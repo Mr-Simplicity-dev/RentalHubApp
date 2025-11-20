@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "start": "react-native start",
+    "build:android": "cd android && ./gradlew assembleRelease",
+    "build:android:bundle": "cd android && ./gradlew bundleRelease",
+    "build:ios": "cd ios && xcodebuild -workspace RentalHubMobile.xcworkspace -scheme RentalHubMobile -configuration Release"
+  }
+}
