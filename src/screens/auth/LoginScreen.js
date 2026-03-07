@@ -105,6 +105,13 @@ const LoginScreen = ({ navigation }) => {
               <Text style={styles.signUpText}>Sign Up</Text>
             </TouchableOpacity>
           </View>
+
+          <View style={styles.footerAlt}>
+            <Text style={styles.footerText}>Invited as a lawyer? </Text>
+            <TouchableOpacity onPress={() => navigation.navigate('AcceptLawyerInvite')}>
+              <Text style={styles.signUpText}>Accept invite</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -153,6 +160,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  footerAlt: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10,
   },
   footerText: {
     fontSize: 14,

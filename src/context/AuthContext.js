@@ -18,17 +18,32 @@ export const AuthProvider = ({ children }) => {
       const isAuth = await authService.isAuthenticated();
       if (isAuth) {
         const userData = await storageService.getUser();
-        setUser(userData);
-        setIsAuthenticated(true);
+        if (userData) {
+          setUser(userData);
+          setIsAuthenticated(true);
+        }
 
-        // Refresh user data
-        const response = await authService.getCurrentUser();
-        if (response.success) {
-          setUser(response.data);
+        try {
+          const response = await authService.getCurrentUser();
+          if (response.success) {
+            setUser(response.data);
+            setIsAuthenticated(true);
+          } else {
+            await authService.logout();
+            setUser(null);
+            setIsAuthenticated(false);
+          }
+        } catch (error) {
+          await authService.logout();
+          setUser(null);
+          setIsAuthenticated(false);
         }
       }
     } catch (error) {
       console.error('Auth initialization error:', error);
+      await authService.logout();
+      setUser(null);
+      setIsAuthenticated(false);
     } finally {
       setLoading(false);
     }
@@ -63,6 +78,8 @@ export const AuthProvider = ({ children }) => {
     await storageService.saveUser(userData);
   };
 
+  const hasRole = (...roles) => roles.includes(user?.user_type);
+
   return (
     <AuthContext.Provider
       value={{
@@ -73,6 +90,7 @@ export const AuthProvider = ({ children }) => {
         register,
         logout,
         updateUser,
+        hasRole,
       }}>
       {children}
     </AuthContext.Provider>

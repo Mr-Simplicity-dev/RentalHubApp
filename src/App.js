@@ -1,7 +1,7 @@
 import React from 'react';
 import { StatusBar } from 'react-native';
-import { AuthProvider } from './src/context/AuthContext';
-import AppNavigator from './src/navigation/AppNavigator';
+import { AuthProvider } from './context/AuthContext';
+import AppNavigator from './navigation/AppNavigator';
 import Toast from 'react-native-toast-message';
 
 const App = () => {

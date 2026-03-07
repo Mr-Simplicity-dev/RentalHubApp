@@ -48,4 +48,21 @@ export const storageService = {
       console.error('Error clearing storage:', error);
     }
   },
+
+  setItem: async (key, value) => {
+    try {
+      await AsyncStorage.setItem(key, value);
+    } catch (error) {
+      console.error(`Error saving key ${key}:`, error);
+    }
+  },
+
+  getItem: async (key) => {
+    try {
+      return await AsyncStorage.getItem(key);
+    } catch (error) {
+      console.error(`Error getting key ${key}:`, error);
+      return null;
+    }
+  },
 };

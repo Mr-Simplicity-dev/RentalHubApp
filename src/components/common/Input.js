@@ -13,6 +13,7 @@ const Input = ({
   icon,
   multiline,
   numberOfLines,
+  ...rest
 }) => {
   return (
     <View style={styles.container}>
@@ -29,6 +30,7 @@ const Input = ({
           placeholderTextColor="#9ca3af"
           multiline={multiline}
           numberOfLines={numberOfLines}
+          {...rest}
         />
       </View>
       {error && <Text style={styles.errorText}>{error}</Text>}

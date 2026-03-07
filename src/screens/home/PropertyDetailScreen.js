@@ -1,383 +1,279 @@
-import React, { useState, useEffect, useContext } from 'react'; import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Dimensions, ActivityIndicator, } from 'react-native'; import { propertyService } from '../../services/propertyService'; import { AuthContext } from '../../context/AuthContext'; import Icon from 'react-native-vector-icons/Ionicons'; import Toast from 'react-native-toast-message'; import Button from '../../components/common/Button';
+import React, { useContext, useEffect, useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Image,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
+import Toast from 'react-native-toast-message';
+import Button from '../../components/common/Button';
+import { propertyService } from '../../services/propertyService';
+import { applicationService } from '../../services/applicationService';
+import { paymentService } from '../../services/paymentService';
+import { AuthContext } from '../../context/AuthContext';
+import { getErrorMessage } from '../../utils/http';
 
-const { width } = Dimensions.get('window');
+const formatCurrency = (value) => `NGN ${Number(value || 0).toLocaleString()}`;
 
-const PropertyDetailScreen = ({ route, navigation }) => { const { id } = route.params; const { user, isAuthenticated } = useContext(AuthContext); const [property, setProperty] = useState(null); const [loading, setLoading] = useState(true); const [isSaved, setIsSaved] = useState(false); const [hasSubscription, setHasSubscription] = useState(false);
+const PropertyDetailScreen = ({ route, navigation }) => {
+  const propertyId = route?.params?.id;
+  const { user, isAuthenticated } = useContext(AuthContext);
 
-useEffect(() => { loadProperty(); }, [id]);
+  const [property, setProperty] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [applying, setApplying] = useState(false);
+  const [unlocking, setUnlocking] = useState(false);
 
-const loadProperty = async () => { setLoading(true); try { let response; if (isAuthenticated && user?.user_type === 'tenant' && user?.subscription_active) { response = await propertyService.getFullPropertyDetails(id); setHasSubscription(true); } else { response = await propertyService.getPropertyById(id); setHasSubscription(false); }
+  const canViewFull = Boolean(
+    isAuthenticated &&
+      user?.user_type === 'tenant' &&
+      (user?.subscription_active || property?.details_unlocked)
+  );
 
-  if (response.success) {
-    setProperty(response.data);
+  const loadProperty = async () => {
+    setLoading(true);
+    try {
+      const response = canViewFull
+        ? await propertyService.getFullPropertyDetails(propertyId)
+        : await propertyService.getPropertyById(propertyId);
+      setProperty(response?.data || null);
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Failed',
+        text2: getErrorMessage(error, 'Could not load property details'),
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (propertyId) {
+      loadProperty();
+    }
+  }, [propertyId, canViewFull]);
+
+  const handleSave = async () => {
+    if (!isAuthenticated) {
+      navigation.navigate('Login');
+      return;
+    }
+
+    setSaving(true);
+    try {
+      await propertyService.saveProperty(propertyId);
+      Toast.show({
+        type: 'success',
+        text1: 'Saved',
+        text2: 'Property was saved to your shortlist',
+      });
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Failed',
+        text2: getErrorMessage(error, 'Could not save property'),
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleApply = async () => {
+    setApplying(true);
+    try {
+      await applicationService.submitApplication({
+        property_id: propertyId,
+        message: 'Application submitted from mobile app',
+      });
+      Toast.show({
+        type: 'success',
+        text1: 'Application submitted',
+      });
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Failed',
+        text2: getErrorMessage(error, 'Could not submit application'),
+      });
+    } finally {
+      setApplying(false);
+    }
+  };
+
+  const handleUnlock = async () => {
+    setUnlocking(true);
+    try {
+      const response = await paymentService.initializePropertyUnlock(propertyId);
+      if (response?.data?.authorization_url) {
+        Toast.show({
+          type: 'info',
+          text1: 'Payment initialized',
+          text2: 'Complete payment in browser then refresh details.',
+        });
+      }
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Unlock failed',
+        text2: getErrorMessage(error, 'Could not start unlock payment'),
+      });
+    } finally {
+      setUnlocking(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <View style={styles.center}>
+        <ActivityIndicator size="large" color="#0284c7" />
+      </View>
+    );
   }
-} catch (error) {
-  Toast.show({
-    type: 'error',
-    text1: 'Error',
-    text2: 'Failed to load property details',
-  });
-} finally {
-  setLoading(false);
-}
-};
 
-const handleSave = async () => { if (!isAuthenticated) { navigation.navigate('Login'); return; }
-
-try {
-  if (isSaved) {
-    await propertyService.unsaveProperty(id);
-    setIsSaved(false);
-    Toast.show({
-      type: 'success',
-      text1: 'Success',
-      text2: 'Property removed from favorites',
-    });
-  } else {
-    await propertyService.saveProperty(id);
-    setIsSaved(true);
-    Toast.show({
-      type: 'success',
-      text1: 'Success',
-      text2: 'Property saved to favorites',
-    });
+  if (!property) {
+    return (
+      <View style={styles.center}>
+        <Text style={styles.empty}>Property not found.</Text>
+      </View>
+    );
   }
-} catch (error) {
-  Toast.show({
-    type: 'error',
-    text1: 'Error',
-    text2: 'Failed to save property',
-  });
-}
-};
 
-const formatCurrency = (amount) => { return ₦${amount.toLocaleString()}; };
+  const cover =
+    property.primary_photo ||
+    property.photos?.[0]?.photo_url ||
+    'https://via.placeholder.com/640x400?text=Property';
 
-if (loading) { return ( ); }
+  return (
+    <ScrollView style={styles.screen}>
+      <Image source={{ uri: cover }} style={styles.image} />
+      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.back}>
+        <Icon name="arrow-back" size={20} color="#0f172a" />
+      </TouchableOpacity>
 
-if (!property) { return ( Property not found ); }
-
-return ( {/* Image Gallery */} {property.photos && property.photos.length > 0 ? ( property.photos.map((photo) => ( <Image key={photo.id} source={{ uri: photo.photo_url }} style={styles.image} /> )) ) : ( <Image source={{ uri: 'https://via.placeholder.com/400x300' }} style={styles.image} /> )}
-
-  {/* Header Actions */}
-  <View style={styles.headerActions}>
-    <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-      <Icon name="arrow-back" size={24} color="#1f2937" />
-    </TouchableOpacity>
-    <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-      <Icon
-        name={isSaved ? 'heart' : 'heart-outline'}
-        size={24}
-        color={isSaved ? '#ef4444' : '#1f2937'}
-      />
-    </TouchableOpacity>
-  </View>
-
-  {/* Content */}
-  <View style={styles.content}>
-    {/* Title and Location */}
-    <Text style={styles.title}>{property.title}</Text>
-    <View style={styles.location}>
-      <Icon name="location-outline" size={18} color="#6b7280" />
-      <Text style={styles.locationText}>
-        {property.area}, {property.city}, {property.state_name}
-      </Text>
-    </View>
-
-    {/* Price */}
-    <View style={styles.priceContainer}>
-      <Text style={styles.price}>{formatCurrency(property.rent_amount)}</Text>
-      <Text style={styles.priceFrequency}>
-        per {property.payment_frequency === 'yearly' ? 'year' : 'month'}
-      </Text>
-    </View>
-
-    {/* Features */}
-    <View style={styles.features}>
-      <View style={styles.feature}>
-        <Icon name="bed-outline" size={24} color="#6b7280" />
-        <Text style={styles.featureValue}>{property.bedrooms}</Text>
-        <Text style={styles.featureLabel}>Bedrooms</Text>
-      </View>
-      <View style={styles.feature}>
-        <Icon name="water-outline" size={24} color="#6b7280" />
-        <Text style={styles.featureValue}>{property.bathrooms}</Text>
-        <Text style={styles.featureLabel}>Bathrooms</Text>
-      </View>
-      {property.avg_rating && (
-        <View style={styles.feature}>
-          <Icon name="star" size={24} color="#fbbf24" />
-          <Text style={styles.featureValue}>
-            {parseFloat(property.avg_rating).toFixed(1)}
-          </Text>
-          <Text style={styles.featureLabel}>Rating</Text>
-        </View>
-      )}
-    </View>
-
-    {/* Description */}
-    <View style={styles.section}>
-      <Text style={styles.sectionTitle}>Description</Text>
-      <Text style={styles.description}>{property.description}</Text>
-    </View>
-
-    {/* Amenities */}
-    {property.amenities && property.amenities.length > 0 && (
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Amenities</Text>
-        <View style={styles.amenities}>
-          {property.amenities.map((amenity, index) => (
-            <View key={index} style={styles.amenity}>
-              <Icon name="checkmark-circle" size={20} color="#10b981" />
-              <Text style={styles.amenityText}>{amenity}</Text>
-            </View>
-          ))}
-        </View>
-      </View>
-    )}
-
-    {/* Contact Section */}
-    {hasSubscription && property.landlord_name ? (
-      <View style={styles.contactSection}>
-        <Text style={styles.sectionTitle}>Contact Landlord</Text>
-        <View style={styles.contactInfo}>
-          <View style={styles.contactItem}>
-            <Text style={styles.contactLabel}>Name</Text>
-            <View style={styles.contactValue}>
-              <Text style={styles.contactText}>{property.landlord_name}</Text>
-              {property.landlord_verified && (
-                <Icon name="checkmark-circle" size={18} color="#10b981" />
-              )}
-            </View>
-          </View>
-          <View style={styles.contactItem}>
-            <Text style={styles.contactLabel}>Phone</Text>
-            <Text style={styles.contactText}>{property.landlord_phone}</Text>
-          </View>
-          <View style={styles.contactItem}>
-            <Text style={styles.contactLabel}>Email</Text>
-            <Text style={styles.contactText}>{property.landlord_email}</Text>
-          </View>
-        </View>
-      </View>
-    ) : (
-      <View style={styles.subscriptionPrompt}>
-        <Icon name="lock-closed-outline" size={32} color="#0284c7" />
-        <Text style={styles.subscriptionTitle}>Subscribe to View Contact</Text>
-        <Text style={styles.subscriptionText}>
-          Subscribe to access landlord contact information and full property details
+      <View style={styles.content}>
+        <Text style={styles.title}>{property.title}</Text>
+        <Text style={styles.location}>
+          {[property.area, property.city, property.state_name].filter(Boolean).join(', ')}
         </Text>
-        <Button
-          title="Subscribe Now"
-          onPress={() => navigation.navigate('Subscribe')}
-          style={styles.subscribeButton}
-        />
+        <Text style={styles.price}>
+          {formatCurrency(property.rent_amount)} / {property.payment_frequency === 'yearly' ? 'year' : 'month'}
+        </Text>
+
+        <View style={styles.metaRow}>
+          <Text style={styles.meta}>{Number(property.bedrooms || 0)} bed</Text>
+          <Text style={styles.meta}>{Number(property.bathrooms || 0)} bath</Text>
+          <Text style={styles.meta}>{property.property_type || 'property'}</Text>
+        </View>
+
+        <Text style={styles.sectionTitle}>Description</Text>
+        <Text style={styles.description}>
+          {property.description || 'No description available'}
+        </Text>
+
+        {canViewFull && property.landlord_name ? (
+          <View style={styles.contactCard}>
+            <Text style={styles.sectionTitle}>Landlord Contact</Text>
+            <Text style={styles.contactText}>Name: {property.landlord_name}</Text>
+            <Text style={styles.contactText}>Phone: {property.landlord_phone || 'N/A'}</Text>
+            <Text style={styles.contactText}>Email: {property.landlord_email || 'N/A'}</Text>
+          </View>
+        ) : (
+          <View style={styles.lockedCard}>
+            <Icon name="lock-closed-outline" size={24} color="#1d4ed8" />
+            <Text style={styles.lockedText}>
+              Unlock full details and landlord contacts to continue.
+            </Text>
+            <Button
+              title={unlocking ? 'Processing...' : 'Unlock Details'}
+              onPress={handleUnlock}
+              loading={unlocking}
+            />
+          </View>
+        )}
+
+        <View style={styles.actions}>
+          <Button
+            title="Save Property"
+            onPress={handleSave}
+            loading={saving}
+            variant="outline"
+            style={styles.actionBtn}
+          />
+
+          {isAuthenticated && user?.user_type === 'tenant' && (
+            <Button
+              title="Apply"
+              onPress={handleApply}
+              loading={applying}
+              style={styles.actionBtn}
+            />
+          )}
+        </View>
       </View>
-    )}
+    </ScrollView>
+  );
+};
 
-    {/* Apply Button */}
-    {isAuthenticated && user?.user_type === 'tenant' && (
-      <Button
-        title="Apply for This Property"
-        onPress={() =>
-          navigation.navigate('ApplicationForm', { propertyId: id, property })
-        }
-        style={styles.applyButton}
-      />
-    )}
-  </View>
-</ScrollView>
-); };
-
-const styles = StyleSheet.create({ container: { flex: 1, backgroundColor: '#ffffff', }, loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', }, errorContainer: { flex: 1, justifyContent:
-
- justifyContent: 'center',
-    alignItems: 'center',
-    padding: 24,
-  },
-  errorText: {
-    fontSize: 18,
-    color: '#6b7280',
-  },
-  imageGallery: {
-    height: 300,
-  },
-  image: {
-    width: width,
-    height: 300,
-    resizeMode: 'cover',
-  },
-  headerActions: {
+const styles = StyleSheet.create({
+  screen: { flex: 1, backgroundColor: '#ffffff' },
+  center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  empty: { fontSize: 16, color: '#64748b' },
+  image: { width: '100%', height: 260 },
+  back: {
     position: 'absolute',
-    top: 40,
-    left: 16,
-    right: 16,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  backButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    top: 12,
+    left: 12,
     backgroundColor: '#ffffff',
+    borderRadius: 20,
+    width: 36,
+    height: 36,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
   },
-  saveButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#ffffff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  content: {
-    padding: 24,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#1f2937',
-    marginBottom: 8,
-  },
-  location: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  locationText: {
-    fontSize: 16,
-    color: '#6b7280',
-    marginLeft: 4,
-  },
-  priceContainer: {
-    marginBottom: 24,
-  },
-  price: {
-    fontSize: 32,
-    fontWeight: '700',
-    color: '#0284c7',
-  },
-  priceFrequency: {
-    fontSize: 14,
-    color: '#6b7280',
-  },
-  features: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingVertical: 24,
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: '#e5e7eb',
-    marginBottom: 24,
-  },
-  feature: {
-    alignItems: 'center',
-  },
-  featureValue: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#1f2937',
-    marginTop: 8,
-  },
-  featureLabel: {
+  content: { padding: 16 },
+  title: { fontSize: 24, fontWeight: '800', color: '#0f172a' },
+  location: { marginTop: 6, color: '#475569', fontSize: 14 },
+  price: { marginTop: 10, fontSize: 26, fontWeight: '800', color: '#0284c7' },
+  metaRow: { marginTop: 8, flexDirection: 'row', gap: 10 },
+  meta: {
+    backgroundColor: '#f1f5f9',
+    color: '#334155',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 999,
+    overflow: 'hidden',
     fontSize: 12,
-    color: '#6b7280',
-    marginTop: 4,
-  },
-  section: {
-    marginBottom: 24,
-  },
-  sectionTitle: {
-    fontSize: 18,
     fontWeight: '600',
-    color: '#1f2937',
-    marginBottom: 12,
   },
-  description: {
-    fontSize: 16,
-    color: '#4b5563',
-    lineHeight: 24,
-  },
-  amenities: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 12,
-  },
-  amenity: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '48%',
-  },
-  amenityText: {
-    fontSize: 14,
-    color: '#4b5563',
-    marginLeft: 8,
-  },
-  contactSection: {
-    backgroundColor: '#f9fafb',
-    padding: 16,
+  sectionTitle: { marginTop: 16, marginBottom: 8, fontSize: 17, fontWeight: '700', color: '#0f172a' },
+  description: { color: '#334155', lineHeight: 22 },
+  contactCard: {
+    marginTop: 16,
+    borderWidth: 1,
+    borderColor: '#bae6fd',
+    backgroundColor: '#f0f9ff',
     borderRadius: 12,
-    marginBottom: 24,
+    padding: 12,
   },
-  contactInfo: {
-    gap: 12,
-  },
-  contactItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  contactLabel: {
-    fontSize: 14,
-    color: '#6b7280',
-  },
-  contactValue: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  contactText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#1f2937',
-  },
-  subscriptionPrompt: {
-    backgroundColor: '#fef3c7',
-    padding: 24,
+  contactText: { color: '#0f172a', marginBottom: 4 },
+  lockedCard: {
+    marginTop: 16,
+    borderWidth: 1,
+    borderColor: '#bfdbfe',
+    backgroundColor: '#eff6ff',
     borderRadius: 12,
-    alignItems: 'center',
-    marginBottom: 24,
+    padding: 14,
+    gap: 10,
   },
-  subscriptionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#92400e',
-    marginTop: 12,
-    marginBottom: 8,
-  },
-  subscriptionText: {
-    fontSize: 14,
-    color: '#78350f',
-    textAlign: 'center',
-    marginBottom: 16,
-  },
-  subscribeButton: {
-    width: '100%',
-  },
-  applyButton: {
-    marginBottom: 24,
-  },
+  lockedText: { color: '#1e3a8a', lineHeight: 20 },
+  actions: { marginTop: 18, gap: 10 },
+  actionBtn: { width: '100%' },
 });
 
 export default PropertyDetailScreen;
