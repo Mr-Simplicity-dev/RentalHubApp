@@ -110,6 +110,13 @@ const HomeScreen = ({ navigation }) => {
       <TouchableOpacity style={styles.cta} onPress={() => goToPropertyList()}>
         <Text style={styles.ctaText}>Browse Properties</Text>
       </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.secondaryCta}
+        onPress={() => navigation.navigate('PropertyAlertRequest')}
+      >
+        <Text style={styles.secondaryCtaText}>Can't find your property? Submit a request</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 };
@@ -205,6 +212,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   ctaText: { color: '#ffffff', fontSize: 15, fontWeight: '700' },
+  secondaryCta: {
+    marginHorizontal: 16,
+    marginTop: 12,
+    borderRadius: 12,
+    paddingVertical: 14,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#cbd5e1',
+    backgroundColor: '#ffffff',
+  },
+  secondaryCtaText: {
+    color: '#0f172a',
+    fontSize: 15,
+    fontWeight: '700',
+  },
 });
 
 export default HomeScreen;

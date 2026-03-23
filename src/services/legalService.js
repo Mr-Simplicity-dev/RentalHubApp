@@ -15,4 +15,14 @@ export const legalService = {
     const response = await api.patch(`/legal/disputes/${disputeId}/resolve`);
     return response.data;
   },
+
+  getDisputeDetails: async (disputeId) => {
+    const response = await api.get(`/disputes/${disputeId}`);
+    return response.data;
+  },
+
+  getLegalAuditLogs: async (params = {}) => {
+    const response = await api.get('/legal/audit-logs', { params });
+    return response.data;
+  },
 };

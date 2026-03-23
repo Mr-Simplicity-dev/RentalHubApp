@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -20,6 +20,7 @@ const PropertyListScreen = ({ route, navigation }) => {
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  const handledRequestRedirect = useRef(false);
 
   const filters = useMemo(() => route?.params || {}, [route?.params]);
 
@@ -63,6 +64,18 @@ const PropertyListScreen = ({ route, navigation }) => {
     loadPage({ nextPage: 1, append: false });
   }, [filters.search, filters.state_id, filters.city, filters.property_type]);
 
+  useEffect(() => {
+    const shouldOpenRequest =
+      route?.params?.request === '1' ||
+      route?.params?.request === 1 ||
+      Boolean(route?.params?.alert_ref || route?.params?.reference || route?.params?.trxref);
+
+    if (shouldOpenRequest && !handledRequestRedirect.current) {
+      handledRequestRedirect.current = true;
+      navigation.navigate('PropertyAlertRequest', route?.params || {});
+    }
+  }, [navigation, route?.params]);
+
   const loadMore = () => {
     if (!loadingMore && hasMore && !loading) {
       loadPage({ nextPage: page + 1, append: true });
@@ -91,6 +104,19 @@ const PropertyListScreen = ({ route, navigation }) => {
       <View style={styles.header}>
         <Text style={styles.title}>Browse Properties</Text>
         <Text style={styles.subtitle}>{items.length} properties loaded</Text>
+        <TouchableOpacity
+          style={styles.requestButton}
+          onPress={() =>
+            navigation.navigate('PropertyAlertRequest', {
+              search: filters.search,
+              state_id: filters.state_id,
+              city: filters.city,
+              property_type: filters.property_type,
+            })
+          }
+        >
+          <Text style={styles.requestButtonText}>Submit property request</Text>
+        </TouchableOpacity>
       </View>
 
       <FlatList
@@ -142,6 +168,21 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 4,
     color: '#64748b',
+  },
+  requestButton: {
+    marginTop: 10,
+    alignSelf: 'center',
+    borderWidth: 1,
+    borderColor: '#bfdbfe',
+    backgroundColor: '#eff6ff',
+    borderRadius: 999,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+  },
+  requestButtonText: {
+    color: '#1d4ed8',
+    fontWeight: '700',
+    fontSize: 12,
   },
   list: { padding: 14, paddingBottom: 40 },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center' },

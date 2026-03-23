@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, ScrollView } from 'react-native';
+import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { legalService } from '../../services/legalService';
 import { getErrorMessage, pickList } from '../../utils/http';
@@ -79,14 +79,17 @@ const LawyerDashboardScreen = ({ navigation }) => {
           keyExtractor={(item) => String(item.id)}
           renderItem={({ item }) => (
             <TouchableOpacity
-              style={[
-                styles.card,
-                selectedProperty?.id === item.id && styles.cardActive,
-              ]}
+              style={[styles.card, selectedProperty?.id === item.id && styles.cardActive]}
               onPress={() => loadDisputes(item)}
             >
               <Text style={styles.cardTitle}>{item.title}</Text>
-              <Text style={styles.cardMeta}>{[item.city, item.state_name].filter(Boolean).join(', ')}</Text>
+              <Text style={styles.cardMeta}>
+                {[item.city, item.state_name || item.state].filter(Boolean).join(', ')}
+              </Text>
+              <Text style={styles.cardMeta}>
+                Assigned by {item.assigned_by_name || item.client_name || 'Unknown'}
+                {item.client_name ? ` for ${item.client_name}` : ''}
+              </Text>
             </TouchableOpacity>
           )}
           ListEmptyComponent={<Text style={styles.empty}>No authorized properties.</Text>}
@@ -105,14 +108,21 @@ const LawyerDashboardScreen = ({ navigation }) => {
                 <Text style={styles.cardMeta}>Status: {item.status || 'open'}</Text>
                 <Text style={styles.cardText}>{item.description || 'No description available'}</Text>
                 <View style={styles.row}>
-                  <TouchableOpacity onPress={() => navigation.navigate('VerifyCase', { disputeId: item.id })}>
+                  <TouchableOpacity
+                    onPress={() => navigation.navigate('VerifyCase', { disputeId: item.id })}
+                  >
                     <Text style={styles.linkText}>Verify Integrity</Text>
                   </TouchableOpacity>
-                  {item.status !== 'resolved' && (
+                  <TouchableOpacity
+                    onPress={() => navigation.navigate('DisputeDetails', { disputeId: item.id })}
+                  >
+                    <Text style={styles.linkText}>Trace Dispute</Text>
+                  </TouchableOpacity>
+                  {item.status !== 'resolved' ? (
                     <TouchableOpacity onPress={() => resolveDispute(item.id)}>
                       <Text style={styles.linkWarn}>Resolve</Text>
                     </TouchableOpacity>
-                  )}
+                  ) : null}
                 </View>
               </View>
             ))
@@ -141,7 +151,7 @@ const styles = StyleSheet.create({
   cardTitle: { fontSize: 16, fontWeight: '700', color: '#0f172a' },
   cardMeta: { marginTop: 4, color: '#475569' },
   cardText: { marginTop: 8, color: '#334155' },
-  row: { flexDirection: 'row', gap: 16, marginTop: 10 },
+  row: { flexDirection: 'row', gap: 16, marginTop: 10, flexWrap: 'wrap' },
   linkText: { color: '#0284c7', fontWeight: '700' },
   linkWarn: { color: '#dc2626', fontWeight: '700' },
   empty: { color: '#64748b' },

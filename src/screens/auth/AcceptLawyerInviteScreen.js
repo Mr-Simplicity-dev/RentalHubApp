@@ -11,6 +11,8 @@ const AcceptLawyerInviteScreen = ({ navigation, route }) => {
   const [form, setForm] = useState({
     token: route?.params?.token || '',
     full_name: '',
+    chamber_name: '',
+    chamber_phone: '',
     phone: '',
     password: '',
     confirm_password: '',
@@ -21,7 +23,14 @@ const AcceptLawyerInviteScreen = ({ navigation, route }) => {
   };
 
   const handleAcceptInvite = async () => {
-    if (!form.token.trim() || !form.full_name.trim() || !form.phone.trim() || !form.password) {
+    if (
+      !form.token.trim() ||
+      !form.full_name.trim() ||
+      !form.chamber_name.trim() ||
+      !form.chamber_phone.trim() ||
+      !form.phone.trim() ||
+      !form.password
+    ) {
       Toast.show({ type: 'error', text1: 'Complete all required fields' });
       return;
     }
@@ -41,6 +50,8 @@ const AcceptLawyerInviteScreen = ({ navigation, route }) => {
       const response = await authService.acceptLawyerInvite({
         token: form.token.trim(),
         full_name: form.full_name.trim(),
+        chamber_name: form.chamber_name.trim(),
+        chamber_phone: form.chamber_phone.trim(),
         phone: form.phone.trim(),
         password: form.password,
       });
@@ -88,6 +99,19 @@ const AcceptLawyerInviteScreen = ({ navigation, route }) => {
         value={form.full_name}
         onChangeText={(value) => onChange('full_name', value)}
         placeholder="Your full name"
+      />
+      <Input
+        label="Chamber / Law Firm Name"
+        value={form.chamber_name}
+        onChangeText={(value) => onChange('chamber_name', value)}
+        placeholder="Your firm or chamber"
+      />
+      <Input
+        label="Chamber Phone"
+        value={form.chamber_phone}
+        onChangeText={(value) => onChange('chamber_phone', value)}
+        placeholder="+234..."
+        keyboardType="phone-pad"
       />
       <Input
         label="Phone"

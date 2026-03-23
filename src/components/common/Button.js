@@ -23,7 +23,7 @@ const Button = ({
     style,
   ];
 
-  const textStyle = [
+  const computedTextStyle = [
     styles.text,
     variant === 'primary' && styles.primaryText,
     variant === 'secondary' && styles.secondaryText,
@@ -43,7 +43,7 @@ const Button = ({
       {loading ? (
         <ActivityIndicator color="#fff" />
       ) : (
-        <Text style={textStyle}>{title}</Text>
+        <Text style={computedTextStyle}>{title}</Text>
       )}
     </TouchableOpacity>
   );

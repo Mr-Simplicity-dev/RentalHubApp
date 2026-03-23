@@ -40,6 +40,18 @@ export const authService = {
     return response.data;
   },
 
+  hydrateSession: async (sessionData) => {
+    const token = sessionData?.token;
+    const user = sessionData?.user;
+
+    if (!token || !user) {
+      return;
+    }
+
+    await storageService.saveToken(token);
+    await storageService.saveUser(user);
+  },
+
   isAuthenticated: async () => {
     const token = await storageService.getToken();
     if (!token) return false;
@@ -77,6 +89,26 @@ export const authService = {
     return response.data;
   },
 
+  getRegistrationFlags: async (params = {}) => {
+    const response = await api.get('/auth/registration-flags', { params });
+    return response.data;
+  },
+
+  initializeRegistrationPayment: async (payload) => {
+    const response = await api.post('/auth/register/payment', payload);
+    return response.data;
+  },
+
+  completeRegistrationPayment: async (reference) => {
+    const response = await api.post(`/auth/register/payment/complete/${reference}`);
+
+    if (response.data?.success) {
+      await authService.hydrateSession(response.data.data);
+    }
+
+    return response.data;
+  },
+
   acceptLawyerInvite: async (payload) => {
     const response = await api.post('/auth/lawyer/accept-invite', payload);
     return response.data;
@@ -100,8 +132,8 @@ export const authService = {
     return response.data;
   },
 
-  getLawyerInvites: async () => {
-    const response = await api.get('/auth/lawyer-invites');
+  getLawyerInvites: async (params = {}) => {
+    const response = await api.get('/auth/lawyer-invites', { params });
     return response.data;
   },
 

@@ -2,6 +2,33 @@ apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
 
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file("key.properties")
+
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
+def resolveSigningValue = { key ->
+    def value = keystoreProperties.getProperty(key)
+    if (value) {
+        return value
+    }
+
+    value = project.findProperty(key)
+    if (value) {
+        return value
+    }
+
+    return System.getenv(key)
+}
+
+def releaseStoreFile = resolveSigningValue("RELEASE_STORE_FILE")
+def releaseStorePassword = resolveSigningValue("RELEASE_STORE_PASSWORD")
+def releaseKeyAlias = resolveSigningValue("RELEASE_KEY_ALIAS")
+def releaseKeyPassword = resolveSigningValue("RELEASE_KEY_PASSWORD")
+def hasReleaseSigning = releaseStoreFile && releaseStorePassword && releaseKeyAlias && releaseKeyPassword
+
 /**
  * This is the configuration block to customize your React Native Android app.
  * By default you don't need to apply any configuration, just uncomment the lines you need.
@@ -89,15 +116,23 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        release {
+            if (hasReleaseSigning) {
+                storeFile file(releaseStoreFile)
+                storePassword releaseStorePassword
+                keyAlias releaseKeyAlias
+                keyPassword releaseKeyPassword
+            }
+        }
     }
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
         }
         release {
-            // Caution! In production, you need to generate your own keystore file.
-            // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            // Use a real release keystore for Play Store uploads.
+            // When release keys are not configured yet, keep local release builds working with debug signing.
+            signingConfig hasReleaseSigning ? signingConfigs.release : signingConfigs.debug
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }

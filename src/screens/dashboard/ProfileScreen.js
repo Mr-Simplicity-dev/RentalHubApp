@@ -1,18 +1,26 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Switch } from 'react-native';
 import { launchCamera } from 'react-native-image-picker';
 import Toast from 'react-native-toast-message';
 import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
 import { AuthContext } from '../../context/AuthContext';
+import { biometricService } from '../../services/biometricService';
 import { userService } from '../../services/userService';
 import { authService } from '../../services/authService';
-import { getErrorMessage, pickObject } from '../../utils/http';
+import { storageService } from '../../services/storageService';
+import { getErrorMessage, getReviewStatus, pickObject } from '../../utils/http';
 
 const ProfileScreen = ({ navigation }) => {
   const { user, updateUser, logout } = useContext(AuthContext);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [biometricSaving, setBiometricSaving] = useState(false);
+  const [biometricStatus, setBiometricStatus] = useState({
+    available: false,
+    enabled: false,
+    label: 'Biometrics',
+  });
   const [status, setStatus] = useState(null);
   const [passportUri, setPassportUri] = useState('');
   const [form, setForm] = useState({
@@ -39,6 +47,18 @@ const ProfileScreen = ({ navigation }) => {
   useEffect(() => {
     loadVerificationStatus();
   }, []);
+
+  const loadBiometricStatus = async () => {
+    const nextStatus = await biometricService.getStatus();
+    setBiometricStatus(nextStatus);
+  };
+
+  useEffect(() => {
+    loadBiometricStatus();
+    const unsubscribe = navigation.addListener('focus', loadBiometricStatus);
+
+    return unsubscribe;
+  }, [navigation]);
 
   const handleSaveProfile = async () => {
     setSaving(true);
@@ -110,9 +130,79 @@ const ProfileScreen = ({ navigation }) => {
     }
   };
 
+  const handleBiometricToggle = async (enabled) => {
+    if (biometricSaving) {
+      return;
+    }
+
+    setBiometricSaving(true);
+
+    try {
+      if (!enabled) {
+        await biometricService.clearStoredSession();
+        setBiometricStatus((previous) => ({ ...previous, enabled: false }));
+        Toast.show({
+          type: 'success',
+          text1: 'Biometric login disabled',
+        });
+        return;
+      }
+
+      const token = await storageService.getToken();
+      const currentUser = user || (await storageService.getUser());
+
+      if (!token || !currentUser) {
+        Toast.show({
+          type: 'error',
+          text1: 'Biometric Login',
+          text2: 'Sign in again before enabling biometric login.',
+        });
+        return;
+      }
+
+      const response = await biometricService.enableForSession({
+        token,
+        user: currentUser,
+      });
+
+      if (!response.success) {
+        Toast.show({
+          type: 'error',
+          text1: 'Biometric Login',
+          text2: response.message || 'Could not enable biometric login.',
+        });
+        return;
+      }
+
+      await loadBiometricStatus();
+      Toast.show({
+        type: 'success',
+        text1: `${response.label || 'Biometric'} login enabled`,
+      });
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Biometric Login',
+        text2: 'Could not update biometric login right now.',
+      });
+    } finally {
+      setBiometricSaving(false);
+    }
+  };
+
   const handleLogout = async () => {
     await logout();
   };
+
+  const reviewStatus = getReviewStatus(user, status);
+  const reviewStatusLabel =
+    reviewStatus === 'verified'
+      ? 'Verified'
+      : reviewStatus === 'pending'
+        ? 'Pending review'
+        : reviewStatus === 'rejected'
+          ? 'Rejected'
+          : 'Not submitted';
 
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
@@ -145,10 +235,55 @@ const ProfileScreen = ({ navigation }) => {
         <Text style={styles.statusText}>
           Identity: {status?.identity ? 'Verified' : 'Pending'} | Document: {status?.identity_document_type || '-'}
         </Text>
+        <Text style={styles.statusText}>Review Status: {reviewStatusLabel}</Text>
+
+        {reviewStatus === 'rejected' ? (
+          <View style={styles.warningBox}>
+            <Text style={styles.warningText}>
+              Your verification was rejected. Capture a new live passport photo and upload it again.
+            </Text>
+          </View>
+        ) : reviewStatus === 'pending' ? (
+          <View style={styles.infoBox}>
+            <Text style={styles.infoText}>
+              Your passport has been submitted and is waiting for review.
+            </Text>
+          </View>
+        ) : null}
 
         {passportUri ? <Image source={{ uri: passportUri }} style={styles.preview} /> : null}
         <Button title="Capture Passport Photo" onPress={openCamera} variant="outline" style={styles.marginTop} />
         <Button title="Upload Passport" onPress={uploadPassport} loading={uploading} style={styles.marginTop} />
+      </View>
+
+      <View style={styles.card}>
+        <Text style={styles.cardTitle}>Security</Text>
+        {biometricStatus.available ? (
+          <>
+            <View style={styles.switchRow}>
+              <View style={styles.switchTextWrap}>
+                <Text style={styles.switchTitle}>Use {biometricStatus.label} to unlock the app</Text>
+                <Text style={styles.switchDescription}>
+                  When enabled, we will ask for your biometric before restoring your saved session.
+                </Text>
+              </View>
+              <Switch
+                value={biometricStatus.enabled}
+                onValueChange={handleBiometricToggle}
+                disabled={biometricSaving}
+                trackColor={{ false: '#cbd5e1', true: '#7dd3fc' }}
+                thumbColor={biometricStatus.enabled ? '#0284c7' : '#f8fafc'}
+              />
+            </View>
+            <Text style={styles.helperText}>
+              Status: {biometricStatus.enabled ? `${biometricStatus.label} enabled` : 'Disabled'}
+            </Text>
+          </>
+        ) : (
+          <Text style={styles.helperText}>
+            Biometric login is not available on this device.
+          </Text>
+        )}
       </View>
 
       <View style={styles.card}>
@@ -184,6 +319,28 @@ const styles = StyleSheet.create({
   cardTitle: { fontSize: 16, fontWeight: '700', color: '#0f172a', marginBottom: 8 },
   infoRow: { color: '#334155', marginBottom: 4 },
   statusText: { color: '#334155', marginBottom: 6 },
+  infoBox: {
+    marginBottom: 10,
+    borderRadius: 10,
+    backgroundColor: '#eff6ff',
+    borderWidth: 1,
+    borderColor: '#bfdbfe',
+    padding: 10,
+  },
+  infoText: {
+    color: '#1d4ed8',
+  },
+  warningBox: {
+    marginBottom: 10,
+    borderRadius: 10,
+    backgroundColor: '#fef2f2',
+    borderWidth: 1,
+    borderColor: '#fecaca',
+    padding: 10,
+  },
+  warningText: {
+    color: '#b91c1c',
+  },
   preview: {
     marginTop: 8,
     width: 120,
@@ -192,6 +349,30 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   marginTop: { marginTop: 8 },
+  switchRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 12,
+  },
+  switchTextWrap: {
+    flex: 1,
+    paddingRight: 12,
+  },
+  switchTitle: {
+    color: '#0f172a',
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  switchDescription: {
+    marginTop: 4,
+    color: '#64748b',
+    lineHeight: 18,
+  },
+  helperText: {
+    marginTop: 10,
+    color: '#475569',
+  },
 });
 
 export default ProfileScreen;

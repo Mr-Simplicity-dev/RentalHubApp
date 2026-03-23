@@ -7,6 +7,7 @@ import {
   Image,
   TouchableOpacity,
   ActivityIndicator,
+  Linking,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
@@ -111,10 +112,11 @@ const PropertyDetailScreen = ({ route, navigation }) => {
     try {
       const response = await paymentService.initializePropertyUnlock(propertyId);
       if (response?.data?.authorization_url) {
+        await Linking.openURL(response.data.authorization_url);
         Toast.show({
           type: 'info',
           text1: 'Payment initialized',
-          text2: 'Complete payment in browser then refresh details.',
+          text2: 'Complete payment in browser, then return and refresh details.',
         });
       }
     } catch (error) {

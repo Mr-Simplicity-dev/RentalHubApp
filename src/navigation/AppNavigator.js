@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -12,6 +12,7 @@ import AcceptLawyerInviteScreen from '../screens/auth/AcceptLawyerInviteScreen';
 import HomeScreen from '../screens/home/HomeScreen';
 import PropertyListScreen from '../screens/home/PropertyListScreen';
 import PropertyDetailScreen from '../screens/home/PropertyDetailScreen';
+import PropertyAlertRequestScreen from '../screens/home/PropertyAlertRequestScreen';
 import DashboardScreen from '../screens/dashboard/DashboardScreen';
 import ProfileScreen from '../screens/dashboard/ProfileScreen';
 import SavedPropertiesScreen from '../screens/dashboard/SavedPropertiesScreen';
@@ -22,6 +23,7 @@ import NotificationsScreen from '../screens/dashboard/NotificationsScreen';
 import ApplicationsScreen from '../screens/applications/ApplicationsScreen';
 import MessagesScreen from '../screens/messages/MessagesScreen';
 import LawyerDashboardScreen from '../screens/lawyer/LawyerDashboardScreen';
+import DisputeDetailsScreen from '../screens/lawyer/DisputeDetailsScreen';
 import VerifyCaseScreen from '../screens/shared/VerifyCaseScreen';
 import AdminDashboardScreen from '../screens/admin/AdminDashboardScreen';
 import AdminUsersScreen from '../screens/admin/AdminUsersScreen';
@@ -38,6 +40,39 @@ const screenOptions = {
   headerTitleAlign: 'center',
 };
 
+const linkingConfig = {
+  prefixes: [
+    'rentalhub://',
+    'https://rentalhub.com.ng',
+    'https://www.rentalhub.com.ng',
+    'https://renatalhub.com.ng',
+    'https://www.renatalhub.com.ng',
+  ],
+  config: {
+    screens: {
+      Home: '',
+      Login: 'login',
+      Register: 'register',
+      ForgotPassword: 'forgot-password',
+      PropertyList: 'properties',
+      PropertyDetail: 'properties/:id',
+      PropertyAlertRequest: 'property-request',
+      AcceptLawyerInvite: 'lawyer/accept-invite',
+      Profile: 'profile',
+      SavedProperties: 'saved-properties',
+      Subscribe: 'subscribe',
+      Notifications: 'notifications',
+      MyProperties: 'my-properties',
+      AddProperty: 'properties/new',
+      LawyerDashboard: 'lawyer',
+      DisputeDetails: 'dispute/:disputeId',
+      VerifyCase: 'verify-case',
+      AdminDashboard: 'admin',
+      SuperAdminDashboard: 'super-admin',
+    },
+  },
+};
+
 const tabIcon = (routeName, focused, color, size) => {
   let iconName = 'ellipse-outline';
   if (routeName === 'HomeTab') iconName = focused ? 'home' : 'home-outline';
@@ -52,6 +87,7 @@ const GuestStack = () => (
     <Stack.Screen name="Home" component={HomeScreen} />
     <Stack.Screen name="PropertyList" component={PropertyListScreen} options={{ title: 'Browse Properties' }} />
     <Stack.Screen name="PropertyDetail" component={PropertyDetailScreen} options={{ title: 'Property Details' }} />
+    <Stack.Screen name="PropertyAlertRequest" component={PropertyAlertRequestScreen} options={{ title: 'Submit Request' }} />
     <Stack.Screen name="Login" component={LoginScreen} options={{ title: 'Login' }} />
     <Stack.Screen name="Register" component={RegisterScreen} options={{ title: 'Register' }} />
     <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{ title: 'Forgot Password' }} />
@@ -80,6 +116,7 @@ const TenantRoot = () => (
     <Stack.Screen name="MainTabs" component={MainTabs} options={{ headerShown: false }} />
     <Stack.Screen name="PropertyList" component={PropertyListScreen} options={{ title: 'Browse Properties' }} />
     <Stack.Screen name="PropertyDetail" component={PropertyDetailScreen} options={{ title: 'Property Details' }} />
+    <Stack.Screen name="PropertyAlertRequest" component={PropertyAlertRequestScreen} options={{ title: 'Submit Request' }} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
     <Stack.Screen name="SavedProperties" component={SavedPropertiesScreen} options={{ title: 'Saved Properties' }} />
     <Stack.Screen name="Subscribe" component={SubscribeScreen} />
@@ -92,6 +129,7 @@ const LandlordRoot = () => (
     <Stack.Screen name="MainTabs" component={MainTabs} options={{ headerShown: false }} />
     <Stack.Screen name="PropertyList" component={PropertyListScreen} options={{ title: 'Browse Properties' }} />
     <Stack.Screen name="PropertyDetail" component={PropertyDetailScreen} options={{ title: 'Property Details' }} />
+    <Stack.Screen name="PropertyAlertRequest" component={PropertyAlertRequestScreen} options={{ title: 'Submit Request' }} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
     <Stack.Screen name="MyProperties" component={MyPropertiesScreen} options={{ title: 'My Properties' }} />
     <Stack.Screen name="AddProperty" component={AddPropertyScreen} options={{ title: 'Add Property' }} />
@@ -102,6 +140,10 @@ const LandlordRoot = () => (
 const LawyerRoot = () => (
   <Stack.Navigator screenOptions={screenOptions}>
     <Stack.Screen name="LawyerDashboard" component={LawyerDashboardScreen} options={{ title: 'Lawyer Dashboard' }} />
+    <Stack.Screen name="PropertyList" component={PropertyListScreen} options={{ title: 'Browse Properties' }} />
+    <Stack.Screen name="PropertyDetail" component={PropertyDetailScreen} options={{ title: 'Property Details' }} />
+    <Stack.Screen name="PropertyAlertRequest" component={PropertyAlertRequestScreen} options={{ title: 'Submit Request' }} />
+    <Stack.Screen name="DisputeDetails" component={DisputeDetailsScreen} options={{ title: 'Dispute Trace' }} />
     <Stack.Screen name="VerifyCase" component={VerifyCaseScreen} options={{ title: 'Verify Case' }} />
     <Stack.Screen name="Messages" component={MessagesScreen} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
@@ -112,6 +154,9 @@ const LawyerRoot = () => (
 const AdminRoot = () => (
   <Stack.Navigator screenOptions={screenOptions}>
     <Stack.Screen name="AdminDashboard" component={AdminDashboardScreen} options={{ title: 'Admin Dashboard' }} />
+    <Stack.Screen name="PropertyList" component={PropertyListScreen} options={{ title: 'Browse Properties' }} />
+    <Stack.Screen name="PropertyDetail" component={PropertyDetailScreen} options={{ title: 'Property Details' }} />
+    <Stack.Screen name="PropertyAlertRequest" component={PropertyAlertRequestScreen} options={{ title: 'Submit Request' }} />
     <Stack.Screen name="AdminUsers" component={AdminUsersScreen} options={{ title: 'Users' }} />
     <Stack.Screen name="AdminProperties" component={AdminPropertiesScreen} options={{ title: 'Properties' }} />
     <Stack.Screen name="AdminApplications" component={AdminApplicationsScreen} options={{ title: 'Applications' }} />
@@ -126,6 +171,9 @@ const AdminRoot = () => (
 const SuperAdminRoot = () => (
   <Stack.Navigator screenOptions={screenOptions}>
     <Stack.Screen name="SuperAdminDashboard" component={SuperAdminDashboardScreen} options={{ title: 'Super Admin' }} />
+    <Stack.Screen name="PropertyList" component={PropertyListScreen} options={{ title: 'Browse Properties' }} />
+    <Stack.Screen name="PropertyDetail" component={PropertyDetailScreen} options={{ title: 'Property Details' }} />
+    <Stack.Screen name="PropertyAlertRequest" component={PropertyAlertRequestScreen} options={{ title: 'Submit Request' }} />
     <Stack.Screen name="VerifyCase" component={VerifyCaseScreen} options={{ title: 'Verify Case' }} />
     <Stack.Screen name="Messages" component={MessagesScreen} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
@@ -153,7 +201,9 @@ const AppNavigator = () => {
   if (isAuthenticated && role === 'admin') content = <AdminRoot />;
   if (isAuthenticated && role === 'super_admin') content = <SuperAdminRoot />;
 
-  return <NavigationContainer>{content}</NavigationContainer>;
+  const linking = useMemo(() => linkingConfig, []);
+
+  return <NavigationContainer linking={linking}>{content}</NavigationContainer>;
 };
 
 export default AppNavigator;

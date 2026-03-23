@@ -51,6 +51,11 @@ export const superAdminService = {
     return response.data;
   },
 
+  deleteRejectedVerification: async (id) => {
+    const response = await api.delete(`/super/verifications/${id}`);
+    return response.data;
+  },
+
   getAdminsPerformance: async () => {
     const response = await api.get('/super/admins/performance');
     return response.data;
@@ -98,6 +103,26 @@ export const superAdminService = {
 
   updateFlag: async (key, enabled) => {
     const response = await api.patch(`/super/flags/${key}`, { enabled });
+    return response.data;
+  },
+
+  getPricingRules: async () => {
+    const response = await api.get('/super/pricing-rules');
+    return response.data;
+  },
+
+  createPricingRule: async (payload) => {
+    const response = await api.post('/super/pricing-rules', payload);
+    return response.data;
+  },
+
+  updatePricingRule: async (ruleId, payload) => {
+    const response = await api.patch(`/super/pricing-rules/${ruleId}`, payload);
+    return response.data;
+  },
+
+  deletePricingRule: async (ruleId) => {
+    const response = await api.delete(`/super/pricing-rules/${ruleId}`);
     return response.data;
   },
 

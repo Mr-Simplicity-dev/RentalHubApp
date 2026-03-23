@@ -6,6 +6,16 @@ export const propertyService = {
     return response.data;
   },
 
+  getLocationOptions: async () => {
+    const response = await api.get('/property-utils/location-options');
+    return response.data;
+  },
+
+  getPropertyAlertConfig: async (params = {}) => {
+    const response = await api.get('/property-alerts/config', { params });
+    return response.data;
+  },
+
   browseProperties: async (page = 1, limit = 20) => {
     const response = await api.get('/properties/browse', {
       params: { page, limit },
@@ -137,6 +147,11 @@ export const propertyService = {
 
   requestPropertyAlert: async (requestData) => {
     const response = await api.post('/property-alerts/request', requestData);
+    return response.data;
+  },
+
+  completePropertyAlertRequest: async (reference) => {
+    const response = await api.post(`/property-alerts/request/complete/${reference}`);
     return response.data;
   },
 };
