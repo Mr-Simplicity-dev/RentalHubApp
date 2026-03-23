@@ -1,4 +1,10 @@
 {
   "name": "RentalHubMobile",
-  "displayName": "RentalHub NG"
+  "displayName": "RentalHub NG",
+  "extra": {
+    "eas": {
+      "projectId": "a7a3b4d3-a3b3-418b-9d5f-c441627b264c"
+    }
+  },
+  "owner": "mdozaa"
 }
