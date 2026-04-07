@@ -24,4 +24,10 @@ export const dashboardService = {
     });
     return response.data;
   },
+
+  // New endpoint from backend
+  getAdminStats: async () => {
+    const response = await api.get('/dashboard/admin/stats');
+    return response.data;
+  },
 };

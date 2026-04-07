@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import api from './api';
 import { storageService } from './storageService';
 import { jwtDecode } from 'jwt-decode';
@@ -114,13 +115,28 @@ export const authService = {
     return response.data;
   },
 
-  uploadPassport: async (imageUri, liveCaptureToken = '') => {
+  acceptAgentInvite: async (payload) => {
+    const response = await api.post('/auth/agent/accept-invite', payload);
+    return response.data;
+  },
+
+  uploadPassport: async (imageInput, liveCaptureToken = '') => {
     const formData = new FormData();
-    formData.append('passport', {
-      uri: imageUri,
-      type: 'image/jpeg',
-      name: 'passport.jpg',
-    });
+    const fileAsset =
+      typeof imageInput === 'string'
+        ? { uri: imageInput, type: 'image/jpeg', name: 'passport.jpg' }
+        : imageInput || {};
+
+    if (Platform.OS === 'web' && fileAsset.file) {
+      formData.append('passport', fileAsset.file, fileAsset.name || 'passport.jpg');
+    } else {
+      formData.append('passport', {
+        uri: fileAsset.uri,
+        type: fileAsset.type || 'image/jpeg',
+        name: fileAsset.name || 'passport.jpg',
+      });
+    }
+
     formData.append('capture_source', 'live_camera');
     if (liveCaptureToken) {
       formData.append('live_capture_token', liveCaptureToken);

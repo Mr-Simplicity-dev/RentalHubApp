@@ -29,6 +29,7 @@ const PropertyDetailScreen = ({ route, navigation }) => {
   const [saving, setSaving] = useState(false);
   const [applying, setApplying] = useState(false);
   const [unlocking, setUnlocking] = useState(false);
+  const [latestDamageReport, setLatestDamageReport] = useState(null);
 
   const canViewFull = Boolean(
     isAuthenticated &&
@@ -43,6 +44,15 @@ const PropertyDetailScreen = ({ route, navigation }) => {
         ? await propertyService.getFullPropertyDetails(propertyId)
         : await propertyService.getPropertyById(propertyId);
       setProperty(response?.data || null);
+
+      try {
+        const damageResponse = await propertyService.getLatestPublishedDamageReport(propertyId);
+        if (damageResponse?.success) {
+          setLatestDamageReport(damageResponse.data || null);
+        }
+      } catch (damageError) {
+        setLatestDamageReport(null);
+      }
     } catch (error) {
       Toast.show({
         type: 'error',
@@ -178,6 +188,26 @@ const PropertyDetailScreen = ({ route, navigation }) => {
           {property.description || 'No description available'}
         </Text>
 
+        {canViewFull && latestDamageReport ? (
+          <View style={styles.damageCard}>
+            <Text style={styles.sectionTitle}>Property Condition Report</Text>
+            <Text style={styles.damageMeta}>
+              Type: {latestDamageReport.damage_type || 'N/A'} | Severity: {latestDamageReport.severity || 'N/A'}
+            </Text>
+            {latestDamageReport.room_location ? (
+              <Text style={styles.damageMeta}>Location: {latestDamageReport.room_location}</Text>
+            ) : null}
+            {latestDamageReport.description ? (
+              <Text style={styles.damageText}>{latestDamageReport.description}</Text>
+            ) : null}
+            {latestDamageReport.ai_analysis?.repair_recommendation ? (
+              <Text style={styles.damageRecommendation}>
+                Recommendation: {latestDamageReport.ai_analysis.repair_recommendation}
+              </Text>
+            ) : null}
+          </View>
+        ) : null}
+
         {canViewFull && property.landlord_name ? (
           <View style={styles.contactCard}>
             <Text style={styles.sectionTitle}>Landlord Contact</Text>
@@ -255,6 +285,17 @@ const styles = StyleSheet.create({
   },
   sectionTitle: { marginTop: 16, marginBottom: 8, fontSize: 17, fontWeight: '700', color: '#0f172a' },
   description: { color: '#334155', lineHeight: 22 },
+  damageCard: {
+    marginTop: 16,
+    borderWidth: 1,
+    borderColor: '#fde68a',
+    backgroundColor: '#fffbeb',
+    borderRadius: 12,
+    padding: 12,
+  },
+  damageMeta: { color: '#92400e', marginTop: 4, fontWeight: '600' },
+  damageText: { marginTop: 8, color: '#78350f' },
+  damageRecommendation: { marginTop: 8, color: '#1e3a8a', fontWeight: '600' },
   contactCard: {
     marginTop: 16,
     borderWidth: 1,

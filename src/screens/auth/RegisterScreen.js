@@ -59,6 +59,10 @@ const RegisterScreen = ({ navigation, route }) => {
     email: '',
     phone: '',
     lawyer_email: '',
+    add_agent: false,
+    agent_full_name: '',
+    agent_email: '',
+    agent_phone: '',
     nin: '',
     international_passport_number: '',
     nationality: '',
@@ -72,6 +76,8 @@ const RegisterScreen = ({ navigation, route }) => {
     () => locationOptions.find((item) => String(item.id) === String(form.state_id)),
     [form.state_id, locationOptions]
   );
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const passportPattern = /^[A-Za-z0-9]{6,20}$/;
 
   const availableLgas = selectedState?.lgas || [];
   const requiresRegistrationPayment =
@@ -79,6 +85,28 @@ const RegisterScreen = ({ navigation, route }) => {
     (userType === 'landlord' && registrationFlags.landlord_registration_payment);
   const displayedRegistrationAmount =
     registrationPricing.amount || (userType === 'tenant' ? 2500 : 5000);
+  const isFormComplete = Boolean(
+    registrationFlags.loaded &&
+      registrationFlags.allow_registration &&
+      form.full_name.trim() &&
+      emailPattern.test(form.email.trim()) &&
+      form.phone.trim() &&
+      emailPattern.test(form.lawyer_email.trim()) &&
+      form.password.length >= 8 &&
+      form.password === form.confirm_password &&
+      (userType !== 'landlord' ||
+        !form.add_agent ||
+        (form.agent_full_name.trim() &&
+          emailPattern.test(form.agent_email.trim()) &&
+          form.agent_phone.trim())) &&
+      (!requiresRegistrationPayment ||
+        (form.state_id && form.lga_name.trim() && registrationPricing.location_complete)) &&
+      (isForeigner
+        ? (!registrationFlags.passport_number ||
+            (passportPattern.test(form.international_passport_number.trim()) &&
+              form.nationality.trim()))
+        : (!registrationFlags.nin_number || /^\d{11}$/.test(form.nin.trim())))
+  );
 
   useEffect(() => {
     let active = true;
@@ -178,6 +206,15 @@ const RegisterScreen = ({ navigation, route }) => {
       email: form.email.trim().toLowerCase(),
       phone: form.phone.trim(),
       lawyer_email: form.lawyer_email.trim().toLowerCase(),
+      add_agent: userType === 'landlord' ? form.add_agent === true : false,
+      agent_full_name:
+        userType === 'landlord' && form.add_agent ? form.agent_full_name.trim() : '',
+      agent_email:
+        userType === 'landlord' && form.add_agent
+          ? form.agent_email.trim().toLowerCase()
+          : '',
+      agent_phone:
+        userType === 'landlord' && form.add_agent ? form.agent_phone.trim() : '',
       password: form.password,
       user_type: userType,
       is_foreigner: isForeigner,
@@ -210,6 +247,10 @@ const RegisterScreen = ({ navigation, route }) => {
       return 'Full name, email, phone, lawyer email, and password are required.';
     }
 
+    if (!emailPattern.test(form.email || '')) {
+      return 'Enter a valid email address.';
+    }
+
     if (form.password !== form.confirm_password) {
       return 'Passwords do not match.';
     }
@@ -220,6 +261,20 @@ const RegisterScreen = ({ navigation, route }) => {
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.lawyer_email || '')) {
       return 'Enter a valid lawyer email.';
+    }
+
+    if (userType === 'landlord' && form.add_agent) {
+      if (!form.agent_full_name.trim()) {
+        return 'Agent full name is required when adding an agent.';
+      }
+
+      if (!emailPattern.test(form.agent_email || '')) {
+        return 'Enter a valid agent email.';
+      }
+
+      if (!form.agent_phone.trim()) {
+        return 'Agent phone is required when adding an agent.';
+      }
     }
 
     if (!isForeigner && registrationFlags.nin_number && !/^\d{11}$/.test(form.nin || '')) {
@@ -378,6 +433,24 @@ const RegisterScreen = ({ navigation, route }) => {
         <Text style={styles.title}>Create Account</Text>
         <Text style={styles.subtitle}>Tenant and landlord onboarding</Text>
 
+        {!registrationFlags.loaded ? (
+          <View style={styles.noticeCard}>
+            <Text style={styles.noticeTitle}>Loading registration settings</Text>
+            <Text style={styles.noticeText}>
+              We are checking the current registration and payment rules for this role.
+            </Text>
+          </View>
+        ) : null}
+
+        {registrationFlags.loaded && !registrationFlags.allow_registration ? (
+          <View style={styles.warningCard}>
+            <Text style={styles.warningTitle}>Registration is currently disabled</Text>
+            <Text style={styles.warningText}>
+              Please try again later or contact support if this should already be open.
+            </Text>
+          </View>
+        ) : null}
+
         <View style={styles.toggleRow}>
           {['tenant', 'landlord'].map((role) => (
             <TouchableOpacity
@@ -419,6 +492,11 @@ const RegisterScreen = ({ navigation, route }) => {
           <Text style={styles.priceMeta}>
             Pricing scope: {String(registrationPricing.rule_scope || 'base').replace(/_/g, ' ')}
           </Text>
+          {requiresRegistrationPayment && form.state_id && form.lga_name && !registrationPricing.location_complete ? (
+            <Text style={styles.pendingMeta}>
+              Confirming your exact state and LGA pricing. Please wait a moment before continuing.
+            </Text>
+          ) : null}
         </View>
 
         <Input
@@ -454,6 +532,48 @@ const RegisterScreen = ({ navigation, route }) => {
           autoCapitalize="none"
           icon="briefcase-outline"
         />
+
+        {userType === 'landlord' ? (
+          <View style={styles.agentBlock}>
+            <TouchableOpacity
+              style={styles.agentToggle}
+              onPress={() => onChange('add_agent', !form.add_agent)}
+            >
+              <Text style={styles.agentToggleLabel}>
+                {form.add_agent ? 'Remove optional agent setup' : 'Add optional agent setup'}
+              </Text>
+            </TouchableOpacity>
+
+            {form.add_agent ? (
+              <>
+                <Input
+                  label="Agent Full Name"
+                  value={form.agent_full_name}
+                  onChangeText={(value) => onChange('agent_full_name', value)}
+                  placeholder="Assigned agent full name"
+                  icon="person-outline"
+                />
+                <Input
+                  label="Agent Email"
+                  value={form.agent_email}
+                  onChangeText={(value) => onChange('agent_email', value)}
+                  placeholder="agent@email.com"
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  icon="mail-outline"
+                />
+                <Input
+                  label="Agent Phone"
+                  value={form.agent_phone}
+                  onChangeText={(value) => onChange('agent_phone', value)}
+                  placeholder="+2348012345678"
+                  keyboardType="phone-pad"
+                  icon="call-outline"
+                />
+              </>
+            ) : null}
+          </View>
+        ) : null}
 
         <SelectField
           label="State"
@@ -530,6 +650,7 @@ const RegisterScreen = ({ navigation, route }) => {
           onPress={handleRegister}
           loading={loading || paymentLoading}
           style={styles.cta}
+          disabled={!isFormComplete}
         />
 
         {paymentState.reference ? (
@@ -634,6 +755,61 @@ const styles = StyleSheet.create({
   priceMeta: {
     marginTop: 6,
     color: '#64748b',
+    lineHeight: 18,
+  },
+  pendingMeta: {
+    marginTop: 8,
+    color: '#1d4ed8',
+    fontWeight: '600',
+  },
+  agentBlock: {
+    marginBottom: 8,
+  },
+  agentToggle: {
+    borderWidth: 1,
+    borderColor: '#cbd5e1',
+    borderRadius: 10,
+    paddingVertical: 10,
+    alignItems: 'center',
+    marginBottom: 10,
+    backgroundColor: '#f8fafc',
+  },
+  agentToggleLabel: {
+    color: '#1e293b',
+    fontWeight: '600',
+  },
+  noticeCard: {
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: '#bfdbfe',
+    backgroundColor: '#eff6ff',
+    padding: 14,
+    marginBottom: 16,
+  },
+  noticeTitle: {
+    color: '#1d4ed8',
+    fontWeight: '700',
+  },
+  noticeText: {
+    marginTop: 6,
+    color: '#1d4ed8',
+    lineHeight: 18,
+  },
+  warningCard: {
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: '#fecaca',
+    backgroundColor: '#fef2f2',
+    padding: 14,
+    marginBottom: 16,
+  },
+  warningTitle: {
+    color: '#991b1b',
+    fontWeight: '700',
+  },
+  warningText: {
+    marginTop: 6,
+    color: '#b91c1c',
     lineHeight: 18,
   },
   helperBlock: {

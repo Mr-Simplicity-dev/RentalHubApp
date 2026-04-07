@@ -59,10 +59,10 @@ const MyPropertiesScreen = ({ navigation }) => {
     }
   };
 
-  if (user?.user_type !== 'landlord') {
+  if (!['landlord', 'agent'].includes(user?.user_type)) {
     return (
       <View style={styles.center}>
-        <Text style={styles.empty}>Only landlords can access this section.</Text>
+        <Text style={styles.empty}>Only landlords or assigned agents can access this section.</Text>
       </View>
     );
   }

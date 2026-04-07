@@ -132,6 +132,31 @@ const getLawyerInviteSummary = (stats = {}) => {
   };
 };
 
+const getTenantSubscriptionValue = (stats = {}) => {
+  if (!stats?.subscription_expires_at) {
+    return 'Inactive';
+  }
+
+  const expiresAt = new Date(stats.subscription_expires_at);
+
+  if (Number.isNaN(expiresAt.getTime())) {
+    return 'Inactive';
+  }
+
+  const now = new Date();
+
+  if (expiresAt <= now) {
+    return 'Expired';
+  }
+
+  const daysLeft = Math.max(
+    1,
+    Math.ceil((expiresAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+  );
+
+  return `${daysLeft}d left`;
+};
+
 const DashboardScreen = ({ navigation }) => {
   const { user } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
@@ -239,6 +264,23 @@ const DashboardScreen = ({ navigation }) => {
         onPress={() => navigation.navigate('Profile')}
       />
 
+      {isTenant ? (
+        <StatusBanner
+          icon="checkmark-circle-outline"
+          title="Pay per property details"
+          description="Save properties first, then pay to unlock each property's full details and landlord contact."
+          actionLabel="Browse properties"
+          colors={{
+            background: '#eff6ff',
+            border: '#bfdbfe',
+            icon: '#2563eb',
+            title: '#1d4ed8',
+            text: '#1d4ed8',
+          }}
+          onPress={() => navigation.navigate('PropertyList')}
+        />
+      ) : null}
+
       <View style={styles.grid}>
         {isTenant ? (
           <>
@@ -262,7 +304,7 @@ const DashboardScreen = ({ navigation }) => {
             />
             <StatCard
               title="Subscription"
-              value={stats.subscription_expires_at ? 'Active' : 'Inactive'}
+              value={getTenantSubscriptionValue(stats)}
               icon="card-outline"
               onPress={() => navigation.navigate('Subscribe')}
             />
@@ -314,6 +356,16 @@ const DashboardScreen = ({ navigation }) => {
             <Text style={styles.quickText}>Create a new listing</Text>
           </TouchableOpacity>
         )}
+
+        <TouchableOpacity style={styles.quickBtn} onPress={() => navigation.navigate('WebFeatures')}>
+          <Text style={styles.quickTitle}>Open All Web Features</Text>
+          <Text style={styles.quickText}>Access every web module from your phone</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.quickBtn} onPress={() => navigation.navigate('PaymentHistory')}>
+          <Text style={styles.quickTitle}>Payment History</Text>
+          <Text style={styles.quickText}>Review your payments and transaction references</Text>
+        </TouchableOpacity>
       </View>
 
       <Text style={styles.sectionTitle}>Recent Activities</Text>

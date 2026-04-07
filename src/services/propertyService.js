@@ -1,6 +1,7 @@
 import api from './api';
 
 export const propertyService = {
+  // Location and state endpoints
   getStates: async () => {
     const response = await api.get('/properties/states');
     return response.data;
@@ -16,6 +17,7 @@ export const propertyService = {
     return response.data;
   },
 
+  // Public property endpoints
   browseProperties: async (page = 1, limit = 20) => {
     const response = await api.get('/properties/browse', {
       params: { page, limit },
@@ -43,6 +45,23 @@ export const propertyService = {
     return response.data;
   },
 
+  // Property unlock endpoints
+  unlockProperty: async (propertyId, paymentData) => {
+    const response = await api.post(`/properties/${propertyId}/unlock`, paymentData);
+    return response.data;
+  },
+
+  getUnlockedProperties: async (params) => {
+    const response = await api.get('/properties/user/unlocked', { params });
+    return response.data;
+  },
+
+  checkPropertyUnlockStatus: async (propertyId) => {
+    const response = await api.get(`/properties/${propertyId}/unlock-status`);
+    return response.data;
+  },
+
+  // Favorite/save endpoints
   saveProperty: async (id) => {
     const response = await api.post(`/properties/${id}/save`);
     return response.data;
@@ -58,8 +77,36 @@ export const propertyService = {
     return response.data;
   },
 
+  // Landlord property management
   createProperty: async (propertyData) => {
-    const response = await api.post('/properties', propertyData);
+    const formData = new FormData();
+    
+    // Add all property data
+    Object.keys(propertyData).forEach(key => {
+      if (key === 'images' && Array.isArray(propertyData[key])) {
+        propertyData[key].forEach((image, index) => {
+          formData.append('images', {
+            uri: image.uri || image,
+            type: image.type || 'image/jpeg',
+            name: image.fileName || `photo_${index}.jpg`,
+          });
+        });
+      } else if (key === 'video' && propertyData[key]) {
+        formData.append('video', {
+          uri: propertyData[key].uri || propertyData[key],
+          type: propertyData[key].type || 'video/mp4',
+          name: propertyData[key].fileName || 'video.mp4',
+        });
+      } else if (key === 'amenities' && Array.isArray(propertyData[key])) {
+        formData.append(key, JSON.stringify(propertyData[key]));
+      } else if (propertyData[key] !== undefined && propertyData[key] !== null) {
+        formData.append(key, propertyData[key]);
+      }
+    });
+
+    const response = await api.post('/properties', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
     return response.data;
   },
 
@@ -109,6 +156,7 @@ export const propertyService = {
     return response.data;
   },
 
+  // Review endpoints
   addReview: async (propertyId, reviewData) => {
     const response = await api.post(`/properties/${propertyId}/review`, reviewData);
     return response.data;
@@ -119,11 +167,13 @@ export const propertyService = {
     return response.data;
   },
 
+  // Property statistics
   getPropertyStats: async (propertyId) => {
     const response = await api.get(`/properties/${propertyId}/stats`);
     return response.data;
   },
 
+  // Property utility endpoints
   getPopularLocations: async (limit = 10) => {
     const response = await api.get('/property-utils/popular-locations', {
       params: { limit },
@@ -145,6 +195,7 @@ export const propertyService = {
     return response.data;
   },
 
+  // Property alerts
   requestPropertyAlert: async (requestData) => {
     const response = await api.post('/property-alerts/request', requestData);
     return response.data;
@@ -152,6 +203,53 @@ export const propertyService = {
 
   completePropertyAlertRequest: async (reference) => {
     const response = await api.post(`/property-alerts/request/complete/${reference}`);
+    return response.data;
+  },
+
+  // Damage report endpoints
+  saveDamageReport: async (propertyId, damageData) => {
+    const formData = new FormData();
+    
+    // Add damage data
+    Object.keys(damageData).forEach(key => {
+      if (key === 'photos' && Array.isArray(damageData[key])) {
+        damageData[key].forEach((photo, index) => {
+          formData.append('photos', {
+            uri: photo.uri || photo,
+            type: photo.type || 'image/jpeg',
+            name: photo.fileName || `damage_photo_${index}.jpg`,
+          });
+        });
+      } else if (damageData[key] !== undefined && damageData[key] !== null) {
+        formData.append(key, damageData[key]);
+      }
+    });
+
+    const response = await api.post(`/properties/${propertyId}/damage-report`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response.data;
+  },
+
+  getDamageReports: async (propertyId) => {
+    const response = await api.get(`/properties/${propertyId}/damage-reports`);
+    return response.data;
+  },
+
+  getLatestPublishedDamageReport: async (propertyId) => {
+    const response = await api.get(`/properties/${propertyId}/damage-report/latest-published`);
+    return response.data;
+  },
+
+  // Property users for disputes
+  getPropertyUsers: async (propertyId) => {
+    const response = await api.get(`/properties/${propertyId}/users`);
+    return response.data;
+  },
+
+  // Bank account verification
+  verifyBankAccount: async (bankData) => {
+    const response = await api.post('/properties/verify-bank-account', bankData);
     return response.data;
   },
 };

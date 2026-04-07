@@ -1,10 +1,24 @@
 import { Platform } from 'react-native';
-import * as Keychain from 'react-native-keychain';
 import { jwtDecode } from 'jwt-decode';
 
 const BIOMETRIC_SERVICE = 'com.rentalhubng.biometric.session';
+const isWeb = Platform.OS === 'web';
+
+let Keychain = null;
+
+if (!isWeb) {
+  try {
+    Keychain = require('react-native-keychain');
+  } catch (error) {
+    Keychain = null;
+  }
+}
 
 const getBiometricLabel = (biometryType) => {
+  if (!Keychain?.BIOMETRY_TYPE) {
+    return 'Biometrics';
+  }
+
   switch (biometryType) {
     case Keychain.BIOMETRY_TYPE.FACE_ID:
       return 'Face ID';
@@ -37,6 +51,10 @@ const isTokenActive = (token) => {
 };
 
 const getSetOptions = () => {
+  if (!Keychain?.ACCESS_CONTROL) {
+    return {};
+  }
+
   const options = {
     service: BIOMETRIC_SERVICE,
     accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_CURRENT_SET_OR_DEVICE_PASSCODE,
@@ -48,23 +66,29 @@ const getSetOptions = () => {
     },
   };
 
-  if (Platform.OS === 'ios') {
+  if (Platform.OS === 'ios' && Keychain?.ACCESSIBLE) {
     options.accessible = Keychain.ACCESSIBLE.WHEN_UNLOCKED_THIS_DEVICE_ONLY;
   }
 
   return options;
 };
 
-const getGetOptions = () => ({
-  service: BIOMETRIC_SERVICE,
-  accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_CURRENT_SET_OR_DEVICE_PASSCODE,
-  authenticationPrompt: {
-    title: 'Use biometric login',
-    subtitle: 'Sign in to RentalHub NG',
-    description: 'Use your saved biometric login to continue',
-    cancel: 'Use password',
-  },
-});
+const getGetOptions = () => {
+  if (!Keychain?.ACCESS_CONTROL) {
+    return {};
+  }
+
+  return {
+    service: BIOMETRIC_SERVICE,
+    accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_CURRENT_SET_OR_DEVICE_PASSCODE,
+    authenticationPrompt: {
+      title: 'Use biometric login',
+      subtitle: 'Sign in to RentalHub NG',
+      description: 'Use your saved biometric login to continue',
+      cancel: 'Use password',
+    },
+  };
+};
 
 const parseSession = (password) => {
   if (!password) {
@@ -96,6 +120,15 @@ export const biometricService = {
   getBiometricLabel,
 
   getStatus: async () => {
+    if (!Keychain) {
+      return {
+        available: false,
+        enabled: false,
+        biometryType: null,
+        label: 'Biometrics',
+      };
+    }
+
     try {
       const biometryType = await Keychain.getSupportedBiometryType();
       const hasSession = await Keychain.hasGenericPassword({ service: BIOMETRIC_SERVICE });
@@ -210,6 +243,10 @@ export const biometricService = {
   },
 
   clearStoredSession: async () => {
+    if (!Keychain) {
+      return;
+    }
+
     try {
       await Keychain.resetGenericPassword({ service: BIOMETRIC_SERVICE });
     } catch (error) {
@@ -217,4 +254,3 @@ export const biometricService = {
     }
   },
 };
-

@@ -45,6 +45,11 @@ const AdminDashboardScreen = ({ navigation }) => {
         <Text style={styles.linkTitle}>Compliance & Risk</Text>
         <Text style={styles.linkMeta}>Open platform risk overview</Text>
       </TouchableOpacity>
+
+      <TouchableOpacity style={styles.linkCard} onPress={() => navigation.navigate('AdminAgentAssignments')}>
+        <Text style={styles.linkTitle}>Agent Assignments</Text>
+        <Text style={styles.linkMeta}>Assign, deactivate, and reassign landlord agents</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 };

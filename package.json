@@ -7,6 +7,7 @@
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "start": "react-native start",
+    "web": "expo start --web",
     "build:android": "cd android && ./gradlew assembleRelease",
     "build:android:bundle": "cd android && ./gradlew bundleRelease",
     "build:ios": "cd ios && xcodebuild -workspace RentalHubMobile.xcworkspace -scheme RentalHubMobile -configuration Release"
@@ -30,10 +31,13 @@
     "react-native-screens": "~4.23.0",
     "react-native-toast-message": "^2.2.0",
     "react-native-vector-icons": "^10.1.0",
-    "react-native-web": "^0.21.0"
+    "react-native-web": "^0.21.0",
+    "react-native-webview": "^13.16.1"
   },
   "devDependencies": {
+    "@expo/metro-runtime": "^55.0.6",
     "@react-native-community/cli": "^20.1.3",
-    "@react-native-community/cli-platform-android": "^20.1.3"
+    "@react-navigation/stack": "^6.4.1",
+    "babel-preset-expo": "^55.0.12"
   }
 }

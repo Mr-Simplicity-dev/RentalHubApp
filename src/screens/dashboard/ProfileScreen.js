@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Switch } from 'react-native';
-import { launchCamera } from 'react-native-image-picker';
+import { Platform, View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Switch } from 'react-native';
 import Toast from 'react-native-toast-message';
 import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
@@ -9,6 +8,7 @@ import { biometricService } from '../../services/biometricService';
 import { userService } from '../../services/userService';
 import { authService } from '../../services/authService';
 import { storageService } from '../../services/storageService';
+import { cameraService } from '../../services/cameraService';
 import { getErrorMessage, getReviewStatus, pickObject } from '../../utils/http';
 
 const ProfileScreen = ({ navigation }) => {
@@ -22,7 +22,7 @@ const ProfileScreen = ({ navigation }) => {
     label: 'Biometrics',
   });
   const [status, setStatus] = useState(null);
-  const [passportUri, setPassportUri] = useState('');
+  const [passportAsset, setPassportAsset] = useState(null);
   const [form, setForm] = useState({
     full_name: user?.full_name || '',
     phone: user?.phone || '',
@@ -84,22 +84,30 @@ const ProfileScreen = ({ navigation }) => {
   };
 
   const openCamera = async () => {
-    const result = await launchCamera({
-      mediaType: 'photo',
-      cameraType: 'front',
-      quality: 0.8,
-      includeBase64: false,
-    });
-    if (result.didCancel) return;
-    const uri = result?.assets?.[0]?.uri;
-    if (uri) {
-      setPassportUri(uri);
+    const result = await cameraService.pickPassportPhoto();
+
+    if (result.cancelled) {
+      if (result.message) {
+        Toast.show({
+          type: 'info',
+          text1: Platform.OS === 'web' ? 'Select a passport photo' : 'Camera unavailable',
+          text2: result.message,
+        });
+      }
+      return;
+    }
+
+    if (result.asset?.uri) {
+      setPassportAsset(result.asset);
     }
   };
 
   const uploadPassport = async () => {
-    if (!passportUri) {
-      Toast.show({ type: 'error', text1: 'Capture passport photo first' });
+    if (!passportAsset?.uri) {
+      Toast.show({
+        type: 'error',
+        text1: Platform.OS === 'web' ? 'Select passport photo first' : 'Capture passport photo first',
+      });
       return;
     }
     setUploading(true);
@@ -112,11 +120,11 @@ const ProfileScreen = ({ navigation }) => {
         // session might be optional
       }
 
-      const response = await authService.uploadPassport(passportUri, captureToken);
+      const response = await authService.uploadPassport(passportAsset, captureToken);
       if (response?.user) {
         await updateUser(response.user);
       }
-      setPassportUri('');
+      setPassportAsset(null);
       await loadVerificationStatus();
       Toast.show({ type: 'success', text1: 'Passport uploaded' });
     } catch (error) {
@@ -251,8 +259,13 @@ const ProfileScreen = ({ navigation }) => {
           </View>
         ) : null}
 
-        {passportUri ? <Image source={{ uri: passportUri }} style={styles.preview} /> : null}
-        <Button title="Capture Passport Photo" onPress={openCamera} variant="outline" style={styles.marginTop} />
+        {passportAsset?.uri ? <Image source={{ uri: passportAsset.uri }} style={styles.preview} /> : null}
+        <Button
+          title={Platform.OS === 'web' ? 'Select Passport Photo' : 'Capture Passport Photo'}
+          onPress={openCamera}
+          variant="outline"
+          style={styles.marginTop}
+        />
         <Button title="Upload Passport" onPress={uploadPassport} loading={uploading} style={styles.marginTop} />
       </View>
 
