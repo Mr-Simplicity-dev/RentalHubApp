@@ -54,7 +54,23 @@ const makeProtectedFeatures = (userType) => {
     ];
   }
 
+  if (userType === 'super_financial_admin') {
+    return [
+      ...base,
+      { label: 'Super Financial Dashboard', path: '/admin/super-financial-dashboard' },
+      { label: 'Admin Dashboard', path: '/admin' },
+    ];
+  }
+
   if (userType === 'state_admin') {
+    return [
+      ...base,
+      { label: 'State Dashboard', path: '/admin/state-dashboard' },
+      { label: 'Admin Dashboard', path: '/admin' },
+    ];
+  }
+
+  if (userType === 'state_financial_admin') {
     return [
       ...base,
       { label: 'State Dashboard', path: '/admin/state-dashboard' },

@@ -238,7 +238,9 @@ const RoleRouter = ({ userType }) => {
       return <AdminRoot />;
     case 'super_admin':
     case 'financial_admin':
+    case 'super_financial_admin':
     case 'state_admin':
+    case 'state_financial_admin':
       return <SuperAdminRoot />;
     default:
       return <TenantRoot />;
