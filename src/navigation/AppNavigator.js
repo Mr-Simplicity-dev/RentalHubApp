@@ -50,6 +50,40 @@ import AgentDashboardScreen from '../screens/agent/AgentDashboardScreen';
 import AgentEarningsScreen from '../screens/agent/AgentEarningsScreen';
 import AgentWithdrawalsScreen from '../screens/agent/AgentWithdrawalsScreen';
 
+// ========== Rent Savings (Tenant) ==========
+import RentSavingsDashboardScreen from '../screens/rent-savings/RentSavingsDashboardScreen';
+import SavingsGoalCreateScreen from '../screens/rent-savings/SavingsGoalCreateScreen';
+import SavingsGoalListScreen from '../screens/rent-savings/SavingsGoalListScreen';
+import SavingsGoalDetailScreen from '../screens/rent-savings/SavingsGoalDetailScreen';
+
+// ========== Financial Admin ==========
+import FinancialAdminDashboardScreen from '../screens/financial-admin/FinancialAdminDashboardScreen';
+import FinancialRevenueReportScreen from '../screens/financial-admin/FinancialRevenueReportScreen';
+import FinancialTransactionsScreen from '../screens/financial-admin/FinancialTransactionsScreen';
+import FinancialWithdrawalsScreen from '../screens/financial-admin/FinancialWithdrawalsScreen';
+import FinancialCommissionsScreen from '../screens/financial-admin/FinancialCommissionsScreen';
+
+// ========== State Admin ==========
+import StateAdminDashboardScreen from '../screens/state-admin/StateAdminDashboardScreen';
+import StateAdminMigrationsScreen from '../screens/state-admin/StateAdminMigrationsScreen';
+
+// ========== Admin (additional screens) ==========
+import AdminPropertyDetailScreen from '../screens/admin/AdminPropertyDetailScreen';
+import AdminUserDetailScreen from '../screens/admin/AdminUserDetailScreen';
+import AdminLawyerInvitesScreen from '../screens/admin/AdminLawyerInvitesScreen';
+
+// ========== Transportation ==========
+import TransportationBookingScreen from '../screens/transportation/TransportationBookingScreen';
+import TransportationBookingDetailScreen from '../screens/transportation/TransportationBookingDetailScreen';
+import TransportationPaymentScreen from '../screens/transportation/TransportationPaymentScreen';
+import TransportationBookingsScreen from '../screens/transportation/TransportationBookingsScreen';
+
+// ========== Fumigation / Cleaning ==========
+import FumigationCleaningBookingScreen from '../screens/fumigation/FumigationCleaningBookingScreen';
+import FumigationCleaningBookingDetailScreen from '../screens/fumigation/FumigationCleaningBookingDetailScreen';
+import FumigationCleaningPaymentScreen from '../screens/fumigation/FumigationCleaningPaymentScreen';
+import FumigationCleaningBookingsScreen from '../screens/fumigation/FumigationCleaningBookingsScreen';
+
 const Stack = (Platform.OS === 'web' ? createStackNavigator : createNativeStackNavigator)();
 const Tab = createBottomTabNavigator();
 
@@ -76,6 +110,28 @@ const linkingConfig = {
       AgentEarnings: 'agent/earnings',
       AgentWithdrawals: 'agent/withdrawals',
       AdminAgentAssignments: 'admin/agents',
+      RentSavingsDashboard: 'rent-savings',
+      SavingsGoalCreate: 'rent-savings/goals/create',
+      SavingsGoalList: 'rent-savings/goals',
+      SavingsGoalDetail: 'rent-savings/goals/:goalId',
+      FinancialAdminDashboard: 'admin/financial',
+      FinancialRevenueReport: 'admin/financial/revenue',
+      FinancialTransactions: 'admin/financial/transactions',
+      FinancialWithdrawals: 'admin/financial/withdrawals',
+      FinancialCommissions: 'admin/financial/commissions',
+      StateAdminDashboard: 'admin/state',
+      StateAdminMigrations: 'admin/state/migrations',
+      AdminPropertyDetail: 'admin/properties/:id',
+      AdminUserDetail: 'admin/users/:id',
+      AdminLawyerInvites: 'admin/lawyer-invites',
+      TransportationBooking: 'transportation/book',
+      TransportationBookings: 'transportation/bookings',
+      TransportationBookingDetail: 'transportation/bookings/:bookingId',
+      TransportationPayment: 'transportation/bookings/:bookingId/pay',
+      FumigationCleaningBooking: 'fumigation/book',
+      FumigationCleaningBookings: 'fumigation/bookings',
+      FumigationCleaningBookingDetail: 'fumigation/bookings/:bookingId',
+      FumigationCleaningPayment: 'fumigation/bookings/:bookingId/pay',
     },
   },
 };
@@ -132,6 +188,18 @@ const TenantRoot = () => (
     <Stack.Screen name="Subscribe" component={SubscribeScreen} />
     <Stack.Screen name="PaymentHistory" component={PaymentHistoryScreen} options={{ title: 'Payment History' }} />
     <Stack.Screen name="Notifications" component={NotificationsScreen} />
+    <Stack.Screen name="RentSavingsDashboard" component={RentSavingsDashboardScreen} options={{ title: 'Rent Savings' }} />
+    <Stack.Screen name="SavingsGoalCreate" component={SavingsGoalCreateScreen} options={{ title: 'Create Goal' }} />
+    <Stack.Screen name="SavingsGoalList" component={SavingsGoalListScreen} options={{ title: 'My Goals' }} />
+    <Stack.Screen name="SavingsGoalDetail" component={SavingsGoalDetailScreen} options={{ title: 'Goal Details' }} />
+    <Stack.Screen name="TransportationBooking" component={TransportationBookingScreen} options={{ title: 'Transportation' }} />
+    <Stack.Screen name="TransportationBookings" component={TransportationBookingsScreen} options={{ title: 'My Transport Bookings' }} />
+    <Stack.Screen name="TransportationBookingDetail" component={TransportationBookingDetailScreen} options={{ title: 'Booking Details' }} />
+    <Stack.Screen name="TransportationPayment" component={TransportationPaymentScreen} options={{ title: 'Transport Payment' }} />
+    <Stack.Screen name="FumigationCleaningBooking" component={FumigationCleaningBookingScreen} options={{ title: 'Fumigation & Cleaning' }} />
+    <Stack.Screen name="FumigationCleaningBookings" component={FumigationCleaningBookingsScreen} options={{ title: 'My Bookings' }} />
+    <Stack.Screen name="FumigationCleaningBookingDetail" component={FumigationCleaningBookingDetailScreen} options={{ title: 'Booking Details' }} />
+    <Stack.Screen name="FumigationCleaningPayment" component={FumigationCleaningPaymentScreen} options={{ title: 'Payment' }} />
     <Stack.Screen name="WebFeatures" component={WebFeaturesScreen} options={{ title: 'Web Features' }} />
     <Stack.Screen name="WebRoute" component={WebRouteScreen} options={{ headerShown: false }} />
   </Stack.Navigator>
@@ -148,6 +216,14 @@ const LandlordRoot = () => (
     <Stack.Screen name="AddProperty" component={AddPropertyScreen} options={{ title: 'Add Property' }} />
     <Stack.Screen name="PaymentHistory" component={PaymentHistoryScreen} options={{ title: 'Payment History' }} />
     <Stack.Screen name="Notifications" component={NotificationsScreen} />
+    <Stack.Screen name="TransportationBooking" component={TransportationBookingScreen} options={{ title: 'Transportation' }} />
+    <Stack.Screen name="TransportationBookings" component={TransportationBookingsScreen} options={{ title: 'My Transport Bookings' }} />
+    <Stack.Screen name="TransportationBookingDetail" component={TransportationBookingDetailScreen} options={{ title: 'Booking Details' }} />
+    <Stack.Screen name="TransportationPayment" component={TransportationPaymentScreen} options={{ title: 'Transport Payment' }} />
+    <Stack.Screen name="FumigationCleaningBooking" component={FumigationCleaningBookingScreen} options={{ title: 'Fumigation & Cleaning' }} />
+    <Stack.Screen name="FumigationCleaningBookings" component={FumigationCleaningBookingsScreen} options={{ title: 'My Bookings' }} />
+    <Stack.Screen name="FumigationCleaningBookingDetail" component={FumigationCleaningBookingDetailScreen} options={{ title: 'Booking Details' }} />
+    <Stack.Screen name="FumigationCleaningPayment" component={FumigationCleaningPaymentScreen} options={{ title: 'Payment' }} />
     <Stack.Screen name="WebFeatures" component={WebFeaturesScreen} options={{ title: 'Web Features' }} />
     <Stack.Screen name="WebRoute" component={WebRouteScreen} options={{ headerShown: false }} />
   </Stack.Navigator>
@@ -166,6 +242,14 @@ const AgentRoot = () => (
     <Stack.Screen name="PaymentHistory" component={PaymentHistoryScreen} options={{ title: 'Payment History' }} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
     <Stack.Screen name="Notifications" component={NotificationsScreen} />
+    <Stack.Screen name="TransportationBooking" component={TransportationBookingScreen} options={{ title: 'Transportation' }} />
+    <Stack.Screen name="TransportationBookings" component={TransportationBookingsScreen} options={{ title: 'My Transport Bookings' }} />
+    <Stack.Screen name="TransportationBookingDetail" component={TransportationBookingDetailScreen} options={{ title: 'Booking Details' }} />
+    <Stack.Screen name="TransportationPayment" component={TransportationPaymentScreen} options={{ title: 'Transport Payment' }} />
+    <Stack.Screen name="FumigationCleaningBooking" component={FumigationCleaningBookingScreen} options={{ title: 'Fumigation & Cleaning' }} />
+    <Stack.Screen name="FumigationCleaningBookings" component={FumigationCleaningBookingsScreen} options={{ title: 'My Bookings' }} />
+    <Stack.Screen name="FumigationCleaningBookingDetail" component={FumigationCleaningBookingDetailScreen} options={{ title: 'Booking Details' }} />
+    <Stack.Screen name="FumigationCleaningPayment" component={FumigationCleaningPaymentScreen} options={{ title: 'Payment' }} />
     <Stack.Screen name="WebFeatures" component={WebFeaturesScreen} options={{ title: 'Web Features' }} />
     <Stack.Screen name="WebRoute" component={WebRouteScreen} options={{ headerShown: false }} />
   </Stack.Navigator>
@@ -182,6 +266,14 @@ const LawyerRoot = () => (
     <Stack.Screen name="Messages" component={MessagesScreen} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
     <Stack.Screen name="Notifications" component={NotificationsScreen} />
+    <Stack.Screen name="TransportationBooking" component={TransportationBookingScreen} options={{ title: 'Transportation' }} />
+    <Stack.Screen name="TransportationBookings" component={TransportationBookingsScreen} options={{ title: 'My Transport Bookings' }} />
+    <Stack.Screen name="TransportationBookingDetail" component={TransportationBookingDetailScreen} options={{ title: 'Booking Details' }} />
+    <Stack.Screen name="TransportationPayment" component={TransportationPaymentScreen} options={{ title: 'Transport Payment' }} />
+    <Stack.Screen name="FumigationCleaningBooking" component={FumigationCleaningBookingScreen} options={{ title: 'Fumigation & Cleaning' }} />
+    <Stack.Screen name="FumigationCleaningBookings" component={FumigationCleaningBookingsScreen} options={{ title: 'My Bookings' }} />
+    <Stack.Screen name="FumigationCleaningBookingDetail" component={FumigationCleaningBookingDetailScreen} options={{ title: 'Booking Details' }} />
+    <Stack.Screen name="FumigationCleaningPayment" component={FumigationCleaningPaymentScreen} options={{ title: 'Payment' }} />
     <Stack.Screen name="WebFeatures" component={WebFeaturesScreen} options={{ title: 'Web Features' }} />
     <Stack.Screen name="WebRoute" component={WebRouteScreen} options={{ headerShown: false }} />
   </Stack.Navigator>
@@ -196,6 +288,9 @@ const AdminRoot = () => (
     <Stack.Screen name="AdminVerifications" component={AdminVerificationsScreen} options={{ title: 'Verifications' }} />
     <Stack.Screen name="AdminCompliance" component={AdminComplianceScreen} options={{ title: 'Compliance' }} />
     <Stack.Screen name="AdminAgentAssignments" component={AdminAgentAssignmentsScreen} options={{ title: 'Agent Assignments' }} />
+    <Stack.Screen name="AdminLawyerInvites" component={AdminLawyerInvitesScreen} options={{ title: 'Lawyer Invites' }} />
+    <Stack.Screen name="AdminPropertyDetail" component={AdminPropertyDetailScreen} options={{ title: 'Property Details' }} />
+    <Stack.Screen name="AdminUserDetail" component={AdminUserDetailScreen} options={{ title: 'User Details' }} />
     <Stack.Screen name="PropertyList" component={PropertyListScreen} options={{ title: 'Browse Properties' }} />
     <Stack.Screen name="PropertyDetail" component={PropertyDetailScreen} options={{ title: 'Property Details' }} />
     <Stack.Screen name="Messages" component={MessagesScreen} />
@@ -212,6 +307,9 @@ const SuperAdminRoot = () => (
     <Stack.Screen name="SuperAdminDashboard" component={SuperAdminDashboardScreen} options={{ title: 'Super Admin' }} />
     <Stack.Screen name="AdminDashboard" component={AdminDashboardScreen} options={{ title: 'Admin Dashboard' }} />
     <Stack.Screen name="AdminAgentAssignments" component={AdminAgentAssignmentsScreen} options={{ title: 'Agent Assignments' }} />
+    <Stack.Screen name="AdminLawyerInvites" component={AdminLawyerInvitesScreen} options={{ title: 'Lawyer Invites' }} />
+    <Stack.Screen name="AdminPropertyDetail" component={AdminPropertyDetailScreen} options={{ title: 'Property Details' }} />
+    <Stack.Screen name="AdminUserDetail" component={AdminUserDetailScreen} options={{ title: 'User Details' }} />
     <Stack.Screen name="PropertyList" component={PropertyListScreen} options={{ title: 'Browse Properties' }} />
     <Stack.Screen name="PropertyDetail" component={PropertyDetailScreen} options={{ title: 'Property Details' }} />
     <Stack.Screen name="VerifyCase" component={VerifyCaseScreen} options={{ title: 'Verify Case' }} />
@@ -219,6 +317,64 @@ const SuperAdminRoot = () => (
     <Stack.Screen name="PaymentHistory" component={PaymentHistoryScreen} options={{ title: 'Payment History' }} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
     <Stack.Screen name="Notifications" component={NotificationsScreen} />
+    <Stack.Screen name="TransportationBooking" component={TransportationBookingScreen} options={{ title: 'Transportation' }} />
+    <Stack.Screen name="TransportationBookings" component={TransportationBookingsScreen} options={{ title: 'Bookings' }} />
+    <Stack.Screen name="TransportationBookingDetail" component={TransportationBookingDetailScreen} options={{ title: 'Booking Details' }} />
+    <Stack.Screen name="TransportationPayment" component={TransportationPaymentScreen} options={{ title: 'Transport Payment' }} />
+    <Stack.Screen name="FumigationCleaningBooking" component={FumigationCleaningBookingScreen} options={{ title: 'Fumigation & Cleaning' }} />
+    <Stack.Screen name="FumigationCleaningBookings" component={FumigationCleaningBookingsScreen} options={{ title: 'Bookings' }} />
+    <Stack.Screen name="FumigationCleaningBookingDetail" component={FumigationCleaningBookingDetailScreen} options={{ title: 'Booking Details' }} />
+    <Stack.Screen name="FumigationCleaningPayment" component={FumigationCleaningPaymentScreen} options={{ title: 'Payment' }} />
+    <Stack.Screen name="WebFeatures" component={WebFeaturesScreen} options={{ title: 'Web Features' }} />
+    <Stack.Screen name="WebRoute" component={WebRouteScreen} options={{ headerShown: false }} />
+  </Stack.Navigator>
+);
+
+const FinancialAdminRoot = () => (
+  <Stack.Navigator screenOptions={screenOptions}>
+    <Stack.Screen name="FinancialAdminDashboard" component={FinancialAdminDashboardScreen} options={{ title: 'Financial Admin' }} />
+    <Stack.Screen name="FinancialRevenueReport" component={FinancialRevenueReportScreen} options={{ title: 'Revenue Reports' }} />
+    <Stack.Screen name="FinancialTransactions" component={FinancialTransactionsScreen} options={{ title: 'Transactions' }} />
+    <Stack.Screen name="FinancialWithdrawals" component={FinancialWithdrawalsScreen} options={{ title: 'Withdrawals' }} />
+    <Stack.Screen name="FinancialCommissions" component={FinancialCommissionsScreen} options={{ title: 'Commissions' }} />
+    <Stack.Screen name="PropertyList" component={PropertyListScreen} options={{ title: 'Browse Properties' }} />
+    <Stack.Screen name="PropertyDetail" component={PropertyDetailScreen} options={{ title: 'Property Details' }} />
+    <Stack.Screen name="Messages" component={MessagesScreen} />
+    <Stack.Screen name="PaymentHistory" component={PaymentHistoryScreen} options={{ title: 'Payment History' }} />
+    <Stack.Screen name="Profile" component={ProfileScreen} />
+    <Stack.Screen name="Notifications" component={NotificationsScreen} />
+    <Stack.Screen name="TransportationBooking" component={TransportationBookingScreen} options={{ title: 'Transportation' }} />
+    <Stack.Screen name="TransportationBookings" component={TransportationBookingsScreen} options={{ title: 'Bookings' }} />
+    <Stack.Screen name="TransportationBookingDetail" component={TransportationBookingDetailScreen} options={{ title: 'Booking Details' }} />
+    <Stack.Screen name="TransportationPayment" component={TransportationPaymentScreen} options={{ title: 'Transport Payment' }} />
+    <Stack.Screen name="FumigationCleaningBooking" component={FumigationCleaningBookingScreen} options={{ title: 'Fumigation & Cleaning' }} />
+    <Stack.Screen name="FumigationCleaningBookings" component={FumigationCleaningBookingsScreen} options={{ title: 'Bookings' }} />
+    <Stack.Screen name="FumigationCleaningBookingDetail" component={FumigationCleaningBookingDetailScreen} options={{ title: 'Booking Details' }} />
+    <Stack.Screen name="FumigationCleaningPayment" component={FumigationCleaningPaymentScreen} options={{ title: 'Payment' }} />
+    <Stack.Screen name="WebFeatures" component={WebFeaturesScreen} options={{ title: 'Web Features' }} />
+    <Stack.Screen name="WebRoute" component={WebRouteScreen} options={{ headerShown: false }} />
+  </Stack.Navigator>
+);
+
+const StateAdminRoot = () => (
+  <Stack.Navigator screenOptions={screenOptions}>
+    <Stack.Screen name="StateAdminDashboard" component={StateAdminDashboardScreen} options={{ title: 'State Admin' }} />
+    <Stack.Screen name="StateAdminMigrations" component={StateAdminMigrationsScreen} options={{ title: 'Migrations' }} />
+    <Stack.Screen name="PropertyList" component={PropertyListScreen} options={{ title: 'Browse Properties' }} />
+    <Stack.Screen name="PropertyDetail" component={PropertyDetailScreen} options={{ title: 'Property Details' }} />
+    <Stack.Screen name="VerifyCase" component={VerifyCaseScreen} options={{ title: 'Verify Case' }} />
+    <Stack.Screen name="Messages" component={MessagesScreen} />
+    <Stack.Screen name="PaymentHistory" component={PaymentHistoryScreen} options={{ title: 'Payment History' }} />
+    <Stack.Screen name="Profile" component={ProfileScreen} />
+    <Stack.Screen name="Notifications" component={NotificationsScreen} />
+    <Stack.Screen name="TransportationBooking" component={TransportationBookingScreen} options={{ title: 'Transportation' }} />
+    <Stack.Screen name="TransportationBookings" component={TransportationBookingsScreen} options={{ title: 'Bookings' }} />
+    <Stack.Screen name="TransportationBookingDetail" component={TransportationBookingDetailScreen} options={{ title: 'Booking Details' }} />
+    <Stack.Screen name="TransportationPayment" component={TransportationPaymentScreen} options={{ title: 'Transport Payment' }} />
+    <Stack.Screen name="FumigationCleaningBooking" component={FumigationCleaningBookingScreen} options={{ title: 'Fumigation & Cleaning' }} />
+    <Stack.Screen name="FumigationCleaningBookings" component={FumigationCleaningBookingsScreen} options={{ title: 'Bookings' }} />
+    <Stack.Screen name="FumigationCleaningBookingDetail" component={FumigationCleaningBookingDetailScreen} options={{ title: 'Booking Details' }} />
+    <Stack.Screen name="FumigationCleaningPayment" component={FumigationCleaningPaymentScreen} options={{ title: 'Payment' }} />
     <Stack.Screen name="WebFeatures" component={WebFeaturesScreen} options={{ title: 'Web Features' }} />
     <Stack.Screen name="WebRoute" component={WebRouteScreen} options={{ headerShown: false }} />
   </Stack.Navigator>
@@ -237,11 +393,13 @@ const RoleRouter = ({ userType }) => {
     case 'admin':
       return <AdminRoot />;
     case 'super_admin':
+      return <SuperAdminRoot />;
     case 'financial_admin':
     case 'super_financial_admin':
+      return <FinancialAdminRoot />;
     case 'state_admin':
     case 'state_financial_admin':
-      return <SuperAdminRoot />;
+      return <StateAdminRoot />;
     default:
       return <TenantRoot />;
   }
