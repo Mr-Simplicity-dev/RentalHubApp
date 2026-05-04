@@ -1,10 +1,13 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
+  Alert,
+  FlatList,
   Linking,
   ScrollView,
   StyleSheet,
   Switch,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -13,6 +16,9 @@ import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
 import SelectField from '../../components/common/SelectField';
 import OptionPickerModal from '../../components/common/OptionPickerModal';
+import ConfirmDialog from '../../components/common/ConfirmDialog';
+import EmptyState from '../../components/common/EmptyState';
+import StatusBadge from '../../components/common/StatusBadge';
 import { superAdminService } from '../../services/superAdminService';
 import { authService } from '../../services/authService';
 import { buildUploadUrl, getErrorMessage, pickList, pickObject } from '../../utils/http';
@@ -22,6 +28,11 @@ const sections = [
   'users',
   'verifications',
   'lawyer_invites',
+  'analytics',
+  'platform_lawyers',
+  'lawyer_activity',
+  'admin_management',
+  'pending_approvals',
   'pricing',
   'properties',
   'reports',
@@ -89,6 +100,52 @@ const SuperAdminDashboardScreen = () => {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
+  // New state for analytics tab
+  const [analyticsTimeRange, setAnalyticsTimeRange] = useState('week');
+
+  // New state for platform lawyers
+  const [platformLawyers, setPlatformLawyers] = useState([]);
+  const [showAddLawyerModal, setShowAddLawyerModal] = useState(false);
+  const [lawyerForm, setLawyerForm] = useState({
+    full_name: '',
+    email: '',
+    phone: '',
+    state_id: '',
+    specialization: '',
+    license_number: '',
+  });
+  const [editingLawyerId, setEditingLawyerId] = useState(null);
+  const [lawyerApplications, setLawyerApplications] = useState([]);
+  const [showLawyerApplications, setShowLawyerApplications] = useState(false);
+  const [reviewNote, setReviewNote] = useState('');
+  const [showReviewDialog, setShowReviewDialog] = useState(false);
+  const [selectedApplicationId, setSelectedApplicationId] = useState(null);
+  const [reviewAction, setReviewAction] = useState(null); // 'approve' or 'reject'
+
+  // New state for lawyer activity
+  const [lawyerActivities, setLawyerActivities] = useState([]);
+  const [activityTimeRange, setActivityTimeRange] = useState('7days');
+
+  // New state for admin management
+  const [admins, setAdmins] = useState([]);
+  const [expandedAdminId, setExpandedAdminId] = useState(null);
+  const [adminStateUsers, setAdminStateUsers] = useState([]);
+  const [loadingStateUsers, setLoadingStateUsers] = useState(false);
+  const [editingJurisdiction, setEditingJurisdiction] = useState(null);
+  const [jurisdictionForm, setJurisdictionForm] = useState({ state: '', city: '' });
+
+  // New state for pending admin approvals
+  const [pendingAdmins, setPendingAdmins] = useState([]);
+
+  // New state for report status changes
+  const [reportStatusTargets, setReportStatusTargets] = useState({});
+
+  // New state for bulk actions
+  const [selectedUserIds, setSelectedUserIds] = useState([]);
+  const [selectedPropertyIds, setSelectedPropertyIds] = useState([]);
+  const [bulkAction, setBulkAction] = useState('');
+  const [showBulkActionPicker, setShowBulkActionPicker] = useState(false);
+
   const selectedPricingState = useMemo(
     () => pricingLocations.find((item) => String(item.id) === String(pricingForm.state_id)),
     [pricingForm.state_id, pricingLocations]
@@ -113,6 +170,50 @@ const SuperAdminDashboardScreen = () => {
     setAdminPerformance(pickList(performanceResponse, ['data']));
   };
 
+  const loadPlatformLawyers = async () => {
+    const response = await superAdminService.getPlatformLawyers();
+    setPlatformLawyers(pickList(response, ['data']));
+  };
+
+  const loadLawyerApplications = async () => {
+    const response = await superAdminService.getPlatformLawyers();
+    const lawyers = pickList(response, ['data']);
+    // Filter for pending applications from the lawyers list if available
+    // Or load separately if there's a dedicated endpoint
+    setLawyerApplications(lawyers.filter((l) => l.status === 'pending_application' || l.application_status === 'pending'));
+  };
+
+  const loadLawyerActivitiesData = async (timeRange) => {
+    const response = await superAdminService.getLawyerActivities(timeRange || activityTimeRange);
+    setLawyerActivities(pickList(response, ['data']));
+  };
+
+  const loadAdmins = async () => {
+    const response = await superAdminService.getAdminsPerformance();
+    setAdmins(pickList(response, ['data']));
+  };
+
+  const loadAdminStateUsers = async (adminId) => {
+    setLoadingStateUsers(true);
+    try {
+      const response = await superAdminService.getAdminStateUsers(adminId);
+      setAdminStateUsers(pickList(response, ['data']));
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Failed',
+        text2: getErrorMessage(error, 'Could not load admin state users'),
+      });
+    } finally {
+      setLoadingStateUsers(false);
+    }
+  };
+
+  const loadPendingAdmins = async () => {
+    const response = await superAdminService.getPendingAdmins();
+    setPendingAdmins(pickList(response, ['data']));
+  };
+
   const loadAll = async () => {
     setLoading(true);
     try {
@@ -127,6 +228,9 @@ const SuperAdminDashboardScreen = () => {
         fraudResponse,
         logsResponse,
         pricingResponse,
+        platformLawyersResponse,
+        lawyerActivitiesResponse,
+        pendingAdminsResponse,
       ] = await Promise.all([
         superAdminService.getUsers(),
         superAdminService.getProperties(),
@@ -138,6 +242,9 @@ const SuperAdminDashboardScreen = () => {
         superAdminService.getFraudFlags(),
         superAdminService.getLogs(),
         superAdminService.getPricingRules(),
+        superAdminService.getPlatformLawyers(),
+        superAdminService.getLawyerActivities('7days'),
+        superAdminService.getPendingAdmins(),
       ]);
 
       setUsers(pickList(usersResponse, ['users', 'data']));
@@ -155,7 +262,12 @@ const SuperAdminDashboardScreen = () => {
       setPricingTargets(pricingPayload.targets || []);
       setPricingLocations(pricingPayload.locations || []);
 
+      setPlatformLawyers(pickList(platformLawyersResponse, ['data']));
+      setLawyerActivities(pickList(lawyerActivitiesResponse, ['data']));
+      setPendingAdmins(pickList(pendingAdminsResponse, ['data']));
+
       await loadVerificationData();
+      await loadAdmins();
     } catch (error) {
       Toast.show({
         type: 'error',
@@ -227,43 +339,155 @@ const SuperAdminDashboardScreen = () => {
     );
   };
 
-  const renderOverview = () => (
-    <View style={styles.card}>
-      <Text style={styles.cardTitle}>Analytics Overview</Text>
-      {Object.keys(analytics).length === 0 ? (
-        <Text style={styles.meta}>No analytics data.</Text>
-      ) : (
-        Object.entries(analytics).map(([key, value]) => (
-          <Text key={key} style={styles.meta}>
-            {key}: {String(value)}
+  const renderOverview = () => {
+    const analyticEntries = Object.entries(analytics);
+
+    return (
+      <View>
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Analytics Overview</Text>
+          <Text style={styles.meta}>
+            Quick platform statistics at a glance. Use the Analytics tab for detailed metrics.
           </Text>
+        </View>
+
+        {analyticEntries.length === 0 ? (
+          <EmptyState
+            icon="stats-chart-outline"
+            title="No analytics data"
+            message="Data will populate once users interact with the platform."
+          />
+        ) : (
+          <View style={styles.analyticsGrid}>
+            {analyticEntries.map(([key, value]) => (
+              <View key={key} style={styles.analyticsCard}>
+                <Text style={styles.analyticsValue}>
+                  {typeof value === 'number' ? value.toLocaleString() : String(value)}
+                </Text>
+                <Text style={styles.analyticsLabel}>
+                  {key.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
+                </Text>
+              </View>
+            ))}
+          </View>
+        )}
+
+        {users.length > 0 && (
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>Quick Stats</Text>
+            <Text style={styles.meta}>Total Users: {users.length}</Text>
+            <Text style={styles.meta}>Total Properties: {properties.length}</Text>
+            <Text style={styles.meta}>Total Reports: {reports.length}</Text>
+            <Text style={styles.meta}>Active Lawyers: {platformLawyers.length}</Text>
+            <Text style={styles.meta}>Pending Admins: {pendingAdmins.length}</Text>
+          </View>
+        )}
+      </View>
+    );
+  };
+
+  const toggleUserSelection = (id) => {
+    setSelectedUserIds((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+    );
+  };
+
+  const handleBulkUserAction = async () => {
+    if (selectedUserIds.length === 0) {
+      Toast.show({ type: 'error', text1: 'Select at least one user' });
+      return;
+    }
+    if (!bulkAction) {
+      Toast.show({ type: 'error', text1: 'Select a bulk action' });
+      return;
+    }
+    await runAction(
+      async () => {
+        await superAdminService.bulkUserAction(selectedUserIds, bulkAction);
+        setSelectedUserIds([]);
+        setBulkAction('');
+      },
+      `Bulk action "${bulkAction}" completed on ${selectedUserIds.length} users`
+    );
+  };
+
+  const renderUsers = () => (
+    <>
+      <View style={styles.card}>
+        <Text style={styles.cardTitle}>Users ({users.length})</Text>
+        <Text style={styles.meta}>
+          Select multiple users for bulk actions (ban, unban, promote, delete).
+        </Text>
+        {selectedUserIds.length > 0 && (
+          <View style={styles.bulkActions}>
+            <Text style={styles.filterLabel}>{selectedUserIds.length} selected</Text>
+            <View style={styles.filtersRow}>
+              {['ban', 'unban', 'promote', 'delete'].map((action) => (
+                <FilterChip
+                  key={action}
+                  label={action}
+                  active={bulkAction === action}
+                  onPress={() => setBulkAction(action)}
+                />
+              ))}
+            </View>
+            <View style={styles.row}>
+              <Button
+                title={`Apply to ${selectedUserIds.length}`}
+                onPress={handleBulkUserAction}
+                loading={submitting}
+                size="sm"
+              />
+              <TouchableOpacity onPress={() => setSelectedUserIds([])}>
+                <Text style={styles.warnText}>Clear Selection</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
+      </View>
+
+      {users.length === 0 ? (
+        <EmptyState
+          icon="people-outline"
+          title="No users"
+          message="Registered users will appear here."
+        />
+      ) : (
+        users.map((item) => (
+          <View key={item.id} style={styles.card}>
+            <TouchableOpacity onPress={() => toggleUserSelection(item.id)}>
+              <View style={styles.checkboxRow}>
+                <View style={[styles.checkbox, selectedUserIds.includes(item.id) && styles.checkboxActive]}>
+                  {selectedUserIds.includes(item.id) && <Text style={styles.checkmark}>✓</Text>}
+                </View>
+                <View>
+                  <Text style={styles.cardTitle}>{item.full_name}</Text>
+                  <Text style={styles.meta}>{item.email}</Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+            <Text style={styles.meta}>Role: {item.user_type}</Text>
+            {item.state_name ? <Text style={styles.meta}>State: {item.state_name}</Text> : null}
+            {item.is_banned !== undefined && <StatusBadge status={item.is_banned ? 'banned' : 'active'} />}
+            <View style={styles.row}>
+              <TouchableOpacity onPress={() => runAction(() => superAdminService.banUser(item.id), 'User banned')}>
+                <Text style={styles.warnText}>Ban</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => runAction(() => superAdminService.unbanUser(item.id), 'User unbanned')}>
+                <Text style={styles.linkText}>Unban</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => runAction(() => superAdminService.promoteUser(item.id), 'User promoted')}>
+                <Text style={styles.linkText}>Promote</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => runAction(() => superAdminService.deleteUser(item.id), 'User deleted')}>
+                <Text style={styles.warnText}>Delete</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
         ))
       )}
-    </View>
+    </>
   );
-
-  const renderUsers = () =>
-    users.map((item) => (
-      <View key={item.id} style={styles.card}>
-        <Text style={styles.cardTitle}>{item.full_name}</Text>
-        <Text style={styles.meta}>{item.email}</Text>
-        <Text style={styles.meta}>Role: {item.user_type}</Text>
-        <View style={styles.row}>
-          <TouchableOpacity onPress={() => runAction(() => superAdminService.banUser(item.id), 'User banned')}>
-            <Text style={styles.warnText}>Ban</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => runAction(() => superAdminService.unbanUser(item.id), 'User unbanned')}>
-            <Text style={styles.linkText}>Unban</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => runAction(() => superAdminService.promoteUser(item.id), 'User promoted')}>
-            <Text style={styles.linkText}>Promote</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => runAction(() => superAdminService.deleteUser(item.id), 'User deleted')}>
-            <Text style={styles.warnText}>Delete</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    ));
 
   const renderVerifications = () => (
     <>
@@ -666,27 +890,211 @@ const SuperAdminDashboardScreen = () => {
     </>
   );
 
-  const renderProperties = () =>
-    properties.map((item) => (
-      <View key={item.id} style={styles.card}>
-        <Text style={styles.cardTitle}>{item.title}</Text>
-        <Text style={styles.meta}>{item.landlord_name || 'No landlord'}</Text>
-        <TouchableOpacity onPress={() => runAction(() => superAdminService.unlistProperty(item.id), 'Property unlisted')}>
-          <Text style={styles.warnText}>Unlist Property</Text>
-        </TouchableOpacity>
-      </View>
-    ));
+  const togglePropertySelection = (id) => {
+    setSelectedPropertyIds((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+    );
+  };
 
-  const renderReports = () =>
-    reports.map((item) => (
-      <View key={item.id} style={styles.card}>
-        <Text style={styles.cardTitle}>{item.reason || item.report_reason || `Report #${item.id}`}</Text>
-        <Text style={styles.meta}>Status: {item.status || 'open'}</Text>
-        <TouchableOpacity onPress={() => runAction(() => superAdminService.resolveReport(item.id), 'Report resolved')}>
-          <Text style={styles.linkText}>Resolve</Text>
-        </TouchableOpacity>
+  const handleBulkPropertyAction = async () => {
+    if (selectedPropertyIds.length === 0) {
+      Toast.show({ type: 'error', text1: 'Select at least one property' });
+      return;
+    }
+    if (!bulkAction) {
+      Toast.show({ type: 'error', text1: 'Select a bulk action' });
+      return;
+    }
+    await runAction(
+      async () => {
+        await superAdminService.bulkPropertyAction(selectedPropertyIds, bulkAction);
+        setSelectedPropertyIds([]);
+        setBulkAction('');
+      },
+      `Bulk action "${bulkAction}" completed on ${selectedPropertyIds.length} properties`
+    );
+  };
+
+  const renderProperties = () => (
+    <>
+      <View style={styles.card}>
+        <Text style={styles.cardTitle}>Properties ({properties.length})</Text>
+        <Text style={styles.meta}>
+          Select multiple properties for bulk actions, or manage individually below.
+        </Text>
+        {selectedPropertyIds.length > 0 && (
+          <View style={styles.bulkActions}>
+            <Text style={styles.filterLabel}>{selectedPropertyIds.length} selected</Text>
+            <View style={styles.filtersRow}>
+              {['unlist', 'feature', 'unfeature', 'delete'].map((action) => (
+                <FilterChip
+                  key={action}
+                  label={action}
+                  active={bulkAction === action}
+                  onPress={() => setBulkAction(action)}
+                />
+              ))}
+            </View>
+            <View style={styles.row}>
+              <Button
+                title={`Apply to ${selectedPropertyIds.length}`}
+                onPress={handleBulkPropertyAction}
+                loading={submitting}
+                size="sm"
+              />
+              <TouchableOpacity onPress={() => setSelectedPropertyIds([])}>
+                <Text style={styles.warnText}>Clear Selection</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
       </View>
-    ));
+
+      {properties.length === 0 ? (
+        <EmptyState
+          icon="home-outline"
+          title="No properties"
+          message="Properties will appear here once listed."
+        />
+      ) : (
+        properties.map((item) => (
+          <View key={item.id} style={styles.card}>
+            <View style={styles.rowBetween}>
+              <TouchableOpacity onPress={() => togglePropertySelection(item.id)}>
+                <View style={styles.checkboxRow}>
+                  <View style={[styles.checkbox, selectedPropertyIds.includes(item.id) && styles.checkboxActive]}>
+                    {selectedPropertyIds.includes(item.id) && <Text style={styles.checkmark}>✓</Text>}
+                  </View>
+                  <Text style={styles.cardTitle}>{item.title}</Text>
+                </View>
+              </TouchableOpacity>
+              {item.is_featured !== undefined && (
+                <StatusBadge status={item.is_featured ? 'featured' : 'standard'} />
+              )}
+            </View>
+            <Text style={styles.meta}>{item.landlord_name || 'No landlord'}</Text>
+            {item.state_name ? <Text style={styles.meta}>State: {item.state_name}</Text> : null}
+            {item.city ? <Text style={styles.meta}>City: {item.city}</Text> : null}
+            {item.price ? <Text style={styles.meta}>Price: N{Number(item.price).toLocaleString()}</Text> : null}
+            <StatusBadge status={item.status || 'active'} />
+            <View style={styles.row}>
+              <TouchableOpacity onPress={() => runAction(() => superAdminService.unlistProperty(item.id), 'Property unlisted')}>
+                <Text style={styles.warnText}>Unlist</Text>
+              </TouchableOpacity>
+              {item.is_featured ? (
+                <TouchableOpacity onPress={() => runAction(() => superAdminService.unfeatureProperty(item.id), 'Property unfeatured')}>
+                  <Text style={styles.linkText}>Unfeature</Text>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity onPress={() => runAction(() => superAdminService.featureProperty(item.id), 'Property featured')}>
+                  <Text style={styles.linkText}>Feature</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          </View>
+        ))
+      )}
+    </>
+  );
+
+  const handleUpdateReportStatus = async (reportId, status) => {
+    await runAction(
+      async () => {
+        await superAdminService.updateReportStatus(reportId, status);
+        setReportStatusTargets((prev) => {
+          const updated = { ...prev };
+          delete updated[reportId];
+          return updated;
+        });
+      },
+      `Report status changed to ${status}`
+    );
+  };
+
+  const toggleReportStatusPicker = (reportId) => {
+    setReportStatusTargets((prev) => {
+      if (prev[reportId]) {
+        const updated = { ...prev };
+        delete updated[reportId];
+        return updated;
+      }
+      return { ...prev, [reportId]: true };
+    });
+  };
+
+  const renderReports = () => {
+    const reportStatusOptions = ['open', 'investigating', 'resolved', 'dismissed'];
+
+    return (
+      <>
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Reports ({reports.length})</Text>
+          <Text style={styles.meta}>
+            Manage reported content. Update status to track investigation progress.
+          </Text>
+        </View>
+
+        {reports.length === 0 ? (
+          <EmptyState
+            icon="flag-outline"
+            title="No reports"
+            message="User reports will appear here."
+          />
+        ) : (
+          reports.map((item) => (
+            <View key={item.id} style={styles.card}>
+              <Text style={styles.cardTitle}>{item.reason || item.report_reason || `Report #${item.id}`}</Text>
+              <View style={styles.rowBetween}>
+                <StatusBadge status={item.status || 'open'} />
+                <TouchableOpacity onPress={() => toggleReportStatusPicker(item.id)}>
+                  <Text style={styles.linkText}>Change Status</Text>
+                </TouchableOpacity>
+              </View>
+              {item.reporter_name ? (
+                <Text style={styles.meta}>Reported by: {item.reporter_name}</Text>
+              ) : null}
+              {item.reported_user_name ? (
+                <Text style={styles.meta}>Against: {item.reported_user_name}</Text>
+              ) : null}
+              {item.property_title ? (
+                <Text style={styles.meta}>Property: {item.property_title}</Text>
+              ) : null}
+              {item.description ? (
+                <Text style={styles.meta}>Details: {item.description}</Text>
+              ) : null}
+              {item.created_at ? (
+                <Text style={styles.meta}>
+                  Created: {new Date(item.created_at).toLocaleString()}
+                </Text>
+              ) : null}
+
+              {reportStatusTargets[item.id] && (
+                <View style={styles.statusOptions}>
+                  <Text style={styles.filterLabel}>Set Status:</Text>
+                  <View style={styles.filtersRow}>
+                    {reportStatusOptions.map((status) => (
+                      <FilterChip
+                        key={status}
+                        label={status}
+                        active={(item.status || 'open') === status}
+                        onPress={() => handleUpdateReportStatus(item.id, status)}
+                      />
+                    ))}
+                  </View>
+                </View>
+              )}
+
+              <View style={styles.row}>
+                <TouchableOpacity onPress={() => runAction(() => superAdminService.resolveReport(item.id), 'Report resolved')}>
+                  <Text style={styles.linkText}>Resolve</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          ))
+        )}
+      </>
+    );
+  };
 
   const renderBroadcasts = () => (
     <>
@@ -770,11 +1178,754 @@ const SuperAdminDashboardScreen = () => {
       </View>
     ));
 
+  // ===================== NEW: ANALYTICS TAB =====================
+  const renderStructuredAnalytics = () => {
+    const analyticEntries = Object.entries(analytics);
+    const timeRangeOptions = [
+      { label: 'Today', value: 'today' },
+      { label: 'This Week', value: 'week' },
+      { label: 'This Month', value: 'month' },
+      { label: 'All Time', value: 'all' },
+    ];
+
+    return (
+      <View>
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Analytics Dashboard</Text>
+          <Text style={styles.filterLabel}>Time Range</Text>
+          <View style={styles.filtersRow}>
+            {timeRangeOptions.map((opt) => (
+              <FilterChip
+                key={opt.value}
+                label={opt.label}
+                active={analyticsTimeRange === opt.value}
+                onPress={() => setAnalyticsTimeRange(opt.value)}
+              />
+            ))}
+          </View>
+          <Button
+            title="Refresh Analytics"
+            onPress={() => runAction(() => loadAll(), 'Analytics refreshed', null)}
+            loading={submitting}
+          />
+        </View>
+
+        {analyticEntries.length === 0 ? (
+          <EmptyState
+            icon="analytics-outline"
+            title="No analytics data"
+            message="Data will appear once users interact with the platform."
+          />
+        ) : (
+          <View style={styles.analyticsGrid}>
+            {analyticEntries.map(([key, value]) => (
+              <View key={key} style={styles.analyticsCard}>
+                <Text style={styles.analyticsValue}>
+                  {typeof value === 'number' ? value.toLocaleString() : String(value)}
+                </Text>
+                <Text style={styles.analyticsLabel}>
+                  {key.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
+                </Text>
+              </View>
+            ))}
+          </View>
+        )}
+      </View>
+    );
+  };
+
+  // ===================== NEW: PLATFORM LAWYERS TAB =====================
+  const resetLawyerForm = () => {
+    setLawyerForm({
+      full_name: '',
+      email: '',
+      phone: '',
+      state_id: '',
+      specialization: '',
+      license_number: '',
+    });
+    setEditingLawyerId(null);
+  };
+
+  const handleSaveLawyer = async () => {
+    if (!lawyerForm.full_name || !lawyerForm.email) {
+      Toast.show({ type: 'error', text1: 'Full name and email are required' });
+      return;
+    }
+
+    await runAction(
+      async () => {
+        if (editingLawyerId) {
+          await superAdminService.updatePlatformLawyer(editingLawyerId, lawyerForm);
+        } else {
+          await superAdminService.createManualPlatformLawyer(lawyerForm);
+        }
+        resetLawyerForm();
+        setShowAddLawyerModal(false);
+        await loadPlatformLawyers();
+      },
+      editingLawyerId ? 'Platform lawyer updated' : 'Platform lawyer created',
+      null
+    );
+  };
+
+  const handleDeleteLawyer = (lawyerId, lawyerName) => {
+    Alert.alert(
+      'Delete Platform Lawyer',
+      `Are you sure you want to remove ${lawyerName} from platform lawyers?`,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: () =>
+            runAction(
+              async () => {
+                await superAdminService.deletePlatformLawyer(lawyerId);
+                await loadPlatformLawyers();
+              },
+              'Platform lawyer removed',
+              null
+            ),
+        },
+      ]
+    );
+  };
+
+  const handleReviewApplication = (applicationId, action) => {
+    setSelectedApplicationId(applicationId);
+    setReviewAction(action);
+    setReviewNote('');
+    setShowReviewDialog(true);
+  };
+
+  const confirmReviewApplication = async () => {
+    if (!selectedApplicationId || !reviewAction) return;
+
+    await runAction(
+      async () => {
+        if (reviewAction === 'approve') {
+          await superAdminService.approvePlatformLawyerApplication(selectedApplicationId, reviewNote);
+        } else {
+          await superAdminService.rejectPlatformLawyerApplication(selectedApplicationId, reviewNote);
+        }
+        setShowReviewDialog(false);
+        setSelectedApplicationId(null);
+        setReviewAction(null);
+        setReviewNote('');
+        await loadPlatformLawyers();
+        await loadLawyerApplications();
+      },
+      reviewAction === 'approve' ? 'Lawyer application approved' : 'Lawyer application rejected',
+      null
+    );
+  };
+
+  const renderPlatformLawyers = () => (
+    <>
+      <View style={styles.card}>
+        <View style={styles.rowBetween}>
+          <Text style={styles.cardTitle}>Platform Lawyers</Text>
+          <TouchableOpacity
+            style={styles.smallBtn}
+            onPress={() => {
+              resetLawyerForm();
+              setShowAddLawyerModal(true);
+            }}
+          >
+            <Text style={styles.smallBtnText}>+ Add Lawyer</Text>
+          </TouchableOpacity>
+        </View>
+        <TouchableOpacity
+          onPress={() => {
+            loadLawyerApplications();
+            setShowLawyerApplications(!showLawyerApplications);
+          }}
+        >
+          <Text style={styles.linkText}>
+            {showLawyerApplications ? 'Hide' : 'View'} Pending Applications
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      {showLawyerApplications && (
+        <>
+          {lawyerApplications.length === 0 ? (
+            <EmptyState title="No pending applications" message="No lawyer applications awaiting review." />
+          ) : (
+            lawyerApplications.map((app) => (
+              <View key={app.id} style={styles.card}>
+                <Text style={styles.cardTitle}>{app.full_name || app.name}</Text>
+                {app.email ? <Text style={styles.meta}>Email: {app.email}</Text> : null}
+                {app.phone ? <Text style={styles.meta}>Phone: {app.phone}</Text> : null}
+                {app.specialization ? <Text style={styles.meta}>Specialization: {app.specialization}</Text> : null}
+                {app.license_number ? <Text style={styles.meta}>License: {app.license_number}</Text> : null}
+                {app.state_name ? <Text style={styles.meta}>State: {app.state_name}</Text> : null}
+                {app.notes ? <Text style={styles.meta}>Notes: {app.notes}</Text> : null}
+                <View style={styles.row}>
+                  <TouchableOpacity onPress={() => handleReviewApplication(app.id, 'approve')}>
+                    <Text style={styles.linkText}>Approve</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => handleReviewApplication(app.id, 'reject')}>
+                    <Text style={styles.warnText}>Reject</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ))
+          )}
+        </>
+      )}
+
+      {platformLawyers.length === 0 ? (
+        <EmptyState
+          icon="briefcase-outline"
+          title="No platform lawyers"
+          message="Add a lawyer manually or review pending applications."
+        />
+      ) : (
+        platformLawyers.map((lawyer) => (
+          <View key={lawyer.id} style={styles.card}>
+            <View style={styles.rowBetween}>
+              <Text style={styles.cardTitle}>{lawyer.full_name || lawyer.name}</Text>
+              <StatusBadge status={lawyer.status || lawyer.invite_status || 'active'} />
+            </View>
+            {lawyer.email ? <Text style={styles.meta}>Email: {lawyer.email}</Text> : null}
+            {lawyer.phone ? <Text style={styles.meta}>Phone: {lawyer.phone}</Text> : null}
+            {lawyer.specialization ? <Text style={styles.meta}>Specialization: {lawyer.specialization}</Text> : null}
+            {lawyer.license_number ? <Text style={styles.meta}>License: {lawyer.license_number}</Text> : null}
+            {lawyer.state_name ? <Text style={styles.meta}>State: {lawyer.state_name}</Text> : null}
+
+            <View style={styles.row}>
+              {lawyer.invite_status !== 'accepted' ? (
+                <TouchableOpacity
+                  onPress={() =>
+                    runAction(
+                      async () => {
+                        await superAdminService.resendPlatformLawyerInvite(lawyer.id);
+                        await loadPlatformLawyers();
+                      },
+                      'Invite resent',
+                      null
+                    )
+                  }
+                >
+                  <Text style={styles.linkText}>Resend Invite</Text>
+                </TouchableOpacity>
+              ) : null}
+              <TouchableOpacity
+                onPress={() => {
+                  setEditingLawyerId(lawyer.id);
+                  setLawyerForm({
+                    full_name: lawyer.full_name || lawyer.name || '',
+                    email: lawyer.email || '',
+                    phone: lawyer.phone || '',
+                    state_id: String(lawyer.state_id || ''),
+                    specialization: lawyer.specialization || '',
+                    license_number: lawyer.license_number || '',
+                  });
+                  setShowAddLawyerModal(true);
+                }}
+              >
+                <Text style={styles.linkText}>Edit</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => handleDeleteLawyer(lawyer.id, lawyer.full_name || lawyer.name)}>
+                <Text style={styles.warnText}>Remove</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        ))
+      )}
+
+      {/* Add/Edit Lawyer Modal */}
+      <ConfirmDialog
+        visible={showAddLawyerModal}
+        title={editingLawyerId ? 'Edit Platform Lawyer' : 'Add Platform Lawyer'}
+        message=""
+        confirmText={editingLawyerId ? 'Update' : 'Add Lawyer'}
+        cancelText="Cancel"
+        onConfirm={handleSaveLawyer}
+        onCancel={() => {
+          setShowAddLawyerModal(false);
+          resetLawyerForm();
+        }}
+        loading={submitting}
+        variant="primary"
+      />
+      {showAddLawyerModal && (
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.cardTitle}>{editingLawyerId ? 'Edit Platform Lawyer' : 'Add Platform Lawyer'}</Text>
+            <Input
+              label="Full Name"
+              value={lawyerForm.full_name}
+              onChangeText={(v) => setLawyerForm((prev) => ({ ...prev, full_name: v }))}
+              placeholder="Enter lawyer name"
+            />
+            <Input
+              label="Email"
+              value={lawyerForm.email}
+              onChangeText={(v) => setLawyerForm((prev) => ({ ...prev, email: v }))}
+              placeholder="lawyer@email.com"
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
+            <Input
+              label="Phone"
+              value={lawyerForm.phone}
+              onChangeText={(v) => setLawyerForm((prev) => ({ ...prev, phone: v }))}
+              placeholder="Phone number"
+              keyboardType="phone-pad"
+            />
+            <Input
+              label="Specialization"
+              value={lawyerForm.specialization}
+              onChangeText={(v) => setLawyerForm((prev) => ({ ...prev, specialization: v }))}
+              placeholder="e.g. Property Law, Litigation"
+            />
+            <Input
+              label="License Number"
+              value={lawyerForm.license_number}
+              onChangeText={(v) => setLawyerForm((prev) => ({ ...prev, license_number: v }))}
+              placeholder="License number"
+            />
+            <SelectField
+              label="State"
+              value={lawyerForm.state_id ? pricingLocations.find((s) => String(s.id) === lawyerForm.state_id)?.state_name : ''}
+              placeholder="Select state"
+              onPress={() => setShowPricingStatePicker(true)}
+            />
+            <View style={styles.row}>
+              <Button
+                title={editingLawyerId ? 'Update' : 'Add Lawyer'}
+                onPress={handleSaveLawyer}
+                loading={submitting}
+                style={styles.flex1}
+              />
+              <Button
+                title="Cancel"
+                variant="outline"
+                onPress={() => {
+                  setShowAddLawyerModal(false);
+                  resetLawyerForm();
+                }}
+                style={styles.flex1}
+              />
+            </View>
+          </View>
+        </View>
+      )}
+
+      {/* Review Application Dialog */}
+      <ConfirmDialog
+        visible={showReviewDialog}
+        title={reviewAction === 'approve' ? 'Approve Application' : 'Reject Application'}
+        message={reviewAction === 'approve' ? 'Add a review note (optional):' : 'Provide a reason for rejection:'}
+        confirmText={reviewAction === 'approve' ? 'Approve' : 'Reject'}
+        cancelText="Cancel"
+        onConfirm={confirmReviewApplication}
+        onCancel={() => {
+          setShowReviewDialog(false);
+          setSelectedApplicationId(null);
+          setReviewAction(null);
+          setReviewNote('');
+        }}
+        loading={submitting}
+        variant={reviewAction === 'approve' ? 'primary' : 'danger'}
+      />
+      {showReviewDialog && (
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.cardTitle}>
+              {reviewAction === 'approve' ? 'Approve Application' : 'Reject Application'}
+            </Text>
+            <TextInput
+              style={styles.textArea}
+              value={reviewNote}
+              onChangeText={setReviewNote}
+              placeholder={reviewAction === 'approve' ? 'Review note (optional)...' : 'Reason for rejection...'}
+              multiline
+              numberOfLines={4}
+            />
+            <View style={styles.row}>
+              <Button
+                title={reviewAction === 'approve' ? 'Approve' : 'Reject'}
+                variant={reviewAction === 'approve' ? 'primary' : 'danger'}
+                onPress={confirmReviewApplication}
+                loading={submitting}
+                style={styles.flex1}
+              />
+              <Button
+                title="Cancel"
+                variant="outline"
+                onPress={() => {
+                  setShowReviewDialog(false);
+                  setSelectedApplicationId(null);
+                  setReviewAction(null);
+                  setReviewNote('');
+                }}
+                style={styles.flex1}
+              />
+            </View>
+          </View>
+        </View>
+      )}
+    </>
+  );
+
+  // ===================== NEW: LAWYER ACTIVITY TAB =====================
+  const renderLawyerActivity = () => {
+    const timeRangeOptions = [
+      { label: '24 Hours', value: '24hours' },
+      { label: '7 Days', value: '7days' },
+      { label: '30 Days', value: '30days' },
+      { label: '90 Days', value: '90days' },
+    ];
+
+    return (
+      <View>
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Lawyer Activity Stats</Text>
+          <Text style={styles.filterLabel}>Time Range</Text>
+          <View style={styles.filtersRow}>
+            {timeRangeOptions.map((opt) => (
+              <FilterChip
+                key={opt.value}
+                label={opt.label}
+                active={activityTimeRange === opt.value}
+                onPress={() => {
+                  setActivityTimeRange(opt.value);
+                  loadLawyerActivitiesData(opt.value);
+                }}
+              />
+            ))}
+          </View>
+        </View>
+
+        {lawyerActivities.length === 0 ? (
+          <EmptyState
+            icon="pulse-outline"
+            title="No activity data"
+            message="Lawyer activity statistics will appear here."
+          />
+        ) : (
+          lawyerActivities.map((activity, index) => (
+            <View key={activity.id || index} style={styles.card}>
+              <Text style={styles.cardTitle}>{activity.lawyer_name || activity.full_name || 'Lawyer'}</Text>
+              {activity.email ? <Text style={styles.meta}>Email: {activity.email}</Text> : null}
+              <View style={styles.activityStatRow}>
+                {activity.properties_managed !== undefined && (
+                  <View style={styles.activityStat}>
+                    <Text style={styles.analyticsValue}>{activity.properties_managed}</Text>
+                    <Text style={styles.analyticsLabel}>Properties</Text>
+                  </View>
+                )}
+                {activity.clients_served !== undefined && (
+                  <View style={styles.activityStat}>
+                    <Text style={styles.analyticsValue}>{activity.clients_served}</Text>
+                    <Text style={styles.analyticsLabel}>Clients</Text>
+                  </View>
+                )}
+                {activity.documents_filed !== undefined && (
+                  <View style={styles.activityStat}>
+                    <Text style={styles.analyticsValue}>{activity.documents_filed}</Text>
+                    <Text style={styles.analyticsLabel}>Documents</Text>
+                  </View>
+                )}
+                {activity.disputes_handled !== undefined && (
+                  <View style={styles.activityStat}>
+                    <Text style={styles.analyticsValue}>{activity.disputes_handled}</Text>
+                    <Text style={styles.analyticsLabel}>Disputes</Text>
+                  </View>
+                )}
+                {activity.agreements_generated !== undefined && (
+                  <View style={styles.activityStat}>
+                    <Text style={styles.analyticsValue}>{activity.agreements_generated}</Text>
+                    <Text style={styles.analyticsLabel}>Agreements</Text>
+                  </View>
+                )}
+              </View>
+              {activity.last_active_at ? (
+                <Text style={styles.meta}>
+                  Last active: {new Date(activity.last_active_at).toLocaleString()}
+                </Text>
+              ) : null}
+              {activity.total_hours_logged ? (
+                <Text style={styles.meta}>Total hours logged: {activity.total_hours_logged}</Text>
+              ) : null}
+            </View>
+          ))
+        )}
+      </View>
+    );
+  };
+
+  // ===================== NEW: ADMIN MANAGEMENT TAB =====================
+  const handleImpersonateAdmin = async (adminId, adminName) => {
+    Alert.alert(
+      'Impersonate Admin',
+      `You are about to impersonate ${adminName}. This will log you in as this admin. Continue?`,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Impersonate',
+          onPress: async () => {
+            try {
+              setSubmitting(true);
+              await superAdminService.impersonateAdmin(adminId);
+              Toast.show({ type: 'success', text1: `Now impersonating ${adminName}` });
+              // The app should navigate/login as the impersonated admin
+            } catch (error) {
+              Toast.show({
+                type: 'error',
+                text1: 'Failed',
+                text2: getErrorMessage(error, 'Could not impersonate admin'),
+              });
+            } finally {
+              setSubmitting(false);
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  const handleUpdateJurisdiction = async (adminId) => {
+    if (!jurisdictionForm.state) {
+      Toast.show({ type: 'error', text1: 'State is required' });
+      return;
+    }
+
+    await runAction(
+      async () => {
+        await superAdminService.updateAdminJurisdiction(
+          adminId,
+          jurisdictionForm.state,
+          jurisdictionForm.city || undefined
+        );
+        setEditingJurisdiction(null);
+        setJurisdictionForm({ state: '', city: '' });
+        await loadAdmins();
+      },
+      'Admin jurisdiction updated',
+      null
+    );
+  };
+
+  const toggleAdminExpand = (adminId) => {
+    if (expandedAdminId === adminId) {
+      setExpandedAdminId(null);
+      setAdminStateUsers([]);
+    } else {
+      setExpandedAdminId(adminId);
+      loadAdminStateUsers(adminId);
+    }
+  };
+
+  const renderAdminManagement = () => (
+    <>
+      <View style={styles.card}>
+        <Text style={styles.cardTitle}>Admin Management</Text>
+        <Text style={styles.meta}>
+          Manage admin accounts, impersonate admins, and edit jurisdictions.
+        </Text>
+      </View>
+
+      {admins.length === 0 ? (
+        <EmptyState
+          icon="shield-checkmark-outline"
+          title="No admins found"
+          message="Admin accounts will appear here once they are created."
+        />
+      ) : (
+        admins.map((admin) => (
+          <View key={admin.id} style={styles.card}>
+            <TouchableOpacity onPress={() => toggleAdminExpand(admin.id)}>
+              <View style={styles.rowBetween}>
+                <Text style={styles.cardTitle}>{admin.full_name}</Text>
+                <Text style={styles.meta}>{expandedAdminId === admin.id ? '▲' : '▼'}</Text>
+              </View>
+            </TouchableOpacity>
+            <Text style={styles.meta}>Email: {admin.email}</Text>
+            {admin.assigned_state ? (
+              <Text style={styles.meta}>Jurisdiction: {admin.assigned_state}{admin.assigned_city ? ` - ${admin.assigned_city}` : ''}</Text>
+            ) : (
+              <Text style={styles.meta}>Jurisdiction: Not assigned</Text>
+            )}
+            <Text style={styles.meta}>
+              Verified: {admin.credentials_verified_count ?? 0} users
+            </Text>
+            {admin.last_verification_at ? (
+              <Text style={styles.meta}>
+                Last activity: {new Date(admin.last_verification_at).toLocaleString()}
+              </Text>
+            ) : null}
+
+            <View style={styles.row}>
+              <TouchableOpacity onPress={() => handleImpersonateAdmin(admin.id, admin.full_name)}>
+                <Text style={styles.linkText}>Impersonate</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  setEditingJurisdiction(admin.id);
+                  setJurisdictionForm({
+                    state: admin.assigned_state || '',
+                    city: admin.assigned_city || '',
+                  });
+                }}
+              >
+                <Text style={styles.linkText}>Edit Jurisdiction</Text>
+              </TouchableOpacity>
+            </View>
+
+            {expandedAdminId === admin.id && (
+              <View style={styles.expandedSection}>
+                <Text style={styles.filterLabel}>State Users</Text>
+                {loadingStateUsers ? (
+                  <Text style={styles.meta}>Loading...</Text>
+                ) : adminStateUsers.length === 0 ? (
+                  <Text style={styles.meta}>No users in this admin's jurisdiction.</Text>
+                ) : (
+                  adminStateUsers.map((user) => (
+                    <View key={user.id} style={styles.listRow}>
+                      <Text style={styles.listTitle}>{user.full_name || user.name}</Text>
+                      <Text style={styles.meta}>{user.email}</Text>
+                      <Text style={styles.meta}>Role: {user.user_type}</Text>
+                    </View>
+                  ))
+                )}
+              </View>
+            )}
+
+            {editingJurisdiction === admin.id && (
+              <View style={styles.inlineForm}>
+                <Input
+                  label="State"
+                  value={jurisdictionForm.state}
+                  onChangeText={(v) => setJurisdictionForm((prev) => ({ ...prev, state: v }))}
+                  placeholder="Enter state name"
+                />
+                <Input
+                  label="City (optional)"
+                  value={jurisdictionForm.city}
+                  onChangeText={(v) => setJurisdictionForm((prev) => ({ ...prev, city: v }))}
+                  placeholder="Enter city name"
+                />
+                <View style={styles.row}>
+                  <Button
+                    title="Save"
+                    onPress={() => handleUpdateJurisdiction(admin.id)}
+                    loading={submitting}
+                    size="sm"
+                  />
+                  <Button
+                    title="Cancel"
+                    variant="outline"
+                    onPress={() => {
+                      setEditingJurisdiction(null);
+                      setJurisdictionForm({ state: '', city: '' });
+                    }}
+                    size="sm"
+                  />
+                </View>
+              </View>
+            )}
+          </View>
+        ))
+      )}
+    </>
+  );
+
+  // ===================== NEW: PENDING ADMIN APPROVALS TAB =====================
+  const renderPendingApprovals = () => (
+    <>
+      <View style={styles.card}>
+        <Text style={styles.cardTitle}>Pending Admin Approvals</Text>
+        <Text style={styles.meta}>
+          Review and approve/reject admin account requests.
+        </Text>
+        <Button
+          title="Refresh"
+          onPress={() => runAction(() => loadPendingAdmins(), 'Pending admins refreshed', null)}
+          loading={submitting}
+          size="sm"
+        />
+      </View>
+
+      {pendingAdmins.length === 0 ? (
+        <EmptyState
+          icon="checkmark-circle-outline"
+          title="No pending approvals"
+          message="All admin requests have been processed."
+        />
+      ) : (
+        pendingAdmins.map((admin) => (
+          <View key={admin.id} style={styles.card}>
+            <Text style={styles.cardTitle}>{admin.full_name || admin.name || 'Unknown'}</Text>
+            <Text style={styles.meta}>Email: {admin.email}</Text>
+            {admin.phone ? <Text style={styles.meta}>Phone: {admin.phone}</Text> : null}
+            {admin.state_name || admin.state ? (
+              <Text style={styles.meta}>State: {admin.state_name || admin.state}</Text>
+            ) : null}
+            {admin.city ? <Text style={styles.meta}>City: {admin.city}</Text> : null}
+            {admin.role_requested ? (
+              <Text style={styles.meta}>Role requested: {admin.role_requested}</Text>
+            ) : null}
+            {admin.created_at ? (
+              <Text style={styles.meta}>
+                Requested: {new Date(admin.created_at).toLocaleDateString()}
+              </Text>
+            ) : null}
+            {admin.reason ? (
+              <Text style={styles.meta}>Reason: {admin.reason}</Text>
+            ) : null}
+            <StatusBadge status={admin.status || 'pending'} />
+
+            <View style={styles.row}>
+              <TouchableOpacity
+                onPress={() =>
+                  runAction(
+                    async () => {
+                      await superAdminService.approvePendingAdmin(admin.id);
+                      await loadPendingAdmins();
+                    },
+                    'Admin approved',
+                    null
+                  )
+                }
+              >
+                <Text style={styles.linkText}>Approve</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() =>
+                  runAction(
+                    async () => {
+                      await superAdminService.rejectPendingAdmin(admin.id);
+                      await loadPendingAdmins();
+                    },
+                    'Admin rejected',
+                    null
+                  )
+                }
+              >
+                <Text style={styles.warnText}>Reject</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        ))
+      )}
+    </>
+  );
+
   const renderedSection = {
     overview: renderOverview(),
     users: renderUsers(),
     verifications: renderVerifications(),
     lawyer_invites: renderLawyerInvites(),
+    analytics: renderStructuredAnalytics(),
+    platform_lawyers: renderPlatformLawyers(),
+    lawyer_activity: renderLawyerActivity(),
+    admin_management: renderAdminManagement(),
+    pending_approvals: renderPendingApprovals(),
     pricing: renderPricing(),
     properties: renderProperties(),
     reports: renderReports(),
@@ -930,6 +2081,148 @@ const styles = StyleSheet.create({
   },
   marginTop: {
     marginTop: 10,
+  },
+  // ===================== NEW STYLES =====================
+  analyticsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+    marginBottom: 10,
+  },
+  analyticsCard: {
+    backgroundColor: '#ffffff',
+    borderWidth: 1,
+    borderColor: '#e2e8f0',
+    borderRadius: 12,
+    padding: 14,
+    minWidth: '47%',
+    flex: 1,
+    alignItems: 'center',
+  },
+  analyticsValue: {
+    fontSize: 24,
+    fontWeight: '800',
+    color: '#0f172a',
+  },
+  analyticsLabel: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#64748b',
+    marginTop: 4,
+    textTransform: 'capitalize',
+    textAlign: 'center',
+  },
+  rowBetween: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  smallBtn: {
+    backgroundColor: '#0284c7',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+  },
+  smallBtnText: {
+    color: '#ffffff',
+    fontWeight: '700',
+    fontSize: 13,
+  },
+  checkbox: {
+    width: 22,
+    height: 22,
+    borderWidth: 2,
+    borderColor: '#cbd5e1',
+    borderRadius: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 10,
+  },
+  checkboxActive: {
+    backgroundColor: '#0284c7',
+    borderColor: '#0284c7',
+  },
+  checkmark: {
+    color: '#ffffff',
+    fontWeight: '800',
+    fontSize: 14,
+  },
+  checkboxRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  bulkActions: {
+    marginTop: 10,
+    paddingTop: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#e2e8f0',
+  },
+  statusOptions: {
+    marginTop: 10,
+    paddingTop: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#e2e8f0',
+  },
+  activityStatRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginTop: 8,
+  },
+  activityStat: {
+    backgroundColor: '#f8fafc',
+    borderRadius: 8,
+    padding: 8,
+    alignItems: 'center',
+    minWidth: 60,
+  },
+  expandedSection: {
+    marginTop: 10,
+    paddingTop: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#e2e8f0',
+  },
+  inlineForm: {
+    marginTop: 10,
+    paddingTop: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#e2e8f0',
+    gap: 8,
+  },
+  modalOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+    zIndex: 1000,
+  },
+  modalContent: {
+    backgroundColor: '#ffffff',
+    borderRadius: 16,
+    padding: 20,
+    width: '100%',
+    maxWidth: 400,
+    maxHeight: '80%',
+  },
+  textArea: {
+    borderWidth: 1,
+    borderColor: '#cbd5e1',
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 14,
+    color: '#0f172a',
+    backgroundColor: '#ffffff',
+    textAlignVertical: 'top',
+    minHeight: 80,
+    marginBottom: 12,
+  },
+  flex1: {
+    flex: 1,
   },
 });
 
