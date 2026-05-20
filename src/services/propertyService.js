@@ -206,6 +206,20 @@ export const propertyService = {
     return response.data;
   },
 
+  analyzeDamagePhoto: async (photo) => {
+    const formData = new FormData();
+    formData.append('photos', {
+      uri: photo.uri,
+      type: photo.type || 'image/jpeg',
+      name: photo.fileName || `damage-${Date.now()}.jpg`,
+    });
+
+    const response = await api.post('/properties/damage-analysis', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response.data;
+  },
+
   // Damage report endpoints
   saveDamageReport: async (propertyId, damageData) => {
     const formData = new FormData();

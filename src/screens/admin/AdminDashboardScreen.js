@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-nati
 import Toast from 'react-native-toast-message';
 import { adminService } from '../../services/adminService';
 import { getErrorMessage, pickObject } from '../../utils/http';
+import TenancyWorkflowSection from '../../components/admin/TenancyWorkflowSection';
+import PropertyRequestWorkflowSection from '../../components/admin/PropertyRequestWorkflowSection';
 
 const AdminDashboardScreen = ({ navigation }) => {
   const [stats, setStats] = useState({});
@@ -50,6 +52,9 @@ const AdminDashboardScreen = ({ navigation }) => {
         <Text style={styles.linkTitle}>Agent Assignments</Text>
         <Text style={styles.linkMeta}>Assign, deactivate, and reassign landlord agents</Text>
       </TouchableOpacity>
+
+      <PropertyRequestWorkflowSection mode="state" title="Tenant Property Requests" />
+      <TenancyWorkflowSection title="LGA Tenancy Grace and Refund Enablement" />
     </ScrollView>
   );
 };

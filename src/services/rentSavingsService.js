@@ -60,6 +60,11 @@ export const rentSavingsService = {
     return response.data;
   },
 
+  getSummary: async () => {
+    const response = await api.get('/rent-savings/summary');
+    return response.data;
+  },
+
   // Admin endpoints
   getAllGoals: async (params) => {
     const response = await api.get('/rent-savings/admin/goals', { params });

@@ -10,6 +10,8 @@ import { AuthContext } from '../context/AuthContext';
 import LoginScreen from '../screens/auth/LoginScreen';
 import RegisterScreen from '../screens/auth/RegisterScreen';
 import ForgotPasswordScreen from '../screens/auth/ForgotPasswordScreen';
+import VerifyEmailScreen from '../screens/auth/VerifyEmailScreen';
+import VerifyPhoneScreen from '../screens/auth/VerifyPhoneScreen';
 import AcceptLawyerInviteScreen from '../screens/auth/AcceptLawyerInviteScreen';
 import AcceptAgentInviteScreen from '../screens/auth/AcceptAgentInviteScreen';
 
@@ -84,6 +86,9 @@ import FumigationCleaningBookingDetailScreen from '../screens/fumigation/Fumigat
 import FumigationCleaningPaymentScreen from '../screens/fumigation/FumigationCleaningPaymentScreen';
 import FumigationCleaningBookingsScreen from '../screens/fumigation/FumigationCleaningBookingsScreen';
 
+// ========== Verification Status ==========
+import VerificationStatusScreen from '../screens/shared/VerificationStatusScreen';
+
 const Stack = (Platform.OS === 'web' ? createStackNavigator : createNativeStackNavigator)();
 const Tab = createBottomTabNavigator();
 
@@ -97,7 +102,13 @@ const linkingConfig = {
     screens: {
       Home: '',
       Login: 'login',
-      Register: 'register',
+      Register: {
+        path: 'register',
+        parse: {
+          referral: String,
+          referral_code: String,
+        },
+      },
       ForgotPassword: 'forgot-password',
       PropertyList: 'properties',
       PropertyDetail: 'properties/:id',
@@ -132,6 +143,22 @@ const linkingConfig = {
       FumigationCleaningBookings: 'fumigation/bookings',
       FumigationCleaningBookingDetail: 'fumigation/bookings/:bookingId',
       FumigationCleaningPayment: 'fumigation/bookings/:bookingId/pay',
+      VerificationStatus: 'verification-status',
+      FumigationCleaningCatalog: 'fumigation-cleaning/catalog',
+      ResetPassword: 'reset-password/:token',
+      VerifyEmail: 'verify-email',
+      VerifyEmailToken: 'verify-email/:token',
+      VerifyPhone: 'verify-phone',
+      Faq: 'faq',
+      HowItWorks: 'how-it-works',
+      Pricing: 'pricing',
+      LandlordGuide: 'landlord-guide',
+      Privacy: 'privacy',
+      Terms: 'terms',
+      NigeriaPage: 'nigeria',
+      LocationPage: 'nigeria/:stateSlug',
+      AreaPage: 'areas/:stateSlug/:citySlug/:areaSlug',
+      LawyersDirectory: 'lawyers',
     },
   },
 };
@@ -145,6 +172,15 @@ const tabIcon = (routeName, focused, color, size) => {
   return <Icon name={iconName} size={size} color={color} />;
 };
 
+const commonVerificationScreens = () => (
+  <>
+    <Stack.Screen name="VerificationStatus" component={VerificationStatusScreen} options={{ title: 'Verification Status' }} />
+    <Stack.Screen name="VerifyEmail" component={VerifyEmailScreen} options={{ title: 'Verify Email' }} />
+    <Stack.Screen name="VerifyEmailToken" component={VerifyEmailScreen} options={{ title: 'Verify Email' }} />
+    <Stack.Screen name="VerifyPhone" component={VerifyPhoneScreen} options={{ title: 'Verify Phone' }} />
+  </>
+);
+
 const GuestStack = () => (
   <Stack.Navigator screenOptions={screenOptions}>
     <Stack.Screen name="Home" component={HomeScreen} />
@@ -154,9 +190,25 @@ const GuestStack = () => (
     <Stack.Screen name="Login" component={LoginScreen} options={{ title: 'Login' }} />
     <Stack.Screen name="Register" component={RegisterScreen} options={{ title: 'Register' }} />
     <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{ title: 'Forgot Password' }} />
+    {commonVerificationScreens()}
     <Stack.Screen name="AcceptLawyerInvite" component={AcceptLawyerInviteScreen} options={{ title: 'Lawyer Invite' }} />
     <Stack.Screen name="AcceptAgentInvite" component={AcceptAgentInviteScreen} options={{ title: 'Agent Invite' }} />
     <Stack.Screen name="WebFeatures" component={WebFeaturesScreen} options={{ title: 'Web Features' }} />
+    <Stack.Screen name="WebRoute" component={WebRouteScreen} options={{ headerShown: false }} />
+    <Stack.Screen name="TransportationBooking" component={TransportationBookingScreen} options={{ title: 'Transportation' }} />
+    <Stack.Screen name="TransportationBookings" component={TransportationBookingsScreen} options={{ title: 'Transport Bookings' }} />
+    <Stack.Screen name="TransportationBookingDetail" component={TransportationBookingDetailScreen} options={{ title: 'Booking Details' }} />
+    <Stack.Screen name="TransportationPayment" component={TransportationPaymentScreen} options={{ title: 'Transport Payment' }} />
+    <Stack.Screen name="FumigationCleaningBooking" component={FumigationCleaningBookingScreen} options={{ title: 'Fumigation & Cleaning' }} />
+    <Stack.Screen name="FumigationCleaningBookings" component={FumigationCleaningBookingsScreen} options={{ title: 'My Bookings' }} />
+    <Stack.Screen name="FumigationCleaningBookingDetail" component={FumigationCleaningBookingDetailScreen} options={{ title: 'Booking Details' }} />
+    <Stack.Screen name="FumigationCleaningPayment" component={FumigationCleaningPaymentScreen} options={{ title: 'Payment' }} />
+  </Stack.Navigator>
+);
+
+const WebAdminRoot = () => (
+  <Stack.Navigator screenOptions={screenOptions}>
+    <Stack.Screen name="WebFeatures" component={WebFeaturesScreen} options={{ title: 'Admin Web Features' }} />
     <Stack.Screen name="WebRoute" component={WebRouteScreen} options={{ headerShown: false }} />
   </Stack.Navigator>
 );
@@ -188,6 +240,7 @@ const TenantRoot = () => (
     <Stack.Screen name="Subscribe" component={SubscribeScreen} />
     <Stack.Screen name="PaymentHistory" component={PaymentHistoryScreen} options={{ title: 'Payment History' }} />
     <Stack.Screen name="Notifications" component={NotificationsScreen} />
+    {commonVerificationScreens()}
     <Stack.Screen name="RentSavingsDashboard" component={RentSavingsDashboardScreen} options={{ title: 'Rent Savings' }} />
     <Stack.Screen name="SavingsGoalCreate" component={SavingsGoalCreateScreen} options={{ title: 'Create Goal' }} />
     <Stack.Screen name="SavingsGoalList" component={SavingsGoalListScreen} options={{ title: 'My Goals' }} />
@@ -216,6 +269,7 @@ const LandlordRoot = () => (
     <Stack.Screen name="AddProperty" component={AddPropertyScreen} options={{ title: 'Add Property' }} />
     <Stack.Screen name="PaymentHistory" component={PaymentHistoryScreen} options={{ title: 'Payment History' }} />
     <Stack.Screen name="Notifications" component={NotificationsScreen} />
+    {commonVerificationScreens()}
     <Stack.Screen name="TransportationBooking" component={TransportationBookingScreen} options={{ title: 'Transportation' }} />
     <Stack.Screen name="TransportationBookings" component={TransportationBookingsScreen} options={{ title: 'My Transport Bookings' }} />
     <Stack.Screen name="TransportationBookingDetail" component={TransportationBookingDetailScreen} options={{ title: 'Booking Details' }} />
@@ -242,6 +296,7 @@ const AgentRoot = () => (
     <Stack.Screen name="PaymentHistory" component={PaymentHistoryScreen} options={{ title: 'Payment History' }} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
     <Stack.Screen name="Notifications" component={NotificationsScreen} />
+    {commonVerificationScreens()}
     <Stack.Screen name="TransportationBooking" component={TransportationBookingScreen} options={{ title: 'Transportation' }} />
     <Stack.Screen name="TransportationBookings" component={TransportationBookingsScreen} options={{ title: 'My Transport Bookings' }} />
     <Stack.Screen name="TransportationBookingDetail" component={TransportationBookingDetailScreen} options={{ title: 'Booking Details' }} />
@@ -266,6 +321,7 @@ const LawyerRoot = () => (
     <Stack.Screen name="Messages" component={MessagesScreen} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
     <Stack.Screen name="Notifications" component={NotificationsScreen} />
+    {commonVerificationScreens()}
     <Stack.Screen name="TransportationBooking" component={TransportationBookingScreen} options={{ title: 'Transportation' }} />
     <Stack.Screen name="TransportationBookings" component={TransportationBookingsScreen} options={{ title: 'My Transport Bookings' }} />
     <Stack.Screen name="TransportationBookingDetail" component={TransportationBookingDetailScreen} options={{ title: 'Booking Details' }} />
@@ -297,6 +353,7 @@ const AdminRoot = () => (
     <Stack.Screen name="PaymentHistory" component={PaymentHistoryScreen} options={{ title: 'Payment History' }} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
     <Stack.Screen name="Notifications" component={NotificationsScreen} />
+    {commonVerificationScreens()}
     <Stack.Screen name="WebFeatures" component={WebFeaturesScreen} options={{ title: 'Web Features' }} />
     <Stack.Screen name="WebRoute" component={WebRouteScreen} options={{ headerShown: false }} />
   </Stack.Navigator>
@@ -317,6 +374,7 @@ const SuperAdminRoot = () => (
     <Stack.Screen name="PaymentHistory" component={PaymentHistoryScreen} options={{ title: 'Payment History' }} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
     <Stack.Screen name="Notifications" component={NotificationsScreen} />
+    {commonVerificationScreens()}
     <Stack.Screen name="TransportationBooking" component={TransportationBookingScreen} options={{ title: 'Transportation' }} />
     <Stack.Screen name="TransportationBookings" component={TransportationBookingsScreen} options={{ title: 'Bookings' }} />
     <Stack.Screen name="TransportationBookingDetail" component={TransportationBookingDetailScreen} options={{ title: 'Booking Details' }} />
@@ -343,6 +401,7 @@ const FinancialAdminRoot = () => (
     <Stack.Screen name="PaymentHistory" component={PaymentHistoryScreen} options={{ title: 'Payment History' }} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
     <Stack.Screen name="Notifications" component={NotificationsScreen} />
+    {commonVerificationScreens()}
     <Stack.Screen name="TransportationBooking" component={TransportationBookingScreen} options={{ title: 'Transportation' }} />
     <Stack.Screen name="TransportationBookings" component={TransportationBookingsScreen} options={{ title: 'Bookings' }} />
     <Stack.Screen name="TransportationBookingDetail" component={TransportationBookingDetailScreen} options={{ title: 'Booking Details' }} />
@@ -367,6 +426,7 @@ const StateAdminRoot = () => (
     <Stack.Screen name="PaymentHistory" component={PaymentHistoryScreen} options={{ title: 'Payment History' }} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
     <Stack.Screen name="Notifications" component={NotificationsScreen} />
+    {commonVerificationScreens()}
     <Stack.Screen name="TransportationBooking" component={TransportationBookingScreen} options={{ title: 'Transportation' }} />
     <Stack.Screen name="TransportationBookings" component={TransportationBookingsScreen} options={{ title: 'Bookings' }} />
     <Stack.Screen name="TransportationBookingDetail" component={TransportationBookingDetailScreen} options={{ title: 'Booking Details' }} />
@@ -390,16 +450,34 @@ const RoleRouter = ({ userType }) => {
       return <AgentRoot />;
     case 'lawyer':
       return <LawyerRoot />;
+    case 'state_lawyer':
+    case 'super_lawyer':
+      return <LawyerRoot />;
     case 'admin':
+    case 'lga_admin':
       return <AdminRoot />;
     case 'super_admin':
       return <SuperAdminRoot />;
     case 'financial_admin':
+    case 'lga_financial_admin':
+      return <FinancialAdminRoot />;
     case 'super_financial_admin':
       return <FinancialAdminRoot />;
     case 'state_admin':
     case 'state_financial_admin':
       return <StateAdminRoot />;
+    case 'lga_support_admin':
+    case 'state_support_admin':
+    case 'super_support_admin':
+    case 'transportation_admin':
+    case 'lga_transportation_admin':
+    case 'state_transportation_admin':
+    case 'super_transportation_admin':
+    case 'fumigation_admin':
+    case 'lga_fumigation_admin':
+    case 'state_fumigation_admin':
+    case 'super_fumigation_admin':
+      return <WebAdminRoot />;
     default:
       return <TenantRoot />;
   }

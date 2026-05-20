@@ -267,6 +267,20 @@ const ProfileScreen = ({ navigation }) => {
           style={styles.marginTop}
         />
         <Button title="Upload Passport" onPress={uploadPassport} loading={uploading} style={styles.marginTop} />
+        <Button
+          title="View Verification Status"
+          variant="outline"
+          onPress={() => navigation.navigate('VerificationStatus')}
+          style={styles.marginTop}
+        />
+        {!status?.phone ? (
+          <Button
+            title="Verify Phone"
+            variant="outline"
+            onPress={() => navigation.navigate('VerifyPhone')}
+            style={styles.marginTop}
+          />
+        ) : null}
       </View>
 
       <View style={styles.card}>

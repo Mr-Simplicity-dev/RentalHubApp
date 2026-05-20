@@ -43,10 +43,12 @@ const makeProtectedFeatures = (userType) => {
       { label: 'Admin Agent Management', path: '/admin/agents' },
       { label: 'Admin Financial Dashboard', path: '/admin/financial-dashboard' },
       { label: 'Admin State Dashboard', path: '/admin/state-dashboard' },
+      { label: 'LGA Transportation Dashboard', path: '/admin/transportation' },
+      { label: 'LGA Fumigation Dashboard', path: '/admin/fumigation-cleaning' },
     ];
   }
 
-  if (userType === 'financial_admin') {
+  if (userType === 'financial_admin' || userType === 'lga_financial_admin') {
     return [
       ...base,
       { label: 'Financial Dashboard', path: '/admin/financial-dashboard' },
@@ -67,6 +69,8 @@ const makeProtectedFeatures = (userType) => {
       ...base,
       { label: 'State Dashboard', path: '/admin/state-dashboard' },
       { label: 'Admin Dashboard', path: '/admin' },
+      { label: 'State Transportation Dashboard', path: '/admin/transportation/state' },
+      { label: 'State Fumigation Dashboard', path: '/admin/fumigation-cleaning/state' },
     ];
   }
 
@@ -75,6 +79,8 @@ const makeProtectedFeatures = (userType) => {
       ...base,
       { label: 'State Dashboard', path: '/admin/state-dashboard' },
       { label: 'Admin Dashboard', path: '/admin' },
+      { label: 'State Transportation Dashboard', path: '/admin/transportation/state' },
+      { label: 'State Fumigation Dashboard', path: '/admin/fumigation-cleaning/state' },
     ];
   }
 
@@ -89,6 +95,64 @@ const makeProtectedFeatures = (userType) => {
       { label: 'Admin Verifications', path: '/admin/verifications' },
       { label: 'Admin Compliance', path: '/admin/compliance' },
       { label: 'Admin Agent Management', path: '/admin/agents' },
+      { label: 'Super Transportation Dashboard', path: '/super-admin/transportation' },
+      { label: 'Super Fumigation Dashboard', path: '/super-admin/fumigation-cleaning' },
+    ];
+  }
+
+  if (userType === 'state_support_admin') {
+    return [
+      ...base,
+      { label: 'State Support Dashboard', path: '/admin/state-support-dashboard' },
+    ];
+  }
+
+  if (userType === 'super_support_admin') {
+    return [
+      ...base,
+      { label: 'Super Support Dashboard', path: '/admin/super-support-dashboard' },
+    ];
+  }
+
+  if (userType === 'transportation_admin' || userType === 'lga_transportation_admin') {
+    return [
+      ...base,
+      { label: 'LGA Transportation Dashboard', path: '/admin/transportation' },
+    ];
+  }
+
+  if (userType === 'state_transportation_admin') {
+    return [
+      ...base,
+      { label: 'State Transportation Dashboard', path: '/admin/transportation/state' },
+    ];
+  }
+
+  if (userType === 'super_transportation_admin') {
+    return [
+      ...base,
+      { label: 'Super Transportation Dashboard', path: '/admin/transportation/super' },
+    ];
+  }
+
+  if (userType === 'fumigation_admin' || userType === 'lga_fumigation_admin') {
+    return [
+      ...base,
+      { label: 'LGA Fumigation Dashboard', path: '/admin/fumigation-cleaning' },
+    ];
+  }
+
+  if (userType === 'state_fumigation_admin') {
+    return [
+      ...base,
+      { label: 'State Fumigation Dashboard', path: '/admin/fumigation-cleaning/state' },
+    ];
+  }
+
+  if (userType === 'super_fumigation_admin') {
+    return [
+      ...base,
+      { label: 'Super Fumigation Dashboard', path: '/admin/fumigation-cleaning/super' },
     ];
   }
 

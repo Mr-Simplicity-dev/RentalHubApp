@@ -19,17 +19,34 @@ import { authService } from '../../services/authService';
 import { propertyService } from '../../services/propertyService';
 import { getErrorMessage, pickList, pickObject } from '../../utils/http';
 
+const LAWYER_ACCESS_FEE = 2000;
+const AGENT_ACCESS_FEE = 5000;
+const TENANT_REGISTRATION_FEE = 3000;
+const LANDLORD_REGISTRATION_FEE = 5000;
+
 const defaultFlags = {
   loaded: false,
   allow_registration: true,
+  registration_allowed: true,
+  registration_global_allowed: true,
+  registration_master_enabled: true,
+  registration_location_restricted: false,
+  registration_access_message: null,
   nin_number: true,
   passport_number: true,
   tenant_registration_payment: false,
   landlord_registration_payment: false,
 };
 
+const referralCodePattern = /^[A-Za-z0-9_-]+$/;
+
 const RegisterScreen = ({ navigation, route }) => {
   const { register, establishSession } = useContext(AuthContext);
+  const initialReferralCode = String(
+    route?.params?.referral ||
+      route?.params?.referral_code ||
+      ''
+  ).trim();
   const registrationReference =
     route?.params?.registration_ref ||
     route?.params?.reference ||
@@ -48,8 +65,8 @@ const RegisterScreen = ({ navigation, route }) => {
   });
   const [registrationFlags, setRegistrationFlags] = useState(defaultFlags);
   const [registrationPricing, setRegistrationPricing] = useState({
-    amount: 2500,
-    base_amount: 2500,
+    amount: 3000,
+    base_amount: 3000,
     location_required: false,
     location_complete: false,
     rule_scope: 'base',
@@ -59,6 +76,9 @@ const RegisterScreen = ({ navigation, route }) => {
     email: '',
     phone: '',
     lawyer_email: '',
+    use_rentalhub_lawyers: false,
+    use_rentalhub_agents: false,
+    referral_code: initialReferralCode,
     add_agent: false,
     agent_full_name: '',
     agent_email: '',
@@ -83,22 +103,33 @@ const RegisterScreen = ({ navigation, route }) => {
   const requiresRegistrationPayment =
     (userType === 'tenant' && registrationFlags.tenant_registration_payment) ||
     (userType === 'landlord' && registrationFlags.landlord_registration_payment);
+  const requiresLawyerPayment = form.use_rentalhub_lawyers === true;
+  const requiresAgentPayment = userType === 'landlord' && form.use_rentalhub_agents === true;
+  const requiresPayment =
+    requiresRegistrationPayment || requiresLawyerPayment || requiresAgentPayment;
+  const baseRegistrationAmount =
+    registrationPricing.amount || (userType === 'tenant' ? TENANT_REGISTRATION_FEE : LANDLORD_REGISTRATION_FEE);
   const displayedRegistrationAmount =
-    registrationPricing.amount || (userType === 'tenant' ? 2500 : 5000);
+    (requiresRegistrationPayment ? baseRegistrationAmount : 0) +
+    (requiresLawyerPayment ? LAWYER_ACCESS_FEE : 0) +
+    (requiresAgentPayment ? AGENT_ACCESS_FEE : 0);
   const isFormComplete = Boolean(
     registrationFlags.loaded &&
-      registrationFlags.allow_registration &&
+      registrationFlags.registration_allowed &&
       form.full_name.trim() &&
       emailPattern.test(form.email.trim()) &&
       form.phone.trim() &&
-      emailPattern.test(form.lawyer_email.trim()) &&
+      (form.use_rentalhub_lawyers || emailPattern.test(form.lawyer_email.trim())) &&
       form.password.length >= 8 &&
       form.password === form.confirm_password &&
       (userType !== 'landlord' ||
         !form.add_agent ||
+        form.use_rentalhub_agents ||
         (form.agent_full_name.trim() &&
           emailPattern.test(form.agent_email.trim()) &&
           form.agent_phone.trim())) &&
+      (!registrationFlags.registration_location_restricted ||
+        (form.state_id && form.lga_name.trim())) &&
       (!requiresRegistrationPayment ||
         (form.state_id && form.lga_name.trim() && registrationPricing.location_complete)) &&
       (isForeigner
@@ -145,7 +176,12 @@ const RegisterScreen = ({ navigation, route }) => {
         const data = pickObject(response, ['data']) || {};
         setRegistrationFlags({
           loaded: true,
-          allow_registration: data.allow_registration !== false,
+          allow_registration: data.registration_allowed !== false,
+          registration_allowed: data.registration_allowed !== false,
+          registration_global_allowed: data.registration_global_allowed !== false,
+          registration_master_enabled: data.registration_master_enabled !== false,
+          registration_location_restricted: data.registration_location_restricted === true,
+          registration_access_message: data.registration_access_message || null,
           nin_number: data.nin_number !== false,
           passport_number: data.passport_number !== false,
           tenant_registration_payment: data.tenant_registration_payment === true,
@@ -153,8 +189,8 @@ const RegisterScreen = ({ navigation, route }) => {
         });
         setRegistrationPricing(
           data.pricing || {
-            amount: userType === 'tenant' ? 2500 : 5000,
-            base_amount: userType === 'tenant' ? 2500 : 5000,
+            amount: userType === 'tenant' ? 3000 : 5000,
+            base_amount: userType === 'tenant' ? 3000 : 5000,
             location_required: false,
             location_complete: false,
             rule_scope: 'base',
@@ -164,8 +200,8 @@ const RegisterScreen = ({ navigation, route }) => {
         if (!active) return;
         setRegistrationFlags((prev) => ({ ...prev, loaded: true }));
         setRegistrationPricing({
-          amount: userType === 'tenant' ? 2500 : 5000,
-          base_amount: userType === 'tenant' ? 2500 : 5000,
+          amount: userType === 'tenant' ? 3000 : 5000,
+          base_amount: userType === 'tenant' ? 3000 : 5000,
           location_required: false,
           location_complete: false,
           rule_scope: 'base',
@@ -205,16 +241,22 @@ const RegisterScreen = ({ navigation, route }) => {
       full_name: form.full_name.trim(),
       email: form.email.trim().toLowerCase(),
       phone: form.phone.trim(),
-      lawyer_email: form.lawyer_email.trim().toLowerCase(),
+      lawyer_email: form.use_rentalhub_lawyers ? '' : form.lawyer_email.trim().toLowerCase(),
+      use_rentalhub_lawyers: form.use_rentalhub_lawyers === true,
+      use_rentalhub_agents: userType === 'landlord' && form.use_rentalhub_agents === true,
       add_agent: userType === 'landlord' ? form.add_agent === true : false,
       agent_full_name:
-        userType === 'landlord' && form.add_agent ? form.agent_full_name.trim() : '',
+        userType === 'landlord' && form.add_agent && !form.use_rentalhub_agents
+          ? form.agent_full_name.trim()
+          : '',
       agent_email:
-        userType === 'landlord' && form.add_agent
+        userType === 'landlord' && form.add_agent && !form.use_rentalhub_agents
           ? form.agent_email.trim().toLowerCase()
           : '',
       agent_phone:
-        userType === 'landlord' && form.add_agent ? form.agent_phone.trim() : '',
+        userType === 'landlord' && form.add_agent && !form.use_rentalhub_agents
+          ? form.agent_phone.trim()
+          : '',
       password: form.password,
       user_type: userType,
       is_foreigner: isForeigner,
@@ -231,20 +273,23 @@ const RegisterScreen = ({ navigation, route }) => {
       payload.nationality = 'Nigeria';
     }
 
+    const referralCode = String(form.referral_code || '').trim();
+    if (referralCode) {
+      payload.referral_code = referralCode;
+    }
+
     return payload;
   };
 
   const validateForm = () => {
-    const required = [
-      form.full_name,
-      form.email,
-      form.phone,
-      form.lawyer_email,
-      form.password,
-    ];
+    const required = [form.full_name, form.email, form.phone, form.password];
 
     if (required.some((entry) => !entry?.trim())) {
-      return 'Full name, email, phone, lawyer email, and password are required.';
+      return 'Full name, email, phone, and password are required.';
+    }
+
+    if (!form.use_rentalhub_lawyers && !form.lawyer_email?.trim()) {
+      return 'Enter a lawyer email or choose RentalHub NG lawyers.';
     }
 
     if (!emailPattern.test(form.email || '')) {
@@ -259,11 +304,11 @@ const RegisterScreen = ({ navigation, route }) => {
       return 'Password must be at least 8 characters.';
     }
 
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.lawyer_email || '')) {
+    if (!form.use_rentalhub_lawyers && !emailPattern.test(form.lawyer_email || '')) {
       return 'Enter a valid lawyer email.';
     }
 
-    if (userType === 'landlord' && form.add_agent) {
+    if (userType === 'landlord' && form.add_agent && !form.use_rentalhub_agents) {
       if (!form.agent_full_name.trim()) {
         return 'Agent full name is required when adding an agent.';
       }
@@ -301,15 +346,43 @@ const RegisterScreen = ({ navigation, route }) => {
       return 'Select your local government area to calculate the registration fee.';
     }
 
+    const referralCode = String(form.referral_code || '').trim();
+    if (referralCode && !referralCodePattern.test(referralCode)) {
+      return 'Referral code can only contain letters, numbers, - or _';
+    }
+
     return null;
   };
 
   const handleRegister = async () => {
-    if (!registrationFlags.allow_registration) {
+    if (!registrationFlags.registration_master_enabled) {
       Toast.show({
         type: 'error',
         text1: 'Registration disabled',
         text2: 'Registration is currently disabled.',
+      });
+      return;
+    }
+
+    if (!registrationFlags.registration_global_allowed) {
+      Toast.show({
+        type: 'error',
+        text1: 'Registration disabled',
+        text2:
+          userType === 'landlord'
+            ? 'Landlord registration is currently disabled.'
+            : 'Tenant registration is currently disabled.',
+      });
+      return;
+    }
+
+    if (!registrationFlags.registration_allowed) {
+      Toast.show({
+        type: 'error',
+        text1: 'Registration unavailable',
+        text2:
+          registrationFlags.registration_access_message ||
+          'Registration is not available for the selected location.',
       });
       return;
     }
@@ -326,7 +399,7 @@ const RegisterScreen = ({ navigation, route }) => {
 
     const payload = buildRegistrationData();
 
-    if (requiresRegistrationPayment) {
+    if (requiresPayment) {
       setPaymentLoading(true);
       try {
         const response = await authService.initializeRegistrationPayment(payload);
@@ -442,12 +515,30 @@ const RegisterScreen = ({ navigation, route }) => {
           </View>
         ) : null}
 
-        {registrationFlags.loaded && !registrationFlags.allow_registration ? (
+        {registrationFlags.loaded && !registrationFlags.registration_master_enabled ? (
           <View style={styles.warningCard}>
             <Text style={styles.warningTitle}>Registration is currently disabled</Text>
             <Text style={styles.warningText}>
               Please try again later or contact support if this should already be open.
             </Text>
+          </View>
+        ) : null}
+
+        {registrationFlags.loaded &&
+        registrationFlags.registration_master_enabled &&
+        !registrationFlags.registration_global_allowed ? (
+          <View style={styles.warningCard}>
+            <Text style={styles.warningTitle}>
+              {userType === 'landlord' ? 'Landlord registration disabled' : 'Tenant registration disabled'}
+            </Text>
+          </View>
+        ) : null}
+
+        {registrationFlags.registration_location_restricted &&
+        !registrationFlags.registration_allowed &&
+        registrationFlags.registration_access_message ? (
+          <View style={styles.noticeCard}>
+            <Text style={styles.noticeText}>{registrationFlags.registration_access_message}</Text>
           </View>
         ) : null}
 
@@ -481,13 +572,13 @@ const RegisterScreen = ({ navigation, route }) => {
 
         <View style={styles.priceCard}>
           <Text style={styles.priceLabel}>
-            {requiresRegistrationPayment ? 'Registration fee' : 'Current base fee'}
+            {requiresPayment ? 'Total due at signup' : 'Current base fee'}
           </Text>
-          <Text style={styles.priceAmount}>N{Number(displayedRegistrationAmount || 0).toLocaleString()}</Text>
+          <Text style={styles.priceAmount}>₦{Number(displayedRegistrationAmount || 0).toLocaleString()}</Text>
           <Text style={styles.priceMeta}>
-            {requiresRegistrationPayment
-              ? `Payment is required before account creation for ${userType}s.`
-              : `Payment is currently disabled for ${userType} registration.`}
+            {requiresPayment
+              ? 'Includes registration and any selected RentalHub NG lawyer or agent access fees.'
+              : `No payment required for ${userType} registration right now.`}
           </Text>
           <Text style={styles.priceMeta}>
             Pricing scope: {String(registrationPricing.rule_scope || 'base').replace(/_/g, ' ')}
@@ -523,15 +614,68 @@ const RegisterScreen = ({ navigation, route }) => {
           keyboardType="phone-pad"
           icon="call-outline"
         />
+        <TouchableOpacity
+          style={styles.agentToggle}
+          onPress={() =>
+            setForm((prev) => ({
+              ...prev,
+              use_rentalhub_lawyers: !prev.use_rentalhub_lawyers,
+              lawyer_email: !prev.use_rentalhub_lawyers ? '' : prev.lawyer_email,
+            }))
+          }
+        >
+          <Text style={styles.agentToggleLabel}>
+            {form.use_rentalhub_lawyers
+              ? 'Using RentalHub NG lawyers (₦2,000)'
+              : 'Use RentalHub NG lawyers instead (₦2,000)'}
+          </Text>
+        </TouchableOpacity>
+
+        {!form.use_rentalhub_lawyers ? (
+          <Input
+            label="Lawyer Email"
+            value={form.lawyer_email}
+            onChangeText={(value) => onChange('lawyer_email', value)}
+            placeholder="lawyer@email.com"
+            keyboardType="email-address"
+            autoCapitalize="none"
+            icon="briefcase-outline"
+          />
+        ) : null}
+
+        {userType === 'landlord' ? (
+          <TouchableOpacity
+            style={styles.agentToggle}
+            onPress={() =>
+              setForm((prev) => ({
+                ...prev,
+                use_rentalhub_agents: !prev.use_rentalhub_agents,
+                add_agent: prev.use_rentalhub_agents ? prev.add_agent : false,
+              }))
+            }
+          >
+            <Text style={styles.agentToggleLabel}>
+              {form.use_rentalhub_agents
+                ? 'Using RentalHub NG agents (₦5,000)'
+                : 'Use RentalHub NG agents instead (₦5,000)'}
+            </Text>
+          </TouchableOpacity>
+        ) : null}
+
         <Input
-          label="Lawyer Email"
-          value={form.lawyer_email}
-          onChangeText={(value) => onChange('lawyer_email', value)}
-          placeholder="lawyer@email.com"
-          keyboardType="email-address"
+          label="Referral Code (optional)"
+          value={form.referral_code}
+          onChangeText={(value) => onChange('referral_code', value)}
+          placeholder="Enter invite code if you have one"
           autoCapitalize="none"
-          icon="briefcase-outline"
+          icon="gift-outline"
         />
+
+        {initialReferralCode && form.referral_code ? (
+          <Text style={styles.helperBlock}>
+            Referral code applied from your invite link.
+          </Text>
+        ) : null}
 
         {userType === 'landlord' ? (
           <View style={styles.agentBlock}>
@@ -646,7 +790,7 @@ const RegisterScreen = ({ navigation, route }) => {
         />
 
         <Button
-          title={requiresRegistrationPayment ? 'Proceed to Payment' : 'Create Account'}
+          title={requiresPayment ? 'Proceed to Payment' : 'Create Account'}
           onPress={handleRegister}
           loading={loading || paymentLoading}
           style={styles.cta}

@@ -18,6 +18,13 @@ export const dashboardService = {
     return response.data;
   },
 
+  getTenantPaidPropertyLocations: async (limit = 6) => {
+    const response = await api.get('/dashboard/tenant/paid-property-locations', {
+      params: { limit },
+    });
+    return response.data;
+  },
+
   getLandlordRecentActivities: async (limit = 10) => {
     const response = await api.get('/dashboard/landlord/recent-activities', {
       params: { limit },

@@ -5,6 +5,8 @@ import Toast from 'react-native-toast-message';
 import { stateAdminService } from '../../services/stateAdminService';
 import { AuthContext } from '../../context/AuthContext';
 import { getErrorMessage, pickObject } from '../../utils/http';
+import PropertyRequestWorkflowSection from '../../components/admin/PropertyRequestWorkflowSection';
+import TenancyWorkflowSection from '../../components/admin/TenancyWorkflowSection';
 
 const formatCurrency = (value) => `NGN ${Number(value || 0).toLocaleString()}`;
 
@@ -82,6 +84,9 @@ const StateAdminDashboardScreen = ({ navigation }) => {
           </TouchableOpacity>
         ))}
       </View>
+
+      <PropertyRequestWorkflowSection mode="state" title="State Tenant Property Requests" />
+      <TenancyWorkflowSection title="State Tenancy Grace and Refund Enablement" />
     </ScrollView>
   );
 };

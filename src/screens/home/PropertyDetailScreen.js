@@ -12,6 +12,7 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
 import Button from '../../components/common/Button';
+import DamageReportCapture from '../../components/properties/DamageReportCapture';
 import { propertyService } from '../../services/propertyService';
 import { applicationService } from '../../services/applicationService';
 import { paymentService } from '../../services/paymentService';
@@ -30,6 +31,11 @@ const PropertyDetailScreen = ({ route, navigation }) => {
   const [applying, setApplying] = useState(false);
   const [unlocking, setUnlocking] = useState(false);
   const [latestDamageReport, setLatestDamageReport] = useState(null);
+  const [showDamageCapture, setShowDamageCapture] = useState(false);
+
+  const canManageDamage = Boolean(
+    isAuthenticated && propertyId && ['landlord', 'agent'].includes(user?.user_type)
+  );
 
   const canViewFull = Boolean(
     isAuthenticated &&
@@ -229,6 +235,15 @@ const PropertyDetailScreen = ({ route, navigation }) => {
           </View>
         )}
 
+        {canManageDamage ? (
+          <Button
+            title="Report Property Damage"
+            onPress={() => setShowDamageCapture(true)}
+            variant="outline"
+            style={styles.actionBtn}
+          />
+        ) : null}
+
         <View style={styles.actions}>
           <Button
             title="Save Property"
@@ -248,6 +263,12 @@ const PropertyDetailScreen = ({ route, navigation }) => {
           )}
         </View>
       </View>
+      <DamageReportCapture
+        visible={showDamageCapture}
+        propertyId={propertyId}
+        onClose={() => setShowDamageCapture(false)}
+        onSaved={loadProperty}
+      />
     </ScrollView>
   );
 };

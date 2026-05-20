@@ -1,17 +1,27 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
+  Linking,
   ScrollView,
+  Share,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
 import { AuthContext } from '../../context/AuthContext';
+import WalletFundModal from '../../components/dashboard/WalletFundModal';
+import WalletWithdrawModal from '../../components/dashboard/WalletWithdrawModal';
 import { dashboardService } from '../../services/dashboardService';
+import { paymentService } from '../../services/paymentService';
+import { referralService } from '../../services/referralService';
+import { rentSavingsService } from '../../services/rentSavingsService';
+import { transportationService } from '../../services/transportationService';
 import { getErrorMessage, getReviewStatus, pickList, pickObject } from '../../utils/http';
+import TenancyGracePanel from '../../components/dashboard/TenancyGracePanel';
 
 const StatCard = ({ title, value, icon, onPress }) => (
   <TouchableOpacity style={styles.statCard} onPress={onPress}>
@@ -39,6 +49,27 @@ const StatusBanner = ({ icon, title, description, colors, onPress, actionLabel }
     </View>
   </TouchableOpacity>
 );
+
+const getPropertyMapAddress = (property = {}) =>
+  property.full_address ||
+  [property.area, property.city, property.state_name].filter(Boolean).join(', ');
+
+const buildGoogleMapsUrl = (property = {}) => {
+  const latitude = Number(property.latitude);
+  const longitude = Number(property.longitude);
+
+  if (Number.isFinite(latitude) && Number.isFinite(longitude)) {
+    return `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
+  }
+
+  const address = getPropertyMapAddress(property);
+  if (!address) return '';
+
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+};
+
+const canOpenPropertyMap = (property = {}) =>
+  property.rent_paid === true || property.payment_type === 'rent_payment';
 
 const getLawyerInviteSummary = (stats = {}) => {
   const rawStatus = stats.lawyer_invite_status || 'not_sent';
@@ -162,23 +193,122 @@ const DashboardScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({});
   const [activities, setActivities] = useState([]);
+  const [paidPropertyLocations, setPaidPropertyLocations] = useState([]);
+  const [transportStats, setTransportStats] = useState(null);
+  const [rentSavingsStats, setRentSavingsStats] = useState(null);
+  const [referralInfo, setReferralInfo] = useState(null);
+  const [referralLoading, setReferralLoading] = useState(false);
+  const [walletBalance, setWalletBalance] = useState(null);
+  const [landlordWallet, setLandlordWallet] = useState(null);
+  const [landlordPropertyFee, setLandlordPropertyFee] = useState(null);
+  const [withdrawHistory, setWithdrawHistory] = useState([]);
+  const [showFundModal, setShowFundModal] = useState(false);
+  const [showWithdrawModal, setShowWithdrawModal] = useState(false);
+  const [fundLoading, setFundLoading] = useState(false);
+  const [withdrawLoading, setWithdrawLoading] = useState(false);
+  const [withdrawForm, setWithdrawForm] = useState({
+    amount: '',
+    bank_name: '',
+    account_number: '',
+    account_name: '',
+  });
 
   const isTenant = user?.user_type === 'tenant';
+  const isLandlord = user?.user_type === 'landlord';
   const reviewStatus = getReviewStatus(user);
   const lawyerInviteSummary = useMemo(() => getLawyerInviteSummary(stats), [stats]);
+  const propertyLocationCards = paidPropertyLocations.length
+    ? paidPropertyLocations
+    : [{
+        property_id: 'pending-rent-location-card',
+        title: 'Property location',
+        payment_type: 'rent_required',
+        rent_paid: false,
+      }];
+  const hasActivePropertyLocation = propertyLocationCards.some(canOpenPropertyMap);
+
+  const loadWalletData = async () => {
+    if (!isTenant && !isLandlord) return;
+
+    try {
+      if (isTenant) {
+        const balanceRes = await paymentService.getWalletBalance();
+        if (balanceRes?.success) {
+          setWalletBalance(balanceRes.data?.balance ?? null);
+        }
+      } else {
+        const balanceRes = await paymentService.getLandlordWalletBalance();
+        if (balanceRes?.success) {
+          setLandlordWallet(balanceRes.data || null);
+          if (balanceRes.data?.property_fee) {
+            setLandlordPropertyFee(balanceRes.data.property_fee);
+          }
+        }
+        const feeRes = await paymentService.getLandlordPropertyFeeStatus();
+        if (feeRes?.success) {
+          setLandlordPropertyFee(feeRes.data || null);
+        }
+      }
+
+      const historyRes = await paymentService.getWalletWithdrawals();
+      if (historyRes?.success) {
+        setWithdrawHistory(pickList(historyRes, ['data']));
+      }
+    } catch (error) {
+      // Non-blocking wallet refresh
+    }
+  };
 
   const loadDashboard = async () => {
     setLoading(true);
     try {
-      const [statsRes, activitiesRes] = await Promise.all([
+      const dashboardRequests = [
         isTenant ? dashboardService.getTenantStats() : dashboardService.getLandlordStats(),
         isTenant
           ? dashboardService.getTenantRecentActivities()
           : dashboardService.getLandlordRecentActivities(),
-      ]);
+      ];
+
+      if (isTenant) {
+        dashboardRequests.push(dashboardService.getTenantPaidPropertyLocations());
+      }
+
+      const [statsRes, activitiesRes, paidLocationsRes] = await Promise.all(dashboardRequests);
 
       setStats(pickObject(statsRes, ['data']) || {});
       setActivities(pickList(activitiesRes, ['data']));
+      setPaidPropertyLocations(isTenant ? pickList(paidLocationsRes, ['data']) : []);
+
+      if (isTenant || isLandlord) {
+        setReferralLoading(true);
+        try {
+          const referralRes = await referralService.getMyReferral();
+          if (referralRes?.success) {
+            setReferralInfo(referralRes.data || null);
+          } else {
+            setReferralInfo(null);
+          }
+        } catch (error) {
+          setReferralInfo(null);
+        } finally {
+          setReferralLoading(false);
+        }
+      }
+
+      if (isTenant) {
+        const [transportRes, rentSavingsRes] = await Promise.all([
+          transportationService.getTenantStats(),
+          rentSavingsService.getSummary(),
+        ]);
+        if (transportRes?.success) {
+          setTransportStats(transportRes.data || null);
+        }
+        if (rentSavingsRes?.success) {
+          setRentSavingsStats(rentSavingsRes.data || null);
+        }
+      }
+
+      await loadWalletData();
     } catch (error) {
       Toast.show({
         type: 'error',
@@ -193,6 +323,192 @@ const DashboardScreen = ({ navigation }) => {
   useEffect(() => {
     loadDashboard();
   }, [user?.user_type]);
+
+  const getRentSavingsValue = () => {
+    if (!rentSavingsStats) return '0 plans';
+
+    const activePlans = Number(rentSavingsStats.active_plans || 0);
+    const totalSaved = Number(rentSavingsStats.total_saved_across_plans || 0);
+
+    if (totalSaved > 0) {
+      return `₦${totalSaved.toLocaleString()}`;
+    }
+
+    return `${activePlans} ${activePlans === 1 ? 'plan' : 'plans'}`;
+  };
+
+  const openFundModal = async () => {
+    setShowFundModal(true);
+    await loadWalletData();
+  };
+
+  const openWithdrawModal = async () => {
+    setWithdrawForm({
+      amount: '',
+      bank_name: '',
+      account_number: '',
+      account_name: '',
+    });
+    setShowWithdrawModal(true);
+    await loadWalletData();
+  };
+
+  const handleFundWallet = async (amountInput) => {
+    if (!amountInput || Number(amountInput) < 100) {
+      Toast.show({
+        type: 'error',
+        text1: 'Invalid amount',
+        text2: 'Minimum funding amount is ₦100',
+      });
+      return;
+    }
+
+    setFundLoading(true);
+    try {
+      const response = await paymentService.fundWallet(Number(amountInput));
+      const paymentUrl = response?.data?.authorization_url;
+
+      if (response?.success && paymentUrl) {
+        await Linking.openURL(paymentUrl);
+        Toast.show({
+          type: 'info',
+          text1: 'Complete payment',
+          text2: 'Finish Paystack in your browser, then return to refresh your wallet.',
+        });
+        setShowFundModal(false);
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: 'Payment failed',
+          text2: response?.message || 'Could not initialize wallet funding',
+        });
+      }
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Payment failed',
+        text2: getErrorMessage(error, 'Could not initialize wallet funding'),
+      });
+    } finally {
+      setFundLoading(false);
+    }
+  };
+
+  const handleWithdrawSubmit = async (consentChecked) => {
+    if (!consentChecked) {
+      Toast.show({
+        type: 'error',
+        text1: 'Confirmation required',
+        text2: 'Confirm your bank details before submitting.',
+      });
+      return;
+    }
+
+    if (
+      !withdrawForm.amount ||
+      !withdrawForm.bank_name ||
+      !withdrawForm.account_number ||
+      !withdrawForm.account_name
+    ) {
+      Toast.show({
+        type: 'error',
+        text1: 'Incomplete form',
+        text2: 'All withdrawal fields are required.',
+      });
+      return;
+    }
+
+    setWithdrawLoading(true);
+    try {
+      const response = await paymentService.withdrawFromWallet(withdrawForm);
+      if (response?.success) {
+        Toast.show({
+          type: 'success',
+          text1: 'Withdrawal submitted',
+          text2: 'Your withdrawal request was submitted successfully.',
+        });
+        setShowWithdrawModal(false);
+        await loadDashboard();
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: 'Withdrawal failed',
+          text2: response?.message || 'Could not submit withdrawal',
+        });
+      }
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Withdrawal failed',
+        text2: getErrorMessage(error, 'Could not submit withdrawal'),
+      });
+    } finally {
+      setWithdrawLoading(false);
+    }
+  };
+
+  const shareReferralInvite = async () => {
+    if (!referralInfo?.invite_url) return;
+
+    const shareText = `Join RentalHub NG with my invite link and I earn ₦${Number(
+      referralInfo.reward_amount || 1000
+    ).toLocaleString()} subscription credit when your registration is complete.`;
+
+    try {
+      await Share.share({
+        title: 'RentalHub NG invite',
+        message: `${shareText}\n${referralInfo.invite_url}`,
+        url: referralInfo.invite_url,
+      });
+    } catch (error) {
+      if (error?.message !== 'User did not share') {
+        Toast.show({
+          type: 'error',
+          text1: 'Share failed',
+          text2: 'Could not open share sheet',
+        });
+      }
+    }
+  };
+
+  const openWhatsappReferralShare = () => {
+    if (!referralInfo?.invite_url) return;
+
+    const shareText = `Join RentalHub NG with my invite link: ${referralInfo.invite_url}`;
+    Linking.openURL(`https://wa.me/?text=${encodeURIComponent(shareText)}`);
+  };
+
+  const openPropertyInGoogleMaps = async (property) => {
+    if (!canOpenPropertyMap(property)) {
+      Toast.show({
+        type: 'info',
+        text1: 'Location locked',
+        text2: 'This card becomes active after rent payment is confirmed.',
+      });
+      return;
+    }
+
+    const mapsUrl = buildGoogleMapsUrl(property);
+
+    if (!mapsUrl) {
+      Toast.show({
+        type: 'info',
+        text1: 'Location unavailable',
+        text2: 'No map location is available for this property yet.',
+      });
+      return;
+    }
+
+    try {
+      await Linking.openURL(mapsUrl);
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Could not open Google Maps',
+        text2: 'Please try again from your phone.',
+      });
+    }
+  };
 
   const verificationBanner =
     reviewStatus === 'pending'
@@ -255,7 +571,7 @@ const DashboardScreen = ({ navigation }) => {
       {verificationBanner ? (
         <StatusBanner
           {...verificationBanner}
-          onPress={() => navigation.navigate('Profile')}
+          onPress={() => navigation.navigate('VerificationStatus')}
         />
       ) : null}
 
@@ -279,6 +595,72 @@ const DashboardScreen = ({ navigation }) => {
           }}
           onPress={() => navigation.navigate('PropertyList')}
         />
+      ) : null}
+
+      {isTenant ? (
+        <View
+          style={[
+            styles.locationSection,
+            !hasActivePropertyLocation && styles.locationSectionLocked,
+          ]}
+        >
+          <View style={styles.locationHeader}>
+            <Icon
+              name={hasActivePropertyLocation ? 'map-outline' : 'lock-closed-outline'}
+              size={22}
+              color={hasActivePropertyLocation ? '#047857' : '#64748b'}
+            />
+            <View style={{ flex: 1 }}>
+              <Text style={styles.locationTitle}>Property Location</Text>
+              <Text style={styles.locationHint}>
+                {hasActivePropertyLocation
+                  ? 'Tap any active property card to open its location in Google Maps.'
+                  : 'This card becomes clickable after your rent payment is confirmed.'}
+              </Text>
+            </View>
+          </View>
+
+          {propertyLocationCards.map((property) => {
+            const isActive = canOpenPropertyMap(property);
+
+            return (
+              <TouchableOpacity
+                key={String(property.property_id)}
+                style={[styles.locationCard, !isActive && styles.locationCardLocked]}
+                activeOpacity={0.85}
+                disabled={!isActive}
+                onPress={() => openPropertyInGoogleMaps(property)}
+              >
+                <View style={{ flex: 1 }}>
+                  <Text style={[styles.locationCardTitle, !isActive && styles.locationCardTitleLocked]}>
+                    {property.title || 'Property location'}
+                  </Text>
+                  <Text style={styles.locationAddress}>
+                    {getPropertyMapAddress(property) ||
+                      (isActive ? 'Location available' : 'Pay rent to activate Google Maps location')}
+                  </Text>
+                  <View style={styles.locationBadges}>
+                    <Text style={[styles.locationBadge, !isActive && styles.locationBadgeLocked]}>
+                      {isActive ? 'Rent paid' : 'Rent not paid'}
+                    </Text>
+                    {isActive ? (
+                      <Text style={styles.locationBadgeAlt}>
+                        {property.latitude && property.longitude ? 'Map pin ready' : 'Address search'}
+                      </Text>
+                    ) : (
+                      <Text style={styles.locationBadgeWarning}>Locked until confirmed</Text>
+                    )}
+                  </View>
+                </View>
+                <Icon
+                  name={isActive ? 'open-outline' : 'lock-closed-outline'}
+                  size={22}
+                  color={isActive ? '#047857' : '#94a3b8'}
+                />
+              </TouchableOpacity>
+            );
+          })}
+        </View>
       ) : null}
 
       <View style={styles.grid}>
@@ -308,6 +690,28 @@ const DashboardScreen = ({ navigation }) => {
               icon="card-outline"
               onPress={() => navigation.navigate('Subscribe')}
             />
+            <StatCard
+              title="Transport Bookings"
+              value={transportStats?.total_bookings || 0}
+              icon="bus-outline"
+              onPress={() => navigation.navigate('TransportationBookings')}
+            />
+            <StatCard
+              title="Rent Savings"
+              value={getRentSavingsValue()}
+              icon="cash-outline"
+              onPress={() => navigation.navigate('RentSavingsDashboard')}
+            />
+            <StatCard
+              title="Wallet Balance"
+              value={
+                walletBalance !== null && walletBalance !== undefined
+                  ? `₦${Number(walletBalance).toLocaleString()}`
+                  : '—'
+              }
+              icon="wallet-outline"
+              onPress={openWithdrawModal}
+            />
           </>
         ) : (
           <>
@@ -335,9 +739,100 @@ const DashboardScreen = ({ navigation }) => {
               icon="mail-unread-outline"
               onPress={() => navigation.navigate('Messages')}
             />
+            <StatCard
+              title="Available to Withdraw"
+              value={
+                landlordWallet
+                  ? `₦${Number(landlordWallet.available_to_withdraw || 0).toLocaleString()}`
+                  : '—'
+              }
+              icon="wallet-outline"
+              onPress={openWithdrawModal}
+            />
+            <StatCard
+              title="Subscription"
+              value={getTenantSubscriptionValue(stats)}
+              icon="card-outline"
+              onPress={() => navigation.navigate('Subscribe')}
+            />
           </>
         )}
       </View>
+
+      {isLandlord && landlordPropertyFee?.reserve_required &&
+      Number(landlordPropertyFee?.amount_due || 0) > 0 ? (
+        <StatusBanner
+          icon="warning-outline"
+          title="Property charges reserve active"
+          description={`${landlordPropertyFee.fee_label || 'Landlord Property Charges'} reserve of ₦${Number(
+            landlordPropertyFee.amount_due || 0
+          ).toLocaleString()} is due on ${new Date(landlordPropertyFee.due_at).toLocaleDateString()}.`}
+          colors={{
+            background: '#fffbeb',
+            border: '#fde68a',
+            icon: '#d97706',
+            title: '#92400e',
+            text: '#b45309',
+          }}
+        />
+      ) : null}
+
+      {referralInfo?.enabled && referralInfo.invite_url ? (
+        <View style={styles.referralCard}>
+          <View style={styles.referralHeader}>
+            <Icon name="gift-outline" size={24} color="#059669" />
+            <View style={{ flex: 1 }}>
+              <Text style={styles.referralEyebrow}>Invite & Earn</Text>
+              <Text style={styles.referralTitle}>
+                Earn ₦{Number(referralInfo.reward_amount || 1000).toLocaleString()} per successful invite
+              </Text>
+              {referralInfo.referral_code ? (
+                <Text style={styles.referralCode}>{referralInfo.referral_code}</Text>
+              ) : null}
+            </View>
+          </View>
+
+          <View style={styles.referralStatsRow}>
+            <View style={styles.referralStat}>
+              <Text style={styles.referralStatLabel}>Referrals</Text>
+              <Text style={styles.referralStatValue}>
+                {Number(referralInfo.total_referrals || 0).toLocaleString()}
+              </Text>
+            </View>
+            <View style={styles.referralStat}>
+              <Text style={styles.referralStatLabel}>Earned</Text>
+              <Text style={styles.referralStatValue}>
+                ₦{Number(referralInfo.total_earned || 0).toLocaleString()}
+              </Text>
+            </View>
+            <View style={styles.referralStat}>
+              <Text style={styles.referralStatLabel}>Credit</Text>
+              <Text style={styles.referralStatValue}>
+                ₦{Number(referralInfo.subscription_credit_balance || 0).toLocaleString()}
+              </Text>
+            </View>
+          </View>
+
+          <Text style={styles.referralLinkLabel}>Invite link</Text>
+          <TextInput
+            style={styles.referralLinkInput}
+            value={referralInfo.invite_url}
+            editable={false}
+            selectTextOnFocus
+          />
+
+          <View style={styles.referralActions}>
+            <TouchableOpacity style={styles.referralBtnPrimary} onPress={shareReferralInvite}>
+              <Text style={styles.referralBtnPrimaryText}>Share</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.referralBtnSecondary} onPress={openWhatsappReferralShare}>
+              <Text style={styles.referralBtnSecondaryText}>WhatsApp</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      ) : referralLoading ? (
+        <Text style={styles.referralLoading}>Loading invite link...</Text>
+      ) : null}
 
       <View style={styles.quickActions}>
         <TouchableOpacity style={styles.quickBtn} onPress={() => navigation.navigate('PropertyList')}>
@@ -366,7 +861,50 @@ const DashboardScreen = ({ navigation }) => {
           <Text style={styles.quickTitle}>Payment History</Text>
           <Text style={styles.quickText}>Review your payments and transaction references</Text>
         </TouchableOpacity>
+
+        {isTenant ? (
+          <>
+            <TouchableOpacity
+              style={styles.quickBtn}
+              onPress={() => navigation.navigate('RentSavingsDashboard')}
+            >
+              <Text style={styles.quickTitle}>Rent Savings</Text>
+              <Text style={styles.quickText}>Create goals and track rent savings plans</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.quickBtn}
+              onPress={() => navigation.navigate('TransportationBooking')}
+            >
+              <Text style={styles.quickTitle}>Book Transportation</Text>
+              <Text style={styles.quickText}>Schedule moving and logistics services</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.quickBtn}
+              onPress={() => navigation.navigate('FumigationCleaningBooking')}
+            >
+              <Text style={styles.quickTitle}>Fumigation & Cleaning</Text>
+              <Text style={styles.quickText}>Book cleaning or fumigation for your property</Text>
+            </TouchableOpacity>
+          </>
+        ) : null}
+
+        {(isTenant || isLandlord) ? (
+          <>
+            <TouchableOpacity style={styles.quickBtn} onPress={openFundModal}>
+              <Text style={styles.quickTitle}>Fund Wallet</Text>
+              <Text style={styles.quickText}>Top up your wallet via Paystack</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.quickBtn} onPress={openWithdrawModal}>
+              <Text style={styles.quickTitle}>Withdraw Funds</Text>
+              <Text style={styles.quickText}>Transfer available balance to your bank account</Text>
+            </TouchableOpacity>
+          </>
+        ) : null}
       </View>
+
+      {(isTenant || isLandlord) ? (
+        <TenancyGracePanel userType={user?.user_type} />
+      ) : null}
 
       <Text style={styles.sectionTitle}>Recent Activities</Text>
       {activities.length === 0 ? (
@@ -384,6 +922,38 @@ const DashboardScreen = ({ navigation }) => {
           </View>
         ))
       )}
+
+      <WalletFundModal
+        visible={showFundModal}
+        onClose={() => setShowFundModal(false)}
+        onSubmit={handleFundWallet}
+        loading={fundLoading}
+        userType={user?.user_type}
+        walletBalance={walletBalance}
+        landlordWallet={landlordWallet}
+        onSwitchToWithdraw={() => {
+          setShowFundModal(false);
+          openWithdrawModal();
+        }}
+      />
+
+      <WalletWithdrawModal
+        visible={showWithdrawModal}
+        onClose={() => setShowWithdrawModal(false)}
+        onSubmit={handleWithdrawSubmit}
+        loading={withdrawLoading}
+        userType={user?.user_type}
+        walletBalance={walletBalance}
+        landlordWallet={landlordWallet}
+        propertyFeeReserve={landlordPropertyFee}
+        withdrawForm={withdrawForm}
+        setWithdrawForm={setWithdrawForm}
+        withdrawHistory={withdrawHistory}
+        onSwitchToFund={() => {
+          setShowWithdrawModal(false);
+          openFundModal();
+        }}
+      />
     </ScrollView>
   );
 };
@@ -406,6 +976,69 @@ const styles = StyleSheet.create({
   bannerTitle: { fontWeight: '800', fontSize: 15 },
   bannerText: { marginTop: 4, lineHeight: 18 },
   bannerAction: { marginTop: 6, fontWeight: '700' },
+  locationSection: {
+    backgroundColor: '#ffffff',
+    borderWidth: 1,
+    borderColor: '#bbf7d0',
+    borderRadius: 14,
+    padding: 14,
+    marginBottom: 12,
+  },
+  locationSectionLocked: { borderColor: '#e2e8f0' },
+  locationHeader: { flexDirection: 'row', gap: 10, alignItems: 'flex-start', marginBottom: 10 },
+  locationTitle: { color: '#0f172a', fontSize: 16, fontWeight: '800' },
+  locationHint: { color: '#475569', marginTop: 3, lineHeight: 18 },
+  locationCard: {
+    borderWidth: 1,
+    borderColor: '#d1fae5',
+    backgroundColor: '#f0fdf4',
+    borderRadius: 12,
+    padding: 12,
+    marginTop: 8,
+    flexDirection: 'row',
+    gap: 10,
+    alignItems: 'flex-start',
+  },
+  locationCardLocked: {
+    borderColor: '#e2e8f0',
+    backgroundColor: '#f1f5f9',
+    opacity: 0.82,
+  },
+  locationCardTitle: { color: '#0f172a', fontWeight: '800' },
+  locationCardTitleLocked: { color: '#64748b' },
+  locationAddress: { color: '#475569', marginTop: 4, lineHeight: 18 },
+  locationBadges: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 8 },
+  locationBadge: {
+    overflow: 'hidden',
+    borderRadius: 999,
+    backgroundColor: '#dcfce7',
+    color: '#15803d',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    fontSize: 11,
+    fontWeight: '800',
+  },
+  locationBadgeLocked: { backgroundColor: '#e2e8f0', color: '#475569' },
+  locationBadgeAlt: {
+    overflow: 'hidden',
+    borderRadius: 999,
+    backgroundColor: '#dbeafe',
+    color: '#1d4ed8',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    fontSize: 11,
+    fontWeight: '800',
+  },
+  locationBadgeWarning: {
+    overflow: 'hidden',
+    borderRadius: 999,
+    backgroundColor: '#fef3c7',
+    color: '#b45309',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    fontSize: 11,
+    fontWeight: '800',
+  },
   grid: { gap: 10 },
   statCard: {
     backgroundColor: '#ffffff',
@@ -442,6 +1075,75 @@ const styles = StyleSheet.create({
   activityType: { color: '#0284c7', fontSize: 11, fontWeight: '700' },
   activityText: { marginTop: 4, color: '#0f172a', fontWeight: '600' },
   activityDate: { marginTop: 4, color: '#64748b', fontSize: 12 },
+  referralCard: {
+    backgroundColor: '#ffffff',
+    borderWidth: 1,
+    borderColor: '#bbf7d0',
+    borderRadius: 14,
+    padding: 14,
+    marginBottom: 12,
+  },
+  referralHeader: { flexDirection: 'row', gap: 10, alignItems: 'flex-start' },
+  referralEyebrow: {
+    color: '#059669',
+    fontSize: 11,
+    fontWeight: '800',
+    textTransform: 'uppercase',
+  },
+  referralTitle: { color: '#0f172a', fontSize: 17, fontWeight: '800', marginTop: 2 },
+  referralCode: {
+    marginTop: 6,
+    alignSelf: 'flex-start',
+    backgroundColor: '#ecfdf5',
+    color: '#047857',
+    fontWeight: '700',
+    fontSize: 12,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 999,
+    overflow: 'hidden',
+  },
+  referralStatsRow: { flexDirection: 'row', gap: 8, marginTop: 12 },
+  referralStat: {
+    flex: 1,
+    borderLeftWidth: 2,
+    borderLeftColor: '#6ee7b7',
+    paddingLeft: 8,
+  },
+  referralStatLabel: { color: '#64748b', fontSize: 11, fontWeight: '600' },
+  referralStatValue: { color: '#0f172a', fontSize: 16, fontWeight: '800', marginTop: 2 },
+  referralLinkLabel: { marginTop: 12, color: '#334155', fontWeight: '700', fontSize: 13 },
+  referralLinkInput: {
+    marginTop: 6,
+    borderWidth: 1,
+    borderColor: '#d1fae5',
+    backgroundColor: '#f8fafc',
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    color: '#0f172a',
+    fontSize: 12,
+  },
+  referralActions: { flexDirection: 'row', gap: 10, marginTop: 12 },
+  referralBtnPrimary: {
+    flex: 1,
+    backgroundColor: '#0284c7',
+    borderRadius: 10,
+    paddingVertical: 12,
+    alignItems: 'center',
+  },
+  referralBtnPrimaryText: { color: '#fff', fontWeight: '800' },
+  referralBtnSecondary: {
+    flex: 1,
+    backgroundColor: '#ecfdf5',
+    borderRadius: 10,
+    paddingVertical: 12,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#bbf7d0',
+  },
+  referralBtnSecondaryText: { color: '#047857', fontWeight: '800' },
+  referralLoading: { color: '#64748b', marginBottom: 12 },
 });
 
 export default DashboardScreen;

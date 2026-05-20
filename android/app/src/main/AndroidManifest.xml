@@ -32,8 +32,8 @@
             <category android:name="android.intent.category.BROWSABLE" />
             <data android:scheme="https" android:host="rentalhub.com.ng" />
             <data android:scheme="https" android:host="www.rentalhub.com.ng" />
-            <data android:scheme="https" android:host="renatalhub.com.ng" />
-            <data android:scheme="https" android:host="www.renatalhub.com.ng" />
+            <data android:scheme="https" android:host="rentalhub.com.ng" />
+            <data android:scheme="https" android:host="www.rentalhub.com.ng" />
         </intent-filter>
       </activity>
     </application>

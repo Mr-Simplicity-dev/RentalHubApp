@@ -22,22 +22,32 @@ import StatusBadge from '../../components/common/StatusBadge';
 import { superAdminService } from '../../services/superAdminService';
 import { authService } from '../../services/authService';
 import { buildUploadUrl, getErrorMessage, pickList, pickObject } from '../../utils/http';
+import FlagsSection from '../../components/admin/FlagsSection';
+import RegistrationAccessSection from '../../components/admin/RegistrationAccessSection';
+import TenancyWorkflowSection from '../../components/admin/TenancyWorkflowSection';
+import PropertyRequestWorkflowSection from '../../components/admin/PropertyRequestWorkflowSection';
 
 const sections = [
   'overview',
   'users',
   'verifications',
+  'moderation',
   'lawyer_invites',
   'analytics',
   'platform_lawyers',
+  'platform_agents',
   'lawyer_activity',
   'admin_management',
   'pending_approvals',
+  'property_requests',
   'pricing',
+  'registration_access',
   'properties',
   'reports',
   'broadcasts',
+  'ad_spaces',
   'flags',
+  'sfa_permissions',
   'fraud',
   'logs',
 ];
@@ -48,6 +58,31 @@ const defaultPricingForm = {
   lga_name: '',
   amount: '',
   is_active: true,
+};
+
+const fallbackAdPlacements = [
+  { value: 'home_top', label: 'Home top banner' },
+  { value: 'home_featured', label: 'Home featured section' },
+  { value: 'dashboard_top', label: 'Dashboard top banner' },
+  { value: 'dashboard_inline', label: 'Dashboard inline banner' },
+  { value: 'properties_top', label: 'Properties top banner' },
+  { value: 'properties_inline', label: 'Properties inline banner' },
+];
+
+const defaultAdSpaceForm = {
+  placement: 'home_top',
+  title: '',
+  description: '',
+  sponsor_name: '',
+  image_url: '',
+  target_url: '',
+  cta_label: 'Learn more',
+  background_color: '#ffffff',
+  text_color: '#111827',
+  is_active: true,
+  sort_order: '0',
+  starts_at: '',
+  ends_at: '',
 };
 
 const SectionButton = ({ label, active, onPress }) => (
@@ -121,6 +156,9 @@ const SuperAdminDashboardScreen = () => {
   const [showReviewDialog, setShowReviewDialog] = useState(false);
   const [selectedApplicationId, setSelectedApplicationId] = useState(null);
   const [reviewAction, setReviewAction] = useState(null); // 'approve' or 'reject'
+  const [sfaList, setSfaList] = useState([]);
+  const [platformAgents, setPlatformAgents] = useState([]);
+  const [adSpaces, setAdSpaces] = useState([]);
 
   // New state for lawyer activity
   const [lawyerActivities, setLawyerActivities] = useState([]);
@@ -136,6 +174,9 @@ const SuperAdminDashboardScreen = () => {
 
   // New state for pending admin approvals
   const [pendingAdmins, setPendingAdmins] = useState([]);
+  const [adPlacements, setAdPlacements] = useState(fallbackAdPlacements);
+  const [adSpaceForm, setAdSpaceForm] = useState(defaultAdSpaceForm);
+  const [editingAdSpaceId, setEditingAdSpaceId] = useState(null);
 
   // New state for report status changes
   const [reportStatusTargets, setReportStatusTargets] = useState({});
@@ -214,6 +255,26 @@ const SuperAdminDashboardScreen = () => {
     setPendingAdmins(pickList(response, ['data']));
   };
 
+  const loadSfaPermissions = async () => {
+    const response = await superAdminService.getSFAPermissions();
+    setSfaList(pickList(response, ['data', 'permissions']) || []);
+  };
+
+  const loadPlatformAgents = async () => {
+    const response = await superAdminService.getPlatformAgents();
+    const payload = pickObject(response, ['data']) || response;
+    setPlatformAgents(
+      pickList(payload, ['agents']) || payload.agents || pickList(response, ['agents']) || []
+    );
+  };
+
+  const loadAdSpaces = async () => {
+    const response = await superAdminService.getAdSpaces();
+    const payload = pickObject(response, ['data']) || {};
+    setAdSpaces(payload.ads || []);
+    setAdPlacements(payload.placements || fallbackAdPlacements);
+  };
+
   const loadAll = async () => {
     setLoading(true);
     try {
@@ -283,6 +344,18 @@ const SuperAdminDashboardScreen = () => {
     loadAll();
   }, []);
 
+  useEffect(() => {
+    if (section === 'sfa_permissions') {
+      loadSfaPermissions();
+    }
+    if (section === 'platform_agents') {
+      loadPlatformAgents();
+    }
+    if (section === 'ad_spaces') {
+      loadAdSpaces();
+    }
+  }, [section]);
+
   const runAction = async (action, successMessage, reload = loadAll) => {
     try {
       setSubmitting(true);
@@ -339,6 +412,109 @@ const SuperAdminDashboardScreen = () => {
     );
   };
 
+  const resetAdSpaceForm = () => {
+    setEditingAdSpaceId(null);
+    setAdSpaceForm(defaultAdSpaceForm);
+  };
+
+  const buildAdSpacePayload = (form = adSpaceForm) => ({
+    placement: form.placement,
+    title: form.title.trim(),
+    description: form.description.trim(),
+    sponsor_name: form.sponsor_name.trim(),
+    image_url: form.image_url.trim(),
+    target_url: form.target_url.trim(),
+    cta_label: form.cta_label.trim() || 'Learn more',
+    background_color: form.background_color.trim() || '#ffffff',
+    text_color: form.text_color.trim() || '#111827',
+    is_active: Boolean(form.is_active),
+    sort_order: Number(form.sort_order || 0),
+    starts_at: form.starts_at.trim() || null,
+    ends_at: form.ends_at.trim() || null,
+  });
+
+  const handleEditAdSpace = (ad) => {
+    setEditingAdSpaceId(ad.id);
+    setAdSpaceForm({
+      placement: ad.placement || 'home_top',
+      title: ad.title || '',
+      description: ad.description || '',
+      sponsor_name: ad.sponsor_name || '',
+      image_url: ad.image_url || '',
+      target_url: ad.target_url || '',
+      cta_label: ad.cta_label || 'Learn more',
+      background_color: ad.background_color || '#ffffff',
+      text_color: ad.text_color || '#111827',
+      is_active: ad.is_active === true,
+      sort_order: String(ad.sort_order || 0),
+      starts_at: ad.starts_at || '',
+      ends_at: ad.ends_at || '',
+    });
+  };
+
+  const handleSaveAdSpace = async () => {
+    if (!adSpaceForm.title.trim()) {
+      Toast.show({ type: 'error', text1: 'Ad title is required' });
+      return;
+    }
+
+    if (!adSpaceForm.target_url.trim()) {
+      Toast.show({ type: 'error', text1: 'Target URL is required' });
+      return;
+    }
+
+    await runAction(
+      async () => {
+        const payload = buildAdSpacePayload();
+        if (editingAdSpaceId) {
+          await superAdminService.updateAdSpace(editingAdSpaceId, payload);
+        } else {
+          await superAdminService.createAdSpace(payload);
+        }
+        resetAdSpaceForm();
+        await loadAdSpaces();
+      },
+      editingAdSpaceId ? 'Ad space updated' : 'Ad space created',
+      null
+    );
+  };
+
+  const handleToggleAdSpace = async (ad) => {
+    await runAction(
+      async () => {
+        await superAdminService.updateAdSpace(ad.id, {
+          ...ad,
+          is_active: !ad.is_active,
+        });
+        await loadAdSpaces();
+      },
+      ad.is_active ? 'Ad space paused' : 'Ad space activated',
+      null
+    );
+  };
+
+  const handleDeleteAdSpace = (adId) => {
+    Alert.alert('Delete ad space', 'Delete this ad space permanently?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Delete',
+        style: 'destructive',
+        onPress: () =>
+          runAction(
+            async () => {
+              await superAdminService.deleteAdSpace(adId);
+              if (editingAdSpaceId === adId) {
+                resetAdSpaceForm();
+              }
+              await loadAdSpaces();
+            },
+            'Ad space deleted',
+            null
+          ),
+      },
+    ]);
+  };
+
   const renderOverview = () => {
     const analyticEntries = Object.entries(analytics);
 
@@ -382,6 +558,8 @@ const SuperAdminDashboardScreen = () => {
             <Text style={styles.meta}>Pending Admins: {pendingAdmins.length}</Text>
           </View>
         )}
+
+        <TenancyWorkflowSection title="National Tenancy Grace and Refund Enablement" />
       </View>
     );
   };
@@ -1022,6 +1200,136 @@ const SuperAdminDashboardScreen = () => {
     });
   };
 
+  const renderModeration = () => {
+    const pendingVerifications = verifications.filter((item) => {
+      const status = item.identity_verification_status || (item.identity_verified ? 'verified' : 'pending');
+      return status === 'pending';
+    });
+    const openReports = reports.filter((item) => !['resolved', 'dismissed'].includes(item.status));
+    const openFraud = fraud.filter((item) => !['resolved', 'closed'].includes(item.status));
+
+    return (
+      <>
+        <View style={styles.card}>
+          <View style={styles.rowBetween}>
+            <View style={styles.flex1}>
+              <Text style={styles.cardTitle}>Live Moderation Queue</Text>
+              <Text style={styles.meta}>
+                Review identity checks, user reports, and fraud flags from one native screen.
+              </Text>
+            </View>
+            <View style={styles.liveDot} />
+          </View>
+          <View style={styles.analyticsGrid}>
+            <View style={styles.analyticsCard}>
+              <Text style={styles.analyticsValue}>{pendingVerifications.length}</Text>
+              <Text style={styles.analyticsLabel}>Verifications</Text>
+            </View>
+            <View style={styles.analyticsCard}>
+              <Text style={styles.analyticsValue}>{openReports.length}</Text>
+              <Text style={styles.analyticsLabel}>Reports</Text>
+            </View>
+            <View style={styles.analyticsCard}>
+              <Text style={styles.analyticsValue}>{openFraud.length}</Text>
+              <Text style={styles.analyticsLabel}>Fraud Flags</Text>
+            </View>
+          </View>
+          <Button
+            title="Refresh Moderation"
+            onPress={() =>
+              runAction(
+                async () => {
+                  await Promise.all([loadVerificationData(), loadAll()]);
+                },
+                'Moderation queue refreshed',
+                null
+              )
+            }
+            loading={submitting}
+          />
+        </View>
+
+        <Text style={styles.sectionTitle}>Pending Verifications</Text>
+        {pendingVerifications.length === 0 ? (
+          <Text style={styles.meta}>No pending identity verifications.</Text>
+        ) : (
+          pendingVerifications.slice(0, 6).map((item) => (
+            <View key={`verification-${item.id}`} style={styles.card}>
+              <Text style={styles.cardTitle}>{item.full_name}</Text>
+              <Text style={styles.meta}>{item.email}</Text>
+              <View style={styles.row}>
+                <TouchableOpacity
+                  onPress={() =>
+                    runAction(
+                      () => superAdminService.approveVerification(item.id),
+                      'Verification approved'
+                    )
+                  }
+                >
+                  <Text style={styles.linkText}>Approve</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() =>
+                    runAction(
+                      () => superAdminService.rejectVerification(item.id),
+                      'Verification rejected'
+                    )
+                  }
+                >
+                  <Text style={styles.warnText}>Reject</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          ))
+        )}
+
+        <Text style={styles.sectionTitle}>Open Reports</Text>
+        {openReports.length === 0 ? (
+          <Text style={styles.meta}>No open reports.</Text>
+        ) : (
+          openReports.slice(0, 6).map((item) => (
+            <View key={`report-${item.id}`} style={styles.card}>
+              <Text style={styles.cardTitle}>{item.reason || item.report_reason || `Report #${item.id}`}</Text>
+              <StatusBadge status={item.status || 'open'} />
+              <TouchableOpacity
+                onPress={() =>
+                  runAction(
+                    () => superAdminService.resolveReport(item.id),
+                    'Report resolved'
+                  )
+                }
+              >
+                <Text style={styles.linkText}>Resolve</Text>
+              </TouchableOpacity>
+            </View>
+          ))
+        )}
+
+        <Text style={styles.sectionTitle}>Fraud Flags</Text>
+        {openFraud.length === 0 ? (
+          <Text style={styles.meta}>No open fraud flags.</Text>
+        ) : (
+          openFraud.slice(0, 6).map((item) => (
+            <View key={`fraud-${item.id}`} style={styles.card}>
+              <Text style={styles.cardTitle}>{item.rule || 'Fraud flag'}</Text>
+              <Text style={styles.meta}>Score: {item.score ?? '-'}</Text>
+              <TouchableOpacity
+                onPress={() =>
+                  runAction(
+                    () => superAdminService.resolveFraudFlag(item.id),
+                    'Fraud flag resolved'
+                  )
+                }
+              >
+                <Text style={styles.linkText}>Resolve</Text>
+              </TouchableOpacity>
+            </View>
+          ))
+        )}
+      </>
+    );
+  };
+
   const renderReports = () => {
     const reportStatusOptions = ['open', 'investigating', 'resolved', 'dismissed'];
 
@@ -1138,23 +1446,237 @@ const SuperAdminDashboardScreen = () => {
     </>
   );
 
-  const renderFlags = () =>
-    flags.map((item) => (
-      <View key={item.key || item.id} style={styles.card}>
-        <Text style={styles.cardTitle}>{item.key || item.name}</Text>
-        <Text style={styles.meta}>Enabled: {String(item.enabled)}</Text>
-        <TouchableOpacity
-          onPress={() =>
-            runAction(
-              () => superAdminService.updateFlag(item.key, !item.enabled),
-              'Flag updated'
-            )
-          }
+  const renderFlags = () => (
+    <FlagsSection
+      flags={flags}
+      onToggle={(key, enabled) =>
+        runAction(() => superAdminService.updateFlag(key, enabled), 'Flag updated')
+      }
+    />
+  );
+
+  const renderRegistrationAccess = () => <RegistrationAccessSection />;
+
+  const renderPropertyRequests = () => (
+    <PropertyRequestWorkflowSection mode="support" title="Tenant Property Requests" />
+  );
+
+  const renderSfaPermissions = () => (
+    <>
+      <Text style={styles.sectionTitle}>Super Financial Admin Permissions</Text>
+      {sfaList.length === 0 ? (
+        <Text style={styles.meta}>No SFA records found.</Text>
+      ) : (
+        sfaList.map((item) => (
+          <View key={item.id || item.super_financial_admin_id} style={styles.card}>
+            <Text style={styles.cardTitle}>{item.full_name || item.email}</Text>
+            <Text style={styles.meta}>Approve admins: {String(item.can_approve_admins)}</Text>
+            <TouchableOpacity
+              onPress={() =>
+                runAction(
+                  () =>
+                    superAdminService.updateSFAPermission(item.super_financial_admin_id, {
+                      can_approve_admins: !item.can_approve_admins,
+                    }),
+                  'SFA permissions updated',
+                  loadSfaPermissions
+                )
+              }
+            >
+              <Text style={styles.linkText}>Toggle approve admins</Text>
+            </TouchableOpacity>
+          </View>
+        ))
+      )}
+    </>
+  );
+
+  const renderPlatformAgents = () => (
+    <>
+      <Text style={styles.sectionTitle}>Platform Agents</Text>
+      {platformAgents.length === 0 ? (
+        <Text style={styles.meta}>No platform agents loaded.</Text>
+      ) : (
+        platformAgents.map((agent) => (
+          <View key={agent.id} style={styles.card}>
+            <Text style={styles.cardTitle}>{agent.full_name || agent.email}</Text>
+            <Text style={styles.meta}>{agent.email}</Text>
+            <Text style={styles.meta}>Status: {agent.status || 'active'}</Text>
+          </View>
+        ))
+      )}
+    </>
+  );
+
+  const renderAdSpaces = () => (
+    <>
+      <View style={styles.card}>
+        <Text style={styles.sectionTitle}>{editingAdSpaceId ? 'Edit Ad Space' : 'Create Ad Space'}</Text>
+        <Text style={styles.meta}>Create, update, pause, and delete sponsored placements from mobile.</Text>
+
+        <Text style={styles.filterLabel}>Placement</Text>
+        <View style={styles.filtersRow}>
+          {adPlacements.map((placement) => (
+            <FilterChip
+              key={placement.value}
+              label={placement.label}
+              active={adSpaceForm.placement === placement.value}
+              onPress={() =>
+                setAdSpaceForm((prev) => ({ ...prev, placement: placement.value }))
+              }
+            />
+          ))}
+        </View>
+
+        <Input
+          label="Title"
+          value={adSpaceForm.title}
+          onChangeText={(value) => setAdSpaceForm((prev) => ({ ...prev, title: value }))}
+          placeholder="Ad headline"
+        />
+        <Input
+          label="Sponsor"
+          value={adSpaceForm.sponsor_name}
+          onChangeText={(value) => setAdSpaceForm((prev) => ({ ...prev, sponsor_name: value }))}
+          placeholder="Sponsor name"
+        />
+        <Text style={styles.filterLabel}>Description</Text>
+        <TextInput
+          value={adSpaceForm.description}
+          onChangeText={(value) => setAdSpaceForm((prev) => ({ ...prev, description: value }))}
+          placeholder="Short ad message"
+          multiline
+          style={styles.textArea}
+        />
+        <Input
+          label="Image URL"
+          value={adSpaceForm.image_url}
+          onChangeText={(value) => setAdSpaceForm((prev) => ({ ...prev, image_url: value }))}
+          placeholder="https://... or /uploads/ad-spaces/image.jpg"
+          autoCapitalize="none"
+        />
+        <Input
+          label="Target URL"
+          value={adSpaceForm.target_url}
+          onChangeText={(value) => setAdSpaceForm((prev) => ({ ...prev, target_url: value }))}
+          placeholder="/register, /properties/123, or https://..."
+          autoCapitalize="none"
+        />
+        <Input
+          label="CTA Label"
+          value={adSpaceForm.cta_label}
+          onChangeText={(value) => setAdSpaceForm((prev) => ({ ...prev, cta_label: value }))}
+          placeholder="Learn more"
+        />
+        <View style={styles.row}>
+          <View style={styles.flex1}>
+            <Input
+              label="Background Color"
+              value={adSpaceForm.background_color}
+              onChangeText={(value) => setAdSpaceForm((prev) => ({ ...prev, background_color: value }))}
+              placeholder="#ffffff"
+              autoCapitalize="none"
+            />
+          </View>
+          <View style={styles.flex1}>
+            <Input
+              label="Text Color"
+              value={adSpaceForm.text_color}
+              onChangeText={(value) => setAdSpaceForm((prev) => ({ ...prev, text_color: value }))}
+              placeholder="#111827"
+              autoCapitalize="none"
+            />
+          </View>
+        </View>
+        <Input
+          label="Sort Order"
+          value={adSpaceForm.sort_order}
+          onChangeText={(value) => setAdSpaceForm((prev) => ({ ...prev, sort_order: value }))}
+          keyboardType="number-pad"
+        />
+        <Input
+          label="Starts At"
+          value={adSpaceForm.starts_at}
+          onChangeText={(value) => setAdSpaceForm((prev) => ({ ...prev, starts_at: value }))}
+          placeholder="YYYY-MM-DDTHH:mm or leave blank"
+          autoCapitalize="none"
+        />
+        <Input
+          label="Ends At"
+          value={adSpaceForm.ends_at}
+          onChangeText={(value) => setAdSpaceForm((prev) => ({ ...prev, ends_at: value }))}
+          placeholder="YYYY-MM-DDTHH:mm or leave blank"
+          autoCapitalize="none"
+        />
+
+        <View style={styles.switchRow}>
+          <Text style={styles.filterLabel}>Active</Text>
+          <Switch
+            value={adSpaceForm.is_active}
+            onValueChange={(value) => setAdSpaceForm((prev) => ({ ...prev, is_active: value }))}
+          />
+        </View>
+
+        <View
+          style={[
+            styles.adPreview,
+            { backgroundColor: adSpaceForm.background_color || '#ffffff' },
+          ]}
         >
-          <Text style={styles.linkText}>Toggle Flag</Text>
-        </TouchableOpacity>
+          <Text style={[styles.cardTitle, { color: adSpaceForm.text_color || '#111827' }]}>
+            {adSpaceForm.title || 'Ad preview title'}
+          </Text>
+          <Text style={[styles.meta, { color: adSpaceForm.text_color || '#111827' }]}>
+            {adSpaceForm.description || 'Description preview'}
+          </Text>
+        </View>
+
+        <View style={styles.row}>
+          <Button
+            title={editingAdSpaceId ? 'Update Ad' : 'Create Ad'}
+            onPress={handleSaveAdSpace}
+            loading={submitting}
+            size="sm"
+          />
+          {editingAdSpaceId ? (
+            <Button title="New Ad" variant="outline" onPress={resetAdSpaceForm} size="sm" />
+          ) : null}
+        </View>
       </View>
-    ));
+
+      <Text style={styles.sectionTitle}>Ad Spaces</Text>
+      {adSpaces.length === 0 ? (
+        <EmptyState
+          icon="megaphone-outline"
+          title="No ad spaces configured"
+          message="Create a sponsored placement above."
+        />
+      ) : (
+        adSpaces.map((ad) => (
+          <View key={ad.id} style={styles.card}>
+            <Text style={styles.cardTitle}>{ad.title || ad.placement}</Text>
+            <Text style={styles.meta}>Placement: {ad.placement}</Text>
+            <Text style={styles.meta}>Sponsor: {ad.sponsor_name || '-'}</Text>
+            <Text style={styles.meta}>Target: {ad.target_url || '-'}</Text>
+            <Text style={styles.meta}>Active: {ad.is_active ? 'Yes' : 'No'}</Text>
+            <Text style={styles.meta}>Impressions: {ad.impression_count ?? 0}</Text>
+            <Text style={styles.meta}>Clicks: {ad.click_count ?? 0}</Text>
+            <View style={styles.row}>
+              <TouchableOpacity onPress={() => handleEditAdSpace(ad)}>
+                <Text style={styles.linkText}>Edit</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => handleToggleAdSpace(ad)}>
+                <Text style={styles.linkText}>{ad.is_active ? 'Pause' : 'Activate'}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => handleDeleteAdSpace(ad.id)}>
+                <Text style={styles.warnText}>Delete</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        ))
+      )}
+    </>
+  );
 
   const renderFraud = () =>
     fraud.map((item) => (
@@ -1920,17 +2442,23 @@ const SuperAdminDashboardScreen = () => {
     overview: renderOverview(),
     users: renderUsers(),
     verifications: renderVerifications(),
+    moderation: renderModeration(),
     lawyer_invites: renderLawyerInvites(),
     analytics: renderStructuredAnalytics(),
     platform_lawyers: renderPlatformLawyers(),
+    platform_agents: renderPlatformAgents(),
     lawyer_activity: renderLawyerActivity(),
     admin_management: renderAdminManagement(),
     pending_approvals: renderPendingApprovals(),
+    property_requests: renderPropertyRequests(),
     pricing: renderPricing(),
+    registration_access: renderRegistrationAccess(),
     properties: renderProperties(),
     reports: renderReports(),
     broadcasts: renderBroadcasts(),
+    ad_spaces: renderAdSpaces(),
     flags: renderFlags(),
+    sfa_permissions: renderSfaPermissions(),
     fraud: renderFraud(),
     logs: renderLogs(),
   }[section];
@@ -2017,6 +2545,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   cardTitle: { fontSize: 16, fontWeight: '700', color: '#0f172a', marginBottom: 4 },
+  sectionTitle: { fontSize: 18, fontWeight: '800', color: '#0f172a', marginBottom: 8 },
   meta: { marginTop: 4, color: '#475569' },
   row: { flexDirection: 'row', gap: 16, marginTop: 10, flexWrap: 'wrap' },
   linkText: { color: '#0284c7', fontWeight: '700', marginTop: 8 },
@@ -2188,6 +2717,20 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#e2e8f0',
     gap: 8,
+  },
+  adPreview: {
+    borderWidth: 1,
+    borderColor: '#e2e8f0',
+    borderRadius: 12,
+    marginTop: 10,
+    padding: 12,
+  },
+  liveDot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: '#22c55e',
+    marginLeft: 10,
   },
   modalOverlay: {
     position: 'absolute',

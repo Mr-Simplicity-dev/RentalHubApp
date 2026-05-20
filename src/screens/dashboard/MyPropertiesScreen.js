@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
 import Toast from 'react-native-toast-message';
 import Button from '../../components/common/Button';
+import DamageReportCapture from '../../components/properties/DamageReportCapture';
 import { AuthContext } from '../../context/AuthContext';
 import { propertyService } from '../../services/propertyService';
 import { getErrorMessage, pickList } from '../../utils/http';
@@ -10,6 +11,7 @@ const MyPropertiesScreen = ({ navigation }) => {
   const { user } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
   const [items, setItems] = useState([]);
+  const [damagePropertyId, setDamagePropertyId] = useState(null);
 
   const loadProperties = async () => {
     setLoading(true);
@@ -100,6 +102,9 @@ const MyPropertiesScreen = ({ navigation }) => {
               <TouchableOpacity onPress={() => toggleAvailability(item.id)} style={styles.linkBtn}>
                 <Text style={styles.linkText}>Toggle Availability</Text>
               </TouchableOpacity>
+              <TouchableOpacity onPress={() => setDamagePropertyId(item.id)} style={styles.linkBtn}>
+                <Text style={styles.linkText}>Report Damage</Text>
+              </TouchableOpacity>
               <TouchableOpacity onPress={() => unlistProperty(item.id)} style={styles.linkBtn}>
                 <Text style={[styles.linkText, styles.warn]}>Unlist</Text>
               </TouchableOpacity>
@@ -107,6 +112,13 @@ const MyPropertiesScreen = ({ navigation }) => {
           </View>
         )}
         ListEmptyComponent={<Text style={styles.empty}>You have not listed any property yet.</Text>}
+      />
+
+      <DamageReportCapture
+        visible={Boolean(damagePropertyId)}
+        propertyId={damagePropertyId}
+        onClose={() => setDamagePropertyId(null)}
+        onSaved={loadProperties}
       />
     </View>
   );

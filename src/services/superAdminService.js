@@ -173,6 +173,69 @@ export const superAdminService = {
     return response.data;
   },
 
+  // ===================== REGISTRATION ACCESS RULES =====================
+  getRegistrationAccessRules: async () => {
+    const response = await api.get('/super/registration-access-rules');
+    return response.data;
+  },
+
+  createRegistrationAccessRule: async (payload) => {
+    const response = await api.post('/super/registration-access-rules', payload);
+    return response.data;
+  },
+
+  updateRegistrationAccessRule: async (ruleId, payload) => {
+    const response = await api.patch(`/super/registration-access-rules/${ruleId}`, payload);
+    return response.data;
+  },
+
+  deleteRegistrationAccessRule: async (ruleId) => {
+    const response = await api.delete(`/super/registration-access-rules/${ruleId}`);
+    return response.data;
+  },
+
+  // ===================== AD SPACES =====================
+  getAdSpaces: async () => {
+    const response = await api.get('/super/ad-spaces');
+    return response.data;
+  },
+
+  createAdSpace: async (payload) => {
+    const response = await api.post('/super/ad-spaces', payload);
+    return response.data;
+  },
+
+  updateAdSpace: async (adId, payload) => {
+    const response = await api.patch(`/super/ad-spaces/${adId}`, payload);
+    return response.data;
+  },
+
+  deleteAdSpace: async (adId) => {
+    const response = await api.delete(`/super/ad-spaces/${adId}`);
+    return response.data;
+  },
+
+  // ===================== PLATFORM AGENTS =====================
+  getPlatformAgents: async () => {
+    const response = await api.get('/super/platform-agents');
+    return response.data;
+  },
+
+  createManualPlatformAgent: async (payload) => {
+    const response = await api.post('/super/platform-agents/manual', payload);
+    return response.data;
+  },
+
+  updatePlatformAgent: async (agentId, payload) => {
+    const response = await api.patch(`/super/platform-agents/${agentId}`, payload);
+    return response.data;
+  },
+
+  deletePlatformAgent: async (agentId) => {
+    const response = await api.delete(`/super/platform-agents/${agentId}`);
+    return response.data;
+  },
+
   // ===================== FRAUD FLAGS =====================
   getFraudFlags: async () => {
     const response = await api.get('/super/fraud');
