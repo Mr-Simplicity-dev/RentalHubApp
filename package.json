@@ -8,9 +8,11 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "web": "expo start --web",
+    "postinstall": "patch-package",
     "build:android": "cd android && ./gradlew assembleRelease",
     "build:android:bundle": "cd android && ./gradlew bundleRelease",
-    "build:ios": "cd ios && xcodebuild -workspace RentalHubMobile.xcworkspace -scheme RentalHubMobile -configuration Release"
+    "build:ios": "cd ios && xcodebuild -workspace RentalHubMobile.xcworkspace -scheme RentalHubMobile -configuration Release",
+    "build:app": "node scripts/build-all.js"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "2.2.0",
