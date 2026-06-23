@@ -72,9 +72,15 @@ export const disputeService = {
     return response.data;
   },
 
-  // Get user disputes
+  // Get user disputes (returns paginated results)
   getUserDisputes: async (params = {}) => {
-    const response = await api.get('/disputes/user/my-disputes', { params });
+    const response = await api.get('/disputes/me', { params });
+    return response.data;
+  },
+
+  // Edit a dispute message (only sender can edit, max 2 edits)
+  editDisputeMessage: async (disputeId, messageId, message) => {
+    const response = await api.patch(`/disputes/${disputeId}/messages/${messageId}`, { message });
     return response.data;
   },
 

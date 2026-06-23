@@ -85,6 +85,11 @@ export const paymentService = {
     return response.data;
   },
 
+  getMyUnlockedProperties: async () => {
+    const response = await api.get('/payments/my-unlocked-properties');
+    return response.data;
+  },
+
   getLocationAccessQuote: async (params = {}) => {
     const response = await api.get('/payments/location-access/quote', { params });
     return response.data;

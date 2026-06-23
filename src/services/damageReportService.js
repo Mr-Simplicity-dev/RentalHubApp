@@ -66,6 +66,12 @@ export const damageReportService = {
     return response.data;
   },
 
+  // Get current user's damage reports (landlord/tenant/admin)
+  getMyDamageReports: async (params = {}) => {
+    const response = await api.get('/damage-reports/my', { params });
+    return response.data;
+  },
+
   moderateDamageReport: async (reportId, moderationData) => {
     const response = await api.patch(`/damage-reports/${reportId}/moderate`, moderationData);
     return response.data;

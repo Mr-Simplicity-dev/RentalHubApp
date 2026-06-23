@@ -26,14 +26,16 @@ const ProfileScreen = ({ navigation }) => {
   const [form, setForm] = useState({
     full_name: user?.full_name || '',
     phone: user?.phone || '',
+    bio: user?.bio || '',
   });
 
   useEffect(() => {
     setForm({
       full_name: user?.full_name || '',
       phone: user?.phone || '',
+      bio: user?.bio || '',
     });
-  }, [user?.full_name, user?.phone]);
+  }, [user?.full_name, user?.phone, user?.bio]);
 
   const loadVerificationStatus = async () => {
     try {
@@ -66,6 +68,7 @@ const ProfileScreen = ({ navigation }) => {
       const response = await userService.updateProfile({
         full_name: form.full_name.trim(),
         phone: form.phone.trim(),
+        bio: form.bio.trim(),
       });
       const nextUser = pickObject(response, ['data']);
       if (nextUser) {
@@ -229,6 +232,14 @@ const ProfileScreen = ({ navigation }) => {
           value={form.phone}
           onChangeText={(value) => setForm((prev) => ({ ...prev, phone: value }))}
           keyboardType="phone-pad"
+        />
+        <Input
+          label="Bio"
+          value={form.bio}
+          onChangeText={(value) => setForm((prev) => ({ ...prev, bio: value }))}
+          multiline
+          numberOfLines={3}
+          placeholder="Tell us about yourself..."
         />
         <Text style={styles.infoRow}>Email: {user?.email || '-'}</Text>
         <Text style={styles.infoRow}>Role: {user?.user_type || '-'}</Text>
