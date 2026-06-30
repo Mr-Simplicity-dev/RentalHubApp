@@ -18,8 +18,13 @@
 - `pod install` must be run on macOS.
 - Run it from the `ios` folder before building the app in Xcode.
 
-## Remaining store blockers to address
+## Remaining store setup
 
-- Add the final iOS App Icon image set files to `ios/RentalHubMobile/Images.xcassets/AppIcon.appiconset`.
 - Configure Apple signing in Xcode with your team and certificates.
 - Confirm that `https://rentalhub.com.ng/api` is the live production API endpoint, or replace the default production mobile API URL in `src/services/api.js`.
+
+## Version 1.0.1
+
+- Replaced placeholder Android launcher artwork with the RentalHub NG brand icon.
+- Added the complete opaque iOS App Icon asset catalog, including the App Store marketing icon.
+- Synchronized Android and iOS release versions and corrected duplicate Android app-link declarations.
