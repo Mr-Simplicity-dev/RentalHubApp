@@ -13,7 +13,7 @@ const SavingsGoalListScreen = ({ navigation }) => {
 
   const loadGoals = useCallback(async () => {
     try {
-      const response = await rentSavingsService.getSavingsGoals();
+      const response = await rentSavingsService.getSavingsPlans();
       setGoals(pickList(response, ['data', 'goals']));
     } catch (error) {
       Toast.show({
@@ -42,25 +42,34 @@ const SavingsGoalListScreen = ({ navigation }) => {
       onPress={() => navigation.navigate('SavingsGoalDetail', { goalId: item.id })}
     >
       <View style={styles.cardHeader}>
-        <Text style={styles.cardTitle}>{item.name}</Text>
+        <Text style={styles.cardTitle}>{item.property_title || 'Rent savings plan'}</Text>
         <Text style={[styles.cardStatus, item.status === 'active' && styles.statusActive]}>
           {item.status || 'active'}
         </Text>
       </View>
-      <Text style={styles.cardTarget}>{formatCurrency(item.target_amount)}</Text>
+      <Text style={styles.cardTarget}>{formatCurrency(item.target_savings_amount)}</Text>
       <View style={styles.progressBar}>
         <View
           style={[
             styles.progressFill,
-            { width: `${Math.min(item.progress_percentage || 0, 100)}%` },
+            {
+              width: `${Math.min(
+                Number(item.target_savings_amount)
+                  ? (Number(item.total_saved || 0) / Number(item.target_savings_amount)) * 100
+                  : 0,
+                100
+              )}%`,
+            },
           ]}
         />
       </View>
       <Text style={styles.cardProgress}>
-        {formatCurrency(item.saved_amount || 0)} saved ({Math.round(item.progress_percentage || 0)}%)
+        {formatCurrency(item.total_saved || 0)} saved
       </Text>
-      {item.target_date && (
-        <Text style={styles.cardDate}>Target: {item.target_date}</Text>
+      {item.rent_due_date && (
+        <Text style={styles.cardDate}>
+          Due: {new Date(item.rent_due_date).toLocaleDateString()}
+        </Text>
       )}
     </TouchableOpacity>
   );
@@ -74,13 +83,13 @@ const SavingsGoalListScreen = ({ navigation }) => {
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         renderItem={renderItem}
         ListHeaderComponent={
-          <Text style={styles.title}>My Savings Goals ({goals.length})</Text>
+          <Text style={styles.title}>My Savings Plans ({goals.length})</Text>
         }
         ListEmptyComponent={
           !loading && (
             <View style={styles.emptyContainer}>
-              <Text style={styles.empty}>No savings goals yet.</Text>
-              <Text style={styles.emptySub}>Create your first goal!</Text>
+              <Text style={styles.empty}>No savings plans yet.</Text>
+              <Text style={styles.emptySub}>Create your first plan.</Text>
             </View>
           )
         }

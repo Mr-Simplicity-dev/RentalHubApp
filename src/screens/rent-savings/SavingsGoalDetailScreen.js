@@ -30,7 +30,7 @@ const SavingsGoalDetailScreen = ({ route, navigation }) => {
     if (!goalId) return;
     setLoading(true);
     try {
-      const response = await rentSavingsService.getSavingsGoalDetails(goalId);
+      const response = await rentSavingsService.getSavingsPlanDetails(goalId);
       setGoal(pickObject(response, ['data', 'goal']));
 
       const contribResponse = await rentSavingsService.getContributions(goalId);
@@ -61,6 +61,7 @@ const SavingsGoalDetailScreen = ({ route, navigation }) => {
     try {
       const response = await rentSavingsService.makeContribution(goalId, {
         amount,
+        month: new Date().toISOString().slice(0, 7),
       });
       if (response?.success || response?.data?.id) {
         Toast.show({ type: 'success', text1: 'Contribution added!' });
@@ -95,13 +96,15 @@ const SavingsGoalDetailScreen = ({ route, navigation }) => {
     );
   }
 
-  const progress = Math.min(goal.progress_percentage || 0, 100);
+  const targetAmount = Number(goal.target_savings_amount || 0);
+  const savedAmount = Number(goal.total_saved || 0);
+  const progress = Math.min(targetAmount ? (savedAmount / targetAmount) * 100 : 0, 100);
 
   return (
     <>
       <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
         <View style={styles.headerCard}>
-          <Text style={styles.goalName}>{goal.name}</Text>
+          <Text style={styles.goalName}>{goal.property_title || 'Rent savings plan'}</Text>
           <Text style={[styles.goalStatus, goal.status === 'active' && styles.statusActive]}>
             {goal.status || 'active'}
           </Text>
@@ -110,18 +113,18 @@ const SavingsGoalDetailScreen = ({ route, navigation }) => {
         <View style={styles.amountRow}>
           <View style={styles.amountItem}>
             <Text style={styles.amountLabel}>Target</Text>
-            <Text style={styles.amountValue}>{formatCurrency(goal.target_amount)}</Text>
+            <Text style={styles.amountValue}>{formatCurrency(targetAmount)}</Text>
           </View>
           <View style={styles.amountItem}>
             <Text style={styles.amountLabel}>Saved</Text>
             <Text style={[styles.amountValue, styles.savedValue]}>
-              {formatCurrency(goal.saved_amount || 0)}
+              {formatCurrency(savedAmount)}
             </Text>
           </View>
           <View style={styles.amountItem}>
             <Text style={styles.amountLabel}>Remaining</Text>
             <Text style={styles.amountValue}>
-              {formatCurrency(Math.max(0, (goal.target_amount || 0) - (goal.saved_amount || 0)))}
+              {formatCurrency(Math.max(0, targetAmount - savedAmount))}
             </Text>
           </View>
         </View>
@@ -133,17 +136,19 @@ const SavingsGoalDetailScreen = ({ route, navigation }) => {
           <Text style={styles.progressText}>{Math.round(progress)}% complete</Text>
         </View>
 
-        {goal.description ? (
+        {goal.property_address ? (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Description</Text>
-            <Text style={styles.description}>{goal.description}</Text>
+            <Text style={styles.sectionTitle}>Property</Text>
+            <Text style={styles.description}>{goal.property_address}</Text>
           </View>
         ) : null}
 
-        {goal.target_date ? (
+        {goal.rent_due_date ? (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Target Date</Text>
-            <Text style={styles.description}>{goal.target_date}</Text>
+            <Text style={styles.sectionTitle}>Rent Due Date</Text>
+            <Text style={styles.description}>
+              {new Date(goal.rent_due_date).toLocaleDateString()}
+            </Text>
           </View>
         ) : null}
 
@@ -160,7 +165,7 @@ const SavingsGoalDetailScreen = ({ route, navigation }) => {
               <View key={c.id || i} style={styles.contribCard}>
                 <Text style={styles.contribAmount}>{formatCurrency(c.amount)}</Text>
                 <Text style={styles.contribDate}>
-                  {c.created_at ? new Date(c.created_at).toLocaleDateString() : 'N/A'}
+                  {c.contributed_at ? new Date(c.contributed_at).toLocaleDateString() : 'N/A'}
                 </Text>
               </View>
             ))}

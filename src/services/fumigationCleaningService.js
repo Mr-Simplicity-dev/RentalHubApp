@@ -31,11 +31,6 @@ export const fumigationCleaningService = {
     return response.data;
   },
 
-  getAvailableBookingDates: async (params) => {
-    const response = await api.get('/fumigation-cleaning/available-dates', { params });
-    return response.data;
-  },
-
   // Bookings
   createBooking: async (bookingData) => {
     const response = await api.post('/fumigation-cleaning/bookings', bookingData);
@@ -84,11 +79,6 @@ export const fumigationCleaningService = {
   },
 
   // Reviews
-  submitReview: async (bookingId, reviewData) => {
-    const response = await api.post(`/fumigation-cleaning/bookings/${bookingId}/review`, reviewData);
-    return response.data;
-  },
-
   getServiceReviews: async (serviceId) => {
     const response = await api.get(`/fumigation-cleaning/services/${serviceId}/reviews`);
     return response.data;

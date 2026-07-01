@@ -45,22 +45,6 @@ export const propertyService = {
     return response.data;
   },
 
-  // Property unlock endpoints
-  unlockProperty: async (propertyId, paymentData) => {
-    const response = await api.post(`/properties/${propertyId}/unlock`, paymentData);
-    return response.data;
-  },
-
-  getUnlockedProperties: async (params) => {
-    const response = await api.get('/properties/user/unlocked', { params });
-    return response.data;
-  },
-
-  checkPropertyUnlockStatus: async (propertyId) => {
-    const response = await api.get(`/properties/${propertyId}/unlock-status`);
-    return response.data;
-  },
-
   // Favorite/save endpoints
   saveProperty: async (id) => {
     const response = await api.post(`/properties/${id}/save`);
@@ -251,7 +235,9 @@ export const propertyService = {
   },
 
   getLatestPublishedDamageReport: async (propertyId) => {
-    const response = await api.get(`/properties/${propertyId}/damage-report/latest-published`);
+    const response = await api.get(
+      `/damage-reports/properties/${propertyId}/damage-report/latest-published`
+    );
     return response.data;
   },
 
@@ -261,9 +247,4 @@ export const propertyService = {
     return response.data;
   },
 
-  // Bank account verification
-  verifyBankAccount: async (bankData) => {
-    const response = await api.post('/properties/verify-bank-account', bankData);
-    return response.data;
-  },
 };

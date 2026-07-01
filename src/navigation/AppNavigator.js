@@ -242,9 +242,9 @@ const TenantRoot = () => (
     <Stack.Screen name="Notifications" component={NotificationsScreen} />
     {commonVerificationScreens()}
     <Stack.Screen name="RentSavingsDashboard" component={RentSavingsDashboardScreen} options={{ title: 'Rent Savings' }} />
-    <Stack.Screen name="SavingsGoalCreate" component={SavingsGoalCreateScreen} options={{ title: 'Create Goal' }} />
-    <Stack.Screen name="SavingsGoalList" component={SavingsGoalListScreen} options={{ title: 'My Goals' }} />
-    <Stack.Screen name="SavingsGoalDetail" component={SavingsGoalDetailScreen} options={{ title: 'Goal Details' }} />
+    <Stack.Screen name="SavingsGoalCreate" component={SavingsGoalCreateScreen} options={{ title: 'Create Plan' }} />
+    <Stack.Screen name="SavingsGoalList" component={SavingsGoalListScreen} options={{ title: 'My Plans' }} />
+    <Stack.Screen name="SavingsGoalDetail" component={SavingsGoalDetailScreen} options={{ title: 'Plan Details' }} />
     <Stack.Screen name="TransportationBooking" component={TransportationBookingScreen} options={{ title: 'Transportation' }} />
     <Stack.Screen name="TransportationBookings" component={TransportationBookingsScreen} options={{ title: 'My Transport Bookings' }} />
     <Stack.Screen name="TransportationBookingDetail" component={TransportationBookingDetailScreen} options={{ title: 'Booking Details' }} />

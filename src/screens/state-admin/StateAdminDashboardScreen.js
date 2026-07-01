@@ -15,7 +15,7 @@ const StateAdminDashboardScreen = ({ navigation }) => {
   const [dashboard, setDashboard] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const stateId = user?.state_id || user?.stateId;
+  const stateId = user?.assigned_state || user?.state_id || user?.stateId;
 
   useEffect(() => {
     if (stateId) loadDashboard();
@@ -23,7 +23,7 @@ const StateAdminDashboardScreen = ({ navigation }) => {
 
   const loadDashboard = async () => {
     try {
-      const response = await stateAdminService.getStateDashboardData(stateId);
+      const response = await stateAdminService.getStateDashboardData();
       setDashboard(pickObject(response, ['data', 'dashboard']));
     } catch (error) {
       Toast.show({
@@ -36,26 +36,16 @@ const StateAdminDashboardScreen = ({ navigation }) => {
     }
   };
 
-  const overview = dashboard?.overview || dashboard || {};
+  const overview = dashboard?.summary || dashboard || {};
 
   const overviewCards = [
-    { label: 'Properties', value: overview.total_properties ?? overview.totalProperties ?? '-', color: '#0284c7' },
-    { label: 'Users', value: overview.total_users ?? overview.totalUsers ?? '-', color: '#059669' },
-    { label: 'Revenue', value: formatCurrency(overview.total_revenue ?? overview.totalRevenue ?? 0), color: '#d97706' },
-    { label: 'Applications', value: overview.total_applications ?? overview.totalApplications ?? '-', color: '#7c3aed' },
+    { label: 'Managed Users', value: overview.total_managed_users ?? '-', color: '#0284c7' },
+    { label: 'Pending Commission', value: formatCurrency(overview.total_pending_commission ?? 0), color: '#059669' },
+    { label: 'Weekly Withdrawable', value: formatCurrency(overview.weekly_withdrawable ?? 0), color: '#d97706' },
   ];
 
   const actionCards = [
-    { label: 'Users', icon: 'people-outline', route: 'StateAdminUsers' },
-    { label: 'Properties', icon: 'business-outline', route: 'StateAdminProperties' },
-    { label: 'Applications', icon: 'document-text-outline', route: 'StateAdminApplications' },
-    { label: 'Payments', icon: 'cash-outline', route: 'StateAdminPayments' },
-    { label: 'Disputes', icon: 'scale-outline', route: 'StateAdminDisputes' },
-    { label: 'Compliance', icon: 'shield-checkmark-outline', route: 'StateAdminCompliance' },
-    { label: 'Verifications', icon: 'id-card-outline', route: 'StateAdminVerifications' },
-    { label: 'Reports', icon: 'bar-chart-outline', route: 'StateAdminReports' },
-    { label: 'Settings', icon: 'settings-outline', route: 'StateAdminSettings' },
-    { label: 'Performance', icon: 'speedometer-outline', route: 'StateAdminPerformance' },
+    { label: 'Property Approvals', icon: 'business-outline', route: 'StateAdminMigrations' },
   ];
 
   return (

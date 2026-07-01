@@ -45,14 +45,6 @@ const FinancialAdminDashboardScreen = ({ navigation }) => {
     { label: 'Transactions', icon: 'swap-horizontal-outline', route: 'FinancialTransactions' },
     { label: 'Withdrawals', icon: 'cash-outline', route: 'FinancialWithdrawals' },
     { label: 'Commissions', icon: 'people-outline', route: 'FinancialCommissions' },
-    { label: 'Invoices', icon: 'document-text-outline', route: 'FinancialInvoices' },
-    { label: 'Refunds', icon: 'arrow-undo-outline', route: 'FinancialRefunds' },
-    { label: 'Tax Reports', icon: 'calculator-outline', route: 'FinancialTaxReports' },
-    { label: 'Payment Gateways', icon: 'card-outline', route: 'FinancialGateways' },
-    { label: 'Alerts', icon: 'alert-circle-outline', route: 'FinancialAlerts' },
-    { label: 'Audit Trail', icon: 'file-tray-full-outline', route: 'FinancialAuditTrail' },
-    { label: 'Settings', icon: 'settings-outline', route: 'FinancialSettings' },
-    { label: 'Export Data', icon: 'download-outline', route: 'FinancialExport' },
   ];
 
   return (

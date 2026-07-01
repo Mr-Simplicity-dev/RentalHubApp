@@ -17,9 +17,7 @@ const FinancialTransactionsScreen = () => {
   const loadTransactions = async () => {
     try {
       const params = {};
-      if (filter === 'pending') params.status = 'pending';
-      else if (filter === 'completed') params.status = 'completed';
-      else if (filter === 'failed') params.status = 'failed';
+      if (filter !== 'all') params.payment_status = filter;
 
       const response = await financialAdminService.getTransactionHistory(params);
       setTransactions(pickList(response, ['data', 'transactions']));

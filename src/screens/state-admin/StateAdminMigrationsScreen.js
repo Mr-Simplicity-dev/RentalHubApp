@@ -11,7 +11,7 @@ const StateAdminMigrationsScreen = ({ navigation }) => {
   const [migrations, setMigrations] = useState([]);
   const [activeTab, setActiveTab] = useState('pending');
 
-  const stateId = user?.state_id || user?.stateId;
+  const stateId = user?.assigned_state || user?.state_id || user?.stateId;
 
   useEffect(() => {
     if (stateId) loadMigrations();
@@ -35,9 +35,9 @@ const StateAdminMigrationsScreen = ({ navigation }) => {
   const handleAction = async (propertyId, action) => {
     try {
       if (action === 'approve') {
-        await stateAdminService.approveProperty(stateId, propertyId, {});
+        await stateAdminService.approveProperty(propertyId);
       } else {
-        await stateAdminService.rejectProperty(stateId, propertyId, { reason: 'Rejected by admin' });
+        await stateAdminService.rejectProperty(propertyId, { reason: 'Rejected by admin' });
       }
       Toast.show({ type: 'success', text1: `Property ${action}d` });
       loadMigrations();

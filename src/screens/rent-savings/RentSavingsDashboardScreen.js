@@ -15,7 +15,7 @@ const RentSavingsDashboardScreen = ({ navigation }) => {
 
   const loadDashboard = useCallback(async () => {
     try {
-      const response = await rentSavingsService.getDashboard();
+      const response = await rentSavingsService.getSummary();
       setDashboard(pickObject(response, ['data', 'dashboard']) || {});
     } catch (error) {
       Toast.show({
@@ -38,9 +38,9 @@ const RentSavingsDashboardScreen = ({ navigation }) => {
     loadDashboard();
   };
 
-  const totalSaved = dashboard?.total_saved ?? dashboard?.totalSavings ?? 0;
-  const totalGoals = dashboard?.total_goals ?? dashboard?.totalGoals ?? 0;
-  const activeGoals = dashboard?.active_goals ?? dashboard?.activeGoals ?? 0;
+  const totalSaved = dashboard?.total_saved_across_plans ?? 0;
+  const totalGoals = dashboard?.total_plans ?? 0;
+  const activeGoals = dashboard?.active_plans ?? 0;
 
   return (
     <ScrollView
@@ -56,11 +56,11 @@ const RentSavingsDashboardScreen = ({ navigation }) => {
         <View style={styles.summaryRow}>
           <View style={styles.summaryItem}>
             <Text style={styles.summaryItemValue}>{totalGoals}</Text>
-            <Text style={styles.summaryItemLabel}>Total Goals</Text>
+            <Text style={styles.summaryItemLabel}>Total Plans</Text>
           </View>
           <View style={styles.summaryItem}>
             <Text style={styles.summaryItemValue}>{activeGoals}</Text>
-            <Text style={styles.summaryItemLabel}>Active Goals</Text>
+            <Text style={styles.summaryItemLabel}>Active Plans</Text>
           </View>
         </View>
       </View>
@@ -71,7 +71,7 @@ const RentSavingsDashboardScreen = ({ navigation }) => {
           onPress={() => navigation.navigate('SavingsGoalCreate')}
         >
           <Icon name="add-circle-outline" size={32} color="#0284c7" />
-          <Text style={styles.actionText}>Create Goal</Text>
+          <Text style={styles.actionText}>Create Plan</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -79,29 +79,43 @@ const RentSavingsDashboardScreen = ({ navigation }) => {
           onPress={() => navigation.navigate('SavingsGoalList')}
         >
           <Icon name="list-outline" size={32} color="#0284c7" />
-          <Text style={styles.actionText}>My Goals</Text>
+          <Text style={styles.actionText}>My Plans</Text>
         </TouchableOpacity>
       </View>
 
-      {dashboard?.recent_goals?.length > 0 && (
+      {dashboard?.upcoming_due?.length > 0 && (
         <>
-          <Text style={styles.sectionTitle}>Recent Goals</Text>
-          {dashboard.recent_goals.map((goal) => (
+          <Text style={styles.sectionTitle}>Upcoming Rent Due</Text>
+          {dashboard.upcoming_due.map((goal) => (
             <TouchableOpacity
               key={goal.id}
               style={styles.goalCard}
               onPress={() => navigation.navigate('SavingsGoalDetail', { goalId: goal.id })}
             >
               <View style={styles.goalHeader}>
-                <Text style={styles.goalName}>{goal.name}</Text>
-                <Text style={styles.goalStatus}>{goal.status}</Text>
+                <Text style={styles.goalName}>Plan #{goal.id}</Text>
+                <Text style={styles.goalStatus}>
+                  {new Date(goal.rent_due_date).toLocaleDateString()}
+                </Text>
               </View>
-              <Text style={styles.goalTarget}>{formatCurrency(goal.target_amount)}</Text>
+              <Text style={styles.goalTarget}>{formatCurrency(goal.target_savings_amount)}</Text>
               <View style={styles.progressBar}>
-                <View style={[styles.progressFill, { width: `${Math.min(goal.progress_percentage || 0, 100)}%` }]} />
+                <View
+                  style={[
+                    styles.progressFill,
+                    {
+                      width: `${Math.min(
+                        Number(goal.target_savings_amount)
+                          ? (Number(goal.total_saved || 0) / Number(goal.target_savings_amount)) * 100
+                          : 0,
+                        100
+                      )}%`,
+                    },
+                  ]}
+                />
               </View>
               <Text style={styles.goalProgress}>
-                {formatCurrency(goal.saved_amount || 0)} saved ({Math.round(goal.progress_percentage || 0)}%)
+                {formatCurrency(goal.total_saved || 0)} saved
               </Text>
             </TouchableOpacity>
           ))}
