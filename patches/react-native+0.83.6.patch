@@ -1,13 +1,12 @@
 diff --git a/node_modules/react-native/ReactAndroid/cmake-utils/default-app-setup/CMakeLists.txt b/node_modules/react-native/ReactAndroid/cmake-utils/default-app-setup/CMakeLists.txt
-index 0cb4bd1..7b1cf33 100644
+index 9755671..9439827 100644
 --- a/node_modules/react-native/ReactAndroid/cmake-utils/default-app-setup/CMakeLists.txt
 +++ b/node_modules/react-native/ReactAndroid/cmake-utils/default-app-setup/CMakeLists.txt
-@@ -29,6 +29,8 @@ else()
-   set(CMAKE_VERBOSE_MAKEFILE ON)
- endif()
+@@ -27,5 +27,7 @@ cmake_minimum_required(VERSION 3.13)
+ # Define the library name here.
+ project(appmodules)
  
 +add_compile_options(-include "${PROJECT_ROOT_DIR}/app/src/main/jni/format_polyfill.h")
 +
- set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DREACT_NATIVE_VERSION=${REACT_NATIVE_VERSION}")
- 
- # We use the same hard-coded paths in both config and build command to make sure
+ # This file includes all the necessary to let you build your application with the New Architecture.
+ include(${REACT_ANDROID_DIR}/cmake-utils/ReactNative-application.cmake)

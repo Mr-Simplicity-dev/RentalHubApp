@@ -1,0 +1,33 @@
+diff --git a/node_modules/react-native-webview/src/RNCWebViewNativeComponent.ts b/node_modules/react-native-webview/src/RNCWebViewNativeComponent.ts
+index 7f4e6c4..7a2f57a 100644
+--- a/node_modules/react-native-webview/src/RNCWebViewNativeComponent.ts
++++ b/node_modules/react-native-webview/src/RNCWebViewNativeComponent.ts
+@@ -73,12 +73,6 @@ export type WebViewNavigationEvent = Readonly<{
+   canGoBack: boolean;
+   canGoForward: boolean;
+   lockIdentifier: Double;
+-  navigationType:
+-    | 'click'
+-    | 'formsubmit'
+-    | 'backforward'
+-    | 'reload'
+-    | 'formresubmit'
+-    | 'other';
++  navigationType: string;
+   mainDocumentURL?: string;
+ }>;
+@@ -90,13 +84,7 @@ export type ShouldStartLoadRequestEvent = Readonly<{
+   canGoBack: boolean;
+   canGoForward: boolean;
+   lockIdentifier: Double;
+-  navigationType:
+-    | 'click'
+-    | 'formsubmit'
+-    | 'backforward'
+-    | 'reload'
+-    | 'formresubmit'
+-    | 'other';
++  navigationType: string;
+   mainDocumentURL?: string;
+   isTopFrame: boolean;
+ }>;
