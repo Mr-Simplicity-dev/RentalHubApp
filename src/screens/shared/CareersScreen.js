@@ -293,9 +293,20 @@ const CareersScreen = ({ navigation }) => {
               <Text style={styles.applicationTitle}>{application.role_title || 'Application'}</Text>
               <Text style={styles.roleMeta}>Status: {application.status}</Text>
               <Text style={styles.roleMeta}>Reference: {application.reference_number}</Text>
+              <TouchableOpacity
+                style={styles.interviewButton}
+                onPress={() => navigation.navigate('RecruitmentApplication', {
+                  application,
+                  applicationId: application.id,
+                  email: application.email_address,
+                  referenceNumber: application.reference_number,
+                })}
+              >
+                <Text style={styles.interviewButtonText}>Open application</Text>
+              </TouchableOpacity>
               {canStartInterview ? (
                 <TouchableOpacity
-                  style={styles.interviewButton}
+                  style={[styles.interviewButton, styles.interviewSecondaryButton]}
                   onPress={() => navigation.navigate('Interview', {
                     applicationId: application.id,
                     phoneNumber: application.phone_number,
@@ -303,7 +314,7 @@ const CareersScreen = ({ navigation }) => {
                     referenceNumber: application.reference_number,
                   })}
                 >
-                  <Text style={styles.interviewButtonText}>Start interview</Text>
+                  <Text style={styles.interviewSecondaryButtonText}>Start interview</Text>
                 </TouchableOpacity>
               ) : null}
             </View>

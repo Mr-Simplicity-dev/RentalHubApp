@@ -91,6 +91,7 @@ import VerificationStatusScreen from '../screens/shared/VerificationStatusScreen
 import CareersScreen from '../screens/shared/CareersScreen';
 import RecruitmentAdminScreen from '../screens/shared/RecruitmentAdminScreen';
 import InterviewScreen from '../screens/shared/InterviewScreen';
+import RecruitmentApplicationScreen from '../screens/shared/RecruitmentApplicationScreen';
 
 const Stack = (Platform.OS === 'web' ? createStackNavigator : createNativeStackNavigator)();
 const Tab = createBottomTabNavigator();
@@ -261,6 +262,7 @@ const TenantRoot = () => (
     <Stack.Screen name="Careers" component={CareersScreen} options={{ title: 'Careers' }} />
     <Stack.Screen name="RecruitmentAdmin" component={RecruitmentAdminScreen} options={{ title: 'Recruitment Admin' }} />
     <Stack.Screen name="Interview" component={InterviewScreen} options={{ title: 'Interview' }} />
+    <Stack.Screen name="RecruitmentApplication" component={RecruitmentApplicationScreen} options={{ title: 'Application' }} />
   </Stack.Navigator>
 );
 
@@ -289,6 +291,7 @@ const LandlordRoot = () => (
     <Stack.Screen name="Careers" component={CareersScreen} options={{ title: 'Careers' }} />
     <Stack.Screen name="RecruitmentAdmin" component={RecruitmentAdminScreen} options={{ title: 'Recruitment Admin' }} />
     <Stack.Screen name="Interview" component={InterviewScreen} options={{ title: 'Interview' }} />
+    <Stack.Screen name="RecruitmentApplication" component={RecruitmentApplicationScreen} options={{ title: 'Application' }} />
   </Stack.Navigator>
 );
 
@@ -319,6 +322,7 @@ const AgentRoot = () => (
     <Stack.Screen name="Careers" component={CareersScreen} options={{ title: 'Careers' }} />
     <Stack.Screen name="RecruitmentAdmin" component={RecruitmentAdminScreen} options={{ title: 'Recruitment Admin' }} />
     <Stack.Screen name="Interview" component={InterviewScreen} options={{ title: 'Interview' }} />
+    <Stack.Screen name="RecruitmentApplication" component={RecruitmentApplicationScreen} options={{ title: 'Application' }} />
   </Stack.Navigator>
 );
 
@@ -347,6 +351,7 @@ const LawyerRoot = () => (
     <Stack.Screen name="Careers" component={CareersScreen} options={{ title: 'Careers' }} />
     <Stack.Screen name="RecruitmentAdmin" component={RecruitmentAdminScreen} options={{ title: 'Recruitment Admin' }} />
     <Stack.Screen name="Interview" component={InterviewScreen} options={{ title: 'Interview' }} />
+    <Stack.Screen name="RecruitmentApplication" component={RecruitmentApplicationScreen} options={{ title: 'Application' }} />
   </Stack.Navigator>
 );
 
@@ -374,6 +379,7 @@ const AdminRoot = () => (
     <Stack.Screen name="Careers" component={CareersScreen} options={{ title: 'Careers' }} />
     <Stack.Screen name="RecruitmentAdmin" component={RecruitmentAdminScreen} options={{ title: 'Recruitment Admin' }} />
     <Stack.Screen name="Interview" component={InterviewScreen} options={{ title: 'Interview' }} />
+    <Stack.Screen name="RecruitmentApplication" component={RecruitmentApplicationScreen} options={{ title: 'Application' }} />
   </Stack.Navigator>
 );
 
@@ -406,6 +412,7 @@ const SuperAdminRoot = () => (
     <Stack.Screen name="Careers" component={CareersScreen} options={{ title: 'Careers' }} />
     <Stack.Screen name="RecruitmentAdmin" component={RecruitmentAdminScreen} options={{ title: 'Recruitment Admin' }} />
     <Stack.Screen name="Interview" component={InterviewScreen} options={{ title: 'Interview' }} />
+    <Stack.Screen name="RecruitmentApplication" component={RecruitmentApplicationScreen} options={{ title: 'Application' }} />
   </Stack.Navigator>
 );
 
@@ -436,6 +443,7 @@ const FinancialAdminRoot = () => (
     <Stack.Screen name="Careers" component={CareersScreen} options={{ title: 'Careers' }} />
     <Stack.Screen name="RecruitmentAdmin" component={RecruitmentAdminScreen} options={{ title: 'Recruitment Admin' }} />
     <Stack.Screen name="Interview" component={InterviewScreen} options={{ title: 'Interview' }} />
+    <Stack.Screen name="RecruitmentApplication" component={RecruitmentApplicationScreen} options={{ title: 'Application' }} />
   </Stack.Navigator>
 );
 
