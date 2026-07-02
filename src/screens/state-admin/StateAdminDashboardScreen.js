@@ -63,6 +63,10 @@ const StateAdminDashboardScreen = ({ navigation }) => {
 
       <Text style={styles.sectionTitle}>Management</Text>
       <View style={styles.actionsGrid}>
+        <TouchableOpacity style={styles.actionCard} onPress={() => navigation.navigate('RecruitmentAdmin')}>
+          <Icon name='people-outline' size={26} color="#0284c7" />
+          <Text style={styles.actionLabel}>Recruitment</Text>
+        </TouchableOpacity>
         {actionCards.map((action) => (
           <TouchableOpacity
             key={action.route}

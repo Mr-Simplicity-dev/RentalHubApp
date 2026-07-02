@@ -88,6 +88,9 @@ import FumigationCleaningBookingsScreen from '../screens/fumigation/FumigationCl
 
 // ========== Verification Status ==========
 import VerificationStatusScreen from '../screens/shared/VerificationStatusScreen';
+import CareersScreen from '../screens/shared/CareersScreen';
+import RecruitmentAdminScreen from '../screens/shared/RecruitmentAdminScreen';
+import InterviewScreen from '../screens/shared/InterviewScreen';
 
 const Stack = (Platform.OS === 'web' ? createStackNavigator : createNativeStackNavigator)();
 const Tab = createBottomTabNavigator();
@@ -255,6 +258,9 @@ const TenantRoot = () => (
     <Stack.Screen name="FumigationCleaningPayment" component={FumigationCleaningPaymentScreen} options={{ title: 'Payment' }} />
     <Stack.Screen name="WebFeatures" component={WebFeaturesScreen} options={{ title: 'Web Features' }} />
     <Stack.Screen name="WebRoute" component={WebRouteScreen} options={{ headerShown: false }} />
+    <Stack.Screen name="Careers" component={CareersScreen} options={{ title: 'Careers' }} />
+    <Stack.Screen name="RecruitmentAdmin" component={RecruitmentAdminScreen} options={{ title: 'Recruitment Admin' }} />
+    <Stack.Screen name="Interview" component={InterviewScreen} options={{ title: 'Interview' }} />
   </Stack.Navigator>
 );
 
@@ -280,6 +286,9 @@ const LandlordRoot = () => (
     <Stack.Screen name="FumigationCleaningPayment" component={FumigationCleaningPaymentScreen} options={{ title: 'Payment' }} />
     <Stack.Screen name="WebFeatures" component={WebFeaturesScreen} options={{ title: 'Web Features' }} />
     <Stack.Screen name="WebRoute" component={WebRouteScreen} options={{ headerShown: false }} />
+    <Stack.Screen name="Careers" component={CareersScreen} options={{ title: 'Careers' }} />
+    <Stack.Screen name="RecruitmentAdmin" component={RecruitmentAdminScreen} options={{ title: 'Recruitment Admin' }} />
+    <Stack.Screen name="Interview" component={InterviewScreen} options={{ title: 'Interview' }} />
   </Stack.Navigator>
 );
 
@@ -307,6 +316,9 @@ const AgentRoot = () => (
     <Stack.Screen name="FumigationCleaningPayment" component={FumigationCleaningPaymentScreen} options={{ title: 'Payment' }} />
     <Stack.Screen name="WebFeatures" component={WebFeaturesScreen} options={{ title: 'Web Features' }} />
     <Stack.Screen name="WebRoute" component={WebRouteScreen} options={{ headerShown: false }} />
+    <Stack.Screen name="Careers" component={CareersScreen} options={{ title: 'Careers' }} />
+    <Stack.Screen name="RecruitmentAdmin" component={RecruitmentAdminScreen} options={{ title: 'Recruitment Admin' }} />
+    <Stack.Screen name="Interview" component={InterviewScreen} options={{ title: 'Interview' }} />
   </Stack.Navigator>
 );
 
@@ -332,6 +344,9 @@ const LawyerRoot = () => (
     <Stack.Screen name="FumigationCleaningPayment" component={FumigationCleaningPaymentScreen} options={{ title: 'Payment' }} />
     <Stack.Screen name="WebFeatures" component={WebFeaturesScreen} options={{ title: 'Web Features' }} />
     <Stack.Screen name="WebRoute" component={WebRouteScreen} options={{ headerShown: false }} />
+    <Stack.Screen name="Careers" component={CareersScreen} options={{ title: 'Careers' }} />
+    <Stack.Screen name="RecruitmentAdmin" component={RecruitmentAdminScreen} options={{ title: 'Recruitment Admin' }} />
+    <Stack.Screen name="Interview" component={InterviewScreen} options={{ title: 'Interview' }} />
   </Stack.Navigator>
 );
 
@@ -356,6 +371,9 @@ const AdminRoot = () => (
     {commonVerificationScreens()}
     <Stack.Screen name="WebFeatures" component={WebFeaturesScreen} options={{ title: 'Web Features' }} />
     <Stack.Screen name="WebRoute" component={WebRouteScreen} options={{ headerShown: false }} />
+    <Stack.Screen name="Careers" component={CareersScreen} options={{ title: 'Careers' }} />
+    <Stack.Screen name="RecruitmentAdmin" component={RecruitmentAdminScreen} options={{ title: 'Recruitment Admin' }} />
+    <Stack.Screen name="Interview" component={InterviewScreen} options={{ title: 'Interview' }} />
   </Stack.Navigator>
 );
 
@@ -385,6 +403,9 @@ const SuperAdminRoot = () => (
     <Stack.Screen name="FumigationCleaningPayment" component={FumigationCleaningPaymentScreen} options={{ title: 'Payment' }} />
     <Stack.Screen name="WebFeatures" component={WebFeaturesScreen} options={{ title: 'Web Features' }} />
     <Stack.Screen name="WebRoute" component={WebRouteScreen} options={{ headerShown: false }} />
+    <Stack.Screen name="Careers" component={CareersScreen} options={{ title: 'Careers' }} />
+    <Stack.Screen name="RecruitmentAdmin" component={RecruitmentAdminScreen} options={{ title: 'Recruitment Admin' }} />
+    <Stack.Screen name="Interview" component={InterviewScreen} options={{ title: 'Interview' }} />
   </Stack.Navigator>
 );
 
@@ -412,6 +433,9 @@ const FinancialAdminRoot = () => (
     <Stack.Screen name="FumigationCleaningPayment" component={FumigationCleaningPaymentScreen} options={{ title: 'Payment' }} />
     <Stack.Screen name="WebFeatures" component={WebFeaturesScreen} options={{ title: 'Web Features' }} />
     <Stack.Screen name="WebRoute" component={WebRouteScreen} options={{ headerShown: false }} />
+    <Stack.Screen name="Careers" component={CareersScreen} options={{ title: 'Careers' }} />
+    <Stack.Screen name="RecruitmentAdmin" component={RecruitmentAdminScreen} options={{ title: 'Recruitment Admin' }} />
+    <Stack.Screen name="Interview" component={InterviewScreen} options={{ title: 'Interview' }} />
   </Stack.Navigator>
 );
 

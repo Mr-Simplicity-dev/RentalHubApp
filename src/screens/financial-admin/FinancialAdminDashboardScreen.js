@@ -62,6 +62,10 @@ const FinancialAdminDashboardScreen = ({ navigation }) => {
 
       <Text style={styles.sectionTitle}>Quick Actions</Text>
       <View style={styles.actionsGrid}>
+        <TouchableOpacity style={styles.actionCard} onPress={() => navigation.navigate('RecruitmentAdmin')}>
+          <Icon name='people-outline' size={28} color="#0284c7" />
+          <Text style={styles.actionLabel}>Recruitment</Text>
+        </TouchableOpacity>
         {actionCards.map((action) => (
           <TouchableOpacity
             key={action.route}

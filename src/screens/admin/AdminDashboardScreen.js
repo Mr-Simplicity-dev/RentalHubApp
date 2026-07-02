@@ -53,6 +53,11 @@ const AdminDashboardScreen = ({ navigation }) => {
         <Text style={styles.linkMeta}>Assign, deactivate, and reassign landlord agents</Text>
       </TouchableOpacity>
 
+      <TouchableOpacity style={styles.linkCard} onPress={() => navigation.navigate('RecruitmentAdmin')}>
+        <Text style={styles.linkTitle}>Recruitment Admin</Text>
+        <Text style={styles.linkMeta}>Open cycles, roles, applicant reviews, and exports</Text>
+      </TouchableOpacity>
+
       <PropertyRequestWorkflowSection mode="state" title="Tenant Property Requests" />
       <TenancyWorkflowSection title="LGA Tenancy Grace and Refund Enablement" />
     </ScrollView>

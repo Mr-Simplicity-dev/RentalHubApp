@@ -857,6 +857,11 @@ const DashboardScreen = ({ navigation }) => {
           <Text style={styles.quickText}>Access every web module from your phone</Text>
         </TouchableOpacity>
 
+        <TouchableOpacity style={styles.quickBtn} onPress={() => navigation.navigate('Careers')}>
+          <Text style={styles.quickTitle}>Careers</Text>
+          <Text style={styles.quickText}>View openings and submit applications</Text>
+        </TouchableOpacity>
+
         <TouchableOpacity style={styles.quickBtn} onPress={() => navigation.navigate('PaymentHistory')}>
           <Text style={styles.quickTitle}>Payment History</Text>
           <Text style={styles.quickText}>Review your payments and transaction references</Text>

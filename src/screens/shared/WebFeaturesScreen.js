@@ -16,6 +16,7 @@ const makePublicFeatures = () => [
   { label: 'Privacy', path: '/privacy' },
   { label: 'Terms', path: '/terms' },
   { label: 'Nigeria Page', path: '/nigeria' },
+  { label: 'Careers', path: '/careers' },
   { label: 'Super Admin Landing', path: '/super-admin' },
 ];
 
@@ -34,6 +35,7 @@ const makeProtectedFeatures = (userType) => {
     return [
       ...base,
       { label: 'Admin Dashboard', path: '/admin' },
+      { label: 'Recruitment Admin', path: '/admin/recruitment' },
       { label: 'Admin Lawyer Invites', path: '/admin/lawyer-invites' },
       { label: 'Admin Users', path: '/admin/users' },
       { label: 'Admin Properties', path: '/admin/properties' },
@@ -88,6 +90,7 @@ const makeProtectedFeatures = (userType) => {
     return [
       ...base,
       { label: 'Super Admin Dashboard', path: '/super-admin' },
+      { label: 'Recruitment Admin', path: '/admin/recruitment' },
       { label: 'Admin Dashboard', path: '/admin' },
       { label: 'Admin Users', path: '/admin/users' },
       { label: 'Admin Properties', path: '/admin/properties' },
