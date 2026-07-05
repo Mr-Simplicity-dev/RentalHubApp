@@ -1,6 +1,7 @@
-import React from 'react';
-import { View, TextInput, Text, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, TextInput, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { colors, radius, typography } from '../../theme';
 
 const Input = ({
   label,
@@ -15,71 +16,114 @@ const Input = ({
   numberOfLines,
   ...rest
 }) => {
+  const [focused, setFocused] = useState(false);
+  const [passwordVisible, setPasswordVisible] = useState(false);
+
   return (
     <View style={styles.container}>
       {label && <Text style={styles.label}>{label}</Text>}
-      <View style={[styles.inputContainer, error && styles.inputError]}>
-        {icon && <Icon name={icon} size={20} color="#6b7280" style={styles.icon} />}
+      <View
+        style={[
+          styles.inputContainer,
+          focused && styles.inputFocused,
+          error && styles.inputError,
+        ]}>
+        {icon && (
+          <Icon
+            name={icon}
+            size={20}
+            color={focused ? colors.blue : colors.muted}
+            style={styles.icon}
+          />
+        )}
         <TextInput
+          accessibilityLabel={rest.accessibilityLabel || label || placeholder}
+          accessibilityState={{ disabled: Boolean(rest.editable === false) }}
           style={[styles.input, icon && styles.inputWithIcon, multiline && styles.multiline]}
           value={value}
           onChangeText={onChangeText}
           placeholder={placeholder}
-          secureTextEntry={secureTextEntry}
+          secureTextEntry={secureTextEntry && !passwordVisible}
           keyboardType={keyboardType}
-          placeholderTextColor="#9ca3af"
+          placeholderTextColor="#96A2B8"
           multiline={multiline}
           numberOfLines={numberOfLines}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
+          selectionColor={colors.blue}
           {...rest}
         />
+        {secureTextEntry ? (
+          <TouchableOpacity
+            accessibilityLabel={passwordVisible ? 'Hide password' : 'Show password'}
+            onPress={() => setPasswordVisible((visible) => !visible)}
+            style={styles.visibilityButton}>
+            <Icon
+              name={passwordVisible ? 'eye-off-outline' : 'eye-outline'}
+              size={20}
+              color={colors.muted}
+            />
+          </TouchableOpacity>
+        ) : null}
       </View>
-      {error && <Text style={styles.errorText}>{error}</Text>}
+      {error && <Text accessibilityLiveRegion="polite" style={styles.errorText}>{error}</Text>}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 16,
+    marginBottom: 18,
   },
   label: {
+    color: colors.text,
+    fontFamily: typography.semibold,
     fontSize: 14,
-    fontWeight: '500',
-    color: '#374151',
-    marginBottom: 6,
+    marginBottom: 8,
   },
   inputContainer: {
-    flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: colors.white,
+    borderColor: colors.border,
+    borderRadius: radius.md,
     borderWidth: 1,
-    borderColor: '#d1d5db',
-    borderRadius: 8,
-    backgroundColor: '#ffffff',
+    flexDirection: 'row',
+    minHeight: 54,
+  },
+  inputFocused: {
+    borderColor: colors.blue,
+    borderWidth: 1.5,
   },
   inputError: {
-    borderColor: '#ef4444',
+    borderColor: colors.danger,
   },
   icon: {
-    marginLeft: 12,
+    marginLeft: 15,
   },
   input: {
+    color: colors.ink,
     flex: 1,
-    paddingVertical: 12,
+    fontFamily: typography.regular,
+    fontSize: 15,
     paddingHorizontal: 14,
-    fontSize: 16,
-    color: '#1f2937',
+    paddingVertical: 14,
   },
   inputWithIcon: {
-    paddingLeft: 8,
+    paddingLeft: 10,
+  },
+  visibilityButton: {
+    padding: 14,
+    paddingLeft: 4,
   },
   multiline: {
     minHeight: 100,
     textAlignVertical: 'top',
   },
   errorText: {
+    color: colors.danger,
+    fontFamily: typography.medium,
     fontSize: 12,
-    color: '#ef4444',
-    marginTop: 4,
+    marginTop: 5,
   },
 });
 

@@ -10,6 +10,7 @@ import {
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { colors, radius, typography } from '../../theme';
 
 const OptionPickerModal = ({
   visible,
@@ -49,7 +50,7 @@ const OptionPickerModal = ({
         <View style={styles.header}>
           <Text style={styles.title}>{title}</Text>
           <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-            <Icon name="close-outline" size={26} color="#0f172a" />
+            <Icon name="close-outline" size={24} color={colors.navy} />
           </TouchableOpacity>
         </View>
 
@@ -59,7 +60,7 @@ const OptionPickerModal = ({
             placeholder={searchPlaceholder}
             value={query}
             onChangeText={setQuery}
-            placeholderTextColor="#94a3b8"
+            placeholderTextColor="#96A2B8"
           />
         ) : null}
 
@@ -84,7 +85,7 @@ const OptionPickerModal = ({
                   {optionLabel}
                 </Text>
                 {active ? (
-                  <Icon name="checkmark-circle" size={20} color="#0284c7" />
+                  <Icon name="checkmark-circle" size={20} color={colors.blue} />
                 ) : null}
               </TouchableOpacity>
             );
@@ -99,71 +100,82 @@ const OptionPickerModal = ({
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#f8fafc',
+    backgroundColor: colors.surface,
   },
   header: {
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    borderBottomWidth: 1,
-    borderBottomColor: '#e2e8f0',
-    flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: colors.surface,
+    borderBottomColor: colors.border,
+    borderBottomWidth: 1,
+    flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: '#ffffff',
+    paddingHorizontal: 20,
+    paddingVertical: 15,
   },
   title: {
-    fontSize: 18,
-    fontWeight: '800',
-    color: '#0f172a',
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 20,
+    letterSpacing: -0.4,
   },
   closeButton: {
-    padding: 4,
+    alignItems: 'center',
+    backgroundColor: colors.white,
+    borderColor: colors.border,
+    borderRadius: 20,
+    borderWidth: 1,
+    height: 40,
+    justifyContent: 'center',
+    width: 40,
   },
   searchInput: {
+    backgroundColor: colors.white,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    color: colors.ink,
+    fontFamily: typography.regular,
     margin: 16,
     marginBottom: 0,
-    borderWidth: 1,
-    borderColor: '#d1d5db',
-    borderRadius: 10,
-    backgroundColor: '#ffffff',
     paddingHorizontal: 14,
-    paddingVertical: 12,
-    color: '#0f172a',
+    paddingVertical: 13,
   },
   listContent: {
     padding: 16,
     paddingBottom: 24,
   },
   optionRow: {
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
-    borderRadius: 12,
-    backgroundColor: '#ffffff',
-    paddingHorizontal: 14,
-    paddingVertical: 14,
-    marginBottom: 10,
-    flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: colors.white,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    flexDirection: 'row',
     justifyContent: 'space-between',
+    marginBottom: 10,
+    minHeight: 54,
+    paddingHorizontal: 15,
   },
   optionRowActive: {
-    borderColor: '#38bdf8',
-    backgroundColor: '#eff6ff',
+    borderColor: colors.blue,
+    backgroundColor: colors.surfaceBlue,
   },
   optionText: {
-    color: '#0f172a',
-    fontSize: 15,
-    fontWeight: '600',
+    color: colors.ink,
     flex: 1,
+    fontFamily: typography.medium,
+    fontSize: 15,
     marginRight: 10,
   },
   optionTextActive: {
-    color: '#0369a1',
+    color: colors.blue,
+    fontFamily: typography.semibold,
   },
   emptyText: {
-    textAlign: 'center',
-    color: '#64748b',
+    color: colors.muted,
+    fontFamily: typography.regular,
     marginTop: 24,
+    textAlign: 'center',
   },
 });
 

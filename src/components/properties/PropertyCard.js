@@ -1,10 +1,11 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { colors, radius, shadows, typography } from '../../theme';
 
 const formatCurrency = (value) => {
   const amount = Number(value || 0);
-  return `NGN ${amount.toLocaleString()}`;
+  return `₦${amount.toLocaleString()}`;
 };
 
 const PropertyCard = ({ property, onPress, onSave, isSaved = false }) => {
@@ -17,18 +18,24 @@ const PropertyCard = ({ property, onPress, onSave, isSaved = false }) => {
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.9} style={styles.card}>
       <View style={styles.imageContainer}>
-        <Image source={{ uri: cover }} style={styles.image} />
+        <Image source={{ uri: cover }} style={styles.image} resizeMode="cover" />
         {Boolean(property?.featured) && (
           <View style={styles.badge}>
             <Text style={styles.badgeText}>Featured</Text>
           </View>
         )}
         {onSave && (
-          <TouchableOpacity style={styles.saveButton} onPress={() => onSave(property.id)}>
+          <TouchableOpacity
+            accessibilityLabel={isSaved ? 'Remove saved property' : 'Save property'}
+            style={styles.saveButton}
+            onPress={(event) => {
+              event.stopPropagation();
+              onSave(property.id);
+            }}>
             <Icon
               name={isSaved ? 'heart' : 'heart-outline'}
               size={20}
-              color={isSaved ? '#ef4444' : '#ffffff'}
+              color={isSaved ? '#F04438' : colors.white}
             />
           </TouchableOpacity>
         )}
@@ -40,16 +47,16 @@ const PropertyCard = ({ property, onPress, onSave, isSaved = false }) => {
         </Text>
 
         <View style={styles.row}>
-          <Icon name="location-outline" size={15} color="#6b7280" />
+          <Icon name="location-outline" size={15} color={colors.muted} />
           <Text style={styles.meta} numberOfLines={1}>
             {[property?.area, property?.city, property?.state_name].filter(Boolean).join(', ') || 'Location unavailable'}
           </Text>
         </View>
 
         <View style={styles.row}>
-          <Icon name="bed-outline" size={15} color="#6b7280" />
+          <Icon name="bed-outline" size={15} color={colors.muted} />
           <Text style={styles.meta}>{Number(property?.bedrooms || 0)} bed</Text>
-          <Icon name="water-outline" size={15} color="#6b7280" style={styles.gap} />
+          <Icon name="water-outline" size={15} color={colors.muted} style={styles.gap} />
           <Text style={styles.meta}>{Number(property?.bathrooms || 0)} bath</Text>
         </View>
 
@@ -66,19 +73,17 @@ const PropertyCard = ({ property, onPress, onSave, isSaved = false }) => {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#ffffff',
-    borderRadius: 14,
+    backgroundColor: colors.white,
+    borderColor: '#E6EBF3',
+    borderRadius: radius.md,
+    borderWidth: 1,
     marginBottom: 14,
     overflow: 'hidden',
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 6,
-    elevation: 3,
+    ...shadows.soft,
   },
   imageContainer: {
-    position: 'relative',
     height: 180,
+    position: 'relative',
   },
   image: {
     width: '100%',
@@ -88,15 +93,15 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 12,
     top: 12,
-    backgroundColor: '#0284c7',
+    backgroundColor: colors.blue,
+    borderRadius: radius.pill,
     paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 999,
+    paddingVertical: 5,
   },
   badgeText: {
-    color: '#ffffff',
+    color: colors.white,
+    fontFamily: typography.bold,
     fontSize: 11,
-    fontWeight: '700',
   },
   saveButton: {
     position: 'absolute',
@@ -105,27 +110,29 @@ const styles = StyleSheet.create({
     width: 34,
     height: 34,
     borderRadius: 17,
-    backgroundColor: 'rgba(0,0,0,0.35)',
+    backgroundColor: 'rgba(7,26,61,0.62)',
     alignItems: 'center',
     justifyContent: 'center',
   },
   content: {
-    padding: 14,
-    gap: 6,
+    gap: 7,
+    padding: 15,
   },
   title: {
+    color: colors.ink,
+    fontFamily: typography.bold,
     fontSize: 17,
-    fontWeight: '700',
-    color: '#0f172a',
+    letterSpacing: -0.25,
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   meta: {
-    marginLeft: 6,
-    color: '#475569',
+    color: colors.muted,
+    fontFamily: typography.regular,
     fontSize: 13,
+    marginLeft: 6,
   },
   gap: {
     marginLeft: 14,
@@ -136,14 +143,15 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   price: {
-    fontSize: 21,
-    fontWeight: '800',
-    color: '#0284c7',
+    color: colors.navy,
+    fontFamily: typography.bold,
+    fontSize: 20,
   },
   frequency: {
-    marginLeft: 6,
-    color: '#64748b',
+    color: colors.muted,
+    fontFamily: typography.regular,
     fontSize: 13,
+    marginLeft: 5,
   },
 });
 

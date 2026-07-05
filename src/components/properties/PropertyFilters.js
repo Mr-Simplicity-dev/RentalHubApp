@@ -1,60 +1,88 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  TextInput,
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
   ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Button from '../common/Button';
 import OptionPickerModal from '../common/OptionPickerModal';
+import { colors, radius, typography } from '../../theme';
+
+const propertyTypes = [
+  { label: 'Any property type', value: '' },
+  { label: 'Apartment', value: 'apartment' },
+  { label: 'House', value: 'house' },
+  { label: 'Duplex', value: 'duplex' },
+  { label: 'Bungalow', value: 'bungalow' },
+  { label: 'Studio', value: 'studio' },
+  { label: 'Mansion', value: 'mansion' },
+  { label: 'Commercial', value: 'commercial' },
+  { label: 'Short let', value: 'short_let' },
+];
+
+const frequencies = [
+  { label: 'Any payment schedule', value: '' },
+  { label: 'Monthly', value: 'monthly' },
+  { label: 'Yearly', value: 'yearly' },
+  { label: 'Quarterly', value: 'quarterly' },
+];
+
+const numberOptions = [
+  { label: 'Any', value: '' },
+  { label: '1+', value: '1' },
+  { label: '2+', value: '2' },
+  { label: '3+', value: '3' },
+  { label: '4+', value: '4' },
+  { label: '5+', value: '5' },
+];
+
+const emptyFilters = {
+  min_price: '',
+  max_price: '',
+  bedrooms: '',
+  bathrooms: '',
+  property_type: '',
+  state: '',
+  city: '',
+  payment_frequency: '',
+};
+
+const normalise = (source = {}) => ({
+  min_price: source.min_price || source.minPrice || '',
+  max_price: source.max_price || source.maxPrice || '',
+  bedrooms: source.bedrooms || '',
+  bathrooms: source.bathrooms || '',
+  property_type: source.property_type || source.propertyType || '',
+  state: source.state || '',
+  city: source.city || '',
+  payment_frequency: source.payment_frequency || source.paymentFrequency || '',
+});
 
 const PropertyFilters = ({ visible, onClose, onApply, initialFilters = {} }) => {
-  const [filters, setFilters] = useState({
-    minPrice: initialFilters.minPrice || '',
-    maxPrice: initialFilters.maxPrice || '',
-    bedrooms: initialFilters.bedrooms || '',
-    bathrooms: initialFilters.bathrooms || '',
-    propertyType: initialFilters.propertyType || '',
-    state: initialFilters.state || '',
-    city: initialFilters.city || '',
-    paymentFrequency: initialFilters.paymentFrequency || '',
-    ...initialFilters,
-  });
-
+  const [filters, setFilters] = useState(normalise(initialFilters));
   const [showPicker, setShowPicker] = useState(null);
 
-  const propertyTypes = [
-    { label: 'Apartment', value: 'apartment' },
-    { label: 'House', value: 'house' },
-    { label: 'Duplex', value: 'duplex' },
-    { label: 'Bungalow', value: 'bungalow' },
-    { label: 'Studio', value: 'studio' },
-    { label: 'Mansion', value: 'mansion' },
-    { label: 'Commercial', value: 'commercial' },
-    { label: 'Short Let', value: 'short_let' },
-  ];
-
-  const frequencies = [
-    { label: 'Monthly', value: 'monthly' },
-    { label: 'Yearly', value: 'yearly' },
-    { label: 'Quarterly', value: 'quarterly' },
-  ];
-
-  const numberOptions = [
-    { label: 'Any', value: '' },
-    { label: '1', value: '1' },
-    { label: '2', value: '2' },
-    { label: '3', value: '3' },
-    { label: '4', value: '4' },
-    { label: '5+', value: '5' },
-  ];
+  useEffect(() => {
+    if (visible) {
+      setFilters(normalise(initialFilters));
+    }
+  }, [visible, initialFilters]);
 
   const updateFilter = (key, value) => {
-    setFilters((prev) => ({ ...prev, [key]: value }));
+    setFilters((previous) => ({ ...previous, [key]: value }));
   };
+
+  const activeCount = Object.values(filters).filter(
+    (value) => value !== '' && value !== null && value !== undefined
+  ).length;
 
   const handleApply = () => {
     const cleaned = {};
@@ -66,235 +94,311 @@ const PropertyFilters = ({ visible, onClose, onApply, initialFilters = {} }) => 
     onApply(cleaned);
   };
 
-  const handleReset = () => {
-    setFilters({
-      minPrice: '',
-      maxPrice: '',
-      bedrooms: '',
-      bathrooms: '',
-      propertyType: '',
-      state: '',
-      city: '',
-      paymentFrequency: '',
-    });
+  const renderSelect = (label, value, options, picker) => {
+    const selected = options.find((item) => String(item.value) === String(value));
+    return (
+      <TouchableOpacity
+        activeOpacity={0.8}
+        onPress={() => setShowPicker(picker)}
+        style={styles.select}>
+        <View>
+          <Text style={styles.selectLabel}>{label}</Text>
+          <Text style={[styles.selectValue, !value && styles.placeholder]}>
+            {selected?.label || `Any ${label.toLowerCase()}`}
+          </Text>
+        </View>
+        <Icon name="chevron-down" size={18} color={colors.muted} />
+      </TouchableOpacity>
+    );
   };
 
-  const activeCount = Object.values(filters).filter((v) => v !== '').length;
-
-  if (!visible) return null;
-
   return (
-    <View style={styles.overlay}>
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Filters</Text>
-          <View style={styles.headerActions}>
-            <TouchableOpacity onPress={handleReset}>
-              <Text style={styles.resetText}>Reset</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={onClose}>
-              <Icon name="close-outline" size={24} color="#0f172a" />
+    <Modal
+      animationType="slide"
+      onRequestClose={onClose}
+      presentationStyle="pageSheet"
+      visible={visible}>
+      <SafeAreaView edges={['top', 'bottom']} style={styles.safeArea}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          style={styles.keyboardView}>
+          <View style={styles.header}>
+            <View>
+              <Text style={styles.eyebrow}>REFINE RESULTS</Text>
+              <Text style={styles.title}>Property filters</Text>
+            </View>
+            <TouchableOpacity
+              accessibilityLabel="Close filters"
+              onPress={onClose}
+              style={styles.closeButton}>
+              <Icon name="close" size={22} color={colors.navy} />
             </TouchableOpacity>
           </View>
-        </View>
 
-        <ScrollView style={styles.body} contentContainerStyle={styles.bodyContent}>
-          <Text style={styles.label}>Price Range (NGN)</Text>
-          <View style={styles.priceRow}>
-            <TextInput
-              style={styles.priceInput}
-              value={filters.minPrice}
-              onChangeText={(v) => updateFilter('minPrice', v)}
-              placeholder="Min"
-              keyboardType="numeric"
-              placeholderTextColor="#94a3b8"
-            />
-            <Text style={styles.priceSeparator}>-</Text>
-            <TextInput
-              style={styles.priceInput}
-              value={filters.maxPrice}
-              onChangeText={(v) => updateFilter('maxPrice', v)}
-              placeholder="Max"
-              keyboardType="numeric"
-              placeholderTextColor="#94a3b8"
+          <ScrollView
+            contentContainerStyle={styles.body}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}>
+            <Text style={styles.sectionTitle}>Budget</Text>
+            <View style={styles.priceRow}>
+              <View style={styles.priceField}>
+                <Text style={styles.currency}>₦</Text>
+                <TextInput
+                  keyboardType="numeric"
+                  onChangeText={(value) => updateFilter('min_price', value)}
+                  placeholder="Minimum"
+                  placeholderTextColor="#96A2B8"
+                  style={styles.priceInput}
+                  value={filters.min_price}
+                />
+              </View>
+              <View style={styles.priceField}>
+                <Text style={styles.currency}>₦</Text>
+                <TextInput
+                  keyboardType="numeric"
+                  onChangeText={(value) => updateFilter('max_price', value)}
+                  placeholder="Maximum"
+                  placeholderTextColor="#96A2B8"
+                  style={styles.priceInput}
+                  value={filters.max_price}
+                />
+              </View>
+            </View>
+
+            <Text style={styles.sectionTitle}>Property</Text>
+            {renderSelect('Property type', filters.property_type, propertyTypes, 'property_type')}
+            <View style={styles.twoColumn}>
+              <View style={styles.column}>
+                {renderSelect('Bedrooms', filters.bedrooms, numberOptions, 'bedrooms')}
+              </View>
+              <View style={styles.column}>
+                {renderSelect('Bathrooms', filters.bathrooms, numberOptions, 'bathrooms')}
+              </View>
+            </View>
+            {renderSelect(
+              'Payment schedule',
+              filters.payment_frequency,
+              frequencies,
+              'payment_frequency'
+            )}
+
+            <Text style={styles.sectionTitle}>Location</Text>
+            <View style={styles.textField}>
+              <Icon name="location-outline" size={19} color={colors.muted} />
+              <TextInput
+                onChangeText={(value) => updateFilter('city', value)}
+                placeholder="City or area"
+                placeholderTextColor="#96A2B8"
+                style={styles.textInput}
+                value={filters.city}
+              />
+            </View>
+            <View style={styles.textField}>
+              <Icon name="map-outline" size={19} color={colors.muted} />
+              <TextInput
+                onChangeText={(value) => updateFilter('state', value)}
+                placeholder="State"
+                placeholderTextColor="#96A2B8"
+                style={styles.textInput}
+                value={filters.state}
+              />
+            </View>
+          </ScrollView>
+
+          <View style={styles.footer}>
+            <TouchableOpacity
+              onPress={() => setFilters(emptyFilters)}
+              style={styles.resetButton}>
+              <Text style={styles.resetText}>Reset all</Text>
+            </TouchableOpacity>
+            <Button
+              title={`Show properties${activeCount ? ` (${activeCount})` : ''}`}
+              onPress={handleApply}
+              style={styles.applyButton}
             />
           </View>
+        </KeyboardAvoidingView>
 
-          <TouchableOpacity
-            style={styles.selectField}
-            onPress={() => setShowPicker('propertyType')}
-          >
-            <Text style={[styles.selectText, !filters.propertyType && styles.placeholder]}>
-              {filters.propertyType
-                ? propertyTypes.find((t) => t.value === filters.propertyType)?.label
-                : 'Property Type'}
-            </Text>
-            <Icon name="chevron-down-outline" size={18} color="#64748b" />
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.selectField}
-            onPress={() => setShowPicker('bedrooms')}
-          >
-            <Text style={[styles.selectText, !filters.bedrooms && styles.placeholder]}>
-              {filters.bedrooms ? `${filters.bedrooms} Bedroom(s)` : 'Bedrooms'}
-            </Text>
-            <Icon name="chevron-down-outline" size={18} color="#64748b" />
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.selectField}
-            onPress={() => setShowPicker('bathrooms')}
-          >
-            <Text style={[styles.selectText, !filters.bathrooms && styles.placeholder]}>
-              {filters.bathrooms ? `${filters.bathrooms} Bathroom(s)` : 'Bathrooms'}
-            </Text>
-            <Icon name="chevron-down-outline" size={18} color="#64748b" />
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.selectField}
-            onPress={() => setShowPicker('paymentFrequency')}
-          >
-            <Text style={[styles.selectText, !filters.paymentFrequency && styles.placeholder]}>
-              {filters.paymentFrequency
-                ? frequencies.find((f) => f.value === filters.paymentFrequency)?.label
-                : 'Payment Frequency'}
-            </Text>
-            <Icon name="chevron-down-outline" size={18} color="#64748b" />
-          </TouchableOpacity>
-
-          <TextInput
-            style={styles.textInput}
-            value={filters.city}
-            onChangeText={(v) => updateFilter('city', v)}
-            placeholder="City"
-            placeholderTextColor="#94a3b8"
-          />
-
-          <TextInput
-            style={styles.textInput}
-            value={filters.state}
-            onChangeText={(v) => updateFilter('state', v)}
-            placeholder="State"
-            placeholderTextColor="#94a3b8"
-          />
-        </ScrollView>
-
-        <View style={styles.footer}>
-          <Button title={`Apply Filters${activeCount > 0 ? ` (${activeCount})` : ''}`} onPress={handleApply} />
-        </View>
-      </View>
-
-      <OptionPickerModal
-        visible={showPicker === 'propertyType'}
-        title="Property Type"
-        options={propertyTypes}
-        onClose={() => setShowPicker(null)}
-        onSelect={(item) => updateFilter('propertyType', item.value)}
-        selectedValue={filters.propertyType}
-      />
-
-      <OptionPickerModal
-        visible={showPicker === 'bedrooms'}
-        title="Bedrooms"
-        options={numberOptions}
-        onClose={() => setShowPicker(null)}
-        onSelect={(item) => updateFilter('bedrooms', item.value)}
-        selectedValue={filters.bedrooms}
-      />
-
-      <OptionPickerModal
-        visible={showPicker === 'bathrooms'}
-        title="Bathrooms"
-        options={numberOptions}
-        onClose={() => setShowPicker(null)}
-        onSelect={(item) => updateFilter('bathrooms', item.value)}
-        selectedValue={filters.bathrooms}
-      />
-
-      <OptionPickerModal
-        visible={showPicker === 'paymentFrequency'}
-        title="Payment Frequency"
-        options={frequencies}
-        onClose={() => setShowPicker(null)}
-        onSelect={(item) => updateFilter('paymentFrequency', item.value)}
-        selectedValue={filters.paymentFrequency}
-      />
-    </View>
+        <OptionPickerModal
+          visible={Boolean(showPicker)}
+          title={
+            showPicker === 'property_type'
+              ? 'Property type'
+              : showPicker === 'payment_frequency'
+                ? 'Payment schedule'
+                : showPicker === 'bedrooms'
+                  ? 'Bedrooms'
+                  : 'Bathrooms'
+          }
+          options={
+            showPicker === 'property_type'
+              ? propertyTypes
+              : showPicker === 'payment_frequency'
+                ? frequencies
+                : numberOptions
+          }
+          onClose={() => setShowPicker(null)}
+          onSelect={(item) => {
+            updateFilter(showPicker, item.value);
+            setShowPicker(null);
+          }}
+          selectedValue={showPicker ? filters[showPicker] : ''}
+        />
+      </SafeAreaView>
+    </Modal>
   );
 };
 
 const styles = StyleSheet.create({
-  overlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    zIndex: 100,
-    justifyContent: 'flex-end',
+  safeArea: {
+    backgroundColor: colors.surface,
+    flex: 1,
   },
-  container: {
-    backgroundColor: '#ffffff',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    maxHeight: '85%',
+  keyboardView: {
+    flex: 1,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 16,
+    borderBottomColor: colors.border,
     borderBottomWidth: 1,
-    borderBottomColor: '#e2e8f0',
-  },
-  title: { fontSize: 18, fontWeight: '800', color: '#0f172a' },
-  headerActions: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  resetText: { color: '#0284c7', fontWeight: '600' },
-  body: { paddingHorizontal: 16 },
-  bodyContent: { paddingTop: 12, paddingBottom: 16 },
-  label: { fontSize: 14, fontWeight: '500', color: '#374151', marginBottom: 6 },
-  priceRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 16 },
-  priceInput: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: '#d1d5db',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    fontSize: 15,
-    color: '#0f172a',
-  },
-  priceSeparator: { color: '#64748b', fontSize: 16 },
-  selectField: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#d1d5db',
-    borderRadius: 8,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    marginBottom: 12,
+    paddingHorizontal: 22,
+    paddingVertical: 17,
   },
-  selectText: { color: '#0f172a', fontSize: 15, flex: 1 },
-  placeholder: { color: '#94a3b8' },
-  textInput: {
+  eyebrow: {
+    color: colors.blue,
+    fontFamily: typography.bold,
+    fontSize: 9,
+    letterSpacing: 1.2,
+  },
+  title: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 23,
+    letterSpacing: -0.5,
+    marginTop: 3,
+  },
+  closeButton: {
+    alignItems: 'center',
+    backgroundColor: colors.white,
+    borderColor: colors.border,
+    borderRadius: 21,
     borderWidth: 1,
-    borderColor: '#d1d5db',
-    borderRadius: 8,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
+    height: 42,
+    justifyContent: 'center',
+    width: 42,
+  },
+  body: {
+    padding: 22,
+    paddingBottom: 30,
+  },
+  sectionTitle: {
+    color: colors.ink,
+    fontFamily: typography.bold,
     fontSize: 15,
-    color: '#0f172a',
-    marginBottom: 12,
+    marginBottom: 11,
+    marginTop: 13,
+  },
+  priceRow: {
+    flexDirection: 'row',
+    gap: 10,
+    marginBottom: 13,
+  },
+  priceField: {
+    alignItems: 'center',
+    backgroundColor: colors.white,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    flex: 1,
+    flexDirection: 'row',
+    minHeight: 54,
+    paddingHorizontal: 14,
+  },
+  currency: {
+    color: colors.text,
+    fontFamily: typography.semibold,
+    fontSize: 16,
+  },
+  priceInput: {
+    color: colors.ink,
+    flex: 1,
+    fontFamily: typography.regular,
+    fontSize: 14,
+    paddingHorizontal: 8,
+  },
+  select: {
+    alignItems: 'center',
+    backgroundColor: colors.white,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 11,
+    minHeight: 58,
+    paddingHorizontal: 15,
+  },
+  selectLabel: {
+    color: colors.muted,
+    fontFamily: typography.medium,
+    fontSize: 10,
+  },
+  selectValue: {
+    color: colors.ink,
+    fontFamily: typography.semibold,
+    fontSize: 14,
+    marginTop: 2,
+  },
+  placeholder: {
+    color: colors.text,
+  },
+  twoColumn: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+  column: {
+    flex: 1,
+  },
+  textField: {
+    alignItems: 'center',
+    backgroundColor: colors.white,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    flexDirection: 'row',
+    marginBottom: 11,
+    minHeight: 54,
+    paddingHorizontal: 15,
+  },
+  textInput: {
+    color: colors.ink,
+    flex: 1,
+    fontFamily: typography.regular,
+    fontSize: 14,
+    paddingHorizontal: 10,
   },
   footer: {
-    padding: 16,
+    alignItems: 'center',
+    backgroundColor: colors.white,
+    borderTopColor: colors.border,
     borderTopWidth: 1,
-    borderTopColor: '#e2e8f0',
+    flexDirection: 'row',
+    gap: 12,
+    padding: 16,
+  },
+  resetButton: {
+    paddingHorizontal: 8,
+    paddingVertical: 15,
+  },
+  resetText: {
+    color: colors.text,
+    fontFamily: typography.semibold,
+    fontSize: 13,
+  },
+  applyButton: {
+    flex: 1,
   },
 });
 

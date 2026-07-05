@@ -1,5 +1,6 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { colors, radius, typography } from '../../theme';
 
 const Button = ({
   title,
@@ -10,6 +11,8 @@ const Button = ({
   style,
   textStyle,
   disabled = false,
+  accessibilityLabel,
+  accessibilityHint,
 }) => {
   const buttonStyle = [
     styles.button,
@@ -36,12 +39,16 @@ const Button = ({
 
   return (
     <TouchableOpacity
+      accessibilityHint={accessibilityHint}
+      accessibilityLabel={accessibilityLabel || title}
+      accessibilityRole="button"
+      accessibilityState={{ busy: loading, disabled: disabled || loading }}
       style={buttonStyle}
       onPress={onPress}
       disabled={disabled || loading}
-      activeOpacity={0.7}>
+      activeOpacity={0.84}>
       {loading ? (
-        <ActivityIndicator color="#fff" />
+        <ActivityIndicator color={variant === 'outline' ? colors.blue : colors.white} />
       ) : (
         <Text style={computedTextStyle}>{title}</Text>
       )}
@@ -51,53 +58,54 @@ const Button = ({
 
 const styles = StyleSheet.create({
   button: {
-    paddingVertical: 14,
-    paddingHorizontal: 20,
-    borderRadius: 8,
     alignItems: 'center',
+    borderRadius: radius.md,
     justifyContent: 'center',
+    minHeight: 52,
+    paddingHorizontal: 20,
+    paddingVertical: 14,
   },
   primaryButton: {
-    backgroundColor: '#0284c7',
+    backgroundColor: colors.blue,
   },
   secondaryButton: {
-    backgroundColor: '#e5e7eb',
+    backgroundColor: colors.surfaceBlue,
   },
   outlineButton: {
-    backgroundColor: '#ffffff',
+    backgroundColor: colors.white,
+    borderColor: colors.blue,
     borderWidth: 1,
-    borderColor: '#0284c7',
   },
   dangerButton: {
-    backgroundColor: '#dc2626',
+    backgroundColor: colors.danger,
   },
   disabledButton: {
-    backgroundColor: '#9ca3af',
-    opacity: 0.6,
+    opacity: 0.48,
   },
   text: {
+    fontFamily: typography.semibold,
     fontSize: 16,
-    fontWeight: '600',
   },
   primaryText: {
-    color: '#ffffff',
+    color: colors.white,
   },
   secondaryText: {
-    color: '#1f2937',
+    color: colors.ink,
   },
   outlineText: {
-    color: '#0284c7',
+    color: colors.blue,
   },
   dangerText: {
-    color: '#ffffff',
+    color: colors.white,
   },
   smallButton: {
     paddingVertical: 10,
     paddingHorizontal: 14,
   },
   largeButton: {
-    paddingVertical: 16,
+    minHeight: 56,
     paddingHorizontal: 24,
+    paddingVertical: 16,
   },
   smallText: {
     fontSize: 14,

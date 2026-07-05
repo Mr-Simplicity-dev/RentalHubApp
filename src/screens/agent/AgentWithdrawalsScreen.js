@@ -1,13 +1,16 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
+import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, ActivityIndicator, RefreshControl, TouchableOpacity } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
 import { AuthContext } from '../../context/AuthContext';
 import { agentService } from '../../services/agentService';
+import { colors, radius, shadows, typography } from '../../theme';
 import { getErrorMessage, pickList, pickObject } from '../../utils/http';
 
-const AgentWithdrawalsScreen = () => {
+const AgentWithdrawalsScreen = ({ navigation }) => {
   const { user } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -17,6 +20,10 @@ const AgentWithdrawalsScreen = () => {
   const [form, setForm] = useState({ amount: '', requestReason: '' });
 
   const landlordId = profile?.agent_assignment?.landlord_user_id;
+
+  useLayoutEffect(() => {
+    navigation.setOptions({ headerShown: false });
+  }, [navigation]);
 
   const loadData = async () => {
     setLoading(true);
@@ -91,30 +98,62 @@ const AgentWithdrawalsScreen = () => {
   if (loading) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color="#0284c7" />
+        <ActivityIndicator size="large" color={colors.blue} />
       </View>
     );
   }
 
   return (
-    <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
-      <Text style={styles.title}>Withdrawal Requests</Text>
-      <Text style={styles.subtitle}>Withdraw from your commission balance</Text>
+    <SafeAreaView edges={['top']} style={styles.safeArea}>
+    <ScrollView
+      style={styles.screen}
+      contentContainerStyle={styles.content}
+      refreshControl={<RefreshControl refreshing={loading} onRefresh={loadData} tintColor={colors.blue} />}
+    >
+      <View style={styles.topBar}>
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+          <Icon name="arrow-back" size={21} color={colors.ink} />
+        </TouchableOpacity>
+        <Text style={styles.topTitle}>Withdraw funds</Text>
+        <View style={styles.topSpacer} />
+      </View>
 
       {!landlordId ? (
         <View style={styles.warningCard}>
+          <View style={styles.warningIcon}><Icon name="alert-circle-outline" size={24} color="#A66B00" /></View>
           <Text style={styles.warningTitle}>No assigned landlord</Text>
           <Text style={styles.warningText}>You need an active assignment before withdrawals can be requested.</Text>
         </View>
       ) : (
         <>
+          <View style={styles.hero}>
+            <Text style={styles.heroEyebrow}>PAYOUT CENTRE</Text>
+            <Text style={styles.title}>Move your earnings</Text>
+            <Text style={styles.subtitle}>Request a secure bank transfer from your commission balance.</Text>
+          </View>
+
           <View style={styles.summaryCard}>
-            <Text style={styles.summaryText}>Pending: N{Number(summary.pending_amount || 0).toLocaleString()}</Text>
-            <Text style={styles.summaryText}>Approved: N{Number(summary.approved_amount || 0).toLocaleString()}</Text>
-            <Text style={styles.summaryText}>Processed: N{Number(summary.processed_amount || 0).toLocaleString()}</Text>
+            {[
+              ['Pending', summary.pending_amount, 'time-outline', '#A66B00'],
+              ['Approved', summary.approved_amount, 'checkmark-circle-outline', colors.blue],
+              ['Processed', summary.processed_amount, 'shield-checkmark-outline', colors.success],
+            ].map(([label, value, icon, color]) => (
+              <View key={label} style={styles.summaryItem}>
+                <Icon name={icon} size={18} color={color} />
+                <Text style={styles.summaryLabel}>{label}</Text>
+                <Text style={styles.summaryValue}>₦{Number(value || 0).toLocaleString()}</Text>
+              </View>
+            ))}
           </View>
 
           <View style={styles.formCard}>
+            <View style={styles.formHeading}>
+              <View style={styles.formIcon}><Icon name="cash-outline" size={20} color={colors.blue} /></View>
+              <View>
+                <Text style={styles.formTitle}>New request</Text>
+                <Text style={styles.formSubtitle}>Funds are sent by bank transfer.</Text>
+              </View>
+            </View>
             <Input
               label="Amount (NGN)"
               value={form.amount}
@@ -131,14 +170,23 @@ const AgentWithdrawalsScreen = () => {
             <Button title="Submit Withdrawal Request" onPress={submitRequest} loading={submitting} />
           </View>
 
-          <Text style={styles.sectionTitle}>Request History</Text>
-          {requests.length === 0 ? <Text style={styles.empty}>No withdrawal requests yet.</Text> : null}
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Request history</Text>
+            <Text style={styles.sectionCount}>{requests.length} requests</Text>
+          </View>
+          {requests.length === 0 ? (
+            <View style={styles.emptyCard}><Text style={styles.empty}>No withdrawal requests yet.</Text></View>
+          ) : null}
 
           {requests.map((item) => (
             <View key={String(item.id)} style={styles.row}>
-              <Text style={styles.amount}>N{Number(item.amount || 0).toLocaleString()}</Text>
-              <Text style={styles.meta}>{item.status}</Text>
-              <Text style={styles.meta}>{new Date(item.created_at).toLocaleDateString()}</Text>
+              <View style={styles.rowTop}>
+                <View>
+                  <Text style={styles.amount}>₦{Number(item.amount || 0).toLocaleString()}</Text>
+                  <Text style={styles.meta}>{new Date(item.created_at).toLocaleDateString()}</Text>
+                </View>
+                <View style={styles.statusPill}><Text style={styles.statusText}>{item.status || 'pending'}</Text></View>
+              </View>
               {item.reason_for_rejection ? (
                 <Text style={styles.reject}>Reason: {item.reason_for_rejection}</Text>
               ) : null}
@@ -147,34 +195,56 @@ const AgentWithdrawalsScreen = () => {
         </>
       )}
     </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#f8fafc' },
-  content: { padding: 16, paddingBottom: 24 },
-  center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  title: { fontSize: 26, fontWeight: '800', color: '#0f172a' },
-  subtitle: { marginTop: 4, marginBottom: 12, color: '#64748b' },
+  safeArea: { flex: 1, backgroundColor: colors.surface },
+  screen: { flex: 1, backgroundColor: colors.surface },
+  content: { padding: 18, paddingBottom: 36 },
+  center: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.surface },
+  topBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 },
+  backButton: { width: 42, height: 42, borderRadius: 21, backgroundColor: colors.white, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: colors.border },
+  topSpacer: { width: 42 },
+  topTitle: { fontFamily: typography.semibold, fontSize: 17, color: colors.ink },
+  hero: { backgroundColor: colors.navy, borderRadius: radius.lg, padding: 22, marginBottom: 12, ...shadows.soft },
+  heroEyebrow: { fontFamily: typography.semibold, fontSize: 11, letterSpacing: 1.2, color: colors.gold },
+  title: { marginTop: 8, fontFamily: typography.bold, fontSize: 26, color: colors.white },
+  subtitle: { marginTop: 7, fontFamily: typography.regular, lineHeight: 20, color: '#B9C9E5' },
   summaryCard: {
+    flexDirection: 'row',
     borderWidth: 1,
-    borderColor: '#dbeafe',
-    backgroundColor: '#eff6ff',
-    borderRadius: 12,
-    padding: 12,
+    borderColor: colors.border,
+    backgroundColor: colors.white,
+    borderRadius: radius.md,
+    paddingVertical: 14,
     marginBottom: 12,
   },
-  summaryText: { color: '#1e3a8a', marginBottom: 4 },
-  formCard: { backgroundColor: '#fff', borderRadius: 12, borderWidth: 1, borderColor: '#e2e8f0', padding: 12 },
-  sectionTitle: { marginTop: 16, marginBottom: 8, fontSize: 16, fontWeight: '700', color: '#0f172a' },
-  empty: { color: '#64748b' },
-  row: { backgroundColor: '#fff', borderWidth: 1, borderColor: '#e2e8f0', borderRadius: 10, padding: 12, marginBottom: 8 },
-  amount: { fontWeight: '800', color: '#0f172a' },
-  meta: { marginTop: 4, color: '#64748b' },
-  reject: { marginTop: 6, color: '#b91c1c' },
-  warningCard: { borderWidth: 1, borderColor: '#fde68a', backgroundColor: '#fffbeb', borderRadius: 12, padding: 12 },
-  warningTitle: { color: '#92400e', fontWeight: '700' },
-  warningText: { color: '#b45309', marginTop: 4 },
+  summaryItem: { flex: 1, alignItems: 'center', paddingHorizontal: 4, borderRightWidth: 1, borderRightColor: colors.border },
+  summaryLabel: { marginTop: 5, fontFamily: typography.regular, fontSize: 11, color: colors.muted },
+  summaryValue: { marginTop: 3, fontFamily: typography.bold, fontSize: 13, color: colors.ink },
+  formCard: { backgroundColor: colors.white, borderRadius: radius.md, borderWidth: 1, borderColor: colors.border, padding: 14 },
+  formHeading: { flexDirection: 'row', alignItems: 'center', marginBottom: 13 },
+  formIcon: { width: 40, height: 40, borderRadius: 12, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.surfaceBlue, marginRight: 10 },
+  formTitle: { fontFamily: typography.semibold, color: colors.ink },
+  formSubtitle: { marginTop: 3, fontFamily: typography.regular, fontSize: 12, color: colors.muted },
+  sectionHeader: { marginTop: 23, marginBottom: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  sectionTitle: { fontFamily: typography.bold, fontSize: 18, color: colors.ink },
+  sectionCount: { fontFamily: typography.medium, fontSize: 12, color: colors.muted },
+  emptyCard: { backgroundColor: colors.white, borderRadius: radius.md, borderWidth: 1, borderColor: colors.border, padding: 18, alignItems: 'center' },
+  empty: { fontFamily: typography.regular, color: colors.muted },
+  row: { backgroundColor: colors.white, borderWidth: 1, borderColor: colors.border, borderRadius: radius.md, padding: 14, marginBottom: 9 },
+  rowTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  amount: { fontFamily: typography.bold, fontSize: 17, color: colors.ink },
+  meta: { marginTop: 4, fontFamily: typography.regular, fontSize: 12, color: colors.muted },
+  statusPill: { backgroundColor: '#FFF7DF', borderRadius: radius.pill, paddingHorizontal: 10, paddingVertical: 6 },
+  statusText: { fontFamily: typography.semibold, fontSize: 11, textTransform: 'capitalize', color: '#805800' },
+  reject: { marginTop: 10, paddingTop: 10, borderTopWidth: 1, borderTopColor: colors.border, fontFamily: typography.regular, color: colors.danger },
+  warningCard: { borderWidth: 1, borderColor: '#F2D58A', backgroundColor: '#FFF9E8', borderRadius: radius.lg, padding: 22, alignItems: 'center' },
+  warningIcon: { width: 48, height: 48, borderRadius: 16, backgroundColor: '#FFF1C2', alignItems: 'center', justifyContent: 'center', marginBottom: 12 },
+  warningTitle: { color: colors.ink, fontFamily: typography.bold, fontSize: 17 },
+  warningText: { color: colors.text, fontFamily: typography.regular, textAlign: 'center', lineHeight: 20, marginTop: 6 },
 });
 
 export default AgentWithdrawalsScreen;

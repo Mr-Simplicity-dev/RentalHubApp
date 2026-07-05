@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import {
   KeyboardAvoidingView,
   Linking,
@@ -6,8 +6,11 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
@@ -15,6 +18,7 @@ import SelectField from '../../components/common/SelectField';
 import OptionPickerModal from '../../components/common/OptionPickerModal';
 import { propertyService } from '../../services/propertyService';
 import { getErrorMessage, pickList, pickObject } from '../../utils/http';
+import { colors, radius, shadows, typography } from '../../theme';
 
 const propertyTypes = [
   { label: 'Apartment', value: 'apartment' },
@@ -75,6 +79,10 @@ const PropertyAlertRequestScreen = ({ route, navigation }) => {
   );
   const availableLgas = selectedState?.lgas || [];
 
+  useLayoutEffect(() => {
+    navigation.setOptions({ headerShown: false });
+  }, [navigation]);
+
   const loadLocationOptions = async () => {
     try {
       const response = await propertyService.getLocationOptions();
@@ -132,6 +140,26 @@ const PropertyAlertRequestScreen = ({ route, navigation }) => {
   const validate = () => {
     if (!form.full_name.trim() || !form.email.trim() || !form.property_type) {
       return 'Name, email and property type are required.';
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
+      return 'Enter a valid email address.';
+    }
+
+    if (
+      form.min_price &&
+      form.max_price &&
+      Number(form.min_price) > Number(form.max_price)
+    ) {
+      return 'Maximum price must be greater than minimum price.';
+    }
+
+    if (
+      [form.min_price, form.max_price, form.bedrooms, form.bathrooms].some(
+        (value) => value && (!Number.isFinite(Number(value)) || Number(value) < 0)
+      )
+    ) {
+      return 'Budget, bedroom and bathroom values must be valid positive numbers.';
     }
 
     if (config.payment_required && !form.state_id) {
@@ -247,23 +275,50 @@ const PropertyAlertRequestScreen = ({ route, navigation }) => {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    >
-      <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.title}>Submit Property Request</Text>
+    <SafeAreaView edges={['top']} style={styles.container}>
+      <View style={styles.header}>
+        <TouchableOpacity
+          accessibilityLabel="Go back"
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}>
+          <Icon name="arrow-back" size={22} color={colors.navy} />
+        </TouchableOpacity>
+        <View style={styles.headerCopy}>
+          <Text style={styles.headerEyebrow}>PERSONALISED SEARCH</Text>
+          <Text style={styles.headerTitle}>Property request</Text>
+        </View>
+        <View style={styles.headerSpacer} />
+      </View>
+
+      <KeyboardAvoidingView
+        style={styles.keyboardView}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <ScrollView
+        contentContainerStyle={styles.content}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}>
+        <View style={styles.introIcon}>
+          <Icon name="notifications-outline" size={24} color={colors.blue} />
+        </View>
+        <Text style={styles.title}>Tell us what home you need</Text>
         <Text style={styles.subtitle}>
-          Tell us what you need and we will notify you by email and WhatsApp when a matching property is available.
+          We’ll notify you by email and WhatsApp when a matching verified property becomes available.
         </Text>
 
         <View style={styles.priceCard}>
+          <View style={styles.priceIcon}>
+            <Icon
+              name={config.payment_required ? 'card-outline' : 'checkmark-circle-outline'}
+              size={21}
+              color={config.payment_required ? colors.gold : colors.success}
+            />
+          </View>
           <Text style={styles.priceLabel}>
             {config.payment_required ? 'Current request fee' : 'Request status'}
           </Text>
           <Text style={styles.priceAmount}>
             {config.payment_required
-              ? `N${Number(config.amount || 0).toLocaleString()}`
+              ? `₦${Number(config.amount || 0).toLocaleString()}`
               : 'No payment required'}
           </Text>
           <Text style={styles.priceMeta}>
@@ -278,6 +333,8 @@ const PropertyAlertRequestScreen = ({ route, navigation }) => {
           ) : null}
         </View>
 
+        <Text style={styles.sectionLabel}>YOUR CONTACT</Text>
+        <View style={styles.formCard}>
         <Input
           label="Full Name"
           value={form.full_name}
@@ -299,7 +356,10 @@ const PropertyAlertRequestScreen = ({ route, navigation }) => {
           placeholder="+234..."
           keyboardType="phone-pad"
         />
+        </View>
 
+        <Text style={styles.sectionLabel}>PROPERTY PREFERENCES</Text>
+        <View style={styles.formCard}>
         <SelectField
           label="Property Type"
           value={selectedType?.label}
@@ -328,6 +388,10 @@ const PropertyAlertRequestScreen = ({ route, navigation }) => {
           onChangeText={(value) => onChange('city', value)}
           placeholder="Optional"
         />
+        </View>
+
+        <Text style={styles.sectionLabel}>BUDGET AND SPACE</Text>
+        <View style={styles.formCard}>
         <Input
           label="Minimum Price"
           value={form.min_price}
@@ -356,16 +420,22 @@ const PropertyAlertRequestScreen = ({ route, navigation }) => {
           keyboardType="numeric"
           placeholder="Optional"
         />
+        </View>
 
         <Button
           title={config.payment_required ? 'Proceed to Payment' : 'Submit Request'}
           onPress={submitRequest}
           loading={loading}
+          size="lg"
+          style={styles.submitButton}
         />
 
         {paymentState.reference ? (
           <View style={styles.pendingCard}>
-            <Text style={styles.pendingTitle}>Payment Pending</Text>
+            <View style={styles.pendingHeading}>
+              <Icon name="time-outline" size={21} color={colors.blue} />
+              <Text style={styles.pendingTitle}>Payment pending</Text>
+            </View>
             <Text style={styles.pendingText}>Reference: {paymentState.reference}</Text>
             <Button
               title="Complete Request"
@@ -420,55 +490,149 @@ const PropertyAlertRequestScreen = ({ route, navigation }) => {
         getOptionLabel={(item) => String(item)}
         getOptionValue={(item) => String(item)}
       />
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#ffffff' },
-  content: { padding: 20, paddingBottom: 36 },
-  title: { fontSize: 30, fontWeight: '800', color: '#0f172a' },
-  subtitle: { marginTop: 6, marginBottom: 16, color: '#64748b', lineHeight: 20 },
-  priceCard: {
-    borderRadius: 14,
+  container: { flex: 1, backgroundColor: colors.surface },
+  keyboardView: { flex: 1 },
+  header: {
+    alignItems: 'center',
+    borderBottomColor: colors.border,
+    borderBottomWidth: 1,
+    flexDirection: 'row',
+    paddingHorizontal: 18,
+    paddingVertical: 10,
+  },
+  backButton: {
+    alignItems: 'center',
+    backgroundColor: colors.white,
+    borderColor: colors.border,
+    borderRadius: 21,
     borderWidth: 1,
-    borderColor: '#dbeafe',
-    backgroundColor: '#f8fbff',
-    padding: 14,
-    marginBottom: 18,
+    height: 42,
+    justifyContent: 'center',
+    width: 42,
+  },
+  headerCopy: { alignItems: 'center', flex: 1 },
+  headerSpacer: { width: 42 },
+  headerEyebrow: {
+    color: colors.blue,
+    fontFamily: typography.bold,
+    fontSize: 9,
+    letterSpacing: 1.2,
+  },
+  headerTitle: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 20,
+    letterSpacing: -0.4,
+    marginTop: 2,
+  },
+  content: { padding: 20, paddingBottom: 40 },
+  introIcon: {
+    alignItems: 'center',
+    backgroundColor: colors.surfaceBlue,
+    borderRadius: 23,
+    height: 46,
+    justifyContent: 'center',
+    marginTop: 8,
+    width: 46,
+  },
+  title: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 29,
+    letterSpacing: -0.9,
+    lineHeight: 35,
+    marginTop: 16,
+  },
+  subtitle: {
+    color: colors.muted,
+    fontFamily: typography.regular,
+    fontSize: 14,
+    lineHeight: 22,
+    marginBottom: 20,
+    marginTop: 8,
+  },
+  priceCard: {
+    backgroundColor: colors.navy,
+    borderRadius: radius.lg,
+    marginBottom: 25,
+    padding: 19,
+  },
+  priceIcon: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    borderRadius: 19,
+    height: 38,
+    justifyContent: 'center',
+    marginBottom: 14,
+    width: 38,
   },
   priceLabel: {
-    color: '#475569',
+    color: '#AFC2DF',
+    fontFamily: typography.semibold,
     fontSize: 13,
-    fontWeight: '600',
   },
   priceAmount: {
-    fontSize: 28,
-    fontWeight: '800',
-    color: '#0f172a',
+    color: colors.white,
+    fontFamily: typography.bold,
+    fontSize: 26,
     marginTop: 4,
   },
   priceMeta: {
-    marginTop: 6,
-    color: '#64748b',
+    color: '#AFC2DF',
+    fontFamily: typography.regular,
+    fontSize: 12,
     lineHeight: 18,
+    marginTop: 6,
+  },
+  sectionLabel: {
+    color: colors.blue,
+    fontFamily: typography.bold,
+    fontSize: 9,
+    letterSpacing: 1.25,
+    marginBottom: 9,
+    marginLeft: 3,
+    marginTop: 4,
+  },
+  formCard: {
+    backgroundColor: colors.white,
+    borderColor: colors.border,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    marginBottom: 23,
+    padding: 17,
+    ...shadows.soft,
+  },
+  submitButton: {
+    marginTop: 3,
   },
   pendingCard: {
-    marginTop: 16,
-    borderRadius: 14,
+    backgroundColor: colors.white,
+    borderColor: '#CFE1FB',
+    borderRadius: radius.md,
     borderWidth: 1,
-    borderColor: '#cbd5e1',
-    backgroundColor: '#f8fafc',
-    padding: 14,
+    marginTop: 17,
+    padding: 16,
+  },
+  pendingHeading: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 8,
   },
   pendingTitle: {
+    color: colors.ink,
+    fontFamily: typography.bold,
     fontSize: 16,
-    fontWeight: '800',
-    color: '#0f172a',
   },
   pendingText: {
+    color: colors.text,
+    fontFamily: typography.regular,
     marginTop: 6,
-    color: '#475569',
   },
   marginTop: {
     marginTop: 10,

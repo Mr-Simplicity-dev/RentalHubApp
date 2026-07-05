@@ -1,14 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
+import { Alert, FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import { legalService } from '../../services/legalService';
 import { getErrorMessage, pickList } from '../../utils/http';
+import { colors, radius, typography } from '../../theme';
 
 const LawyerDashboardScreen = ({ navigation }) => {
   const [properties, setProperties] = useState([]);
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [disputes, setDisputes] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({ headerShown: false });
+  }, [navigation]);
 
   const loadProperties = async () => {
     setLoading(true);
@@ -61,15 +68,22 @@ const LawyerDashboardScreen = ({ navigation }) => {
   }, []);
 
   return (
+    <SafeAreaView edges={['top']} style={styles.safeArea}>
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Lawyer Dashboard</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('VerifyCase')}>
-          <Text style={styles.linkText}>Verify Evidence</Text>
-        </TouchableOpacity>
+      <View style={styles.hero}>
+        <View style={styles.heroTop}>
+          <View style={styles.heroIcon}><Icon name="scale-outline" size={24} color={colors.gold} /></View>
+          <TouchableOpacity onPress={() => navigation.navigate('VerifyCase')} style={styles.verifyButton}>
+            <Icon name="shield-checkmark-outline" size={17} color={colors.navy} />
+            <Text style={styles.verifyText}>Verify evidence</Text>
+          </TouchableOpacity>
+        </View>
+        <Text style={styles.heroEyebrow}>LEGAL WORKSPACE</Text>
+        <Text style={styles.title}>Cases and property access</Text>
+        <Text style={styles.heroText}>Review authorised properties, trace evidence and resolve disputes.</Text>
       </View>
 
-      <Text style={styles.sectionTitle}>Authorized Properties</Text>
+      <Text style={styles.sectionTitle}>Authorised properties</Text>
       {loading ? (
         <Text style={styles.empty}>Loading...</Text>
       ) : (
@@ -86,6 +100,7 @@ const LawyerDashboardScreen = ({ navigation }) => {
               <Text style={styles.cardMeta}>
                 {[item.city, item.state_name || item.state].filter(Boolean).join(', ')}
               </Text>
+              <View style={styles.cardArrow}><Icon name="chevron-forward" size={18} color={colors.blue} /></View>
               <Text style={styles.cardMeta}>
                 Assigned by {item.assigned_by_name || item.client_name || 'Unknown'}
                 {item.client_name ? ` for ${item.client_name}` : ''}
@@ -119,7 +134,12 @@ const LawyerDashboardScreen = ({ navigation }) => {
                     <Text style={styles.linkText}>Trace Dispute</Text>
                   </TouchableOpacity>
                   {item.status !== 'resolved' ? (
-                    <TouchableOpacity onPress={() => resolveDispute(item.id)}>
+                    <TouchableOpacity onPress={() =>
+                      Alert.alert('Resolve dispute?', 'Mark this dispute as resolved?', [
+                        { text: 'Cancel', style: 'cancel' },
+                        { text: 'Resolve', onPress: () => resolveDispute(item.id) },
+                      ])
+                    }>
                       <Text style={styles.linkWarn}>Resolve</Text>
                     </TouchableOpacity>
                   ) : null}
@@ -130,31 +150,41 @@ const LawyerDashboardScreen = ({ navigation }) => {
         </>
       ) : null}
     </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#f8fafc' },
-  content: { padding: 16, paddingBottom: 24 },
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  title: { fontSize: 26, fontWeight: '800', color: '#0f172a' },
-  sectionTitle: { fontSize: 18, fontWeight: '700', color: '#0f172a', marginTop: 16, marginBottom: 8 },
+  safeArea: { flex: 1, backgroundColor: colors.surface },
+  screen: { flex: 1, backgroundColor: colors.surface },
+  content: { padding: 18, paddingBottom: 30 },
+  hero: { backgroundColor: colors.navy, borderRadius: radius.lg, padding: 20 },
+  heroTop: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' },
+  heroIcon: { alignItems: 'center', backgroundColor: 'rgba(255,201,40,0.14)', borderRadius: 21, height: 42, justifyContent: 'center', width: 42 },
+  verifyButton: { alignItems: 'center', backgroundColor: colors.gold, borderRadius: radius.pill, flexDirection: 'row', gap: 6, paddingHorizontal: 12, paddingVertical: 9 },
+  verifyText: { color: colors.navy, fontFamily: typography.bold, fontSize: 10 },
+  heroEyebrow: { color: '#9BC3F4', fontFamily: typography.bold, fontSize: 9, letterSpacing: 1.2, marginTop: 16 },
+  title: { fontSize: 24, fontFamily: typography.bold, color: colors.white, marginTop: 4 },
+  heroText: { color: '#AFC2DF', fontFamily: typography.regular, fontSize: 12, lineHeight: 18, marginTop: 6 },
+  sectionTitle: { fontSize: 18, fontFamily: typography.bold, color: colors.ink, marginTop: 22, marginBottom: 9 },
   card: {
-    backgroundColor: '#ffffff',
+    backgroundColor: colors.white,
     borderWidth: 1,
-    borderColor: '#e2e8f0',
-    borderRadius: 12,
-    padding: 12,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    padding: 14,
     marginBottom: 10,
+    position: 'relative',
   },
-  cardActive: { borderColor: '#60a5fa', backgroundColor: '#eff6ff' },
-  cardTitle: { fontSize: 16, fontWeight: '700', color: '#0f172a' },
-  cardMeta: { marginTop: 4, color: '#475569' },
-  cardText: { marginTop: 8, color: '#334155' },
+  cardActive: { borderColor: colors.blue, backgroundColor: colors.surfaceBlue },
+  cardTitle: { fontSize: 15, fontFamily: typography.bold, color: colors.ink },
+  cardMeta: { marginTop: 4, color: colors.muted, fontFamily: typography.regular, fontSize: 11, paddingRight: 20 },
+  cardText: { marginTop: 8, color: colors.text, fontFamily: typography.regular },
+  cardArrow: { position: 'absolute', right: 12, top: 18 },
   row: { flexDirection: 'row', gap: 16, marginTop: 10, flexWrap: 'wrap' },
-  linkText: { color: '#0284c7', fontWeight: '700' },
-  linkWarn: { color: '#dc2626', fontWeight: '700' },
-  empty: { color: '#64748b' },
+  linkText: { color: colors.blue, fontFamily: typography.semibold, fontSize: 11 },
+  linkWarn: { color: colors.danger, fontFamily: typography.semibold, fontSize: 11 },
+  empty: { color: colors.muted, fontFamily: typography.regular },
 });
 
 export default LawyerDashboardScreen;

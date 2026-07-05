@@ -3,11 +3,31 @@
     "name": "RentalHub NG",
     "slug": "rentalhubmobile",
     "version": "1.0.2",
+    "orientation": "portrait",
+    "icon": "./assets/rentalhub-app-icon.png",
+    "scheme": "rentalhub",
+    "userInterfaceStyle": "light",
+    "android": {
+      "package": "com.rentalhubng",
+      "versionCode": 3,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/rentalhub-app-icon.png",
+        "backgroundColor": "#071A3D"
+      }
+    },
+    "ios": {
+      "bundleIdentifier": "com.rentalhubng",
+      "buildNumber": "3",
+      "supportsTablet": false
+    },
     "owner": "mdozaa",
     "extra": {
       "eas": {
         "projectId": "a7a3b4d3-a3b3-418b-9d5f-c441627b264c"
       }
-    }
+    },
+    "plugins": [
+      "expo-asset"
+    ]
   }
 }

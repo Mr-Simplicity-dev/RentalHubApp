@@ -1,29 +1,50 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
+  ActivityIndicator,
+  RefreshControl,
   ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
   TextInput,
   TouchableOpacity,
-  ActivityIndicator,
+  View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
+import BrandMark from '../../components/brand/BrandMark';
 import PropertyCard from '../../components/properties/PropertyCard';
+import { AuthContext } from '../../context/AuthContext';
 import { propertyService } from '../../services/propertyService';
+import { colors, radius, shadows, typography } from '../../theme';
 import { getErrorMessage, pickList } from '../../utils/http';
 
+const propertyTypes = [
+  { label: 'Apartment', value: 'apartment', icon: 'business-outline' },
+  { label: 'House', value: 'house', icon: 'home-outline' },
+  { label: 'Duplex', value: 'duplex', icon: 'layers-outline' },
+  { label: 'Short let', value: 'short_let', icon: 'bed-outline' },
+];
+
 const HomeScreen = ({ navigation }) => {
+  const { isAuthenticated, user } = useContext(AuthContext);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [featured, setFeatured] = useState([]);
   const [locations, setLocations] = useState([]);
 
   const featuredCards = useMemo(() => featured.slice(0, 6), [featured]);
+  const firstName = String(user?.full_name || user?.name || '').trim().split(/\s+/)[0];
 
-  const loadHome = async () => {
-    setLoading(true);
+  const loadHome = async ({ refresh = false } = {}) => {
+    if (refresh) {
+      setRefreshing(true);
+    } else {
+      setLoading(true);
+    }
+
     try {
       const [featuredRes, statesRes] = await Promise.all([
         propertyService.getFeaturedProperties(8),
@@ -34,11 +55,12 @@ const HomeScreen = ({ navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Load failed',
-        text2: getErrorMessage(error, 'Could not load home data'),
+        text1: 'Could not refresh Explore',
+        text2: getErrorMessage(error, 'Please check your connection and try again.'),
       });
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
   };
 
@@ -50,182 +72,509 @@ const HomeScreen = ({ navigation }) => {
     navigation.navigate('PropertyList', params);
   };
 
+  const submitSearch = () => {
+    const value = search.trim();
+    goToPropertyList(value ? { search: value } : {});
+  };
+
   return (
-    <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Find Verified Rental Homes</Text>
-        <Text style={styles.headerText}>
-          Browse trusted listings, unlock full property details, and apply faster.
-        </Text>
-      </View>
-
-      <View style={styles.searchCard}>
-        <Icon name="search-outline" size={20} color="#64748b" />
-        <TextInput
-          value={search}
-          onChangeText={setSearch}
-          placeholder="Search by city, state, area..."
-          style={styles.searchInput}
-          returnKeyType="search"
-          onSubmitEditing={() => goToPropertyList({ search })}
-        />
-        <TouchableOpacity onPress={() => goToPropertyList({ search })} style={styles.searchButton}>
-          <Icon name="arrow-forward" size={18} color="#ffffff" />
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.sectionHead}>
-        <Text style={styles.sectionTitle}>Featured Properties</Text>
-        <TouchableOpacity onPress={() => goToPropertyList()}>
-          <Text style={styles.linkText}>Browse all</Text>
-        </TouchableOpacity>
-      </View>
-
-      {loading ? (
-        <ActivityIndicator size="large" color="#0284c7" />
-      ) : (
-        featuredCards.map((item) => (
-          <PropertyCard
-            key={item.id}
-            property={item}
-            onPress={() => navigation.navigate('PropertyDetail', { id: item.id })}
+    <SafeAreaView edges={['top']} style={styles.safeArea}>
+      <StatusBar barStyle="dark-content" backgroundColor={colors.surface} />
+      <ScrollView
+        style={styles.screen}
+        contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => loadHome({ refresh: true })}
+            colors={[colors.blue]}
+            tintColor={colors.blue}
           />
-        ))
-      )}
-
-      <Text style={styles.sectionTitle}>Popular States</Text>
-      <View style={styles.grid}>
-        {locations.map((item) => (
+        }>
+        <View style={styles.topBar}>
+          <BrandMark compact />
           <TouchableOpacity
-            key={item.id || item.state_name}
-            style={styles.gridCard}
-            onPress={() => goToPropertyList({ state_id: item.id })}
-          >
-            <Text style={styles.gridTitle}>{item.state_name || item.name}</Text>
-            <Text style={styles.gridMeta}>{item.property_count || 0} properties</Text>
+            accessibilityLabel={isAuthenticated ? 'Open notifications' : 'Sign in'}
+            accessibilityRole="button"
+            onPress={() =>
+              navigation.navigate(isAuthenticated ? 'Notifications' : 'Login')
+            }
+            style={styles.topAction}>
+            <Icon
+              name={isAuthenticated ? 'notifications-outline' : 'person-outline'}
+              size={21}
+              color={colors.navy}
+            />
+            {isAuthenticated ? <View style={styles.notificationDot} /> : null}
           </TouchableOpacity>
-        ))}
-      </View>
+        </View>
 
-      <TouchableOpacity style={styles.cta} onPress={() => goToPropertyList()}>
-        <Text style={styles.ctaText}>Browse Properties</Text>
-      </TouchableOpacity>
+        <View style={styles.intro}>
+          {firstName ? <Text style={styles.greeting}>Hello, {firstName}</Text> : null}
+          <Text style={styles.title}>Find a place that{'\n'}feels like yours.</Text>
+          <Text style={styles.subtitle}>
+            Search verified homes and move with confidence.
+          </Text>
+        </View>
 
-      <TouchableOpacity
-        style={styles.secondaryCta}
-        onPress={() => navigation.navigate('PropertyAlertRequest')}
-      >
-        <Text style={styles.secondaryCtaText}>Can't find your property? Submit a request</Text>
-      </TouchableOpacity>
-    </ScrollView>
+        <View style={styles.searchCard}>
+          <Icon name="search-outline" size={21} color={colors.muted} />
+          <TextInput
+            accessibilityLabel="Search properties"
+            value={search}
+            onChangeText={setSearch}
+            placeholder="City, state or neighbourhood"
+            placeholderTextColor="#909CB2"
+            style={styles.searchInput}
+            returnKeyType="search"
+            selectionColor={colors.blue}
+            onSubmitEditing={submitSearch}
+          />
+          <TouchableOpacity
+            accessibilityLabel="Search"
+            accessibilityRole="button"
+            onPress={submitSearch}
+            style={styles.searchButton}>
+            <Icon name="arrow-forward" size={19} color={colors.white} />
+          </TouchableOpacity>
+        </View>
+
+        <ScrollView
+          horizontal
+          contentContainerStyle={styles.typeRow}
+          showsHorizontalScrollIndicator={false}>
+          {propertyTypes.map((type) => (
+            <TouchableOpacity
+              key={type.value}
+              activeOpacity={0.8}
+              onPress={() => goToPropertyList({ property_type: type.value })}
+              style={styles.typeChip}>
+              <View style={styles.typeIcon}>
+                <Icon name={type.icon} size={18} color={colors.blue} />
+              </View>
+              <Text style={styles.typeText}>{type.label}</Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+
+        <View style={styles.sectionHeader}>
+          <View>
+            <Text style={styles.sectionEyebrow}>CURATED FOR YOU</Text>
+            <Text style={styles.sectionTitle}>Featured homes</Text>
+          </View>
+          <TouchableOpacity
+            accessibilityRole="button"
+            onPress={() => goToPropertyList()}
+            style={styles.seeAllButton}>
+            <Text style={styles.seeAllText}>See all</Text>
+            <Icon name="chevron-forward" size={16} color={colors.blue} />
+          </TouchableOpacity>
+        </View>
+
+        {loading ? (
+          <View style={styles.loadingState}>
+            <ActivityIndicator size="large" color={colors.blue} />
+            <Text style={styles.loadingText}>Finding verified homes…</Text>
+          </View>
+        ) : featuredCards.length ? (
+          <ScrollView
+            horizontal
+            contentContainerStyle={styles.featuredRow}
+            decelerationRate="fast"
+            snapToInterval={312}
+            showsHorizontalScrollIndicator={false}>
+            {featuredCards.map((item) => (
+              <View key={item.id} style={styles.featuredCard}>
+                <PropertyCard
+                  property={item}
+                  onPress={() => navigation.navigate('PropertyDetail', { id: item.id })}
+                />
+              </View>
+            ))}
+          </ScrollView>
+        ) : (
+          <View style={styles.emptyState}>
+            <Icon name="home-outline" size={25} color={colors.blue} />
+            <View style={styles.emptyCopy}>
+              <Text style={styles.emptyTitle}>Fresh listings are on the way</Text>
+              <Text style={styles.emptyText}>Browse all available properties for now.</Text>
+            </View>
+          </View>
+        )}
+
+        <View style={styles.sectionHeader}>
+          <View>
+            <Text style={styles.sectionEyebrow}>EXPLORE NIGERIA</Text>
+            <Text style={styles.sectionTitle}>Popular locations</Text>
+          </View>
+        </View>
+
+        <ScrollView
+          horizontal
+          contentContainerStyle={styles.locationRow}
+          showsHorizontalScrollIndicator={false}>
+          {locations.map((item, index) => (
+            <TouchableOpacity
+              key={item.id || item.state_name}
+              activeOpacity={0.82}
+              onPress={() => goToPropertyList({ state_id: item.id })}
+              style={[styles.locationCard, index % 2 === 1 && styles.locationCardAlt]}>
+              <View style={styles.locationIcon}>
+                <Icon name="location" size={18} color={colors.white} />
+              </View>
+              <Text style={styles.locationName} numberOfLines={1}>
+                {item.state_name || item.name}
+              </Text>
+              <Text style={styles.locationMeta}>
+                {Number(item.property_count || 0).toLocaleString()} homes
+              </Text>
+              <Icon
+                name="arrow-forward-circle-outline"
+                size={23}
+                color="rgba(255,255,255,0.78)"
+                style={styles.locationArrow}
+              />
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+
+        <TouchableOpacity
+          activeOpacity={0.88}
+          style={styles.requestCard}
+          onPress={() => navigation.navigate('PropertyAlertRequest')}>
+          <View style={styles.requestWatermark}>
+            <Icon name="search" size={112} color="rgba(255,255,255,0.05)" />
+          </View>
+          <View style={styles.requestIcon}>
+            <Icon name="sparkles" size={20} color={colors.gold} />
+          </View>
+          <Text style={styles.requestTitle}>Can’t find the right home?</Text>
+          <Text style={styles.requestText}>
+            Tell us what you need and we’ll alert you when a matching property arrives.
+          </Text>
+          <View style={styles.requestAction}>
+            <Text style={styles.requestActionText}>Create property request</Text>
+            <Icon name="arrow-forward" size={18} color={colors.navy} />
+          </View>
+        </TouchableOpacity>
+
+        <View style={styles.trustLine}>
+          <Icon name="shield-checkmark" size={16} color={colors.success} />
+          <Text style={styles.trustText}>Listings reviewed for a safer rental journey</Text>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#f8fafc' },
-  content: { paddingBottom: 24 },
-  header: {
-    backgroundColor: '#0284c7',
-    paddingHorizontal: 18,
-    paddingTop: 22,
-    paddingBottom: 30,
+  safeArea: {
+    backgroundColor: colors.surface,
+    flex: 1,
   },
-  headerTitle: {
-    color: '#ffffff',
-    fontSize: 28,
-    fontWeight: '800',
+  screen: {
+    backgroundColor: colors.surface,
+    flex: 1,
   },
-  headerText: {
-    marginTop: 8,
-    color: '#e0f2fe',
+  content: {
+    paddingBottom: 34,
+  },
+  topBar: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingTop: 9,
+  },
+  topAction: {
+    alignItems: 'center',
+    backgroundColor: colors.white,
+    borderColor: colors.border,
+    borderRadius: 22,
+    borderWidth: 1,
+    height: 44,
+    justifyContent: 'center',
+    position: 'relative',
+    width: 44,
+  },
+  notificationDot: {
+    backgroundColor: colors.gold,
+    borderColor: colors.white,
+    borderRadius: 5,
+    borderWidth: 2,
+    height: 10,
+    position: 'absolute',
+    right: 7,
+    top: 7,
+    width: 10,
+  },
+  intro: {
+    paddingHorizontal: 20,
+    paddingTop: 35,
+  },
+  greeting: {
+    color: colors.blue,
+    fontFamily: typography.semibold,
+    fontSize: 13,
+    marginBottom: 7,
+  },
+  title: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 36,
+    letterSpacing: -1.25,
+    lineHeight: 42,
+  },
+  subtitle: {
+    color: colors.muted,
+    fontFamily: typography.regular,
     fontSize: 15,
-    lineHeight: 21,
+    lineHeight: 22,
+    marginTop: 10,
   },
   searchCard: {
-    marginHorizontal: 16,
-    marginTop: -16,
-    backgroundColor: '#ffffff',
-    borderRadius: 14,
-    paddingHorizontal: 14,
-    flexDirection: 'row',
     alignItems: 'center',
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.12,
-    shadowRadius: 8,
-    elevation: 5,
+    backgroundColor: colors.white,
+    borderColor: '#E6EBF3',
+    borderRadius: radius.md,
+    borderWidth: 1,
+    flexDirection: 'row',
+    marginHorizontal: 20,
+    marginTop: 25,
+    minHeight: 58,
+    paddingLeft: 16,
+    paddingRight: 9,
+    ...shadows.soft,
   },
   searchInput: {
+    color: colors.ink,
     flex: 1,
-    paddingVertical: 12,
-    marginLeft: 8,
-    color: '#0f172a',
+    fontFamily: typography.regular,
+    fontSize: 14,
+    paddingHorizontal: 11,
+    paddingVertical: 15,
   },
   searchButton: {
-    backgroundColor: '#0284c7',
-    width: 34,
-    height: 34,
-    borderRadius: 17,
     alignItems: 'center',
+    backgroundColor: colors.blue,
+    borderRadius: 20,
+    height: 40,
     justifyContent: 'center',
+    width: 40,
   },
-  sectionHead: {
-    marginTop: 22,
-    marginBottom: 6,
-    marginHorizontal: 16,
+  typeRow: {
+    gap: 10,
+    paddingHorizontal: 20,
+    paddingTop: 17,
+  },
+  typeChip: {
+    alignItems: 'center',
+    backgroundColor: colors.white,
+    borderColor: colors.border,
+    borderRadius: radius.pill,
+    borderWidth: 1,
+    flexDirection: 'row',
+    paddingHorizontal: 11,
+    paddingVertical: 8,
+  },
+  typeIcon: {
+    alignItems: 'center',
+    backgroundColor: colors.surfaceBlue,
+    borderRadius: 15,
+    height: 30,
+    justifyContent: 'center',
+    width: 30,
+  },
+  typeText: {
+    color: colors.text,
+    fontFamily: typography.semibold,
+    fontSize: 12,
+    marginHorizontal: 9,
+  },
+  sectionHeader: {
+    alignItems: 'flex-end',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    marginBottom: 14,
+    marginHorizontal: 20,
+    marginTop: 34,
+  },
+  sectionEyebrow: {
+    color: colors.blue,
+    fontFamily: typography.bold,
+    fontSize: 9,
+    letterSpacing: 1.25,
   },
   sectionTitle: {
-    marginHorizontal: 16,
-    marginTop: 22,
-    marginBottom: 10,
-    fontSize: 20,
-    fontWeight: '800',
-    color: '#0f172a',
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 22,
+    letterSpacing: -0.5,
+    marginTop: 5,
   },
-  linkText: { color: '#0284c7', fontWeight: '700' },
-  grid: {
-    marginHorizontal: 16,
+  seeAllButton: {
+    alignItems: 'center',
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    gap: 10,
+    paddingBottom: 2,
+    paddingLeft: 12,
+    paddingVertical: 6,
   },
-  gridCard: {
-    width: '48%',
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
-    padding: 12,
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
+  seeAllText: {
+    color: colors.blue,
+    fontFamily: typography.semibold,
+    fontSize: 13,
   },
-  gridTitle: { fontSize: 15, fontWeight: '700', color: '#0f172a' },
-  gridMeta: { marginTop: 4, color: '#64748b', fontSize: 12 },
-  cta: {
-    marginHorizontal: 16,
-    marginTop: 22,
-    backgroundColor: '#0f172a',
-    borderRadius: 12,
-    paddingVertical: 14,
+  loadingState: {
     alignItems: 'center',
+    backgroundColor: colors.white,
+    borderRadius: radius.md,
+    justifyContent: 'center',
+    marginHorizontal: 20,
+    minHeight: 180,
   },
-  ctaText: { color: '#ffffff', fontSize: 15, fontWeight: '700' },
-  secondaryCta: {
-    marginHorizontal: 16,
+  loadingText: {
+    color: colors.muted,
+    fontFamily: typography.medium,
+    fontSize: 12,
     marginTop: 12,
-    borderRadius: 12,
-    paddingVertical: 14,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#cbd5e1',
-    backgroundColor: '#ffffff',
   },
-  secondaryCtaText: {
-    color: '#0f172a',
-    fontSize: 15,
-    fontWeight: '700',
+  featuredRow: {
+    gap: 12,
+    paddingHorizontal: 20,
+  },
+  featuredCard: {
+    width: 300,
+  },
+  emptyState: {
+    alignItems: 'center',
+    backgroundColor: colors.white,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    flexDirection: 'row',
+    marginHorizontal: 20,
+    padding: 18,
+  },
+  emptyCopy: {
+    flex: 1,
+    marginLeft: 13,
+  },
+  emptyTitle: {
+    color: colors.ink,
+    fontFamily: typography.semibold,
+    fontSize: 14,
+  },
+  emptyText: {
+    color: colors.muted,
+    fontFamily: typography.regular,
+    fontSize: 12,
+    marginTop: 3,
+  },
+  locationRow: {
+    gap: 12,
+    paddingHorizontal: 20,
+  },
+  locationCard: {
+    backgroundColor: colors.navySoft,
+    borderRadius: radius.md,
+    minHeight: 145,
+    overflow: 'hidden',
+    padding: 16,
+    width: 156,
+  },
+  locationCardAlt: {
+    backgroundColor: '#164FA4',
+  },
+  locationIcon: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,0.14)',
+    borderRadius: 17,
+    height: 34,
+    justifyContent: 'center',
+    width: 34,
+  },
+  locationName: {
+    color: colors.white,
+    fontFamily: typography.bold,
+    fontSize: 17,
+    marginTop: 15,
+  },
+  locationMeta: {
+    color: '#B6C9E6',
+    fontFamily: typography.medium,
+    fontSize: 11,
+    marginTop: 4,
+  },
+  locationArrow: {
+    bottom: 13,
+    position: 'absolute',
+    right: 13,
+  },
+  requestCard: {
+    backgroundColor: colors.navy,
+    borderRadius: radius.lg,
+    marginHorizontal: 20,
+    marginTop: 35,
+    overflow: 'hidden',
+    padding: 21,
+  },
+  requestWatermark: {
+    position: 'absolute',
+    right: -18,
+    top: -15,
+  },
+  requestIcon: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(255,201,40,0.14)',
+    borderRadius: 19,
+    height: 38,
+    justifyContent: 'center',
+    width: 38,
+  },
+  requestTitle: {
+    color: colors.white,
+    fontFamily: typography.bold,
+    fontSize: 21,
+    letterSpacing: -0.4,
+    marginTop: 18,
+  },
+  requestText: {
+    color: '#AFC2DF',
+    fontFamily: typography.regular,
+    fontSize: 13,
+    lineHeight: 20,
+    marginTop: 8,
+    maxWidth: 300,
+  },
+  requestAction: {
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    backgroundColor: colors.gold,
+    borderRadius: radius.pill,
+    flexDirection: 'row',
+    marginTop: 20,
+    paddingHorizontal: 15,
+    paddingVertical: 11,
+  },
+  requestActionText: {
+    color: colors.navy,
+    fontFamily: typography.bold,
+    fontSize: 12,
+    marginRight: 9,
+  },
+  trustLine: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginHorizontal: 20,
+    marginTop: 24,
+  },
+  trustText: {
+    color: colors.muted,
+    fontFamily: typography.medium,
+    fontSize: 11,
+    marginLeft: 7,
   },
 });
 

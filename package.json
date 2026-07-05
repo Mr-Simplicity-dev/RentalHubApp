@@ -15,12 +15,16 @@
     "build:app": "node scripts/build-all.js"
   },
   "dependencies": {
+    "@expo-google-fonts/inter": "^0.4.2",
     "@react-native-async-storage/async-storage": "2.2.0",
     "@react-navigation/bottom-tabs": "^6.6.1",
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/native-stack": "^6.11.0",
     "axios": "^1.7.2",
     "expo": "~55.0.27",
+    "expo-asset": "~55.0.17",
+    "expo-font": "~55.0.8",
+    "expo-modules-core": "~55.0.25",
     "jwt-decode": "^4.0.0",
     "react": "19.2.0",
     "react-dom": "19.2.0",

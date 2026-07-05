@@ -41,6 +41,35 @@ export const applicationService = {
     return response.data;
   },
 
+  updateTenantOffer: async (id, proposedRent, note = '') => {
+    const response = await api.patch(`/applications/${id}/offer`, {
+      proposed_rent: proposedRent,
+      note,
+    });
+    return response.data;
+  },
+
+  respondToCounterOffer: async (id, action, note = '') => {
+    const response = await api.patch(`/applications/${id}/respond-counter`, {
+      action,
+      note,
+    });
+    return response.data;
+  },
+
+  acceptTenantOffer: async (id, note = '') => {
+    const response = await api.patch(`/applications/${id}/accept-offer`, { note });
+    return response.data;
+  },
+
+  counterTenantOffer: async (id, counterOfferRent, note = '') => {
+    const response = await api.patch(`/applications/${id}/counter-offer`, {
+      counter_offer_rent: counterOfferRent,
+      note,
+    });
+    return response.data;
+  },
+
   getApplicationStats: async () => {
     const response = await api.get('/applications/landlord/stats');
     return response.data;

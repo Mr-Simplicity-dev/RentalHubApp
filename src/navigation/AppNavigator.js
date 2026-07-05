@@ -1,12 +1,15 @@
 import React, { useContext } from 'react';
-import { ActivityIndicator, Platform, View } from 'react-native';
+import { ActivityIndicator, Platform } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { AuthContext } from '../context/AuthContext';
+import BrandSplash from '../components/brand/BrandSplash';
+import { colors, typography } from '../theme';
 
+import WelcomeScreen from '../screens/auth/WelcomeScreen';
 import LoginScreen from '../screens/auth/LoginScreen';
 import RegisterScreen from '../screens/auth/RegisterScreen';
 import ForgotPasswordScreen from '../screens/auth/ForgotPasswordScreen';
@@ -30,6 +33,7 @@ import NotificationsScreen from '../screens/dashboard/NotificationsScreen';
 import PaymentHistoryScreen from '../screens/dashboard/PaymentHistoryScreen';
 
 import ApplicationsScreen from '../screens/applications/ApplicationsScreen';
+import ApplicationDetailScreen from '../screens/applications/ApplicationDetailScreen';
 import MessagesScreen from '../screens/messages/MessagesScreen';
 
 import LawyerDashboardScreen from '../screens/lawyer/LawyerDashboardScreen';
@@ -98,12 +102,25 @@ const Tab = createBottomTabNavigator();
 
 const screenOptions = {
   headerTitleAlign: 'center',
+  headerShadowVisible: false,
+  headerStyle: {
+    backgroundColor: colors.white,
+  },
+  headerTintColor: colors.navy,
+  headerTitleStyle: {
+    fontFamily: typography.semibold,
+    fontSize: 17,
+  },
+  contentStyle: {
+    backgroundColor: colors.surface,
+  },
 };
 
 const linkingConfig = {
   prefixes: ['rentalhub://', 'https://rentalhub.com.ng', 'https://www.rentalhub.com.ng'],
   config: {
     screens: {
+      Welcome: 'welcome',
       Home: '',
       Login: 'login',
       Register: {
@@ -169,8 +186,8 @@ const linkingConfig = {
 
 const tabIcon = (routeName, focused, color, size) => {
   let iconName = 'ellipse-outline';
-  if (routeName === 'HomeTab') iconName = focused ? 'home' : 'home-outline';
-  if (routeName === 'DashboardTab') iconName = focused ? 'grid' : 'grid-outline';
+  if (routeName === 'HomeTab') iconName = focused ? 'compass' : 'compass-outline';
+  if (routeName === 'DashboardTab') iconName = focused ? 'person-circle' : 'person-circle-outline';
   if (routeName === 'Applications') iconName = focused ? 'document-text' : 'document-text-outline';
   if (routeName === 'Messages') iconName = focused ? 'chatbubbles' : 'chatbubbles-outline';
   return <Icon name={iconName} size={size} color={color} />;
@@ -186,13 +203,14 @@ const commonVerificationScreens = () => (
 );
 
 const GuestStack = () => (
-  <Stack.Navigator screenOptions={screenOptions}>
-    <Stack.Screen name="Home" component={HomeScreen} />
+  <Stack.Navigator initialRouteName="Welcome" screenOptions={screenOptions}>
+    <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
+    <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
     <Stack.Screen name="PropertyList" component={PropertyListScreen} options={{ title: 'Browse Properties' }} />
     <Stack.Screen name="PropertyDetail" component={PropertyDetailScreen} options={{ title: 'Property Details' }} />
     <Stack.Screen name="PropertyAlertRequest" component={PropertyAlertRequestScreen} options={{ title: 'Submit Request' }} />
-    <Stack.Screen name="Login" component={LoginScreen} options={{ title: 'Login' }} />
-    <Stack.Screen name="Register" component={RegisterScreen} options={{ title: 'Register' }} />
+    <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+    <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
     <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{ title: 'Forgot Password' }} />
     {commonVerificationScreens()}
     <Stack.Screen name="AcceptLawyerInvite" component={AcceptLawyerInviteScreen} options={{ title: 'Lawyer Invite' }} />
@@ -221,13 +239,26 @@ const MainTabs = () => (
   <Tab.Navigator
     screenOptions={({ route }) => ({
       tabBarIcon: ({ focused, color, size }) => tabIcon(route.name, focused, color, size),
-      tabBarActiveTintColor: '#0284c7',
-      tabBarInactiveTintColor: '#6b7280',
+      tabBarActiveTintColor: colors.blue,
+      tabBarInactiveTintColor: colors.muted,
+      tabBarLabelStyle: {
+        fontFamily: typography.semibold,
+        fontSize: 10,
+        marginBottom: Platform.OS === 'android' ? 7 : 1,
+      },
+      tabBarIconStyle: {
+        marginTop: Platform.OS === 'android' ? 7 : 1,
+      },
+      tabBarStyle: {
+        backgroundColor: colors.white,
+        borderTopColor: colors.border,
+        height: Platform.OS === 'android' ? 68 : 82,
+      },
       headerShown: false,
     })}
   >
-    <Tab.Screen name="HomeTab" component={HomeScreen} options={{ title: 'Home' }} />
-    <Tab.Screen name="DashboardTab" component={DashboardScreen} options={{ title: 'Dashboard' }} />
+    <Tab.Screen name="HomeTab" component={HomeScreen} options={{ title: 'Explore' }} />
+    <Tab.Screen name="DashboardTab" component={DashboardScreen} options={{ title: 'My Hub' }} />
     <Tab.Screen name="Applications" component={ApplicationsScreen} options={{ title: 'Applications' }} />
     <Tab.Screen name="Messages" component={MessagesScreen} options={{ title: 'Messages' }} />
   </Tab.Navigator>
@@ -239,6 +270,7 @@ const TenantRoot = () => (
     <Stack.Screen name="PropertyList" component={PropertyListScreen} options={{ title: 'Browse Properties' }} />
     <Stack.Screen name="PropertyDetail" component={PropertyDetailScreen} options={{ title: 'Property Details' }} />
     <Stack.Screen name="PropertyAlertRequest" component={PropertyAlertRequestScreen} options={{ title: 'Submit Request' }} />
+    <Stack.Screen name="ApplicationDetail" component={ApplicationDetailScreen} options={{ headerShown: false }} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
     <Stack.Screen name="SavedProperties" component={SavedPropertiesScreen} options={{ title: 'Saved Properties' }} />
     <Stack.Screen name="Subscribe" component={SubscribeScreen} />
@@ -272,6 +304,7 @@ const LandlordRoot = () => (
     <Stack.Screen name="PropertyList" component={PropertyListScreen} options={{ title: 'Browse Properties' }} />
     <Stack.Screen name="PropertyDetail" component={PropertyDetailScreen} options={{ title: 'Property Details' }} />
     <Stack.Screen name="PropertyAlertRequest" component={PropertyAlertRequestScreen} options={{ title: 'Submit Request' }} />
+    <Stack.Screen name="ApplicationDetail" component={ApplicationDetailScreen} options={{ headerShown: false }} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
     <Stack.Screen name="MyProperties" component={MyPropertiesScreen} options={{ title: 'My Properties' }} />
     <Stack.Screen name="AddProperty" component={AddPropertyScreen} options={{ title: 'Add Property' }} />
@@ -519,11 +552,7 @@ const AppNavigator = () => {
   const { isAuthenticated, loading, user } = useContext(AuthContext);
 
   if (loading) {
-    return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <ActivityIndicator size="large" color="#0284c7" />
-      </View>
-    );
+    return <BrandSplash />;
   }
 
   return (

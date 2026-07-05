@@ -8,13 +8,18 @@ import {
   Platform,
   TouchableOpacity,
   Alert,
+  StatusBar,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { AuthContext } from '../../context/AuthContext';
 import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
+import BrandMark from '../../components/brand/BrandMark';
 import Toast from 'react-native-toast-message';
 import { authService } from '../../services/authService';
 import { biometricService } from '../../services/biometricService';
+import { colors, radius, shadows, typography } from '../../theme';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -171,137 +176,210 @@ const LoginScreen = ({ navigation }) => {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Welcome Back</Text>
-          <Text style={styles.subtitle}>Sign in to continue</Text>
-        </View>
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor={colors.surface} />
+      <KeyboardAvoidingView
+        style={styles.keyboardView}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}>
+          <View style={styles.topBar}>
+            <TouchableOpacity
+              accessibilityLabel="Go back"
+              accessibilityRole="button"
+              onPress={() => navigation.goBack()}
+              style={styles.backButton}>
+              <Icon name="arrow-back" size={22} color={colors.navy} />
+            </TouchableOpacity>
+            <BrandMark compact />
+            <View style={styles.topBarSpacer} />
+          </View>
 
-        <View style={styles.form}>
-          <Input
-            label="Email Address"
-            value={email}
-            onChangeText={setEmail}
-            placeholder="Enter your email"
-            keyboardType="email-address"
-            icon="mail-outline"
-            autoCapitalize="none"
-          />
+          <View style={styles.header}>
+            <Text style={styles.eyebrow}>WELCOME BACK</Text>
+            <Text style={styles.title}>Good to see you again.</Text>
+            <Text style={styles.subtitle}>
+              Sign in to continue managing your RentalHub experience.
+            </Text>
+          </View>
 
-          <Input
-            label="Password"
-            value={password}
-            onChangeText={setPassword}
-            placeholder="Enter your password"
-            secureTextEntry
-            icon="lock-closed-outline"
-          />
-
-          <TouchableOpacity
-            onPress={() => navigation.navigate('ForgotPassword')}
-            style={styles.forgotPassword}>
-            <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
-          </TouchableOpacity>
-
-          <Button
-            title="Sign In"
-            onPress={handleLogin}
-            loading={loading}
-            style={styles.loginButton}
-          />
-
-          {biometricStatus.enabled ? (
-            <Button
-              title={`Use ${biometricStatus.label}`}
-              onPress={handleBiometricLogin}
-              loading={biometricLoading}
-              variant="outline"
-              style={styles.biometricButton}
+          <View style={styles.formCard}>
+            <Input
+              label="Email address"
+              value={email}
+              onChangeText={setEmail}
+              placeholder="you@example.com"
+              keyboardType="email-address"
+              icon="mail-outline"
+              autoCapitalize="none"
+              autoComplete="email"
             />
-          ) : null}
+
+            <Input
+              label="Password"
+              value={password}
+              onChangeText={setPassword}
+              placeholder="Enter your password"
+              secureTextEntry
+              icon="lock-closed-outline"
+              autoComplete="current-password"
+            />
+
+            <TouchableOpacity
+              onPress={() => navigation.navigate('ForgotPassword')}
+              style={styles.forgotPassword}>
+              <Text style={styles.forgotPasswordText}>Forgot password?</Text>
+            </TouchableOpacity>
+
+            <Button
+              title="Sign in"
+              onPress={handleLogin}
+              loading={loading}
+              size="lg"
+              style={styles.loginButton}
+            />
+
+            {biometricStatus.enabled ? (
+              <Button
+                title={`Use ${biometricStatus.label}`}
+                onPress={handleBiometricLogin}
+                loading={biometricLoading}
+                variant="outline"
+                style={styles.biometricButton}
+              />
+            ) : null}
+          </View>
 
           <View style={styles.footer}>
-            <Text style={styles.footerText}>Don't have an account? </Text>
+            <Text style={styles.footerText}>New to RentalHub?</Text>
             <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-              <Text style={styles.signUpText}>Sign Up</Text>
+              <Text style={styles.signUpText}> Create an account</Text>
             </TouchableOpacity>
           </View>
 
-          <View style={styles.footerAlt}>
-            <Text style={styles.footerText}>Invited as a lawyer? </Text>
-            <TouchableOpacity onPress={() => navigation.navigate('AcceptLawyerInvite')}>
-              <Text style={styles.signUpText}>Accept invite</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('AcceptLawyerInvite')}
+            style={styles.inviteLink}>
+            <Icon name="briefcase-outline" size={16} color={colors.muted} />
+            <Text style={styles.inviteText}>I received a lawyer invitation</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: colors.surface,
+  },
+  keyboardView: {
+    flex: 1,
   },
   scrollContent: {
     flexGrow: 1,
-    padding: 24,
+    paddingBottom: 28,
+    paddingHorizontal: 22,
+  },
+  topBar: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+  },
+  backButton: {
+    alignItems: 'center',
+    backgroundColor: colors.white,
+    borderColor: colors.border,
+    borderRadius: 21,
+    borderWidth: 1,
+    height: 42,
     justifyContent: 'center',
+    width: 42,
+  },
+  topBarSpacer: {
+    width: 42,
   },
   header: {
-    marginBottom: 32,
+    marginBottom: 25,
+    marginTop: 35,
+  },
+  eyebrow: {
+    color: colors.blue,
+    fontFamily: typography.bold,
+    fontSize: 11,
+    letterSpacing: 1.5,
+    marginBottom: 10,
   },
   title: {
+    color: colors.ink,
+    fontFamily: typography.bold,
     fontSize: 32,
-    fontWeight: '700',
-    color: '#1f2937',
-    marginBottom: 8,
+    letterSpacing: -1,
+    lineHeight: 39,
   },
   subtitle: {
+    color: colors.muted,
+    fontFamily: typography.regular,
     fontSize: 16,
-    color: '#6b7280',
+    lineHeight: 24,
+    marginTop: 10,
   },
-  form: {
-    marginBottom: 24,
+  formCard: {
+    backgroundColor: colors.white,
+    borderColor: '#E8EDF5',
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    padding: 20,
+    ...shadows.soft,
   },
   forgotPassword: {
     alignSelf: 'flex-end',
-    marginBottom: 24,
+    marginBottom: 21,
+    marginTop: -2,
   },
   forgotPasswordText: {
+    color: colors.blue,
+    fontFamily: typography.semibold,
     fontSize: 14,
-    color: '#0284c7',
-    fontWeight: '500',
   },
   loginButton: {
-    marginBottom: 24,
+    marginBottom: 0,
   },
   biometricButton: {
-    marginBottom: 24,
+    marginTop: 12,
   },
   footer: {
+    alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center',
-  },
-  footerAlt: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 10,
+    marginTop: 27,
   },
   footerText: {
+    color: colors.muted,
+    fontFamily: typography.regular,
     fontSize: 14,
-    color: '#6b7280',
   },
   signUpText: {
+    color: colors.blue,
+    fontFamily: typography.bold,
     fontSize: 14,
-    color: '#0284c7',
-    fontWeight: '600',
+  },
+  inviteLink: {
+    alignItems: 'center',
+    alignSelf: 'center',
+    flexDirection: 'row',
+    gap: 7,
+    marginTop: 20,
+    padding: 8,
+  },
+  inviteText: {
+    color: colors.muted,
+    fontFamily: typography.medium,
+    fontSize: 12,
   },
 });
 

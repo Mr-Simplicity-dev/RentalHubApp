@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import {
   KeyboardAvoidingView,
   Linking,
@@ -10,14 +10,17 @@ import {
   View,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
+import Icon from 'react-native-vector-icons/Ionicons';
 import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
+import BrandMark from '../../components/brand/BrandMark';
 import SelectField from '../../components/common/SelectField';
 import OptionPickerModal from '../../components/common/OptionPickerModal';
 import { AuthContext } from '../../context/AuthContext';
 import { authService } from '../../services/authService';
 import { propertyService } from '../../services/propertyService';
 import { getErrorMessage, pickList, pickObject } from '../../utils/http';
+import { colors, radius, shadows, typography } from '../../theme';
 
 const LAWYER_ACCESS_FEE = 2000;
 const AGENT_ACCESS_FEE = 5000;
@@ -42,6 +45,7 @@ const referralCodePattern = /^[A-Za-z0-9_-]+$/;
 
 const RegisterScreen = ({ navigation, route }) => {
   const { register, establishSession } = useContext(AuthContext);
+  const scrollRef = useRef(null);
   const initialReferralCode = String(
     route?.params?.referral ||
       route?.params?.referral_code ||
@@ -54,6 +58,8 @@ const RegisterScreen = ({ navigation, route }) => {
     '';
   const [loading, setLoading] = useState(false);
   const [paymentLoading, setPaymentLoading] = useState(false);
+  const [currentStep, setCurrentStep] = useState(0);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [locationOptions, setLocationOptions] = useState([]);
   const [userType, setUserType] = useState('tenant');
   const [isForeigner, setIsForeigner] = useState(false);
@@ -100,6 +106,12 @@ const RegisterScreen = ({ navigation, route }) => {
   const passportPattern = /^[A-Za-z0-9]{6,20}$/;
 
   const availableLgas = selectedState?.lgas || [];
+  const steps = [
+    { title: 'About you', short: 'Account' },
+    { title: 'Your support', short: 'Support' },
+    { title: 'Identity and location', short: 'Identity' },
+    { title: 'Secure and review', short: 'Review' },
+  ];
   const requiresRegistrationPayment =
     (userType === 'tenant' && registrationFlags.tenant_registration_payment) ||
     (userType === 'landlord' && registrationFlags.landlord_registration_payment);
@@ -114,7 +126,8 @@ const RegisterScreen = ({ navigation, route }) => {
     (requiresLawyerPayment ? LAWYER_ACCESS_FEE : 0) +
     (requiresAgentPayment ? AGENT_ACCESS_FEE : 0);
   const isFormComplete = Boolean(
-    registrationFlags.loaded &&
+    acceptedTerms &&
+      registrationFlags.loaded &&
       registrationFlags.registration_allowed &&
       form.full_name.trim() &&
       emailPattern.test(form.email.trim()) &&
@@ -304,6 +317,10 @@ const RegisterScreen = ({ navigation, route }) => {
       return 'Password must be at least 8 characters.';
     }
 
+    if (!acceptedTerms) {
+      return 'Accept the Terms and Privacy Policy to continue.';
+    }
+
     if (!form.use_rentalhub_lawyers && !emailPattern.test(form.lawyer_email || '')) {
       return 'Enter a valid lawyer email.';
     }
@@ -352,6 +369,90 @@ const RegisterScreen = ({ navigation, route }) => {
     }
 
     return null;
+  };
+
+  const validateStep = (step) => {
+    if (step === 0) {
+      if (!form.full_name.trim() || !form.email.trim() || !form.phone.trim()) {
+        return 'Enter your full name, email address and phone number.';
+      }
+      if (!emailPattern.test(form.email.trim())) {
+        return 'Enter a valid email address.';
+      }
+      const referralCode = String(form.referral_code || '').trim();
+      if (referralCode && !referralCodePattern.test(referralCode)) {
+        return 'Referral code can only contain letters, numbers, - or _.';
+      }
+    }
+
+    if (step === 1) {
+      if (!form.use_rentalhub_lawyers && !emailPattern.test(form.lawyer_email.trim())) {
+        return 'Enter a valid lawyer email or choose RentalHub NG lawyers.';
+      }
+      if (userType === 'landlord' && form.add_agent && !form.use_rentalhub_agents) {
+        if (!form.agent_full_name.trim()) return 'Enter the agent’s full name.';
+        if (!emailPattern.test(form.agent_email.trim())) return 'Enter a valid agent email.';
+        if (!form.agent_phone.trim()) return 'Enter the agent’s phone number.';
+      }
+    }
+
+    if (step === 2) {
+      const locationRequired =
+        requiresRegistrationPayment || registrationFlags.registration_location_restricted;
+      if (locationRequired && !form.state_id) return 'Select your state.';
+      if (locationRequired && !form.lga_name.trim()) return 'Select your local government area.';
+      if (!isForeigner && registrationFlags.nin_number && !/^\d{11}$/.test(form.nin)) {
+        return 'Enter your 11-digit NIN.';
+      }
+      if (
+        isForeigner &&
+        registrationFlags.passport_number &&
+        !passportPattern.test(form.international_passport_number.trim())
+      ) {
+        return 'Enter a valid international passport number.';
+      }
+      if (isForeigner && registrationFlags.passport_number && !form.nationality.trim()) {
+        return 'Enter your nationality.';
+      }
+    }
+
+    if (step === 3) {
+      if (form.password.length < 8) return 'Password must be at least 8 characters.';
+      if (form.password !== form.confirm_password) return 'Passwords do not match.';
+      if (!acceptedTerms) return 'Accept the Terms and Privacy Policy to continue.';
+    }
+
+    return null;
+  };
+
+  const changeStep = (nextStep) => {
+    setCurrentStep(Math.max(0, Math.min(steps.length - 1, nextStep)));
+    requestAnimationFrame(() => scrollRef.current?.scrollTo({ y: 0, animated: true }));
+  };
+
+  const continueRegistration = () => {
+    if (!registrationFlags.loaded) {
+      Toast.show({
+        type: 'info',
+        text1: 'Checking registration',
+        text2: 'Please wait while we load the current registration rules.',
+      });
+      return;
+    }
+    const error = validateStep(currentStep);
+    if (error) {
+      Toast.show({ type: 'error', text1: 'Complete this step', text2: error });
+      return;
+    }
+    changeStep(currentStep + 1);
+  };
+
+  const handleRegistrationBack = () => {
+    if (currentStep > 0) {
+      changeStep(currentStep - 1);
+    } else {
+      navigation.goBack();
+    }
   };
 
   const handleRegister = async () => {
@@ -502,9 +603,45 @@ const RegisterScreen = ({ navigation, route }) => {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.title}>Create Account</Text>
-        <Text style={styles.subtitle}>Tenant and landlord onboarding</Text>
+      <View style={styles.topBar}>
+        <TouchableOpacity
+          accessibilityLabel="Go back"
+          accessibilityRole="button"
+          onPress={handleRegistrationBack}
+          style={styles.backButton}>
+          <Icon name="arrow-back" size={22} color={colors.navy} />
+        </TouchableOpacity>
+        <BrandMark compact />
+        <View style={styles.topBarSpacer} />
+      </View>
+      <ScrollView
+        ref={scrollRef}
+        contentContainerStyle={styles.content}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}>
+        <View style={styles.progressHeader}>
+          <Text style={styles.stepCount}>STEP {currentStep + 1} OF {steps.length}</Text>
+          <Text style={styles.stepPercent}>{Math.round(((currentStep + 1) / steps.length) * 100)}%</Text>
+        </View>
+        <View style={styles.progressTrack}>
+          <View
+            style={[
+              styles.progressFill,
+              { width: `${((currentStep + 1) / steps.length) * 100}%` },
+            ]}
+          />
+        </View>
+        <Text style={styles.eyebrow}>{steps[currentStep].short.toUpperCase()}</Text>
+        <Text style={styles.title}>{steps[currentStep].title}</Text>
+        <Text style={styles.subtitle}>
+          {currentStep === 0
+            ? 'Choose how you’ll use RentalHub and tell us how to reach you.'
+            : currentStep === 1
+              ? 'Choose the legal and agent support that fits your rental journey.'
+              : currentStep === 2
+                ? 'Add your location and the identity details required for verification.'
+                : 'Create a secure password and review everything before continuing.'}
+        </Text>
 
         {!registrationFlags.loaded ? (
           <View style={styles.noticeCard}>
@@ -542,6 +679,9 @@ const RegisterScreen = ({ navigation, route }) => {
           </View>
         ) : null}
 
+        {currentStep === 0 ? (
+          <>
+        <Text style={styles.choiceLabel}>I’m registering as</Text>
         <View style={styles.toggleRow}>
           {['tenant', 'landlord'].map((role) => (
             <TouchableOpacity
@@ -556,6 +696,7 @@ const RegisterScreen = ({ navigation, route }) => {
           ))}
         </View>
 
+        <Text style={styles.choiceLabel}>Citizenship</Text>
         <View style={styles.toggleRow}>
           {[false, true].map((value) => (
             <TouchableOpacity
@@ -569,12 +710,19 @@ const RegisterScreen = ({ navigation, route }) => {
             </TouchableOpacity>
           ))}
         </View>
+          </>
+        ) : null}
 
+        {currentStep === 3 ? (
         <View style={styles.priceCard}>
           <Text style={styles.priceLabel}>
-            {requiresPayment ? 'Total due at signup' : 'Current base fee'}
+            AMOUNT DUE TODAY
           </Text>
-          <Text style={styles.priceAmount}>₦{Number(displayedRegistrationAmount || 0).toLocaleString()}</Text>
+          <Text style={styles.priceAmount}>
+            {requiresPayment
+              ? `₦${Number(displayedRegistrationAmount || 0).toLocaleString()}`
+              : 'No payment required'}
+          </Text>
           <Text style={styles.priceMeta}>
             {requiresPayment
               ? 'Includes registration and any selected RentalHub NG lawyer or agent access fees.'
@@ -589,7 +737,10 @@ const RegisterScreen = ({ navigation, route }) => {
             </Text>
           ) : null}
         </View>
+        ) : null}
 
+        {currentStep === 0 ? (
+          <View style={styles.stepCard}>
         <Input
           label="Full Name"
           value={form.full_name}
@@ -614,6 +765,11 @@ const RegisterScreen = ({ navigation, route }) => {
           keyboardType="phone-pad"
           icon="call-outline"
         />
+          </View>
+        ) : null}
+
+        {currentStep === 1 ? (
+          <View style={styles.stepCard}>
         <TouchableOpacity
           style={styles.agentToggle}
           onPress={() =>
@@ -661,7 +817,11 @@ const RegisterScreen = ({ navigation, route }) => {
             </Text>
           </TouchableOpacity>
         ) : null}
+          </View>
+        ) : null}
 
+        {currentStep === 0 ? (
+          <View style={styles.stepCard}>
         <Input
           label="Referral Code (optional)"
           value={form.referral_code}
@@ -676,8 +836,10 @@ const RegisterScreen = ({ navigation, route }) => {
             Referral code applied from your invite link.
           </Text>
         ) : null}
+          </View>
+        ) : null}
 
-        {userType === 'landlord' ? (
+        {currentStep === 1 && userType === 'landlord' && !form.use_rentalhub_agents ? (
           <View style={styles.agentBlock}>
             <TouchableOpacity
               style={styles.agentToggle}
@@ -719,6 +881,8 @@ const RegisterScreen = ({ navigation, route }) => {
           </View>
         ) : null}
 
+        {currentStep === 2 ? (
+          <View style={styles.stepCard}>
         <SelectField
           label="State"
           value={selectedState?.state_name}
@@ -771,7 +935,50 @@ const RegisterScreen = ({ navigation, route }) => {
         ) : (
           <Text style={styles.helperBlock}>Passport collection is currently disabled.</Text>
         )}
+          </View>
+        ) : null}
 
+        {currentStep === 3 ? (
+          <>
+          <View style={styles.reviewCard}>
+            <View style={styles.reviewHeading}>
+              <View>
+                <Text style={styles.reviewEyebrow}>ACCOUNT SUMMARY</Text>
+                <Text style={styles.reviewTitle}>
+                  {form.full_name || 'Your RentalHub account'}
+                </Text>
+              </View>
+              <TouchableOpacity onPress={() => changeStep(0)} style={styles.editButton}>
+                <Icon name="pencil-outline" size={16} color={colors.blue} />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.reviewRow}>
+              <Icon name="person-outline" size={17} color={colors.muted} />
+              <Text style={styles.reviewText}>
+                {userType === 'landlord' ? 'Landlord' : 'Tenant'} · {isForeigner ? 'International' : 'Nigerian'}
+              </Text>
+            </View>
+            <View style={styles.reviewRow}>
+              <Icon name="mail-outline" size={17} color={colors.muted} />
+              <Text style={styles.reviewText}>{form.email || 'Email not entered'}</Text>
+            </View>
+            <View style={styles.reviewRow}>
+              <Icon name="location-outline" size={17} color={colors.muted} />
+              <Text style={styles.reviewText}>
+                {[form.lga_name, selectedState?.state_name].filter(Boolean).join(', ') || 'Location not required'}
+              </Text>
+            </View>
+            <TouchableOpacity onPress={() => changeStep(1)} style={styles.reviewSupport}>
+              <Text style={styles.reviewSupportText}>
+                {form.use_rentalhub_lawyers
+                  ? 'RentalHub lawyer support selected'
+                  : `Personal lawyer: ${form.lawyer_email || 'not entered'}`}
+              </Text>
+              <Icon name="chevron-forward" size={16} color={colors.blue} />
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.stepCard}>
         <Input
           label="Password"
           value={form.password}
@@ -788,6 +995,38 @@ const RegisterScreen = ({ navigation, route }) => {
           secureTextEntry
           icon="lock-closed-outline"
         />
+          <TouchableOpacity
+            accessibilityRole="checkbox"
+            accessibilityState={{ checked: acceptedTerms }}
+            activeOpacity={0.8}
+            onPress={() => setAcceptedTerms((value) => !value)}
+            style={styles.termsRow}>
+            <View style={[styles.checkbox, acceptedTerms && styles.checkboxChecked]}>
+              {acceptedTerms ? <Icon name="checkmark" size={15} color={colors.white} /> : null}
+            </View>
+            <Text style={styles.termsText}>
+              I agree to RentalHub’s{' '}
+              <Text
+                onPress={(event) => {
+                  event.stopPropagation();
+                  Linking.openURL('https://rentalhub.com.ng/terms');
+                }}
+                style={styles.termsLink}>
+                Terms
+              </Text>{' '}
+              and{' '}
+              <Text
+                onPress={(event) => {
+                  event.stopPropagation();
+                  Linking.openURL('https://rentalhub.com.ng/privacy');
+                }}
+                style={styles.termsLink}>
+                Privacy Policy
+              </Text>
+              .
+            </Text>
+          </TouchableOpacity>
+          </View>
 
         <Button
           title={requiresPayment ? 'Proceed to Payment' : 'Create Account'}
@@ -819,6 +1058,27 @@ const RegisterScreen = ({ navigation, route }) => {
             />
           </View>
         ) : null}
+          </>
+        ) : null}
+
+        <View style={styles.stepNavigation}>
+          {currentStep > 0 ? (
+            <Button
+              title="Back"
+              variant="outline"
+              onPress={() => changeStep(currentStep - 1)}
+              style={styles.stepNavButton}
+            />
+          ) : null}
+          {currentStep < steps.length - 1 ? (
+            <Button
+              title="Continue"
+              onPress={continueRegistration}
+              style={styles.stepNavButton}
+              disabled={!registrationFlags.loaded}
+            />
+          ) : null}
+        </View>
 
         <View style={styles.footer}>
           <Text style={styles.footerText}>Already have an account?</Text>
@@ -858,47 +1118,136 @@ const RegisterScreen = ({ navigation, route }) => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#ffffff' },
-  content: { padding: 20, paddingBottom: 36 },
-  title: { fontSize: 30, fontWeight: '800', color: '#0f172a' },
-  subtitle: { marginTop: 6, marginBottom: 16, color: '#64748b' },
+  container: { flex: 1, backgroundColor: colors.surface },
+  topBar: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingBottom: 10,
+    paddingHorizontal: 22,
+    paddingTop: Platform.OS === 'android' ? 14 : 8,
+  },
+  backButton: {
+    alignItems: 'center',
+    backgroundColor: colors.white,
+    borderColor: colors.border,
+    borderRadius: 21,
+    borderWidth: 1,
+    height: 42,
+    justifyContent: 'center',
+    width: 42,
+  },
+  topBarSpacer: { width: 42 },
+  content: { padding: 22, paddingBottom: 42 },
+  progressHeader: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 14,
+  },
+  stepCount: {
+    color: colors.blue,
+    fontFamily: typography.bold,
+    fontSize: 9,
+    letterSpacing: 1.2,
+  },
+  stepPercent: {
+    color: colors.muted,
+    fontFamily: typography.semibold,
+    fontSize: 10,
+  },
+  progressTrack: {
+    backgroundColor: colors.border,
+    borderRadius: 4,
+    height: 5,
+    marginTop: 9,
+    overflow: 'hidden',
+  },
+  progressFill: {
+    backgroundColor: colors.blue,
+    borderRadius: 4,
+    height: 5,
+  },
+  eyebrow: {
+    color: colors.blue,
+    fontFamily: typography.bold,
+    fontSize: 11,
+    letterSpacing: 1.5,
+    marginTop: 16,
+  },
+  title: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 32,
+    letterSpacing: -1,
+    marginTop: 9,
+  },
+  subtitle: {
+    color: colors.muted,
+    fontFamily: typography.regular,
+    fontSize: 15,
+    lineHeight: 23,
+    marginBottom: 24,
+    marginTop: 9,
+  },
+  stepCard: {
+    backgroundColor: colors.white,
+    borderColor: colors.border,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    marginBottom: 15,
+    padding: 17,
+    ...shadows.soft,
+  },
   toggleRow: { flexDirection: 'row', gap: 10, marginBottom: 12 },
+  choiceLabel: {
+    color: colors.text,
+    fontFamily: typography.semibold,
+    fontSize: 12,
+    marginBottom: 8,
+    marginLeft: 2,
+  },
   toggleBtn: {
     flex: 1,
-    borderRadius: 10,
+    borderRadius: radius.md,
     borderWidth: 1,
-    borderColor: '#cbd5e1',
-    paddingVertical: 10,
+    borderColor: colors.border,
+    backgroundColor: colors.white,
+    minHeight: 48,
+    justifyContent: 'center',
     alignItems: 'center',
   },
   toggleBtnActive: {
-    borderColor: '#0284c7',
-    backgroundColor: '#eff6ff',
+    borderColor: colors.blue,
+    backgroundColor: colors.surfaceBlue,
   },
-  toggleText: { fontWeight: '600', color: '#475569' },
-  toggleTextActive: { color: '#0284c7' },
+  toggleText: { fontFamily: typography.semibold, color: colors.text },
+  toggleTextActive: { color: colors.blue },
   priceCard: {
-    borderRadius: 14,
+    borderRadius: radius.md,
     borderWidth: 1,
-    borderColor: '#dbeafe',
-    backgroundColor: '#f8fbff',
-    padding: 14,
-    marginBottom: 18,
+    borderColor: '#CFE1FB',
+    backgroundColor: colors.white,
+    padding: 18,
+    marginBottom: 22,
+    marginTop: 4,
+    ...shadows.soft,
   },
   priceLabel: {
-    color: '#475569',
+    color: colors.muted,
     fontSize: 13,
-    fontWeight: '600',
+    fontFamily: typography.semibold,
   },
   priceAmount: {
     fontSize: 28,
-    fontWeight: '800',
-    color: '#0f172a',
+    fontFamily: typography.bold,
+    color: colors.ink,
     marginTop: 4,
   },
   priceMeta: {
     marginTop: 6,
-    color: '#64748b',
+    color: colors.muted,
+    fontFamily: typography.regular,
     lineHeight: 18,
   },
   pendingMeta: {
@@ -906,21 +1255,117 @@ const styles = StyleSheet.create({
     color: '#1d4ed8',
     fontWeight: '600',
   },
+  reviewCard: {
+    backgroundColor: colors.navy,
+    borderRadius: radius.lg,
+    marginBottom: 15,
+    overflow: 'hidden',
+    padding: 18,
+  },
+  reviewHeading: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 14,
+  },
+  reviewEyebrow: {
+    color: '#9BC3F4',
+    fontFamily: typography.bold,
+    fontSize: 8,
+    letterSpacing: 1.1,
+  },
+  reviewTitle: {
+    color: colors.white,
+    fontFamily: typography.bold,
+    fontSize: 19,
+    marginTop: 3,
+  },
+  editButton: {
+    alignItems: 'center',
+    backgroundColor: colors.white,
+    borderRadius: 18,
+    height: 36,
+    justifyContent: 'center',
+    width: 36,
+  },
+  reviewRow: {
+    alignItems: 'center',
+    borderTopColor: 'rgba(255,255,255,0.1)',
+    borderTopWidth: 1,
+    flexDirection: 'row',
+    paddingVertical: 10,
+  },
+  reviewText: {
+    color: '#D8E4F5',
+    flex: 1,
+    fontFamily: typography.regular,
+    fontSize: 11,
+    marginLeft: 8,
+  },
+  reviewSupport: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,0.08)',
+    borderRadius: radius.sm,
+    flexDirection: 'row',
+    marginTop: 5,
+    padding: 11,
+  },
+  reviewSupportText: {
+    color: '#D8E4F5',
+    flex: 1,
+    fontFamily: typography.medium,
+    fontSize: 10,
+  },
   agentBlock: {
     marginBottom: 8,
   },
   agentToggle: {
-    borderWidth: 1,
-    borderColor: '#cbd5e1',
-    borderRadius: 10,
-    paddingVertical: 10,
     alignItems: 'center',
+    backgroundColor: colors.surfaceBlue,
+    borderColor: '#CFE1FB',
+    borderRadius: radius.md,
+    borderWidth: 1,
     marginBottom: 10,
-    backgroundColor: '#f8fafc',
+    minHeight: 50,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
   },
   agentToggleLabel: {
-    color: '#1e293b',
-    fontWeight: '600',
+    color: colors.blue,
+    fontFamily: typography.semibold,
+    fontSize: 12,
+    textAlign: 'center',
+  },
+  termsRow: {
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+    marginTop: 1,
+    paddingVertical: 5,
+  },
+  checkbox: {
+    alignItems: 'center',
+    borderColor: colors.border,
+    borderRadius: 6,
+    borderWidth: 1.5,
+    height: 22,
+    justifyContent: 'center',
+    marginRight: 10,
+    width: 22,
+  },
+  checkboxChecked: {
+    backgroundColor: colors.blue,
+    borderColor: colors.blue,
+  },
+  termsText: {
+    color: colors.text,
+    flex: 1,
+    fontFamily: typography.regular,
+    fontSize: 11,
+    lineHeight: 17,
+  },
+  termsLink: {
+    color: colors.blue,
+    fontFamily: typography.semibold,
   },
   noticeCard: {
     borderRadius: 14,
@@ -963,7 +1408,15 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 10,
   },
-  cta: { marginTop: 6 },
+  cta: { marginTop: 8 },
+  stepNavigation: {
+    flexDirection: 'row',
+    gap: 10,
+    marginTop: 12,
+  },
+  stepNavButton: {
+    flex: 1,
+  },
   paymentCard: {
     marginTop: 16,
     borderRadius: 14,
@@ -990,8 +1443,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
   },
-  footerText: { color: '#64748b' },
-  footerLink: { color: '#0284c7', fontWeight: '700' },
+  footerText: { color: colors.muted, fontFamily: typography.regular },
+  footerLink: { color: colors.blue, fontFamily: typography.bold },
 });
 
 export default RegisterScreen;

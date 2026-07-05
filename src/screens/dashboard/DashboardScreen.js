@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Linking,
+  RefreshControl,
   ScrollView,
   Share,
   StyleSheet,
@@ -11,6 +12,7 @@ import {
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import { AuthContext } from '../../context/AuthContext';
 import WalletFundModal from '../../components/dashboard/WalletFundModal';
@@ -22,6 +24,7 @@ import { rentSavingsService } from '../../services/rentSavingsService';
 import { transportationService } from '../../services/transportationService';
 import { getErrorMessage, getReviewStatus, pickList, pickObject } from '../../utils/http';
 import TenancyGracePanel from '../../components/dashboard/TenancyGracePanel';
+import { colors, radius, shadows, typography } from '../../theme';
 
 const StatCard = ({ title, value, icon, onPress }) => (
   <TouchableOpacity style={styles.statCard} onPress={onPress}>
@@ -191,6 +194,7 @@ const getTenantSubscriptionValue = (stats = {}) => {
 const DashboardScreen = ({ navigation }) => {
   const { user } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [stats, setStats] = useState({});
   const [activities, setActivities] = useState([]);
   const [paidPropertyLocations, setPaidPropertyLocations] = useState([]);
@@ -259,8 +263,8 @@ const DashboardScreen = ({ navigation }) => {
     }
   };
 
-  const loadDashboard = async () => {
-    setLoading(true);
+  const loadDashboard = async ({ refresh = false } = {}) => {
+    refresh ? setRefreshing(true) : setLoading(true);
     try {
       const dashboardRequests = [
         isTenant ? dashboardService.getTenantStats() : dashboardService.getLandlordStats(),
@@ -317,6 +321,7 @@ const DashboardScreen = ({ navigation }) => {
       });
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
   };
 
@@ -564,9 +569,45 @@ const DashboardScreen = ({ navigation }) => {
   }
 
   return (
-    <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
-      <Text style={styles.title}>Welcome back, {user?.full_name || 'User'}</Text>
-      <Text style={styles.subtitle}>Manage your account and rental workflow</Text>
+    <SafeAreaView edges={['top']} style={styles.safeArea}>
+    <ScrollView
+      style={styles.screen}
+      contentContainerStyle={styles.content}
+      showsVerticalScrollIndicator={false}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={() => loadDashboard({ refresh: true })}
+          colors={[colors.blue]}
+          tintColor={colors.blue}
+        />
+      }>
+      <View style={styles.topBar}>
+        <View>
+          <Text style={styles.topEyebrow}>MY HUB</Text>
+          <Text style={styles.topTitle}>Hello, {String(user?.full_name || 'there').split(' ')[0]}</Text>
+        </View>
+        <View style={styles.topActions}>
+          <TouchableOpacity
+            accessibilityLabel="Open notifications"
+            onPress={() => navigation.navigate('Notifications')}
+            style={styles.topButton}>
+            <Icon name="notifications-outline" size={21} color={colors.navy} />
+            {Number(stats.unread_notifications || stats.unread_messages || 0) > 0 ? (
+              <View style={styles.unreadDot} />
+            ) : null}
+          </TouchableOpacity>
+          <TouchableOpacity
+            accessibilityLabel="Open profile"
+            onPress={() => navigation.navigate('Profile')}
+            style={styles.avatar}>
+            <Text style={styles.avatarText}>
+              {String(user?.full_name || 'U').trim().charAt(0).toUpperCase()}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+      <Text style={styles.subtitle}>Everything about your rental journey, in one place.</Text>
 
       {verificationBanner ? (
         <StatusBanner
@@ -960,32 +1001,97 @@ const DashboardScreen = ({ navigation }) => {
         }}
       />
     </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#f8fafc' },
-  content: { padding: 16, paddingBottom: 30 },
-  center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  title: { fontSize: 26, fontWeight: '800', color: '#0f172a', textAlign: 'center' },
-  subtitle: { marginTop: 6, marginBottom: 14, color: '#64748b', textAlign: 'center' },
+  safeArea: { flex: 1, backgroundColor: colors.surface },
+  screen: { flex: 1, backgroundColor: colors.surface },
+  content: { padding: 18, paddingBottom: 34 },
+  center: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.surface },
+  topBar: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  topEyebrow: {
+    color: colors.blue,
+    fontFamily: typography.bold,
+    fontSize: 9,
+    letterSpacing: 1.3,
+  },
+  topTitle: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 28,
+    letterSpacing: -0.8,
+    marginTop: 3,
+  },
+  topActions: {
+    flexDirection: 'row',
+    gap: 9,
+  },
+  topButton: {
+    alignItems: 'center',
+    backgroundColor: colors.white,
+    borderColor: colors.border,
+    borderRadius: 21,
+    borderWidth: 1,
+    height: 42,
+    justifyContent: 'center',
+    position: 'relative',
+    width: 42,
+  },
+  unreadDot: {
+    backgroundColor: colors.gold,
+    borderColor: colors.white,
+    borderRadius: 5,
+    borderWidth: 2,
+    height: 10,
+    position: 'absolute',
+    right: 6,
+    top: 6,
+    width: 10,
+  },
+  avatar: {
+    alignItems: 'center',
+    backgroundColor: colors.navy,
+    borderRadius: 21,
+    height: 42,
+    justifyContent: 'center',
+    width: 42,
+  },
+  avatarText: {
+    color: colors.white,
+    fontFamily: typography.bold,
+    fontSize: 16,
+  },
+  title: { fontSize: 26, fontFamily: typography.bold, color: colors.ink },
+  subtitle: {
+    color: colors.muted,
+    fontFamily: typography.regular,
+    fontSize: 13,
+    marginBottom: 18,
+    marginTop: 7,
+  },
   banner: {
     borderWidth: 1,
-    borderRadius: 14,
+    borderRadius: radius.md,
     padding: 14,
     flexDirection: 'row',
     gap: 10,
     marginBottom: 12,
   },
   bannerBody: { flex: 1 },
-  bannerTitle: { fontWeight: '800', fontSize: 15 },
-  bannerText: { marginTop: 4, lineHeight: 18 },
-  bannerAction: { marginTop: 6, fontWeight: '700' },
+  bannerTitle: { fontFamily: typography.bold, fontSize: 14 },
+  bannerText: { fontFamily: typography.regular, fontSize: 12, marginTop: 4, lineHeight: 18 },
+  bannerAction: { marginTop: 7, fontFamily: typography.semibold, fontSize: 12 },
   locationSection: {
     backgroundColor: '#ffffff',
     borderWidth: 1,
     borderColor: '#bbf7d0',
-    borderRadius: 14,
+    borderRadius: radius.md,
     padding: 14,
     marginBottom: 12,
   },
@@ -1044,30 +1150,48 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '800',
   },
-  grid: { gap: 10 },
-  statCard: {
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
-    padding: 14,
+  grid: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: 10,
   },
-  statTitle: { color: '#64748b', fontSize: 13 },
-  statValue: { fontSize: 24, fontWeight: '800', color: '#0f172a', marginTop: 4 },
-  quickActions: { marginTop: 14, gap: 10 },
-  quickBtn: {
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
+  statCard: {
+    backgroundColor: colors.white,
+    borderRadius: radius.md,
     borderWidth: 1,
-    borderColor: '#dbeafe',
-    padding: 12,
+    borderColor: colors.border,
+    padding: 14,
+    minHeight: 112,
+    width: '48%',
+    justifyContent: 'space-between',
+    ...shadows.soft,
   },
-  quickTitle: { color: '#1e40af', fontWeight: '700' },
-  quickText: { marginTop: 2, color: '#475569', fontSize: 12 },
-  sectionTitle: { marginTop: 18, marginBottom: 8, fontSize: 18, fontWeight: '800', color: '#0f172a' },
+  statTitle: { color: colors.muted, fontFamily: typography.medium, fontSize: 11 },
+  statValue: { fontSize: 21, fontFamily: typography.bold, color: colors.ink, marginTop: 5 },
+  quickActions: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop: 16,
+    gap: 10,
+  },
+  quickBtn: {
+    backgroundColor: colors.white,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+    minHeight: 88,
+    padding: 13,
+    width: '48%',
+  },
+  quickTitle: { color: colors.navy, fontFamily: typography.bold, fontSize: 13 },
+  quickText: { marginTop: 5, color: colors.muted, fontFamily: typography.regular, fontSize: 11, lineHeight: 16 },
+  sectionTitle: {
+    marginTop: 24,
+    marginBottom: 10,
+    fontSize: 19,
+    fontFamily: typography.bold,
+    color: colors.ink,
+  },
   emptyText: { color: '#64748b' },
   activityItem: {
     backgroundColor: '#ffffff',

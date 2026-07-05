@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { colors, radius, typography } from '../../theme';
 
 const SelectField = ({
   label,
@@ -24,7 +25,7 @@ const SelectField = ({
       <Icon
         name="chevron-down-outline"
         size={20}
-        color={disabled ? '#94a3b8' : '#64748b'}
+        color={disabled ? '#AAB3C3' : colors.muted}
       />
     </TouchableOpacity>
     {helperText ? <Text style={styles.helperText}>{helperText}</Text> : null}
@@ -33,42 +34,44 @@ const SelectField = ({
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 16,
+    marginBottom: 18,
   },
   label: {
+    color: colors.text,
+    fontFamily: typography.semibold,
     fontSize: 14,
-    fontWeight: '500',
-    color: '#374151',
-    marginBottom: 6,
+    marginBottom: 8,
   },
   field: {
+    alignItems: 'center',
+    backgroundColor: colors.white,
+    borderColor: colors.border,
+    borderRadius: radius.md,
     minHeight: 52,
     borderWidth: 1,
-    borderColor: '#d1d5db',
-    borderRadius: 8,
-    backgroundColor: '#ffffff',
-    paddingHorizontal: 14,
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
+    paddingHorizontal: 14,
   },
   fieldDisabled: {
-    backgroundColor: '#f8fafc',
-    borderColor: '#e2e8f0',
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
   },
   value: {
+    color: colors.ink,
     flex: 1,
-    fontSize: 16,
-    color: '#1f2937',
+    fontFamily: typography.regular,
+    fontSize: 15,
     marginRight: 10,
   },
   placeholder: {
-    color: '#94a3b8',
+    color: '#96A2B8',
   },
   helperText: {
-    marginTop: 4,
+    color: colors.muted,
+    fontFamily: typography.regular,
     fontSize: 12,
-    color: '#64748b',
+    marginTop: 5,
   },
 });
 

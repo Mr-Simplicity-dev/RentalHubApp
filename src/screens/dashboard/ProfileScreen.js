@@ -1,5 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { Platform, View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Switch } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
@@ -10,6 +12,7 @@ import { authService } from '../../services/authService';
 import { storageService } from '../../services/storageService';
 import { cameraService } from '../../services/cameraService';
 import { getErrorMessage, getReviewStatus, pickObject } from '../../utils/http';
+import { colors, radius, shadows, typography } from '../../theme';
 
 const ProfileScreen = ({ navigation }) => {
   const { user, updateUser, logout } = useContext(AuthContext);
@@ -28,6 +31,10 @@ const ProfileScreen = ({ navigation }) => {
     phone: user?.phone || '',
     bio: user?.bio || '',
   });
+
+  useLayoutEffect(() => {
+    navigation.setOptions({ headerShown: false });
+  }, [navigation]);
 
   useEffect(() => {
     setForm({
@@ -216,12 +223,58 @@ const ProfileScreen = ({ navigation }) => {
           : 'Not submitted';
 
   return (
-    <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
-      <Text style={styles.title}>My Profile</Text>
-      <Text style={styles.subtitle}>Account and verification details</Text>
+    <SafeAreaView edges={['top']} style={styles.safeArea}>
+      <View style={styles.header}>
+        <TouchableOpacity
+          accessibilityLabel="Go back"
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}>
+          <Icon name="arrow-back" size={22} color={colors.navy} />
+        </TouchableOpacity>
+        <View style={styles.headerCopy}>
+          <Text style={styles.headerEyebrow}>ACCOUNT</Text>
+          <Text style={styles.headerTitle}>Profile</Text>
+        </View>
+        <TouchableOpacity
+          accessibilityLabel="Open notifications"
+          onPress={() => navigation.navigate('Notifications')}
+          style={styles.backButton}>
+          <Icon name="notifications-outline" size={21} color={colors.navy} />
+        </TouchableOpacity>
+      </View>
+
+    <ScrollView
+      style={styles.screen}
+      contentContainerStyle={styles.content}
+      keyboardShouldPersistTaps="handled"
+      showsVerticalScrollIndicator={false}>
+      <View style={styles.profileHero}>
+        <View style={styles.avatar}>
+          <Text style={styles.avatarText}>
+            {String(user?.full_name || 'U').trim().charAt(0).toUpperCase()}
+          </Text>
+          {reviewStatus === 'verified' ? (
+            <View style={styles.verifiedDot}>
+              <Icon name="checkmark" size={11} color={colors.white} />
+            </View>
+          ) : null}
+        </View>
+        <Text style={styles.title}>{user?.full_name || 'RentalHub member'}</Text>
+        <Text style={styles.subtitle}>{user?.email || 'No email available'}</Text>
+        <View style={styles.rolePill}>
+          <Text style={styles.roleText}>
+            {String(user?.user_type || 'member').replace(/_/g, ' ')}
+          </Text>
+        </View>
+      </View>
 
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>Account Information</Text>
+        <View style={styles.cardHeader}>
+          <View style={styles.cardIcon}>
+            <Icon name="person-outline" size={19} color={colors.blue} />
+          </View>
+          <Text style={styles.cardTitle}>Personal information</Text>
+        </View>
         <Input
           label="Full Name"
           value={form.full_name}
@@ -241,13 +294,19 @@ const ProfileScreen = ({ navigation }) => {
           numberOfLines={3}
           placeholder="Tell us about yourself..."
         />
-        <Text style={styles.infoRow}>Email: {user?.email || '-'}</Text>
-        <Text style={styles.infoRow}>Role: {user?.user_type || '-'}</Text>
-        <Button title="Save Changes" onPress={handleSaveProfile} loading={saving} />
+        <Button title="Save changes" onPress={handleSaveProfile} loading={saving} />
       </View>
 
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>Identity Verification</Text>
+        <View style={styles.cardHeader}>
+          <View style={styles.cardIcon}>
+            <Icon name="shield-checkmark-outline" size={19} color={colors.blue} />
+          </View>
+          <View style={styles.cardHeaderCopy}>
+            <Text style={styles.cardTitle}>Identity verification</Text>
+            <Text style={styles.cardCaption}>Status: {reviewStatusLabel}</Text>
+          </View>
+        </View>
         <Text style={styles.statusText}>
           Email: {status?.email ? 'Verified' : 'Pending'} | Phone: {status?.phone ? 'Verified' : 'Pending'}
         </Text>
@@ -295,7 +354,12 @@ const ProfileScreen = ({ navigation }) => {
       </View>
 
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>Security</Text>
+        <View style={styles.cardHeader}>
+          <View style={styles.cardIcon}>
+            <Icon name="finger-print-outline" size={20} color={colors.blue} />
+          </View>
+          <Text style={styles.cardTitle}>Security</Text>
+        </View>
         {biometricStatus.available ? (
           <>
             <View style={styles.switchRow}>
@@ -338,25 +402,138 @@ const ProfileScreen = ({ navigation }) => {
         />
       </View>
     </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#f8fafc' },
-  content: { padding: 16, paddingBottom: 24 },
-  title: { fontSize: 28, fontWeight: '800', color: '#0f172a', textAlign: 'center' },
-  subtitle: { marginTop: 4, marginBottom: 14, textAlign: 'center', color: '#64748b' },
-  card: {
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
-    padding: 12,
-    marginBottom: 12,
+  safeArea: { flex: 1, backgroundColor: colors.surface },
+  screen: { flex: 1, backgroundColor: colors.surface },
+  header: {
+    alignItems: 'center',
+    borderBottomColor: colors.border,
+    borderBottomWidth: 1,
+    flexDirection: 'row',
+    paddingHorizontal: 18,
+    paddingVertical: 10,
   },
-  cardTitle: { fontSize: 16, fontWeight: '700', color: '#0f172a', marginBottom: 8 },
-  infoRow: { color: '#334155', marginBottom: 4 },
-  statusText: { color: '#334155', marginBottom: 6 },
+  backButton: {
+    alignItems: 'center',
+    backgroundColor: colors.white,
+    borderColor: colors.border,
+    borderRadius: 21,
+    borderWidth: 1,
+    height: 42,
+    justifyContent: 'center',
+    width: 42,
+  },
+  headerCopy: { alignItems: 'center', flex: 1 },
+  headerEyebrow: {
+    color: colors.blue,
+    fontFamily: typography.bold,
+    fontSize: 9,
+    letterSpacing: 1.2,
+  },
+  headerTitle: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 20,
+    marginTop: 2,
+  },
+  content: { padding: 18, paddingBottom: 30 },
+  profileHero: {
+    alignItems: 'center',
+    paddingBottom: 24,
+    paddingTop: 9,
+  },
+  avatar: {
+    alignItems: 'center',
+    backgroundColor: colors.navy,
+    borderRadius: 42,
+    height: 84,
+    justifyContent: 'center',
+    position: 'relative',
+    width: 84,
+  },
+  avatarText: {
+    color: colors.white,
+    fontFamily: typography.bold,
+    fontSize: 31,
+  },
+  verifiedDot: {
+    alignItems: 'center',
+    backgroundColor: colors.success,
+    borderColor: colors.surface,
+    borderRadius: 10,
+    borderWidth: 3,
+    bottom: 1,
+    height: 21,
+    justifyContent: 'center',
+    position: 'absolute',
+    right: 1,
+    width: 21,
+  },
+  title: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 23,
+    letterSpacing: -0.5,
+    marginTop: 14,
+    textAlign: 'center',
+  },
+  subtitle: {
+    color: colors.muted,
+    fontFamily: typography.regular,
+    fontSize: 13,
+    marginTop: 4,
+    textAlign: 'center',
+  },
+  rolePill: {
+    backgroundColor: colors.surfaceBlue,
+    borderRadius: radius.pill,
+    marginTop: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+  },
+  roleText: {
+    color: colors.blue,
+    fontFamily: typography.bold,
+    fontSize: 9,
+    letterSpacing: 0.7,
+    textTransform: 'uppercase',
+  },
+  card: {
+    backgroundColor: colors.white,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: colors.border,
+    padding: 17,
+    marginBottom: 14,
+    ...shadows.soft,
+  },
+  cardHeader: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    marginBottom: 15,
+  },
+  cardIcon: {
+    alignItems: 'center',
+    backgroundColor: colors.surfaceBlue,
+    borderRadius: 18,
+    height: 36,
+    justifyContent: 'center',
+    marginRight: 10,
+    width: 36,
+  },
+  cardHeaderCopy: { flex: 1 },
+  cardTitle: { fontSize: 16, fontFamily: typography.bold, color: colors.ink },
+  cardCaption: {
+    color: colors.muted,
+    fontFamily: typography.medium,
+    fontSize: 10,
+    marginTop: 2,
+  },
+  statusText: { color: colors.text, fontFamily: typography.regular, marginBottom: 7 },
   infoBox: {
     marginBottom: 10,
     borderRadius: 10,
@@ -380,11 +557,11 @@ const styles = StyleSheet.create({
     color: '#b91c1c',
   },
   preview: {
-    marginTop: 8,
-    width: 120,
-    height: 120,
-    borderRadius: 10,
     alignSelf: 'center',
+    borderRadius: radius.md,
+    height: 150,
+    marginTop: 8,
+    width: 150,
   },
   marginTop: { marginTop: 8 },
   switchRow: {
@@ -398,18 +575,21 @@ const styles = StyleSheet.create({
     paddingRight: 12,
   },
   switchTitle: {
-    color: '#0f172a',
+    color: colors.ink,
+    fontFamily: typography.semibold,
     fontSize: 15,
-    fontWeight: '600',
   },
   switchDescription: {
-    marginTop: 4,
-    color: '#64748b',
+    color: colors.muted,
+    fontFamily: typography.regular,
+    fontSize: 12,
     lineHeight: 18,
+    marginTop: 4,
   },
   helperText: {
+    color: colors.text,
+    fontFamily: typography.regular,
     marginTop: 10,
-    color: '#475569',
   },
 });
 

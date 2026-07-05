@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useLayoutEffect } from 'react';
 import {
   View,
   Text,
@@ -10,8 +10,10 @@ import {
   Platform,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import { transportationService } from '../../services/transportationService';
+import { colors, radius, shadows, typography } from '../../theme';
 import { getErrorMessage } from '../../utils/http';
 
 const SERVICE_ICONS = {
@@ -41,6 +43,10 @@ const TransportationBookingScreen = ({ route, navigation }) => {
     items_description: '',
     special_requirements: '',
   });
+
+  useLayoutEffect(() => {
+    navigation.setOptions({ headerShown: false });
+  }, [navigation]);
 
   const today = new Date().toISOString().split('T')[0];
 
@@ -176,9 +182,17 @@ const TransportationBookingScreen = ({ route, navigation }) => {
   }
 
   return (
+    <SafeAreaView edges={['top']} style={styles.safeArea}>
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Book Transportation</Text>
+        <View style={styles.headerTop}>
+          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+            <Icon name="arrow-back" size={21} color={colors.white} />
+          </TouchableOpacity>
+          <View style={styles.headerIcon}><Icon name="car-sport-outline" size={23} color={colors.gold} /></View>
+        </View>
+        <Text style={styles.headerEyebrow}>MOVING SUPPORT</Text>
+        <Text style={styles.headerTitle}>Book transportation</Text>
         <Text style={styles.headerSub}>
           Arrange transportation to move your items
         </Text>
@@ -345,55 +359,59 @@ const TransportationBookingScreen = ({ route, navigation }) => {
         </TouchableOpacity>
       </View>
     </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#f8fafc' },
-  content: { paddingBottom: 32 },
-  centerContainer: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  safeArea: { flex: 1, backgroundColor: colors.surface },
+  screen: { flex: 1, backgroundColor: colors.surface },
+  content: { padding: 18, paddingBottom: 36 },
+  centerContainer: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.surface },
   header: {
-    backgroundColor: '#0284c7',
-    paddingHorizontal: 18,
-    paddingTop: 22,
-    paddingBottom: 30,
+    backgroundColor: colors.navy,
+    padding: 20,
+    borderRadius: radius.lg,
+    marginBottom: 14,
+    ...shadows.soft,
   },
-  headerTitle: { color: '#ffffff', fontSize: 26, fontWeight: '800' },
-  headerSub: { color: '#e0f2fe', fontSize: 14, marginTop: 6 },
+  headerTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 },
+  backButton: { width: 40, height: 40, borderRadius: 20, backgroundColor: colors.navySoft, alignItems: 'center', justifyContent: 'center' },
+  headerIcon: { width: 42, height: 42, borderRadius: 14, backgroundColor: colors.navySoft, alignItems: 'center', justifyContent: 'center' },
+  headerEyebrow: { fontFamily: typography.semibold, fontSize: 11, letterSpacing: 1.2, color: colors.gold },
+  headerTitle: { marginTop: 7, color: colors.white, fontFamily: typography.bold, fontSize: 26 },
+  headerSub: { color: '#B9C9E5', fontFamily: typography.regular, fontSize: 14, lineHeight: 20, marginTop: 6 },
   section: {
-    margin: 16,
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
+    marginBottom: 12,
+    backgroundColor: colors.white,
+    borderRadius: radius.md,
     padding: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 6,
-    elevation: 3,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: '700',
-    color: '#0f172a',
+    fontFamily: typography.bold,
+    color: colors.ink,
     marginBottom: 12,
   },
   serviceCard: {
     borderWidth: 1,
     borderColor: '#e2e8f0',
-    borderRadius: 10,
+    borderRadius: radius.md,
     padding: 14,
     marginBottom: 10,
   },
   serviceCardSelected: {
-    borderColor: '#0284c7',
-    backgroundColor: '#f0f9ff',
+    borderColor: colors.blue,
+    backgroundColor: colors.surfaceBlue,
   },
   serviceHeader: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   serviceInfo: { flex: 1, marginLeft: 10 },
-  serviceName: { fontSize: 16, fontWeight: '700', color: '#0f172a' },
+  serviceName: { fontSize: 16, fontFamily: typography.semibold, color: colors.ink },
   serviceType: { fontSize: 12, color: '#64748b', textTransform: 'capitalize' },
   serviceDesc: { color: '#475569', fontSize: 13, marginTop: 8 },
   serviceDetails: {
@@ -402,14 +420,14 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   serviceDetailText: { color: '#64748b', fontSize: 13 },
-  servicePrice: { fontWeight: '700', color: '#0284c7', fontSize: 16 },
+  servicePrice: { fontFamily: typography.bold, color: colors.blue, fontSize: 16 },
   perKmText: { color: '#94a3b8', fontSize: 12, marginTop: 4 },
   inputGroup: { marginBottom: 14 },
   label: { fontSize: 14, fontWeight: '600', color: '#334155', marginBottom: 6 },
   input: {
     borderWidth: 1,
     borderColor: '#cbd5e1',
-    borderRadius: 8,
+    borderRadius: radius.sm,
     paddingHorizontal: 12,
     paddingVertical: 10,
     fontSize: 15,
@@ -444,13 +462,13 @@ const styles = StyleSheet.create({
   },
   calculatingText: { marginLeft: 8, color: '#64748b' },
   submitButton: {
-    backgroundColor: '#0284c7',
-    borderRadius: 10,
+    backgroundColor: colors.blue,
+    borderRadius: radius.md,
     paddingVertical: 14,
     alignItems: 'center',
   },
   submitButtonDisabled: { opacity: 0.6 },
-  submitButtonText: { color: '#ffffff', fontSize: 16, fontWeight: '700' },
+  submitButtonText: { color: colors.white, fontSize: 16, fontFamily: typography.semibold },
 });
 
 export default TransportationBookingScreen;

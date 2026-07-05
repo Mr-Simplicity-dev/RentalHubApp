@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Linking,
@@ -8,15 +8,22 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import Button from '../../components/common/Button';
 import { legalService } from '../../services/legalService';
+import { colors, radius, shadows, typography } from '../../theme';
 import { buildUploadUrl, getErrorMessage, pickObject } from '../../utils/http';
 
 const DisputeDetailsScreen = ({ navigation, route }) => {
   const disputeId = route?.params?.disputeId;
   const [loading, setLoading] = useState(true);
   const [payload, setPayload] = useState(null);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({ headerShown: false });
+  }, [navigation]);
 
   const loadDispute = async () => {
     if (!disputeId) {
@@ -45,7 +52,7 @@ const DisputeDetailsScreen = ({ navigation, route }) => {
 
   if (loading) {
     return (
-      <View style={styles.center}>
+      <View style={[styles.center, styles.screen]}>
         <ActivityIndicator size="large" color="#0284c7" />
       </View>
     );
@@ -63,15 +70,28 @@ const DisputeDetailsScreen = ({ navigation, route }) => {
     payload;
 
   return (
+    <SafeAreaView edges={['top']} style={styles.safeArea}>
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
+      <View style={styles.topBar}>
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+          <Icon name="arrow-back" size={21} color={colors.ink} />
+        </TouchableOpacity>
+        <Text style={styles.topTitle}>Case file</Text>
+        <TouchableOpacity style={styles.refreshButton} onPress={loadDispute}>
+          <Icon name="refresh" size={20} color={colors.blue} />
+        </TouchableOpacity>
+      </View>
       <View style={styles.headerCard}>
-        <Text style={styles.title}>Dispute #{dispute.id}</Text>
-        <Text style={styles.metaText}>Property: {dispute.property_title || '-'}</Text>
-        <Text style={styles.metaText}>Status: {dispute.status || 'open'}</Text>
-        <Text style={styles.metaText}>Opened by: {dispute.opened_by_name || 'Unknown'}</Text>
-        <Text style={styles.metaText}>
-          Against: {dispute.against_name || dispute.against_email || 'Unknown'}
-        </Text>
+        <View style={styles.caseTop}>
+          <View style={styles.caseIcon}><Icon name="shield-checkmark-outline" size={23} color={colors.gold} /></View>
+          <View style={styles.statusPill}><Text style={styles.statusText}>{dispute.status || 'open'}</Text></View>
+        </View>
+        <Text style={styles.eyebrow}>DISPUTE #{dispute.id}</Text>
+        <Text style={styles.title}>{dispute.property_title || 'Property dispute'}</Text>
+        <View style={styles.partyBlock}>
+          <View style={styles.partyRow}><Text style={styles.partyLabel}>Opened by</Text><Text style={styles.partyValue}>{dispute.opened_by_name || 'Unknown'}</Text></View>
+          <View style={styles.partyRow}><Text style={styles.partyLabel}>Against</Text><Text style={styles.partyValue}>{dispute.against_name || dispute.against_email || 'Unknown'}</Text></View>
+        </View>
         {dispute.description ? <Text style={styles.description}>{dispute.description}</Text> : null}
         <Button
           title="Verify Evidence Integrity"
@@ -82,7 +102,7 @@ const DisputeDetailsScreen = ({ navigation, route }) => {
       </View>
 
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>Assigned Lawyers</Text>
+        <View style={styles.cardHeading}><Icon name="people-outline" size={20} color={colors.blue} /><Text style={styles.cardTitle}>Assigned lawyers</Text><Text style={styles.count}>{authorized_lawyers.length}</Text></View>
         {authorized_lawyers.length === 0 ? (
           <Text style={styles.emptyText}>No authorized lawyers linked to this dispute.</Text>
         ) : (
@@ -100,12 +120,13 @@ const DisputeDetailsScreen = ({ navigation, route }) => {
       </View>
 
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>Dispute Timeline</Text>
+        <View style={styles.cardHeading}><Icon name="git-branch-outline" size={20} color={colors.blue} /><Text style={styles.cardTitle}>Dispute timeline</Text><Text style={styles.count}>{timeline.length}</Text></View>
         {timeline.length === 0 ? (
           <Text style={styles.emptyText}>No timeline entries available.</Text>
         ) : (
           timeline.map((item, index) => (
             <View key={`${item.type}-${index}`} style={styles.timelineRow}>
+              <View style={styles.timelineDot} />
               <Text style={styles.timelineTitle}>{item.summary || item.type}</Text>
               <Text style={styles.timelineMeta}>
                 {item.actor_name || 'System'} {item.actor_role ? `(${item.actor_role})` : ''}
@@ -124,7 +145,7 @@ const DisputeDetailsScreen = ({ navigation, route }) => {
       </View>
 
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>Evidence</Text>
+        <View style={styles.cardHeading}><Icon name="folder-open-outline" size={20} color={colors.blue} /><Text style={styles.cardTitle}>Evidence</Text><Text style={styles.count}>{evidence.length}</Text></View>
         {evidence.length === 0 ? (
           <Text style={styles.emptyText}>No evidence uploaded.</Text>
         ) : (
@@ -138,7 +159,7 @@ const DisputeDetailsScreen = ({ navigation, route }) => {
                 </Text>
                 {evidenceUrl ? (
                   <TouchableOpacity onPress={() => Linking.openURL(evidenceUrl)}>
-                    <Text style={styles.linkText}>Open file</Text>
+                    <View style={styles.linkRow}><Text style={styles.linkText}>Open evidence</Text><Icon name="open-outline" size={16} color={colors.blue} /></View>
                   </TouchableOpacity>
                 ) : null}
               </View>
@@ -148,7 +169,7 @@ const DisputeDetailsScreen = ({ navigation, route }) => {
       </View>
 
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>Messages</Text>
+        <View style={styles.cardHeading}><Icon name="chatbubbles-outline" size={20} color={colors.blue} /><Text style={styles.cardTitle}>Case messages</Text><Text style={styles.count}>{messages.length}</Text></View>
         {messages.length === 0 ? (
           <Text style={styles.emptyText}>No messages yet.</Text>
         ) : (
@@ -165,7 +186,7 @@ const DisputeDetailsScreen = ({ navigation, route }) => {
       </View>
 
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>Legal Audit Logs</Text>
+        <View style={styles.cardHeading}><Icon name="finger-print-outline" size={20} color={colors.blue} /><Text style={styles.cardTitle}>Legal audit trail</Text><Text style={styles.count}>{audit_logs.length}</Text></View>
         {audit_logs.length === 0 ? (
           <Text style={styles.emptyText}>No legal audit logs found.</Text>
         ) : (
@@ -181,51 +202,70 @@ const DisputeDetailsScreen = ({ navigation, route }) => {
         )}
       </View>
     </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#f8fafc' },
-  content: { padding: 16, paddingBottom: 24 },
+  safeArea: { flex: 1, backgroundColor: colors.surface },
+  screen: { flex: 1, backgroundColor: colors.surface },
+  content: { padding: 18, paddingBottom: 36 },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  topBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 },
+  backButton: { width: 42, height: 42, borderRadius: 21, backgroundColor: colors.white, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: colors.border },
+  refreshButton: { width: 42, height: 42, borderRadius: 21, backgroundColor: colors.surfaceBlue, alignItems: 'center', justifyContent: 'center' },
+  topTitle: { fontFamily: typography.semibold, fontSize: 17, color: colors.ink },
   headerCard: {
-    backgroundColor: '#ffffff',
-    borderWidth: 1,
-    borderColor: '#dbeafe',
-    borderRadius: 16,
-    padding: 16,
+    backgroundColor: colors.navy,
+    borderRadius: radius.lg,
+    padding: 20,
     marginBottom: 12,
+    ...shadows.soft,
   },
-  title: { fontSize: 24, fontWeight: '800', color: '#0f172a' },
-  metaText: { marginTop: 6, color: '#475569' },
-  description: { marginTop: 12, color: '#1e293b', lineHeight: 20 },
+  caseTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 },
+  caseIcon: { width: 44, height: 44, borderRadius: 14, backgroundColor: colors.navySoft, alignItems: 'center', justifyContent: 'center' },
+  statusPill: { paddingVertical: 6, paddingHorizontal: 11, borderRadius: radius.pill, backgroundColor: '#244572' },
+  statusText: { fontFamily: typography.semibold, fontSize: 11, color: colors.white, textTransform: 'capitalize' },
+  eyebrow: { fontFamily: typography.semibold, fontSize: 11, letterSpacing: 1.1, color: colors.gold },
+  title: { marginTop: 7, fontFamily: typography.bold, fontSize: 24, color: colors.white },
+  partyBlock: { marginTop: 16, padding: 12, borderRadius: radius.md, backgroundColor: colors.navySoft },
+  partyRow: { flexDirection: 'row', justifyContent: 'space-between', marginVertical: 4 },
+  partyLabel: { fontFamily: typography.regular, fontSize: 12, color: '#AFC3E6' },
+  partyValue: { maxWidth: '67%', textAlign: 'right', fontFamily: typography.medium, fontSize: 12, color: colors.white },
+  description: { marginTop: 14, fontFamily: typography.regular, color: '#D5E0F2', lineHeight: 20 },
   marginTop: { marginTop: 12 },
   card: {
-    backgroundColor: '#ffffff',
+    backgroundColor: colors.white,
     borderWidth: 1,
-    borderColor: '#e2e8f0',
-    borderRadius: 14,
+    borderColor: colors.border,
+    borderRadius: radius.md,
     padding: 14,
     marginBottom: 12,
   },
-  cardTitle: { fontSize: 17, fontWeight: '800', color: '#0f172a', marginBottom: 10 },
-  emptyText: { color: '#64748b' },
+  cardHeading: { flexDirection: 'row', alignItems: 'center', marginBottom: 10 },
+  cardTitle: { flex: 1, marginLeft: 8, fontFamily: typography.bold, fontSize: 16, color: colors.ink },
+  count: { minWidth: 25, textAlign: 'center', paddingVertical: 3, paddingHorizontal: 7, borderRadius: radius.pill, overflow: 'hidden', backgroundColor: colors.surfaceBlue, fontFamily: typography.semibold, fontSize: 11, color: colors.blue },
+  emptyText: { fontFamily: typography.regular, color: colors.muted },
   listRow: {
     paddingVertical: 10,
     borderTopWidth: 1,
-    borderTopColor: '#e2e8f0',
+    borderTopColor: colors.border,
   },
-  listTitle: { fontWeight: '700', color: '#0f172a' },
-  listMeta: { marginTop: 4, color: '#475569' },
+  listTitle: { fontFamily: typography.semibold, color: colors.ink },
+  listMeta: { marginTop: 4, fontFamily: typography.regular, color: colors.muted },
   timelineRow: {
+    position: 'relative',
+    paddingLeft: 17,
     paddingVertical: 10,
     borderTopWidth: 1,
-    borderTopColor: '#e2e8f0',
+    borderTopColor: colors.border,
   },
-  timelineTitle: { fontWeight: '800', color: '#0f172a' },
-  timelineMeta: { marginTop: 4, color: '#64748b' },
-  timelineDetails: { marginTop: 6, color: '#334155', lineHeight: 18 },
-  linkText: { marginTop: 6, color: '#0284c7', fontWeight: '700' },
+  timelineDot: { position: 'absolute', top: 15, left: 0, width: 8, height: 8, borderRadius: 4, backgroundColor: colors.blue },
+  timelineTitle: { fontFamily: typography.semibold, color: colors.ink },
+  timelineMeta: { marginTop: 4, fontFamily: typography.regular, fontSize: 12, color: colors.muted },
+  timelineDetails: { marginTop: 6, fontFamily: typography.regular, color: colors.text, lineHeight: 18 },
+  linkRow: { marginTop: 8, flexDirection: 'row', alignItems: 'center', gap: 5 },
+  linkText: { color: colors.blue, fontFamily: typography.semibold },
 });
 
 export default DisputeDetailsScreen;
