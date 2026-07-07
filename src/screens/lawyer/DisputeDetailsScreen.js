@@ -1,7 +1,6 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import {
   ActivityIndicator,
-  Linking,
   ScrollView,
   StyleSheet,
   Text,
@@ -12,6 +11,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import Button from '../../components/common/Button';
+import FilePreviewCard from '../../components/common/FilePreviewCard';
 import { legalService } from '../../services/legalService';
 import { colors, radius, shadows, typography } from '../../theme';
 import { buildUploadUrl, getErrorMessage, pickObject } from '../../utils/http';
@@ -153,15 +153,15 @@ const DisputeDetailsScreen = ({ navigation, route }) => {
             const evidenceUrl = buildUploadUrl(item.file_path || item.file_url || item.file_name);
             return (
               <View key={item.id} style={styles.listRow}>
-                <Text style={styles.listTitle}>{item.file_name || `Evidence #${item.id}`}</Text>
-                <Text style={styles.listMeta}>
-                  Uploaded by {item.uploaded_by_name || 'Unknown'}
-                </Text>
-                {evidenceUrl ? (
-                  <TouchableOpacity onPress={() => Linking.openURL(evidenceUrl)}>
-                    <View style={styles.linkRow}><Text style={styles.linkText}>Open evidence</Text><Icon name="open-outline" size={16} color={colors.blue} /></View>
-                  </TouchableOpacity>
-                ) : null}
+                <FilePreviewCard
+                  title={item.file_name || `Evidence #${item.id}`}
+                  subtitle={`Uploaded by ${item.uploaded_by_name || 'Unknown'}`}
+                  uri={evidenceUrl}
+                  fileName={item.file_name || item.file_path || item.file_url}
+                  fileSize={item.file_size}
+                  mimeType={item.mime_type || item.file_type}
+                  actionLabel="Open evidence"
+                />
               </View>
             );
           })
@@ -264,8 +264,6 @@ const styles = StyleSheet.create({
   timelineTitle: { fontFamily: typography.semibold, color: colors.ink },
   timelineMeta: { marginTop: 4, fontFamily: typography.regular, fontSize: 12, color: colors.muted },
   timelineDetails: { marginTop: 6, fontFamily: typography.regular, color: colors.text, lineHeight: 18 },
-  linkRow: { marginTop: 8, flexDirection: 'row', alignItems: 'center', gap: 5 },
-  linkText: { color: colors.blue, fontFamily: typography.semibold },
 });
 
 export default DisputeDetailsScreen;

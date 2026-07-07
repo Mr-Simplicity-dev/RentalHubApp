@@ -1,38 +1,49 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'react-native';
-import {
-  Inter_400Regular,
-  Inter_500Medium,
-  Inter_600SemiBold,
-  Inter_700Bold,
-  useFonts,
-} from '@expo-google-fonts/inter';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AuthProvider } from './context/AuthContext';
+import { RealtimeProvider } from './context/RealtimeContext';
+import { NotificationProvider } from './context/NotificationContext';
+import { TourProvider } from './context/TourContext';
 import AppNavigator from './navigation/AppNavigator';
 import Toast from 'react-native-toast-message';
 import BrandSplash from './components/brand/BrandSplash';
+import NativeTourManager from './components/tour/NativeTourManager';
+import NetworkStatusBanner from './components/common/NetworkStatusBanner';
+import NativeCallOverlay from './components/calls/NativeCallOverlay';
+import AppErrorBoundary from './components/common/AppErrorBoundary';
 
 const App = () => {
-  const [fontsLoaded] = useFonts({
-    'Inter-Regular': Inter_400Regular,
-    'Inter-Medium': Inter_500Medium,
-    'Inter-SemiBold': Inter_600SemiBold,
-    'Inter-Bold': Inter_700Bold,
-  });
+  const [showSplash, setShowSplash] = useState(true);
 
-  if (!fontsLoaded) {
+  useEffect(() => {
+    const timer = setTimeout(() => setShowSplash(false), 1600);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (showSplash) {
     return <BrandSplash />;
   }
 
   return (
-    <SafeAreaProvider>
-      <AuthProvider>
-        <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
-        <AppNavigator />
-        <Toast />
-      </AuthProvider>
-    </SafeAreaProvider>
+    <AppErrorBoundary>
+      <SafeAreaProvider>
+        <AuthProvider>
+          <RealtimeProvider>
+            <NotificationProvider>
+              <TourProvider>
+                <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
+                <NetworkStatusBanner />
+                <AppNavigator />
+                <NativeCallOverlay />
+                <NativeTourManager />
+                <Toast />
+              </TourProvider>
+            </NotificationProvider>
+          </RealtimeProvider>
+        </AuthProvider>
+      </SafeAreaProvider>
+    </AppErrorBoundary>
   );
 };
 

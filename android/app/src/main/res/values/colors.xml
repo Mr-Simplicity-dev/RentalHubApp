@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="rentalhub_navy">#071A3D</color>
-    <color name="rentalhub_gold">#FFC928</color>
+  <color name="rentalhub_navy">#071A3D</color>
+  <color name="rentalhub_gold">#FFC928</color>
+  <color name="notification_icon_color">#0A66C2</color>
 </resources>

@@ -1,0 +1,352 @@
+import React from 'react';
+import {
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import Icon from 'react-native-vector-icons/Ionicons';
+import { colors, radius, shadows, typography } from '../../theme';
+
+export const DashboardScreen = ({
+  children,
+  refreshing = false,
+  onRefresh,
+  contentContainerStyle,
+}) => (
+  <SafeAreaView edges={['top']} style={styles.safeArea}>
+    <ScrollView
+      style={styles.screen}
+      contentContainerStyle={[styles.content, contentContainerStyle]}
+      refreshControl={
+        onRefresh ? (
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor={colors.blue}
+            colors={[colors.blue]}
+          />
+        ) : undefined
+      }
+      showsVerticalScrollIndicator={false}
+    >
+      {children}
+    </ScrollView>
+  </SafeAreaView>
+);
+
+export const DashboardHero = ({
+  eyebrow,
+  title,
+  subtitle,
+  icon = 'grid-outline',
+  onRefresh,
+}) => (
+  <View style={styles.hero}>
+    <View style={styles.heroTop}>
+      <View style={styles.heroIcon}>
+        <Icon name={icon} size={23} color={colors.gold} />
+      </View>
+      {onRefresh ? (
+        <TouchableOpacity
+          accessibilityLabel="Refresh dashboard"
+          accessibilityRole="button"
+          style={styles.refreshButton}
+          onPress={onRefresh}
+        >
+          <Icon name="refresh" size={19} color={colors.white} />
+        </TouchableOpacity>
+      ) : null}
+    </View>
+    <Text style={styles.eyebrow}>{eyebrow}</Text>
+    <Text style={styles.heroTitle}>{title}</Text>
+    <Text style={styles.heroSubtitle}>{subtitle}</Text>
+  </View>
+);
+
+export const MetricGrid = ({ children }) => (
+  <View style={styles.metricGrid}>{children}</View>
+);
+
+export const MetricCard = ({
+  label,
+  value,
+  icon = 'analytics-outline',
+  color = colors.blue,
+  onPress,
+}) => {
+  const Container = onPress ? TouchableOpacity : View;
+
+  return (
+    <Container
+      accessibilityRole={onPress ? 'button' : undefined}
+      style={styles.metricCard}
+      onPress={onPress}
+    >
+      <View style={[styles.metricIcon, { backgroundColor: `${color}16` }]}>
+        <Icon name={icon} size={18} color={color} />
+      </View>
+      <Text numberOfLines={1} style={styles.metricLabel}>{label}</Text>
+      <Text numberOfLines={1} adjustsFontSizeToFit style={styles.metricValue}>{value}</Text>
+    </Container>
+  );
+};
+
+export const DashboardSection = ({ title, subtitle, children }) => (
+  <View style={styles.section}>
+    <Text style={styles.sectionTitle}>{title}</Text>
+    {subtitle ? <Text style={styles.sectionSubtitle}>{subtitle}</Text> : null}
+    <View style={styles.sectionBody}>{children}</View>
+  </View>
+);
+
+export const ActionRow = ({
+  title,
+  subtitle,
+  icon = 'arrow-forward-circle-outline',
+  onPress,
+  badge,
+}) => (
+  <TouchableOpacity
+    accessibilityRole="button"
+    style={styles.actionRow}
+    onPress={onPress}
+  >
+    <View style={styles.actionIcon}>
+      <Icon name={icon} size={21} color={colors.blue} />
+    </View>
+    <View style={styles.actionCopy}>
+      <View style={styles.actionTitleRow}>
+        <Text style={styles.actionTitle}>{title}</Text>
+        {badge ? <Text style={styles.actionBadge}>{badge}</Text> : null}
+      </View>
+      {subtitle ? <Text style={styles.actionSubtitle}>{subtitle}</Text> : null}
+    </View>
+    <Icon name="chevron-forward" size={18} color={colors.muted} />
+  </TouchableOpacity>
+);
+
+export const DashboardNotice = ({ title, message, variant = 'info' }) => {
+  const warning = variant === 'warning';
+
+  return (
+    <View style={[styles.notice, warning && styles.noticeWarning]}>
+      <Icon
+        name={warning ? 'alert-circle-outline' : 'information-circle-outline'}
+        size={21}
+        color={warning ? '#92400E' : colors.blue}
+      />
+      <View style={styles.noticeCopy}>
+        <Text style={[styles.noticeTitle, warning && styles.noticeTitleWarning]}>{title}</Text>
+        <Text style={[styles.noticeMessage, warning && styles.noticeMessageWarning]}>{message}</Text>
+      </View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: colors.surface,
+  },
+  screen: {
+    flex: 1,
+    backgroundColor: colors.surface,
+  },
+  content: {
+    paddingHorizontal: 18,
+    paddingTop: 12,
+    paddingBottom: 40,
+  },
+  hero: {
+    backgroundColor: colors.navy,
+    borderRadius: radius.lg,
+    padding: 22,
+    marginBottom: 16,
+    ...shadows.soft,
+  },
+  heroTop: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 18,
+  },
+  heroIcon: {
+    alignItems: 'center',
+    backgroundColor: colors.navySoft,
+    borderRadius: 14,
+    height: 44,
+    justifyContent: 'center',
+    width: 44,
+  },
+  refreshButton: {
+    alignItems: 'center',
+    backgroundColor: colors.navySoft,
+    borderRadius: 19,
+    height: 38,
+    justifyContent: 'center',
+    width: 38,
+  },
+  eyebrow: {
+    color: colors.gold,
+    fontFamily: typography.semibold,
+    fontSize: 10,
+    letterSpacing: 1.25,
+  },
+  heroTitle: {
+    color: colors.white,
+    fontFamily: typography.bold,
+    fontSize: 27,
+    lineHeight: 33,
+    marginTop: 7,
+  },
+  heroSubtitle: {
+    color: '#B9C9E5',
+    fontFamily: typography.regular,
+    fontSize: 13,
+    lineHeight: 20,
+    marginTop: 7,
+  },
+  metricGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+    marginBottom: 6,
+  },
+  metricCard: {
+    backgroundColor: colors.white,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    minHeight: 124,
+    padding: 14,
+    width: '48.4%',
+  },
+  metricIcon: {
+    alignItems: 'center',
+    borderRadius: 10,
+    height: 34,
+    justifyContent: 'center',
+    marginBottom: 11,
+    width: 34,
+  },
+  metricLabel: {
+    color: colors.muted,
+    fontFamily: typography.medium,
+    fontSize: 11,
+  },
+  metricValue: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 22,
+    marginTop: 5,
+  },
+  section: {
+    marginTop: 18,
+  },
+  sectionTitle: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 18,
+  },
+  sectionSubtitle: {
+    color: colors.muted,
+    fontFamily: typography.regular,
+    fontSize: 12,
+    lineHeight: 18,
+    marginTop: 4,
+  },
+  sectionBody: {
+    gap: 9,
+    marginTop: 11,
+  },
+  actionRow: {
+    alignItems: 'center',
+    backgroundColor: colors.white,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    flexDirection: 'row',
+    minHeight: 70,
+    padding: 13,
+  },
+  actionIcon: {
+    alignItems: 'center',
+    backgroundColor: colors.surfaceBlue,
+    borderRadius: 12,
+    height: 42,
+    justifyContent: 'center',
+    width: 42,
+  },
+  actionCopy: {
+    flex: 1,
+    marginLeft: 12,
+    marginRight: 8,
+  },
+  actionTitleRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  actionTitle: {
+    color: colors.ink,
+    flexShrink: 1,
+    fontFamily: typography.semibold,
+    fontSize: 14,
+  },
+  actionSubtitle: {
+    color: colors.muted,
+    fontFamily: typography.regular,
+    fontSize: 11,
+    lineHeight: 16,
+    marginTop: 3,
+  },
+  actionBadge: {
+    backgroundColor: colors.surfaceBlue,
+    borderRadius: radius.pill,
+    color: colors.blue,
+    fontFamily: typography.semibold,
+    fontSize: 9,
+    marginLeft: 8,
+    overflow: 'hidden',
+    paddingHorizontal: 7,
+    paddingVertical: 3,
+  },
+  notice: {
+    alignItems: 'flex-start',
+    backgroundColor: '#EFF6FF',
+    borderColor: '#BFDBFE',
+    borderRadius: radius.md,
+    borderWidth: 1,
+    flexDirection: 'row',
+    padding: 13,
+  },
+  noticeWarning: {
+    backgroundColor: '#FFFBEB',
+    borderColor: '#FDE68A',
+  },
+  noticeCopy: {
+    flex: 1,
+    marginLeft: 10,
+  },
+  noticeTitle: {
+    color: colors.blue,
+    fontFamily: typography.bold,
+    fontSize: 13,
+  },
+  noticeTitleWarning: {
+    color: '#92400E',
+  },
+  noticeMessage: {
+    color: colors.text,
+    fontFamily: typography.regular,
+    fontSize: 12,
+    lineHeight: 18,
+    marginTop: 4,
+  },
+  noticeMessageWarning: {
+    color: '#B45309',
+  },
+});

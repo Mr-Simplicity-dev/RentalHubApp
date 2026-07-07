@@ -1,14 +1,20 @@
-import React, { useEffect, useLayoutEffect, useState, useContext } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, RefreshControl } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import Toast from 'react-native-toast-message';
-import { stateAdminService } from '../../services/stateAdminService';
 import { AuthContext } from '../../context/AuthContext';
+import { stateAdminService } from '../../services/stateAdminService';
+import { colors } from '../../theme';
 import { getErrorMessage, pickObject } from '../../utils/http';
 import PropertyRequestWorkflowSection from '../../components/admin/PropertyRequestWorkflowSection';
 import TenancyWorkflowSection from '../../components/admin/TenancyWorkflowSection';
-import { colors, radius, shadows, typography } from '../../theme';
+import {
+  ActionRow,
+  DashboardHero,
+  DashboardNotice,
+  DashboardScreen,
+  DashboardSection,
+  MetricCard,
+  MetricGrid,
+} from '../../components/dashboard/DashboardKit';
 
 const formatCurrency = (value) => `₦${Number(value || 0).toLocaleString()}`;
 
@@ -18,16 +24,18 @@ const StateAdminDashboardScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
 
   const stateId = user?.assigned_state || user?.state_id || user?.stateId;
+  const stateName = user?.assigned_state_name || user?.state_name || 'Your state';
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
   }, [navigation]);
 
-  useEffect(() => {
-    if (stateId) loadDashboard();
-  }, [stateId]);
-
   const loadDashboard = async () => {
+    if (!stateId) {
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     try {
       const response = await stateAdminService.getStateDashboardData();
@@ -43,99 +51,68 @@ const StateAdminDashboardScreen = ({ navigation }) => {
     }
   };
 
-  const overview = dashboard?.summary || dashboard || {};
+  useEffect(() => {
+    loadDashboard();
+  }, [stateId]);
 
+  const overview = dashboard?.summary || dashboard || {};
   const overviewCards = [
     { label: 'Managed users', value: overview.total_managed_users ?? '-', icon: 'people-outline', color: colors.blue },
-    { label: 'Pending commission', value: formatCurrency(overview.total_pending_commission ?? 0), icon: 'hourglass-outline', color: '#A66B00' },
-    { label: 'Weekly available', value: formatCurrency(overview.weekly_withdrawable ?? 0), icon: 'wallet-outline', color: colors.success },
-  ];
-
-  const actionCards = [
-    { label: 'Property Approvals', icon: 'business-outline', route: 'StateAdminMigrations' },
+    { label: 'Pending commission', value: formatCurrency(overview.total_pending_commission), icon: 'hourglass-outline', color: '#A66B00' },
+    { label: 'Weekly available', value: formatCurrency(overview.weekly_withdrawable), icon: 'wallet-outline', color: colors.success },
   ];
 
   return (
-    <SafeAreaView edges={['top']} style={styles.safeArea}>
-    <ScrollView style={styles.screen} contentContainerStyle={styles.content} refreshControl={<RefreshControl refreshing={loading} onRefresh={loadDashboard} tintColor={colors.blue} />}>
-      <View style={styles.hero}>
-        <View style={styles.heroIcon}><Icon name="map-outline" size={24} color={colors.gold} /></View>
-        <Text style={styles.eyebrow}>STATE OPERATIONS</Text>
-        <Text style={styles.title}>{user?.assigned_state_name || user?.state_name || 'Your state'} command centre</Text>
-        <Text style={styles.subtitle}>Manage local users, approvals, tenancy workflows and commissions.</Text>
-      </View>
+    <DashboardScreen refreshing={loading} onRefresh={loadDashboard}>
+      <DashboardHero
+        eyebrow="STATE OPERATIONS"
+        title={`${stateName} command centre`}
+        subtitle="Manage local users, approvals, tenancy workflows and commissions."
+        icon="map-outline"
+        onRefresh={loadDashboard}
+      />
 
-      <View style={styles.overviewGrid}>
+      {!stateId ? (
+        <DashboardNotice
+          variant="warning"
+          title="State assignment required"
+          message="This account must be assigned to a state before operational data can be loaded."
+        />
+      ) : null}
+
+      <MetricGrid>
         {overviewCards.map((card) => (
-          <View key={card.label} style={styles.overviewCard}>
-            <View style={[styles.metricIcon, { backgroundColor: `${card.color}16` }]}><Icon name={card.icon} size={18} color={card.color} /></View>
-            <Text style={styles.overviewLabel}>{card.label}</Text>
-            <Text style={styles.overviewValue}>{card.value}</Text>
-          </View>
+          <MetricCard key={card.label} {...card} />
         ))}
-      </View>
+      </MetricGrid>
 
-      <Text style={styles.sectionTitle}>Management tools</Text>
-      <View style={styles.actionsGrid}>
-        <TouchableOpacity style={styles.actionCard} onPress={() => navigation.navigate('RecruitmentAdmin')}>
-          <View style={styles.actionIcon}><Icon name='people-outline' size={21} color={colors.blue} /></View>
-          <Text style={styles.actionLabel}>Recruitment</Text>
-          <Icon name="chevron-forward" size={17} color={colors.muted} />
-        </TouchableOpacity>
-        {actionCards.map((action) => (
-          <TouchableOpacity
-            key={action.route}
-            style={styles.actionCard}
-            onPress={() => navigation.navigate(action.route)}
-          >
-            <View style={styles.actionIcon}><Icon name={action.icon} size={21} color={colors.blue} /></View>
-            <Text style={styles.actionLabel}>{action.label}</Text>
-            <Icon name="chevron-forward" size={17} color={colors.muted} />
-          </TouchableOpacity>
-        ))}
-      </View>
+      <DashboardSection
+        title="Management tools"
+        subtitle="Move into a focused workflow for each administrative task."
+      >
+        <ActionRow
+          title="Property approvals"
+          subtitle="Review state property migrations and approval requests."
+          icon="business-outline"
+          onPress={() => navigation.navigate('StateAdminMigrations')}
+        />
+        <ActionRow
+          title="Recruitment"
+          subtitle="Review roles, candidates and hiring activity."
+          icon="people-outline"
+          onPress={() => navigation.navigate('RecruitmentAdmin')}
+        />
+      </DashboardSection>
 
-      <PropertyRequestWorkflowSection mode="state" title="State Tenant Property Requests" />
-      <TenancyWorkflowSection title="State Tenancy Grace and Refund Enablement" />
-    </ScrollView>
-    </SafeAreaView>
+      <DashboardSection title="Property request workflow">
+        <PropertyRequestWorkflowSection mode="state" title="State Tenant Property Requests" />
+      </DashboardSection>
+
+      <DashboardSection title="Tenancy controls">
+        <TenancyWorkflowSection title="State Tenancy Grace and Refund Enablement" />
+      </DashboardSection>
+    </DashboardScreen>
   );
 };
-
-const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: colors.surface },
-  screen: { flex: 1, backgroundColor: colors.surface },
-  content: { padding: 18, paddingBottom: 36 },
-  hero: { backgroundColor: colors.navy, borderRadius: radius.lg, padding: 22, marginBottom: 14, ...shadows.soft },
-  heroIcon: { width: 44, height: 44, borderRadius: 14, backgroundColor: colors.navySoft, alignItems: 'center', justifyContent: 'center', marginBottom: 18 },
-  eyebrow: { fontFamily: typography.semibold, fontSize: 11, letterSpacing: 1.2, color: colors.gold },
-  title: { marginTop: 8, fontFamily: typography.bold, fontSize: 27, color: colors.white },
-  subtitle: { marginTop: 7, fontFamily: typography.regular, lineHeight: 20, color: '#B9C9E5' },
-  overviewGrid: { flexDirection: 'row', gap: 8, marginBottom: 23 },
-  overviewCard: {
-    flex: 1,
-    backgroundColor: '#ffffff',
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: radius.md,
-    padding: 10,
-  },
-  metricIcon: { width: 32, height: 32, borderRadius: 10, alignItems: 'center', justifyContent: 'center', marginBottom: 8 },
-  overviewLabel: { fontFamily: typography.regular, color: colors.muted, fontSize: 10 },
-  overviewValue: { fontFamily: typography.bold, fontSize: 13, color: colors.ink, marginTop: 4 },
-  sectionTitle: { fontFamily: typography.bold, fontSize: 18, color: colors.ink, marginBottom: 10 },
-  actionsGrid: { gap: 9, marginBottom: 22 },
-  actionCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#ffffff',
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: radius.md,
-    padding: 13,
-  },
-  actionIcon: { width: 40, height: 40, borderRadius: 12, backgroundColor: colors.surfaceBlue, alignItems: 'center', justifyContent: 'center', marginRight: 11 },
-  actionLabel: { flex: 1, fontFamily: typography.semibold, color: colors.ink },
-});
 
 export default StateAdminDashboardScreen;

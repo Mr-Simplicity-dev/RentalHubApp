@@ -23,6 +23,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import OptionPickerModal from '../../components/common/OptionPickerModal';
 import { AuthContext } from '../../context/AuthContext';
+import { useRealtime } from '../../context/RealtimeContext';
 import { messageService } from '../../services/messageService';
 import { colors, radius, typography } from '../../theme';
 import { getErrorMessage, pickList } from '../../utils/http';
@@ -35,9 +36,14 @@ const initials = (name = 'User') =>
     .map((part) => part.charAt(0).toUpperCase())
     .join('');
 
-const MessagesScreen = ({ navigation }) => {
+const MessagesScreen = ({ navigation, route }) => {
   const { user } = useContext(AuthContext);
+  const { checkPresence, connected, emitTyping, isUserOnline, subscribe } = useRealtime();
   const threadRef = useRef(null);
+  const selectedRef = useRef(null);
+  const typingTimerRef = useRef(null);
+  const typingActiveRef = useRef(false);
+  const remoteTypingTimerRef = useRef(null);
   const [conversations, setConversations] = useState([]);
   const [messages, setMessages] = useState([]);
   const [recipients, setRecipients] = useState([]);
@@ -49,12 +55,17 @@ const MessagesScreen = ({ navigation }) => {
   const [threadLoading, setThreadLoading] = useState(false);
   const [sending, setSending] = useState(false);
   const [showRecipientPicker, setShowRecipientPicker] = useState(false);
+  const [typingUserId, setTypingUserId] = useState(null);
 
   const canCompose = ['admin', 'lga_admin', 'super_admin'].includes(user?.user_type);
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
   }, [navigation]);
+
+  useEffect(() => {
+    selectedRef.current = selected;
+  }, [selected]);
 
   const loadConversations = async () => {
     const response = await messageService.getConversations();
@@ -109,6 +120,142 @@ const MessagesScreen = ({ navigation }) => {
     loadAll();
   }, [user?.user_type]);
 
+  useEffect(() => {
+    const updateConversation = (message) => {
+      const mine = Number(message.sender_id) === Number(user?.id);
+      const otherUserId = mine ? message.receiver_id : message.sender_id;
+      if (!otherUserId) return;
+
+      const activeThread =
+        Number(selectedRef.current?.other_user_id) === Number(otherUserId);
+      setConversations((current) => {
+        const existing = current.find(
+          (item) => Number(item.other_user_id) === Number(otherUserId)
+        );
+        const next = {
+          ...existing,
+          id: message.id,
+          other_user_id: otherUserId,
+          other_user_name: mine
+            ? message.receiver_name || existing?.other_user_name
+            : message.sender_name || existing?.other_user_name,
+          other_user_type: mine
+            ? message.receiver_user_type || existing?.other_user_type
+            : message.sender_user_type || existing?.other_user_type,
+          message_text: message.message_text,
+          subject: message.subject,
+          message_type: message.message_type,
+          property_id: message.property_id || existing?.property_id,
+          property_title: message.property_title || existing?.property_title,
+          created_at: message.created_at,
+          unread_count:
+            !mine && !activeThread
+              ? Number(existing?.unread_count || 0) + 1
+              : activeThread
+                ? 0
+                : Number(existing?.unread_count || 0),
+        };
+        return [
+          next,
+          ...current.filter(
+            (item) => Number(item.other_user_id) !== Number(otherUserId)
+          ),
+        ];
+      });
+    };
+
+    const appendMessage = (message) => {
+      setMessages((current) => {
+        const existingIndex = current.findIndex(
+          (item) => String(item.id) === String(message.id)
+        );
+        if (existingIndex >= 0) {
+          return current.map((item, index) =>
+            index === existingIndex ? { ...item, ...message, pending: false } : item
+          );
+        }
+        return [...current, { ...message, pending: false }];
+      });
+    };
+
+    const unsubscribeNew = subscribe('message:new', (message = {}) => {
+      const mine = Number(message.sender_id) === Number(user?.id);
+      const otherUserId = mine ? message.receiver_id : message.sender_id;
+      const activeThread =
+        Number(selectedRef.current?.other_user_id) === Number(otherUserId);
+
+      updateConversation(message);
+      if (activeThread) {
+        appendMessage(message);
+        if (!mine) {
+          void messageService.markConversationAsRead(otherUserId).catch(() => {});
+        }
+      } else if (!mine) {
+        Toast.show({
+          type: 'info',
+          text1: message.sender_name || 'New RentalHub message',
+          text2: message.message_text,
+        });
+      }
+    });
+
+    const unsubscribeRead = subscribe('message:read', ({ message_ids: messageIds = [] } = {}) => {
+      const readIds = new Set(messageIds.map(String));
+      if (!readIds.size) return;
+      setMessages((current) =>
+        current.map((message) =>
+          readIds.has(String(message.id)) ? { ...message, is_read: true } : message
+        )
+      );
+    });
+
+    const unsubscribeDeleted = subscribe(
+      'message:deleted',
+      ({ message_id: messageId } = {}) => {
+        if (!messageId) return;
+        setMessages((current) =>
+          current.filter((message) => String(message.id) !== String(messageId))
+        );
+        void loadConversations().catch(() => {});
+      }
+    );
+
+    const unsubscribeTyping = subscribe('message:typing', (payload = {}) => {
+      if (
+        Number(payload.user_id) !==
+        Number(selectedRef.current?.other_user_id)
+      ) {
+        return;
+      }
+      setTypingUserId(payload.is_typing ? payload.user_id : null);
+      if (remoteTypingTimerRef.current) clearTimeout(remoteTypingTimerRef.current);
+      if (payload.is_typing) {
+        remoteTypingTimerRef.current = setTimeout(() => setTypingUserId(null), 3000);
+      }
+    });
+
+    return () => {
+      unsubscribeNew();
+      unsubscribeRead();
+      unsubscribeDeleted();
+      unsubscribeTyping();
+    };
+  }, [subscribe, user?.id]);
+
+  useEffect(() => {
+    if (connected && selected?.other_user_id) {
+      checkPresence([selected.other_user_id]);
+    }
+  }, [checkPresence, connected, selected?.other_user_id]);
+
+  useEffect(
+    () => () => {
+      if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
+      if (remoteTypingTimerRef.current) clearTimeout(remoteTypingTimerRef.current);
+    },
+    []
+  );
+
   const visibleConversations = useMemo(() => {
     const value = query.trim().toLowerCase();
     if (!value) return conversations;
@@ -147,6 +294,28 @@ const MessagesScreen = ({ navigation }) => {
     }
   };
 
+  useEffect(() => {
+    const senderId = route?.params?.senderId;
+    if (!senderId || loading || selected) return;
+
+    const conversation = conversations.find(
+      (item) => Number(item.other_user_id) === Number(senderId)
+    ) || {
+      other_user_id: senderId,
+      other_user_name: route?.params?.senderName || 'RentalHub user',
+      unread_count: 0,
+    };
+    navigation.setParams({ senderId: undefined, senderName: undefined });
+    void pickConversation(conversation);
+  }, [
+    conversations,
+    loading,
+    navigation,
+    route?.params?.senderId,
+    route?.params?.senderName,
+    selected,
+  ]);
+
   const startConversation = (recipient) => {
     const next = {
       other_user_id: recipient.id,
@@ -178,16 +347,29 @@ const MessagesScreen = ({ navigation }) => {
     setSending(true);
     setMessages((current) => [...current, optimisticMessage]);
     setMessageText('');
+    if (typingActiveRef.current) emitTyping(selected.other_user_id, false);
+    typingActiveRef.current = false;
+    if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
     try {
-      await messageService.sendMessage({
+      const response = await messageService.sendMessage({
         receiver_id: Number(selected.other_user_id),
         message_text: optimisticMessage.message_text,
         message_type: messageType,
       });
-      await Promise.all([
-        loadConversation(selected.other_user_id),
-        loadConversations(),
-      ]);
+      const sentMessage = response?.data;
+      if (sentMessage?.id) {
+        setMessages((current) => {
+          const withoutPending = current.filter(
+            (message) =>
+              message.id !== optimisticId &&
+              String(message.id) !== String(sentMessage.id)
+          );
+          return [...withoutPending, { ...sentMessage, pending: false }];
+        });
+      } else {
+        await loadConversation(selected.other_user_id);
+      }
+      await loadConversations();
     } catch (error) {
       setMessages((current) => current.filter((message) => message.id !== optimisticId));
       setMessageText(optimisticMessage.message_text);
@@ -202,9 +384,36 @@ const MessagesScreen = ({ navigation }) => {
   };
 
   const closeThread = () => {
+    if (selected?.other_user_id && typingActiveRef.current) {
+      emitTyping(selected.other_user_id, false);
+    }
+    typingActiveRef.current = false;
+    if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
+    if (remoteTypingTimerRef.current) clearTimeout(remoteTypingTimerRef.current);
     setSelected(null);
     setMessages([]);
     setMessageText('');
+    setTypingUserId(null);
+  };
+
+  const updateMessageText = (value) => {
+    setMessageText(value);
+    if (!selected?.other_user_id) return;
+
+    if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
+    if (value.trim()) {
+      if (!typingActiveRef.current) {
+        typingActiveRef.current = true;
+        emitTyping(selected.other_user_id, true);
+      }
+      typingTimerRef.current = setTimeout(() => {
+        emitTyping(selected.other_user_id, false);
+        typingActiveRef.current = false;
+      }, 1400);
+    } else if (typingActiveRef.current) {
+      emitTyping(selected.other_user_id, false);
+      typingActiveRef.current = false;
+    }
   };
 
   if (loading) {
@@ -237,7 +446,11 @@ const MessagesScreen = ({ navigation }) => {
                 {selected.other_user_name || 'RentalHub user'}
               </Text>
               <Text style={styles.threadRole}>
-                {String(selected.other_user_type || 'member').replace(/_/g, ' ')}
+                {typingUserId
+                  ? 'Typing…'
+                  : isUserOnline(selected.other_user_id)
+                    ? 'Online'
+                    : String(selected.other_user_type || 'member').replace(/_/g, ' ')}
               </Text>
             </View>
             <TouchableOpacity
@@ -332,9 +545,15 @@ const MessagesScreen = ({ navigation }) => {
                       </Text>
                       {mine ? (
                         <Icon
-                          name={item.pending ? 'time-outline' : 'checkmark-done'}
+                          name={
+                            item.pending
+                              ? 'time-outline'
+                              : item.is_read
+                                ? 'checkmark-done'
+                                : 'checkmark'
+                          }
                           size={13}
-                          color={item.pending ? '#C8D8EF' : '#DCE9FA'}
+                          color={item.is_read ? '#B9F3FF' : '#DCE9FA'}
                         />
                       ) : null}
                     </View>
@@ -349,7 +568,7 @@ const MessagesScreen = ({ navigation }) => {
             <View style={styles.composer}>
               <TextInput
                 multiline
-                onChangeText={setMessageText}
+                onChangeText={updateMessageText}
                 placeholder="Write a message…"
                 placeholderTextColor="#96A2B8"
                 selectionColor={colors.blue}

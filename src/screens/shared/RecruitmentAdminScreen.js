@@ -1,96 +1,552 @@
-import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
+import Toast from 'react-native-toast-message';
 import recruitmentService from '../../services/recruitmentService';
-import { getErrorMessage } from '../../utils/http';
+import { colors, radius, typography } from '../../theme';
+import { getErrorMessage, pickList, pickObject } from '../../utils/http';
+import {
+  ActionRow,
+  DashboardHero,
+  DashboardNotice,
+  DashboardScreen,
+  DashboardSection,
+  MetricCard,
+  MetricGrid,
+} from '../../components/dashboard/DashboardKit';
+
+const statusOptions = ['all', 'submitted', 'under_review', 'shortlisted', 'approved', 'rejected', 'disqualified'];
+const paymentOptions = ['all', 'pending', 'paid', 'failed'];
+
+const formatCurrency = (value) => `₦${Number(value || 0).toLocaleString()}`;
+
+const getList = (response) => {
+  if (Array.isArray(response?.data?.data)) return response.data.data;
+  if (Array.isArray(response?.data)) return response.data;
+  return pickList(response, ['data']);
+};
+
+const getObject = (response) => {
+  if (response?.data?.data && typeof response.data.data === 'object') return response.data.data;
+  return pickObject(response?.data || response, ['data']);
+};
+
+const Chip = ({ label, active, onPress }) => (
+  <TouchableOpacity
+    accessibilityRole="button"
+    style={[styles.chip, active && styles.chipActive]}
+    onPress={onPress}
+  >
+    <Text style={[styles.chipText, active && styles.chipTextActive]}>{label.replace(/_/g, ' ')}</Text>
+  </TouchableOpacity>
+);
+
+const ApplicantCard = ({ applicant, onDecision, onReport }) => {
+  const score = applicant.interview_score ?? applicant.score;
+  const hasViolation = applicant.violation_detected || applicant.status === 'disqualified';
+
+  return (
+    <View style={styles.applicantCard}>
+      <View style={styles.applicantHeader}>
+        <View style={styles.avatar}>
+          <Text style={styles.avatarText}>{String(applicant.full_name || applicant.email_address || '?').slice(0, 1).toUpperCase()}</Text>
+        </View>
+        <View style={styles.applicantMain}>
+          <Text style={styles.applicantName}>{applicant.full_name || 'Unnamed applicant'}</Text>
+          <Text style={styles.applicantMeta}>{applicant.reference_number || applicant.email_address || 'No reference'}</Text>
+        </View>
+        <Text style={[styles.statusBadge, hasViolation && styles.statusDanger]}>{applicant.status || 'draft'}</Text>
+      </View>
+
+      <View style={styles.detailGrid}>
+        <Text style={styles.detailText}>Role: {applicant.role_title || 'N/A'}</Text>
+        <Text style={styles.detailText}>Payment: {applicant.payment_status || 'pending'}</Text>
+        <Text style={styles.detailText}>Location: {[applicant.state_name, applicant.lga_name].filter(Boolean).join(', ') || 'N/A'}</Text>
+        <Text style={styles.detailText}>Interview: {score != null ? `${Math.round(Number(score))}%` : 'Not completed'}</Text>
+      </View>
+
+      <View style={styles.actions}>
+        <TouchableOpacity style={styles.actionButton} onPress={() => onDecision(applicant, 'shortlist')}>
+          <Text style={styles.actionText}>Shortlist</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.actionButton} onPress={() => onDecision(applicant, 'approve')}>
+          <Text style={styles.approveText}>Approve</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.actionButton} onPress={() => onDecision(applicant, 'reject')}>
+          <Text style={styles.rejectText}>Reject</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.actionButton} onPress={() => onReport(applicant)}>
+          <Text style={styles.reportText}>Report</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
 
 const RecruitmentAdminScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [status, setStatus] = useState(null);
   const [roles, setRoles] = useState([]);
   const [cycles, setCycles] = useState([]);
-  const [error, setError] = useState('');
+  const [analytics, setAnalytics] = useState(null);
+  const [applicants, setApplicants] = useState([]);
+  const [pagination, setPagination] = useState(null);
+  const [filters, setFilters] = useState({
+    status: 'all',
+    payment_status: 'all',
+    cycle_id: '',
+    role_id: '',
+    search: '',
+    page: 1,
+  });
+
+  const queryParams = useMemo(() => {
+    const params = { limit: 25, page: filters.page };
+    if (filters.status !== 'all') params.status = filters.status;
+    if (filters.payment_status !== 'all') params.payment_status = filters.payment_status;
+    if (filters.cycle_id) params.cycle_id = filters.cycle_id;
+    if (filters.role_id) params.role_id = filters.role_id;
+    if (filters.search.trim()) params.search = filters.search.trim();
+    return params;
+  }, [filters]);
+
+  const loadData = useCallback(async ({ soft = false } = {}) => {
+    if (soft) setRefreshing(true);
+    else setLoading(true);
+
+    try {
+      const [statusRes, cyclesRes, rolesRes, analyticsRes, applicantsRes] = await Promise.all([
+        recruitmentService.getStatus(),
+        recruitmentService.getAdminCycles(),
+        recruitmentService.getAdminRoles(),
+        recruitmentService.getAnalytics(filters.cycle_id ? { cycle_id: filters.cycle_id } : {}),
+        recruitmentService.getApplicants(queryParams),
+      ]);
+
+      setStatus(getObject(statusRes));
+      setCycles(getList(cyclesRes));
+      setRoles(getList(rolesRes));
+      setAnalytics(getObject(analyticsRes));
+      setApplicants(getList(applicantsRes));
+      setPagination(applicantsRes?.data?.pagination || applicantsRes?.pagination || null);
+    } catch (err) {
+      Toast.show({
+        type: 'error',
+        text1: 'Recruitment admin failed',
+        text2: getErrorMessage(err, 'Could not load recruitment admin overview'),
+      });
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  }, [filters.cycle_id, queryParams]);
 
   useEffect(() => {
-    const loadData = async () => {
-      try {
-        setLoading(true);
-        const [statusRes, rolesRes, cyclesRes] = await Promise.all([
-          recruitmentService.getStatus(),
-          recruitmentService.getActiveRoles(),
-          recruitmentService.getActiveCycles(),
-        ]);
-        setStatus(statusRes?.data?.data || statusRes?.data || null);
-        setRoles(rolesRes?.data?.data || []);
-        setCycles(cyclesRes?.data?.data || []);
-      } catch (err) {
-        setError(getErrorMessage(err, 'Could not load recruitment admin overview'));
-      } finally {
-        setLoading(false);
-      }
-    };
-
     loadData();
-  }, []);
+  }, [loadData]);
 
-  if (loading) {
-    return (
-      <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#0284c7" />
-        <Text style={styles.centerText}>Loading recruitment admin view...</Text>
-      </View>
+  const funnel = Array.isArray(analytics?.conversion_funnel) ? analytics.conversion_funnel : [];
+  const paidFees = analytics?.total_fees_collected || 0;
+  const completedInterviews = analytics?.interview?.completed || 0;
+  const averageScore = analytics?.interview?.average_score || 0;
+
+  const updateFilter = (key, value) => {
+    setFilters((current) => ({ ...current, [key]: value, page: 1 }));
+  };
+
+  const confirmDecision = (applicant, action) => {
+    const actionLabel = action === 'shortlist' ? 'shortlist' : action;
+    Alert.alert(
+      `${actionLabel.charAt(0).toUpperCase()}${actionLabel.slice(1)} applicant?`,
+      `${applicant.full_name || applicant.reference_number || 'This applicant'} will be marked ${actionLabel}.`,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: actionLabel,
+          style: action === 'reject' ? 'destructive' : 'default',
+          onPress: async () => {
+            try {
+              const payload = { notes: `Updated from RentalHub mobile recruitment admin` };
+              if (action === 'approve') await recruitmentService.approveApplicant(applicant.id, payload);
+              if (action === 'reject') await recruitmentService.rejectApplicant(applicant.id, { ...payload, reason: 'Rejected from mobile recruitment admin' });
+              if (action === 'shortlist') await recruitmentService.shortlistApplicant(applicant.id, payload);
+              Toast.show({ type: 'success', text1: `Applicant ${actionLabel}ed` });
+              loadData({ soft: true });
+            } catch (err) {
+              Toast.show({
+                type: 'error',
+                text1: 'Decision failed',
+                text2: getErrorMessage(err, 'Could not update applicant'),
+              });
+            }
+          },
+        },
+      ]
     );
-  }
+  };
+
+  const openApplicantReport = (applicant) => {
+    navigation.navigate('WebRoute', {
+      path: `/api/recruitment/admin/reports/applicant/${applicant.id}`,
+      title: 'Applicant Report',
+    });
+  };
+
+  const sendExportEmail = () => {
+    Alert.alert(
+      'Email recruitment export?',
+      'This sends a CSV export for the current filters to the configured recruitment email.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Send export',
+          onPress: async () => {
+            try {
+              await recruitmentService.emailDocuments({
+                ...queryParams,
+                application_ids: applicants.map((applicant) => applicant.id).filter(Boolean),
+              });
+              Toast.show({ type: 'success', text1: 'Recruitment export sent' });
+            } catch (err) {
+              Toast.show({
+                type: 'error',
+                text1: 'Export failed',
+                text2: getErrorMessage(err, 'Could not send recruitment export'),
+              });
+            }
+          },
+        },
+      ]
+    );
+  };
 
   return (
-    <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
-      <Text style={styles.title}>Recruitment Admin</Text>
-      <Text style={styles.subtitle}>Review recruitment status and open the full admin console from your phone.</Text>
+    <DashboardScreen refreshing={loading || refreshing} onRefresh={() => loadData({ soft: true })}>
+      <DashboardHero
+        eyebrow="RECRUITMENT ADMIN"
+        title="Hiring command centre"
+        subtitle="Filter candidates, review interview/payment health, make decisions and export reports natively."
+        icon="briefcase-outline"
+        onRefresh={() => loadData({ soft: true })}
+      />
 
-      {error ? <Text style={styles.errorText}>{error}</Text> : null}
+      <MetricGrid>
+        <MetricCard label="Applicants" value={String(analytics?.total_applicants || pagination?.total || applicants.length)} icon="people-outline" color={colors.blue} />
+        <MetricCard label="Fees" value={formatCurrency(paidFees)} icon="card-outline" color={colors.success} />
+        <MetricCard label="Interviews" value={String(completedInterviews)} icon="videocam-outline" color="#A66B00" />
+        <MetricCard label="Avg score" value={`${Math.round(Number(averageScore || 0))}%`} icon="school-outline" color={colors.navy} />
+      </MetricGrid>
 
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>{status?.is_active ? 'Recruitment is open' : 'Recruitment is closed'}</Text>
-        <Text style={styles.cardText}>{status?.message || 'Monitor cycles, roles, and applicants from the full console.'}</Text>
-      </View>
+      <DashboardSection title="Recruitment status">
+        <DashboardNotice
+          title={status?.is_active ? 'Recruitment is open' : 'Recruitment is closed'}
+          message={status?.message || 'Use this workspace to monitor cycles, roles, applicants and hiring decisions.'}
+          variant={status?.is_active ? 'info' : 'warning'}
+        />
+      </DashboardSection>
 
-      <View style={styles.metricRow}>
-        <View style={styles.metricBox}>
-          <Text style={styles.metricLabel}>Active cycles</Text>
-          <Text style={styles.metricValue}>{cycles.length}</Text>
-        </View>
-        <View style={styles.metricBox}>
-          <Text style={styles.metricLabel}>Active roles</Text>
-          <Text style={styles.metricValue}>{roles.length}</Text>
-        </View>
-      </View>
-
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate('WebRoute', { path: '/admin/recruitment', title: 'Recruitment Admin' })}
+      <DashboardSection
+        title="Filters"
+        subtitle="Narrow candidates by status, payment, cycle, role, and search text."
       >
-        <Text style={styles.buttonText}>Open full recruitment console</Text>
-      </TouchableOpacity>
-    </ScrollView>
+        <TextInput
+          value={filters.search}
+          onChangeText={(search) => updateFilter('search', search)}
+          placeholder="Search name, email, phone or reference"
+          placeholderTextColor={colors.muted}
+          style={styles.searchInput}
+        />
+
+        <Text style={styles.filterLabel}>Status</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipRow}>
+          {statusOptions.map((option) => (
+            <Chip key={option} label={option} active={filters.status === option} onPress={() => updateFilter('status', option)} />
+          ))}
+        </ScrollView>
+
+        <Text style={styles.filterLabel}>Payment</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipRow}>
+          {paymentOptions.map((option) => (
+            <Chip key={option} label={option} active={filters.payment_status === option} onPress={() => updateFilter('payment_status', option)} />
+          ))}
+        </ScrollView>
+
+        <Text style={styles.filterLabel}>Cycles</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipRow}>
+          <Chip label="All cycles" active={!filters.cycle_id} onPress={() => updateFilter('cycle_id', '')} />
+          {cycles.map((cycle) => (
+            <Chip
+              key={String(cycle.id)}
+              label={cycle.title || cycle.name || `Cycle ${cycle.id}`}
+              active={String(filters.cycle_id) === String(cycle.id)}
+              onPress={() => updateFilter('cycle_id', String(cycle.id))}
+            />
+          ))}
+        </ScrollView>
+
+        <Text style={styles.filterLabel}>Roles</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipRow}>
+          <Chip label="All roles" active={!filters.role_id} onPress={() => updateFilter('role_id', '')} />
+          {roles.map((role) => (
+            <Chip
+              key={String(role.id)}
+              label={role.title || `Role ${role.id}`}
+              active={String(filters.role_id) === String(role.id)}
+              onPress={() => updateFilter('role_id', String(role.id))}
+            />
+          ))}
+        </ScrollView>
+      </DashboardSection>
+
+      <DashboardSection
+        title="Hiring funnel"
+        subtitle="Status breakdown from the current analytics set."
+      >
+        <View style={styles.funnelGrid}>
+          {funnel.length ? funnel.map((item) => (
+            <View key={item.status || 'unknown'} style={styles.funnelCard}>
+              <Text style={styles.funnelLabel}>{String(item.status || 'unknown').replace(/_/g, ' ')}</Text>
+              <Text style={styles.funnelValue}>{item.count || 0}</Text>
+            </View>
+          )) : (
+            <View style={styles.funnelCard}>
+              <Text style={styles.funnelLabel}>No funnel data</Text>
+              <Text style={styles.funnelValue}>0</Text>
+            </View>
+          )}
+        </View>
+      </DashboardSection>
+
+      <DashboardSection
+        title="Candidates"
+        subtitle={`${pagination?.total || applicants.length} matching applicants`}
+      >
+        {applicants.map((applicant) => (
+          <ApplicantCard
+            key={String(applicant.id)}
+            applicant={applicant}
+            onDecision={confirmDecision}
+            onReport={openApplicantReport}
+          />
+        ))}
+        {!applicants.length ? (
+          <View style={styles.emptyCard}>
+            <Icon name="search-outline" size={24} color={colors.muted} />
+            <Text style={styles.emptyText}>No applicants match the current filters.</Text>
+          </View>
+        ) : null}
+      </DashboardSection>
+
+      <DashboardSection
+        title="Reports and exports"
+        subtitle="Native summary is here; PDF/ZIP download still hands off to secured backend report endpoints."
+      >
+        <ActionRow
+          title="Email filtered CSV export"
+          subtitle="Send applicant summary for the current filters."
+          icon="mail-outline"
+          onPress={sendExportEmail}
+        />
+        <ActionRow
+          title="Open full recruitment console"
+          subtitle="Use web tools for bulk ZIP downloads, question uploads and cycle setup."
+          icon="open-outline"
+          badge="Web handoff"
+          onPress={() => navigation.navigate('WebRoute', { path: '/admin/recruitment', title: 'Recruitment Admin' })}
+        />
+      </DashboardSection>
+    </DashboardScreen>
   );
 };
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#f8fafc' },
-  content: { padding: 16, paddingBottom: 24 },
-  centered: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#f8fafc' },
-  centerText: { marginTop: 8, color: '#64748b' },
-  title: { fontSize: 28, fontWeight: '800', color: '#0f172a' },
-  subtitle: { color: '#64748b', marginTop: 6, marginBottom: 12 },
-  card: { backgroundColor: '#ffffff', borderColor: '#e2e8f0', borderWidth: 1, borderRadius: 14, padding: 14, marginBottom: 12 },
-  cardTitle: { color: '#0f172a', fontSize: 16, fontWeight: '700' },
-  cardText: { color: '#64748b', marginTop: 4 },
-  metricRow: { flexDirection: 'row', gap: 10, marginBottom: 12 },
-  metricBox: { flex: 1, backgroundColor: '#eff6ff', borderColor: '#bfdbfe', borderWidth: 1, borderRadius: 12, padding: 12 },
-  metricLabel: { color: '#1d4ed8', fontSize: 12, fontWeight: '600' },
-  metricValue: { color: '#0f172a', fontSize: 24, fontWeight: '800', marginTop: 4 },
-  button: { backgroundColor: '#0284c7', borderRadius: 12, paddingVertical: 12, alignItems: 'center' },
-  buttonText: { color: '#ffffff', fontWeight: '700' },
-  errorText: { color: '#dc2626', marginBottom: 10, fontWeight: '600' },
+  searchInput: {
+    backgroundColor: colors.white,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    color: colors.ink,
+    fontFamily: typography.medium,
+    fontSize: 14,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+  },
+  filterLabel: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 12,
+    marginTop: 7,
+  },
+  chipRow: {
+    gap: 8,
+    paddingVertical: 2,
+  },
+  chip: {
+    backgroundColor: colors.white,
+    borderColor: colors.border,
+    borderRadius: radius.pill,
+    borderWidth: 1,
+    paddingHorizontal: 13,
+    paddingVertical: 8,
+  },
+  chipActive: {
+    backgroundColor: colors.blue,
+    borderColor: colors.blue,
+  },
+  chipText: {
+    color: colors.text,
+    fontFamily: typography.semibold,
+    fontSize: 11,
+    textTransform: 'capitalize',
+  },
+  chipTextActive: {
+    color: colors.white,
+  },
+  funnelGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  funnelCard: {
+    backgroundColor: colors.white,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    padding: 12,
+    width: '48%',
+  },
+  funnelLabel: {
+    color: colors.muted,
+    fontFamily: typography.semibold,
+    fontSize: 11,
+    textTransform: 'capitalize',
+  },
+  funnelValue: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 22,
+    marginTop: 4,
+  },
+  applicantCard: {
+    backgroundColor: colors.white,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    padding: 14,
+  },
+  applicantHeader: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 10,
+  },
+  avatar: {
+    alignItems: 'center',
+    backgroundColor: colors.surfaceBlue,
+    borderRadius: 18,
+    height: 36,
+    justifyContent: 'center',
+    width: 36,
+  },
+  avatarText: {
+    color: colors.blue,
+    fontFamily: typography.bold,
+    fontSize: 16,
+  },
+  applicantMain: {
+    flex: 1,
+  },
+  applicantName: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 15,
+  },
+  applicantMeta: {
+    color: colors.muted,
+    fontFamily: typography.medium,
+    fontSize: 11,
+    marginTop: 2,
+  },
+  statusBadge: {
+    backgroundColor: '#ECFDF3',
+    borderRadius: radius.pill,
+    color: colors.success,
+    fontFamily: typography.bold,
+    fontSize: 10,
+    overflow: 'hidden',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    textTransform: 'capitalize',
+  },
+  statusDanger: {
+    backgroundColor: '#FEF3F2',
+    color: colors.danger,
+  },
+  detailGrid: {
+    gap: 3,
+    marginTop: 11,
+  },
+  detailText: {
+    color: colors.text,
+    fontFamily: typography.regular,
+    fontSize: 12,
+    lineHeight: 17,
+  },
+  actions: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginTop: 12,
+  },
+  actionButton: {
+    backgroundColor: colors.surfaceBlue,
+    borderRadius: radius.pill,
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+  },
+  actionText: {
+    color: colors.blue,
+    fontFamily: typography.bold,
+    fontSize: 11,
+  },
+  approveText: {
+    color: colors.success,
+    fontFamily: typography.bold,
+    fontSize: 11,
+  },
+  rejectText: {
+    color: colors.danger,
+    fontFamily: typography.bold,
+    fontSize: 11,
+  },
+  reportText: {
+    color: colors.navy,
+    fontFamily: typography.bold,
+    fontSize: 11,
+  },
+  emptyCard: {
+    alignItems: 'center',
+    backgroundColor: colors.white,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    gap: 8,
+    padding: 18,
+  },
+  emptyText: {
+    color: colors.muted,
+    fontFamily: typography.medium,
+    fontSize: 12,
+    textAlign: 'center',
+  },
 });
 
 export default RecruitmentAdminScreen;

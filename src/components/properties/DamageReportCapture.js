@@ -69,6 +69,8 @@ const DamageReportCapture = ({ visible, propertyId, onClose, onSaved }) => {
   const [aiResult, setAiResult] = useState(null);
   const [saving, setSaving] = useState(false);
   const [pickerType, setPickerType] = useState(null);
+  const [uploadProgress, setUploadProgress] = useState(null);
+  const [retryAction, setRetryAction] = useState(null);
   const [form, setForm] = useState({
     room_location: '',
     damage_type: '',
@@ -88,6 +90,8 @@ const DamageReportCapture = ({ visible, propertyId, onClose, onSaved }) => {
     setAiResult(null);
     setSaving(false);
     setPickerType(null);
+    setUploadProgress(null);
+    setRetryAction(null);
     setForm({
       room_location: '',
       damage_type: '',
@@ -142,9 +146,20 @@ const DamageReportCapture = ({ visible, propertyId, onClose, onSaved }) => {
       setAnalyzing(true);
       setAnalysisError('');
       setAiResult(null);
+      setRetryAction(null);
+      setUploadProgress({ label: 'Uploading photo for AI analysis', percent: 0 });
 
       try {
-        const response = await propertyService.analyzeDamagePhoto(captured);
+        const response = await propertyService.analyzeDamagePhoto(captured, {
+          onUploadProgress: (event) => {
+            const total = event.total || asset.fileSize || 0;
+            const percent = total ? Math.round((event.loaded / total) * 100) : 0;
+            setUploadProgress({
+              label: 'Uploading photo for AI analysis',
+              percent: Math.min(percent, 100),
+            });
+          },
+        });
         const analysis = response?.data?.ai_analysis;
         if (analysis && !analysis.error) {
           setAiResult(analysis);
@@ -154,8 +169,10 @@ const DamageReportCapture = ({ visible, propertyId, onClose, onSaved }) => {
         }
       } catch (error) {
         setAnalysisError('AI analysis failed. You can still complete the report manually.');
+        setRetryAction(() => () => analyzeExistingPhoto(captured));
       } finally {
         setAnalyzing(false);
+        setUploadProgress(null);
       }
     } catch (error) {
       Toast.show({
@@ -163,6 +180,39 @@ const DamageReportCapture = ({ visible, propertyId, onClose, onSaved }) => {
         text1: 'Camera error',
         text2: getErrorMessage(error, 'Could not open camera'),
       });
+    }
+  };
+
+  const analyzeExistingPhoto = async (targetPhoto = photo) => {
+    if (!targetPhoto) return;
+    setAnalyzing(true);
+    setAnalysisError('');
+    setRetryAction(null);
+    setUploadProgress({ label: 'Retrying AI analysis', percent: 0 });
+    try {
+      const response = await propertyService.analyzeDamagePhoto(targetPhoto, {
+        onUploadProgress: (event) => {
+          const total = event.total || 0;
+          const percent = total ? Math.round((event.loaded / total) * 100) : 0;
+          setUploadProgress({
+            label: 'Retrying AI analysis',
+            percent: Math.min(percent, 100),
+          });
+        },
+      });
+      const analysis = response?.data?.ai_analysis;
+      if (analysis && !analysis.error) {
+        setAiResult(analysis);
+        applyAnalysis(analysis);
+      } else {
+        setAnalysisError('AI analysis unavailable. Complete the report manually.');
+      }
+    } catch (error) {
+      setAnalysisError('AI analysis failed again. You can still save the report manually.');
+      setRetryAction(() => () => analyzeExistingPhoto(targetPhoto));
+    } finally {
+      setAnalyzing(false);
+      setUploadProgress(null);
     }
   };
 
@@ -177,6 +227,8 @@ const DamageReportCapture = ({ visible, propertyId, onClose, onSaved }) => {
     }
 
     setSaving(true);
+    setUploadProgress({ label: 'Saving evidence report', percent: 0 });
+    setRetryAction(null);
     try {
       const payload = {
         room_location: form.room_location.trim(),
@@ -194,7 +246,16 @@ const DamageReportCapture = ({ visible, propertyId, onClose, onSaved }) => {
         payload.ai_analysis = JSON.stringify(aiResult);
       }
 
-      const response = await propertyService.saveDamageReport(propertyId, payload);
+      const response = await propertyService.saveDamageReport(propertyId, payload, {
+        onUploadProgress: (event) => {
+          const total = event.total || photo.fileSize || 0;
+          const percent = total ? Math.round((event.loaded / total) * 100) : 0;
+          setUploadProgress({
+            label: 'Saving evidence report',
+            percent: Math.min(percent, 100),
+          });
+        },
+      });
 
       if (response?.success) {
         Toast.show({
@@ -212,6 +273,7 @@ const DamageReportCapture = ({ visible, propertyId, onClose, onSaved }) => {
         });
       }
     } catch (error) {
+      setRetryAction(() => saveReport);
       Toast.show({
         type: 'error',
         text1: 'Save failed',
@@ -219,6 +281,7 @@ const DamageReportCapture = ({ visible, propertyId, onClose, onSaved }) => {
       });
     } finally {
       setSaving(false);
+      setUploadProgress(null);
     }
   };
 
@@ -236,7 +299,7 @@ const DamageReportCapture = ({ visible, propertyId, onClose, onSaved }) => {
         <View style={styles.sheet}>
           <View style={styles.header}>
             <Text style={styles.title}>Property Maintenance Assessment</Text>
-            <TouchableOpacity onPress={handleClose}>
+            <TouchableOpacity accessibilityLabel="Close damage assessment" accessibilityRole="button" onPress={handleClose}>
               <Icon name="close" size={24} color="#64748b" />
             </TouchableOpacity>
           </View>
@@ -264,7 +327,28 @@ const DamageReportCapture = ({ visible, propertyId, onClose, onSaved }) => {
                   </View>
                 ) : null}
 
+                {uploadProgress ? (
+                  <View style={styles.progressCard}>
+                    <Text style={styles.progressTitle}>{uploadProgress.label}</Text>
+                    <View style={styles.progressTrack}>
+                      <View style={[styles.progressFill, { width: `${uploadProgress.percent}%` }]} />
+                    </View>
+                    <Text style={styles.progressText}>{uploadProgress.percent}% complete</Text>
+                  </View>
+                ) : null}
+
                 {analysisError ? <Text style={styles.warningText}>{analysisError}</Text> : null}
+                {retryAction ? (
+                  <TouchableOpacity
+                    accessibilityLabel="Retry last damage evidence upload step"
+                    accessibilityRole="button"
+                    style={styles.retryButton}
+                    onPress={retryAction}
+                  >
+                    <Icon name="refresh-outline" size={17} color="#1d4ed8" />
+                    <Text style={styles.retryText}>Retry last upload step</Text>
+                  </TouchableOpacity>
+                ) : null}
 
                 <SelectField
                   label="Room Location"
@@ -381,6 +465,27 @@ const styles = StyleSheet.create({
   analyzingRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   analyzingText: { color: '#0284c7', fontWeight: '600' },
   warningText: { color: '#b45309', fontSize: 13 },
+  progressCard: {
+    backgroundColor: '#eff6ff',
+    borderColor: '#bfdbfe',
+    borderRadius: 12,
+    borderWidth: 1,
+    padding: 12,
+  },
+  progressTitle: { color: '#1e3a8a', fontSize: 13, fontWeight: '800' },
+  progressTrack: { backgroundColor: '#dbeafe', borderRadius: 999, height: 8, marginTop: 9, overflow: 'hidden' },
+  progressFill: { backgroundColor: '#0284c7', height: '100%' },
+  progressText: { color: '#1d4ed8', fontSize: 12, marginTop: 6 },
+  retryButton: {
+    alignItems: 'center',
+    backgroundColor: '#eff6ff',
+    borderRadius: 999,
+    flexDirection: 'row',
+    gap: 7,
+    justifyContent: 'center',
+    paddingVertical: 10,
+  },
+  retryText: { color: '#1d4ed8', fontSize: 13, fontWeight: '800' },
 });
 
 export default DamageReportCapture;

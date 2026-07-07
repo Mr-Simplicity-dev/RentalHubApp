@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
-  Linking,
   ScrollView,
   StyleSheet,
   Text,
@@ -12,8 +11,10 @@ import {
 } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
 import Toast from 'react-native-toast-message';
+import FilePreviewCard from '../../components/common/FilePreviewCard';
 import recruitmentService from '../../services/recruitmentService';
 import { getErrorMessage } from '../../utils/http';
+import { savePendingPayment } from '../../services/paymentRecoveryService';
 
 const DOCUMENT_FIELDS = [
   { key: 'cv', label: 'CV / Resume' },
@@ -31,6 +32,7 @@ const RecruitmentApplicationScreen = ({ route, navigation }) => {
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [accessLoading, setAccessLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(null);
   const [accessCodeInput, setAccessCodeInput] = useState('');
   const [paymentReferenceInput, setPaymentReferenceInput] = useState('');
   const [selectedFiles, setSelectedFiles] = useState({});
@@ -82,9 +84,30 @@ const RecruitmentApplicationScreen = ({ route, navigation }) => {
         applicant_email: application?.email_address || route?.params?.email || '',
         reference_number: application?.reference_number || route?.params?.referenceNumber || '',
       });
-      const authorizationUrl = response?.data?.authorization_url;
+      const paymentData = response?.data?.data || response?.data || {};
+      const authorizationUrl = paymentData.authorization_url;
+      const reference = paymentData.reference;
+      if (reference) {
+        await savePendingPayment({
+          flow: 'recruitment',
+          reference,
+          applicationId,
+          email: application?.email_address || route?.params?.email || '',
+          referenceNumber: application?.reference_number || route?.params?.referenceNumber || '',
+        });
+      }
       if (authorizationUrl) {
-        await Linking.openURL(authorizationUrl);
+        navigation.navigate('WebRoute', {
+          url: authorizationUrl,
+          title: 'Recruitment Payment',
+          paymentRecovery: {
+            flow: 'recruitment',
+            reference,
+            applicationId,
+            email: application?.email_address || route?.params?.email || '',
+            referenceNumber: application?.reference_number || route?.params?.referenceNumber || '',
+          },
+        });
         Toast.show({ type: 'success', text1: 'Payment opened', text2: 'Complete the payment and then verify it.' });
       } else {
         Toast.show({ type: 'error', text1: 'Payment unavailable', text2: 'No payment link was returned.' });
@@ -165,8 +188,11 @@ const RecruitmentApplicationScreen = ({ route, navigation }) => {
 
     try {
       setUploading(true);
+      setUploadProgress({ current: 0, total: pendingFiles.length, label: 'Preparing upload', percent: 0 });
       setError('');
-      for (const [docKey, asset] of pendingFiles) {
+      for (const [index, [docKey, asset]] of pendingFiles.entries()) {
+        const field = DOCUMENT_FIELDS.find((item) => item.key === docKey);
+        const label = field?.label || docKey;
         const formData = new FormData();
         const filePayload = asset.file
           ? asset.file
@@ -178,7 +204,24 @@ const RecruitmentApplicationScreen = ({ route, navigation }) => {
         formData.append(docKey, filePayload);
         formData.append('applicant_email', application?.email_address || route?.params?.email || '');
         formData.append('reference_number', application?.reference_number || route?.params?.referenceNumber || '');
-        await recruitmentService.uploadDocuments(Number(applicationId), formData);
+        setUploadProgress({
+          current: index + 1,
+          total: pendingFiles.length,
+          label,
+          percent: 0,
+        });
+        await recruitmentService.uploadDocuments(Number(applicationId), formData, {
+          onUploadProgress: (event) => {
+            const total = event.total || asset.fileSize || 0;
+            const percent = total ? Math.min(100, Math.round((event.loaded / total) * 100)) : 0;
+            setUploadProgress({
+              current: index + 1,
+              total: pendingFiles.length,
+              label,
+              percent,
+            });
+          },
+        });
       }
       Toast.show({ type: 'success', text1: 'Documents uploaded', text2: 'Your supporting files were submitted.' });
       setSelectedFiles({});
@@ -187,6 +230,7 @@ const RecruitmentApplicationScreen = ({ route, navigation }) => {
       setError(getErrorMessage(err, 'Could not upload documents'));
     } finally {
       setUploading(false);
+      setUploadProgress(null);
     }
   };
 
@@ -252,12 +296,42 @@ const RecruitmentApplicationScreen = ({ route, navigation }) => {
         <Text style={styles.cardText}>Only available after your payment and access code are verified.</Text>
         {DOCUMENT_FIELDS.map((field) => (
           <View key={field.key} style={styles.docRow}>
-            <Text style={styles.docLabel}>{field.label}</Text>
-            <TouchableOpacity style={styles.docButton} onPress={() => pickFile(field.key)}>
+            <View style={styles.docCopy}>
+              <Text style={styles.docLabel}>{field.label}</Text>
+              {selectedFiles[field.key] ? (
+                <FilePreviewCard
+                  title={selectedFiles[field.key].fileName || field.label}
+                  subtitle="Ready to upload"
+                  uri={selectedFiles[field.key].uri}
+                  fileName={selectedFiles[field.key].fileName}
+                  fileSize={selectedFiles[field.key].fileSize}
+                  mimeType={selectedFiles[field.key].type}
+                  actionLabel="Preview"
+                />
+              ) : null}
+            </View>
+            <TouchableOpacity
+              accessibilityRole="button"
+              accessibilityLabel={`${selectedFiles[field.key] ? 'Change' : 'Select'} ${field.label}`}
+              style={styles.docButton}
+              onPress={() => pickFile(field.key)}
+              disabled={uploading}
+            >
               <Text style={styles.docButtonText}>{selectedFiles[field.key] ? 'Change file' : 'Select file'}</Text>
             </TouchableOpacity>
           </View>
         ))}
+        {uploadProgress ? (
+          <View style={styles.uploadProgressCard}>
+            <Text style={styles.uploadProgressTitle}>
+              Uploading {uploadProgress.label} ({uploadProgress.current}/{uploadProgress.total})
+            </Text>
+            <View style={styles.progressTrack}>
+              <View style={[styles.progressFill, { width: `${uploadProgress.percent}%` }]} />
+            </View>
+            <Text style={styles.uploadProgressText}>{uploadProgress.percent}% complete</Text>
+          </View>
+        ) : null}
         <TouchableOpacity style={styles.primaryButton} onPress={uploadDocuments} disabled={uploading || !canUpload}>
           {uploading ? <ActivityIndicator color="#ffffff" /> : <Text style={styles.primaryButtonText}>Upload documents</Text>}
         </TouchableOpacity>
@@ -281,10 +355,16 @@ const styles = StyleSheet.create({
   primaryButtonText: { color: '#ffffff', fontWeight: '700' },
   secondaryButton: { marginTop: 8, borderWidth: 1, borderColor: '#0284c7', borderRadius: 10, paddingVertical: 10, alignItems: 'center' },
   secondaryButtonText: { color: '#0284c7', fontWeight: '700' },
-  docRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 8 },
+  docRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10, marginTop: 8 },
+  docCopy: { flex: 1 },
   docLabel: { color: '#0f172a', fontWeight: '600' },
   docButton: { borderWidth: 1, borderColor: '#cbd5e1', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 6 },
   docButtonText: { color: '#475569' },
+  uploadProgressCard: { backgroundColor: '#eff6ff', borderColor: '#bfdbfe', borderWidth: 1, borderRadius: 10, marginTop: 12, padding: 12 },
+  uploadProgressTitle: { color: '#1e3a8a', fontWeight: '700' },
+  progressTrack: { backgroundColor: '#dbeafe', borderRadius: 999, height: 8, marginTop: 9, overflow: 'hidden' },
+  progressFill: { backgroundColor: '#0284c7', height: '100%' },
+  uploadProgressText: { color: '#1d4ed8', fontSize: 12, marginTop: 6 },
   errorText: { color: '#dc2626', marginBottom: 10, fontWeight: '600' },
 });
 

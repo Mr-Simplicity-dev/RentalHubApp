@@ -6,6 +6,7 @@ import Toast from 'react-native-toast-message';
 import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
 import { AuthContext } from '../../context/AuthContext';
+import { useTour } from '../../context/TourContext';
 import { biometricService } from '../../services/biometricService';
 import { userService } from '../../services/userService';
 import { authService } from '../../services/authService';
@@ -16,6 +17,7 @@ import { colors, radius, shadows, typography } from '../../theme';
 
 const ProfileScreen = ({ navigation }) => {
   const { user, updateUser, logout } = useContext(AuthContext);
+  const { replayTour } = useTour();
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [biometricSaving, setBiometricSaving] = useState(false);
@@ -390,8 +392,20 @@ const ProfileScreen = ({ navigation }) => {
 
       <View style={styles.card}>
         <Button
+          title="App Settings"
+          variant="outline"
+          onPress={() => navigation.navigate('Settings')}
+        />
+        <Button
+          title="Replay App Tour"
+          variant="outline"
+          style={styles.marginTop}
+          onPress={replayTour}
+        />
+        <Button
           title="Notifications"
           variant="outline"
+          style={styles.marginTop}
           onPress={() => navigation.navigate('Notifications')}
         />
         <Button

@@ -24,7 +24,9 @@ import Toast from 'react-native-toast-message';
 import Button from '../../components/common/Button';
 import DamageReportCapture from '../../components/properties/DamageReportCapture';
 import { AuthContext } from '../../context/AuthContext';
+import { useRealtime } from '../../context/RealtimeContext';
 import { applicationService } from '../../services/applicationService';
+import { messageService } from '../../services/messageService';
 import { paymentService } from '../../services/paymentService';
 import { propertyService } from '../../services/propertyService';
 import { colors, radius, shadows, typography } from '../../theme';
@@ -41,6 +43,7 @@ const PropertyDetailScreen = ({ route, navigation }) => {
   const propertyId = route?.params?.id;
   const { width } = useWindowDimensions();
   const { user, isAuthenticated } = useContext(AuthContext);
+  const { connected, inviteCall } = useRealtime();
   const [property, setProperty] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -50,6 +53,7 @@ const PropertyDetailScreen = ({ route, navigation }) => {
   const [imageIndex, setImageIndex] = useState(0);
   const [latestDamageReport, setLatestDamageReport] = useState(null);
   const [showDamageCapture, setShowDamageCapture] = useState(false);
+  const [requestingTour, setRequestingTour] = useState(false);
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
@@ -210,6 +214,74 @@ const PropertyDetailScreen = ({ route, navigation }) => {
       title: property?.title || 'RentalHub property',
       url: link,
     });
+  };
+
+  const requestVirtualTour = async () => {
+    if (!isAuthenticated) {
+      navigation.navigate('Login');
+      return;
+    }
+
+    const receiverId = property?.landlord_id || property?.user_id;
+    if (!receiverId) {
+      Toast.show({
+        type: 'error',
+        text1: 'Tour unavailable',
+        text2: 'This property does not expose a verified tour contact yet.',
+      });
+      return;
+    }
+
+    setRequestingTour(true);
+    try {
+      if (connected) {
+        await inviteCall({
+          receiverId,
+          callType: 'virtual_tour',
+          propertyId,
+          propertyTitle: property?.title || 'RentalHub property',
+        });
+        Toast.show({
+          type: 'success',
+          text1: 'Virtual tour request sent',
+          text2: 'Waiting for the landlord or agent to accept.',
+        });
+      } else {
+        await messageService.sendMessage({
+          receiver_id: receiverId,
+          property_id: propertyId,
+          subject: 'Virtual property tour request',
+          message_text: `I would like to request a virtual tour for ${property?.title || 'this property'}.`,
+        });
+        Toast.show({
+          type: 'info',
+          text1: 'Tour request saved as message',
+          text2: 'Realtime is offline, so the request was sent to messages.',
+        });
+      }
+    } catch (error) {
+      try {
+        await messageService.sendMessage({
+          receiver_id: receiverId,
+          property_id: propertyId,
+          subject: 'Virtual property tour request',
+          message_text: `I would like to request a virtual tour for ${property?.title || 'this property'}.`,
+        });
+        Toast.show({
+          type: 'info',
+          text1: 'Tour request sent as message',
+          text2: 'The live request could not connect, but the contact has your message.',
+        });
+      } catch (messageError) {
+        Toast.show({
+          type: 'error',
+          text1: 'Tour request failed',
+          text2: getErrorMessage(messageError, getErrorMessage(error, 'Could not request a virtual tour')),
+        });
+      }
+    } finally {
+      setRequestingTour(false);
+    }
   };
 
   if (loading) {
@@ -421,6 +493,8 @@ const PropertyDetailScreen = ({ route, navigation }) => {
               <View style={styles.contactActions}>
                 {property.landlord_phone ? (
                   <TouchableOpacity
+                    accessibilityLabel="Call verified property contact"
+                    accessibilityRole="button"
                     onPress={() => Linking.openURL(`tel:${property.landlord_phone}`)}
                     style={styles.contactAction}>
                     <Icon name="call-outline" size={18} color={colors.blue} />
@@ -429,12 +503,27 @@ const PropertyDetailScreen = ({ route, navigation }) => {
                 ) : null}
                 {property.landlord_email ? (
                   <TouchableOpacity
+                    accessibilityLabel="Email verified property contact"
+                    accessibilityRole="button"
                     onPress={() => Linking.openURL(`mailto:${property.landlord_email}`)}
                     style={styles.contactAction}>
                     <Icon name="mail-outline" size={18} color={colors.blue} />
                     <Text style={styles.contactActionText}>Email</Text>
                   </TouchableOpacity>
                 ) : null}
+                <TouchableOpacity
+                  accessibilityLabel="Request virtual property tour"
+                  accessibilityRole="button"
+                  disabled={requestingTour}
+                  onPress={requestVirtualTour}
+                  style={[styles.contactAction, styles.virtualTourAction]}>
+                  {requestingTour ? (
+                    <ActivityIndicator color={colors.blue} size="small" />
+                  ) : (
+                    <Icon name="videocam-outline" size={18} color={colors.blue} />
+                  )}
+                  <Text style={styles.contactActionText}>Virtual tour</Text>
+                </TouchableOpacity>
               </View>
             </View>
           ) : (
@@ -822,6 +911,7 @@ const styles = StyleSheet.create({
   },
   contactActions: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: 10,
     marginTop: 15,
   },
@@ -834,6 +924,11 @@ const styles = StyleSheet.create({
     gap: 7,
     justifyContent: 'center',
     minHeight: 44,
+    minWidth: '30%',
+    paddingHorizontal: 8,
+  },
+  virtualTourAction: {
+    backgroundColor: '#EAF3FF',
   },
   contactActionText: {
     color: colors.blue,

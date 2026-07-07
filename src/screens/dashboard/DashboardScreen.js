@@ -17,6 +17,10 @@ import Toast from 'react-native-toast-message';
 import { AuthContext } from '../../context/AuthContext';
 import WalletFundModal from '../../components/dashboard/WalletFundModal';
 import WalletWithdrawModal from '../../components/dashboard/WalletWithdrawModal';
+import {
+  ActionRow,
+  DashboardSection,
+} from '../../components/dashboard/DashboardKit';
 import { dashboardService } from '../../services/dashboardService';
 import { paymentService } from '../../services/paymentService';
 import { referralService } from '../../services/referralService';
@@ -875,78 +879,93 @@ const DashboardScreen = ({ navigation }) => {
         <Text style={styles.referralLoading}>Loading invite link...</Text>
       ) : null}
 
-      <View style={styles.quickActions}>
-        <TouchableOpacity style={styles.quickBtn} onPress={() => navigation.navigate('PropertyList')}>
-          <Text style={styles.quickTitle}>Browse Properties</Text>
-          <Text style={styles.quickText}>Find listings and review details</Text>
-        </TouchableOpacity>
-
+      <DashboardSection title="Property tools">
+        <ActionRow
+          title="Browse Properties"
+          subtitle="Find listings and review property details."
+          icon="search-outline"
+          onPress={() => navigation.navigate('PropertyList')}
+        />
         {isTenant ? (
-          <TouchableOpacity style={styles.quickBtn} onPress={() => navigation.navigate('SavedProperties')}>
-            <Text style={styles.quickTitle}>Saved Properties</Text>
-            <Text style={styles.quickText}>Review your shortlist</Text>
-          </TouchableOpacity>
+          <ActionRow
+            title="Saved Properties"
+            subtitle="Return to your shortlist."
+            icon="heart-outline"
+            onPress={() => navigation.navigate('SavedProperties')}
+          />
         ) : (
-          <TouchableOpacity style={styles.quickBtn} onPress={() => navigation.navigate('AddProperty')}>
-            <Text style={styles.quickTitle}>Add Property</Text>
-            <Text style={styles.quickText}>Create a new listing</Text>
-          </TouchableOpacity>
+          <ActionRow
+            title="Add Property"
+            subtitle="Create and publish a new listing."
+            icon="add-circle-outline"
+            onPress={() => navigation.navigate('AddProperty')}
+          />
         )}
+      </DashboardSection>
 
-        <TouchableOpacity style={styles.quickBtn} onPress={() => navigation.navigate('WebFeatures')}>
-          <Text style={styles.quickTitle}>Open All Web Features</Text>
-          <Text style={styles.quickText}>Access every web module from your phone</Text>
-        </TouchableOpacity>
+      {isTenant ? (
+        <DashboardSection title="Home services">
+          <ActionRow
+            title="Rent Savings"
+            subtitle="Create goals and track your rent plan."
+            icon="cash-outline"
+            onPress={() => navigation.navigate('RentSavingsDashboard')}
+          />
+          <ActionRow
+            title="Book Transportation"
+            subtitle="Schedule moving and logistics services."
+            icon="bus-outline"
+            onPress={() => navigation.navigate('TransportationBooking')}
+          />
+          <ActionRow
+            title="Fumigation & Cleaning"
+            subtitle="Book trusted property care services."
+            icon="sparkles-outline"
+            onPress={() => navigation.navigate('FumigationCleaningBooking')}
+          />
+        </DashboardSection>
+      ) : null}
 
-        <TouchableOpacity style={styles.quickBtn} onPress={() => navigation.navigate('Careers')}>
-          <Text style={styles.quickTitle}>Careers</Text>
-          <Text style={styles.quickText}>View openings and submit applications</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.quickBtn} onPress={() => navigation.navigate('PaymentHistory')}>
-          <Text style={styles.quickTitle}>Payment History</Text>
-          <Text style={styles.quickText}>Review your payments and transaction references</Text>
-        </TouchableOpacity>
-
-        {isTenant ? (
-          <>
-            <TouchableOpacity
-              style={styles.quickBtn}
-              onPress={() => navigation.navigate('RentSavingsDashboard')}
-            >
-              <Text style={styles.quickTitle}>Rent Savings</Text>
-              <Text style={styles.quickText}>Create goals and track rent savings plans</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.quickBtn}
-              onPress={() => navigation.navigate('TransportationBooking')}
-            >
-              <Text style={styles.quickTitle}>Book Transportation</Text>
-              <Text style={styles.quickText}>Schedule moving and logistics services</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.quickBtn}
-              onPress={() => navigation.navigate('FumigationCleaningBooking')}
-            >
-              <Text style={styles.quickTitle}>Fumigation & Cleaning</Text>
-              <Text style={styles.quickText}>Book cleaning or fumigation for your property</Text>
-            </TouchableOpacity>
-          </>
-        ) : null}
-
+      <DashboardSection title="Money">
+        <ActionRow
+          title="Payment History"
+          subtitle="Review payments and transaction references."
+          icon="receipt-outline"
+          onPress={() => navigation.navigate('PaymentHistory')}
+        />
         {(isTenant || isLandlord) ? (
           <>
-            <TouchableOpacity style={styles.quickBtn} onPress={openFundModal}>
-              <Text style={styles.quickTitle}>Fund Wallet</Text>
-              <Text style={styles.quickText}>Top up your wallet via Paystack</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.quickBtn} onPress={openWithdrawModal}>
-              <Text style={styles.quickTitle}>Withdraw Funds</Text>
-              <Text style={styles.quickText}>Transfer available balance to your bank account</Text>
-            </TouchableOpacity>
+            <ActionRow
+              title="Fund Wallet"
+              subtitle="Top up securely through Paystack."
+              icon="add-circle-outline"
+              onPress={openFundModal}
+            />
+            <ActionRow
+              title="Withdraw Funds"
+              subtitle="Transfer your available balance."
+              icon="wallet-outline"
+              onPress={openWithdrawModal}
+            />
           </>
         ) : null}
-      </View>
+      </DashboardSection>
+
+      <DashboardSection title="More">
+        <ActionRow
+          title="Careers"
+          subtitle="View openings and submit applications."
+          icon="briefcase-outline"
+          onPress={() => navigation.navigate('Careers')}
+        />
+        <ActionRow
+          title="Additional web tools"
+          subtitle="Temporary access to features still being converted to native screens."
+          icon="globe-outline"
+          badge="Legacy"
+          onPress={() => navigation.navigate('WebFeatures')}
+        />
+      </DashboardSection>
 
       {(isTenant || isLandlord) ? (
         <TenancyGracePanel userType={user?.user_type} />

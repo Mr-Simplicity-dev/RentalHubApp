@@ -62,7 +62,7 @@ export const propertyService = {
   },
 
   // Landlord property management
-  createProperty: async (propertyData) => {
+  createProperty: async (propertyData, config = {}) => {
     const formData = new FormData();
     
     // Add all property data
@@ -90,6 +90,7 @@ export const propertyService = {
 
     const response = await api.post('/properties', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
+      ...config,
     });
     return response.data;
   },
@@ -104,7 +105,7 @@ export const propertyService = {
     return response.data;
   },
 
-  uploadPhotos: async (propertyId, images) => {
+  uploadPhotos: async (propertyId, images, config = {}) => {
     const formData = new FormData();
     images.forEach((image, index) => {
       formData.append('photos', {
@@ -116,6 +117,7 @@ export const propertyService = {
 
     const response = await api.post(`/properties/${propertyId}/photos`, formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
+      ...config,
     });
     return response.data;
   },
@@ -190,7 +192,7 @@ export const propertyService = {
     return response.data;
   },
 
-  analyzeDamagePhoto: async (photo) => {
+  analyzeDamagePhoto: async (photo, config = {}) => {
     const formData = new FormData();
     formData.append('photos', {
       uri: photo.uri,
@@ -200,12 +202,13 @@ export const propertyService = {
 
     const response = await api.post('/properties/damage-analysis', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
+      ...config,
     });
     return response.data;
   },
 
   // Damage report endpoints
-  saveDamageReport: async (propertyId, damageData) => {
+  saveDamageReport: async (propertyId, damageData, config = {}) => {
     const formData = new FormData();
     
     // Add damage data
@@ -225,6 +228,7 @@ export const propertyService = {
 
     const response = await api.post(`/properties/${propertyId}/damage-report`, formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
+      ...config,
     });
     return response.data;
   },

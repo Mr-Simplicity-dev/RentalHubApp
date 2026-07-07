@@ -84,3 +84,8 @@ media/
 # Temporary files
 tmp/
 temp/
+
+# Expo
+.expo
+dist/
+web-build/

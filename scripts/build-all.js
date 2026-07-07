@@ -45,7 +45,7 @@ const main = () => {
 
   if (platform === 'android' || platform === 'all') {
     console.log('>>> Building Android APK...');
-    run(`cd android && .\\gradlew assembleDebug --no-daemon -PreactNativeArchitectures=arm64-v8a --build-cache`, { cwd: ANDROID_DIR });
+    run(`cd android && .\\gradlew assembleRelease --no-daemon --build-cache`, { cwd: ANDROID_DIR });
 
     const apkPath = path.join(ANDROID_DIR, 'app', 'build', 'outputs', 'apk', 'debug', 'app-debug.apk');
     if (fs.existsSync(apkPath)) {

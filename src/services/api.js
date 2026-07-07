@@ -1,6 +1,10 @@
 import { Platform } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {
+  markNetworkHealthy,
+  markNetworkProblem,
+} from './networkStatusService';
 
 const DEFAULT_PRODUCTION_API_BASE_URL = 'https://rentalhub.com.ng/api';
 const DEFAULT_LOCAL_API_BASE_URL =
@@ -48,8 +52,12 @@ api.interceptors.request.use(
 
 // Response interceptor
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    markNetworkHealthy();
+    return response;
+  },
   async (error) => {
+    markNetworkProblem(error);
     if (error.response?.status === 401) {
       await AsyncStorage.removeItem('token');
       await AsyncStorage.removeItem('user');

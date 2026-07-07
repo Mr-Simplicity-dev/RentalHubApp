@@ -27,7 +27,14 @@
       }
     },
     "plugins": [
-      "expo-asset"
+      "expo-asset",
+      [
+        "expo-notifications",
+        {
+          "color": "#0A66C2",
+          "defaultChannel": "messages"
+        }
+      ]
     ]
   }
 }

@@ -1,7 +1,6 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import {
   ActivityIndicator,
-  Linking,
   RefreshControl,
   ScrollView,
   StyleSheet,
@@ -14,6 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import Button from '../../components/common/Button';
 import { paymentService } from '../../services/paymentService';
+import { savePendingPayment } from '../../services/paymentRecoveryService';
 import { colors, radius, shadows, typography } from '../../theme';
 import { getErrorMessage, pickList, pickObject } from '../../utils/http';
 
@@ -62,8 +62,24 @@ const SubscribeScreen = ({ navigation }) => {
     try {
       const response = await paymentService.initializeSubscription(planId, 'paystack');
       const url = response?.data?.authorization_url;
+      const reference = response?.data?.reference;
+      if (reference) {
+        await savePendingPayment({
+          flow: 'subscription',
+          reference,
+          planId,
+        });
+      }
       if (url) {
-        await Linking.openURL(url);
+        navigation.navigate('WebRoute', {
+          url,
+          title: 'Subscription Payment',
+          paymentRecovery: {
+            flow: 'subscription',
+            reference,
+            planId,
+          },
+        });
         Toast.show({
           type: 'info',
           text1: 'Complete your payment',

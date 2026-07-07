@@ -44,6 +44,30 @@ export const financialAdminService = {
     return response.data;
   },
 
+  getAuditTrail: async (params = {}) => {
+    const response = await api.get('/financial-admin/audit-trail', { params });
+    return response.data;
+  },
+
+  getStateAdminPerformance: async (params = {}) => {
+    const response = await api.get('/financial-admin/performance/state-admins', { params });
+    return response.data;
+  },
+
+  getFrozenFunds: async (params = {}) => {
+    const response = await api.get('/financial-admin/funds/frozen', { params });
+    return response.data;
+  },
+
+  freezeFunds: async ({ userId, amount, reason }) => {
+    const response = await api.post('/financial-admin/funds/freeze', {
+      user_id: userId,
+      amount,
+      reason,
+    });
+    return response.data;
+  },
+
   getWithdrawalRequests: async () => {
     const response = await api.get('/financial-admin/withdrawals/pending');
     return {
@@ -69,5 +93,10 @@ export const financialAdminService = {
       success: response.data?.success !== false,
       data: { commissions: response.data?.data?.summary || [] },
     };
+  },
+
+  getCommissionConfig: async () => {
+    const response = await api.get('/financial-admin/commission-config');
+    return response.data;
   },
 };

@@ -23,8 +23,10 @@
     "axios": "^1.7.2",
     "expo": "~55.0.27",
     "expo-asset": "~55.0.17",
+    "expo-constants": "~55.0.16",
+    "expo-device": "~55.0.18",
     "expo-font": "~55.0.8",
-    "expo-modules-core": "~55.0.25",
+    "expo-notifications": "~55.0.24",
     "jwt-decode": "^4.0.0",
     "react": "19.2.0",
     "react-dom": "19.2.0",
@@ -33,11 +35,13 @@
     "react-native-image-picker": "^7.1.2",
     "react-native-keychain": "^10.0.0",
     "react-native-safe-area-context": "~5.6.2",
-    "react-native-screens": "~4.23.0",
+    "react-native-screens": "^4.25.2",
     "react-native-toast-message": "^2.2.0",
     "react-native-vector-icons": "^10.1.0",
     "react-native-web": "^0.21.0",
-    "react-native-webview": "13.16.1"
+    "react-native-webrtc": "^124.0.7",
+    "react-native-webview": "13.16.1",
+    "socket.io-client": "^4.8.3"
   },
   "devDependencies": {
     "@react-native-community/cli": "^20.1.3",

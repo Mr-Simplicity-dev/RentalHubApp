@@ -10,6 +10,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
 import { fumigationCleaningService } from '../../services/fumigationCleaningService';
 import { getErrorMessage } from '../../utils/http';
+import { recoverPayment, savePendingPayment } from '../../services/paymentRecoveryService';
 
 const FumigationCleaningPaymentScreen = ({ route, navigation }) => {
   const { bookingId } = route.params;
@@ -38,16 +39,26 @@ const FumigationCleaningPaymentScreen = ({ route, navigation }) => {
     try {
       const response = await fumigationCleaningService.initializeBookingPayment(bookingId, 'paystack');
       if (response?.success) {
+        const reference = response.data?.reference;
+        if (reference) {
+          await savePendingPayment({
+            flow: 'fumigation',
+            reference,
+            bookingId,
+          });
+        }
         if (response.data?.authorization_url) {
           navigation.navigate('WebRoute', {
             url: response.data.authorization_url,
-            onComplete: () => {
-              Toast.show({ type: 'success', text1: 'Payment successful!' });
-              navigation.navigate('FumigationCleaningBookingDetail', { bookingId });
+            title: 'Fumigation Payment',
+            paymentRecovery: {
+              flow: 'fumigation',
+              reference,
+              bookingId,
             },
           });
-        } else if (response.data?.reference) {
-          verifyPayment(response.data.reference);
+        } else if (reference) {
+          verifyPayment(reference);
         }
       } else {
         Toast.show({ type: 'error', text1: response?.message || 'Payment failed' });
@@ -61,7 +72,10 @@ const FumigationCleaningPaymentScreen = ({ route, navigation }) => {
 
   const verifyPayment = async (reference) => {
     try {
-      const response = await fumigationCleaningService.verifyPayment(reference);
+      const response = await recoverPayment({
+        reference,
+        fallbackFlow: 'fumigation',
+      });
       if (response?.success) {
         Toast.show({ type: 'success', text1: 'Payment verified!' });
         navigation.navigate('FumigationCleaningBookingDetail', { bookingId });

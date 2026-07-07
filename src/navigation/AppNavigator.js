@@ -1,13 +1,20 @@
-import React, { useContext } from 'react';
-import { ActivityIndicator, Platform } from 'react-native';
+import React, { useContext, useEffect } from 'react';
+import { ActivityIndicator, AppState, Linking, Platform } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
+import { navigationRef } from './navigationRef';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Toast from 'react-native-toast-message';
 import { AuthContext } from '../context/AuthContext';
 import BrandSplash from '../components/brand/BrandSplash';
 import { colors, typography } from '../theme';
+import {
+  getPendingPayment,
+  isLikelyPaymentReturnUrl,
+  recoverPayment,
+} from '../services/paymentRecoveryService';
 
 import WelcomeScreen from '../screens/auth/WelcomeScreen';
 import LoginScreen from '../screens/auth/LoginScreen';
@@ -22,6 +29,7 @@ import HomeScreen from '../screens/home/HomeScreen';
 import PropertyListScreen from '../screens/home/PropertyListScreen';
 import PropertyDetailScreen from '../screens/home/PropertyDetailScreen';
 import PropertyAlertRequestScreen from '../screens/home/PropertyAlertRequestScreen';
+import LocationInfoScreen from '../screens/home/LocationInfoScreen';
 
 import DashboardScreen from '../screens/dashboard/DashboardScreen';
 import ProfileScreen from '../screens/dashboard/ProfileScreen';
@@ -38,6 +46,8 @@ import MessagesScreen from '../screens/messages/MessagesScreen';
 
 import LawyerDashboardScreen from '../screens/lawyer/LawyerDashboardScreen';
 import DisputeDetailsScreen from '../screens/lawyer/DisputeDetailsScreen';
+import LawyersDirectoryScreen from '../screens/legal/LawyersDirectoryScreen';
+import LegalSupportScreen from '../screens/legal/LegalSupportScreen';
 
 import VerifyCaseScreen from '../screens/shared/VerifyCaseScreen';
 import WebFeaturesScreen from '../screens/shared/WebFeaturesScreen';
@@ -68,10 +78,18 @@ import FinancialRevenueReportScreen from '../screens/financial-admin/FinancialRe
 import FinancialTransactionsScreen from '../screens/financial-admin/FinancialTransactionsScreen';
 import FinancialWithdrawalsScreen from '../screens/financial-admin/FinancialWithdrawalsScreen';
 import FinancialCommissionsScreen from '../screens/financial-admin/FinancialCommissionsScreen';
+import FinancialControlsScreen from '../screens/financial-admin/FinancialControlsScreen';
 
 // ========== State Admin ==========
 import StateAdminDashboardScreen from '../screens/state-admin/StateAdminDashboardScreen';
 import StateAdminMigrationsScreen from '../screens/state-admin/StateAdminMigrationsScreen';
+
+// ========== Service Operations Admin ==========
+import ServiceOperationsDashboardScreen from '../screens/service-admin/ServiceOperationsDashboardScreen';
+import ServiceBookingsScreen from '../screens/service-admin/ServiceBookingsScreen';
+import SupportTicketsScreen from '../screens/service-admin/SupportTicketsScreen';
+import SupportTicketDetailScreen from '../screens/service-admin/SupportTicketDetailScreen';
+import FumigationComplianceScreen from '../screens/service-admin/FumigationComplianceScreen';
 
 // ========== Admin (additional screens) ==========
 import AdminPropertyDetailScreen from '../screens/admin/AdminPropertyDetailScreen';
@@ -96,6 +114,8 @@ import CareersScreen from '../screens/shared/CareersScreen';
 import RecruitmentAdminScreen from '../screens/shared/RecruitmentAdminScreen';
 import InterviewScreen from '../screens/shared/InterviewScreen';
 import RecruitmentApplicationScreen from '../screens/shared/RecruitmentApplicationScreen';
+import PublicInfoScreen from '../screens/shared/PublicInfoScreen';
+import SettingsScreen from '../screens/settings/SettingsScreen';
 
 const Stack = (Platform.OS === 'web' ? createStackNavigator : createNativeStackNavigator)();
 const Tab = createBottomTabNavigator();
@@ -138,6 +158,7 @@ const linkingConfig = {
       AcceptAgentInvite: 'agent/accept-invite',
       WebFeatures: 'web-features',
       PaymentHistory: 'payment-history',
+      Messages: 'messages',
       AgentDashboard: 'agent/dashboard',
       AgentEarnings: 'agent/earnings',
       AgentWithdrawals: 'agent/withdrawals',
@@ -151,6 +172,7 @@ const linkingConfig = {
       FinancialTransactions: 'admin/financial/transactions',
       FinancialWithdrawals: 'admin/financial/withdrawals',
       FinancialCommissions: 'admin/financial/commissions',
+      FinancialControls: 'admin/financial/controls',
       StateAdminDashboard: 'admin/state',
       StateAdminMigrations: 'admin/state/migrations',
       AdminPropertyDetail: 'admin/properties/:id',
@@ -177,9 +199,16 @@ const linkingConfig = {
       Privacy: 'privacy',
       Terms: 'terms',
       NigeriaPage: 'nigeria',
-      LocationPage: 'nigeria/:stateSlug',
-      AreaPage: 'areas/:stateSlug/:citySlug/:areaSlug',
+      LocationInfo: {
+        path: 'nigeria/:stateSlug',
+        parse: {
+          stateSlug: String,
+          citySlug: String,
+          areaSlug: String,
+        },
+      },
       LawyersDirectory: 'lawyers',
+      LegalSupport: 'legal-support',
     },
   },
 };
@@ -202,6 +231,15 @@ const commonVerificationScreens = () => (
   </>
 );
 
+const commonInfoScreens = () => (
+  <>
+    <Stack.Screen name="PublicInfo" component={PublicInfoScreen} options={{ title: 'Information' }} />
+    <Stack.Screen name="LawyersDirectory" component={LawyersDirectoryScreen} options={{ title: 'Lawyers' }} />
+    <Stack.Screen name="LegalSupport" component={LegalSupportScreen} options={{ title: 'Legal Support' }} />
+    <Stack.Screen name="Settings" component={SettingsScreen} options={{ title: 'Settings' }} />
+  </>
+);
+
 const GuestStack = () => (
   <Stack.Navigator initialRouteName="Welcome" screenOptions={screenOptions}>
     <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
@@ -209,12 +247,14 @@ const GuestStack = () => (
     <Stack.Screen name="PropertyList" component={PropertyListScreen} options={{ title: 'Browse Properties' }} />
     <Stack.Screen name="PropertyDetail" component={PropertyDetailScreen} options={{ title: 'Property Details' }} />
     <Stack.Screen name="PropertyAlertRequest" component={PropertyAlertRequestScreen} options={{ title: 'Submit Request' }} />
+    <Stack.Screen name="LocationInfo" component={LocationInfoScreen} options={{ title: 'Location' }} />
     <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
     <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
     <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{ title: 'Forgot Password' }} />
     {commonVerificationScreens()}
     <Stack.Screen name="AcceptLawyerInvite" component={AcceptLawyerInviteScreen} options={{ title: 'Lawyer Invite' }} />
     <Stack.Screen name="AcceptAgentInvite" component={AcceptAgentInviteScreen} options={{ title: 'Agent Invite' }} />
+    {commonInfoScreens()}
     <Stack.Screen name="WebFeatures" component={WebFeaturesScreen} options={{ title: 'Web Features' }} />
     <Stack.Screen name="WebRoute" component={WebRouteScreen} options={{ headerShown: false }} />
     <Stack.Screen name="TransportationBooking" component={TransportationBookingScreen} options={{ title: 'Transportation' }} />
@@ -231,6 +271,23 @@ const GuestStack = () => (
 const WebAdminRoot = () => (
   <Stack.Navigator screenOptions={screenOptions}>
     <Stack.Screen name="WebFeatures" component={WebFeaturesScreen} options={{ title: 'Admin Web Features' }} />
+    {commonInfoScreens()}
+    <Stack.Screen name="WebRoute" component={WebRouteScreen} options={{ headerShown: false }} />
+  </Stack.Navigator>
+);
+
+const ServiceAdminRoot = () => (
+  <Stack.Navigator screenOptions={screenOptions}>
+    <Stack.Screen name="ServiceOperationsDashboard" component={ServiceOperationsDashboardScreen} options={{ title: 'Service Operations' }} />
+    <Stack.Screen name="ServiceBookings" component={ServiceBookingsScreen} options={{ title: 'Bookings' }} />
+    <Stack.Screen name="FumigationCompliance" component={FumigationComplianceScreen} options={{ title: 'Safety Compliance' }} />
+    <Stack.Screen name="SupportTickets" component={SupportTicketsScreen} options={{ title: 'Support Tickets' }} />
+    <Stack.Screen name="SupportTicketDetail" component={SupportTicketDetailScreen} options={{ title: 'Ticket Conversation' }} />
+    <Stack.Screen name="Messages" component={MessagesScreen} />
+    <Stack.Screen name="Notifications" component={NotificationsScreen} />
+    <Stack.Screen name="Profile" component={ProfileScreen} />
+    <Stack.Screen name="WebFeatures" component={WebFeaturesScreen} options={{ title: 'Web Features' }} />
+    {commonInfoScreens()}
     <Stack.Screen name="WebRoute" component={WebRouteScreen} options={{ headerShown: false }} />
   </Stack.Navigator>
 );
@@ -270,6 +327,7 @@ const TenantRoot = () => (
     <Stack.Screen name="PropertyList" component={PropertyListScreen} options={{ title: 'Browse Properties' }} />
     <Stack.Screen name="PropertyDetail" component={PropertyDetailScreen} options={{ title: 'Property Details' }} />
     <Stack.Screen name="PropertyAlertRequest" component={PropertyAlertRequestScreen} options={{ title: 'Submit Request' }} />
+    <Stack.Screen name="LocationInfo" component={LocationInfoScreen} options={{ title: 'Location' }} />
     <Stack.Screen name="ApplicationDetail" component={ApplicationDetailScreen} options={{ headerShown: false }} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
     <Stack.Screen name="SavedProperties" component={SavedPropertiesScreen} options={{ title: 'Saved Properties' }} />
@@ -290,6 +348,7 @@ const TenantRoot = () => (
     <Stack.Screen name="FumigationCleaningBookingDetail" component={FumigationCleaningBookingDetailScreen} options={{ title: 'Booking Details' }} />
     <Stack.Screen name="FumigationCleaningPayment" component={FumigationCleaningPaymentScreen} options={{ title: 'Payment' }} />
     <Stack.Screen name="WebFeatures" component={WebFeaturesScreen} options={{ title: 'Web Features' }} />
+    {commonInfoScreens()}
     <Stack.Screen name="WebRoute" component={WebRouteScreen} options={{ headerShown: false }} />
     <Stack.Screen name="Careers" component={CareersScreen} options={{ title: 'Careers' }} />
     <Stack.Screen name="RecruitmentAdmin" component={RecruitmentAdminScreen} options={{ title: 'Recruitment Admin' }} />
@@ -304,6 +363,7 @@ const LandlordRoot = () => (
     <Stack.Screen name="PropertyList" component={PropertyListScreen} options={{ title: 'Browse Properties' }} />
     <Stack.Screen name="PropertyDetail" component={PropertyDetailScreen} options={{ title: 'Property Details' }} />
     <Stack.Screen name="PropertyAlertRequest" component={PropertyAlertRequestScreen} options={{ title: 'Submit Request' }} />
+    <Stack.Screen name="LocationInfo" component={LocationInfoScreen} options={{ title: 'Location' }} />
     <Stack.Screen name="ApplicationDetail" component={ApplicationDetailScreen} options={{ headerShown: false }} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
     <Stack.Screen name="MyProperties" component={MyPropertiesScreen} options={{ title: 'My Properties' }} />
@@ -320,6 +380,7 @@ const LandlordRoot = () => (
     <Stack.Screen name="FumigationCleaningBookingDetail" component={FumigationCleaningBookingDetailScreen} options={{ title: 'Booking Details' }} />
     <Stack.Screen name="FumigationCleaningPayment" component={FumigationCleaningPaymentScreen} options={{ title: 'Payment' }} />
     <Stack.Screen name="WebFeatures" component={WebFeaturesScreen} options={{ title: 'Web Features' }} />
+    {commonInfoScreens()}
     <Stack.Screen name="WebRoute" component={WebRouteScreen} options={{ headerShown: false }} />
     <Stack.Screen name="Careers" component={CareersScreen} options={{ title: 'Careers' }} />
     <Stack.Screen name="RecruitmentAdmin" component={RecruitmentAdminScreen} options={{ title: 'Recruitment Admin' }} />
@@ -337,6 +398,7 @@ const AgentRoot = () => (
     <Stack.Screen name="AddProperty" component={AddPropertyScreen} options={{ title: 'Add Property' }} />
     <Stack.Screen name="PropertyList" component={PropertyListScreen} options={{ title: 'Browse Properties' }} />
     <Stack.Screen name="PropertyDetail" component={PropertyDetailScreen} options={{ title: 'Property Details' }} />
+    <Stack.Screen name="LocationInfo" component={LocationInfoScreen} options={{ title: 'Location' }} />
     <Stack.Screen name="Messages" component={MessagesScreen} />
     <Stack.Screen name="PaymentHistory" component={PaymentHistoryScreen} options={{ title: 'Payment History' }} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
@@ -351,6 +413,7 @@ const AgentRoot = () => (
     <Stack.Screen name="FumigationCleaningBookingDetail" component={FumigationCleaningBookingDetailScreen} options={{ title: 'Booking Details' }} />
     <Stack.Screen name="FumigationCleaningPayment" component={FumigationCleaningPaymentScreen} options={{ title: 'Payment' }} />
     <Stack.Screen name="WebFeatures" component={WebFeaturesScreen} options={{ title: 'Web Features' }} />
+    {commonInfoScreens()}
     <Stack.Screen name="WebRoute" component={WebRouteScreen} options={{ headerShown: false }} />
     <Stack.Screen name="Careers" component={CareersScreen} options={{ title: 'Careers' }} />
     <Stack.Screen name="RecruitmentAdmin" component={RecruitmentAdminScreen} options={{ title: 'Recruitment Admin' }} />
@@ -365,6 +428,7 @@ const LawyerRoot = () => (
     <Stack.Screen name="PropertyList" component={PropertyListScreen} options={{ title: 'Browse Properties' }} />
     <Stack.Screen name="PropertyDetail" component={PropertyDetailScreen} options={{ title: 'Property Details' }} />
     <Stack.Screen name="PropertyAlertRequest" component={PropertyAlertRequestScreen} options={{ title: 'Submit Request' }} />
+    <Stack.Screen name="LocationInfo" component={LocationInfoScreen} options={{ title: 'Location' }} />
     <Stack.Screen name="DisputeDetails" component={DisputeDetailsScreen} options={{ title: 'Dispute Trace' }} />
     <Stack.Screen name="VerifyCase" component={VerifyCaseScreen} options={{ title: 'Verify Case' }} />
     <Stack.Screen name="Messages" component={MessagesScreen} />
@@ -380,6 +444,7 @@ const LawyerRoot = () => (
     <Stack.Screen name="FumigationCleaningBookingDetail" component={FumigationCleaningBookingDetailScreen} options={{ title: 'Booking Details' }} />
     <Stack.Screen name="FumigationCleaningPayment" component={FumigationCleaningPaymentScreen} options={{ title: 'Payment' }} />
     <Stack.Screen name="WebFeatures" component={WebFeaturesScreen} options={{ title: 'Web Features' }} />
+    {commonInfoScreens()}
     <Stack.Screen name="WebRoute" component={WebRouteScreen} options={{ headerShown: false }} />
     <Stack.Screen name="Careers" component={CareersScreen} options={{ title: 'Careers' }} />
     <Stack.Screen name="RecruitmentAdmin" component={RecruitmentAdminScreen} options={{ title: 'Recruitment Admin' }} />
@@ -402,12 +467,14 @@ const AdminRoot = () => (
     <Stack.Screen name="AdminUserDetail" component={AdminUserDetailScreen} options={{ title: 'User Details' }} />
     <Stack.Screen name="PropertyList" component={PropertyListScreen} options={{ title: 'Browse Properties' }} />
     <Stack.Screen name="PropertyDetail" component={PropertyDetailScreen} options={{ title: 'Property Details' }} />
+    <Stack.Screen name="LocationInfo" component={LocationInfoScreen} options={{ title: 'Location' }} />
     <Stack.Screen name="Messages" component={MessagesScreen} />
     <Stack.Screen name="PaymentHistory" component={PaymentHistoryScreen} options={{ title: 'Payment History' }} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
     <Stack.Screen name="Notifications" component={NotificationsScreen} />
     {commonVerificationScreens()}
     <Stack.Screen name="WebFeatures" component={WebFeaturesScreen} options={{ title: 'Web Features' }} />
+    {commonInfoScreens()}
     <Stack.Screen name="WebRoute" component={WebRouteScreen} options={{ headerShown: false }} />
     <Stack.Screen name="Careers" component={CareersScreen} options={{ title: 'Careers' }} />
     <Stack.Screen name="RecruitmentAdmin" component={RecruitmentAdminScreen} options={{ title: 'Recruitment Admin' }} />
@@ -426,6 +493,7 @@ const SuperAdminRoot = () => (
     <Stack.Screen name="AdminUserDetail" component={AdminUserDetailScreen} options={{ title: 'User Details' }} />
     <Stack.Screen name="PropertyList" component={PropertyListScreen} options={{ title: 'Browse Properties' }} />
     <Stack.Screen name="PropertyDetail" component={PropertyDetailScreen} options={{ title: 'Property Details' }} />
+    <Stack.Screen name="LocationInfo" component={LocationInfoScreen} options={{ title: 'Location' }} />
     <Stack.Screen name="VerifyCase" component={VerifyCaseScreen} options={{ title: 'Verify Case' }} />
     <Stack.Screen name="Messages" component={MessagesScreen} />
     <Stack.Screen name="PaymentHistory" component={PaymentHistoryScreen} options={{ title: 'Payment History' }} />
@@ -441,6 +509,7 @@ const SuperAdminRoot = () => (
     <Stack.Screen name="FumigationCleaningBookingDetail" component={FumigationCleaningBookingDetailScreen} options={{ title: 'Booking Details' }} />
     <Stack.Screen name="FumigationCleaningPayment" component={FumigationCleaningPaymentScreen} options={{ title: 'Payment' }} />
     <Stack.Screen name="WebFeatures" component={WebFeaturesScreen} options={{ title: 'Web Features' }} />
+    {commonInfoScreens()}
     <Stack.Screen name="WebRoute" component={WebRouteScreen} options={{ headerShown: false }} />
     <Stack.Screen name="Careers" component={CareersScreen} options={{ title: 'Careers' }} />
     <Stack.Screen name="RecruitmentAdmin" component={RecruitmentAdminScreen} options={{ title: 'Recruitment Admin' }} />
@@ -456,8 +525,10 @@ const FinancialAdminRoot = () => (
     <Stack.Screen name="FinancialTransactions" component={FinancialTransactionsScreen} options={{ title: 'Transactions' }} />
     <Stack.Screen name="FinancialWithdrawals" component={FinancialWithdrawalsScreen} options={{ title: 'Withdrawals' }} />
     <Stack.Screen name="FinancialCommissions" component={FinancialCommissionsScreen} options={{ title: 'Commissions' }} />
+    <Stack.Screen name="FinancialControls" component={FinancialControlsScreen} options={{ title: 'Financial Controls' }} />
     <Stack.Screen name="PropertyList" component={PropertyListScreen} options={{ title: 'Browse Properties' }} />
     <Stack.Screen name="PropertyDetail" component={PropertyDetailScreen} options={{ title: 'Property Details' }} />
+    <Stack.Screen name="LocationInfo" component={LocationInfoScreen} options={{ title: 'Location' }} />
     <Stack.Screen name="Messages" component={MessagesScreen} />
     <Stack.Screen name="PaymentHistory" component={PaymentHistoryScreen} options={{ title: 'Payment History' }} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
@@ -472,6 +543,7 @@ const FinancialAdminRoot = () => (
     <Stack.Screen name="FumigationCleaningBookingDetail" component={FumigationCleaningBookingDetailScreen} options={{ title: 'Booking Details' }} />
     <Stack.Screen name="FumigationCleaningPayment" component={FumigationCleaningPaymentScreen} options={{ title: 'Payment' }} />
     <Stack.Screen name="WebFeatures" component={WebFeaturesScreen} options={{ title: 'Web Features' }} />
+    {commonInfoScreens()}
     <Stack.Screen name="WebRoute" component={WebRouteScreen} options={{ headerShown: false }} />
     <Stack.Screen name="Careers" component={CareersScreen} options={{ title: 'Careers' }} />
     <Stack.Screen name="RecruitmentAdmin" component={RecruitmentAdminScreen} options={{ title: 'Recruitment Admin' }} />
@@ -486,6 +558,7 @@ const StateAdminRoot = () => (
     <Stack.Screen name="StateAdminMigrations" component={StateAdminMigrationsScreen} options={{ title: 'Migrations' }} />
     <Stack.Screen name="PropertyList" component={PropertyListScreen} options={{ title: 'Browse Properties' }} />
     <Stack.Screen name="PropertyDetail" component={PropertyDetailScreen} options={{ title: 'Property Details' }} />
+    <Stack.Screen name="LocationInfo" component={LocationInfoScreen} options={{ title: 'Location' }} />
     <Stack.Screen name="VerifyCase" component={VerifyCaseScreen} options={{ title: 'Verify Case' }} />
     <Stack.Screen name="Messages" component={MessagesScreen} />
     <Stack.Screen name="PaymentHistory" component={PaymentHistoryScreen} options={{ title: 'Payment History' }} />
@@ -501,6 +574,7 @@ const StateAdminRoot = () => (
     <Stack.Screen name="FumigationCleaningBookingDetail" component={FumigationCleaningBookingDetailScreen} options={{ title: 'Booking Details' }} />
     <Stack.Screen name="FumigationCleaningPayment" component={FumigationCleaningPaymentScreen} options={{ title: 'Payment' }} />
     <Stack.Screen name="WebFeatures" component={WebFeaturesScreen} options={{ title: 'Web Features' }} />
+    {commonInfoScreens()}
     <Stack.Screen name="WebRoute" component={WebRouteScreen} options={{ headerShown: false }} />
   </Stack.Navigator>
 );
@@ -542,7 +616,7 @@ const RoleRouter = ({ userType }) => {
     case 'lga_fumigation_admin':
     case 'state_fumigation_admin':
     case 'super_fumigation_admin':
-      return <WebAdminRoot />;
+      return <ServiceAdminRoot />;
     default:
       return <TenantRoot />;
   }
@@ -551,12 +625,72 @@ const RoleRouter = ({ userType }) => {
 const AppNavigator = () => {
   const { isAuthenticated, loading, user } = useContext(AuthContext);
 
+  useEffect(() => {
+    let recovering = false;
+
+    const openDestination = (destination) => {
+      if (!destination?.name || !navigationRef.isReady()) return;
+      navigationRef.navigate(destination.name, destination.params);
+    };
+
+    const recoverFromUrl = async (url) => {
+      if (!url || !isLikelyPaymentReturnUrl(url) || recovering) return;
+      recovering = true;
+      try {
+        const result = await recoverPayment({ url });
+        if (result.handled && result.success) {
+          Toast.show({ type: 'success', text1: 'Payment verified' });
+          openDestination(result.destination);
+        }
+      } catch {
+        // Recovery is best-effort; payment screens still expose refresh/retry paths.
+      } finally {
+        recovering = false;
+      }
+    };
+
+    const recoverPendingOnResume = async () => {
+      if (recovering) return;
+      const pending = await getPendingPayment();
+      if (!pending?.reference) return;
+
+      recovering = true;
+      try {
+        const result = await recoverPayment({ reference: pending.reference, fallbackFlow: pending.flow });
+        if (result.handled && result.success) {
+          Toast.show({ type: 'success', text1: 'Payment verified' });
+          openDestination(result.destination);
+        }
+      } catch {
+        // Keep the pending payment for a later retry.
+      } finally {
+        recovering = false;
+      }
+    };
+
+    Linking.getInitialURL().then(recoverFromUrl).catch(() => {});
+    const linkingSubscription = Linking.addEventListener('url', ({ url }) => recoverFromUrl(url));
+    const appStateSubscription = AppState.addEventListener('change', (state) => {
+      if (state === 'active') {
+        recoverPendingOnResume();
+      }
+    });
+
+    return () => {
+      linkingSubscription?.remove?.();
+      appStateSubscription?.remove?.();
+    };
+  }, []);
+
   if (loading) {
     return <BrandSplash />;
   }
 
   return (
-    <NavigationContainer linking={linkingConfig} fallback={<ActivityIndicator />}>
+    <NavigationContainer
+      ref={navigationRef}
+      linking={linkingConfig}
+      fallback={<ActivityIndicator />}>
       {isAuthenticated ? <RoleRouter userType={user?.user_type} /> : <GuestStack />}
     </NavigationContainer>
   );

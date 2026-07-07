@@ -11,6 +11,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
 import { transportationService } from '../../services/transportationService';
 import { getErrorMessage } from '../../utils/http';
+import { recoverPayment, savePendingPayment } from '../../services/paymentRecoveryService';
 
 const TransportationPaymentScreen = ({ route, navigation }) => {
   const { bookingId } = route.params;
@@ -43,17 +44,27 @@ const TransportationPaymentScreen = ({ route, navigation }) => {
     try {
       const response = await transportationService.initializeBookingPayment(bookingId, 'paystack');
       if (response?.success) {
+        const reference = response.data?.reference;
+        if (reference) {
+          await savePendingPayment({
+            flow: 'transportation',
+            reference,
+            bookingId,
+          });
+        }
         if (response.data?.authorization_url) {
           navigation.navigate('WebRoute', {
             url: response.data.authorization_url,
-            onComplete: () => {
-              Toast.show({ type: 'success', text1: 'Payment successful!' });
-              navigation.navigate('TransportationBookingDetail', { bookingId });
+            title: 'Transport Payment',
+            paymentRecovery: {
+              flow: 'transportation',
+              reference,
+              bookingId,
             },
           });
-        } else if (response.data?.reference) {
+        } else if (reference) {
           // Poll for payment verification
-          verifyPayment(response.data.reference);
+          verifyPayment(reference);
         }
       } else {
         Toast.show({ type: 'error', text1: response?.message || 'Payment failed' });
@@ -71,7 +82,10 @@ const TransportationPaymentScreen = ({ route, navigation }) => {
 
   const verifyPayment = async (reference) => {
     try {
-      const response = await transportationService.verifyPayment(reference);
+      const response = await recoverPayment({
+        reference,
+        fallbackFlow: 'transportation',
+      });
       if (response?.success) {
         Toast.show({ type: 'success', text1: 'Payment verified!' });
         navigation.navigate('TransportationBookingDetail', { bookingId });

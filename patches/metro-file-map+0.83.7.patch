@@ -1,9 +1,8 @@
 diff --git a/node_modules/metro-file-map/src/watchers/FallbackWatcher.js b/node_modules/metro-file-map/src/watchers/FallbackWatcher.js
-index a8063ee..58a7ed4 100644
+index ddc052f..edec266 100644
 --- a/node_modules/metro-file-map/src/watchers/FallbackWatcher.js
 +++ b/node_modules/metro-file-map/src/watchers/FallbackWatcher.js
-@@ -43,28 +43,28 @@ const DEBOUNCE_MS = 100;
- class FallbackWatcher extends _AbstractWatcher.AbstractWatcher {
+@@ -49,11 +49,15 @@ class FallbackWatcher extends _AbstractWatcher.AbstractWatcher {
    #changeTimers = new Map();
    #dirRegistry = Object.create(null);
    #watched = Object.create(null);
@@ -11,43 +10,28 @@ index a8063ee..58a7ed4 100644
 +  startWatching() {
      this.#watchdir(this.root);
 -    await new Promise((resolve) => {
--      recReaddir(
--        this.root,
--        (dir) => {
--          this.#watchdir(dir);
--        },
--        (filename) => {
--          this.#register(filename, "f");
--        },
--        (symlink) => {
--          this.#register(symlink, "l");
--        },
--        () => {
--          resolve();
--        },
--        this.#checkedEmitError,
--        this.ignored,
--      );
 +    ["src", "assets"].forEach((sourceDir) => {
 +      const absoluteSourceDir = _path.default.join(this.root, sourceDir);
 +      if (!_fs.default.existsSync(absoluteSourceDir)) {
 +        return;
 +      }
-+      recReaddir(
+       recReaddir(
+-        this.root,
 +        absoluteSourceDir,
-+        (dir) => {
-+          this.#watchdir(dir);
-+        },
-+        (filename) => {
-+          this.#register(filename, "f");
-+        },
-+        (symlink) => {
-+          this.#register(symlink, "l");
-+        },
+         (dir) => {
+           this.#watchdir(dir);
+         },
+@@ -63,13 +67,12 @@ class FallbackWatcher extends _AbstractWatcher.AbstractWatcher {
+         (symlink) => {
+           this.#register(symlink, "l");
+         },
+-        () => {
+-          resolve();
+-        },
 +        () => {},
-+        this.#checkedEmitError,
-+        this.ignored,
-+      );
+         this.#checkedEmitError,
+         this.ignored,
+       );
      });
 +    return Promise.resolve();
    }

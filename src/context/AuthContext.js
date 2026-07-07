@@ -2,6 +2,7 @@ import React, { createContext, useState, useEffect } from 'react';
 import { authService } from '../services/authService';
 import { biometricService } from '../services/biometricService';
 import { storageService } from '../services/storageService';
+import { unregisterPushDevice } from '../services/pushNotificationService';
 
 export const AuthContext = createContext();
 
@@ -83,6 +84,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = async () => {
+    await unregisterPushDevice().catch(() => {});
     await authService.logout();
     await biometricService.clearStoredSession();
     setUser(null);

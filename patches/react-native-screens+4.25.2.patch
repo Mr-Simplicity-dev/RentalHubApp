@@ -1,0 +1,54 @@
+diff --git a/node_modules/react-native-screens/src/fabric/tabs/TabsBottomAccessoryNativeComponent.ts b/node_modules/react-native-screens/src/fabric/tabs/TabsBottomAccessoryNativeComponent.ts
+--- a/node_modules/react-native-screens/src/fabric/tabs/TabsBottomAccessoryNativeComponent.ts
++++ b/node_modules/react-native-screens/src/fabric/tabs/TabsBottomAccessoryNativeComponent.ts
+@@ -4,7 +4,7 @@ import { codegenNativeComponent } from 'react-native';
+ import type { CodegenTypes as CT, ViewProps } from 'react-native';
+ 
+ type EnvironmentChangeEvent = {
+-  environment: 'regular' | 'inline';
++  environment: string;
+ };
+ 
+ export interface NativeProps extends ViewProps {
+diff --git a/node_modules/react-native-screens/src/fabric/tabs/TabsHostAndroidNativeComponent.ts b/node_modules/react-native-screens/src/fabric/tabs/TabsHostAndroidNativeComponent.ts
+--- a/node_modules/react-native-screens/src/fabric/tabs/TabsHostAndroidNativeComponent.ts
++++ b/node_modules/react-native-screens/src/fabric/tabs/TabsHostAndroidNativeComponent.ts
+@@ -10,7 +10,7 @@ type TabSelectedEvent = {
+   provenance: CT.Int32;
+   isRepeated: boolean;
+   hasTriggeredSpecialEffect: boolean;
+-  actionOrigin: 'user' | 'programmatic-js' | 'programmatic-native' | 'implicit';
++  actionOrigin: string;
+ };
+ 
+ type NavigationStateRequest = {
+@@ -23,7 +23,7 @@ type TabSelectionRejectedEvent = Readonly<{
+   provenance: CT.Int32;
+   rejectedScreenKey: string;
+   rejectedBaseProvenance: CT.Int32;
+-  rejectionReason: 'stale' | 'repeated';
++  rejectionReason: string;
+ }>;
+ 
+ type TabSelectionPreventedEvent = Readonly<{
+diff --git a/node_modules/react-native-screens/src/fabric/tabs/TabsHostIOSNativeComponent.ts b/node_modules/react-native-screens/src/fabric/tabs/TabsHostIOSNativeComponent.ts
+--- a/node_modules/react-native-screens/src/fabric/tabs/TabsHostIOSNativeComponent.ts
++++ b/node_modules/react-native-screens/src/fabric/tabs/TabsHostIOSNativeComponent.ts
+@@ -10,7 +10,7 @@ type TabSelectedEvent = Readonly<{
+   provenance: CT.Int32;
+   isRepeated: boolean;
+   hasTriggeredSpecialEffect: boolean;
+-  actionOrigin: 'user' | 'programmatic-js' | 'programmatic-native' | 'implicit';
++  actionOrigin: string;
+ }>;
+ 
+ type NavigationStateRequest = Readonly<{
+@@ -23,7 +23,7 @@ type TabSelectionRejectedEvent = Readonly<{
+   provenance: CT.Int32;
+   rejectedScreenKey: string;
+   rejectedBaseProvenance: CT.Int32;
+-  rejectionReason: 'stale' | 'repeated';
++  rejectionReason: string;
+ }>;
+ 
+ type TabSelectionPreventedEvent = Readonly<{

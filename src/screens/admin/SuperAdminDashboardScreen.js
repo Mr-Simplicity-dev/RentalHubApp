@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Alert,
   FlatList,
@@ -26,6 +26,10 @@ import FlagsSection from '../../components/admin/FlagsSection';
 import RegistrationAccessSection from '../../components/admin/RegistrationAccessSection';
 import TenancyWorkflowSection from '../../components/admin/TenancyWorkflowSection';
 import PropertyRequestWorkflowSection from '../../components/admin/PropertyRequestWorkflowSection';
+import {
+  ActionRow,
+  DashboardHero,
+} from '../../components/dashboard/DashboardKit';
 
 const sections = [
   'overview',
@@ -51,6 +55,11 @@ const sections = [
   'fraud',
   'logs',
 ];
+
+const sectionOptions = sections.map((value) => ({
+  value,
+  label: value.replace(/_/g, ' ').replace(/\b\w/g, (letter) => letter.toUpperCase()),
+}));
 
 const defaultPricingForm = {
   applies_to: 'tenant_registration',
@@ -85,14 +94,6 @@ const defaultAdSpaceForm = {
   ends_at: '',
 };
 
-const SectionButton = ({ label, active, onPress }) => (
-  <TouchableOpacity style={[styles.tabBtn, active && styles.tabBtnActive]} onPress={onPress}>
-    <Text style={[styles.tabText, active && styles.tabTextActive]}>
-      {String(label).replace(/_/g, ' ')}
-    </Text>
-  </TouchableOpacity>
-);
-
 const FilterChip = ({ label, active, onPress }) => (
   <TouchableOpacity style={[styles.filterChip, active && styles.filterChipActive]} onPress={onPress}>
     <Text style={[styles.filterChipText, active && styles.filterChipTextActive]}>{label}</Text>
@@ -101,6 +102,8 @@ const FilterChip = ({ label, active, onPress }) => (
 
 const SuperAdminDashboardScreen = () => {
   const [section, setSection] = useState('overview');
+  const [showSectionPicker, setShowSectionPicker] = useState(false);
+  const loadedSections = useRef(new Set());
   const [analytics, setAnalytics] = useState({});
   const [users, setUsers] = useState([]);
   const [verifications, setVerifications] = useState([]);
@@ -340,23 +343,129 @@ const SuperAdminDashboardScreen = () => {
     }
   };
 
-  useEffect(() => {
-    loadAll();
-  }, []);
+  const loadSection = async (targetSection, force = false) => {
+    if (!force && loadedSections.current.has(targetSection)) {
+      return;
+    }
+
+    setLoading(true);
+    try {
+      switch (targetSection) {
+        case 'overview':
+        case 'analytics': {
+          const response = await superAdminService.getAnalytics();
+          setAnalytics(pickObject(response, ['data']) || {});
+          break;
+        }
+        case 'users': {
+          const response = await superAdminService.getUsers();
+          setUsers(pickList(response, ['users', 'data']));
+          break;
+        }
+        case 'verifications':
+          await loadVerificationData();
+          break;
+        case 'moderation': {
+          const [verificationsResponse, reportsResponse, flagsResponse, fraudResponse] = await Promise.all([
+            superAdminService.getVerifications(verificationFilters),
+            superAdminService.getReports(),
+            superAdminService.getFlags(),
+            superAdminService.getFraudFlags(),
+          ]);
+          setVerifications(pickList(verificationsResponse, ['data', 'verifications']));
+          setReports(pickList(reportsResponse, ['reports', 'data']));
+          setFlags(pickList(flagsResponse, ['flags', 'data']));
+          setFraud(pickList(fraudResponse, ['flags', 'data']));
+          break;
+        }
+        case 'lawyer_invites':
+          await loadLawyerInvites();
+          break;
+        case 'platform_lawyers':
+          await loadPlatformLawyers();
+          break;
+        case 'platform_agents':
+          await loadPlatformAgents();
+          break;
+        case 'lawyer_activity': {
+          const response = await superAdminService.getLawyerActivities(activityTimeRange);
+          setLawyerActivities(pickList(response, ['data']));
+          break;
+        }
+        case 'admin_management':
+          await loadAdmins();
+          break;
+        case 'pending_approvals':
+          await loadPendingAdmins();
+          break;
+        case 'pricing': {
+          const response = await superAdminService.getPricingRules();
+          const payload = pickObject(response, ['data']) || {};
+          setPricingRules(payload.rules || []);
+          setPricingTargets(payload.targets || []);
+          setPricingLocations(payload.locations || []);
+          break;
+        }
+        case 'properties': {
+          const response = await superAdminService.getProperties();
+          setProperties(pickList(response, ['properties', 'data']));
+          break;
+        }
+        case 'reports': {
+          const response = await superAdminService.getReports();
+          setReports(pickList(response, ['reports', 'data']));
+          break;
+        }
+        case 'broadcasts': {
+          const response = await superAdminService.getBroadcasts();
+          setBroadcasts(pickList(response, ['broadcasts', 'data']));
+          break;
+        }
+        case 'ad_spaces':
+          await loadAdSpaces();
+          break;
+        case 'flags': {
+          const response = await superAdminService.getFlags();
+          setFlags(pickList(response, ['flags', 'data']));
+          break;
+        }
+        case 'sfa_permissions':
+          await loadSfaPermissions();
+          break;
+        case 'fraud': {
+          const response = await superAdminService.getFraudFlags();
+          setFraud(pickList(response, ['flags', 'data']));
+          break;
+        }
+        case 'logs': {
+          const response = await superAdminService.getLogs();
+          setLogs(pickList(response, ['logs', 'data']));
+          break;
+        }
+        default:
+          break;
+      }
+      loadedSections.current.add(targetSection);
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Failed',
+        text2: getErrorMessage(error, 'Could not load this workspace'),
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    if (section === 'sfa_permissions') {
-      loadSfaPermissions();
-    }
-    if (section === 'platform_agents') {
-      loadPlatformAgents();
-    }
-    if (section === 'ad_spaces') {
-      loadAdSpaces();
-    }
+    loadSection(section);
   }, [section]);
 
-  const runAction = async (action, successMessage, reload = loadAll) => {
+  const runAction = async (
+    action,
+    successMessage,
+    reload = () => loadSection(section, true)
+  ) => {
     try {
       setSubmitting(true);
       await action();
@@ -2462,22 +2571,40 @@ const SuperAdminDashboardScreen = () => {
     fraud: renderFraud(),
     logs: renderLogs(),
   }[section];
+  const selectedSection = sectionOptions.find((item) => item.value === section);
 
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
-      <Text style={styles.title}>Super Admin Control Center</Text>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tabRow}>
-        {sections.map((item) => (
-          <SectionButton
-            key={item}
-            label={item}
-            active={section === item}
-            onPress={() => setSection(item)}
-          />
-        ))}
-      </ScrollView>
+      <DashboardHero
+        eyebrow="PLATFORM OPERATIONS"
+        title="Super Admin"
+        subtitle="Choose one focused workspace at a time. Data is loaded only when that workspace is opened."
+        icon="shield-checkmark-outline"
+        onRefresh={() => loadSection(section, true)}
+      />
+      <ActionRow
+        title={selectedSection?.label || 'Choose workspace'}
+        subtitle="Tap to switch administrative workspace"
+        icon="apps-outline"
+        badge="Workspace"
+        onPress={() => setShowSectionPicker(true)}
+      />
 
       {loading ? <Text style={styles.meta}>Loading...</Text> : renderedSection}
+
+      <OptionPickerModal
+        visible={showSectionPicker}
+        title="Choose workspace"
+        options={sectionOptions}
+        selectedValue={section}
+        searchable
+        searchPlaceholder="Search workspaces"
+        onClose={() => setShowSectionPicker(false)}
+        onSelect={(item) => {
+          setSection(item.value);
+          setShowSectionPicker(false);
+        }}
+      />
 
       <OptionPickerModal
         visible={showPricingStatePicker}

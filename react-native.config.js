@@ -1,4 +1,5 @@
 module.exports = {
+  assets: ['./assets/fonts'],
   dependencies: {
     expo: {
       platforms: {
@@ -6,4 +7,4 @@ module.exports = {
       },
     },
   },
-}
+};
