@@ -1,4 +1,5 @@
 import api from './api';
+import { requestWithOfflineQueue } from './offlineActionQueueService';
 
 export const serviceAdminService = {
   getSupportTickets: async (params = {}) => {
@@ -17,13 +18,21 @@ export const serviceAdminService = {
   },
 
   updateTransportationBookingStatus: async (bookingId, payload = {}) => {
-    const response = await api.patch(`/transportation-admin/bookings/${bookingId}/status`, payload);
-    return response.data;
+    return requestWithOfflineQueue({
+      method: 'patch',
+      path: `/transportation-admin/bookings/${bookingId}/status`,
+      data: payload,
+      label: `Transportation booking #${bookingId} status update`,
+    });
   },
 
   updateTransportationPaymentStatus: async (bookingId, payload = {}) => {
-    const response = await api.patch(`/transportation-admin/bookings/${bookingId}/payment-status`, payload);
-    return response.data;
+    return requestWithOfflineQueue({
+      method: 'patch',
+      path: `/transportation-admin/bookings/${bookingId}/payment-status`,
+      data: payload,
+      label: `Transportation booking #${bookingId} payment update`,
+    });
   },
 
   getTransportationBookingOperations: async (bookingId) => {
@@ -32,8 +41,12 @@ export const serviceAdminService = {
   },
 
   updateTransportationDispatch: async (bookingId, payload = {}) => {
-    const response = await api.patch(`/transportation-admin/bookings/${bookingId}/dispatch`, payload);
-    return response.data;
+    return requestWithOfflineQueue({
+      method: 'patch',
+      path: `/transportation-admin/bookings/${bookingId}/dispatch`,
+      data: payload,
+      label: `Transportation booking #${bookingId} dispatch update`,
+    });
   },
 
   getTransportationStateDashboard: async () => {
@@ -62,8 +75,12 @@ export const serviceAdminService = {
   },
 
   updateFumigationBookingStatus: async (bookingId, payload = {}) => {
-    const response = await api.put(`/fumigation-cleaning/admin/bookings/${bookingId}/status`, payload);
-    return response.data;
+    return requestWithOfflineQueue({
+      method: 'put',
+      path: `/fumigation-cleaning/admin/bookings/${bookingId}/status`,
+      data: payload,
+      label: `Fumigation booking #${bookingId} status update`,
+    });
   },
 
   getFumigationBookingOperations: async (bookingId) => {
@@ -77,15 +94,21 @@ export const serviceAdminService = {
   },
 
   assignFumigationProvider: async (bookingId, providerId) => {
-    const response = await api.post(`/fumigation-cleaning/admin/bookings/${bookingId}/assign-provider`, {
-      provider_id: providerId,
+    return requestWithOfflineQueue({
+      method: 'post',
+      path: `/fumigation-cleaning/admin/bookings/${bookingId}/assign-provider`,
+      data: { provider_id: providerId },
+      label: `Fumigation booking #${bookingId} provider assignment`,
     });
-    return response.data;
   },
 
   updateFumigationProviderLifecycle: async (bookingId, payload = {}) => {
-    const response = await api.patch(`/fumigation-cleaning/admin/bookings/${bookingId}/provider-lifecycle`, payload);
-    return response.data;
+    return requestWithOfflineQueue({
+      method: 'patch',
+      path: `/fumigation-cleaning/admin/bookings/${bookingId}/provider-lifecycle`,
+      data: payload,
+      label: `Fumigation booking #${bookingId} provider lifecycle update`,
+    });
   },
 
   getFumigationComplianceRecord: async (bookingId) => {
@@ -94,7 +117,11 @@ export const serviceAdminService = {
   },
 
   submitFumigationCompliance: async (bookingId, payload = {}) => {
-    const response = await api.post(`/fumigation-cleaning/admin/compliance/${bookingId}`, payload);
-    return response.data;
+    return requestWithOfflineQueue({
+      method: 'post',
+      path: `/fumigation-cleaning/admin/compliance/${bookingId}`,
+      data: payload,
+      label: `Fumigation booking #${bookingId} safety compliance`,
+    });
   },
 };

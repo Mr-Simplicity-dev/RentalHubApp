@@ -1,6 +1,10 @@
 import { API_ORIGIN } from '../services/api';
 
 export const getErrorMessage = (error, fallback = 'Request failed') => {
+  if (error?.offlineQueued) {
+    return `${error.queuedAction?.label || 'This action'} was saved and will retry when connection returns.`;
+  }
+
   const validationError = error?.response?.data?.errors?.[0]?.msg;
   return (
     validationError ||

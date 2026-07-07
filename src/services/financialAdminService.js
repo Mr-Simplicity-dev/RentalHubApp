@@ -1,4 +1,5 @@
 import api from './api';
+import { requestWithOfflineQueue } from './offlineActionQueueService';
 
 export const financialAdminService = {
   getFinancialOverview: async () => {
@@ -60,12 +61,16 @@ export const financialAdminService = {
   },
 
   freezeFunds: async ({ userId, amount, reason }) => {
-    const response = await api.post('/financial-admin/funds/freeze', {
-      user_id: userId,
-      amount,
-      reason,
+    return requestWithOfflineQueue({
+      method: 'post',
+      path: '/financial-admin/funds/freeze',
+      data: {
+        user_id: userId,
+        amount,
+        reason,
+      },
+      label: `Freeze funds for user #${userId}`,
     });
-    return response.data;
   },
 
   getWithdrawalRequests: async () => {

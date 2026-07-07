@@ -10,15 +10,21 @@ import {
   DEFAULT_APP_SETTINGS,
   subscribeAppSettings,
 } from '../../services/appSettingsService';
+import {
+  getOfflineQueueSnapshot,
+  subscribeOfflineQueue,
+} from '../../services/offlineActionQueueService';
 
 const NetworkStatusBanner = () => {
   const [status, setStatus] = useState(getNetworkSnapshot());
   const [settings, setSettings] = useState(DEFAULT_APP_SETTINGS);
+  const [queue, setQueue] = useState(getOfflineQueueSnapshot());
 
   useEffect(() => subscribeNetworkStatus(setStatus), []);
   useEffect(() => subscribeAppSettings(setSettings), []);
+  useEffect(() => subscribeOfflineQueue(setQueue), []);
 
-  if (status.online || !settings.weakNetworkWarnings) return null;
+  if ((status.online && !queue.pendingCount && !queue.flushing) || !settings.weakNetworkWarnings) return null;
 
   return (
     <View
@@ -31,9 +37,13 @@ const NetworkStatusBanner = () => {
         color="#92400E"
       />
       <Text style={styles.text}>
-        {status.weak
-          ? 'Network is weak. Some updates may take longer.'
-          : 'You appear offline. We will retry when connection returns.'}
+        {queue.flushing
+          ? 'Connection restored. Replaying saved actions now.'
+          : queue.pendingCount
+            ? `${queue.pendingCount} action${queue.pendingCount === 1 ? '' : 's'} saved for retry when connection returns.`
+            : status.weak
+              ? 'Network is weak. Some updates may take longer.'
+              : 'You appear offline. We will retry when connection returns.'}
       </Text>
     </View>
   );

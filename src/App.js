@@ -12,6 +12,8 @@ import NativeTourManager from './components/tour/NativeTourManager';
 import NetworkStatusBanner from './components/common/NetworkStatusBanner';
 import NativeCallOverlay from './components/calls/NativeCallOverlay';
 import AppErrorBoundary from './components/common/AppErrorBoundary';
+import { subscribeNetworkStatus } from './services/networkStatusService';
+import { flushOfflineQueue, hydrateOfflineQueue } from './services/offlineActionQueueService';
 
 const App = () => {
   const [showSplash, setShowSplash] = useState(true);
@@ -19,6 +21,16 @@ const App = () => {
   useEffect(() => {
     const timer = setTimeout(() => setShowSplash(false), 1600);
     return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    hydrateOfflineQueue().catch(() => {});
+    const unsubscribe = subscribeNetworkStatus((status) => {
+      if (status.online && !status.weak) {
+        flushOfflineQueue().catch(() => {});
+      }
+    });
+    return unsubscribe;
   }, []);
 
   if (showSplash) {
