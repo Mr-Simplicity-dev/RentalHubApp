@@ -32,7 +32,7 @@ const AdminSupportDashboardScreen = ({ navigation, route }) => {
     setLoading(true);
     try {
       const response = await api.get('/support/admin/dashboard', { params: { level } });
-      setDashboard(pickObject(response, ['data', 'dashboard']) || {});
+      setDashboard(pickObject(response.data, ['data', 'dashboard']) || {});
     } catch (error) {
       Toast.show({
         type: 'error',

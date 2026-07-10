@@ -541,9 +541,9 @@ const LawyerRoot = () => (
     <Stack.Screen name="PropertyAlertRequest" component={PropertyAlertRequestScreen} options={{ title: 'Submit Request' }} />
     <Stack.Screen name="LocationInfo" component={LocationInfoScreen} options={{ title: 'Location' }} />
     <Stack.Screen name="DisputeDetails" component={DisputeDetailsScreen} options={{ title: 'Dispute Trace' }} />
-    <Stack.Screen name="VerifyCase"
+    <Stack.Screen name="VerifyCase" component={VerifyCaseScreen} options={{ title: 'Verify Case' }} />
     <Stack.Screen name="StateLawyerDashboard" component={StateLawyerDashboardScreen} options={{ title: 'State Lawyer' }} />
-    <Stack.Screen name="SuperLawyerDashboard" component={SuperLawyerDashboardScreen} options={{ title: 'Super Lawyer' }} /> component={VerifyCaseScreen} options={{ title: 'Verify Case' }} />
+    <Stack.Screen name="SuperLawyerDashboard" component={SuperLawyerDashboardScreen} options={{ title: 'Super Lawyer' }} />
     <Stack.Screen name="Messages" component={MessagesScreen} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
     <Stack.Screen name="Notifications" component={NotificationsScreen} />
@@ -622,12 +622,12 @@ const AdminRoot = () => (
 const SuperAdminRoot = () => (
   <Stack.Navigator screenOptions={screenOptions}>
     <Stack.Screen name="SuperAdminDashboard" component={SuperAdminDashboardScreen} options={{ title: 'Super Admin' }} />
-    <Stack.Screen name="AdminDashboard"
+    <Stack.Screen name="AdminDashboard" component={AdminDashboardScreen} options={{ title: 'Admin Dashboard' }} />
     <Stack.Screen name="SuperAdminSeo" component={SuperAdminSeoDashboardScreen} options={{ title: 'SEO Dashboard' }} />
     <Stack.Screen name="SuperAdminSupportGovernance" component={SuperAdminSupportGovernanceScreen} options={{ title: 'Support Governance' }} />
     <Stack.Screen name="SuperAdminTransportationDashboard" component={SuperAdminTransportationDashboardScreen} options={{ title: 'Transport Oversight' }} />
     <Stack.Screen name="SuperAdminFumigationDashboard" component={SuperAdminFumigationDashboardScreen} options={{ title: 'Fumigation Oversight' }} />
-    <Stack.Screen name="SuperFinancialAdminDashboard" component={SuperFinancialAdminDashboardScreen} options={{ title: 'Super Financial' }} /> component={AdminDashboardScreen} options={{ title: 'Admin Dashboard' }} />
+    <Stack.Screen name="SuperFinancialAdminDashboard" component={SuperFinancialAdminDashboardScreen} options={{ title: 'Super Financial' }} />
     <Stack.Screen name="AdminAgentAssignments" component={AdminAgentAssignmentsScreen} options={{ title: 'Agent Assignments' }} />
     <Stack.Screen name="AdminLawyerInvites" component={AdminLawyerInvitesScreen} options={{ title: 'Lawyer Invites' }} />
     <Stack.Screen name="AdminPropertyDetail" component={AdminPropertyDetailScreen} options={{ title: 'Property Details' }} />
@@ -681,8 +681,8 @@ const FinancialAdminRoot = () => (
     <Stack.Screen name="FinancialWithdrawals" component={FinancialWithdrawalsScreen} options={{ title: 'Withdrawals' }} />
     <Stack.Screen name="FinancialCommissions" component={FinancialCommissionsScreen} options={{ title: 'Commissions' }} />
     <Stack.Screen name="FinancialControls" component={FinancialControlsScreen} options={{ title: 'Financial Controls' }} />
-    <Stack.Screen name="PropertyList"
-    <Stack.Screen name="SuperFinancialAdminDashboard" component={SuperFinancialAdminDashboardScreen} options={{ title: 'Super Financial' }} /> component={PropertyListScreen} options={{ title: 'Browse Properties' }} />
+    <Stack.Screen name="PropertyList" component={PropertyListScreen} options={{ title: 'Browse Properties' }} />
+    <Stack.Screen name="SuperFinancialAdminDashboard" component={SuperFinancialAdminDashboardScreen} options={{ title: 'Super Financial' }} />
     <Stack.Screen name="PropertyDetail" component={PropertyDetailScreen} options={{ title: 'Property Details' }} />
     <Stack.Screen name="LocationInfo" component={LocationInfoScreen} options={{ title: 'Location' }} />
     <Stack.Screen name="Messages" component={MessagesScreen} />
