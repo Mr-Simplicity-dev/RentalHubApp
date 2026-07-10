@@ -16,6 +16,10 @@
     {
       "path": "assets/fonts/Inter-SemiBold.ttf",
       "sha1": "863e1483cb0cad642b80fc840072596afd5ff144"
+    },
+    {
+      "path": "node_modules/react-native-vector-icons/Fonts/Ionicons.ttf",
+      "sha1": ""
     }
   ]
 }

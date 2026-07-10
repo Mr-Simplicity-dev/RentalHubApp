@@ -10,6 +10,8 @@ export const DEFAULT_APP_SETTINGS = {
   pushBookings: true,
   adminAlerts: true,
   weakNetworkWarnings: true,
+  largerText: false,
+  reduceMotion: false,
 };
 
 const listeners = new Set();

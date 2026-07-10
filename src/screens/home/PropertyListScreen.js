@@ -25,7 +25,9 @@ import PropertyFilters from '../../components/properties/PropertyFilters';
 import { AuthContext } from '../../context/AuthContext';
 import { paymentService } from '../../services/paymentService';
 import { propertyService } from '../../services/propertyService';
-import { colors, radius, shadows, typography } from '../../theme';
+import AdSpace from '../../components/common/AdSpace';
+import { colors, radius, shadows, typography } from 
+'../../theme';
 import { getErrorMessage, pickList } from '../../utils/http';
 
 const PAGE_SIZE = 15;
@@ -390,6 +392,9 @@ const PropertyListScreen = ({ route, navigation }) => {
           ) : null}
         </View>
       ) : null}
+
+      <AdSpace placement="properties_inline" />
+
     </>
   );
 

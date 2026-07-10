@@ -1,8 +1,9 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useRef } from 'react';
 import { authService } from '../services/authService';
 import { biometricService } from '../services/biometricService';
 import { storageService } from '../services/storageService';
 import { unregisterPushDevice } from '../services/pushNotificationService';
+import { setOnUnauthorized } from '../services/api';
 
 export const AuthContext = createContext();
 
@@ -11,8 +12,12 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+  const logoutRef = useRef();
+
   useEffect(() => {
     initAuth();
+    setOnUnauthorized(() => logoutRef.current?.());
+    return () => setOnUnauthorized(null);
   }, []);
 
   const initAuth = async () => {
@@ -50,9 +55,11 @@ export const AuthProvider = ({ children }) => {
             setIsAuthenticated(false);
           }
         } catch (error) {
-          await authService.logout();
-          setUser(null);
-          setIsAuthenticated(false);
+          if (error?.response?.status === 401) {
+            await authService.logout();
+            setUser(null);
+            setIsAuthenticated(false);
+          }
         }
       }
     } catch (error) {
@@ -90,6 +97,7 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     setIsAuthenticated(false);
   };
+  logoutRef.current = logout;
 
   const establishSession = async (sessionData) => {
     await authService.hydrateSession(sessionData);

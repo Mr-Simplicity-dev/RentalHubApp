@@ -45,7 +45,7 @@ react {
 /**
  * Set this to true to Run Proguard on Release builds to minify the Java bytecode.
  */
-def enableProguardInReleaseBuilds = false
+def enableProguardInReleaseBuilds = true
 
 /**
  * The preferred build flavor of JavaScriptCore (JSC)
@@ -94,9 +94,11 @@ android {
             signingConfig signingConfigs.debug
         }
         release {
-            // Use a real release keystore for Play Store uploads.
-            // When release keys are not configured yet, keep local release builds working with debug signing.
             signingConfig hasReleaseSigning ? signingConfigs.release : signingConfigs.debug
+
+            if (!hasReleaseSigning) {
+                throw new GradleException('Release signing not configured. Set RELEASE_STORE_FILE, RELEASE_STORE_PASSWORD, RELEASE_KEY_ALIAS, and RELEASE_KEY_PASSWORD in key.properties, gradle.properties, or environment variables.')
+            }
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }

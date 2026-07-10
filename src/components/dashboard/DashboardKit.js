@@ -10,6 +10,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { colors, radius, shadows, typography } from '../../theme';
+import { useAccessibilityPreferences } from '../../hooks/useAccessibilityPreferences';
 
 export const DashboardScreen = ({
   children,
@@ -44,28 +45,33 @@ export const DashboardHero = ({
   subtitle,
   icon = 'grid-outline',
   onRefresh,
-}) => (
-  <View style={styles.hero}>
-    <View style={styles.heroTop}>
-      <View style={styles.heroIcon}>
-        <Icon name={icon} size={23} color={colors.gold} />
+}) => {
+  const { scaleFont, hitSlop } = useAccessibilityPreferences();
+
+  return (
+    <View style={styles.hero}>
+      <View style={styles.heroTop}>
+        <View style={styles.heroIcon}>
+          <Icon name={icon} size={23} color={colors.gold} />
+        </View>
+        {onRefresh ? (
+          <TouchableOpacity
+            accessibilityLabel="Refresh dashboard"
+            accessibilityRole="button"
+            hitSlop={hitSlop}
+            style={styles.refreshButton}
+            onPress={onRefresh}
+          >
+            <Icon name="refresh" size={19} color={colors.white} />
+          </TouchableOpacity>
+        ) : null}
       </View>
-      {onRefresh ? (
-        <TouchableOpacity
-          accessibilityLabel="Refresh dashboard"
-          accessibilityRole="button"
-          style={styles.refreshButton}
-          onPress={onRefresh}
-        >
-          <Icon name="refresh" size={19} color={colors.white} />
-        </TouchableOpacity>
-      ) : null}
+      <Text style={[styles.eyebrow, { fontSize: scaleFont(10) }]}>{eyebrow}</Text>
+      <Text style={[styles.heroTitle, { fontSize: scaleFont(27), lineHeight: scaleFont(33) }]}>{title}</Text>
+      <Text style={[styles.heroSubtitle, { fontSize: scaleFont(13), lineHeight: scaleFont(20) }]}>{subtitle}</Text>
     </View>
-    <Text style={styles.eyebrow}>{eyebrow}</Text>
-    <Text style={styles.heroTitle}>{title}</Text>
-    <Text style={styles.heroSubtitle}>{subtitle}</Text>
-  </View>
-);
+  );
+};
 
 export const MetricGrid = ({ children }) => (
   <View style={styles.metricGrid}>{children}</View>
@@ -79,29 +85,35 @@ export const MetricCard = ({
   onPress,
 }) => {
   const Container = onPress ? TouchableOpacity : View;
+  const { scaleFont, hitSlop } = useAccessibilityPreferences();
 
   return (
     <Container
       accessibilityRole={onPress ? 'button' : undefined}
+      hitSlop={onPress ? hitSlop : undefined}
       style={styles.metricCard}
       onPress={onPress}
     >
       <View style={[styles.metricIcon, { backgroundColor: `${color}16` }]}>
         <Icon name={icon} size={18} color={color} />
       </View>
-      <Text numberOfLines={1} style={styles.metricLabel}>{label}</Text>
-      <Text numberOfLines={1} adjustsFontSizeToFit style={styles.metricValue}>{value}</Text>
+      <Text numberOfLines={1} style={[styles.metricLabel, { fontSize: scaleFont(11) }]}>{label}</Text>
+      <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.metricValue, { fontSize: scaleFont(22) }]}>{value}</Text>
     </Container>
   );
 };
 
-export const DashboardSection = ({ title, subtitle, children }) => (
-  <View style={styles.section}>
-    <Text style={styles.sectionTitle}>{title}</Text>
-    {subtitle ? <Text style={styles.sectionSubtitle}>{subtitle}</Text> : null}
-    <View style={styles.sectionBody}>{children}</View>
-  </View>
-);
+export const DashboardSection = ({ title, subtitle, children }) => {
+  const { scaleFont } = useAccessibilityPreferences();
+
+  return (
+    <View style={styles.section}>
+      <Text style={[styles.sectionTitle, { fontSize: scaleFont(18) }]}>{title}</Text>
+      {subtitle ? <Text style={[styles.sectionSubtitle, { fontSize: scaleFont(12), lineHeight: scaleFont(18) }]}>{subtitle}</Text> : null}
+      <View style={styles.sectionBody}>{children}</View>
+    </View>
+  );
+};
 
 export const ActionRow = ({
   title,
@@ -110,27 +122,38 @@ export const ActionRow = ({
   onPress,
   badge,
 }) => (
-  <TouchableOpacity
-    accessibilityRole="button"
-    style={styles.actionRow}
-    onPress={onPress}
-  >
-    <View style={styles.actionIcon}>
-      <Icon name={icon} size={21} color={colors.blue} />
-    </View>
-    <View style={styles.actionCopy}>
-      <View style={styles.actionTitleRow}>
-        <Text style={styles.actionTitle}>{title}</Text>
-        {badge ? <Text style={styles.actionBadge}>{badge}</Text> : null}
-      </View>
-      {subtitle ? <Text style={styles.actionSubtitle}>{subtitle}</Text> : null}
-    </View>
-    <Icon name="chevron-forward" size={18} color={colors.muted} />
-  </TouchableOpacity>
+  <ActionRowInner title={title} subtitle={subtitle} icon={icon} onPress={onPress} badge={badge} />
 );
+
+const ActionRowInner = ({ title, subtitle, icon, onPress, badge }) => {
+  const { scaleFont, hitSlop } = useAccessibilityPreferences();
+
+  return (
+    <TouchableOpacity
+      accessibilityLabel={`${title}${subtitle ? `. ${subtitle}` : ''}`}
+      accessibilityRole="button"
+      hitSlop={hitSlop}
+      style={styles.actionRow}
+      onPress={onPress}
+    >
+      <View style={styles.actionIcon}>
+        <Icon name={icon} size={21} color={colors.blue} />
+      </View>
+      <View style={styles.actionCopy}>
+        <View style={styles.actionTitleRow}>
+          <Text style={[styles.actionTitle, { fontSize: scaleFont(14) }]}>{title}</Text>
+          {badge ? <Text style={[styles.actionBadge, { fontSize: scaleFont(10) }]}>{badge}</Text> : null}
+        </View>
+        {subtitle ? <Text style={[styles.actionSubtitle, { fontSize: scaleFont(12), lineHeight: scaleFont(18) }]}>{subtitle}</Text> : null}
+      </View>
+      <Icon name="chevron-forward" size={18} color={colors.muted} />
+    </TouchableOpacity>
+  );
+};
 
 export const DashboardNotice = ({ title, message, variant = 'info' }) => {
   const warning = variant === 'warning';
+  const { scaleFont } = useAccessibilityPreferences();
 
   return (
     <View style={[styles.notice, warning && styles.noticeWarning]}>
@@ -140,8 +163,8 @@ export const DashboardNotice = ({ title, message, variant = 'info' }) => {
         color={warning ? '#92400E' : colors.blue}
       />
       <View style={styles.noticeCopy}>
-        <Text style={[styles.noticeTitle, warning && styles.noticeTitleWarning]}>{title}</Text>
-        <Text style={[styles.noticeMessage, warning && styles.noticeMessageWarning]}>{message}</Text>
+        <Text style={[styles.noticeTitle, warning && styles.noticeTitleWarning, { fontSize: scaleFont(13) }]}>{title}</Text>
+        <Text style={[styles.noticeMessage, warning && styles.noticeMessageWarning, { fontSize: scaleFont(12), lineHeight: scaleFont(18) }]}>{message}</Text>
       </View>
     </View>
   );

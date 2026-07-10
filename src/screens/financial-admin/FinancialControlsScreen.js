@@ -15,6 +15,7 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
 import { financialAdminService } from '../../services/financialAdminService';
+import { trackMobileEvent } from '../../services/mobileDiagnosticsService';
 import { colors, radius, shadows, typography } from '../../theme';
 import { getErrorMessage, pickList, pickObject } from '../../utils/http';
 import {
@@ -147,6 +148,11 @@ const FinancialControlsScreen = ({ navigation }) => {
     try {
       const title = buildExportName(label);
       const csv = rowsToCsv(rows, columns);
+      trackMobileEvent('financial_export_shared', {
+        label,
+        row_count: rows.length,
+        screen: 'FinancialControls',
+      });
       await Share.share({
         title,
         message: `${title}\n\n${csv}`,

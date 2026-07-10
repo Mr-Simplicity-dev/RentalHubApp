@@ -1,9 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { WebView } from 'react-native-webview';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
 import { API_ORIGIN } from '../../services/api';
+import { storageService } from '../../services/storageService';
 import {
   isLikelyPaymentReturnUrl,
   recoverPayment,
@@ -39,16 +39,17 @@ const WebRouteScreen = ({ route, navigation }) => {
     const loadSession = async () => {
       try {
         const [token, user] = await Promise.all([
-          AsyncStorage.getItem('token'),
-          AsyncStorage.getItem('user'),
+          storageService.getToken(),
+          storageService.getUser(),
         ]);
+        const userJson = user ? JSON.stringify(user) : '';
 
         if (!active) return;
 
         setSession({
           loading: false,
           token: token || '',
-          user: user || '',
+          user: userJson,
         });
       } catch (error) {
         if (!active) return;
@@ -115,23 +116,14 @@ const WebRouteScreen = ({ route, navigation }) => {
     );
   }
 
-  const injectedJavaScriptBeforeContentLoaded = `
-    (function() {
-      try {
-        var token = '${escapeForJs(session.token)}';
-        var user = '${escapeForJs(session.user)}';
-
-        if (token) {
-          localStorage.setItem('token', token);
-        }
-
-        if (user) {
-          localStorage.setItem('user', user);
-        }
-      } catch (e) {}
-    })();
-    true;
-  `;
+  const webOrigin = useMemo(() => {
+    try {
+      const url = new URL(API_ORIGIN);
+      return url.origin;
+    } catch {
+      return '';
+    }
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -156,12 +148,12 @@ const WebRouteScreen = ({ route, navigation }) => {
 
       <WebView
         source={{ uri }}
+        originWhitelist={[webOrigin]}
         sharedCookiesEnabled
         thirdPartyCookiesEnabled
         javaScriptEnabled
         domStorageEnabled
         startInLoadingState
-        injectedJavaScriptBeforeContentLoaded={injectedJavaScriptBeforeContentLoaded}
         onNavigationStateChange={(state) => {
           handlePaymentReturn(state?.url);
         }}

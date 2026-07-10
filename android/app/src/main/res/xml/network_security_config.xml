@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">rentalhub.com.ng</domain>
+        <domain includeSubdomains="true">www.rentalhub.com.ng</domain>
+        <pin-set expiration="2027-03-13">
+            <pin digest="SHA-256">jw0TovYuftFQbDMYOF1ZjiNykcocAiMNGJBiOkDPrm0=</pin>
+            <pin digest="SHA-256">9Fk6HgfMnM7/vtnBHcUhg1b3gU2bIpSd50XmKZkMbGA=</pin>
+        </pin-set>
+    </domain-config>
+</network-security-config>

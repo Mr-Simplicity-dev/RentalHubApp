@@ -1,14 +1,22 @@
 import React, { useEffect, useRef } from 'react';
 import { Animated, Image, StatusBar, StyleSheet, Text, View } from 'react-native';
 import { colors, typography } from '../../theme';
+import { useAccessibilityPreferences } from '../../hooks/useAccessibilityPreferences';
 
 const logo = require('../../../assets/rentalhub-app-icon.png');
 
 const BrandSplash = () => {
+  const { reduceMotion, scaleFont } = useAccessibilityPreferences();
   const scale = useRef(new Animated.Value(0.88)).current;
   const opacity = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
+    if (reduceMotion) {
+      scale.setValue(1);
+      opacity.setValue(1);
+      return;
+    }
+
     Animated.parallel([
       Animated.spring(scale, {
         toValue: 1,
@@ -22,7 +30,7 @@ const BrandSplash = () => {
         useNativeDriver: true,
       }),
     ]).start();
-  }, [opacity, scale]);
+  }, [opacity, reduceMotion, scale]);
 
   return (
     <View style={styles.container}>
@@ -31,8 +39,8 @@ const BrandSplash = () => {
       <View style={styles.glowTwo} />
       <Animated.View style={[styles.brand, { opacity, transform: [{ scale }] }]}>
         <Image source={logo} style={styles.logo} resizeMode="contain" />
-        <Text style={styles.name}>RentalHub</Text>
-        <Text style={styles.tagline}>Trusted homes. Confident living.</Text>
+        <Text style={[styles.name, { fontSize: scaleFont(34) }]}>RentalHub</Text>
+        <Text style={[styles.tagline, { fontSize: scaleFont(14) }]}>Trusted homes. Confident living.</Text>
       </Animated.View>
       <View style={styles.loadingTrack}>
         <Animated.View style={[styles.loadingFill, { opacity }]} />

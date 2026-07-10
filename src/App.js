@@ -14,6 +14,7 @@ import NativeCallOverlay from './components/calls/NativeCallOverlay';
 import AppErrorBoundary from './components/common/AppErrorBoundary';
 import { subscribeNetworkStatus } from './services/networkStatusService';
 import { flushOfflineQueue, hydrateOfflineQueue } from './services/offlineActionQueueService';
+import { trackMobileEvent } from './services/mobileDiagnosticsService';
 
 const App = () => {
   const [showSplash, setShowSplash] = useState(true);
@@ -25,6 +26,7 @@ const App = () => {
 
   useEffect(() => {
     hydrateOfflineQueue().catch(() => {});
+    trackMobileEvent('app_opened', { source: 'native_app_root' });
     const unsubscribe = subscribeNetworkStatus((status) => {
       if (status.online && !status.weak) {
         flushOfflineQueue().catch(() => {});

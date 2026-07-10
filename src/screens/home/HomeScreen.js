@@ -13,6 +13,7 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
+import AdSpace from '../../components/common/AdSpace';
 import BrandMark from '../../components/brand/BrandMark';
 import PropertyCard from '../../components/properties/PropertyCard';
 import { AuthContext } from '../../context/AuthContext';
@@ -238,6 +239,16 @@ const HomeScreen = ({ navigation }) => {
             </TouchableOpacity>
           ))}
         </ScrollView>
+
+        <View style={styles.sectionHeader}>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.sectionEyebrow}>SPONSORED</Text>
+            <Text style={styles.sectionTitle}>Featured offers</Text>
+          </View>
+        </View>
+        <View style={styles.adSection}>
+          <AdSpace placement="home_featured" />
+        </View>
 
         <TouchableOpacity
           activeOpacity={0.88}
@@ -510,6 +521,9 @@ const styles = StyleSheet.create({
     bottom: 13,
     position: 'absolute',
     right: 13,
+  },
+  adSection: {
+    marginHorizontal: 20,
   },
   requestCard: {
     backgroundColor: colors.navy,

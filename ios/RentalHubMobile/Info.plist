@@ -43,6 +43,19 @@
 		<false/>
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
+		<key>NSPinnedDomains</key>
+		<dict>
+			<key>rentalhub.com.ng</key>
+			<dict>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+				<key>NSPinnedLeafIdentities</key>
+				<array>
+					<data>jw0TovYuftFQbDMYOF1ZjiNykcocAiMNGJBiOkDPrm0=</data>
+					<data>9Fk6HgfMnM7/vtnBHcUhg1b3gU2bIpSd50XmKZkMbGA=</data>
+				</array>
+			</dict>
+		</dict>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>RentalHub NG uses your location to improve property discovery around you.</string>
@@ -70,6 +83,7 @@
 		<string>Inter-Medium.ttf</string>
 		<string>Inter-Regular.ttf</string>
 		<string>Inter-SemiBold.ttf</string>
+		<string>Ionicons.ttf</string>
 	</array>
 </dict>
 </plist>

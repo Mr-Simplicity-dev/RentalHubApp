@@ -133,5 +133,15 @@ export const flushOfflineQueue = async () => {
     lastFlushedAt: new Date().toISOString(),
   };
   listeners.forEach((listener) => listener(queueSnapshot));
+  if (completed > 0) {
+    api.post('/mobile/analytics/events', {
+      event_name: 'offline_queue_flushed',
+      metadata: {
+        completed,
+        attempted: rows.length,
+        remaining: remaining.length,
+      },
+    }).catch(() => {});
+  }
   return { attempted: rows.length, completed };
 };

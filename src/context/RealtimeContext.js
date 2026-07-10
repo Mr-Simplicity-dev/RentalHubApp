@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {
   createContext,
   useCallback,
@@ -10,6 +9,7 @@ import React, {
 } from 'react';
 import { io } from 'socket.io-client';
 import { API_ORIGIN } from '../services/api';
+import { storageService } from '../services/storageService';
 import { AuthContext } from './AuthContext';
 
 export const RealtimeContext = createContext(null);
@@ -55,7 +55,7 @@ export const RealtimeProvider = ({ children }) => {
         return;
       }
 
-      const token = await AsyncStorage.getItem('token');
+      const token = await storageService.getToken();
       if (!token || disposed) return;
 
       const socket = io(API_ORIGIN, {

@@ -7,22 +7,24 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Button from '../common/Button';
 import { AuthContext } from '../../context/AuthContext';
 import { useTour } from '../../context/TourContext';
 import { colors, radius, shadows, typography } from '../../theme';
+import { useAccessibilityPreferences } from '../../hooks/useAccessibilityPreferences';
 
 const WelcomeModal = ({
   visible,
   firstName,
   stepCount,
+  reduceMotion,
+  scaleFont,
   onStart,
   onDismiss,
 }) => (
   <Modal
-    animationType="fade"
+    animationType={reduceMotion ? 'none' : 'fade'}
     transparent
     visible={visible}
     statusBarTranslucent
@@ -33,11 +35,11 @@ const WelcomeModal = ({
         <View style={styles.welcomeIcon}>
           <Icon name="compass-outline" size={34} color={colors.blue} />
         </View>
-        <Text style={styles.welcomeEyebrow}>WELCOME TO YOUR APP</Text>
-        <Text style={styles.welcomeTitle}>
+        <Text style={[styles.welcomeEyebrow, { fontSize: scaleFont(10) }]}>WELCOME TO YOUR APP</Text>
+        <Text style={[styles.welcomeTitle, { fontSize: scaleFont(27), lineHeight: scaleFont(33) }]}>
           {firstName ? `Hello, ${firstName}` : 'Let us show you around'}
         </Text>
-        <Text style={styles.welcomeText}>
+        <Text style={[styles.welcomeText, { fontSize: scaleFont(14), lineHeight: scaleFont(22) }]}>
           Take a short role-based tour of the tools designed for your account.
         </Text>
         <View style={styles.durationRow}>
@@ -53,11 +55,13 @@ const WelcomeModal = ({
   </Modal>
 );
 
-const WalkthroughModal = ({
+const CoachMarkOverlay = ({
   visible,
   step,
   stepIndex,
   stepCount,
+  reduceMotion,
+  scaleFont,
   onBack,
   onNext,
   onSkip,
@@ -66,78 +70,72 @@ const WalkthroughModal = ({
   const zone = step?.targetZone || ['top', 'middle', 'bottom', 'bottomLeft', 'bottomRight'][stepIndex % 5];
   const targetStyle = styles[`target_${zone}`] || styles.target_middle;
   const targetLabel = step?.targetLabel || step?.title || 'Feature';
+  if (!visible) return null;
 
   return (
-    <Modal
-      animationType="fade"
-      visible={visible}
-      transparent
-      statusBarTranslucent
-      onRequestClose={onSkip}
-    >
-      <SafeAreaView accessibilityViewIsModal style={styles.coachOverlay}>
-        <StatusBar barStyle="light-content" backgroundColor="rgba(7, 26, 61, 0.72)" />
-        <View pointerEvents="none" style={styles.dimLayer} />
+    <View style={styles.coachOverlay}>
+      <StatusBar barStyle="light-content" backgroundColor="rgba(7, 26, 61, 0.72)" />
+      <View pointerEvents="none" style={styles.dimLayer} />
 
-        <View pointerEvents="box-none" style={styles.coachCanvas}>
-          <View style={[styles.targetRing, targetStyle]}>
-            <View style={styles.targetPulse} />
-            <View style={styles.targetLabel}>
-              <Icon name="scan-outline" size={15} color={colors.white} />
-              <Text style={styles.targetLabelText}>{targetLabel}</Text>
-            </View>
+      <View pointerEvents="box-none" style={styles.coachCanvas}>
+        <View style={[styles.targetRing, targetStyle]}>
+          <View style={styles.targetPulse} />
+          <View style={styles.targetLabel}>
+            <Icon name="scan-outline" size={15} color={colors.white} />
+            <Text style={styles.targetLabelText}>{targetLabel}</Text>
           </View>
         </View>
+      </View>
 
-        <View style={styles.coachHeader}>
-          <Text style={styles.coachStepCount}>STEP {stepIndex + 1} OF {stepCount}</Text>
-          <TouchableOpacity accessibilityRole="button" onPress={onSkip} style={styles.coachSkipButton}>
-            <Text style={styles.coachSkipText}>Skip</Text>
-          </TouchableOpacity>
+      <View style={styles.coachHeader}>
+        <Text style={styles.coachStepCount}>STEP {stepIndex + 1} OF {stepCount}</Text>
+        <TouchableOpacity accessibilityRole="button" onPress={onSkip} style={styles.coachSkipButton}>
+          <Text style={styles.coachSkipText}>Skip</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.coachProgressTrack}>
+        <View style={[styles.progressFill, { width: `${((stepIndex + 1) / stepCount) * 100}%` }]} />
+      </View>
+
+      <View style={styles.coachCard}>
+        <View style={styles.coachArrowUp} />
+        <View style={styles.coachIcon}>
+          <Icon name={step?.icon || 'sparkles-outline'} size={25} color={colors.blue} />
         </View>
 
-        <View style={styles.coachProgressTrack}>
-          <View style={[styles.progressFill, { width: `${((stepIndex + 1) / stepCount) * 100}%` }]} />
+        <Text style={[styles.walkthroughTitle, { fontSize: scaleFont(24), lineHeight: scaleFont(30) }]}>{step?.title}</Text>
+        <Text style={[styles.walkthroughText, { fontSize: scaleFont(14), lineHeight: scaleFont(22) }]}>{step?.description}</Text>
+        {step?.targetHint ? <Text style={[styles.targetHint, { fontSize: scaleFont(12), lineHeight: scaleFont(18) }]}>{step.targetHint}</Text> : null}
+
+        <View style={styles.dots}>
+          {Array.from({ length: stepCount }).map((_, index) => (
+            <View
+              key={`tour-dot-${index}`}
+              style={[styles.dot, index === stepIndex && styles.dotActive]}
+            />
+          ))}
         </View>
 
-        <View style={styles.coachCard}>
-          <View style={styles.coachIcon}>
-            <Icon name={step?.icon || 'sparkles-outline'} size={25} color={colors.blue} />
-          </View>
-
-          <Text style={styles.walkthroughTitle}>{step?.title}</Text>
-          <Text style={styles.walkthroughText}>{step?.description}</Text>
-          {step?.targetHint ? <Text style={styles.targetHint}>{step.targetHint}</Text> : null}
-
-          <View style={styles.dots}>
-            {Array.from({ length: stepCount }).map((_, index) => (
-              <View
-                key={`tour-dot-${index}`}
-                style={[styles.dot, index === stepIndex && styles.dotActive]}
-              />
-            ))}
-          </View>
-
-          <View style={styles.walkthroughFooter}>
-            {stepIndex > 0 ? (
-              <Button
-                title="Back"
-                variant="outline"
-                onPress={onBack}
-                style={styles.footerButton}
-              />
-            ) : (
-              <View style={styles.footerButton} />
-            )}
+        <View style={styles.walkthroughFooter}>
+          {stepIndex > 0 ? (
             <Button
-              title={isLast ? 'Finish Tour' : 'Next'}
-              onPress={onNext}
+              title="Back"
+              variant="outline"
+              onPress={onBack}
               style={styles.footerButton}
             />
-          </View>
+          ) : (
+            <View style={styles.footerButton} />
+          )}
+          <Button
+            title={isLast ? 'Finish Tour' : 'Next'}
+            onPress={onNext}
+            style={styles.footerButton}
+          />
         </View>
-      </SafeAreaView>
-    </Modal>
+      </View>
+    </View>
   );
 };
 
@@ -156,6 +154,7 @@ const NativeTourManager = () => {
   } = useTour();
 
   const firstName = String(user?.full_name || '').trim().split(/\s+/)[0];
+  const { reduceMotion, scaleFont } = useAccessibilityPreferences();
 
   return (
     <>
@@ -163,14 +162,18 @@ const NativeTourManager = () => {
         visible={welcomeVisible}
         firstName={firstName}
         stepCount={steps.length}
+        reduceMotion={reduceMotion}
+        scaleFont={scaleFont}
         onStart={() => startTour()}
         onDismiss={dismissWelcome}
       />
-      <WalkthroughModal
+      <CoachMarkOverlay
         visible={walkthroughVisible}
         step={steps[currentStep]}
         stepIndex={currentStep}
         stepCount={steps.length}
+        reduceMotion={reduceMotion}
+        scaleFont={scaleFont}
         onBack={previousStep}
         onNext={nextStep}
         onSkip={skipTour}
@@ -178,6 +181,8 @@ const NativeTourManager = () => {
     </>
   );
 };
+
+const ARROW_SIZE = 16;
 
 const styles = StyleSheet.create({
   backdrop: {
@@ -251,7 +256,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   coachOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    elevation: 99999,
     flex: 1,
+    zIndex: 99999,
   },
   dimLayer: {
     ...StyleSheet.absoluteFillObject,
@@ -348,6 +356,18 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontFamily: typography.bold,
     fontSize: 12,
+  },
+  coachArrowUp: {
+    alignSelf: 'center',
+    borderBottomColor: colors.white,
+    borderBottomWidth: ARROW_SIZE,
+    borderLeftColor: 'transparent',
+    borderLeftWidth: ARROW_SIZE / 1.6,
+    borderRightColor: 'transparent',
+    borderRightWidth: ARROW_SIZE / 1.6,
+    height: 0,
+    marginTop: -ARROW_SIZE - 22,
+    width: 0,
   },
   coachCard: {
     backgroundColor: colors.white,

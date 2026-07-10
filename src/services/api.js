@@ -1,10 +1,10 @@
 import { Platform } from 'react-native';
 import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   markNetworkHealthy,
   markNetworkProblem,
 } from './networkStatusService';
+import { storageService } from './storageService';
 
 const DEFAULT_PRODUCTION_API_BASE_URL = 'https://rentalhub.com.ng/api';
 const DEFAULT_LOCAL_API_BASE_URL =
@@ -36,10 +36,14 @@ const api = axios.create({
   },
 });
 
-// Request interceptor
+let onUnauthorized = null;
+export const setOnUnauthorized = (callback) => {
+  onUnauthorized = callback;
+};
+
 api.interceptors.request.use(
   async (config) => {
-    const token = await AsyncStorage.getItem('token');
+    const token = await storageService.getToken();
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -50,7 +54,6 @@ api.interceptors.request.use(
   }
 );
 
-// Response interceptor
 api.interceptors.response.use(
   (response) => {
     markNetworkHealthy();
@@ -59,8 +62,10 @@ api.interceptors.response.use(
   async (error) => {
     markNetworkProblem(error);
     if (error.response?.status === 401) {
-      await AsyncStorage.removeItem('token');
-      await AsyncStorage.removeItem('user');
+      await storageService.clearAll();
+      if (typeof onUnauthorized === 'function') {
+        onUnauthorized();
+      }
     }
     return Promise.reject(error);
   }

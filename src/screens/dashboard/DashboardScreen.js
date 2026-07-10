@@ -14,6 +14,7 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
+import AdSpace from '../../components/common/AdSpace';
 import { AuthContext } from '../../context/AuthContext';
 import WalletFundModal from '../../components/dashboard/WalletFundModal';
 import WalletWithdrawModal from '../../components/dashboard/WalletWithdrawModal';
@@ -987,6 +988,8 @@ const DashboardScreen = ({ navigation }) => {
           </View>
         ))
       )}
+
+      <AdSpace placement="dashboard_inline" />
 
       <WalletFundModal
         visible={showFundModal}

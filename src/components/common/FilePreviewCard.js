@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { ActivityIndicator, Alert, Image, Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { colors, radius, typography } from '../../theme';
+import { trackMobileEvent } from '../../services/mobileDiagnosticsService';
 
 const IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'heic'];
 
@@ -50,6 +51,11 @@ const FilePreviewCard = ({
         Alert.alert('Cannot open file', 'This device cannot open the selected file link.');
         return;
       }
+      trackMobileEvent('file_preview_opened', {
+        title: displayName,
+        extension,
+        mime_type: mimeType,
+      });
       await Linking.openURL(uri);
     } catch {
       Alert.alert('Open failed', 'The file could not be opened. Check your connection and try again.');
