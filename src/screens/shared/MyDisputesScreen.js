@@ -2,9 +2,13 @@ import React, { useEffect, useLayoutEffect, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
+  Modal,
+  Pressable,
   RefreshControl,
+  ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -71,6 +75,41 @@ const MyDisputesScreen = ({ navigation }) => {
     loadDisputes();
   }, []);
 
+  const [createOpen, setCreateOpen] = useState(false);
+  const [createForm, setCreateForm] = useState({ property_id: '', title: '', description: '', against_user: '' });
+  const [creating, setCreating] = useState(false);
+
+  const handleCreateDispute = async () => {
+    const { property_id, title, description, against_user } = createForm;
+    if (!property_id || !title || !description || !against_user) {
+      Toast.show({ type: 'info', text1: 'All fields are required' });
+      return;
+    }
+    setCreating(true);
+    try {
+      const res = await api.post('/disputes', {
+        property_id: Number(property_id),
+        against_user: Number(against_user),
+        title: title.trim(),
+        description: description.trim(),
+      });
+      if (res.data?.success) {
+        Toast.show({ type: 'success', text1: 'Dispute created' });
+        setCreateOpen(false);
+        setCreateForm({ property_id: '', title: '', description: '', against_user: '' });
+        loadDisputes();
+      }
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Create failed',
+        text2: getErrorMessage(error, 'Could not create dispute'),
+      });
+    } finally {
+      setCreating(false);
+    }
+  };
+
   const renderDisputeCard = ({ item }) => {
     const status = getStatusStyle(item.status);
 
@@ -127,7 +166,12 @@ const MyDisputesScreen = ({ navigation }) => {
           <Text style={styles.eyebrow}>CONFLICT RESOLUTION</Text>
           <Text style={styles.title}>My disputes</Text>
         </View>
-        <View style={styles.headerSpacer} />
+        <TouchableOpacity
+          accessibilityLabel="Create dispute"
+          onPress={() => setCreateOpen(true)}
+          style={styles.createButton}>
+          <Icon name="add" size={24} color={colors.blue} />
+        </TouchableOpacity>
       </View>
 
       <FlatList
@@ -170,6 +214,33 @@ const MyDisputesScreen = ({ navigation }) => {
         renderItem={renderDisputeCard}
         showsVerticalScrollIndicator={false}
       />
+
+      <Modal visible={createOpen} transparent animationType="slide" onRequestClose={() => setCreateOpen(false)}>
+        <Pressable style={styles.modalBackdrop} onPress={() => setCreateOpen(false)}>
+          <Pressable style={styles.modalCard}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Create dispute</Text>
+              <TouchableOpacity onPress={() => setCreateOpen(false)}>
+                <Icon name="close" size={22} color={colors.muted} />
+              </TouchableOpacity>
+            </View>
+            <ScrollView>
+              <Text style={styles.fieldLabel}>Property ID *</Text>
+              <TextInput style={styles.input} value={createForm.property_id} onChangeText={(v) => setCreateForm((p) => ({ ...p, property_id: v }))} placeholder="e.g. 42" keyboardType="number-pad" placeholderTextColor={colors.muted} />
+              <Text style={styles.fieldLabel}>User ID to dispute against *</Text>
+              <TextInput style={styles.input} value={createForm.against_user} onChangeText={(v) => setCreateForm((p) => ({ ...p, against_user: v }))} placeholder="e.g. 7" keyboardType="number-pad" placeholderTextColor={colors.muted} />
+              <Text style={styles.fieldLabel}>Title *</Text>
+              <TextInput style={styles.input} value={createForm.title} onChangeText={(v) => setCreateForm((p) => ({ ...p, title: v }))} placeholder="Dispute title" placeholderTextColor={colors.muted} />
+              <Text style={styles.fieldLabel}>Description *</Text>
+              <TextInput style={[styles.input, styles.descInput]} value={createForm.description} onChangeText={(v) => setCreateForm((p) => ({ ...p, description: v }))} placeholder="Describe the issue" multiline placeholderTextColor={colors.muted} />
+              <Text style={styles.hint}>Find Property ID and user IDs on the property detail page.</Text>
+            </ScrollView>
+            <TouchableOpacity style={[styles.submitBtn, creating && { opacity: 0.6 }]} disabled={creating} onPress={handleCreateDispute}>
+              {creating ? <ActivityIndicator color={colors.white} /> : <Text style={styles.submitBtnText}>Create dispute</Text>}
+            </TouchableOpacity>
+          </Pressable>
+        </Pressable>
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -324,6 +395,75 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 10,
+  },
+  createButton: {
+    alignItems: 'center',
+    height: 42,
+    justifyContent: 'center',
+    width: 42,
+  },
+  modalBackdrop: {
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    flex: 1,
+    justifyContent: 'center',
+    padding: 24,
+  },
+  modalCard: {
+    backgroundColor: colors.white,
+    borderRadius: radius.md,
+    maxHeight: '80%',
+    padding: 20,
+  },
+  modalHeader: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  modalTitle: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 18,
+  },
+  fieldLabel: {
+    color: colors.ink,
+    fontFamily: typography.medium,
+    fontSize: 13,
+    marginBottom: 4,
+    marginTop: 12,
+  },
+  input: {
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
+    borderRadius: radius.sm,
+    borderWidth: 1,
+    color: colors.ink,
+    fontFamily: typography.regular,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+  },
+  descInput: {
+    height: 90,
+    textAlignVertical: 'top',
+  },
+  hint: {
+    color: colors.muted,
+    fontFamily: typography.regular,
+    fontSize: 11,
+    marginTop: 8,
+    textAlign: 'center',
+  },
+  submitBtn: {
+    alignItems: 'center',
+    backgroundColor: colors.blue,
+    borderRadius: radius.sm,
+    marginTop: 16,
+    paddingVertical: 13,
+  },
+  submitBtnText: {
+    color: colors.white,
+    fontFamily: typography.bold,
+    fontSize: 14,
   },
 });
 

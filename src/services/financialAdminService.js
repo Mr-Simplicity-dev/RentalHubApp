@@ -104,4 +104,9 @@ export const financialAdminService = {
     const response = await api.get('/financial-admin/commission-config');
     return response.data;
   },
+
+  updateCommissionConfig: async (updates) => {
+    const response = await api.put('/financial-admin/commission-config', { updates });
+    return response.data;
+  },
 };

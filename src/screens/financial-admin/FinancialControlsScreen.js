@@ -89,6 +89,9 @@ const FinancialControlsScreen = ({ navigation }) => {
   const [freezeForm, setFreezeForm] = useState({ userId: '', amount: '', reason: '' });
   const [submittingFreeze, setSubmittingFreeze] = useState(false);
   const [exporting, setExporting] = useState('');
+  const [commEditVisible, setCommEditVisible] = useState(false);
+  const [commEditValues, setCommEditValues] = useState({});
+  const [savingComm, setSavingComm] = useState(false);
 
   const loadControls = useCallback(async () => {
     setLoading(true);
@@ -222,6 +225,33 @@ const FinancialControlsScreen = ({ navigation }) => {
         { label: 'Updated At', value: (row) => row.updated_at },
       ],
     });
+
+  const openCommEdit = () => {
+    const values = {};
+    commissionEntries.forEach(([key, config]) => {
+      values[key] = String(config?.value ?? '');
+    });
+    setCommEditValues(values);
+    setCommEditVisible(true);
+  };
+
+  const saveCommissionConfig = async () => {
+    setSavingComm(true);
+    try {
+      await financialAdminService.updateCommissionConfig(commEditValues);
+      Toast.show({ type: 'success', text1: 'Commission config saved' });
+      setCommEditVisible(false);
+      loadControls();
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Save failed',
+        text2: getErrorMessage(error, 'Could not update commission config'),
+      });
+    } finally {
+      setSavingComm(false);
+    }
+  };
 
   const exportTransactions = async () => {
     setExporting('Transaction Reconciliation');
@@ -454,6 +484,13 @@ const FinancialControlsScreen = ({ navigation }) => {
           title="Commission configuration"
           subtitle="Current finance rules are visible in-app; changing them remains server-protected."
         >
+          <ActionRow
+            title="Edit commission config"
+            subtitle="Modify commission rates and finance rules."
+            icon="create-outline"
+            badge="Edit"
+            onPress={openCommEdit}
+          />
           <View style={styles.cardStack}>
             {commissionEntries.slice(0, 8).map(([key, config]) => (
               <View key={key} style={styles.configCard}>
@@ -566,6 +603,41 @@ const FinancialControlsScreen = ({ navigation }) => {
               onPress={confirmFreezeFunds}
             >
               {submittingFreeze ? <ActivityIndicator color={colors.white} /> : <Text style={styles.freezeButtonText}>Confirm freeze</Text>}
+            </TouchableOpacity>
+          </Pressable>
+        </Pressable>
+      </Modal>
+
+      <Modal visible={commEditVisible} transparent animationType="slide" onRequestClose={() => setCommEditVisible(false)}>
+        <Pressable style={styles.modalBackdrop} onPress={() => setCommEditVisible(false)}>
+          <Pressable style={styles.modalCard}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Edit commission config</Text>
+              <TouchableOpacity accessibilityRole="button" onPress={() => setCommEditVisible(false)}>
+                <Icon name="close" size={22} color={colors.muted} />
+              </TouchableOpacity>
+            </View>
+            <ScrollView style={{ maxHeight: 400 }}>
+              {Object.entries(commEditValues).map(([key, val]) => (
+                <View key={key} style={{ marginBottom: 12 }}>
+                  <Text style={[styles.recordMeta, { marginBottom: 4 }]}>{key.replace(/_/g, ' ')}</Text>
+                  <TextInput
+                    style={styles.input}
+                    value={val}
+                    onChangeText={(text) => setCommEditValues((prev) => ({ ...prev, [key]: text }))}
+                    keyboardType="decimal-pad"
+                    placeholderTextColor={colors.muted}
+                  />
+                </View>
+              ))}
+            </ScrollView>
+            <TouchableOpacity
+              accessibilityRole="button"
+              disabled={savingComm}
+              style={[styles.freezeButton, savingComm && styles.disabledButton]}
+              onPress={saveCommissionConfig}
+            >
+              {savingComm ? <ActivityIndicator color={colors.white} /> : <Text style={styles.freezeButtonText}>Save changes</Text>}
             </TouchableOpacity>
           </Pressable>
         </Pressable>

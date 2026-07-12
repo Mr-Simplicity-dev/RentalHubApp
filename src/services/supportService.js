@@ -21,8 +21,17 @@ export const supportService = {
     return response.data;
   },
 
-  replyToTicket: async (ticketId, message) => {
-    const response = await api.post(`/support/tickets/${ticketId}/reply`, { message });
+  replyToTicket: async (ticketId, message, file) => {
+    const body = file
+      ? (() => {
+          const fd = new FormData();
+          if (message) fd.append('message', message);
+          fd.append('attachment', { uri: file.uri, type: file.type || 'application/octet-stream', name: file.fileName || 'attachment' });
+          return fd;
+        })()
+      : { message };
+    const config = file ? { headers: { 'Content-Type': 'multipart/form-data' } } : {};
+    const response = await api.post(`/support/tickets/${ticketId}/reply`, body, config);
     return response.data;
   },
 
@@ -48,6 +57,45 @@ export const supportService = {
 
   getDashboard: async (level = 'lga') => {
     const response = await api.get('/support/admin/dashboard', { params: { level } });
+    return response.data;
+  },
+
+  contactSupport: async (data) => {
+    const response = await api.post('/support/contact', data);
+    return response.data;
+  },
+
+  contactLookup: async (email) => {
+    const response = await api.post('/support/tickets/contact-lookup', { email });
+    return response.data;
+  },
+
+  getContactConversation: async (ticketId, email) => {
+    const response = await api.post('/support/tickets/contact-conversation', { ticketId, email });
+    return response.data;
+  },
+
+  contactReply: async (ticketId, email, message, file) => {
+    const fd = new FormData();
+    fd.append('ticketId', ticketId);
+    fd.append('email', email);
+    if (message) fd.append('message', message);
+    if (file) {
+      fd.append('attachment', {
+        uri: file.uri,
+        type: file.type || 'application/octet-stream',
+        name: file.fileName || 'attachment',
+      });
+    }
+    const response = await api.post('/support/tickets/contact-reply', fd, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response.data;
+  },
+
+  getTypingStatus: async (ticketId, email) => {
+    const params = email ? { email } : {};
+    const response = await api.get(`/support/tickets/${ticketId}/typing-status`, { params });
     return response.data;
   },
 };

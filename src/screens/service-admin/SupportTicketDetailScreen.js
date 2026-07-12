@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { launchImageLibrary } from 'react-native-image-picker';
 import { supportService } from '../../services/supportService';
 import { getErrorMessage, pickList, pickObject } from '../../utils/http';
 import { colors, radius, typography } from '../../theme';
@@ -28,6 +29,7 @@ const SupportTicketDetailScreen = ({ navigation, route }) => {
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [message, setMessage] = useState('');
+  const [attachment, setAttachment] = useState(null);
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
@@ -55,17 +57,31 @@ const SupportTicketDetailScreen = ({ navigation, route }) => {
     loadConversation();
   }, [ticketId]);
 
+  const pickAttachment = async () => {
+    try {
+      const result = await launchImageLibrary({ mediaType: 'mixed', selectionLimit: 1 });
+      const asset = result?.assets?.[0];
+      if (asset) {
+        setAttachment(asset);
+        Toast.show({ type: 'info', text1: 'Attachment selected', text2: asset.fileName || 'File ready' });
+      }
+    } catch {
+      Toast.show({ type: 'error', text1: 'Could not pick file' });
+    }
+  };
+
   const sendReply = async () => {
     const trimmed = message.trim();
-    if (!trimmed) {
-      Toast.show({ type: 'info', text1: 'Type a reply first' });
+    if (!trimmed && !attachment) {
+      Toast.show({ type: 'info', text1: 'Type a reply or attach a file' });
       return;
     }
 
     setSending(true);
     try {
-      await supportService.replyToTicket(ticketId, trimmed);
+      await supportService.replyToTicket(ticketId, trimmed, attachment);
       setMessage('');
+      setAttachment(null);
       Toast.show({ type: 'success', text1: 'Reply sent' });
       await loadConversation();
     } catch (error) {
@@ -117,6 +133,11 @@ const SupportTicketDetailScreen = ({ navigation, route }) => {
                   {reply.author_name || (adminReply ? 'Support admin' : 'Customer')}
                 </Text>
                 <Text style={styles.replyMessage}>{reply.message}</Text>
+                {reply.attachment_url ? (
+                  <Text style={styles.replyAttachment} numberOfLines={1}>
+                    {reply.attachment_name || 'Attachment'}
+                  </Text>
+                ) : null}
                 <Text style={styles.replyTime}>
                   {reply.created_at ? new Date(reply.created_at).toLocaleString() : ''}
                 </Text>
@@ -127,15 +148,28 @@ const SupportTicketDetailScreen = ({ navigation, route }) => {
       </DashboardScreen>
 
       <View style={styles.composer}>
-        <TextInput
-          accessibilityLabel="Support reply message"
-          multiline
-          onChangeText={setMessage}
-          placeholder="Type your reply…"
-          placeholderTextColor={colors.muted}
-          style={styles.input}
-          value={message}
-        />
+        <TouchableOpacity
+          accessibilityLabel="Attach file"
+          onPress={pickAttachment}
+          style={styles.attachButton}
+          disabled={sending}
+        >
+          <Icon name="attach" size={22} color={attachment ? colors.blue : colors.muted} />
+        </TouchableOpacity>
+        <View style={styles.inputWrap}>
+          {attachment ? (
+            <Text style={styles.attachmentLabel} numberOfLines={1}>{attachment.fileName || 'File attached'}</Text>
+          ) : null}
+          <TextInput
+            accessibilityLabel="Support reply message"
+            multiline
+            onChangeText={setMessage}
+            placeholder="Type your reply…"
+            placeholderTextColor={colors.muted}
+            style={styles.input}
+            value={message}
+          />
+        </View>
         <TouchableOpacity
           accessibilityLabel="Send reply"
           accessibilityRole="button"
@@ -186,6 +220,12 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     marginTop: 6,
   },
+  replyAttachment: {
+    color: colors.blue,
+    fontFamily: typography.medium,
+    fontSize: 12,
+    marginTop: 6,
+  },
   replyTime: {
     color: colors.muted,
     fontFamily: typography.regular,
@@ -210,13 +250,28 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 0,
   },
+  attachButton: {
+    alignItems: 'center',
+    height: 46,
+    justifyContent: 'center',
+    width: 36,
+  },
+  inputWrap: {
+    flex: 1,
+  },
+  attachmentLabel: {
+    color: colors.blue,
+    fontFamily: typography.medium,
+    fontSize: 11,
+    marginBottom: 2,
+    marginLeft: 14,
+  },
   input: {
     backgroundColor: colors.surface,
     borderColor: colors.border,
     borderRadius: 18,
     borderWidth: 1,
     color: colors.ink,
-    flex: 1,
     fontFamily: typography.regular,
     maxHeight: 110,
     minHeight: 46,

@@ -6,7 +6,6 @@ import {
 } from './networkStatusService';
 import { storageService } from './storageService';
 
-const DEFAULT_PRODUCTION_API_BASE_URL = 'https://rentalhub.com.ng/api';
 const DEFAULT_LOCAL_API_BASE_URL =
   Platform.OS === 'android' ? 'http://10.0.2.2:5000/api' : 'http://localhost:5000/api';
 
@@ -21,11 +20,21 @@ const isConfiguredApiUrl = (value) => {
   );
 };
 
-const resolveDefaultApiBaseUrl = () => (__DEV__ ? DEFAULT_LOCAL_API_BASE_URL : DEFAULT_PRODUCTION_API_BASE_URL);
+const resolveDefaultApiBaseUrl = () => {
+  if (__DEV__) return DEFAULT_LOCAL_API_BASE_URL;
+  throw new Error('API_BASE_URL env var is required in production. Set it via .env or build pipeline.');
+};
 
-export const API_BASE_URL = isConfiguredApiUrl(process.env.API_BASE_URL)
-  ? normalizeUrl(process.env.API_BASE_URL)
-  : resolveDefaultApiBaseUrl();
+let _apiBaseUrl;
+try {
+  _apiBaseUrl = isConfiguredApiUrl(process.env.API_BASE_URL)
+    ? normalizeUrl(process.env.API_BASE_URL)
+    : resolveDefaultApiBaseUrl();
+} catch (e) {
+  console.error('[api]', e.message);
+  _apiBaseUrl = '';
+}
+export const API_BASE_URL = _apiBaseUrl;
 
 export const API_ORIGIN = API_BASE_URL.replace(/\/api$/i, '');
 

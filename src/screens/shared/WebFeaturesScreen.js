@@ -9,6 +9,8 @@ import {
 
 const makePublicFeatures = () => [
   { label: 'Home', path: '/' },
+  { label: 'Contact Support', path: '/contact-widget' },
+  { label: 'WhatsApp Assistant', path: '/whatsapp-bot' },
   { label: 'Lawyers Directory', path: '/lawyers' },
   { label: 'Properties', path: '/properties' },
   { label: 'Verify Email', path: '/verify-email' },
@@ -34,6 +36,8 @@ const makeProtectedFeatures = (userType) => {
     { label: 'Subscribe', path: '/subscribe' },
     { label: 'Settings', path: '/settings' },
     { label: 'Dashboard', path: '/dashboard' },
+    { label: 'Platform Ratings', path: '/platform-ratings' },
+    { label: 'Verification Status', path: '/verification-status' },
   ];
 
   if (userType === 'admin') {
@@ -42,6 +46,7 @@ const makeProtectedFeatures = (userType) => {
       { label: 'Admin Dashboard', path: '/admin' },
       { label: 'Recruitment Admin', path: '/admin/recruitment' },
       { label: 'Admin Lawyer Invites', path: '/admin/lawyer-invites' },
+      { label: 'Appeals', path: '/admin/appeals' },
       { label: 'Admin Users', path: '/admin/users' },
       { label: 'Admin Properties', path: '/admin/properties' },
       { label: 'Admin Applications', path: '/admin/applications' },
@@ -103,6 +108,10 @@ const makeProtectedFeatures = (userType) => {
       { label: 'Admin Verifications', path: '/admin/verifications' },
       { label: 'Admin Compliance', path: '/admin/compliance' },
       { label: 'Admin Agent Management', path: '/admin/agents' },
+      { label: 'Admin Monitor', path: '/admin/monitor' },
+      { label: 'Live Moderation', path: '/admin/live-moderation' },
+      { label: 'Broadcast (SMS/Email)', path: '/super-admin?tab=broadcast' },
+      { label: 'Appeals', path: '/admin/appeals' },
       { label: 'Super Transportation Dashboard', path: '/super-admin/transportation' },
       { label: 'Super Fumigation Dashboard', path: '/super-admin/fumigation-cleaning' },
     ];
@@ -317,6 +326,9 @@ const WebFeaturesScreen = ({ navigation }) => {
     '/add-property': { name: 'AddProperty' },
     '/lawyer': { name: 'LawyerDashboard' },
     '/verify-case': { name: 'VerifyCase' },
+    '/platform-ratings': { name: 'PlatformRatings' },
+    '/contact-widget': { name: 'ContactWidget' },
+    '/whatsapp-bot': { name: 'WhatsAppBot' },
   };
 
   const availableRoutes = navigation.getState()?.routeNames || [];

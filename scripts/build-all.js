@@ -45,9 +45,9 @@ const main = () => {
 
   if (platform === 'android' || platform === 'all') {
     console.log('>>> Building Android APK...');
-    run(`cd android && .\\gradlew assembleRelease --no-daemon --build-cache`, { cwd: ANDROID_DIR });
+    run(`.\\gradlew assembleRelease --no-daemon --build-cache`, { cwd: ANDROID_DIR });
 
-    const apkPath = path.join(ANDROID_DIR, 'app', 'build', 'outputs', 'apk', 'debug', 'app-debug.apk');
+    const apkPath = path.join(ANDROID_DIR, 'app', 'build', 'outputs', 'apk', 'release', 'app-release.apk');
     if (fs.existsSync(apkPath)) {
       fs.mkdirSync(UPLOADS_DIR, { recursive: true });
       const destPath = path.join(UPLOADS_DIR, 'app.apk');

@@ -112,6 +112,9 @@ import RecruitmentApplicationScreen from '../screens/shared/RecruitmentApplicati
 import PublicInfoScreen from '../screens/shared/PublicInfoScreen';
 import SettingsScreen from '../screens/settings/SettingsScreen';
 
+import PlatformRatingsScreen from '../screens/shared/PlatformRatingsScreen';
+import ContactWidgetScreen from '../screens/shared/ContactWidgetScreen';
+import WhatsAppBotScreen from '../screens/shared/WhatsAppBotScreen';
 import MyDisputesScreen from '../screens/shared/MyDisputesScreen';
 import MyDamageReportsScreen from '../screens/shared/MyDamageReportsScreen';
 import SubscribedPropertiesScreen from '../screens/shared/SubscribedPropertiesScreen';
@@ -287,7 +290,10 @@ const commonInfoScreens = () => (
     <Stack.Screen name="PublicInfo" component={PublicInfoScreen} options={{ title: 'Information' }} />
     <Stack.Screen name="LawyersDirectory" component={LawyersDirectoryScreen} options={{ title: 'Lawyers' }} />
     <Stack.Screen name="LegalSupport" component={LegalSupportScreen} options={{ title: 'Legal Support' }} />
+    <Stack.Screen name="PlatformRatings" component={PlatformRatingsScreen} options={{ title: 'Ratings' }} />
+    <Stack.Screen name="WhatsAppBot" component={WhatsAppBotScreen} options={{ title: 'WhatsApp Assistant' }} />
     <Stack.Screen name="Settings" component={SettingsScreen} options={{ title: 'Settings' }} />
+    <Stack.Screen name="ContactWidget" component={ContactWidgetScreen} options={{ title: 'Support' }} />
   </>
 );
 
@@ -356,6 +362,7 @@ const ServiceAdminRoot = () => (
     <Stack.Screen name="Notifications" component={NotificationsScreen} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
     <Stack.Screen name="WebFeatures" component={WebFeaturesScreen} options={{ title: 'Web Features' }} />
+    <Stack.Screen name="ContactWidget" component={ContactWidgetScreen} options={{ title: 'Support' }} />
     {commonInfoScreens()}
     <Stack.Screen name="WebRoute" component={WebRouteScreen} options={{ headerShown: false }} />
   </Stack.Navigator>
