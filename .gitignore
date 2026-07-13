@@ -89,6 +89,10 @@ key.properties
 tmp/
 temp/
 
+# Generated JS bundle
+android/app/src/main/assets/index.android.bundle
+android/app/src/main/assets/index.android.bundle.meta
+
 # Expo
 .expo
 dist/
