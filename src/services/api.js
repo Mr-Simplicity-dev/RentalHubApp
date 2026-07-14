@@ -22,7 +22,7 @@ const isConfiguredApiUrl = (value) => {
 
 const resolveDefaultApiBaseUrl = () => {
   if (__DEV__) return DEFAULT_LOCAL_API_BASE_URL;
-  throw new Error('API_BASE_URL env var is required in production. Set it via .env or build pipeline.');
+  return 'https://rentalhub.com.ng/api';
 };
 
 let _apiBaseUrl;

@@ -9,16 +9,21 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
-import {
-  mediaDevices,
-  RTCIceCandidate,
-  RTCPeerConnection,
-  RTCSessionDescription,
-  RTCView,
-} from 'react-native-webrtc';
 import { getWebRtcIceServers, isVideoEnabledCall } from '../../config/webrtcConfig';
 import { useRealtime } from '../../context/RealtimeContext';
 import { colors, radius, shadows, typography } from '../../theme';
+
+let mediaDevices, RTCIceCandidate, RTCPeerConnection, RTCSessionDescription, RTCView;
+try {
+  const WebRTC = require('react-native-webrtc');
+  mediaDevices = WebRTC.mediaDevices;
+  RTCIceCandidate = WebRTC.RTCIceCandidate;
+  RTCPeerConnection = WebRTC.RTCPeerConnection;
+  RTCSessionDescription = WebRTC.RTCSessionDescription;
+  RTCView = WebRTC.RTCView;
+} catch (e) {
+  // WebRTC native module not available — calls will gracefully fail
+}
 
 const callTitle = (call = {}) => {
   if (call.callType === 'virtual_tour') return 'Virtual property tour';

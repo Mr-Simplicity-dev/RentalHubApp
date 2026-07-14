@@ -34,9 +34,7 @@ const BrandSplash = () => {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor={colors.navy} />
-      <View style={styles.glowOne} />
-      <View style={styles.glowTwo} />
+      <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
       <Animated.View style={[styles.brand, { opacity, transform: [{ scale }] }]}>
         <Image source={logo} style={styles.logo} resizeMode="contain" />
         <Text style={[styles.name, { fontSize: scaleFont(34) }]}>RentalHub</Text>
@@ -52,30 +50,10 @@ const BrandSplash = () => {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    backgroundColor: colors.navy,
+    backgroundColor: colors.white,
     flex: 1,
     justifyContent: 'center',
     overflow: 'hidden',
-  },
-  glowOne: {
-    backgroundColor: colors.blue,
-    borderRadius: 220,
-    height: 360,
-    opacity: 0.2,
-    position: 'absolute',
-    right: -180,
-    top: -100,
-    width: 360,
-  },
-  glowTwo: {
-    backgroundColor: colors.blueBright,
-    borderRadius: 180,
-    bottom: -170,
-    height: 320,
-    left: -160,
-    opacity: 0.13,
-    position: 'absolute',
-    width: 320,
   },
   brand: {
     alignItems: 'center',
@@ -86,21 +64,21 @@ const styles = StyleSheet.create({
     width: 112,
   },
   name: {
-    color: colors.white,
+    color: colors.navy,
     fontFamily: typography.bold,
     fontSize: 34,
     letterSpacing: -1,
     marginTop: 20,
   },
   tagline: {
-    color: '#B8C8E3',
+    color: colors.muted,
     fontFamily: typography.medium,
     fontSize: 14,
     letterSpacing: 0.2,
     marginTop: 8,
   },
   loadingTrack: {
-    backgroundColor: 'rgba(255,255,255,0.14)',
+    backgroundColor: 'rgba(7, 26, 61, 0.12)',
     borderRadius: 3,
     bottom: 64,
     height: 3,
