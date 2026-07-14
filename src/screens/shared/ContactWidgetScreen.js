@@ -188,8 +188,8 @@ const ContactWidgetScreen = ({ navigation }) => {
     const poll = async () => {
       try {
         const res = await supportService.getTypingStatus(viewingContactTicket.id, lookupEmail.trim());
-        setAdminTypingName(res.data?.typing?.userName || null);
-        setAdminViewingName(res.data?.viewing?.userName || null);
+        setAdminTypingName(res.typing?.userName || null);
+        setAdminViewingName(res.viewing?.userName || null);
       } catch {}
     };
     poll();
