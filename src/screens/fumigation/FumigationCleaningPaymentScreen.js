@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
+  Linking,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
@@ -48,14 +49,11 @@ const FumigationCleaningPaymentScreen = ({ route, navigation }) => {
           });
         }
         if (response.data?.authorization_url) {
-          navigation.navigate('WebRoute', {
-            url: response.data.authorization_url,
-            title: 'Fumigation Payment',
-            paymentRecovery: {
-              flow: 'fumigation',
-              reference,
-              bookingId,
-            },
+          await Linking.openURL(response.data.authorization_url);
+          Toast.show({
+            type: 'info',
+            text1: 'Paystack opened',
+            text2: 'Complete payment securely, then return to RentalHub.',
           });
         } else if (reference) {
           verifyPayment(reference);

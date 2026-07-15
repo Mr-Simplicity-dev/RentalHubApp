@@ -21,6 +21,11 @@ export const supportService = {
     return response.data;
   },
 
+  getTicketContext: async (ticketId) => {
+    const response = await api.get(`/support/tickets/${ticketId}/context`);
+    return response.data;
+  },
+
   replyToTicket: async (ticketId, message, file) => {
     const body = file
       ? (() => {
@@ -32,6 +37,80 @@ export const supportService = {
       : { message };
     const config = file ? { headers: { 'Content-Type': 'multipart/form-data' } } : {};
     const response = await api.post(`/support/tickets/${ticketId}/reply`, body, config);
+    return response.data;
+  },
+
+  editReply: async (ticketId, replyId, message) => {
+    const response = await api.patch(`/support/tickets/${ticketId}/reply/${replyId}`, { message });
+    return response.data;
+  },
+
+  deleteReply: async (ticketId, replyId) => {
+    const response = await api.delete(`/support/tickets/${ticketId}/reply/${replyId}`);
+    return response.data;
+  },
+
+  markReplyRead: async (ticketId, replyId) => {
+    const response = await api.patch(`/support/tickets/${ticketId}/reply/${replyId}/read`);
+    return response.data;
+  },
+
+  sendTyping: async (ticketId) => {
+    const response = await api.post(`/support/tickets/${ticketId}/typing`);
+    return response.data;
+  },
+
+  assignTicket: async (ticketId, assignedTo) => {
+    const payload = assignedTo ? { assigned_to: assignedTo } : {};
+    const response = await api.patch(`/support/tickets/${ticketId}/assign`, payload);
+    return response.data;
+  },
+
+  takeoverTicket: async (ticketId) => {
+    const response = await api.post(`/support/tickets/${ticketId}/takeover`);
+    return response.data;
+  },
+
+  resolveTicket: async (ticketId, resolutionSummary = '') => {
+    const response = await api.patch(`/support/tickets/${ticketId}/resolve`, {
+      resolution_summary: resolutionSummary,
+    });
+    return response.data;
+  },
+
+  escalateToDepartment: async (ticketId, department, note = '') => {
+    const response = await api.post(`/support/tickets/${ticketId}/escalate-department`, {
+      department,
+      note,
+    });
+    return response.data;
+  },
+
+  updateEscalationStatus: async (ticketId, status, note = '') => {
+    const response = await api.patch(`/support/tickets/${ticketId}/escalation-status`, {
+      status,
+      note,
+    });
+    return response.data;
+  },
+
+  getInternalNotes: async (ticketId, params = {}) => {
+    const response = await api.get(`/support/tickets/${ticketId}/internal-notes`, { params });
+    return response.data;
+  },
+
+  addInternalNote: async (ticketId, message) => {
+    const response = await api.post(`/support/tickets/${ticketId}/internal-notes`, { message });
+    return response.data;
+  },
+
+  editInternalNote: async (ticketId, noteId, message) => {
+    const response = await api.patch(`/support/tickets/${ticketId}/internal-notes/${noteId}`, { message });
+    return response.data;
+  },
+
+  deleteInternalNote: async (ticketId, noteId) => {
+    const response = await api.delete(`/support/tickets/${ticketId}/internal-notes/${noteId}`);
     return response.data;
   },
 

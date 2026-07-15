@@ -960,11 +960,11 @@ const DashboardScreen = ({ navigation }) => {
           onPress={() => navigation.navigate('Careers')}
         />
         <ActionRow
-          title="Additional web tools"
-          subtitle="Temporary access to features still being converted to native screens."
-          icon="globe-outline"
-          badge="Legacy"
-          onPress={() => navigation.navigate('WebFeatures')}
+          title="More app tools"
+          subtitle="Open role-aware RentalHub tools from one native shortcut list."
+          icon="apps-outline"
+          badge="Native"
+          onPress={() => navigation.navigate('NativeTools')}
         />
       </DashboardSection>
 

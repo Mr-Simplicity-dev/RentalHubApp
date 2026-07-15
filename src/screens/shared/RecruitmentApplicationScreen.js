@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
+  Linking,
   ScrollView,
   StyleSheet,
   Text,
@@ -97,18 +98,12 @@ const RecruitmentApplicationScreen = ({ route, navigation }) => {
         });
       }
       if (authorizationUrl) {
-        navigation.navigate('WebRoute', {
-          url: authorizationUrl,
-          title: 'Recruitment Payment',
-          paymentRecovery: {
-            flow: 'recruitment',
-            reference,
-            applicationId,
-            email: application?.email_address || route?.params?.email || '',
-            referenceNumber: application?.reference_number || route?.params?.referenceNumber || '',
-          },
+        await Linking.openURL(authorizationUrl);
+        Toast.show({
+          type: 'info',
+          text1: 'Paystack opened',
+          text2: 'Complete payment securely, then return to RentalHub.',
         });
-        Toast.show({ type: 'success', text1: 'Payment opened', text2: 'Complete the payment and then verify it.' });
       } else {
         Toast.show({ type: 'error', text1: 'Payment unavailable', text2: 'No payment link was returned.' });
       }

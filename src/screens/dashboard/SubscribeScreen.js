@@ -2,6 +2,7 @@ import React, { useEffect, useLayoutEffect, useState } from 'react';
 import {
   ActivityIndicator,
   RefreshControl,
+  Linking,
   ScrollView,
   StyleSheet,
   Text,
@@ -71,19 +72,11 @@ const SubscribeScreen = ({ navigation }) => {
         });
       }
       if (url) {
-        navigation.navigate('WebRoute', {
-          url,
-          title: 'Subscription Payment',
-          paymentRecovery: {
-            flow: 'subscription',
-            reference,
-            planId,
-          },
-        });
+        await Linking.openURL(url);
         Toast.show({
           type: 'info',
-          text1: 'Complete your payment',
-          text2: 'Return to RentalHub when Paystack confirms your payment.',
+          text1: 'Paystack opened',
+          text2: 'Complete payment securely, then return to RentalHub.',
         });
       } else {
         Toast.show({

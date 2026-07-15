@@ -1,7 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
-  ActivityIndicator,
-  Alert,
   Image,
   Linking,
   StyleSheet,
@@ -10,7 +8,6 @@ import {
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { WebView } from 'react-native-webview';
 import Toast from 'react-native-toast-message';
 import api from '../../services/api';
 import { colors, radius, shadows, typography } from '../../theme';
@@ -24,18 +21,9 @@ const PLACEMENTS = {
   properties_inline: 'properties_inline',
 };
 
-const videoHtml = (src, poster) => `<!DOCTYPE html>
-<html><head><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
-<style>*{margin:0;padding:0}body{background:#000;display:flex;align-items:center;justify-content:center;height:100vh}
-video{width:100%;height:100%;object-fit:cover}
-</style></head><body>
-<video src="${encodeURI(src)}"${poster ? ` poster="${encodeURI(poster)}"` : ''} autoplay loop playsinline webkit-playsinline style="max-height:100vh">
-</video></body></html>`;
-
 const AdSpace = ({ placement, limit = 10, onRefresh }) => {
   const [ads, setAds] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [mutedAds, setMutedAds] = useState({});
   const trackedRef = useRef(new Set());
 
   const loadAds = useCallback(async () => {
@@ -82,14 +70,10 @@ const AdSpace = ({ placement, limit = 10, onRefresh }) => {
   if (loading) return null;
   if (!ads.length) return null;
 
-  const toggleSound = (adId) => {
-    setMutedAds((prev) => ({ ...prev, [adId]: !prev[adId] }));
-  };
-
   const handlePress = (ad) => {
     if (!ad.id) return;
     api.post(`/ads/${ad.id}/click`).catch(() => {});
-    const url = ad.target_url;
+    const url = ad.target_url || ad.video_url;
     if (/^https?:\/\//i.test(String(url))) {
       Linking.openURL(url).catch(() => {
         Toast.show({ type: 'error', text1: 'Could not open ad link' });
@@ -108,27 +92,21 @@ const AdSpace = ({ placement, limit = 10, onRefresh }) => {
         >
           {ad.media_type === 'video' && ad.video_url ? (
             <View style={styles.videoWrap}>
-              <WebView
-                source={{ html: videoHtml(ad.video_url, ad.video_thumbnail) }}
-                style={styles.video}
-                scrollEnabled={false}
-                bounces={false}
-                javaScriptEnabled
-                allowsInlineMediaPlayback
-                mediaPlaybackRequiresUserAction
-                mixedContentMode="never"
-              />
-              <TouchableOpacity
-                style={styles.soundToggle}
-                onPress={() => toggleSound(ad.id)}
-                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-              >
-                <Icon
-                  name={mutedAds[ad.id] ? 'volume-mute-outline' : 'volume-high-outline'}
-                  size={16}
-                  color={colors.white}
+              {ad.video_thumbnail || ad.image_url ? (
+                <Image
+                  source={{ uri: ad.video_thumbnail || ad.image_url }}
+                  style={styles.videoPoster}
+                  resizeMode="cover"
                 />
-              </TouchableOpacity>
+              ) : (
+                <View style={styles.videoPlaceholder}>
+                  <Icon name="videocam-outline" size={28} color={colors.white} />
+                </View>
+              )}
+              <View style={styles.playBadge}>
+                <Icon name="play" size={16} color={colors.white} />
+                <Text style={styles.playText}>Play video</Text>
+              </View>
             </View>
           ) : ad.image_url ? (
             <Image
@@ -180,19 +158,32 @@ const styles = StyleSheet.create({
     height: 180,
     position: 'relative',
   },
-  video: {
-    backgroundColor: colors.ink,
+  videoPoster: {
+    height: 180,
+    width: '100%',
   },
-  soundToggle: {
+  videoPlaceholder: {
+    alignItems: 'center',
+    backgroundColor: colors.ink,
+    height: 180,
+    justifyContent: 'center',
+  },
+  playBadge: {
     alignItems: 'center',
     backgroundColor: 'rgba(0,0,0,0.55)',
-    borderRadius: 18,
+    borderRadius: radius.pill,
     bottom: 8,
-    height: 32,
-    justifyContent: 'center',
+    flexDirection: 'row',
+    gap: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 7,
     position: 'absolute',
     right: 8,
-    width: 32,
+  },
+  playText: {
+    color: colors.white,
+    fontFamily: typography.semibold,
+    fontSize: 11,
   },
   image: {
     height: 160,

@@ -94,7 +94,7 @@ const INFO_PAGES = {
     title: 'Privacy summary',
     subtitle: 'How RentalHub thinks about user data in plain language.',
     icon: 'lock-closed-outline',
-    notice: 'This is a mobile summary. The full legal text remains available through the website until fully converted.',
+    notice: 'This is a mobile summary for quick reading. Use official RentalHub legal documents for final wording.',
     sections: [
       {
         title: 'Data handling',
@@ -111,7 +111,7 @@ const INFO_PAGES = {
     title: 'Terms summary',
     subtitle: 'A readable mobile summary of platform expectations.',
     icon: 'document-text-outline',
-    notice: 'This is a convenience summary. The full terms page remains the source of final legal wording.',
+    notice: 'This is a convenience summary. Official RentalHub terms remain the source of final legal wording.',
     sections: [
       {
         title: 'Platform expectations',
@@ -133,7 +133,7 @@ const INFO_PAGES = {
         title: 'Location discovery',
         items: [
           'Use Browse Properties to filter by state, city and area.',
-          'Location pages on web have deeper SEO content; the app focuses on searchable listings.',
+          'The app focuses on searchable listings, saved locations and practical location guidance.',
         ],
       },
     ],

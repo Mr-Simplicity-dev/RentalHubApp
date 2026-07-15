@@ -7,8 +7,7 @@ $Libraries = @(
     @{ Name = "rngesturehandler_codegen"; Pkg = "react-native-gesture-handler";               HasComponents = $true  },
     @{ Name = "RNImagePickerSpec";        Pkg = "react-native-image-picker";                  HasComponents = $false },
     @{ Name = "RNKeychainSpec";           Pkg = "react-native-keychain";                      HasComponents = $false },
-    @{ Name = "RNVectorIconsSpec";        Pkg = "react-native-vector-icons";                  HasComponents = $false },
-    @{ Name = "RNCWebViewSpec";           Pkg = "react-native-webview";                       HasComponents = $true  }
+    @{ Name = "RNVectorIconsSpec";        Pkg = "react-native-vector-icons";                  HasComponents = $false }
 )
 
 function Create-CodegenDir {

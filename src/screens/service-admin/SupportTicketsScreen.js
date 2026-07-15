@@ -60,7 +60,7 @@ const SupportTicketsScreen = ({ navigation }) => {
 
       <DashboardNotice
         title="Conversation tools"
-        message="The list is native now. Deep reply/edit/internal-note tools still open through the secure web workflow until their full mobile composer is converted."
+        message="Open any ticket for native replies, attachments, assignment, escalation, resolution and internal notes."
       />
 
       <DashboardSection title="Latest tickets">

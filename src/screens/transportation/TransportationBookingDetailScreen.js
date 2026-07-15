@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
+  Linking,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
@@ -93,14 +94,11 @@ const TransportationBookingDetailScreen = ({ route, navigation }) => {
             bookingId,
           });
         }
-        navigation.navigate('WebRoute', {
-          url: response.data.authorization_url,
-          title: 'Transport Payment',
-          paymentRecovery: {
-            flow: 'transportation',
-            reference,
-            bookingId,
-          },
+        await Linking.openURL(response.data.authorization_url);
+        Toast.show({
+          type: 'info',
+          text1: 'Paystack opened',
+          text2: 'Complete payment securely, then return to RentalHub.',
         });
       } else {
         Toast.show({ type: 'error', text1: response?.message || 'Payment initialization failed' });

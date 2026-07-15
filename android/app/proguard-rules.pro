@@ -26,9 +26,6 @@
 # react-native-safe-area-context
 -keep class com.th3rdwave.safeareacontext.** { *; }
 
-# react-native-webview
--keep class com.reactnativecommunity.webview.** { *; }
-
 # react-native-async-storage
 -keep class com.reactnativecommunity.asyncstorage.** { *; }
 

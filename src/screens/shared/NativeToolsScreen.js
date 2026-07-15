@@ -13,7 +13,13 @@ const makePublicFeatures = () => [
   { label: 'Contact Support', path: '/contact-widget' },
   { label: 'WhatsApp Assistant', path: '/whatsapp-bot' },
   { label: 'Lawyers Directory', path: '/lawyers' },
+  { label: 'Legal Support', path: '/legal-support' },
   { label: 'Properties', path: '/properties' },
+  { label: 'Transportation Booking', path: '/transportation/book' },
+  { label: 'Fumigation & Cleaning Booking', path: '/fumigation-cleaning/booking' },
+  { label: 'Fumigation & Cleaning Catalog', path: '/fumigation-cleaning/catalog' },
+  { label: 'About RentalHub', path: '/about' },
+  { label: 'Support Centre', path: '/support' },
   { label: 'Verify Email', path: '/verify-email' },
   { label: 'Verify Phone', path: '/verify-phone' },
   { label: 'Forgot Password', path: '/forgot-password' },
@@ -37,6 +43,12 @@ const makeProtectedFeatures = (userType) => {
     { label: 'Subscribe', path: '/subscribe' },
     { label: 'Settings', path: '/settings' },
     { label: 'Dashboard', path: '/dashboard' },
+    { label: 'Support Centre', path: '/support' },
+    { label: 'Transport Bookings', path: '/transportation/bookings' },
+    { label: 'Fumigation Bookings', path: '/fumigation-cleaning/bookings' },
+    { label: 'My Disputes', path: '/my-disputes' },
+    { label: 'Damage Reports', path: '/my-damage-reports' },
+    { label: 'Subscribed Properties', path: '/subscribed-properties' },
     { label: 'Platform Ratings', path: '/platform-ratings' },
     { label: 'Verification Status', path: '/verification-status' },
   ];
@@ -53,6 +65,9 @@ const makeProtectedFeatures = (userType) => {
       { label: 'Admin Applications', path: '/admin/applications' },
       { label: 'Admin Verifications', path: '/admin/verifications' },
       { label: 'Admin Compliance', path: '/admin/compliance' },
+      { label: 'Inspections', path: '/admin/inspections' },
+      { label: 'Evidence Verifications', path: '/admin/evidence-verifications' },
+      { label: 'Ledger', path: '/admin/ledger' },
       { label: 'Admin Agent Management', path: '/admin/agents' },
       { label: 'Admin Financial Dashboard', path: '/admin/financial-dashboard' },
       { label: 'Admin State Dashboard', path: '/admin/state-dashboard' },
@@ -109,6 +124,12 @@ const makeProtectedFeatures = (userType) => {
       { label: 'Admin Verifications', path: '/admin/verifications' },
       { label: 'Admin Compliance', path: '/admin/compliance' },
       { label: 'Admin Agent Management', path: '/admin/agents' },
+      { label: 'SEO Dashboard', path: '/admin/seo' },
+      { label: 'Support Governance', path: '/super-admin/support-governance' },
+      { label: 'Inspections', path: '/admin/inspections' },
+      { label: 'Evidence Verifications', path: '/admin/evidence-verifications' },
+      { label: 'Ledger', path: '/admin/ledger' },
+      { label: 'Withdrawals', path: '/admin/withdrawals' },
       { label: 'Admin Monitor', path: '/admin/monitor' },
       { label: 'Live Moderation', path: '/admin/live-moderation' },
       { label: 'Broadcast (SMS/Email)', path: '/super-admin?tab=broadcast' },
@@ -205,6 +226,8 @@ const makeProtectedFeatures = (userType) => {
     return [
       ...base,
       { label: 'Lawyer Dashboard', path: '/lawyer' },
+      { label: 'State Lawyer Dashboard', path: '/lawyer/state' },
+      { label: 'Super Lawyer Dashboard', path: '/lawyer/super' },
       { label: 'Case Verification', path: '/verify-case' },
     ];
   }
@@ -225,7 +248,7 @@ const makeProtectedFeatures = (userType) => {
   return base;
 };
 
-const WebFeaturesScreen = ({ navigation }) => {
+const NativeToolsScreen = ({ navigation }) => {
   const { user, isAuthenticated } = useContext(AuthContext);
 
   const publicFeatures = useMemo(() => makePublicFeatures(), []);
@@ -265,9 +288,17 @@ const WebFeaturesScreen = ({ navigation }) => {
     '/': usesMainTabs
       ? { name: 'MainTabs', params: { screen: 'HomeTab' } }
       : { name: 'Home' },
+    '/about': { name: 'AboutUs' },
     '/lawyers': { name: 'LawyersDirectory' },
     '/legal-support': { name: 'LegalSupport' },
     '/properties': { name: 'PropertyList' },
+    '/list-property': { name: 'AddProperty' },
+    '/transportation/book': { name: 'TransportationBooking' },
+    '/transportation/bookings': { name: 'TransportationBookings' },
+    '/fumigation-cleaning/catalog': { name: 'FumigationCleaningCatalog' },
+    '/fumigation-cleaning/booking': { name: 'FumigationCleaningBooking' },
+    '/fumigation-cleaning/bookings': { name: 'FumigationCleaningBookings' },
+    '/support': { name: 'Support' },
     '/verify-email': { name: 'VerifyEmail' },
     '/verify-phone': { name: 'VerifyPhone' },
     '/forgot-password': { name: 'ForgotPassword' },
@@ -305,9 +336,14 @@ const WebFeaturesScreen = ({ navigation }) => {
     '/admin/applications': { name: 'AdminApplications' },
     '/admin/verifications': { name: 'AdminVerifications' },
     '/admin/compliance': { name: 'AdminCompliance' },
+    '/admin/inspections': { name: 'AdminInspections' },
+    '/admin/evidence-verifications': { name: 'AdminEvidenceVerifications' },
+    '/admin/ledger': { name: 'AdminLedger' },
     '/admin/agents': { name: 'AdminAgentAssignments' },
     '/admin/financial-dashboard': { name: 'FinancialAdminDashboard' },
     '/admin/state-dashboard': { name: 'StateAdminDashboard' },
+    '/admin/withdrawals': { name: 'FinancialWithdrawals' },
+    '/admin/seo': { name: 'SuperAdminSeo' },
     '/admin/monitor': { name: 'SuperAdminDashboard', params: { initialPanel: 'monitor' } },
     '/admin/live-moderation': { name: 'SuperAdminDashboard', params: { initialPanel: 'moderation' } },
     '/super-admin?tab=broadcast': { name: 'SuperAdminDashboard', params: { initialPanel: 'broadcast' } },
@@ -357,6 +393,7 @@ const WebFeaturesScreen = ({ navigation }) => {
     ],
     '/admin/fumigation-cleaning/super#fumigation-bookings': { name: 'ServiceBookings', params: { type: 'fumigation' } },
     '/super-admin': { name: 'SuperAdminDashboard' },
+    '/super-admin/support-governance': { name: 'SuperAdminSupportGovernance' },
     '/super-admin/transportation': { name: 'SuperAdminTransportationDashboard' },
     '/super-admin/fumigation-cleaning': { name: 'SuperAdminFumigationDashboard' },
     '/admin/super-financial-dashboard': [
@@ -369,7 +406,12 @@ const WebFeaturesScreen = ({ navigation }) => {
     '/my-properties': { name: 'MyProperties' },
     '/add-property': { name: 'AddProperty' },
     '/lawyer': { name: 'LawyerDashboard' },
+    '/lawyer/state': { name: 'StateLawyerDashboard' },
+    '/lawyer/super': { name: 'SuperLawyerDashboard' },
     '/verify-case': { name: 'VerifyCase' },
+    '/my-disputes': { name: 'MyDisputes' },
+    '/my-damage-reports': { name: 'MyDamageReports' },
+    '/subscribed-properties': { name: 'SubscribedProperties' },
     '/platform-ratings': { name: 'PlatformRatings' },
     '/contact-widget': { name: 'ContactWidget' },
     '/whatsapp-bot': { name: 'WhatsAppBot' },
@@ -432,4 +474,4 @@ const WebFeaturesScreen = ({ navigation }) => {
   );
 };
 
-export default WebFeaturesScreen;
+export default NativeToolsScreen;
