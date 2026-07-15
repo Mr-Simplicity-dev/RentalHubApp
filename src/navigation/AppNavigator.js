@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, AppState, BackHandler, Linking, Platform, View } from 'react-native';
+import React, { useContext, useEffect } from 'react';
+import { ActivityIndicator, AppState, BackHandler, Linking, Platform } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { navigationRef } from './navigationRef';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -32,6 +32,7 @@ import PropertyDetailScreen from '../screens/home/PropertyDetailScreen';
 import PropertyAlertRequestScreen from '../screens/home/PropertyAlertRequestScreen';
 import LocationInfoScreen from '../screens/home/LocationInfoScreen';
 
+import DashboardScreen from '../screens/dashboard/DashboardScreen';
 import ProfileScreen from '../screens/dashboard/ProfileScreen';
 import SavedPropertiesScreen from '../screens/dashboard/SavedPropertiesScreen';
 import MyPropertiesScreen from '../screens/dashboard/MyPropertiesScreen';
@@ -53,6 +54,7 @@ import VerifyCaseScreen from '../screens/shared/VerifyCaseScreen';
 import WebFeaturesScreen from '../screens/shared/WebFeaturesScreen';
 import WebRouteScreen from '../screens/shared/WebRouteScreen';
 
+import AdminDashboardScreen from '../screens/admin/AdminDashboardScreen';
 import AdminUsersScreen from '../screens/admin/AdminUsersScreen';
 import AdminPropertiesScreen from '../screens/admin/AdminPropertiesScreen';
 import AdminApplicationsScreen from '../screens/admin/AdminApplicationsScreen';
@@ -76,6 +78,7 @@ import FinancialRevenueReportScreen from '../screens/financial-admin/FinancialRe
 import FinancialTransactionsScreen from '../screens/financial-admin/FinancialTransactionsScreen';
 import FinancialWithdrawalsScreen from '../screens/financial-admin/FinancialWithdrawalsScreen';
 import FinancialCommissionsScreen from '../screens/financial-admin/FinancialCommissionsScreen';
+import FinancialControlsScreen from '../screens/financial-admin/FinancialControlsScreen';
 
 // ========== State Admin ==========
 import StateAdminDashboardScreen from '../screens/state-admin/StateAdminDashboardScreen';
@@ -83,6 +86,7 @@ import StateAdminMigrationsScreen from '../screens/state-admin/StateAdminMigrati
 
 // ========== Service Operations Admin ==========
 import ServiceBookingsScreen from '../screens/service-admin/ServiceBookingsScreen';
+import ServiceOperationsDashboardScreen from '../screens/service-admin/ServiceOperationsDashboardScreen';
 import SupportTicketsScreen from '../screens/service-admin/SupportTicketsScreen';
 import SupportTicketDetailScreen from '../screens/service-admin/SupportTicketDetailScreen';
 import FumigationComplianceScreen from '../screens/service-admin/FumigationComplianceScreen';
@@ -109,6 +113,7 @@ import VerificationStatusScreen from '../screens/shared/VerificationStatusScreen
 import CareersScreen from '../screens/shared/CareersScreen';
 import InterviewScreen from '../screens/shared/InterviewScreen';
 import RecruitmentApplicationScreen from '../screens/shared/RecruitmentApplicationScreen';
+import RecruitmentAdminScreen from '../screens/shared/RecruitmentAdminScreen';
 import PublicInfoScreen from '../screens/shared/PublicInfoScreen';
 import SettingsScreen from '../screens/settings/SettingsScreen';
 
@@ -131,6 +136,7 @@ import AdminFumigationStateDashboardScreen from '../screens/admin/AdminFumigatio
 import AdminSupportDashboardScreen from '../screens/admin/AdminSupportDashboardScreen';
 import AdminPoolScreen from '../screens/service-admin/AdminPoolScreen';
 import ActivityFeedScreen from '../screens/service-admin/ActivityFeedScreen';
+import SuperAdminDashboardScreen from '../screens/admin/SuperAdminDashboardScreen';
 import SuperAdminSeoDashboardScreen from '../screens/admin/SuperAdminSeoDashboardScreen';
 import SuperAdminSupportGovernanceScreen from '../screens/admin/SuperAdminSupportGovernanceScreen';
 import SuperAdminTransportationDashboardScreen from '../screens/admin/SuperAdminTransportationDashboardScreen';
@@ -140,38 +146,6 @@ import StateLawyerDashboardScreen from '../screens/lawyer/StateLawyerDashboardSc
 import SuperLawyerDashboardScreen from '../screens/lawyer/SuperLawyerDashboardScreen';
 const Stack = (Platform.OS === 'web' ? createStackNavigator : createNativeStackNavigator)();
 const Tab = createBottomTabNavigator();
-
-const createLazyScreen = (loadScreen) => {
-  let LoadedScreen;
-
-  return function LazyLoadedScreen(props) {
-    const [Component, setComponent] = useState(() => LoadedScreen);
-
-    useEffect(() => {
-      if (LoadedScreen) return;
-      const nextModule = loadScreen();
-      LoadedScreen = nextModule.default || nextModule;
-      setComponent(() => LoadedScreen);
-    }, []);
-
-    if (!Component) {
-      return (
-        <View style={{ alignItems: 'center', backgroundColor: colors.surface, flex: 1, justifyContent: 'center' }}>
-          <ActivityIndicator color={colors.blue} size="large" />
-        </View>
-      );
-    }
-
-    return <Component {...props} />;
-  };
-};
-
-const DashboardScreen = createLazyScreen(() => require('../screens/dashboard/DashboardScreen'));
-const AdminDashboardScreen = createLazyScreen(() => require('../screens/admin/AdminDashboardScreen'));
-const SuperAdminDashboardScreen = createLazyScreen(() => require('../screens/admin/SuperAdminDashboardScreen'));
-const FinancialControlsScreen = createLazyScreen(() => require('../screens/financial-admin/FinancialControlsScreen'));
-const ServiceOperationsDashboardScreen = createLazyScreen(() => require('../screens/service-admin/ServiceOperationsDashboardScreen'));
-const RecruitmentAdminScreen = createLazyScreen(() => require('../screens/shared/RecruitmentAdminScreen'));
 
 const screenOptions = {
   headerTitleAlign: 'center',
