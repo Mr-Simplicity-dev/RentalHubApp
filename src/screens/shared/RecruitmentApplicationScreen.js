@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
-  Linking,
   ScrollView,
   StyleSheet,
   Text,
@@ -16,6 +15,8 @@ import FilePreviewCard from '../../components/common/FilePreviewCard';
 import recruitmentService from '../../services/recruitmentService';
 import { getErrorMessage } from '../../utils/http';
 import { savePendingPayment } from '../../services/paymentRecoveryService';
+import useNativePaystackCheckout from '../../hooks/useNativePaystackCheckout';
+import { hasPaystackCheckout } from '../../services/nativePaymentService';
 
 const DOCUMENT_FIELDS = [
   { key: 'cv', label: 'CV / Resume' },
@@ -38,6 +39,7 @@ const RecruitmentApplicationScreen = ({ route, navigation }) => {
   const [paymentReferenceInput, setPaymentReferenceInput] = useState('');
   const [selectedFiles, setSelectedFiles] = useState({});
   const [error, setError] = useState('');
+  const { openNativeCheckout, NativePaystackCheckoutModal } = useNativePaystackCheckout();
 
   const applicationId = application?.id || route?.params?.applicationId;
 
@@ -86,7 +88,6 @@ const RecruitmentApplicationScreen = ({ route, navigation }) => {
         reference_number: application?.reference_number || route?.params?.referenceNumber || '',
       });
       const paymentData = response?.data?.data || response?.data || {};
-      const authorizationUrl = paymentData.authorization_url;
       const reference = paymentData.reference;
       if (reference) {
         await savePendingPayment({
@@ -97,13 +98,24 @@ const RecruitmentApplicationScreen = ({ route, navigation }) => {
           referenceNumber: application?.reference_number || route?.params?.referenceNumber || '',
         });
       }
-      if (authorizationUrl) {
-        await Linking.openURL(authorizationUrl);
-        Toast.show({
-          type: 'info',
-          text1: 'Paystack opened',
-          text2: 'Complete payment securely, then return to RentalHub.',
+      if (hasPaystackCheckout(paymentData)) {
+        openNativeCheckout({
+          transaction: paymentData,
+          title: 'Pay application fee',
+          subtitle: 'Complete your recruitment application payment securely in the app.',
+          amountLabel: paymentData.amount ? `₦${Number(paymentData.amount).toLocaleString()}` : '',
+          onSuccess: (paymentResponse) =>
+            completeRecruitmentPayment(paymentResponse?.reference || reference),
+          onBrowserFallback: () => {
+            Toast.show({
+              type: 'info',
+              text1: 'Paystack checkout opened',
+              text2: 'Complete payment securely, then return to RentalHub.',
+            });
+          },
         });
+      } else if (reference) {
+        await completeRecruitmentPayment(reference);
       } else {
         Toast.show({ type: 'error', text1: 'Payment unavailable', text2: 'No payment link was returned.' });
       }
@@ -229,6 +241,25 @@ const RecruitmentApplicationScreen = ({ route, navigation }) => {
     }
   };
 
+  const completeRecruitmentPayment = async (reference) => {
+    if (!reference) return;
+
+    try {
+      setPaymentLoading(true);
+      const response = await recruitmentService.verifyPayment(reference);
+      const updatedApp = response?.data?.application || response?.data?.data?.application || null;
+      if (updatedApp) {
+        setApplication((prev) => ({ ...(prev || {}), ...updatedApp }));
+      }
+      setPaymentReferenceInput(reference);
+      Toast.show({ type: 'success', text1: 'Payment verified', text2: 'Your access code is ready.' });
+    } catch (err) {
+      setError(getErrorMessage(err, 'Payment verification failed'));
+    } finally {
+      setPaymentLoading(false);
+    }
+  };
+
   if (loading) {
     return (
       <View style={styles.centered}>
@@ -239,6 +270,7 @@ const RecruitmentApplicationScreen = ({ route, navigation }) => {
   }
 
   return (
+    <>
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
       <Text style={styles.title}>Application progress</Text>
       <Text style={styles.subtitle}>Complete payment, unlock your application, and upload your documents.</Text>
@@ -332,6 +364,8 @@ const RecruitmentApplicationScreen = ({ route, navigation }) => {
         </TouchableOpacity>
       </View>
     </ScrollView>
+    {NativePaystackCheckoutModal}
+    </>
   );
 };
 

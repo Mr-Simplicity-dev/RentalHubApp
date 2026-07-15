@@ -28,7 +28,10 @@ import { useRealtime } from '../../context/RealtimeContext';
 import { applicationService } from '../../services/applicationService';
 import { messageService } from '../../services/messageService';
 import { paymentService } from '../../services/paymentService';
+import { recoverPayment, savePendingPayment } from '../../services/paymentRecoveryService';
 import { propertyService } from '../../services/propertyService';
+import useNativePaystackCheckout from '../../hooks/useNativePaystackCheckout';
+import { hasPaystackCheckout } from '../../services/nativePaymentService';
 import { colors, radius, shadows, typography } from '../../theme';
 import { getErrorMessage } from '../../utils/http';
 
@@ -54,6 +57,7 @@ const PropertyDetailScreen = ({ route, navigation }) => {
   const [latestDamageReport, setLatestDamageReport] = useState(null);
   const [showDamageCapture, setShowDamageCapture] = useState(false);
   const [requestingTour, setRequestingTour] = useState(false);
+  const { openNativeCheckout, NativePaystackCheckoutModal } = useNativePaystackCheckout();
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
@@ -188,13 +192,33 @@ const PropertyDetailScreen = ({ route, navigation }) => {
     setUnlocking(true);
     try {
       const response = await paymentService.initializePropertyUnlock(propertyId);
-      if (response?.data?.authorization_url) {
-        await Linking.openURL(response.data.authorization_url);
-        Toast.show({
-          type: 'info',
-          text1: 'Payment opened',
-          text2: 'Complete payment, then return and refresh the property.',
+      const reference = response?.data?.reference;
+      if (reference) {
+        await savePendingPayment({
+          flow: 'unlock',
+          reference,
+          propertyId,
         });
+      }
+
+      if (hasPaystackCheckout(response?.data)) {
+        openNativeCheckout({
+          transaction: response.data,
+          title: 'Unlock property',
+          subtitle: 'Pay securely to view the complete property details.',
+          amountLabel: response?.data?.amount ? `₦${Number(response.data.amount).toLocaleString()}` : '',
+          onSuccess: (paymentResponse) =>
+            completeUnlockPayment(paymentResponse?.reference || reference),
+          onBrowserFallback: () => {
+            Toast.show({
+              type: 'info',
+              text1: 'Paystack checkout opened',
+              text2: 'Complete payment securely, then return and refresh the property.',
+            });
+          },
+        });
+      } else if (reference) {
+        await completeUnlockPayment(reference);
       }
     } catch (error) {
       Toast.show({
@@ -204,6 +228,33 @@ const PropertyDetailScreen = ({ route, navigation }) => {
       });
     } finally {
       setUnlocking(false);
+    }
+  };
+
+  const completeUnlockPayment = async (reference) => {
+    if (!reference) return;
+
+    try {
+      const response = await recoverPayment({
+        reference,
+        fallbackFlow: 'unlock',
+      });
+      if (response?.success) {
+        Toast.show({ type: 'success', text1: 'Property unlocked' });
+        await loadProperty();
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: 'Verification failed',
+          text2: response?.message || 'Could not verify property unlock.',
+        });
+      }
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Verification failed',
+        text2: getErrorMessage(error, 'Could not verify property unlock.'),
+      });
     }
   };
 
@@ -589,6 +640,7 @@ const PropertyDetailScreen = ({ route, navigation }) => {
         propertyId={propertyId}
         visible={showDamageCapture}
       />
+      {NativePaystackCheckoutModal}
     </SafeAreaView>
   );
 };

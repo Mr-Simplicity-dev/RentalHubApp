@@ -2,7 +2,6 @@ import React, { useEffect, useLayoutEffect, useState } from 'react';
 import {
   ActivityIndicator,
   RefreshControl,
-  Linking,
   ScrollView,
   StyleSheet,
   Text,
@@ -14,7 +13,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import Button from '../../components/common/Button';
 import { paymentService } from '../../services/paymentService';
-import { savePendingPayment } from '../../services/paymentRecoveryService';
+import { recoverPayment, savePendingPayment } from '../../services/paymentRecoveryService';
+import useNativePaystackCheckout from '../../hooks/useNativePaystackCheckout';
+import { hasPaystackCheckout } from '../../services/nativePaymentService';
 import { colors, radius, shadows, typography } from '../../theme';
 import { getErrorMessage, pickList, pickObject } from '../../utils/http';
 
@@ -24,6 +25,7 @@ const SubscribeScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [loadingId, setLoadingId] = useState(null);
+  const { openNativeCheckout, NativePaystackCheckoutModal } = useNativePaystackCheckout();
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
@@ -62,7 +64,6 @@ const SubscribeScreen = ({ navigation }) => {
     setLoadingId(planId);
     try {
       const response = await paymentService.initializeSubscription(planId, 'paystack');
-      const url = response?.data?.authorization_url;
       const reference = response?.data?.reference;
       if (reference) {
         await savePendingPayment({
@@ -71,13 +72,25 @@ const SubscribeScreen = ({ navigation }) => {
           planId,
         });
       }
-      if (url) {
-        await Linking.openURL(url);
-        Toast.show({
-          type: 'info',
-          text1: 'Paystack opened',
-          text2: 'Complete payment securely, then return to RentalHub.',
+      if (hasPaystackCheckout(response?.data)) {
+        const selectedPlan = plans.find((plan) => String(plan.id) === String(planId));
+        openNativeCheckout({
+          transaction: response.data,
+          title: 'Pay subscription',
+          subtitle: 'Complete your membership payment securely in the app.',
+          amountLabel: selectedPlan?.amount ? `₦${Number(selectedPlan.amount).toLocaleString()}` : '',
+          onSuccess: (paymentResponse) =>
+            completeSubscriptionPayment(paymentResponse?.reference || reference),
+          onBrowserFallback: () => {
+            Toast.show({
+              type: 'info',
+              text1: 'Paystack checkout opened',
+              text2: 'Complete payment securely, then return to RentalHub.',
+            });
+          },
         });
+      } else if (reference) {
+        await completeSubscriptionPayment(reference);
       } else {
         Toast.show({
           type: 'success',
@@ -93,6 +106,33 @@ const SubscribeScreen = ({ navigation }) => {
       });
     } finally {
       setLoadingId(null);
+    }
+  };
+
+  const completeSubscriptionPayment = async (reference) => {
+    if (!reference) return;
+
+    try {
+      const response = await recoverPayment({
+        reference,
+        fallbackFlow: 'subscription',
+      });
+      if (response?.success) {
+        Toast.show({ type: 'success', text1: 'Subscription activated' });
+        await loadSubscriptionData({ refresh: true });
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: 'Verification failed',
+          text2: response?.message || 'Could not verify subscription payment.',
+        });
+      }
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Verification failed',
+        text2: getErrorMessage(error, 'Could not verify subscription payment.'),
+      });
     }
   };
 
@@ -240,6 +280,7 @@ const SubscribeScreen = ({ navigation }) => {
           </>
         )}
       </ScrollView>
+      {NativePaystackCheckoutModal}
     </SafeAreaView>
   );
 };

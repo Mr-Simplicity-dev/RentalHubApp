@@ -98,7 +98,7 @@ const WalletFundModal = ({
             </View>
 
             <Button
-              title={loading ? 'Redirecting...' : `Pay ₦${amount ? Number(amount).toLocaleString() : '0'}`}
+              title={loading ? 'Preparing payment...' : `Pay ₦${amount ? Number(amount).toLocaleString() : '0'}`}
               onPress={() => onSubmit?.(amount)}
               loading={loading}
               disabled={loading || !amount || Number(amount) < 100}

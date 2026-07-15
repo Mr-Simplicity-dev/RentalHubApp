@@ -1,7 +1,6 @@
 import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import {
   KeyboardAvoidingView,
-  Linking,
   Platform,
   ScrollView,
   StyleSheet,
@@ -17,6 +16,8 @@ import Button from '../../components/common/Button';
 import SelectField from '../../components/common/SelectField';
 import OptionPickerModal from '../../components/common/OptionPickerModal';
 import { propertyService } from '../../services/propertyService';
+import useNativePaystackCheckout from '../../hooks/useNativePaystackCheckout';
+import { hasPaystackCheckout } from '../../services/nativePaymentService';
 import { getErrorMessage, pickList, pickObject } from '../../utils/http';
 import { colors, radius, shadows, typography } from '../../theme';
 
@@ -57,6 +58,7 @@ const PropertyAlertRequestScreen = ({ route, navigation }) => {
   const [paymentState, setPaymentState] = useState({
     reference: paymentReference,
     authorizationUrl: '',
+    transaction: null,
   });
   const [form, setForm] = useState({
     full_name: route?.params?.full_name || '',
@@ -78,6 +80,7 @@ const PropertyAlertRequestScreen = ({ route, navigation }) => {
     [form.state_id, locationOptions]
   );
   const availableLgas = selectedState?.lgas || [];
+  const { openNativeCheckout, NativePaystackCheckoutModal } = useNativePaystackCheckout();
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
@@ -207,13 +210,25 @@ const PropertyAlertRequestScreen = ({ route, navigation }) => {
         setPaymentState({
           reference: responseData.reference,
           authorizationUrl: responseData.authorization_url,
+          transaction: responseData,
         });
-        await Linking.openURL(responseData.authorization_url);
-        Toast.show({
-          type: 'success',
-          text1: 'Payment started',
-          text2: 'Complete payment in browser, then return here and finish the request.',
-        });
+        if (hasPaystackCheckout(responseData)) {
+          openNativeCheckout({
+            transaction: responseData,
+            title: 'Pay property request',
+            subtitle: 'Complete your property alert request securely in the app.',
+            amountLabel: config.amount ? `₦${Number(config.amount).toLocaleString()}` : '',
+            onSuccess: (paymentResponse) =>
+              completePaidRequest(paymentResponse?.reference || responseData.reference),
+            onBrowserFallback: () => {
+              Toast.show({
+                type: 'info',
+                text1: 'Paystack checkout opened',
+                text2: 'Complete payment securely, then return here and finish the request.',
+              });
+            },
+          });
+        }
         return;
       }
 
@@ -253,6 +268,7 @@ const PropertyAlertRequestScreen = ({ route, navigation }) => {
       setPaymentState({
         reference: '',
         authorizationUrl: '',
+        transaction: null,
       });
 
       Toast.show({
@@ -272,6 +288,30 @@ const PropertyAlertRequestScreen = ({ route, navigation }) => {
     } finally {
       setPaymentLoading(false);
     }
+  };
+
+  const reopenPendingPayment = () => {
+    if (!paymentState.transaction && !paymentState.authorizationUrl) return;
+
+    openNativeCheckout({
+      transaction:
+        paymentState.transaction || {
+          reference: paymentState.reference,
+          authorization_url: paymentState.authorizationUrl,
+        },
+      title: 'Complete property request',
+      subtitle: 'Finish payment so we can submit your property alert request.',
+      amountLabel: config.amount ? `₦${Number(config.amount).toLocaleString()}` : '',
+      onSuccess: (paymentResponse) =>
+        completePaidRequest(paymentResponse?.reference || paymentState.reference),
+      onBrowserFallback: () => {
+        Toast.show({
+          type: 'info',
+          text1: 'Paystack checkout opened',
+          text2: 'Complete payment securely, then return and finish the request.',
+        });
+      },
+    });
   };
 
   return (
@@ -444,10 +484,10 @@ const PropertyAlertRequestScreen = ({ route, navigation }) => {
               style={styles.marginTop}
             />
             <Button
-              title="Reopen Payment Page"
+              title="Open Payment Options"
               variant="outline"
-              onPress={() => Linking.openURL(paymentState.authorizationUrl)}
-              disabled={!paymentState.authorizationUrl}
+              onPress={reopenPendingPayment}
+              disabled={!paymentState.authorizationUrl && !paymentState.transaction}
               style={styles.marginTop}
             />
           </View>
@@ -490,6 +530,7 @@ const PropertyAlertRequestScreen = ({ route, navigation }) => {
         getOptionLabel={(item) => String(item)}
         getOptionValue={(item) => String(item)}
       />
+      {NativePaystackCheckoutModal}
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

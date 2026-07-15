@@ -5,19 +5,21 @@ import {
   StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
-  Linking,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
 import { fumigationCleaningService } from '../../services/fumigationCleaningService';
 import { getErrorMessage } from '../../utils/http';
 import { recoverPayment, savePendingPayment } from '../../services/paymentRecoveryService';
+import useNativePaystackCheckout from '../../hooks/useNativePaystackCheckout';
+import { hasPaystackCheckout } from '../../services/nativePaymentService';
 
 const FumigationCleaningPaymentScreen = ({ route, navigation }) => {
   const { bookingId } = route.params;
   const [booking, setBooking] = useState(null);
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
+  const { openNativeCheckout, NativePaystackCheckoutModal } = useNativePaystackCheckout();
 
   useEffect(() => {
     loadBookingDetails();
@@ -48,12 +50,20 @@ const FumigationCleaningPaymentScreen = ({ route, navigation }) => {
             bookingId,
           });
         }
-        if (response.data?.authorization_url) {
-          await Linking.openURL(response.data.authorization_url);
-          Toast.show({
-            type: 'info',
-            text1: 'Paystack opened',
-            text2: 'Complete payment securely, then return to RentalHub.',
+        if (hasPaystackCheckout(response.data)) {
+          openNativeCheckout({
+            transaction: response.data,
+            title: 'Pay service booking',
+            subtitle: 'Complete your fumigation or cleaning booking with secure in-app card payment.',
+            amountLabel: booking?.total_price ? `₦${Number(booking.total_price).toLocaleString()}` : '',
+            onSuccess: (paymentResponse) => verifyPayment(paymentResponse?.reference || reference),
+            onBrowserFallback: () => {
+              Toast.show({
+                type: 'info',
+                text1: 'Paystack checkout opened',
+                text2: 'Complete payment securely, then return to RentalHub.',
+              });
+            },
           });
         } else if (reference) {
           verifyPayment(reference);
@@ -153,6 +163,7 @@ const FumigationCleaningPaymentScreen = ({ route, navigation }) => {
           {processing ? <ActivityIndicator color="#0284c7" /> : <Icon name="arrow-forward" size={20} color="#0284c7" />}
         </TouchableOpacity>
       </View>
+      {NativePaystackCheckoutModal}
     </View>
   );
 };

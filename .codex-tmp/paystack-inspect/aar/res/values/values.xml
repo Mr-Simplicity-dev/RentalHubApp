@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="pstk_lipa_steps">
+        <item>Open your M-PESA Menu</item>
+        <item>Select “Lipa na M-PESA“</item>
+        <item>Select “Pay Bill” or “Buy Goods“</item>
+        <item>Enter Business Number</item>
+        <item>Enter Account Number</item>
+        <item>Enter your M-PESA pin</item>
+        <item>You will receive a confirmation SMS from M-PESA once the payment is complete</item>
+    </string-array>
+    <string name="pstk_action_pay_with_channel">"Pay with %s"</string>
+    <string name="pstk_bank_authentication">Bank Authentication</string>
+    <string name="pstk_card">Card</string>
+    <string name="pstk_card_payment_3ds_auth_loading_title">Waiting for response from your card issuer</string>
+    <string name="pstk_card_payment_3ds_auth_start_title">Please click the button below to authenticate with your bank</string>
+    <string name="pstk_card_payment_3ds_btn_authenticate">Authenticate</string>
+    <string name="pstk_card_payment_3ds_checking_status">Checking transaction status</string>
+    <string name="pstk_card_payment_3ds_content_description">3DS payment</string>
+    <string name="pstk_card_payment_address_city_label">City</string>
+    <string name="pstk_card_payment_address_city_placeholder">Denver</string>
+    <string name="pstk_card_payment_address_postal_code_label">Postal Code</string>
+    <string name="pstk_card_payment_address_state_label">State</string>
+    <string name="pstk_card_payment_address_street_label">Street Address</string>
+    <string name="pstk_card_payment_address_street_placeholder">201 Spear Street</string>
+    <string name="pstk_card_payment_address_title">Enter your billing address to complete this payment</string>
+    <string name="pstk_card_payment_address_town_city_label">Town or City</string>
+    <string name="pstk_card_payment_address_zipcode_label">Zip Code</string>
+    <string name="pstk_card_payment_address_zipcode_placeholder">12345</string>
+    <string name="pstk_card_payment_authorize_payment">Authorize</string>
+    <string name="pstk_card_payment_cancel_transaction">Cancel</string>
+    <string name="pstk_card_payment_card_cvv_label">CVV</string>
+    <string name="pstk_card_payment_card_cvv_placeholder">123</string>
+    <string name="pstk_card_payment_card_expiry_error">Invalid card expiry</string>
+    <string name="pstk_card_payment_card_expiry_label">Card Expiry</string>
+    <string name="pstk_card_payment_card_expiry_placeholder">MM/YY</string>
+    <string name="pstk_card_payment_card_number_error">Invalid card number</string>
+    <string name="pstk_card_payment_card_number_label">Card Number</string>
+    <string name="pstk_card_payment_card_number_placeholder">0000 0000 0000 0000</string>
+    <string name="pstk_card_payment_enter_details_title">Enter your card details to pay</string>
+    <string name="pstk_card_payment_error_btn_try_another_card">Try another card</string>
+    <string name="pstk_card_payment_pin_instruction">Please enter your 4-digit card pin to authorize this payment</string>
+    <string name="pstk_card_payment_test_card_instruction">Use any of the options below to test the payment flow</string>
+    <string name="pstk_card_scheme_amex">American Express</string>
+    <string name="pstk_card_scheme_diners">Diners Club</string>
+    <string name="pstk_card_scheme_discover">Discover</string>
+    <string name="pstk_card_scheme_jcb">JCB</string>
+    <string name="pstk_card_scheme_maestro">Maestro</string>
+    <string name="pstk_card_scheme_mastercard">Mastercard</string>
+    <string name="pstk_card_scheme_verve">Verve</string>
+    <string name="pstk_card_scheme_visa">Visa</string>
+    <string name="pstk_checking_transaction_status">Checking transaction status</string>
+    <string name="pstk_choose_payment_method_title">Choose a payment method to continue</string>
+    <string name="pstk_clipboard_copy_message">Copied!</string>
+    <string name="pstk_close_icon">Close icon</string>
+    <string name="pstk_component_content_description_payment_secured">Payment secured by paystack</string>
+    <string name="pstk_component_pay_button_complete_payment">Complete Payment</string>
+    <string name="pstk_component_pay_button_pay_amount">Pay %1$s </string>
+    <string name="pstk_component_paystack_text">paystack</string>
+    <string name="pstk_could_not_start_transaction">We could not start this transaction</string>
+    <string name="pstk_date_of_birth_auth_logo">Date of birth authentication logo</string>
+    <string name="pstk_date_of_birth_day_label">Day</string>
+    <string name="pstk_date_of_birth_day_placeholder">01</string>
+    <string name="pstk_date_of_birth_month_label">Month</string>
+    <string name="pstk_date_of_birth_title">Verify your date of birth to use this bank account with Paystack</string>
+    <string name="pstk_date_of_birth_year_label">Year</string>
+    <string name="pstk_date_of_birth_year_placeholder">1994</string>
+    <string name="pstk_declined">Declined</string>
+    <string name="pstk_empty_state_charge_types">Unfortunately, there are no supported charge types</string>
+    <string name="pstk_error">Error</string>
+    <string name="pstk_from_lipa_steps_back_to_payment">Back to payment</string>
+    <string name="pstk_generic_error_msg">An error occurred</string>
+    <string name="pstk_how_to_lipa_steps">How to pay with Lipa na M-PESA</string>
+    <string name="pstk_icon_copy">Copy</string>
+    <string name="pstk_kenyan_flag_description">Kenyan Flag</string>
+    <string name="pstk_mpesa_countdown_prefix">"Payment is valid for "</string>
+    <string name="pstk_mpesa_offline_amount_label">AMOUNT</string>
+    <string name="pstk_mpesa_offline_completed_payment_button_text">I’ve completed the payment</string>
+    <string name="pstk_mpesa_offline_instruction">Use the details below to make the Lipa na M-PESA payment</string>
+    <string name="pstk_mpesa_offline_requery_error_message">We have not received your payment yet, if you have made the payment please click the button below.</string>
+    <string name="pstk_mpesa_offline_retry_payment_text">Retrying</string>
+    <string name="pstk_mpesa_offline_switch_text">Switching</string>
+    <string name="pstk_mpesa_offline_with_lipa_instruction">How to pay with Lipa na M-PESA</string>
+    <string name="pstk_mpesa_payment_generic_error_message">Unable to process. Please try again.</string>
+    <string name="pstk_mpesa_phone_number_instruction">Please enter your mobile money number to begin this payment</string>
+    <string name="pstk_mpesa_retry_offline">Retry with M-PESA Paybill</string>
+    <string name="pstk_mpesa_unreachable_error">Unable to reach your phone using %1$s. Please, try again.</string>
+    <string name="pstk_no_supported_payment_channels">There are no supported payment channels for this transaction\n</string>
+    <string name="pstk_otp">OTP</string>
+    <string name="pstk_otp_input_placeholder">123456</string>
+    <string name="pstk_otp_instruction">Please enter the OTP sent to you</string>
+    <string name="pstk_otp_resend_countdown_prefix">Resend OTP in</string>
+    <string name="pstk_paybill_account_number">ACCOUNT NUMBER</string>
+    <string name="pstk_paybill_business_number">PAYBILL BUSINESS NUMBER</string>
+    <string name="pstk_payment_action_cancel_text">Cancel</string>
+    <string name="pstk_payment_cancel_abort">ABORT</string>
+    <string name="pstk_payment_cancel_no">NO</string>
+    <string name="pstk_payment_cancel_title">Do you want to abort this transaction?</string>
+    <string name="pstk_phone_number_auth_form_instruction">Please enter your mobile phone number (at least 10 digits)</string>
+    <string name="pstk_phone_number_input_placeholder">08012345678</string>
+    <string name="pstk_phone_number_label">Phone Number</string>
+    <string name="pstk_phone_number_placeholder_ke">070 000 0000</string>
+    <string name="pstk_resend_otp">Resend OTP</string>
+    <string name="pstk_resend_otp_disabled_message">We are having trouble sending the OTP. Kindly wait a few more minutes or cancel the transaction.</string>
+    <string name="pstk_result_screen_success_subtitle">You paid %1$s to %2$s</string>
+    <string name="pstk_result_screen_success_title">Payment Successful</string>
+    <string name="pstk_retry_mpesa_payment_with_same_number">Retry with the same number</string>
+    <string name="pstk_retry_with_test_details">Retry with test details</string>
+    <string name="pstk_sample_charge_type_address">Perform Address Charge Type</string>
+    <string name="pstk_sample_charge_type_birthday">Perform Birthday ChargeType</string>
+    <string name="pstk_sample_charge_type_otp">Perform OTP Charge Type</string>
+    <string name="pstk_sample_charge_type_phone">Perform Phone Number Charge Type</string>
+    <string name="pstk_sample_charge_type_pin">Perform Pin Charge Type</string>
+    <string name="pstk_sample_holder_payment_type">The following payment type %1$s will be implemented here.</string>
+    <string name="pstk_sample_selected_payment_channel">%1$s selected successfully!</string>
+    <string name="pstk_send_otp">Send OTP</string>
+    <string name="pstk_success">Success</string>
+    <string name="pstk_supported_charge_types">Charge Types</string>
+    <string name="pstk_switch_to_mpesa_express">Switch to M-PESA Express</string>
+    <string name="pstk_switch_to_mpesa_pay_bill">Switch to M-PESA Paybill</string>
+    <string name="pstk_test">Test</string>
+    <string name="pstk_transaction_timed_out">Transaction timed out</string>
+    <string name="pstk_try_mpesa_payment_with_another_number">Try another number</string>
+    <string name="pstk_unknown">Unknown</string>
+    <string name="pstk_unsupported_payment_channel">Unsupported payment channel selected</string>
+    <string name="pstk_use_a_test_card">Use a test card</string>
+    <string name="pstk_use_another_card">Use another card</string>
+    <style name="Theme.BaseSdkTheme" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
+    </style>
+    <style name="Theme.PaystackSdk" parent="Theme.BaseSdkTheme"/>
+    <style name="Theme.PaystackSdkAndroid" parent="android:Theme.Material.Light.NoActionBar"/>
+</resources>

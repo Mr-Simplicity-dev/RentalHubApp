@@ -9,7 +9,6 @@ import React, {
 import {
   ActivityIndicator,
   FlatList,
-  Linking,
   RefreshControl,
   StyleSheet,
   Text,
@@ -25,6 +24,9 @@ import PropertyFilters from '../../components/properties/PropertyFilters';
 import { AuthContext } from '../../context/AuthContext';
 import { paymentService } from '../../services/paymentService';
 import { propertyService } from '../../services/propertyService';
+import { savePendingPayment } from '../../services/paymentRecoveryService';
+import useNativePaystackCheckout from '../../hooks/useNativePaystackCheckout';
+import { hasPaystackCheckout } from '../../services/nativePaymentService';
 import AdSpace from '../../components/common/AdSpace';
 import { colors, radius, shadows, typography } from 
 '../../theme';
@@ -59,6 +61,7 @@ const PropertyListScreen = ({ route, navigation }) => {
   const [pendingLocationAccessReference, setPendingLocationAccessReference] = useState('');
   const handledRequestRedirect = useRef(false);
   const handledLocationAccessRef = useRef('');
+  const { openNativeCheckout, NativePaystackCheckoutModal } = useNativePaystackCheckout();
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
@@ -239,17 +242,40 @@ const PropertyListScreen = ({ route, navigation }) => {
         return;
       }
 
-      const authorizationUrl = response?.data?.authorization_url;
       const reference = response?.data?.reference;
-      if (reference) setPendingLocationAccessReference(reference);
-
-      if (authorizationUrl) {
-        await Linking.openURL(authorizationUrl);
-        Toast.show({
-          type: 'success',
-          text1: 'Payment started',
-          text2: 'Complete payment in your browser, then return here to confirm.',
+      if (reference) {
+        setPendingLocationAccessReference(reference);
+        await savePendingPayment({
+          flow: 'location_access',
+          reference,
+          stateId: location.state_id,
+          lgaName: location.lga_name || '',
         });
+      }
+
+      if (hasPaystackCheckout(response?.data)) {
+        openNativeCheckout({
+          transaction: response.data,
+          title: 'Unlock location',
+          subtitle: `Pay once to browse verified homes in ${location.lga_name || 'this location'}.`,
+          amountLabel: response?.data?.amount
+            ? `₦${Number(response.data.amount).toLocaleString()}`
+            : accessFeeLabel,
+          onSuccess: (paymentResponse) =>
+            completeLocationAccessPayment(paymentResponse?.reference || reference),
+          onBrowserFallback: () => {
+            Toast.show({
+              type: 'info',
+              text1: 'Paystack checkout opened',
+              text2: 'Complete payment securely, then return here to confirm.',
+            });
+          },
+        });
+        return;
+      }
+
+      if (reference) {
+        await completeLocationAccessPayment(reference);
         return;
       }
 
@@ -539,6 +565,7 @@ const PropertyListScreen = ({ route, navigation }) => {
         onClose={() => setFiltersVisible(false)}
         visible={filtersVisible}
       />
+      {NativePaystackCheckoutModal}
     </SafeAreaView>
   );
 };

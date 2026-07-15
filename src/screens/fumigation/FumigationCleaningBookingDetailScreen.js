@@ -7,13 +7,14 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
-  Linking,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
 import { fumigationCleaningService } from '../../services/fumigationCleaningService';
 import { getErrorMessage } from '../../utils/http';
-import { savePendingPayment } from '../../services/paymentRecoveryService';
+import { recoverPayment, savePendingPayment } from '../../services/paymentRecoveryService';
+import useNativePaystackCheckout from '../../hooks/useNativePaystackCheckout';
+import { hasPaystackCheckout } from '../../services/nativePaymentService';
 
 const STATUS_COLORS = {
   pending: '#f59e0b',
@@ -30,6 +31,8 @@ const FumigationCleaningBookingDetailScreen = ({ route, navigation }) => {
   const [booking, setBooking] = useState(null);
   const [loading, setLoading] = useState(true);
   const [cancelling, setCancelling] = useState(false);
+  const [paying, setPaying] = useState(false);
+  const { openNativeCheckout, NativePaystackCheckoutModal } = useNativePaystackCheckout();
 
   useEffect(() => {
     loadBookingDetails();
@@ -75,9 +78,10 @@ const FumigationCleaningBookingDetailScreen = ({ route, navigation }) => {
   };
 
   const handlePay = async () => {
+    setPaying(true);
     try {
       const response = await fumigationCleaningService.initializeBookingPayment(bookingId);
-      if (response?.success && response?.data?.authorization_url) {
+      if (response?.success) {
         const reference = response.data?.reference;
         if (reference) {
           await savePendingPayment({
@@ -86,12 +90,46 @@ const FumigationCleaningBookingDetailScreen = ({ route, navigation }) => {
             bookingId,
           });
         }
-        await Linking.openURL(response.data.authorization_url);
-        Toast.show({
-          type: 'info',
-          text1: 'Paystack opened',
-          text2: 'Complete payment securely, then return to RentalHub.',
-        });
+        if (hasPaystackCheckout(response.data)) {
+          openNativeCheckout({
+            transaction: response.data,
+            title: 'Pay service booking',
+            subtitle: 'Complete your fumigation or cleaning booking with secure in-app card payment.',
+            amountLabel: booking?.total_price ? `₦${Number(booking.total_price).toLocaleString()}` : '',
+            onSuccess: (paymentResponse) =>
+              completeNativePayment(paymentResponse?.reference || reference),
+            onBrowserFallback: () => {
+              Toast.show({
+                type: 'info',
+                text1: 'Paystack checkout opened',
+                text2: 'Complete payment securely, then return to RentalHub.',
+              });
+            },
+          });
+        } else if (reference) {
+          await completeNativePayment(reference);
+        }
+      }
+    } catch (error) {
+      Toast.show({ type: 'error', text1: getErrorMessage(error) });
+    } finally {
+      setPaying(false);
+    }
+  };
+
+  const completeNativePayment = async (reference) => {
+    if (!reference) return;
+
+    try {
+      const response = await recoverPayment({
+        reference,
+        fallbackFlow: 'fumigation',
+      });
+      if (response?.success) {
+        Toast.show({ type: 'success', text1: 'Payment verified' });
+        await loadBookingDetails();
+      } else {
+        Toast.show({ type: 'error', text1: response?.message || 'Payment verification failed' });
       }
     } catch (error) {
       Toast.show({ type: 'error', text1: getErrorMessage(error) });
@@ -112,6 +150,7 @@ const FumigationCleaningBookingDetailScreen = ({ route, navigation }) => {
   const canPay = booking.status === 'pending' && !booking.payment_status;
 
   return (
+    <>
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
       <View style={styles.statusSection}>
         <View style={[styles.statusBadge, { backgroundColor: STATUS_COLORS[booking.status] || '#6b7280' }]}>
@@ -163,8 +202,8 @@ const FumigationCleaningBookingDetailScreen = ({ route, navigation }) => {
 
       <View style={styles.actions}>
         {canPay && (
-          <TouchableOpacity style={styles.payButton} onPress={handlePay}>
-            <Text style={styles.payButtonText}>Pay Now</Text>
+          <TouchableOpacity style={[styles.payButton, paying && styles.buttonDisabled]} onPress={handlePay} disabled={paying}>
+            {paying ? <ActivityIndicator color="#ffffff" /> : <Text style={styles.payButtonText}>Pay Now</Text>}
           </TouchableOpacity>
         )}
         {canCancel && (
@@ -174,6 +213,8 @@ const FumigationCleaningBookingDetailScreen = ({ route, navigation }) => {
         )}
       </View>
     </ScrollView>
+    {NativePaystackCheckoutModal}
+    </>
   );
 };
 

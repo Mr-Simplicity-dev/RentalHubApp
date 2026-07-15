@@ -27,6 +27,9 @@ import { paymentService } from '../../services/paymentService';
 import { referralService } from '../../services/referralService';
 import { rentSavingsService } from '../../services/rentSavingsService';
 import { transportationService } from '../../services/transportationService';
+import { recoverPayment, savePendingPayment } from '../../services/paymentRecoveryService';
+import useNativePaystackCheckout from '../../hooks/useNativePaystackCheckout';
+import { hasPaystackCheckout } from '../../services/nativePaymentService';
 import { getErrorMessage, getReviewStatus, pickList, pickObject } from '../../utils/http';
 import TenancyGracePanel from '../../components/dashboard/TenancyGracePanel';
 import { colors, radius, shadows, typography } from '../../theme';
@@ -221,6 +224,7 @@ const DashboardScreen = ({ navigation }) => {
     account_number: '',
     account_name: '',
   });
+  const { openNativeCheckout, NativePaystackCheckoutModal } = useNativePaystackCheckout();
 
   const isTenant = user?.user_type === 'tenant';
   const isLandlord = user?.user_type === 'landlord';
@@ -376,15 +380,35 @@ const DashboardScreen = ({ navigation }) => {
     setFundLoading(true);
     try {
       const response = await paymentService.fundWallet(Number(amountInput));
-      const paymentUrl = response?.data?.authorization_url;
+      const reference = response?.data?.reference;
 
-      if (response?.success && paymentUrl) {
-        await Linking.openURL(paymentUrl);
-        Toast.show({
-          type: 'info',
-          text1: 'Complete payment',
-          text2: 'Finish Paystack in your browser, then return to refresh your wallet.',
+      if (reference) {
+        await savePendingPayment({
+          flow: 'wallet',
+          reference,
+          amount: Number(amountInput),
         });
+      }
+
+      if (response?.success && hasPaystackCheckout(response?.data)) {
+        setShowFundModal(false);
+        openNativeCheckout({
+          transaction: response.data,
+          title: 'Fund wallet',
+          subtitle: 'Top up your RentalHub wallet securely with your card.',
+          amountLabel: `₦${Number(amountInput).toLocaleString()}`,
+          onSuccess: (paymentResponse) =>
+            completeWalletFunding(paymentResponse?.reference || reference),
+          onBrowserFallback: () => {
+            Toast.show({
+              type: 'info',
+              text1: 'Paystack checkout opened',
+              text2: 'Complete payment securely, then return to refresh your wallet.',
+            });
+          },
+        });
+      } else if (response?.success && reference) {
+        await completeWalletFunding(reference);
         setShowFundModal(false);
       } else {
         Toast.show({
@@ -401,6 +425,33 @@ const DashboardScreen = ({ navigation }) => {
       });
     } finally {
       setFundLoading(false);
+    }
+  };
+
+  const completeWalletFunding = async (reference) => {
+    if (!reference) return;
+
+    try {
+      const response = await recoverPayment({
+        reference,
+        fallbackFlow: 'wallet',
+      });
+      if (response?.success) {
+        Toast.show({ type: 'success', text1: 'Wallet funded' });
+        await Promise.all([loadWalletData(), loadDashboard({ refresh: true })]);
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: 'Verification failed',
+          text2: response?.message || 'Could not verify wallet funding.',
+        });
+      }
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Verification failed',
+        text2: getErrorMessage(error, 'Could not verify wallet funding.'),
+      });
     }
   };
 
@@ -1022,6 +1073,7 @@ const DashboardScreen = ({ navigation }) => {
           openFundModal();
         }}
       />
+      {NativePaystackCheckoutModal}
     </ScrollView>
     </SafeAreaView>
   );
