@@ -1,4 +1,5 @@
 import React, { useContext, useMemo } from 'react';
+import Toast from 'react-native-toast-message';
 import { AuthContext } from '../../context/AuthContext';
 import {
   ActionRow,
@@ -30,9 +31,9 @@ const makeProtectedFeatures = (userType) => {
   const base = [
     { label: 'Profile', path: '/profile' },
     { label: 'Payment History', path: '/payment-history' },
-    { label: 'Saved Properties (Web)', path: '/saved-properties' },
-    { label: 'Applications (Web)', path: '/applications' },
-    { label: 'Messages (Web)', path: '/messages' },
+    { label: 'Saved Properties', path: '/saved-properties' },
+    { label: 'Applications', path: '/applications' },
+    { label: 'Messages', path: '/messages' },
     { label: 'Subscribe', path: '/subscribe' },
     { label: 'Settings', path: '/settings' },
     { label: 'Dashboard', path: '/dashboard' },
@@ -192,9 +193,9 @@ const makeProtectedFeatures = (userType) => {
   if (userType === 'agent') {
     return [
       ...base,
-      { label: 'Agent Dashboard (Web)', path: '/agent/dashboard' },
-      { label: 'Agent Earnings (Web)', path: '/agent/earnings' },
-      { label: 'Agent Withdrawals (Web)', path: '/agent/withdrawals' },
+      { label: 'Agent Dashboard', path: '/agent/dashboard' },
+      { label: 'Agent Earnings', path: '/agent/earnings' },
+      { label: 'Agent Withdrawals', path: '/agent/withdrawals' },
       { label: 'My Properties', path: '/my-properties' },
       { label: 'Add Property', path: '/add-property' },
     ];
@@ -281,7 +282,10 @@ const WebFeaturesScreen = ({ navigation }) => {
     '/profile': { name: 'Profile' },
     '/payment-history': { name: 'PaymentHistory' },
     '/saved-properties': { name: 'SavedProperties' },
-    '/applications': { name: 'MainTabs', params: { screen: 'Applications' } },
+    '/applications': [
+      { name: 'MainTabs', params: { screen: 'Applications' } },
+      { name: 'AdminApplications' },
+    ],
     '/messages': usesMainTabs
       ? { name: 'MainTabs', params: { screen: 'Messages' } }
       : { name: 'Messages' },
@@ -292,6 +296,10 @@ const WebFeaturesScreen = ({ navigation }) => {
     '/admin': { name: 'AdminDashboard' },
     '/admin/recruitment': { name: 'RecruitmentAdmin' },
     '/admin/lawyer-invites': { name: 'AdminLawyerInvites' },
+    '/admin/appeals': [
+      { name: 'SuperAdminDashboard', params: { initialPanel: 'appeals' } },
+      { name: 'AdminCompliance' },
+    ],
     '/admin/users': { name: 'AdminUsers' },
     '/admin/properties': { name: 'AdminProperties' },
     '/admin/applications': { name: 'AdminApplications' },
@@ -300,25 +308,61 @@ const WebFeaturesScreen = ({ navigation }) => {
     '/admin/agents': { name: 'AdminAgentAssignments' },
     '/admin/financial-dashboard': { name: 'FinancialAdminDashboard' },
     '/admin/state-dashboard': { name: 'StateAdminDashboard' },
-    '/admin/lga-support-dashboard': { name: 'ServiceOperationsDashboard' },
+    '/admin/monitor': { name: 'SuperAdminDashboard', params: { initialPanel: 'monitor' } },
+    '/admin/live-moderation': { name: 'SuperAdminDashboard', params: { initialPanel: 'moderation' } },
+    '/super-admin?tab=broadcast': { name: 'SuperAdminDashboard', params: { initialPanel: 'broadcast' } },
+    '/admin/lga-support-dashboard': [
+      { name: 'AdminSupportDashboard' },
+      { name: 'ServiceOperationsDashboard' },
+    ],
     '/admin/lga-support-dashboard?tab=tickets': { name: 'SupportTickets' },
-    '/admin/state-support-dashboard': { name: 'ServiceOperationsDashboard' },
+    '/admin/state-support-dashboard': [
+      { name: 'AdminSupportDashboard' },
+      { name: 'ServiceOperationsDashboard' },
+    ],
     '/admin/state-support-dashboard?tab=tickets': { name: 'SupportTickets' },
-    '/admin/super-support-dashboard': { name: 'ServiceOperationsDashboard' },
+    '/admin/super-support-dashboard': [
+      { name: 'SuperAdminSupportGovernance' },
+      { name: 'ServiceOperationsDashboard' },
+    ],
     '/admin/super-support-dashboard?tab=tickets': { name: 'SupportTickets' },
-    '/admin/transportation': { name: 'ServiceOperationsDashboard' },
+    '/admin/transportation': [
+      { name: 'AdminTransportationDashboard' },
+      { name: 'ServiceOperationsDashboard' },
+    ],
     '/admin/transportation?tab=bookings': { name: 'ServiceBookings', params: { type: 'transportation' } },
-    '/admin/transportation/state': { name: 'ServiceOperationsDashboard' },
+    '/admin/transportation/state': [
+      { name: 'AdminTransportationStateDashboard' },
+      { name: 'ServiceOperationsDashboard' },
+    ],
     '/admin/transportation/state?tab=bookings': { name: 'ServiceBookings', params: { type: 'transportation_state' } },
-    '/admin/transportation/super': { name: 'ServiceOperationsDashboard' },
+    '/admin/transportation/super': [
+      { name: 'SuperAdminTransportationDashboard' },
+      { name: 'ServiceOperationsDashboard' },
+    ],
     '/admin/transportation/super?tab=bookings': { name: 'ServiceBookings', params: { type: 'transportation_super' } },
-    '/admin/fumigation-cleaning': { name: 'ServiceOperationsDashboard' },
+    '/admin/fumigation-cleaning': [
+      { name: 'AdminFumigationDashboard' },
+      { name: 'ServiceOperationsDashboard' },
+    ],
     '/admin/fumigation-cleaning#fumigation-bookings': { name: 'ServiceBookings', params: { type: 'fumigation' } },
-    '/admin/fumigation-cleaning/state': { name: 'ServiceOperationsDashboard' },
+    '/admin/fumigation-cleaning/state': [
+      { name: 'AdminFumigationStateDashboard' },
+      { name: 'ServiceOperationsDashboard' },
+    ],
     '/admin/fumigation-cleaning/state#fumigation-bookings': { name: 'ServiceBookings', params: { type: 'fumigation' } },
-    '/admin/fumigation-cleaning/super': { name: 'ServiceOperationsDashboard' },
+    '/admin/fumigation-cleaning/super': [
+      { name: 'SuperAdminFumigationDashboard' },
+      { name: 'ServiceOperationsDashboard' },
+    ],
     '/admin/fumigation-cleaning/super#fumigation-bookings': { name: 'ServiceBookings', params: { type: 'fumigation' } },
     '/super-admin': { name: 'SuperAdminDashboard' },
+    '/super-admin/transportation': { name: 'SuperAdminTransportationDashboard' },
+    '/super-admin/fumigation-cleaning': { name: 'SuperAdminFumigationDashboard' },
+    '/admin/super-financial-dashboard': [
+      { name: 'SuperFinancialAdminDashboard' },
+      { name: 'FinancialAdminDashboard' },
+    ],
     '/agent/dashboard': { name: 'AgentDashboard' },
     '/agent/earnings': { name: 'AgentEarnings' },
     '/agent/withdrawals': { name: 'AgentWithdrawals' },
@@ -334,7 +378,8 @@ const WebFeaturesScreen = ({ navigation }) => {
   const availableRoutes = navigation.getState()?.routeNames || [];
   const getNativeTarget = (path) => {
     const target = nativeTargets[path];
-    return target?.name && availableRoutes.includes(target.name) ? target : null;
+    const candidates = Array.isArray(target) ? target : [target];
+    return candidates.find((candidate) => candidate?.name && availableRoutes.includes(candidate.name)) || null;
   };
 
   const openItem = (item) => {
@@ -343,7 +388,11 @@ const WebFeaturesScreen = ({ navigation }) => {
       navigation.navigate(target.name, target.params);
       return;
     }
-    navigation.navigate('WebRoute', { path: item.path, title: item.label });
+    Toast.show({
+      type: 'info',
+      text1: 'Native screen unavailable here',
+      text2: 'This tool is not registered for your current app role.',
+    });
   };
 
   const renderFeature = (item, prefix) => {
@@ -352,10 +401,10 @@ const WebFeaturesScreen = ({ navigation }) => {
     return (
       <ActionRow
         key={`${prefix}-${item.path}`}
-        title={item.label.replace(' (Web)', '')}
-        subtitle={nativeTarget ? 'Opens inside the mobile app' : 'Opens the secure web module'}
-        icon={nativeTarget ? 'phone-portrait-outline' : 'globe-outline'}
-        badge={nativeTarget ? 'Native' : 'Web'}
+        title={item.label}
+        subtitle={nativeTarget ? 'Opens inside the mobile app' : 'Native route not available for this role'}
+        icon={nativeTarget ? 'phone-portrait-outline' : 'lock-closed-outline'}
+        badge={nativeTarget ? 'Native' : 'Role gated'}
         onPress={() => openItem(item)}
       />
     );
@@ -366,7 +415,7 @@ const WebFeaturesScreen = ({ navigation }) => {
       <DashboardHero
         eyebrow="ADDITIONAL TOOLS"
         title="Everything in one place"
-        subtitle="Native experiences open in the app. Only tools still awaiting conversion use the secure web module."
+        subtitle="Native experiences open in the app with role-aware routing, so users stay in the APK."
         icon="apps-outline"
       />
 

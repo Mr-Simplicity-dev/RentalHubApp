@@ -1,6 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Alert,
+  ActivityIndicator,
+  Modal,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -100,6 +103,11 @@ const RecruitmentAdminScreen = ({ navigation }) => {
   const [analytics, setAnalytics] = useState(null);
   const [applicants, setApplicants] = useState([]);
   const [pagination, setPagination] = useState(null);
+  const [detailModal, setDetailModal] = useState({
+    applicant: null,
+    loading: false,
+    visible: false,
+  });
   const [filters, setFilters] = useState({
     status: 'all',
     payment_status: 'all',
@@ -194,11 +202,30 @@ const RecruitmentAdminScreen = ({ navigation }) => {
     );
   };
 
-  const openApplicantReport = (applicant) => {
-    navigation.navigate('WebRoute', {
-      path: `/api/recruitment/admin/reports/applicant/${applicant.id}`,
-      title: 'Applicant Report',
-    });
+  const closeApplicantDetails = () => {
+    setDetailModal({ applicant: null, loading: false, visible: false });
+  };
+
+  const openApplicantReport = async (applicant) => {
+    setDetailModal({ applicant, loading: true, visible: true });
+    try {
+      const response = await recruitmentService.getApplicantDetail(applicant.id);
+      setDetailModal({
+        applicant: {
+          ...applicant,
+          ...getObject(response),
+        },
+        loading: false,
+        visible: true,
+      });
+    } catch (err) {
+      setDetailModal({ applicant, loading: false, visible: true });
+      Toast.show({
+        type: 'error',
+        text1: 'Applicant details unavailable',
+        text2: getErrorMessage(err, 'Could not load the full applicant record'),
+      });
+    }
   };
 
   const sendExportEmail = () => {
@@ -348,7 +375,7 @@ const RecruitmentAdminScreen = ({ navigation }) => {
 
       <DashboardSection
         title="Reports and exports"
-        subtitle="Native summary is here; PDF/ZIP download still hands off to secured backend report endpoints."
+        subtitle="Candidate reports, filtered CSV email exports and hiring decisions stay inside the mobile workflow."
       >
         <ActionRow
           title="Email filtered CSV export"
@@ -356,14 +383,64 @@ const RecruitmentAdminScreen = ({ navigation }) => {
           icon="mail-outline"
           onPress={sendExportEmail}
         />
-        <ActionRow
-          title="Open full recruitment console"
-          subtitle="Use web tools for bulk ZIP downloads, question uploads and cycle setup."
-          icon="open-outline"
-          badge="Web handoff"
-          onPress={() => navigation.navigate('WebRoute', { path: '/admin/recruitment', title: 'Recruitment Admin' })}
-        />
       </DashboardSection>
+
+      <Modal
+        animationType="slide"
+        transparent
+        visible={detailModal.visible}
+        onRequestClose={closeApplicantDetails}
+      >
+        <Pressable style={styles.modalBackdrop} onPress={closeApplicantDetails}>
+          <Pressable style={styles.modalCard}>
+            <View style={styles.modalHeader}>
+              <View>
+                <Text style={styles.modalEyebrow}>APPLICANT REPORT</Text>
+                <Text style={styles.modalTitle}>
+                  {detailModal.applicant?.full_name || 'Applicant details'}
+                </Text>
+              </View>
+              <TouchableOpacity accessibilityRole="button" onPress={closeApplicantDetails}>
+                <Icon name="close" size={22} color={colors.muted} />
+              </TouchableOpacity>
+            </View>
+
+            {detailModal.loading ? (
+              <View style={styles.modalLoading}>
+                <ActivityIndicator color={colors.blue} />
+                <Text style={styles.modalMuted}>Loading applicant record…</Text>
+              </View>
+            ) : (
+              <ScrollView contentContainerStyle={styles.detailList}>
+                {[
+                  ['Reference', detailModal.applicant?.reference_number],
+                  ['Email', detailModal.applicant?.email_address],
+                  ['Phone', detailModal.applicant?.phone_number],
+                  ['Role', detailModal.applicant?.role_title],
+                  ['Location', [detailModal.applicant?.state_name, detailModal.applicant?.lga_name].filter(Boolean).join(', ')],
+                  ['Status', detailModal.applicant?.status],
+                  ['Payment', detailModal.applicant?.payment_status],
+                  ['Interview score', detailModal.applicant?.interview_score ?? detailModal.applicant?.score],
+                  ['Education', detailModal.applicant?.highest_education],
+                  ['Experience', detailModal.applicant?.years_of_experience],
+                  ['Submitted', detailModal.applicant?.created_at],
+                ].map(([label, value]) => (
+                  <View key={label} style={styles.detailRow}>
+                    <Text style={styles.detailLabel}>{label}</Text>
+                    <Text style={styles.detailValue}>{value || 'N/A'}</Text>
+                  </View>
+                ))}
+                {detailModal.applicant?.suitability_reason ? (
+                  <View style={styles.detailBlock}>
+                    <Text style={styles.detailLabel}>Suitability note</Text>
+                    <Text style={styles.detailValue}>{detailModal.applicant.suitability_reason}</Text>
+                  </View>
+                ) : null}
+              </ScrollView>
+            )}
+          </Pressable>
+        </Pressable>
+      </Modal>
     </DashboardScreen>
   );
 };
@@ -546,6 +623,77 @@ const styles = StyleSheet.create({
     fontFamily: typography.medium,
     fontSize: 12,
     textAlign: 'center',
+  },
+  modalBackdrop: {
+    backgroundColor: 'rgba(15, 23, 42, 0.55)',
+    flex: 1,
+    justifyContent: 'flex-end',
+  },
+  modalCard: {
+    backgroundColor: colors.surface,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    maxHeight: '82%',
+    padding: 18,
+  },
+  modalHeader: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+  },
+  modalEyebrow: {
+    color: colors.blue,
+    fontFamily: typography.bold,
+    fontSize: 11,
+    letterSpacing: 0.8,
+  },
+  modalTitle: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 19,
+    marginTop: 3,
+  },
+  modalLoading: {
+    alignItems: 'center',
+    gap: 10,
+    paddingVertical: 28,
+  },
+  modalMuted: {
+    color: colors.muted,
+    fontFamily: typography.medium,
+    fontSize: 12,
+  },
+  detailList: {
+    gap: 9,
+    paddingBottom: 22,
+  },
+  detailRow: {
+    backgroundColor: colors.white,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    padding: 11,
+  },
+  detailBlock: {
+    backgroundColor: '#F8FAFC',
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    padding: 12,
+  },
+  detailLabel: {
+    color: colors.muted,
+    fontFamily: typography.semibold,
+    fontSize: 11,
+    textTransform: 'uppercase',
+  },
+  detailValue: {
+    color: colors.ink,
+    fontFamily: typography.medium,
+    fontSize: 13,
+    lineHeight: 19,
+    marginTop: 3,
   },
 });
 

@@ -12,6 +12,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
 import { transportationService } from '../../services/transportationService';
 import { getErrorMessage } from '../../utils/http';
+import { savePendingPayment } from '../../services/paymentRecoveryService';
 
 const STATUS_COLORS = {
   pending: '#f59e0b',
@@ -84,7 +85,23 @@ const TransportationBookingDetailScreen = ({ route, navigation }) => {
     try {
       const response = await transportationService.initializeBookingPayment(bookingId);
       if (response?.success && response?.data?.authorization_url) {
-        navigation.navigate('WebRoute', { url: response.data.authorization_url });
+        const reference = response.data?.reference;
+        if (reference) {
+          await savePendingPayment({
+            flow: 'transportation',
+            reference,
+            bookingId,
+          });
+        }
+        navigation.navigate('WebRoute', {
+          url: response.data.authorization_url,
+          title: 'Transport Payment',
+          paymentRecovery: {
+            flow: 'transportation',
+            reference,
+            bookingId,
+          },
+        });
       } else {
         Toast.show({ type: 'error', text1: response?.message || 'Payment initialization failed' });
       }

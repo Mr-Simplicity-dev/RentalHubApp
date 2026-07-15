@@ -545,18 +545,6 @@ const FinancialControlsScreen = ({ navigation }) => {
             badge={exporting === 'Commission Configuration' ? 'Preparing' : 'CSV'}
             onPress={exportCommissionConfig}
           />
-          <ActionRow
-            title="Open legacy export console"
-            subtitle="Use only for reports that still require the web PDF/export tools."
-            icon="open-outline"
-            badge="Fallback"
-            onPress={() =>
-              navigation.navigate('WebRoute', {
-                path: '/admin/super-financial-dashboard?panel=exports',
-                title: 'Financial Exports',
-              })
-            }
-          />
         </DashboardSection>
       </DashboardScreen>
 

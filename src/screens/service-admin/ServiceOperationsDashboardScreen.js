@@ -7,7 +7,6 @@ import { colors } from '../../theme';
 import {
   ActionRow,
   DashboardHero,
-  DashboardNotice,
   DashboardScreen,
   DashboardSection,
   MetricCard,
@@ -30,11 +29,6 @@ const getRoleProfile = (role = '') => {
         : role.includes('super')
           ? 'transportation_super'
           : 'transportation',
-      webPath: role.includes('state')
-        ? '/admin/transportation/state'
-        : role.includes('super')
-          ? '/admin/transportation/super'
-          : '/admin/transportation',
     };
   }
 
@@ -45,11 +39,6 @@ const getRoleProfile = (role = '') => {
       eyebrow: 'FUMIGATION & CLEANING',
       icon: 'sparkles-outline',
       bookingsType: 'fumigation',
-      webPath: role.includes('state')
-        ? '/admin/fumigation-cleaning/state'
-        : role.includes('super')
-          ? '/admin/fumigation-cleaning/super'
-          : '/admin/fumigation-cleaning',
     };
   }
 
@@ -58,11 +47,6 @@ const getRoleProfile = (role = '') => {
     title: role.includes('super') ? 'Support command centre' : role.includes('state') ? 'State support desk' : 'Support desk',
     eyebrow: 'CUSTOMER SUPPORT',
     icon: 'headset-outline',
-    webPath: role.includes('state')
-      ? '/admin/state-support-dashboard'
-      : role.includes('super')
-        ? '/admin/super-support-dashboard'
-        : '/admin/lga-support-dashboard',
   };
 };
 
@@ -178,17 +162,69 @@ const ServiceOperationsDashboardScreen = ({ navigation }) => {
         />
       </DashboardSection>
 
-      <DashboardSection title="Still being converted">
-        <DashboardNotice
-          title="Secure web fallback remains"
-          message="Advanced forms like provider assignment, SLA policy edits, reports and department-specific settings still open in the secure web module while we convert them."
+      <DashboardSection
+        title="Native operations"
+        subtitle="The daily service-admin controls now stay inside the mobile app."
+      >
+        <ActionRow
+          title="Admin pool"
+          subtitle="Review available support and operations admins."
+          icon="people-outline"
+          badge="Native"
+          onPress={() => navigation.navigate('AdminPool')}
         />
         <ActionRow
-          title="Open full web workspace"
-          subtitle="Use this only for tools not yet available as native screens."
-          icon="globe-outline"
-          badge="Fallback"
-          onPress={() => navigation.navigate('WebRoute', { path: profile.webPath, title: profile.title })}
+          title="Activity feed"
+          subtitle="Track recent escalations, booking actions and audit events."
+          icon="reader-outline"
+          badge="Native"
+          onPress={() => navigation.navigate('ActivityFeed')}
+        />
+        {profile.family === 'support' ? (
+          <ActionRow
+            title="Support dashboard"
+            subtitle="See support metrics and ticket governance in-app."
+            icon="analytics-outline"
+            badge="Native"
+            onPress={() => navigation.navigate('AdminSupportDashboard')}
+          />
+        ) : null}
+        {profile.family === 'transportation' ? (
+          <ActionRow
+            title="Transport oversight"
+            subtitle="Open the transport-native command dashboard for your level."
+            icon="speedometer-outline"
+            badge="Native"
+            onPress={() =>
+              navigation.navigate(
+                profile.bookingsType === 'transportation_state'
+                  ? 'AdminTransportationStateDashboard'
+                  : 'ServiceBookings',
+                { type: profile.bookingsType }
+              )
+            }
+          />
+        ) : null}
+        {profile.family === 'fumigation' ? (
+          <ActionRow
+            title="Fumigation oversight"
+            subtitle="Open the native fumigation queue and safety workflow."
+            icon="shield-checkmark-outline"
+            badge="Native"
+            onPress={() =>
+              navigation.navigate(
+                user?.user_type?.includes('state') ? 'AdminFumigationStateDashboard' : 'ServiceBookings',
+                { type: profile.bookingsType }
+              )
+            }
+          />
+        ) : null}
+        <ActionRow
+          title="All activity"
+          subtitle="Review complete mobile-visible operational history."
+          icon="list-outline"
+          badge="Native"
+          onPress={() => navigation.navigate('AllActivity')}
         />
       </DashboardSection>
     </DashboardScreen>

@@ -17,25 +17,21 @@ const TYPE_CONFIG = {
     title: 'Transportation bookings',
     eyebrow: 'TRANSPORT OPS',
     icon: 'car-outline',
-    webPath: '/admin/transportation?tab=bookings',
   },
   transportation_state: {
     title: 'State transport bookings',
     eyebrow: 'STATE TRANSPORT OPS',
     icon: 'car-sport-outline',
-    webPath: '/admin/transportation/state?tab=bookings',
   },
   transportation_super: {
     title: 'System transport bookings',
     eyebrow: 'SUPER TRANSPORT OPS',
     icon: 'bus-outline',
-    webPath: '/admin/transportation/super?tab=bookings',
   },
   fumigation: {
     title: 'Fumigation & cleaning bookings',
     eyebrow: 'SERVICE OPS',
     icon: 'sparkles-outline',
-    webPath: '/admin/fumigation-cleaning#fumigation-bookings',
   },
 };
 
@@ -134,14 +130,6 @@ const ServiceBookingsScreen = ({ navigation, route }) => {
   useEffect(() => {
     loadBookings();
   }, [type]);
-
-  const openBooking = (booking) => {
-    const bookingId = booking.id || booking.booking_id;
-    navigation.navigate('WebRoute', {
-      path: `${config.webPath}${String(config.webPath).includes('?') ? '&' : '?'}booking=${bookingId}`,
-      title: `Booking #${bookingId}`,
-    });
-  };
 
   const mergeBooking = (bookingId, response) => {
     const updatedBooking = getUpdatedBooking(response);
@@ -514,7 +502,7 @@ const ServiceBookingsScreen = ({ navigation, route }) => {
       <DashboardHero
         eyebrow={config.eyebrow}
         title={config.title}
-        subtitle="A native mobile queue for reviewing bookings, updating core statuses and jumping into the secure web module only for specialist workflows."
+        subtitle="A native mobile queue for reviewing bookings, updating core statuses and managing service operations inside the app."
         icon={config.icon}
         onRefresh={loadBookings}
       />
@@ -553,11 +541,23 @@ const ServiceBookingsScreen = ({ navigation, route }) => {
                   <Text style={styles.badgeText}>{status}</Text>
                 </View>
               </View>
-              <Text numberOfLines={2} style={styles.detail}>
+              <Text numberOfLines={3} style={styles.detail}>
                 {booking.pickup_address && booking.destination_address
                   ? `${booking.pickup_address} → ${booking.destination_address}`
                   : booking.property_address || booking.address || booking.admin_notes || 'Review the full service record.'}
               </Text>
+
+              <View style={styles.recordGrid}>
+                <Text style={styles.recordText}>
+                  Reference: {booking.reference || booking.booking_reference || booking.payment_reference || `#${bookingId}`}
+                </Text>
+                <Text style={styles.recordText}>
+                  Amount: ₦{Number(booking.total_amount || booking.amount || booking.estimated_cost || 0).toLocaleString()}
+                </Text>
+                <Text style={styles.recordText}>
+                  Contact: {booking.phone || booking.customer_phone || booking.user_phone || booking.email || 'Not supplied'}
+                </Text>
+              </View>
 
               {paymentStatus ? (
                 <View style={styles.paymentRow}>
@@ -601,15 +601,6 @@ const ServiceBookingsScreen = ({ navigation, route }) => {
                 </TouchableOpacity>
               ) : null}
 
-              <TouchableOpacity
-                accessibilityLabel={`Open full record for booking ${bookingId}`}
-                accessibilityRole="button"
-                onPress={() => openBooking(booking)}
-                style={styles.fullRecordButton}
-              >
-                <Text style={styles.fullRecordText}>Open full record</Text>
-                <Icon name="open-outline" size={15} color={colors.blue} />
-              </TouchableOpacity>
             </View>
           );
         })}
@@ -682,6 +673,21 @@ const styles = StyleSheet.create({
     fontFamily: typography.medium,
     fontSize: 12,
     textTransform: 'capitalize',
+  },
+  recordGrid: {
+    backgroundColor: '#F8FAFC',
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    gap: 4,
+    marginTop: 10,
+    padding: 10,
+  },
+  recordText: {
+    color: colors.text,
+    fontFamily: typography.regular,
+    fontSize: 11,
+    lineHeight: 16,
   },
   actionGroup: {
     flexDirection: 'row',
@@ -805,14 +811,6 @@ const styles = StyleSheet.create({
     fontSize: 11,
     marginTop: 10,
   },
-  fullRecordButton: {
-    alignItems: 'center',
-    alignSelf: 'flex-start',
-    flexDirection: 'row',
-    gap: 6,
-    marginTop: 12,
-    paddingVertical: 4,
-  },
   complianceButton: {
     alignItems: 'center',
     alignSelf: 'flex-start',
@@ -828,11 +826,6 @@ const styles = StyleSheet.create({
   },
   complianceText: {
     color: colors.success,
-    fontFamily: typography.semibold,
-    fontSize: 12,
-  },
-  fullRecordText: {
-    color: colors.blue,
     fontFamily: typography.semibold,
     fontSize: 12,
   },
