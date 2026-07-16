@@ -22,7 +22,7 @@ class RentalHubPaystackModule(
 
   @ReactMethod
   fun isAvailable(promise: Promise) {
-    promise.resolve(currentActivity is ComponentActivity)
+    promise.resolve(getCurrentActivity() is ComponentActivity)
   }
 
   @ReactMethod
@@ -33,7 +33,7 @@ class RentalHubPaystackModule(
       return
     }
 
-    val activity = currentActivity as? ComponentActivity
+    val activity = getCurrentActivity() as? ComponentActivity
     if (activity == null) {
       promise.reject("E_PAYSTACK_ACTIVITY", "Paystack checkout requires an active Android activity.")
       return
