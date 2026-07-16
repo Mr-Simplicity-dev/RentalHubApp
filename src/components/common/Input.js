@@ -14,13 +14,14 @@ const Input = ({
   icon,
   multiline,
   numberOfLines,
+  containerStyle,
   ...rest
 }) => {
   const [focused, setFocused] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, containerStyle]}>
       {label && <Text style={styles.label}>{label}</Text>}
       <View
         style={[

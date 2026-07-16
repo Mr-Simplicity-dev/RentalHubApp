@@ -1,10 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { StyleSheet, Text, View } from 'react-native';
 import Toast from 'react-native-toast-message';
-import { adminService } from '../../services/adminService';
 import { superAdminService } from '../../services/superAdminService';
 import { getErrorMessage, pickList } from '../../utils/http';
+import {
+  InfoRow,
+  PremiumButton,
+  PremiumCard,
+  PremiumHero,
+  PremiumListScreen,
+  StatusPill,
+} from '../../components/common/PremiumLayout';
+import { colors, typography } from '../../theme';
 
 const AdminLawyerInvitesScreen = () => {
   const [invites, setInvites] = useState([]);
@@ -15,6 +22,7 @@ const AdminLawyerInvitesScreen = () => {
   }, []);
 
   const loadInvites = async () => {
+    setLoading(true);
     try {
       const response = await superAdminService.getLawyerInvites();
       setInvites(pickList(response, ['data', 'invites']));
@@ -57,68 +65,88 @@ const AdminLawyerInvitesScreen = () => {
   };
 
   return (
-    <View style={styles.screen}>
-      <FlatList
-        data={invites}
-        keyExtractor={(item) => String(item.id)}
-        contentContainerStyle={styles.list}
-        renderItem={({ item }) => (
-          <View style={styles.card}>
-            <View style={styles.cardHeader}>
-              <Icon name="briefcase-outline" size={20} color="#0f172a" />
-              <View style={styles.cardHeaderText}>
-                <Text style={styles.cardTitle}>{item.email}</Text>
-                <Text style={styles.cardMeta}>Name: {item.name || item.full_name || 'N/A'}</Text>
-              </View>
+    <PremiumListScreen
+      data={invites}
+      refreshing={loading}
+      onRefresh={loadInvites}
+      keyExtractor={(item) => String(item.id)}
+      emptyTitle="No lawyer invites"
+      emptyMessage="Lawyer invitations will appear here once created."
+      emptyIcon="mail-outline"
+      header={
+        <PremiumHero
+          eyebrow="Legal network"
+          title="Lawyer invites"
+          subtitle="Monitor invitations, resend access and revoke pending invites from mobile."
+          icon="briefcase-outline"
+          right={<StatusPill label={`${invites.length} invites`} color={colors.blue} />}
+        />
+      }
+      renderItem={({ item }) => (
+        <PremiumCard>
+          <View style={styles.cardHeader}>
+            <View style={styles.inviteIcon}>
+              <Text style={styles.inviteIconText}>LG</Text>
             </View>
-            <Text style={styles.cardStatus}>
-              Status: {item.status || 'pending'}
-              {item.used_at ? ` | Used: ${new Date(item.used_at).toLocaleDateString()}` : ''}
-            </Text>
-            {item.status === 'pending' && (
-              <View style={styles.actions}>
-                <TouchableOpacity onPress={() => handleResend(item.id)}>
-                  <Text style={styles.resendText}>Resend</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => handleRevoke(item.id)}>
-                  <Text style={styles.revokeText}>Revoke</Text>
-                </TouchableOpacity>
-              </View>
-            )}
+            <View style={styles.cardCopy}>
+              <Text style={styles.cardTitle}>{item.email || 'No email provided'}</Text>
+              <Text style={styles.cardMeta}>{item.name || item.full_name || 'Name unavailable'}</Text>
+            </View>
           </View>
-        )}
-        ListEmptyComponent={
-          <View style={styles.emptyContainer}>
-            <Icon name="mail-outline" size={48} color="#cbd5e1" />
-            <Text style={styles.empty}>No lawyer invites found.</Text>
-          </View>
-        }
-      />
-    </View>
+          <InfoRow icon="mail-outline" label="Status" value={item.status || 'pending'} />
+          {item.used_at ? (
+            <InfoRow icon="checkmark-done-outline" label="Used" value={new Date(item.used_at).toLocaleDateString()} />
+          ) : null}
+          {item.status === 'pending' ? (
+            <View style={styles.actions}>
+              <PremiumButton title="Resend invite" icon="send-outline" onPress={() => handleResend(item.id)} />
+              <PremiumButton title="Revoke" variant="ghost" icon="close-circle-outline" onPress={() => handleRevoke(item.id)} />
+            </View>
+          ) : null}
+        </PremiumCard>
+      )}
+    />
   );
 };
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#f8fafc' },
-  list: { padding: 16, paddingBottom: 24 },
-  card: {
-    backgroundColor: '#ffffff',
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
-    borderRadius: 12,
-    padding: 14,
-    marginBottom: 10,
+  cardHeader: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 6,
   },
-  cardHeader: { flexDirection: 'row', gap: 10 },
-  cardHeaderText: { flex: 1 },
-  cardTitle: { fontSize: 16, fontWeight: '700', color: '#0f172a' },
-  cardMeta: { color: '#475569', fontSize: 13, marginTop: 2 },
-  cardStatus: { color: '#64748b', fontSize: 12, marginTop: 6 },
-  actions: { flexDirection: 'row', gap: 16, marginTop: 10 },
-  resendText: { color: '#0284c7', fontWeight: '700' },
-  revokeText: { color: '#dc2626', fontWeight: '700' },
-  emptyContainer: { alignItems: 'center', marginTop: 60, gap: 12 },
-  empty: { fontSize: 16, color: '#64748b' },
+  inviteIcon: {
+    alignItems: 'center',
+    backgroundColor: colors.navy,
+    borderRadius: 18,
+    height: 44,
+    justifyContent: 'center',
+    width: 44,
+  },
+  inviteIconText: {
+    color: colors.gold,
+    fontFamily: typography.bold,
+    fontSize: 12,
+  },
+  cardCopy: {
+    flex: 1,
+  },
+  cardTitle: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 16,
+  },
+  cardMeta: {
+    color: colors.muted,
+    fontFamily: typography.regular,
+    fontSize: 12,
+    marginTop: 3,
+  },
+  actions: {
+    gap: 10,
+    marginTop: 12,
+  },
 });
 
 export default AdminLawyerInvitesScreen;

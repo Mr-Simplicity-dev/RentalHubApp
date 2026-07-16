@@ -1,10 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 import Input from '../../components/common/Input';
-import Button from '../../components/common/Button';
+import {
+  InfoRow,
+  PremiumButton,
+  PremiumCard,
+  PremiumHero,
+  PremiumScreen,
+  StatusPill,
+} from '../../components/common/PremiumLayout';
 import { evidenceService } from '../../services/evidenceService';
 import { getErrorMessage, pickObject } from '../../utils/http';
+import { colors, typography } from '../../theme';
 
 const VerifyCaseScreen = ({ route }) => {
   const [disputeId, setDisputeId] = useState(String(route?.params?.disputeId || ''));
@@ -37,66 +45,80 @@ const VerifyCaseScreen = ({ route }) => {
   }, [route?.params?.disputeId]);
 
   return (
-    <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
-      <Text style={styles.title}>Digital Evidence Verification</Text>
-      <Text style={styles.subtitle}>Verify dispute evidence integrity by dispute ID.</Text>
-
-      <Input
-        label="Dispute ID"
-        value={disputeId}
-        onChangeText={setDisputeId}
-        placeholder="Enter dispute id"
-        keyboardType="number-pad"
+    <PremiumScreen>
+      <PremiumHero
+        eyebrow="Evidence integrity"
+        title="Digital evidence verification"
+        subtitle="Verify dispute files and Merkle root integrity before legal or admin action."
+        icon="finger-print-outline"
       />
 
-      <Button title="Verify" onPress={() => verifyCase()} loading={loading} />
+      <PremiumCard>
+        <Input
+          label="Dispute ID"
+          value={disputeId}
+          onChangeText={setDisputeId}
+          placeholder="Enter dispute id"
+          keyboardType="number-pad"
+          icon="folder-open-outline"
+        />
+
+        <PremiumButton
+          title="Verify evidence"
+          onPress={() => verifyCase()}
+          loading={loading}
+          icon="shield-checkmark-outline"
+        />
+      </PremiumCard>
 
       {result ? (
-        <View style={styles.card}>
-          <Text style={styles.sectionTitle}>Verification Result</Text>
-          <Text style={styles.meta}>Merkle Root: {result.merkleRoot || 'N/A'}</Text>
-          <Text style={styles.meta}>
-            Root Integrity: {result.merkleValid ? 'VALID' : 'INVALID'}
-          </Text>
+        <PremiumCard>
+          <Text style={styles.sectionTitle}>Verification result</Text>
+          <InfoRow icon="git-branch-outline" label="Merkle root" value={result.merkleRoot || 'N/A'} />
+          <InfoRow
+            icon="shield-outline"
+            label="Root integrity"
+            value={result.merkleValid ? 'Valid' : 'Invalid'}
+            valueStyle={{ color: result.merkleValid ? colors.success : colors.danger }}
+          />
           {(result.files || []).map((file, index) => (
             <View key={`${file.file}-${index}`} style={styles.fileRow}>
               <Text style={styles.fileName}>{file.file}</Text>
-              <Text style={file.valid ? styles.valid : styles.invalid}>
-                {file.valid ? 'VERIFIED' : 'TAMPERED'}
-              </Text>
+              <StatusPill
+                label={file.valid ? 'Verified' : 'Tampered'}
+                color={file.valid ? colors.success : colors.danger}
+              />
             </View>
           ))}
-        </View>
+        </PremiumCard>
       ) : null}
-    </ScrollView>
+    </PremiumScreen>
   );
 };
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#ffffff' },
-  content: { padding: 16, paddingBottom: 24 },
-  title: { fontSize: 26, fontWeight: '800', color: '#0f172a' },
-  subtitle: { marginTop: 6, marginBottom: 16, color: '#64748b' },
-  card: {
-    marginTop: 16,
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
-    borderRadius: 12,
-    padding: 12,
-    backgroundColor: '#f8fafc',
+  sectionTitle: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 17,
+    marginBottom: 8,
   },
-  sectionTitle: { fontSize: 16, fontWeight: '700', color: '#0f172a', marginBottom: 10 },
-  meta: { color: '#334155', marginBottom: 6 },
   fileRow: {
+    alignItems: 'center',
+    borderTopColor: colors.border,
+    borderTopWidth: StyleSheet.hairlineWidth,
     flexDirection: 'row',
+    gap: 10,
     justifyContent: 'space-between',
-    paddingVertical: 8,
-    borderTopWidth: 1,
-    borderTopColor: '#e2e8f0',
+    paddingVertical: 10,
   },
-  fileName: { color: '#0f172a', flex: 1, paddingRight: 8 },
-  valid: { color: '#16a34a', fontWeight: '700' },
-  invalid: { color: '#dc2626', fontWeight: '700' },
+  fileName: {
+    color: colors.ink,
+    flex: 1,
+    fontFamily: typography.medium,
+    fontSize: 13,
+    paddingRight: 8,
+  },
 });
 
 export default VerifyCaseScreen;

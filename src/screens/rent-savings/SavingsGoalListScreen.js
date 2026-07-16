@@ -1,10 +1,30 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, RefreshControl } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
+import {
+  InfoRow,
+  PremiumButton,
+  PremiumCard,
+  PremiumHero,
+  PremiumListScreen,
+  StatusPill,
+  formatNaira,
+} from '../../components/common/PremiumLayout';
 import { rentSavingsService } from '../../services/rentSavingsService';
 import { getErrorMessage, pickList } from '../../utils/http';
+import { colors, radius, typography } from '../../theme';
 
-const formatCurrency = (value) => `NGN ${Number(value || 0).toLocaleString()}`;
+const getProgress = (item) => {
+  const target = Number(item.target_savings_amount || 0);
+  const saved = Number(item.total_saved || 0);
+  return Math.min(target ? (saved / target) * 100 : 0, 100);
+};
+
+const ProgressBar = ({ value }) => (
+  <View style={styles.progressBar}>
+    <View style={[styles.progressFill, { width: `${value}%` }]} />
+  </View>
+);
 
 const SavingsGoalListScreen = ({ navigation }) => {
   const [goals, setGoals] = useState([]);
@@ -31,113 +51,113 @@ const SavingsGoalListScreen = ({ navigation }) => {
     loadGoals();
   }, [loadGoals]);
 
-  const onRefresh = () => {
-    setRefreshing(true);
-    loadGoals();
-  };
-
-  const renderItem = ({ item }) => (
-    <TouchableOpacity
-      style={styles.card}
-      onPress={() => navigation.navigate('SavingsGoalDetail', { goalId: item.id })}
-    >
-      <View style={styles.cardHeader}>
-        <Text style={styles.cardTitle}>{item.property_title || 'Rent savings plan'}</Text>
-        <Text style={[styles.cardStatus, item.status === 'active' && styles.statusActive]}>
-          {item.status || 'active'}
-        </Text>
-      </View>
-      <Text style={styles.cardTarget}>{formatCurrency(item.target_savings_amount)}</Text>
-      <View style={styles.progressBar}>
-        <View
-          style={[
-            styles.progressFill,
-            {
-              width: `${Math.min(
-                Number(item.target_savings_amount)
-                  ? (Number(item.total_saved || 0) / Number(item.target_savings_amount)) * 100
-                  : 0,
-                100
-              )}%`,
-            },
-          ]}
-        />
-      </View>
-      <Text style={styles.cardProgress}>
-        {formatCurrency(item.total_saved || 0)} saved
-      </Text>
-      {item.rent_due_date && (
-        <Text style={styles.cardDate}>
-          Due: {new Date(item.rent_due_date).toLocaleDateString()}
-        </Text>
-      )}
-    </TouchableOpacity>
+  const header = (
+    <>
+      <PremiumHero
+        eyebrow="Rent savings"
+        title={`My savings plans (${goals.length})`}
+        subtitle="Build rent discipline with visible progress, due dates and target tracking."
+        icon="wallet-outline"
+      />
+      <PremiumButton
+        title="Create new plan"
+        onPress={() => navigation.navigate('SavingsGoalCreate')}
+        icon="add-circle-outline"
+        style={styles.createButton}
+      />
+    </>
   );
 
   return (
-    <View style={styles.screen}>
-      <FlatList
-        data={goals}
-        keyExtractor={(item) => String(item.id)}
-        contentContainerStyle={styles.list}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-        renderItem={renderItem}
-        ListHeaderComponent={
-          <Text style={styles.title}>My Savings Plans ({goals.length})</Text>
-        }
-        ListEmptyComponent={
-          !loading && (
-            <View style={styles.emptyContainer}>
-              <Text style={styles.empty}>No savings plans yet.</Text>
-              <Text style={styles.emptySub}>Create your first plan.</Text>
-            </View>
-          )
-        }
-      />
-    </View>
+    <PremiumListScreen
+      data={goals}
+      keyExtractor={(item) => String(item.id)}
+      refreshing={refreshing}
+      onRefresh={() => {
+        setRefreshing(true);
+        loadGoals();
+      }}
+      header={header}
+      emptyTitle={loading ? 'Loading savings plans' : 'No savings plans yet'}
+      emptyMessage={loading ? 'Please wait while we prepare your rent-savings records.' : 'Create your first plan from an approved rental application.'}
+      emptyIcon="wallet-outline"
+      renderItem={({ item }) => {
+        const progress = getProgress(item);
+        const status = item.status || 'active';
+        return (
+          <TouchableOpacity
+            activeOpacity={0.86}
+            onPress={() => navigation.navigate('SavingsGoalDetail', { goalId: item.id })}
+          >
+            <PremiumCard>
+              <View style={styles.cardHeader}>
+                <View style={styles.titleBlock}>
+                  <Text style={styles.cardTitle}>{item.property_title || 'Rent savings plan'}</Text>
+                  <Text style={styles.cardTarget}>{formatNaira(item.target_savings_amount)}</Text>
+                </View>
+                <StatusPill label={status} color={status === 'active' ? colors.blue : colors.muted} />
+              </View>
+              <ProgressBar value={progress} />
+              <Text style={styles.progressCopy}>
+                {formatNaira(item.total_saved || 0)} saved • {Math.round(progress)}% complete
+              </Text>
+              {item.rent_due_date ? (
+                <InfoRow
+                  icon="calendar-outline"
+                  label="Rent due"
+                  value={new Date(item.rent_due_date).toLocaleDateString()}
+                />
+              ) : null}
+            </PremiumCard>
+          </TouchableOpacity>
+        );
+      }}
+    />
   );
 };
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#f8fafc' },
-  list: { padding: 16, paddingBottom: 24 },
-  title: { fontSize: 22, fontWeight: '800', color: '#0f172a', marginBottom: 14 },
-  card: {
-    backgroundColor: '#ffffff',
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
-    borderRadius: 12,
-    padding: 14,
-    marginBottom: 10,
+  createButton: {
+    marginBottom: 12,
   },
-  cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  cardTitle: { fontSize: 16, fontWeight: '700', color: '#0f172a' },
-  cardStatus: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: '#64748b',
-    backgroundColor: '#f1f5f9',
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 99,
-    overflow: 'hidden',
-    textTransform: 'capitalize',
+  cardHeader: {
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+    gap: 12,
+    justifyContent: 'space-between',
   },
-  statusActive: { color: '#0284c7', backgroundColor: '#e0f2fe' },
-  cardTarget: { fontSize: 22, fontWeight: '800', color: '#0284c7', marginTop: 6 },
+  titleBlock: {
+    flex: 1,
+  },
+  cardTitle: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 16,
+  },
+  cardTarget: {
+    color: colors.blue,
+    fontFamily: typography.bold,
+    fontSize: 22,
+    marginTop: 5,
+  },
   progressBar: {
-    height: 8,
-    backgroundColor: '#e2e8f0',
-    borderRadius: 4,
-    marginTop: 10,
+    backgroundColor: colors.border,
+    borderRadius: radius.pill,
+    height: 10,
+    marginTop: 14,
     overflow: 'hidden',
   },
-  progressFill: { height: '100%', backgroundColor: '#0284c7', borderRadius: 4 },
-  cardProgress: { color: '#475569', fontSize: 13, marginTop: 4 },
-  cardDate: { color: '#64748b', fontSize: 12, marginTop: 4 },
-  emptyContainer: { alignItems: 'center', marginTop: 60 },
-  empty: { fontSize: 16, color: '#64748b' },
-  emptySub: { color: '#94a3b8', marginTop: 4 },
+  progressFill: {
+    backgroundColor: colors.blue,
+    borderRadius: radius.pill,
+    height: '100%',
+  },
+  progressCopy: {
+    color: colors.text,
+    fontFamily: typography.medium,
+    fontSize: 12,
+    marginTop: 8,
+  },
 });
 
 export default SavingsGoalListScreen;

@@ -1,23 +1,30 @@
 import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  ActivityIndicator,
-  TextInput,
-  Modal,
-} from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { Modal, StyleSheet, Text, View } from 'react-native';
 import Toast from 'react-native-toast-message';
+import Input from '../../components/common/Input';
+import {
+  EmptyPanel,
+  InfoRow,
+  PremiumButton,
+  PremiumCard,
+  PremiumCenter,
+  PremiumHero,
+  PremiumScreen,
+  PremiumSectionTitle,
+  StatusPill,
+  formatNaira,
+} from '../../components/common/PremiumLayout';
 import { rentSavingsService } from '../../services/rentSavingsService';
-import Button from '../../components/common/Button';
-import { getErrorMessage, pickObject, pickList } from '../../utils/http';
+import { getErrorMessage, pickList, pickObject } from '../../utils/http';
+import { colors, radius, typography } from '../../theme';
 
-const formatCurrency = (value) => `NGN ${Number(value || 0).toLocaleString()}`;
+const ProgressBar = ({ value }) => (
+  <View style={styles.progressBar}>
+    <View style={[styles.progressFill, { width: `${value}%` }]} />
+  </View>
+);
 
-const SavingsGoalDetailScreen = ({ route, navigation }) => {
+const SavingsGoalDetailScreen = ({ route }) => {
   const { goalId } = route?.params || {};
   const [goal, setGoal] = useState(null);
   const [contributions, setContributions] = useState([]);
@@ -81,128 +88,133 @@ const SavingsGoalDetailScreen = ({ route, navigation }) => {
   };
 
   if (loading) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color="#0284c7" />
-      </View>
-    );
+    return <PremiumCenter loading title="Loading savings goal" />;
   }
 
   if (!goal) {
     return (
-      <View style={styles.center}>
-        <Text style={styles.empty}>Goal not found.</Text>
-      </View>
+      <PremiumCenter
+        icon="wallet-outline"
+        title="Goal not found"
+        message="This savings plan could not be loaded."
+      />
     );
   }
 
   const targetAmount = Number(goal.target_savings_amount || 0);
   const savedAmount = Number(goal.total_saved || 0);
+  const remainingAmount = Math.max(0, targetAmount - savedAmount);
   const progress = Math.min(targetAmount ? (savedAmount / targetAmount) * 100 : 0, 100);
+  const status = goal.status || 'active';
 
   return (
     <>
-      <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
-        <View style={styles.headerCard}>
-          <Text style={styles.goalName}>{goal.property_title || 'Rent savings plan'}</Text>
-          <Text style={[styles.goalStatus, goal.status === 'active' && styles.statusActive]}>
-            {goal.status || 'active'}
-          </Text>
-        </View>
+      <PremiumScreen>
+        <PremiumHero
+          eyebrow="Rent savings"
+          title={goal.property_title || 'Rent savings plan'}
+          subtitle={`${Math.round(progress)}% complete • ${formatNaira(remainingAmount)} remaining`}
+          icon="wallet-outline"
+          right={<StatusPill label={status} color={status === 'active' ? colors.blue : colors.muted} />}
+        />
 
         <View style={styles.amountRow}>
-          <View style={styles.amountItem}>
+          <PremiumCard style={styles.amountItem}>
             <Text style={styles.amountLabel}>Target</Text>
-            <Text style={styles.amountValue}>{formatCurrency(targetAmount)}</Text>
-          </View>
-          <View style={styles.amountItem}>
+            <Text style={styles.amountValue}>{formatNaira(targetAmount)}</Text>
+          </PremiumCard>
+          <PremiumCard style={styles.amountItem}>
             <Text style={styles.amountLabel}>Saved</Text>
-            <Text style={[styles.amountValue, styles.savedValue]}>
-              {formatCurrency(savedAmount)}
-            </Text>
-          </View>
-          <View style={styles.amountItem}>
-            <Text style={styles.amountLabel}>Remaining</Text>
-            <Text style={styles.amountValue}>
-              {formatCurrency(Math.max(0, targetAmount - savedAmount))}
-            </Text>
-          </View>
+            <Text style={[styles.amountValue, styles.savedValue]}>{formatNaira(savedAmount)}</Text>
+          </PremiumCard>
         </View>
 
-        <View style={styles.progressSection}>
-          <View style={styles.progressBar}>
-            <View style={[styles.progressFill, { width: `${progress}%` }]} />
-          </View>
+        <PremiumCard>
+          <ProgressBar value={progress} />
           <Text style={styles.progressText}>{Math.round(progress)}% complete</Text>
-        </View>
+          <InfoRow icon="cash-outline" label="Remaining" value={formatNaira(remainingAmount)} />
+        </PremiumCard>
 
         {goal.property_address ? (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Property</Text>
-            <Text style={styles.description}>{goal.property_address}</Text>
-          </View>
+          <>
+            <PremiumSectionTitle title="Property" />
+            <PremiumCard>
+              <Text style={styles.description}>{goal.property_address}</Text>
+            </PremiumCard>
+          </>
         ) : null}
 
         {goal.rent_due_date ? (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Rent Due Date</Text>
-            <Text style={styles.description}>
-              {new Date(goal.rent_due_date).toLocaleDateString()}
-            </Text>
-          </View>
+          <PremiumCard>
+            <InfoRow
+              icon="calendar-outline"
+              label="Rent due date"
+              value={new Date(goal.rent_due_date).toLocaleDateString()}
+            />
+          </PremiumCard>
         ) : null}
 
-        <Button
-          title="Add Contribution"
+        <PremiumButton
+          title="Add contribution"
           onPress={() => setContributeModal(true)}
           icon="add-circle-outline"
+          style={styles.addButton}
         />
 
-        {contributions.length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Contribution History</Text>
-            {contributions.map((c, i) => (
-              <View key={c.id || i} style={styles.contribCard}>
-                <Text style={styles.contribAmount}>{formatCurrency(c.amount)}</Text>
-                <Text style={styles.contribDate}>
-                  {c.contributed_at ? new Date(c.contributed_at).toLocaleDateString() : 'N/A'}
-                </Text>
-              </View>
-            ))}
-          </View>
+        <PremiumSectionTitle
+          title="Contribution history"
+          subtitle="Recent deposits towards this rent target."
+        />
+        {contributions.length > 0 ? (
+          contributions.map((item, index) => (
+            <PremiumCard key={item.id || index}>
+              <InfoRow icon="cash-outline" label="Amount" value={formatNaira(item.amount)} />
+              <InfoRow
+                icon="calendar-outline"
+                label="Date"
+                value={item.contributed_at ? new Date(item.contributed_at).toLocaleDateString() : 'N/A'}
+              />
+            </PremiumCard>
+          ))
+        ) : (
+          <EmptyPanel
+            title="No contributions yet"
+            message="Add your first contribution to start building this rent plan."
+            icon="cash-outline"
+          />
         )}
-      </ScrollView>
+      </PremiumScreen>
 
       <Modal visible={contributeModal} transparent animationType="fade">
         <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Add Contribution</Text>
-            <TextInput
-              style={styles.modalInput}
+          <PremiumCard style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Add contribution</Text>
+            <Input
+              label="Amount"
               value={contributionAmount}
               onChangeText={setContributionAmount}
               placeholder="Amount (NGN)"
               keyboardType="numeric"
-              placeholderTextColor="#94a3b8"
+              icon="cash-outline"
             />
             <View style={styles.modalActions}>
-              <Button
+              <PremiumButton
                 title="Cancel"
-                variant="outline"
+                variant="secondary"
                 onPress={() => {
                   setContributeModal(false);
                   setContributionAmount('');
                 }}
-                style={styles.modalBtn}
+                style={styles.modalButton}
               />
-              <Button
-                title={contributing ? 'Saving...' : 'Save'}
+              <PremiumButton
+                title="Save"
                 onPress={handleContribute}
                 loading={contributing}
-                style={styles.modalBtn}
+                style={styles.modalButton}
               />
             </View>
-          </View>
+          </PremiumCard>
         </View>
       </Modal>
     </>
@@ -210,93 +222,78 @@ const SavingsGoalDetailScreen = ({ route, navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#f8fafc' },
-  content: { padding: 16, paddingBottom: 24 },
-  center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  empty: { fontSize: 16, color: '#64748b' },
-  headerCard: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  goalName: { fontSize: 24, fontWeight: '800', color: '#0f172a', flex: 1 },
-  goalStatus: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: '#64748b',
-    backgroundColor: '#f1f5f9',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 99,
-    overflow: 'hidden',
-    textTransform: 'capitalize',
-  },
-  statusActive: { color: '#0284c7', backgroundColor: '#e0f2fe' },
   amountRow: {
     flexDirection: 'row',
     gap: 10,
-    marginBottom: 16,
   },
   amountItem: {
     flex: 1,
-    backgroundColor: '#ffffff',
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
-    borderRadius: 12,
-    padding: 12,
   },
-  amountLabel: { color: '#64748b', fontSize: 12, fontWeight: '500' },
-  amountValue: { color: '#0f172a', fontSize: 18, fontWeight: '800', marginTop: 4 },
-  savedValue: { color: '#0284c7' },
-  progressSection: { marginBottom: 20 },
+  amountLabel: {
+    color: colors.muted,
+    fontFamily: typography.medium,
+    fontSize: 11,
+    textTransform: 'uppercase',
+  },
+  amountValue: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 18,
+    marginTop: 5,
+  },
+  savedValue: {
+    color: colors.blue,
+  },
   progressBar: {
+    backgroundColor: colors.border,
+    borderRadius: radius.pill,
     height: 12,
-    backgroundColor: '#e2e8f0',
-    borderRadius: 6,
     overflow: 'hidden',
   },
-  progressFill: { height: '100%', backgroundColor: '#0284c7', borderRadius: 6 },
-  progressText: { color: '#475569', fontSize: 13, marginTop: 6, textAlign: 'center' },
-  section: { marginBottom: 20 },
-  sectionTitle: { fontSize: 16, fontWeight: '700', color: '#0f172a', marginBottom: 6 },
-  description: { color: '#334155', lineHeight: 22 },
-  contribCard: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    backgroundColor: '#ffffff',
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 6,
+  progressFill: {
+    backgroundColor: colors.blue,
+    borderRadius: radius.pill,
+    height: '100%',
   },
-  contribAmount: { fontWeight: '700', color: '#0f172a' },
-  contribDate: { color: '#64748b' },
+  progressText: {
+    color: colors.text,
+    fontFamily: typography.semibold,
+    fontSize: 13,
+    marginBottom: 8,
+    marginTop: 8,
+    textAlign: 'center',
+  },
+  description: {
+    color: colors.text,
+    fontFamily: typography.regular,
+    fontSize: 14,
+    lineHeight: 22,
+  },
+  addButton: {
+    marginBottom: 10,
+  },
   modalOverlay: {
+    backgroundColor: 'rgba(7, 26, 61, 0.62)',
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
     justifyContent: 'center',
-    padding: 30,
+    padding: 24,
   },
   modalContent: {
-    backgroundColor: '#ffffff',
-    borderRadius: 16,
-    padding: 20,
+    marginBottom: 0,
   },
-  modalTitle: { fontSize: 18, fontWeight: '800', color: '#0f172a', marginBottom: 14 },
-  modalInput: {
-    borderWidth: 1,
-    borderColor: '#d1d5db',
-    borderRadius: 8,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    fontSize: 16,
-    color: '#0f172a',
-    marginBottom: 16,
+  modalTitle: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 19,
+    marginBottom: 14,
   },
-  modalActions: { flexDirection: 'row', gap: 10 },
-  modalBtn: { flex: 1 },
+  modalActions: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+  modalButton: {
+    flex: 1,
+  },
 });
 
 export default SavingsGoalDetailScreen;

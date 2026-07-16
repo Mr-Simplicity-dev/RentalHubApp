@@ -1,13 +1,31 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 import Input from '../../components/common/Input';
-import Button from '../../components/common/Button';
+import {
+  EmptyPanel,
+  InfoRow,
+  PremiumButton,
+  PremiumCard,
+  PremiumCenter,
+  PremiumHero,
+  PremiumScreen,
+  PremiumSectionTitle,
+  StatusPill,
+} from '../../components/common/PremiumLayout';
 import { adminAgentService } from '../../services/adminAgentService';
 import { getErrorMessage, pickList } from '../../utils/http';
+import { colors, typography } from '../../theme';
+
+const getStatusColor = (status) => {
+  if (status === 'active') return colors.success;
+  if (status === 'revoked') return colors.danger;
+  return colors.warning;
+};
 
 const AdminAgentAssignmentsScreen = () => {
   const [loading, setLoading] = useState(false);
+  const [actionId, setActionId] = useState(null);
   const [assignments, setAssignments] = useState([]);
   const [form, setForm] = useState({ landlordId: '', agentId: '' });
 
@@ -37,6 +55,7 @@ const AdminAgentAssignmentsScreen = () => {
       return;
     }
 
+    setActionId('create');
     try {
       await adminAgentService.createAssignment({
         landlordId: Number(form.landlordId),
@@ -51,10 +70,13 @@ const AdminAgentAssignmentsScreen = () => {
         text1: 'Create failed',
         text2: getErrorMessage(error, 'Could not create assignment'),
       });
+    } finally {
+      setActionId(null);
     }
   };
 
   const setActiveState = async (item, action) => {
+    setActionId(`${item.id}-${action}`);
     try {
       if (action === 'revoke') {
         await adminAgentService.revokeAssignment(item.id);
@@ -70,73 +92,143 @@ const AdminAgentAssignmentsScreen = () => {
         text1: 'Action failed',
         text2: getErrorMessage(error, 'Could not update assignment status'),
       });
+    } finally {
+      setActionId(null);
     }
   };
 
   return (
-    <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
-      <Text style={styles.title}>Agent Assignments</Text>
+    <PremiumScreen>
+      <PremiumHero
+        eyebrow="Admin delegation"
+        title="Agent assignments"
+        subtitle="Assign agents to landlords and manage delegated account access from a premium native workflow."
+        icon="people-circle-outline"
+      />
 
-      <View style={styles.formCard}>
+      <PremiumCard>
+        <Text style={styles.formTitle}>Create assignment</Text>
         <Input
-          label="Landlord User ID"
+          label="Landlord user ID"
           value={form.landlordId}
           keyboardType="number-pad"
           onChangeText={(value) => setForm((prev) => ({ ...prev, landlordId: value }))}
+          icon="home-outline"
         />
         <Input
-          label="Agent User ID"
+          label="Agent user ID"
           value={form.agentId}
           keyboardType="number-pad"
           onChangeText={(value) => setForm((prev) => ({ ...prev, agentId: value }))}
+          icon="person-add-outline"
         />
-        <Button title="Assign Agent" onPress={createAssignment} />
-      </View>
+        <PremiumButton
+          title="Assign agent"
+          onPress={createAssignment}
+          loading={actionId === 'create'}
+          icon="link-outline"
+        />
+      </PremiumCard>
 
-      <Text style={styles.sectionTitle}>Current Assignments</Text>
-      {loading ? <Text style={styles.empty}>Loading...</Text> : null}
-      {!loading && assignments.length === 0 ? <Text style={styles.empty}>No assignments found.</Text> : null}
+      <PremiumSectionTitle
+        title="Current assignments"
+        subtitle="Active and recoverable delegation records."
+      />
 
-      {assignments.map((item) => (
-        <View key={String(item.id)} style={styles.row}>
-          <Text style={styles.name}>{item.agent_name || `Agent #${item.agent_user_id}`}</Text>
-          <Text style={styles.meta}>Landlord: {item.landlord_name || item.landlord_user_id}</Text>
-          <Text style={styles.meta}>Status: {item.status}</Text>
-          <View style={styles.actions}>
-            {item.status === 'active' ? (
-              <>
-                <TouchableOpacity onPress={() => setActiveState(item, 'deactivate')}>
-                  <Text style={styles.link}>Deactivate</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => setActiveState(item, 'revoke')}>
-                  <Text style={styles.danger}>Revoke</Text>
-                </TouchableOpacity>
-              </>
-            ) : (
-              <TouchableOpacity onPress={() => setActiveState(item, 'reactivate')}>
-                <Text style={styles.link}>Reactivate</Text>
-              </TouchableOpacity>
-            )}
-          </View>
-        </View>
-      ))}
-    </ScrollView>
+      {loading ? <PremiumCenter loading title="Loading assignments" /> : null}
+      {!loading && assignments.length === 0 ? (
+        <EmptyPanel
+          title="No assignments found"
+          message="Create an assignment above to connect a landlord with an agent."
+          icon="people-outline"
+        />
+      ) : null}
+
+      {!loading && assignments.map((item) => {
+        const status = item.status || 'active';
+        return (
+          <PremiumCard key={String(item.id)}>
+            <View style={styles.rowHeader}>
+              <View style={styles.rowTitleBlock}>
+                <Text style={styles.name}>{item.agent_name || `Agent #${item.agent_user_id}`}</Text>
+                <Text style={styles.meta}>Landlord: {item.landlord_name || item.landlord_user_id}</Text>
+              </View>
+              <StatusPill label={status} color={getStatusColor(status)} />
+            </View>
+            <InfoRow icon="finger-print-outline" label="Assignment ID" value={item.id} />
+
+            <View style={styles.actions}>
+              {status === 'active' ? (
+                <>
+                  <PremiumButton
+                    title="Deactivate"
+                    variant="secondary"
+                    onPress={() => setActiveState(item, 'deactivate')}
+                    loading={actionId === `${item.id}-deactivate`}
+                    style={styles.actionButton}
+                  />
+                  <PremiumButton
+                    title="Revoke"
+                    variant="ghost"
+                    onPress={() => setActiveState(item, 'revoke')}
+                    loading={actionId === `${item.id}-revoke`}
+                    style={styles.actionButton}
+                  />
+                </>
+              ) : (
+                <PremiumButton
+                  title="Reactivate"
+                  onPress={() => setActiveState(item, 'reactivate')}
+                  loading={actionId === `${item.id}-reactivate`}
+                  style={styles.fullButton}
+                />
+              )}
+            </View>
+          </PremiumCard>
+        );
+      })}
+    </PremiumScreen>
   );
 };
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#f8fafc' },
-  content: { padding: 16, paddingBottom: 24 },
-  title: { fontSize: 26, fontWeight: '800', color: '#0f172a' },
-  formCard: { marginTop: 12, backgroundColor: '#fff', borderWidth: 1, borderColor: '#e2e8f0', borderRadius: 12, padding: 12 },
-  sectionTitle: { marginTop: 16, marginBottom: 8, fontSize: 17, fontWeight: '700', color: '#0f172a' },
-  empty: { color: '#64748b' },
-  row: { backgroundColor: '#fff', borderWidth: 1, borderColor: '#e2e8f0', borderRadius: 10, padding: 12, marginBottom: 8 },
-  name: { color: '#0f172a', fontWeight: '700' },
-  meta: { marginTop: 4, color: '#64748b' },
-  actions: { flexDirection: 'row', gap: 14, marginTop: 8 },
-  link: { color: '#0284c7', fontWeight: '700' },
-  danger: { color: '#dc2626', fontWeight: '700' },
+  formTitle: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 17,
+    marginBottom: 12,
+  },
+  rowHeader: {
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+    gap: 12,
+    justifyContent: 'space-between',
+  },
+  rowTitleBlock: {
+    flex: 1,
+  },
+  name: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 16,
+  },
+  meta: {
+    color: colors.muted,
+    fontFamily: typography.regular,
+    fontSize: 12,
+    marginTop: 3,
+  },
+  actions: {
+    flexDirection: 'row',
+    gap: 10,
+    marginTop: 14,
+  },
+  actionButton: {
+    flex: 1,
+  },
+  fullButton: {
+    flex: 1,
+  },
 });
 
 export default AdminAgentAssignmentsScreen;

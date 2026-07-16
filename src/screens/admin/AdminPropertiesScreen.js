@@ -1,13 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { adminService } from '../../services/adminService';
 import { getErrorMessage, pickList } from '../../utils/http';
+import {
+  InfoRow,
+  PremiumCard,
+  PremiumHero,
+  PremiumListScreen,
+  StatusPill,
+} from '../../components/common/PremiumLayout';
+import { colors, typography } from '../../theme';
 
 const AdminPropertiesScreen = () => {
   const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const loadProperties = async () => {
+    setLoading(true);
     try {
       const response = await adminService.getProperties();
       setItems(pickList(response, ['data', 'properties']));
@@ -17,6 +27,8 @@ const AdminPropertiesScreen = () => {
         text1: 'Failed',
         text2: getErrorMessage(error, 'Could not load properties'),
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -25,42 +37,83 @@ const AdminPropertiesScreen = () => {
   }, []);
 
   return (
-    <View style={styles.screen}>
-      <Text style={styles.title}>Admin Properties</Text>
-      <FlatList
-        data={items}
-        keyExtractor={(item) => String(item.id)}
-        contentContainerStyle={styles.list}
-        renderItem={({ item }) => (
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>{item.title}</Text>
-            <Text style={styles.cardMeta}>{item.landlord_name || 'No landlord name'}</Text>
-            <Text style={styles.cardMeta}>
-              {[item.city, item.state].filter(Boolean).join(', ') || [item.city, item.state_name].filter(Boolean).join(', ')}
-            </Text>
-          </View>
-        )}
-        ListEmptyComponent={<Text style={styles.empty}>No properties found.</Text>}
-      />
-    </View>
+    <PremiumListScreen
+      data={items}
+      refreshing={loading}
+      onRefresh={loadProperties}
+      keyExtractor={(item) => String(item.id)}
+      emptyTitle="No properties found"
+      emptyMessage="Properties submitted to RentalHub will appear here."
+      emptyIcon="home-outline"
+      header={
+        <PremiumHero
+          eyebrow="Administration"
+          title="Properties"
+          subtitle="Review property records, landlords and locations in a cleaner mobile view."
+          icon="business-outline"
+          right={<StatusPill label={`${items.length} records`} color={colors.blue} />}
+        />
+      }
+      renderItem={({ item }) => {
+        const location =
+          [item.city, item.state].filter(Boolean).join(', ') ||
+          [item.city, item.state_name].filter(Boolean).join(', ') ||
+          'Location unavailable';
+
+        return (
+          <PremiumCard>
+            <View style={styles.cardHeader}>
+              <View style={styles.propertyIcon}>
+                <Text style={styles.propertyIconText}>RH</Text>
+              </View>
+              <View style={styles.cardCopy}>
+                <Text style={styles.cardTitle}>{item.title || 'Untitled property'}</Text>
+                <Text style={styles.cardMeta}>{location}</Text>
+              </View>
+            </View>
+            <InfoRow icon="person-outline" label="Landlord" value={item.landlord_name || 'No landlord name'} />
+            <InfoRow icon="pricetag-outline" label="Status" value={item.status || item.approval_status || '—'} />
+          </PremiumCard>
+        );
+      }}
+    />
   );
 };
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#f8fafc' },
-  title: { textAlign: 'center', marginVertical: 12, fontSize: 22, fontWeight: '800', color: '#0f172a' },
-  list: { paddingHorizontal: 14, paddingBottom: 20 },
-  card: {
-    backgroundColor: '#ffffff',
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
-    borderRadius: 12,
-    padding: 12,
-    marginBottom: 10,
+  cardHeader: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 6,
   },
-  cardTitle: { fontSize: 16, fontWeight: '700', color: '#0f172a' },
-  cardMeta: { marginTop: 4, color: '#475569' },
-  empty: { color: '#64748b', textAlign: 'center', marginTop: 40 },
+  propertyIcon: {
+    alignItems: 'center',
+    backgroundColor: colors.navy,
+    borderRadius: 18,
+    height: 44,
+    justifyContent: 'center',
+    width: 44,
+  },
+  propertyIconText: {
+    color: colors.gold,
+    fontFamily: typography.bold,
+    fontSize: 12,
+  },
+  cardCopy: {
+    flex: 1,
+  },
+  cardTitle: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 16,
+  },
+  cardMeta: {
+    color: colors.muted,
+    fontFamily: typography.regular,
+    fontSize: 12,
+    marginTop: 3,
+  },
 });
 
 export default AdminPropertiesScreen;

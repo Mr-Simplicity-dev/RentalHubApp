@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import Toast from 'react-native-toast-message';
-import Button from '../../components/common/Button';
 import Input from '../../components/common/Input';
+import {
+  PremiumButton,
+  PremiumCard,
+  PremiumHero,
+  PremiumScreen,
+} from '../../components/common/PremiumLayout';
 import { authService } from '../../services/authService';
 import { getErrorMessage } from '../../utils/http';
 
@@ -58,41 +63,48 @@ const VerifyPhoneScreen = ({ navigation }) => {
   };
 
   return (
-    <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
-      <View style={styles.card}>
-        <Text style={styles.title}>Verify Phone</Text>
-        <Text style={styles.subtitle}>
-          Request a one-time code, then enter it here to complete phone verification.
-        </Text>
+    <PremiumScreen>
+      <PremiumHero
+        eyebrow="Phone security"
+        title="Verify your mobile number"
+        subtitle="Use a one-time code to protect bookings, calls and payment alerts on your account."
+        icon="phone-portrait-outline"
+      />
 
-        <Button title="Send OTP" onPress={sendOtp} loading={sending} variant="outline" />
+      <PremiumCard>
+        <PremiumButton
+          title="Send OTP"
+          onPress={sendOtp}
+          loading={sending}
+          variant="secondary"
+          icon="chatbubble-ellipses-outline"
+        />
 
         <Input
-          label="OTP"
+          label="OTP code"
           value={otp}
           onChangeText={setOtp}
           keyboardType="number-pad"
           placeholder="Enter code"
+          icon="keypad-outline"
+          containerStyle={styles.inputGap}
         />
 
-        <Button title="Verify Phone" onPress={verifyOtp} loading={verifying} />
-      </View>
-    </ScrollView>
+        <PremiumButton
+          title="Verify phone"
+          onPress={verifyOtp}
+          loading={verifying}
+          icon="checkmark-circle-outline"
+        />
+      </PremiumCard>
+    </PremiumScreen>
   );
 };
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#f8fafc' },
-  content: { padding: 16, paddingBottom: 24 },
-  card: {
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
-    padding: 16,
+  inputGap: {
+    marginTop: 18,
   },
-  title: { fontSize: 24, fontWeight: '800', color: '#0f172a', marginBottom: 6 },
-  subtitle: { color: '#64748b', marginBottom: 14 },
 });
 
 export default VerifyPhoneScreen;

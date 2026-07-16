@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
-import { ScrollView, StyleSheet, Text } from 'react-native';
 import Toast from 'react-native-toast-message';
 import Input from '../../components/common/Input';
-import Button from '../../components/common/Button';
+import {
+  PremiumButton,
+  PremiumCard,
+  PremiumHero,
+  PremiumScreen,
+} from '../../components/common/PremiumLayout';
 import { authService } from '../../services/authService';
 import { getErrorMessage } from '../../utils/http';
 
@@ -44,35 +48,51 @@ const AcceptAgentInviteScreen = ({ navigation, route }) => {
   };
 
   return (
-    <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
-      <Text style={styles.title}>Accept Agent Invite</Text>
-      <Text style={styles.subtitle}>Complete your delegated agent account setup</Text>
-
-      <Input label="Invite Token" value={form.token} onChangeText={(value) => onChange('token', value)} />
-      <Input label="Full Name" value={form.full_name} onChangeText={(value) => onChange('full_name', value)} />
-      <Input
-        label="Phone"
-        value={form.phone}
-        onChangeText={(value) => onChange('phone', value)}
-        keyboardType="phone-pad"
-      />
-      <Input
-        label="Password"
-        value={form.password}
-        onChangeText={(value) => onChange('password', value)}
-        secureTextEntry
+    <PremiumScreen>
+      <PremiumHero
+        eyebrow="Agent onboarding"
+        title="Activate your agent profile"
+        subtitle="Complete your delegated access setup and start managing assigned RentalHub work from mobile."
+        icon="briefcase-outline"
       />
 
-      <Button title="Accept Invite" onPress={onSubmit} loading={loading} />
-    </ScrollView>
+      <PremiumCard>
+        <Input
+          label="Invite token"
+          value={form.token}
+          onChangeText={(value) => onChange('token', value)}
+          icon="ticket-outline"
+        />
+        <Input
+          label="Full name"
+          value={form.full_name}
+          onChangeText={(value) => onChange('full_name', value)}
+          icon="person-outline"
+        />
+        <Input
+          label="Phone"
+          value={form.phone}
+          onChangeText={(value) => onChange('phone', value)}
+          keyboardType="phone-pad"
+          icon="call-outline"
+        />
+        <Input
+          label="Password"
+          value={form.password}
+          onChangeText={(value) => onChange('password', value)}
+          secureTextEntry
+          icon="lock-closed-outline"
+        />
+
+        <PremiumButton
+          title="Accept invite"
+          onPress={onSubmit}
+          loading={loading}
+          icon="checkmark-circle-outline"
+        />
+      </PremiumCard>
+    </PremiumScreen>
   );
 };
-
-const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#fff' },
-  content: { padding: 16, paddingBottom: 30 },
-  title: { fontSize: 28, fontWeight: '800', color: '#0f172a' },
-  subtitle: { marginTop: 6, marginBottom: 16, color: '#64748b' },
-});
 
 export default AcceptAgentInviteScreen;

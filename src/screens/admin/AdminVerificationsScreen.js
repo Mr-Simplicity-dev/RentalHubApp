@@ -1,13 +1,24 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { adminService } from '../../services/adminService';
 import { getErrorMessage, pickList } from '../../utils/http';
+import {
+  InfoRow,
+  PremiumButton,
+  PremiumCard,
+  PremiumHero,
+  PremiumListScreen,
+  StatusPill,
+} from '../../components/common/PremiumLayout';
+import { colors, typography } from '../../theme';
 
 const AdminVerificationsScreen = () => {
   const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const loadVerifications = async () => {
+    setLoading(true);
     try {
       const response = await adminService.getPendingVerifications();
       setItems(pickList(response, ['data', 'users', 'verifications']));
@@ -17,6 +28,8 @@ const AdminVerificationsScreen = () => {
         text1: 'Failed',
         text2: getErrorMessage(error, 'Could not load verifications'),
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -53,55 +66,90 @@ const AdminVerificationsScreen = () => {
   };
 
   return (
-    <View style={styles.screen}>
-      <Text style={styles.title}>Admin Verifications</Text>
-      <FlatList
-        data={items}
-        keyExtractor={(item) => String(item.id)}
-        contentContainerStyle={styles.list}
-        renderItem={({ item }) => (
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>{item.full_name}</Text>
-            <Text style={styles.cardMeta}>{item.email}</Text>
-            <Text style={styles.cardMeta}>
-              {item.identity_document_type === 'passport'
-                ? `Passport: ${item.international_passport_number || 'N/A'}`
-                : `NIN: ${item.nin || 'N/A'}`}
-            </Text>
-            <View style={styles.row}>
-              <TouchableOpacity onPress={() => approve(item.id)}>
-                <Text style={styles.linkText}>Approve</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => reject(item.id)}>
-                <Text style={styles.warnText}>Reject</Text>
-              </TouchableOpacity>
+    <PremiumListScreen
+      data={items}
+      refreshing={loading}
+      onRefresh={loadVerifications}
+      keyExtractor={(item) => String(item.id)}
+      emptyTitle="No pending verifications"
+      emptyMessage="Identity documents awaiting review will appear here."
+      emptyIcon="shield-checkmark-outline"
+      header={
+        <PremiumHero
+          eyebrow="Compliance"
+          title="Verifications"
+          subtitle="Review identity records with clearer context and decisive actions."
+          icon="shield-checkmark-outline"
+          right={<StatusPill label={`${items.length} pending`} color={colors.blue} />}
+        />
+      }
+      renderItem={({ item }) => {
+        const documentLabel =
+          item.identity_document_type === 'passport'
+            ? `Passport: ${item.international_passport_number || 'N/A'}`
+            : `NIN: ${item.nin || 'N/A'}`;
+
+        return (
+          <PremiumCard>
+            <View style={styles.cardHeader}>
+              <View style={styles.avatar}>
+                <Text style={styles.avatarText}>{String(item.full_name || item.email || 'V').slice(0, 1).toUpperCase()}</Text>
+              </View>
+              <View style={styles.cardCopy}>
+                <Text style={styles.cardTitle}>{item.full_name || 'Verification request'}</Text>
+                <Text style={styles.cardMeta}>{item.email || 'No email provided'}</Text>
+              </View>
             </View>
-          </View>
-        )}
-        ListEmptyComponent={<Text style={styles.empty}>No pending verifications.</Text>}
-      />
-    </View>
+            <InfoRow icon="id-card-outline" label="Document" value={documentLabel} />
+            <View style={styles.actions}>
+              <PremiumButton title="Approve" icon="checkmark-circle-outline" onPress={() => approve(item.id)} />
+              <PremiumButton title="Reject" variant="ghost" icon="close-circle-outline" onPress={() => reject(item.id)} />
+            </View>
+          </PremiumCard>
+        );
+      }}
+    />
   );
 };
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#f8fafc' },
-  title: { textAlign: 'center', marginVertical: 12, fontSize: 22, fontWeight: '800', color: '#0f172a' },
-  list: { paddingHorizontal: 14, paddingBottom: 20 },
-  card: {
-    backgroundColor: '#ffffff',
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
-    borderRadius: 12,
-    padding: 12,
-    marginBottom: 10,
+  cardHeader: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 6,
   },
-  cardTitle: { fontSize: 16, fontWeight: '700', color: '#0f172a' },
-  cardMeta: { marginTop: 4, color: '#475569' },
-  row: { flexDirection: 'row', gap: 16, marginTop: 10 },
-  linkText: { color: '#0284c7', fontWeight: '700' },
-  warnText: { color: '#dc2626', fontWeight: '700' },
-  empty: { color: '#64748b', textAlign: 'center', marginTop: 40 },
+  avatar: {
+    alignItems: 'center',
+    backgroundColor: colors.surfaceBlue,
+    borderRadius: 22,
+    height: 44,
+    justifyContent: 'center',
+    width: 44,
+  },
+  avatarText: {
+    color: colors.blue,
+    fontFamily: typography.bold,
+    fontSize: 18,
+  },
+  cardCopy: {
+    flex: 1,
+  },
+  cardTitle: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 16,
+  },
+  cardMeta: {
+    color: colors.muted,
+    fontFamily: typography.regular,
+    fontSize: 12,
+    marginTop: 3,
+  },
+  actions: {
+    gap: 10,
+    marginTop: 12,
+  },
 });
 
 export default AdminVerificationsScreen;

@@ -1,29 +1,32 @@
-import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  ActivityIndicator,
-  Alert,
-} from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import React, { useEffect, useState } from 'react';
+import { Alert, StyleSheet, Text, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { transportationService } from '../../services/transportationService';
 import { getErrorMessage } from '../../utils/http';
 import { recoverPayment, savePendingPayment } from '../../services/paymentRecoveryService';
 import useNativePaystackCheckout from '../../hooks/useNativePaystackCheckout';
 import { hasPaystackCheckout } from '../../services/nativePaymentService';
+import {
+  formatNaira,
+  InfoRow,
+  PremiumButton,
+  PremiumCard,
+  PremiumCenter,
+  PremiumHero,
+  PremiumScreen,
+  PremiumSectionTitle,
+  StatusPill,
+} from '../../components/common/PremiumLayout';
+import { colors, radius, typography } from '../../theme';
 
 const STATUS_COLORS = {
-  pending: '#f59e0b',
-  confirmed: '#3b82f6',
-  scheduled: '#8b5cf6',
-  in_progress: '#06b6d4',
-  completed: '#16a34a',
-  cancelled: '#ef4444',
-  rescheduled: '#f97316',
+  pending: '#B7791F',
+  confirmed: colors.blue,
+  scheduled: '#7C3AED',
+  in_progress: '#0891B2',
+  completed: colors.success,
+  cancelled: colors.danger,
+  rescheduled: '#EA580C',
 };
 
 const TransportationBookingDetailScreen = ({ route, navigation }) => {
@@ -103,7 +106,7 @@ const TransportationBookingDetailScreen = ({ route, navigation }) => {
             transaction: response.data,
             title: 'Pay transportation booking',
             subtitle: 'Complete your transport booking with secure in-app Paystack card payment.',
-            amountLabel: booking?.total_price ? `₦${Number(booking.total_price).toLocaleString()}` : '',
+            amountLabel: formatNaira(booking?.total_price, ''),
             onSuccess: (paymentResponse) =>
               completeNativePayment(paymentResponse?.reference || reference),
             onBrowserFallback: () => {
@@ -155,197 +158,161 @@ const TransportationBookingDetailScreen = ({ route, navigation }) => {
   };
 
   if (loading) {
+    return <PremiumCenter loading title="Loading booking" message="Fetching your transportation booking details." />;
+  }
+
+  if (!booking) {
     return (
-      <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color="#0284c7" />
-      </View>
+      <PremiumCenter
+        tone="danger"
+        icon="alert-circle-outline"
+        title="Booking unavailable"
+        message="We could not load this transportation booking."
+        actionLabel="Go back"
+        onAction={() => navigation.goBack()}
+      />
     );
   }
 
-  if (!booking) return null;
-
   const canCancel = ['pending', 'confirmed'].includes(booking.status);
   const canPay = booking.status === 'pending' && !booking.payment_status;
+  const statusColor = STATUS_COLORS[booking.status] || colors.muted;
 
   return (
     <>
-    <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
-      <View style={styles.statusSection}>
-        <View style={[styles.statusBadge, { backgroundColor: STATUS_COLORS[booking.status] || '#6b7280' }]}>
-          <Text style={styles.statusText}>
-            {(booking.status || '').replace(/_/g, ' ').toUpperCase()}
-          </Text>
-        </View>
-        <Text style={styles.serviceName}>{booking.service_name || 'Transportation'}</Text>
-      </View>
+      <PremiumScreen>
+        <PremiumHero
+          eyebrow="Transportation"
+          title={booking.service_name || 'Transportation booking'}
+          subtitle="Track trip details, payment status and next actions from one clean screen."
+          icon="car-outline"
+          right={<StatusPill label={booking.status || 'pending'} color={statusColor} />}
+        />
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Trip Details</Text>
-        <View style={styles.detailItem}>
-          <Icon name="location-outline" size={18} color="#64748b" />
-          <View style={styles.detailContent}>
-            <Text style={styles.detailLabel}>Pickup</Text>
-            <Text style={styles.detailValue}>{booking.pickup_address}</Text>
+        <PremiumCard>
+          <PremiumSectionTitle title="Trip details" subtitle="Pickup, destination and schedule." />
+          <InfoRow icon="location-outline" label="Pickup" value={booking.pickup_address} />
+          <InfoRow icon="navigate-outline" label="Destination" value={booking.destination_address} />
+          <InfoRow icon="calendar-outline" label="Date & time" value={`${booking.booking_date || '—'} at ${booking.booking_time || '—'}`} />
+          <InfoRow icon="resize-outline" label="Distance" value={booking.estimated_distance_km ? `${booking.estimated_distance_km} km` : '—'} />
+        </PremiumCard>
+
+        <PremiumCard>
+          <PremiumSectionTitle title="Payment" subtitle="Charges and payment completion status." />
+          <View style={styles.priceLine}>
+            <Text style={styles.priceLabel}>Base price</Text>
+            <Text style={styles.priceValue}>{formatNaira(booking.base_price)}</Text>
           </View>
-        </View>
-        <View style={styles.detailItem}>
-          <Icon name="location-outline" size={18} color="#64748b" />
-          <View style={styles.detailContent}>
-            <Text style={styles.detailLabel}>Destination</Text>
-            <Text style={styles.detailValue}>{booking.destination_address}</Text>
+          <View style={styles.priceLine}>
+            <Text style={styles.priceLabel}>Distance charge</Text>
+            <Text style={styles.priceValue}>{formatNaira(booking.distance_price)}</Text>
           </View>
-        </View>
-        <View style={styles.detailItem}>
-          <Icon name="calendar-outline" size={18} color="#64748b" />
-          <View style={styles.detailContent}>
-            <Text style={styles.detailLabel}>Date & Time</Text>
-            <Text style={styles.detailValue}>
-              {booking.booking_date} at {booking.booking_time}
-            </Text>
+          <View style={styles.totalPanel}>
+            <View>
+              <Text style={styles.totalLabel}>Total</Text>
+              <Text style={styles.paymentStatus}>
+                Payment {booking.payment_status === 'paid' ? 'completed' : 'pending'}
+              </Text>
+            </View>
+            <Text style={styles.totalValue}>{formatNaira(booking.total_price)}</Text>
           </View>
-        </View>
-        <View style={styles.detailItem}>
-          <Icon name="resize-outline" size={18} color="#64748b" />
-          <View style={styles.detailContent}>
-            <Text style={styles.detailLabel}>Distance</Text>
-            <Text style={styles.detailValue}>{booking.estimated_distance_km} km</Text>
-          </View>
-        </View>
-      </View>
+        </PremiumCard>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Payment</Text>
-        <View style={styles.priceRow}>
-          <Text>Base Price</Text>
-          <Text>₦{booking.base_price?.toLocaleString()}</Text>
-        </View>
-        <View style={styles.priceRow}>
-          <Text>Distance Charge</Text>
-          <Text>₦{booking.distance_price?.toLocaleString()}</Text>
-        </View>
-        <View style={[styles.priceRow, styles.totalRow]}>
-          <Text style={styles.totalLabel}>Total</Text>
-          <Text style={styles.totalValue}>₦{booking.total_price?.toLocaleString()}</Text>
-        </View>
-        <View style={styles.paymentStatus}>
-          <Text>Payment: </Text>
-          <Text style={booking.payment_status === 'paid' ? styles.paidText : styles.unpaidText}>
-            {booking.payment_status === 'paid' ? 'Paid' : 'Unpaid'}
-          </Text>
-        </View>
-      </View>
+        {booking.items_description ? (
+          <PremiumCard>
+            <PremiumSectionTitle title="Items" />
+            <Text style={styles.bodyText}>{booking.items_description}</Text>
+          </PremiumCard>
+        ) : null}
 
-      {booking.items_description && (
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Items</Text>
-          <Text style={styles.itemsText}>{booking.items_description}</Text>
-        </View>
-      )}
+        {booking.special_requirements ? (
+          <PremiumCard>
+            <PremiumSectionTitle title="Special requirements" />
+            <Text style={styles.bodyText}>{booking.special_requirements}</Text>
+          </PremiumCard>
+        ) : null}
 
-      {booking.special_requirements && (
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Special Requirements</Text>
-          <Text style={styles.itemsText}>{booking.special_requirements}</Text>
+        <View style={styles.actions}>
+          {canPay ? (
+            <PremiumButton
+              title="Pay now"
+              icon="card-outline"
+              loading={paying}
+              disabled={paying}
+              onPress={handlePay}
+            />
+          ) : null}
+          {canCancel ? (
+            <PremiumButton
+              title="Cancel booking"
+              variant="ghost"
+              icon="close-circle-outline"
+              loading={cancelling}
+              disabled={cancelling}
+              onPress={handleCancel}
+            />
+          ) : null}
         </View>
-      )}
-
-      <View style={styles.actions}>
-        {canPay && (
-          <TouchableOpacity style={[styles.payButton, paying && styles.buttonDisabled]} onPress={handlePay} disabled={paying}>
-            {paying ? <ActivityIndicator color="#ffffff" /> : <Text style={styles.payButtonText}>Pay Now</Text>}
-          </TouchableOpacity>
-        )}
-        {canCancel && (
-          <TouchableOpacity
-            style={[styles.cancelButton, cancelling && styles.buttonDisabled]}
-            onPress={handleCancel}
-            disabled={cancelling}
-          >
-            {cancelling ? (
-              <ActivityIndicator color="#ef4444" />
-            ) : (
-              <Text style={styles.cancelButtonText}>Cancel Booking</Text>
-            )}
-          </TouchableOpacity>
-        )}
-      </View>
-    </ScrollView>
-    {NativePaystackCheckoutModal}
+      </PremiumScreen>
+      {NativePaystackCheckoutModal}
     </>
   );
 };
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#f8fafc' },
-  content: { paddingBottom: 32 },
-  centerContainer: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  statusSection: {
-    backgroundColor: '#ffffff',
-    padding: 20,
+  priceLine: {
     alignItems: 'center',
-  },
-  statusBadge: {
-    paddingHorizontal: 16,
-    paddingVertical: 6,
-    borderRadius: 20,
-    marginBottom: 10,
-  },
-  statusText: { color: '#ffffff', fontSize: 13, fontWeight: '700', letterSpacing: 1 },
-  serviceName: { fontSize: 22, fontWeight: '800', color: '#0f172a' },
-  section: {
-    margin: 16,
-    marginBottom: 0,
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
-    padding: 16,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#0f172a',
-    marginBottom: 12,
-  },
-  detailItem: {
-    flexDirection: 'row',
-    marginBottom: 12,
-  },
-  detailContent: { marginLeft: 10, flex: 1 },
-  detailLabel: { fontSize: 12, color: '#64748b' },
-  detailValue: { fontSize: 14, color: '#0f172a', fontWeight: '500' },
-  priceRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 6,
+    paddingVertical: 8,
   },
-  totalRow: {
-    borderTopWidth: 1,
-    borderTopColor: '#e2e8f0',
-    paddingTop: 8,
-    marginTop: 8,
+  priceLabel: {
+    color: colors.text,
+    fontFamily: typography.regular,
+    fontSize: 13,
   },
-  totalLabel: { fontWeight: '700', fontSize: 16 },
-  totalValue: { fontWeight: '800', fontSize: 18, color: '#0284c7' },
-  paymentStatus: { flexDirection: 'row', marginTop: 8 },
-  paidText: { color: '#16a34a', fontWeight: '700' },
-  unpaidText: { color: '#ef4444', fontWeight: '700' },
-  itemsText: { color: '#475569', fontSize: 14, lineHeight: 20 },
-  actions: { padding: 16, gap: 10 },
-  payButton: {
-    backgroundColor: '#16a34a',
-    borderRadius: 10,
-    paddingVertical: 14,
+  priceValue: {
+    color: colors.ink,
+    fontFamily: typography.semibold,
+    fontSize: 14,
+  },
+  totalPanel: {
     alignItems: 'center',
-  },
-  payButtonText: { color: '#ffffff', fontSize: 16, fontWeight: '700' },
-  cancelButton: {
+    backgroundColor: colors.surfaceBlue,
+    borderColor: '#CFE2FF',
+    borderRadius: radius.md,
     borderWidth: 1,
-    borderColor: '#ef4444',
-    borderRadius: 10,
-    paddingVertical: 14,
-    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 10,
+    padding: 14,
   },
-  cancelButtonText: { color: '#ef4444', fontSize: 16, fontWeight: '700' },
-  buttonDisabled: { opacity: 0.6 },
+  totalLabel: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 14,
+  },
+  paymentStatus: {
+    color: colors.muted,
+    fontFamily: typography.medium,
+    fontSize: 11,
+    marginTop: 3,
+  },
+  totalValue: {
+    color: colors.blue,
+    fontFamily: typography.bold,
+    fontSize: 21,
+  },
+  bodyText: {
+    color: colors.text,
+    fontFamily: typography.regular,
+    fontSize: 14,
+    lineHeight: 22,
+  },
+  actions: {
+    gap: 10,
+    marginTop: 2,
+  },
 });
 
 export default TransportationBookingDetailScreen;

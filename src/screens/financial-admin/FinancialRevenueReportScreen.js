@@ -1,19 +1,31 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
+import {
+  InfoRow,
+  PremiumCard,
+  PremiumHero,
+  PremiumListScreen,
+  StatusPill,
+  formatNaira,
+} from '../../components/common/PremiumLayout';
 import { financialAdminService } from '../../services/financialAdminService';
 import { getErrorMessage, pickList, pickObject } from '../../utils/http';
+import { colors, radius, typography } from '../../theme';
 
-const formatCurrency = (value) => `NGN ${Number(value || 0).toLocaleString()}`;
+const periods = ['daily', 'weekly', 'monthly', 'yearly'];
+
+const getStatusColor = (status) => {
+  if (status === 'completed' || status === 'success') return colors.success;
+  if (status === 'failed' || status === 'cancelled') return colors.danger;
+  return colors.warning;
+};
 
 const FinancialRevenueReportScreen = () => {
   const [revenueData, setRevenueData] = useState(null);
   const [transactions, setTransactions] = useState([]);
   const [period, setPeriod] = useState('monthly');
-
-  useEffect(() => {
-    loadData();
-  }, [period]);
+  const [refreshing, setRefreshing] = useState(false);
 
   const loadData = async () => {
     try {
@@ -28,112 +40,178 @@ const FinancialRevenueReportScreen = () => {
         text1: 'Failed',
         text2: getErrorMessage(error, 'Could not load revenue data'),
       });
+    } finally {
+      setRefreshing(false);
     }
   };
 
-  const periods = ['daily', 'weekly', 'monthly', 'yearly'];
+  useEffect(() => {
+    loadData();
+  }, [period]);
 
-  return (
-    <View style={styles.screen}>
+  const growth = revenueData?.growth_percentage;
+  const header = (
+    <>
+      <PremiumHero
+        eyebrow="Financial admin"
+        title="Revenue command centre"
+        subtitle="Monitor RentalHub revenue trends and the latest payment flow with a native executive summary."
+        icon="analytics-outline"
+      />
+
       <View style={styles.filterRow}>
-        {periods.map((p) => (
+        {periods.map((item) => (
           <TouchableOpacity
-            key={p}
-            style={[styles.filterChip, period === p && styles.filterChipActive]}
-            onPress={() => setPeriod(p)}
+            key={item}
+            accessibilityRole="button"
+            style={[styles.filterChip, period === item && styles.filterChipActive]}
+            onPress={() => setPeriod(item)}
           >
-            <Text style={[styles.filterText, period === p && styles.filterTextActive]}>
-              {p.charAt(0).toUpperCase() + p.slice(1)}
+            <Text style={[styles.filterText, period === item && styles.filterTextActive]}>
+              {item.charAt(0).toUpperCase() + item.slice(1)}
             </Text>
           </TouchableOpacity>
         ))}
       </View>
 
-      {revenueData && (
+      {revenueData ? (
         <View style={styles.summaryRow}>
-          <View style={styles.summaryCard}>
-            <Text style={styles.summaryLabel}>Total Revenue</Text>
-            <Text style={styles.summaryValue}>{formatCurrency(revenueData.total_revenue || 0)}</Text>
-          </View>
-          <View style={styles.summaryCard}>
+          <PremiumCard style={styles.summaryCard}>
+            <Text style={styles.summaryLabel}>Total revenue</Text>
+            <Text style={styles.summaryValue}>{formatNaira(revenueData.total_revenue || 0)}</Text>
+          </PremiumCard>
+          <PremiumCard style={styles.summaryCard}>
             <Text style={styles.summaryLabel}>Growth</Text>
-            <Text style={[styles.summaryValue, { color: (revenueData.growth_percentage || 0) >= 0 ? '#059669' : '#dc2626' }]}>
-              {revenueData.growth_percentage != null ? `${revenueData.growth_percentage.toFixed(1)}%` : 'N/A'}
+            <Text style={[
+              styles.summaryValue,
+              { color: (growth || 0) >= 0 ? colors.success : colors.danger },
+            ]}>
+              {growth != null ? `${growth.toFixed(1)}%` : 'N/A'}
             </Text>
-          </View>
+          </PremiumCard>
         </View>
-      )}
+      ) : null}
 
-      <FlatList
-        data={transactions}
-        keyExtractor={(item) => String(item.id)}
-        contentContainerStyle={styles.list}
-        renderItem={({ item }) => (
-          <View style={styles.txCard}>
+      <Text style={styles.sectionTitle}>Recent transactions</Text>
+    </>
+  );
+
+  return (
+    <PremiumListScreen
+      data={transactions}
+      keyExtractor={(item) => String(item.id)}
+      refreshing={refreshing}
+      onRefresh={() => {
+        setRefreshing(true);
+        loadData();
+      }}
+      header={header}
+      emptyTitle="No transactions found"
+      emptyMessage="Revenue-linked transactions will appear here after payments are processed."
+      emptyIcon="trending-up-outline"
+      renderItem={({ item }) => {
+        const status = item.status || item.payment_status || 'pending';
+        return (
+          <PremiumCard>
             <View style={styles.txHeader}>
-              <Text style={styles.txRef}>#{item.reference || item.id}</Text>
-              <Text style={[styles.txStatus, item.status === 'completed' && styles.statusCompleted]}>
-                {item.status || 'pending'}
-              </Text>
+              <View style={styles.txBlock}>
+                <Text style={styles.txRef}>#{item.reference || item.id}</Text>
+                <Text style={styles.txAmount}>{formatNaira(item.amount || 0)}</Text>
+              </View>
+              <StatusPill label={status} color={getStatusColor(status)} />
             </View>
-            <Text style={styles.txAmount}>{formatCurrency(item.amount || 0)}</Text>
-            <Text style={styles.txMeta}>
-              {item.payment_method || item.method} | {item.created_at ? new Date(item.created_at).toLocaleDateString() : ''}
-            </Text>
-          </View>
-        )}
-        ListEmptyComponent={<Text style={styles.empty}>No transactions found.</Text>}
-      />
-    </View>
+            <InfoRow
+              icon="card-outline"
+              label="Method"
+              value={item.payment_method || item.method || 'N/A'}
+            />
+            <InfoRow
+              icon="calendar-outline"
+              label="Date"
+              value={item.created_at ? new Date(item.created_at).toLocaleDateString() : 'Not available'}
+            />
+          </PremiumCard>
+        );
+      }}
+    />
   );
 };
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#f8fafc' },
-  filterRow: { flexDirection: 'row', gap: 8, padding: 16, paddingBottom: 8 },
-  filterChip: {
-    paddingHorizontal: 14,
-    paddingVertical: 6,
-    borderRadius: 99,
-    backgroundColor: '#f1f5f9',
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
+  filterRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 12,
   },
-  filterChipActive: { backgroundColor: '#0284c7', borderColor: '#0284c7' },
-  filterText: { fontSize: 13, color: '#475569', fontWeight: '600' },
-  filterTextActive: { color: '#ffffff' },
-  summaryRow: { flexDirection: 'row', gap: 10, paddingHorizontal: 16, marginBottom: 12 },
+  filterChip: {
+    backgroundColor: colors.white,
+    borderColor: colors.border,
+    borderRadius: radius.pill,
+    borderWidth: 1,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+  },
+  filterChipActive: {
+    backgroundColor: colors.blue,
+    borderColor: colors.blue,
+  },
+  filterText: {
+    color: colors.text,
+    fontFamily: typography.semibold,
+    fontSize: 12,
+  },
+  filterTextActive: {
+    color: colors.white,
+  },
+  summaryRow: {
+    flexDirection: 'row',
+    gap: 10,
+    marginBottom: 6,
+  },
   summaryCard: {
     flex: 1,
-    backgroundColor: '#ffffff',
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
-    borderRadius: 12,
-    padding: 14,
   },
-  summaryLabel: { color: '#64748b', fontSize: 12 },
-  summaryValue: { fontSize: 20, fontWeight: '800', color: '#0f172a', marginTop: 4 },
-  list: { paddingHorizontal: 16, paddingBottom: 24 },
-  txCard: {
-    backgroundColor: '#ffffff',
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
-    borderRadius: 10,
-    padding: 12,
-    marginBottom: 8,
-  },
-  txHeader: { flexDirection: 'row', justifyContent: 'space-between' },
-  txRef: { color: '#64748b', fontSize: 12, fontWeight: '600' },
-  txStatus: {
+  summaryLabel: {
+    color: colors.muted,
+    fontFamily: typography.medium,
     fontSize: 11,
-    fontWeight: '700',
-    color: '#d97706',
-    textTransform: 'capitalize',
+    textTransform: 'uppercase',
   },
-  statusCompleted: { color: '#059669' },
-  txAmount: { fontSize: 18, fontWeight: '800', color: '#0f172a', marginTop: 4 },
-  txMeta: { color: '#64748b', fontSize: 12, marginTop: 2 },
-  empty: { textAlign: 'center', color: '#64748b', marginTop: 40 },
+  summaryValue: {
+    color: colors.navy,
+    fontFamily: typography.bold,
+    fontSize: 20,
+    marginTop: 5,
+  },
+  sectionTitle: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 17,
+    marginBottom: 10,
+    marginTop: 4,
+  },
+  txHeader: {
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+    gap: 12,
+    justifyContent: 'space-between',
+    marginBottom: 6,
+  },
+  txBlock: {
+    flex: 1,
+  },
+  txRef: {
+    color: colors.muted,
+    fontFamily: typography.semibold,
+    fontSize: 12,
+  },
+  txAmount: {
+    color: colors.navy,
+    fontFamily: typography.bold,
+    fontSize: 22,
+    marginTop: 4,
+  },
 });
 
 export default FinancialRevenueReportScreen;

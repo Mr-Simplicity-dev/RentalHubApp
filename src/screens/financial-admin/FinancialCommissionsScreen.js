@@ -1,10 +1,23 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, RefreshControl } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 import Toast from 'react-native-toast-message';
+import {
+  InfoRow,
+  PremiumCard,
+  PremiumHero,
+  PremiumListScreen,
+  StatusPill,
+  formatNaira,
+} from '../../components/common/PremiumLayout';
 import { financialAdminService } from '../../services/financialAdminService';
 import { getErrorMessage, pickList } from '../../utils/http';
+import { colors, typography } from '../../theme';
 
-const formatCurrency = (value) => `NGN ${Number(value || 0).toLocaleString()}`;
+const getStatusColor = (status) => {
+  if (status === 'paid' || status === 'completed' || status === 'approved') return colors.success;
+  if (status === 'failed' || status === 'rejected') return colors.danger;
+  return colors.warning;
+};
 
 const FinancialCommissionsScreen = () => {
   const [commissions, setCommissions] = useState([]);
@@ -29,57 +42,83 @@ const FinancialCommissionsScreen = () => {
     loadCommissions();
   }, [loadCommissions]);
 
+  const header = (
+    <PremiumHero
+      eyebrow="Financial admin"
+      title="Commission reports"
+      subtitle="Track agent payouts, property-linked commissions and payment status in one clean mobile view."
+      icon="ribbon-outline"
+    />
+  );
+
   return (
-    <View style={styles.screen}>
-      <FlatList
-        data={commissions}
-        keyExtractor={(item) => String(item.id)}
-        contentContainerStyle={styles.list}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); loadCommissions(); }} />}
-        renderItem={({ item }) => (
-          <View style={styles.card}>
+    <PremiumListScreen
+      data={commissions}
+      keyExtractor={(item) => String(item.id)}
+      refreshing={refreshing}
+      onRefresh={() => {
+        setRefreshing(true);
+        loadCommissions();
+      }}
+      header={header}
+      emptyTitle="No commission records"
+      emptyMessage="Commission activity will appear here once agents start earning from property work."
+      emptyIcon="wallet-outline"
+      renderItem={({ item }) => {
+        const status = item.status || 'pending';
+        return (
+          <PremiumCard>
             <View style={styles.cardHeader}>
-              <Text style={styles.cardAgent}>{item.agent_name || item.agent?.name || 'Agent'}</Text>
-              <Text style={[styles.cardStatus, item.status === 'paid' && styles.paid]}>
-                {item.status || 'pending'}
-              </Text>
+              <View style={styles.agentBlock}>
+                <Text style={styles.agent}>{item.agent_name || item.agent?.name || 'Agent'}</Text>
+                <Text style={styles.property}>{item.property_title || item.property?.title || 'Property'}</Text>
+              </View>
+              <StatusPill label={status} color={getStatusColor(status)} />
             </View>
-            <Text style={styles.cardAmount}>{formatCurrency(item.amount || 0)}</Text>
-            <Text style={styles.cardMeta}>
-              {item.property_title || item.property?.title || 'Property'} |
-              {item.created_at ? ` ${new Date(item.created_at).toLocaleDateString()}` : ''}
-            </Text>
-          </View>
-        )}
-        ListEmptyComponent={<Text style={styles.empty}>No commission records found.</Text>}
-      />
-    </View>
+
+            <Text style={styles.amount}>{formatNaira(item.amount || 0)}</Text>
+
+            <InfoRow
+              icon="calendar-outline"
+              label="Created"
+              value={item.created_at ? new Date(item.created_at).toLocaleDateString() : 'Not available'}
+            />
+          </PremiumCard>
+        );
+      }}
+    />
   );
 };
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#f8fafc' },
-  list: { padding: 16, paddingBottom: 24 },
-  card: {
-    backgroundColor: '#ffffff',
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
-    borderRadius: 12,
-    padding: 14,
-    marginBottom: 10,
+  cardHeader: {
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+    gap: 12,
+    justifyContent: 'space-between',
   },
-  cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  cardAgent: { fontWeight: '700', color: '#0f172a', fontSize: 15 },
-  cardStatus: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: '#d97706',
-    textTransform: 'capitalize',
+  agentBlock: {
+    flex: 1,
   },
-  paid: { color: '#059669' },
-  cardAmount: { fontSize: 20, fontWeight: '800', color: '#0f172a', marginTop: 6 },
-  cardMeta: { color: '#64748b', fontSize: 12, marginTop: 2 },
-  empty: { textAlign: 'center', color: '#64748b', marginTop: 40 },
+  agent: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 16,
+  },
+  property: {
+    color: colors.muted,
+    fontFamily: typography.regular,
+    fontSize: 12,
+    lineHeight: 18,
+    marginTop: 3,
+  },
+  amount: {
+    color: colors.navy,
+    fontFamily: typography.bold,
+    fontSize: 24,
+    marginBottom: 6,
+    marginTop: 14,
+  },
 });
 
 export default FinancialCommissionsScreen;

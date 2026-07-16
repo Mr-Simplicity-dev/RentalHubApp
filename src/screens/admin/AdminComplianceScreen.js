@@ -1,8 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import Toast from 'react-native-toast-message';
+import {
+  InfoRow,
+  PremiumCard,
+  PremiumHero,
+  PremiumScreen,
+  PremiumSectionTitle,
+  StatusPill,
+} from '../../components/common/PremiumLayout';
 import { complianceService } from '../../services/complianceService';
 import { getErrorMessage, pickList, pickObject } from '../../utils/http';
+import { colors } from '../../theme';
 
 const AdminComplianceScreen = () => {
   const [overview, setOverview] = useState(null);
@@ -30,49 +38,47 @@ const AdminComplianceScreen = () => {
   }, []);
 
   return (
-    <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
-      <Text style={styles.title}>Compliance & Risk</Text>
+    <PremiumScreen>
+      <PremiumHero
+        eyebrow="Risk operations"
+        title="Compliance & risk"
+        subtitle="Monitor disputes, escalations, evidence coverage and risk signals from a native admin cockpit."
+        icon="shield-checkmark-outline"
+        right={<StatusPill label={`Risk ${overview?.riskScore ?? '-'}`} color={colors.warning} />}
+      />
 
-      <View style={styles.card}>
-        <Text style={styles.sectionTitle}>Overview</Text>
-        <Text style={styles.meta}>Open Disputes: {overview?.totalOpen ?? '-'}</Text>
-        <Text style={styles.meta}>Escalated: {overview?.escalated ?? '-'}</Text>
-        <Text style={styles.meta}>Aging Cases: {overview?.aging ?? '-'}</Text>
-        <Text style={styles.meta}>No Evidence: {overview?.withoutEvidence ?? '-'}</Text>
-        <Text style={styles.meta}>Lawyer Activity: {overview?.lawyerActivity ?? '-'}</Text>
-        <Text style={styles.meta}>Risk Score: {overview?.riskScore ?? '-'}</Text>
-      </View>
+      <PremiumSectionTitle
+        title="Overview"
+        subtitle="Key signals that need admin attention."
+      />
+      <PremiumCard>
+        <InfoRow icon="warning-outline" label="Open disputes" value={overview?.totalOpen ?? '-'} />
+        <InfoRow icon="arrow-up-circle-outline" label="Escalated" value={overview?.escalated ?? '-'} />
+        <InfoRow icon="hourglass-outline" label="Aging cases" value={overview?.aging ?? '-'} />
+        <InfoRow icon="document-lock-outline" label="No evidence" value={overview?.withoutEvidence ?? '-'} />
+        <InfoRow icon="briefcase-outline" label="Lawyer activity" value={overview?.lawyerActivity ?? '-'} />
+      </PremiumCard>
 
-      <View style={styles.card}>
-        <Text style={styles.sectionTitle}>Risk Trend</Text>
+      <PremiumSectionTitle
+        title="Risk trend"
+        subtitle="Recent day-by-day risk scoring."
+      />
+      <PremiumCard>
         {trend.length === 0 ? (
-          <Text style={styles.meta}>No trend data available.</Text>
+          <InfoRow icon="analytics-outline" label="Trend" value="No trend data available" />
         ) : (
           trend.map((item, index) => (
-            <Text key={`${item.day}-${index}`} style={styles.meta}>
-              {item.day || `Day ${index + 1}`}: {item.risk_score ?? item.riskScore ?? '-'}
-            </Text>
+            <InfoRow
+              key={`${item.day}-${index}`}
+              icon="pulse-outline"
+              label={item.day || `Day ${index + 1}`}
+              value={item.risk_score ?? item.riskScore ?? '-'}
+            />
           ))
         )}
-      </View>
-    </ScrollView>
+      </PremiumCard>
+    </PremiumScreen>
   );
 };
-
-const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#f8fafc' },
-  content: { padding: 16, paddingBottom: 24 },
-  title: { fontSize: 28, fontWeight: '800', color: '#0f172a', marginBottom: 14 },
-  card: {
-    backgroundColor: '#ffffff',
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
-    borderRadius: 12,
-    padding: 14,
-    marginBottom: 12,
-  },
-  sectionTitle: { fontSize: 16, fontWeight: '700', color: '#0f172a', marginBottom: 8 },
-  meta: { color: '#475569', marginBottom: 6 },
-});
 
 export default AdminComplianceScreen;

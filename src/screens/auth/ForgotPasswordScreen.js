@@ -1,10 +1,16 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 import Toast from 'react-native-toast-message';
 import Input from '../../components/common/Input';
-import Button from '../../components/common/Button';
+import {
+  PremiumButton,
+  PremiumCard,
+  PremiumHero,
+  PremiumScreen,
+} from '../../components/common/PremiumLayout';
 import { authService } from '../../services/authService';
 import { getErrorMessage } from '../../utils/http';
+import { colors, typography } from '../../theme';
 
 const ForgotPasswordScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -40,29 +46,49 @@ const ForgotPasswordScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.screen}>
-      <Text style={styles.title}>Forgot Password</Text>
-      <Text style={styles.subtitle}>Enter your email to receive a reset link.</Text>
-
-      <Input
-        label="Email"
-        value={email}
-        onChangeText={setEmail}
-        placeholder="you@email.com"
-        autoCapitalize="none"
-        keyboardType="email-address"
-        icon="mail-outline"
+    <PremiumScreen>
+      <PremiumHero
+        eyebrow="Account recovery"
+        title="Reset your password securely"
+        subtitle="Enter the email linked to your RentalHub account and we will send you the next step."
+        icon="shield-checkmark-outline"
       />
 
-      <Button title="Send Reset Link" onPress={handleSubmit} loading={loading} />
-    </View>
+      <PremiumCard>
+        <Input
+          label="Email address"
+          value={email}
+          onChangeText={setEmail}
+          placeholder="you@email.com"
+          autoCapitalize="none"
+          keyboardType="email-address"
+          icon="mail-outline"
+        />
+
+        <PremiumButton
+          title="Send reset link"
+          onPress={handleSubmit}
+          loading={loading}
+          icon="send-outline"
+        />
+
+        <Text style={styles.helper}>
+          For your security, reset links are time-sensitive. Use the latest email if you request more than one.
+        </Text>
+      </PremiumCard>
+    </PremiumScreen>
   );
 };
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#ffffff', padding: 20 },
-  title: { fontSize: 28, fontWeight: '800', color: '#0f172a' },
-  subtitle: { marginTop: 8, marginBottom: 18, color: '#64748b' },
+  helper: {
+    color: colors.muted,
+    fontFamily: typography.regular,
+    fontSize: 12,
+    lineHeight: 18,
+    marginTop: 14,
+    textAlign: 'center',
+  },
 });
 
 export default ForgotPasswordScreen;

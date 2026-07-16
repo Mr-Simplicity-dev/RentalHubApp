@@ -1,13 +1,24 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { adminService } from '../../services/adminService';
 import { getErrorMessage, pickList } from '../../utils/http';
+import {
+  InfoRow,
+  PremiumButton,
+  PremiumCard,
+  PremiumHero,
+  PremiumListScreen,
+  StatusPill,
+} from '../../components/common/PremiumLayout';
+import { colors, typography } from '../../theme';
 
 const AdminUsersScreen = () => {
   const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const loadUsers = async () => {
+    setLoading(true);
     try {
       const response = await adminService.getUsers();
       setUsers(pickList(response, ['data', 'users']));
@@ -17,6 +28,8 @@ const AdminUsersScreen = () => {
         text1: 'Failed',
         text2: getErrorMessage(error, 'Could not load users'),
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -39,44 +52,82 @@ const AdminUsersScreen = () => {
   };
 
   return (
-    <View style={styles.screen}>
-      <Text style={styles.title}>Admin Users</Text>
-      <FlatList
-        data={users}
-        keyExtractor={(item) => String(item.id)}
-        contentContainerStyle={styles.list}
-        renderItem={({ item }) => (
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>{item.full_name}</Text>
-            <Text style={styles.cardMeta}>{item.email}</Text>
-            <Text style={styles.cardMeta}>Role: {item.user_type || '-'}</Text>
-            <TouchableOpacity onPress={() => removeUser(item.id)}>
-              <Text style={styles.deleteText}>Delete</Text>
-            </TouchableOpacity>
+    <PremiumListScreen
+      data={users}
+      refreshing={loading}
+      onRefresh={loadUsers}
+      keyExtractor={(item) => String(item.id)}
+      emptyTitle="No users found"
+      emptyMessage="Users will appear here when they register or are added."
+      emptyIcon="people-outline"
+      header={
+        <PremiumHero
+          eyebrow="Administration"
+          title="Users"
+          subtitle="Manage user identities, roles and account access from a mobile-first view."
+          icon="people-outline"
+          right={<StatusPill label={`${users.length} records`} color={colors.blue} />}
+        />
+      }
+      renderItem={({ item }) => (
+        <PremiumCard>
+          <View style={styles.cardHeader}>
+            <View style={styles.avatar}>
+              <Text style={styles.avatarText}>{String(item.full_name || item.email || 'U').slice(0, 1).toUpperCase()}</Text>
+            </View>
+            <View style={styles.cardCopy}>
+              <Text style={styles.cardTitle}>{item.full_name || 'Unnamed user'}</Text>
+              <Text style={styles.cardMeta}>{item.email || 'No email provided'}</Text>
+            </View>
           </View>
-        )}
-        ListEmptyComponent={<Text style={styles.empty}>No users found.</Text>}
-      />
-    </View>
+          <InfoRow icon="shield-outline" label="Role" value={item.user_type || '—'} />
+          <InfoRow icon="call-outline" label="Phone" value={item.phone || item.phone_number || '—'} />
+          <PremiumButton
+            title="Delete user"
+            variant="ghost"
+            icon="trash-outline"
+            onPress={() => removeUser(item.id)}
+          />
+        </PremiumCard>
+      )}
+    />
   );
 };
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#f8fafc' },
-  title: { textAlign: 'center', marginVertical: 12, fontSize: 22, fontWeight: '800', color: '#0f172a' },
-  list: { paddingHorizontal: 14, paddingBottom: 20 },
-  card: {
-    backgroundColor: '#ffffff',
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
-    borderRadius: 12,
-    padding: 12,
-    marginBottom: 10,
+  cardHeader: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 6,
   },
-  cardTitle: { fontSize: 16, fontWeight: '700', color: '#0f172a' },
-  cardMeta: { marginTop: 4, color: '#475569' },
-  deleteText: { marginTop: 8, color: '#dc2626', fontWeight: '700' },
-  empty: { color: '#64748b', textAlign: 'center', marginTop: 40 },
+  avatar: {
+    alignItems: 'center',
+    backgroundColor: colors.surfaceBlue,
+    borderRadius: 22,
+    height: 44,
+    justifyContent: 'center',
+    width: 44,
+  },
+  avatarText: {
+    color: colors.blue,
+    fontFamily: typography.bold,
+    fontSize: 18,
+  },
+  cardCopy: {
+    flex: 1,
+  },
+  cardTitle: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 16,
+  },
+  cardMeta: {
+    color: colors.muted,
+    fontFamily: typography.regular,
+    fontSize: 12,
+    marginTop: 3,
+  },
 });
 
 export default AdminUsersScreen;

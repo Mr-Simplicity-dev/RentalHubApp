@@ -19,6 +19,8 @@ import { propertyService } from '../../services/propertyService';
 import { colors, radius, typography } from '../../theme';
 import { getErrorMessage, pickList } from '../../utils/http';
 
+const fallbackPropertyImage = require('../../../assets/rentalhub-app-icon.png');
+
 const MyPropertiesScreen = ({ navigation }) => {
   const { user } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
@@ -213,8 +215,7 @@ const MyPropertiesScreen = ({ navigation }) => {
           const cover =
             item.primary_photo ||
             item.photo_url ||
-            item.photos?.[0]?.photo_url ||
-            'https://via.placeholder.com/640x400?text=RentalHub+Property';
+            item.photos?.[0]?.photo_url;
           const statusColor =
             status === 'available' ? colors.success : status === 'pending' ? '#B46B00' : colors.muted;
           const statusBg =
@@ -224,7 +225,7 @@ const MyPropertiesScreen = ({ navigation }) => {
               <TouchableOpacity
                 activeOpacity={0.84}
                 onPress={() => navigation.navigate('PropertyDetail', { id: item.id })}>
-                <Image source={{ uri: cover }} style={styles.image} />
+                <Image source={cover ? { uri: cover } : fallbackPropertyImage} style={styles.image} />
                 <View style={[styles.statusPill, { backgroundColor: statusBg }]}>
                   <Text style={[styles.statusText, { color: statusColor }]}>{status}</Text>
                 </View>

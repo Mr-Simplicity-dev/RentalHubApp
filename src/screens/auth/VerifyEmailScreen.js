@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 import Toast from 'react-native-toast-message';
-import Button from '../../components/common/Button';
 import Input from '../../components/common/Input';
+import {
+  PremiumButton,
+  PremiumCard,
+  PremiumHero,
+  PremiumScreen,
+} from '../../components/common/PremiumLayout';
 import { authService } from '../../services/authService';
 import { getErrorMessage } from '../../utils/http';
+import { colors, typography } from '../../theme';
 
 const VerifyEmailScreen = ({ navigation, route }) => {
   const [token, setToken] = useState(route?.params?.token || '');
@@ -41,51 +47,57 @@ const VerifyEmailScreen = ({ navigation, route }) => {
   }, [route?.params?.token]);
 
   return (
-    <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
-      <View style={styles.card}>
-        <Text style={styles.title}>Verify Email</Text>
-        <Text style={styles.subtitle}>
-          Paste the verification token from your email if it was not opened automatically.
-        </Text>
+    <PremiumScreen>
+      <PremiumHero
+        eyebrow="Email security"
+        title="Verify your email"
+        subtitle="Confirm your email to unlock safer payments, applications and account recovery."
+        icon="mail-open-outline"
+      />
 
+      <PremiumCard>
         <Input
           label="Email verification token"
           value={token}
           onChangeText={setToken}
           autoCapitalize="none"
           placeholder="Paste token"
+          icon="ticket-outline"
         />
 
         {message ? <Text style={styles.message}>{message}</Text> : null}
 
-        <Button title="Verify Email" onPress={() => verifyEmail()} loading={loading} />
+        <PremiumButton
+          title="Verify email"
+          onPress={() => verifyEmail()}
+          loading={loading}
+          icon="shield-checkmark-outline"
+        />
         {navigation.canGoBack() ? (
-          <Button
+          <PremiumButton
             title="Done"
-            variant="outline"
+            variant="secondary"
             onPress={() => navigation.goBack()}
+            icon="arrow-back-outline"
             style={styles.marginTop}
           />
         ) : null}
-      </View>
-    </ScrollView>
+      </PremiumCard>
+    </PremiumScreen>
   );
 };
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#f8fafc' },
-  content: { padding: 16, paddingBottom: 24 },
-  card: {
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
-    padding: 16,
+  message: {
+    color: colors.text,
+    fontFamily: typography.medium,
+    fontSize: 13,
+    lineHeight: 19,
+    marginBottom: 14,
   },
-  title: { fontSize: 24, fontWeight: '800', color: '#0f172a', marginBottom: 6 },
-  subtitle: { color: '#64748b', marginBottom: 14 },
-  message: { color: '#334155', marginBottom: 12 },
-  marginTop: { marginTop: 10 },
+  marginTop: {
+    marginTop: 10,
+  },
 });
 
 export default VerifyEmailScreen;

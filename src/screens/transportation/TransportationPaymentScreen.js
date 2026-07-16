@@ -1,12 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ActivityIndicator,
-  Alert,
-} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
 import { transportationService } from '../../services/transportationService';
@@ -14,6 +7,17 @@ import { getErrorMessage } from '../../utils/http';
 import { recoverPayment, savePendingPayment } from '../../services/paymentRecoveryService';
 import useNativePaystackCheckout from '../../hooks/useNativePaystackCheckout';
 import { hasPaystackCheckout } from '../../services/nativePaymentService';
+import {
+  formatNaira,
+  InfoRow,
+  PremiumButton,
+  PremiumCard,
+  PremiumCenter,
+  PremiumHero,
+  PremiumScreen,
+  PremiumSectionTitle,
+} from '../../components/common/PremiumLayout';
+import { colors, radius, typography } from '../../theme';
 
 const TransportationPaymentScreen = ({ route, navigation }) => {
   const { bookingId } = route.params;
@@ -60,7 +64,7 @@ const TransportationPaymentScreen = ({ route, navigation }) => {
             transaction: response.data,
             title: 'Pay transportation booking',
             subtitle: 'Complete your transport booking with secure in-app Paystack card payment.',
-            amountLabel: booking?.total_price ? `₦${Number(booking.total_price).toLocaleString()}` : '',
+            amountLabel: formatNaira(booking?.total_price, ''),
             onSuccess: (paymentResponse) => verifyPayment(paymentResponse?.reference || reference),
             onBrowserFallback: () => {
               Toast.show({
@@ -71,7 +75,6 @@ const TransportationPaymentScreen = ({ route, navigation }) => {
             },
           });
         } else if (reference) {
-          // Poll for payment verification
           verifyPayment(reference);
         }
       } else {
@@ -110,165 +113,141 @@ const TransportationPaymentScreen = ({ route, navigation }) => {
   };
 
   if (loading) {
-    return (
-      <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color="#0284c7" />
-      </View>
-    );
+    return <PremiumCenter loading title="Loading payment" message="Preparing your secure checkout details." />;
   }
 
   if (!booking) {
     return (
-      <View style={styles.centerContainer}>
-        <Text style={styles.errorText}>Booking not found</Text>
-      </View>
+      <PremiumCenter
+        tone="danger"
+        icon="alert-circle-outline"
+        title="Booking not found"
+        message="We could not find this transportation booking."
+        actionLabel="Go back"
+        onAction={() => navigation.goBack()}
+      />
     );
   }
 
   if (booking.payment_status === 'paid') {
     return (
-      <View style={styles.centerContainer}>
-        <Icon name="checkmark-circle" size={80} color="#16a34a" />
-        <Text style={styles.successTitle}>Payment Complete</Text>
-        <Text style={styles.successText}>
-          Your transportation booking has been paid for.
-        </Text>
-        <TouchableOpacity
-          style={styles.viewButton}
-          onPress={() => navigation.navigate('TransportationBookingDetail', { bookingId })}
-        >
-          <Text style={styles.viewButtonText}>View Booking</Text>
-        </TouchableOpacity>
-      </View>
+      <PremiumCenter
+        tone="success"
+        icon="checkmark-circle-outline"
+        title="Payment complete"
+        message="Your transportation booking has already been paid for."
+        actionLabel="View booking"
+        onAction={() => navigation.navigate('TransportationBookingDetail', { bookingId })}
+      />
     );
   }
 
   return (
-    <View style={styles.screen}>
-      <View style={styles.header}>
-        <Icon name="card-outline" size={50} color="#ffffff" />
-        <Text style={styles.headerTitle}>Complete Payment</Text>
-        <Text style={styles.headerSub}>
-          Pay to confirm your transportation booking
-        </Text>
-      </View>
+    <>
+      <PremiumScreen>
+        <PremiumHero
+          eyebrow="Secure checkout"
+          title="Complete payment"
+          subtitle="Confirm your transportation booking with a protected in-app payment."
+          icon="card-outline"
+        />
 
-      <View style={styles.summaryCard}>
-        <Text style={styles.summaryTitle}>Booking Summary</Text>
-        <View style={styles.summaryRow}>
-          <Text style={styles.summaryLabel}>Service</Text>
-          <Text style={styles.summaryValue}>{booking.service_name || 'Transportation'}</Text>
-        </View>
-        <View style={styles.summaryRow}>
-          <Text style={styles.summaryLabel}>Date</Text>
-          <Text style={styles.summaryValue}>{booking.booking_date}</Text>
-        </View>
-        <View style={styles.summaryRow}>
-          <Text style={styles.summaryLabel}>Distance</Text>
-          <Text style={styles.summaryValue}>{booking.estimated_distance_km} km</Text>
-        </View>
-        <View style={[styles.summaryRow, styles.totalRow]}>
-          <Text style={styles.totalLabel}>Total Amount</Text>
-          <Text style={styles.totalValue}>₦{booking.total_price?.toLocaleString()}</Text>
-        </View>
-      </View>
-
-      <View style={styles.paymentMethods}>
-        <Text style={styles.paymentTitle}>Select Payment Method</Text>
-        <TouchableOpacity
-          style={[styles.paymentOption, processing && styles.optionDisabled]}
-          onPress={handlePayWithPaystack}
-          disabled={processing}
-        >
-          <Icon name="wallet-outline" size={24} color="#0284c7" />
-          <View style={styles.optionContent}>
-            <Text style={styles.optionTitle}>Pay with Paystack</Text>
-            <Text style={styles.optionDesc}>Credit/Debit card, bank transfer, USSD</Text>
+        <PremiumCard>
+          <PremiumSectionTitle title="Booking summary" subtitle="Review the details before you pay." />
+          <InfoRow icon="car-outline" label="Service" value={booking.service_name || 'Transportation'} />
+          <InfoRow icon="calendar-outline" label="Date" value={booking.booking_date} />
+          <InfoRow icon="resize-outline" label="Distance" value={booking.estimated_distance_km ? `${booking.estimated_distance_km} km` : '—'} />
+          <View style={styles.totalPanel}>
+            <View>
+              <Text style={styles.totalLabel}>Total amount</Text>
+              <Text style={styles.totalHint}>Processed securely via Paystack</Text>
+            </View>
+            <Text style={styles.totalValue}>{formatNaira(booking.total_price)}</Text>
           </View>
-          {processing ? (
-            <ActivityIndicator color="#0284c7" />
-          ) : (
-            <Icon name="arrow-forward" size={20} color="#0284c7" />
-          )}
-        </TouchableOpacity>
+        </PremiumCard>
 
-        <TouchableOpacity
-          style={[styles.paymentOption, processing && styles.optionDisabled]}
-          onPress={() => handlePayWithPaystack()}
-          disabled={processing}
-        >
-          <Icon name="business-outline" size={24} color="#0284c7" />
-          <View style={styles.optionContent}>
-            <Text style={styles.optionTitle}>Bank Transfer</Text>
-            <Text style={styles.optionDesc}>Pay via direct bank transfer</Text>
+        <PremiumCard>
+          <PremiumSectionTitle title="Payment method" subtitle="Use card, bank transfer, USSD or supported Paystack channels." />
+          <View style={styles.methodRow}>
+            <View style={styles.methodIcon}>
+              <Icon name="shield-checkmark-outline" size={22} color={colors.blue} />
+            </View>
+            <View style={styles.methodCopy}>
+              <Text style={styles.methodTitle}>Paystack secure checkout</Text>
+              <Text style={styles.methodText}>Encrypted payment, instant verification and recovery if the session is interrupted.</Text>
+            </View>
           </View>
-          <Icon name="arrow-forward" size={20} color="#0284c7" />
-        </TouchableOpacity>
-      </View>
+          <PremiumButton
+            title="Pay securely"
+            icon="lock-closed-outline"
+            loading={processing}
+            disabled={processing}
+            onPress={handlePayWithPaystack}
+          />
+        </PremiumCard>
+      </PremiumScreen>
       {NativePaystackCheckoutModal}
-    </View>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#f8fafc' },
-  centerContainer: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 30 },
-  header: {
-    backgroundColor: '#0284c7',
-    padding: 30,
+  totalPanel: {
     alignItems: 'center',
-  },
-  headerTitle: { color: '#ffffff', fontSize: 24, fontWeight: '800', marginTop: 12 },
-  headerSub: { color: '#e0f2fe', fontSize: 14, marginTop: 6, textAlign: 'center' },
-  summaryCard: {
-    margin: 16,
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
-    padding: 16,
-  },
-  summaryTitle: { fontSize: 18, fontWeight: '700', color: '#0f172a', marginBottom: 12 },
-  summaryRow: {
+    backgroundColor: colors.surfaceBlue,
+    borderColor: '#CFE2FF',
+    borderRadius: radius.md,
+    borderWidth: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 8,
+    marginTop: 14,
+    padding: 14,
   },
-  summaryLabel: { color: '#64748b' },
-  summaryValue: { fontWeight: '600', color: '#0f172a' },
-  totalRow: {
-    borderTopWidth: 1,
-    borderTopColor: '#e2e8f0',
-    paddingTop: 12,
-    marginTop: 8,
+  totalLabel: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 13,
   },
-  totalLabel: { fontSize: 16, fontWeight: '700' },
-  totalValue: { fontSize: 20, fontWeight: '800', color: '#0284c7' },
-  paymentMethods: { margin: 16, marginTop: 0 },
-  paymentTitle: { fontSize: 16, fontWeight: '700', color: '#0f172a', marginBottom: 12 },
-  paymentOption: {
-    flexDirection: 'row',
+  totalHint: {
+    color: colors.muted,
+    fontFamily: typography.regular,
+    fontSize: 11,
+    marginTop: 3,
+  },
+  totalValue: {
+    color: colors.blue,
+    fontFamily: typography.bold,
+    fontSize: 22,
+  },
+  methodRow: {
     alignItems: 'center',
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 10,
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 16,
   },
-  optionContent: { flex: 1, marginLeft: 12 },
-  optionTitle: { fontSize: 15, fontWeight: '700', color: '#0f172a' },
-  optionDesc: { fontSize: 12, color: '#64748b', marginTop: 2 },
-  optionDisabled: { opacity: 0.6 },
-  successTitle: { fontSize: 22, fontWeight: '800', color: '#166534', marginTop: 16 },
-  successText: { color: '#475569', textAlign: 'center', marginTop: 8 },
-  viewButton: {
-    backgroundColor: '#0284c7',
-    borderRadius: 10,
-    paddingVertical: 12,
-    paddingHorizontal: 30,
-    marginTop: 20,
+  methodIcon: {
+    alignItems: 'center',
+    backgroundColor: colors.surfaceBlue,
+    borderRadius: 18,
+    height: 44,
+    justifyContent: 'center',
+    width: 44,
   },
-  viewButtonText: { color: '#ffffff', fontWeight: '700' },
-  errorText: { fontSize: 16, color: '#ef4444' },
+  methodCopy: {
+    flex: 1,
+  },
+  methodTitle: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 15,
+  },
+  methodText: {
+    color: colors.text,
+    fontFamily: typography.regular,
+    fontSize: 12,
+    lineHeight: 18,
+    marginTop: 3,
+  },
 });
 
 export default TransportationPaymentScreen;

@@ -1,22 +1,26 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import {
-  ActivityIndicator,
-  Alert,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
 import Toast from 'react-native-toast-message';
 import FilePreviewCard from '../../components/common/FilePreviewCard';
-import recruitmentService from '../../services/recruitmentService';
-import { getErrorMessage } from '../../utils/http';
-import { savePendingPayment } from '../../services/paymentRecoveryService';
+import Input from '../../components/common/Input';
+import {
+  InfoRow,
+  PremiumButton,
+  PremiumCard,
+  PremiumCenter,
+  PremiumHero,
+  PremiumScreen,
+  PremiumSectionTitle,
+  StatusPill,
+  formatNaira,
+} from '../../components/common/PremiumLayout';
 import useNativePaystackCheckout from '../../hooks/useNativePaystackCheckout';
 import { hasPaystackCheckout } from '../../services/nativePaymentService';
+import { savePendingPayment } from '../../services/paymentRecoveryService';
+import recruitmentService from '../../services/recruitmentService';
+import { getErrorMessage } from '../../utils/http';
+import { colors, radius, typography } from '../../theme';
 
 const DOCUMENT_FIELDS = [
   { key: 'cv', label: 'CV / Resume' },
@@ -27,7 +31,13 @@ const DOCUMENT_FIELDS = [
   { key: 'certificates', label: 'Certificates' },
 ];
 
-const RecruitmentApplicationScreen = ({ route, navigation }) => {
+const ProgressBar = ({ value }) => (
+  <View style={styles.progressTrack}>
+    <View style={[styles.progressFill, { width: `${value}%` }]} />
+  </View>
+);
+
+const RecruitmentApplicationScreen = ({ route }) => {
   const initialApplication = route?.params?.application || null;
   const [application, setApplication] = useState(initialApplication);
   const [loading, setLoading] = useState(!initialApplication);
@@ -103,7 +113,7 @@ const RecruitmentApplicationScreen = ({ route, navigation }) => {
           transaction: paymentData,
           title: 'Pay application fee',
           subtitle: 'Complete your recruitment application payment securely in the app.',
-          amountLabel: paymentData.amount ? `₦${Number(paymentData.amount).toLocaleString()}` : '',
+          amountLabel: paymentData.amount ? formatNaira(paymentData.amount) : '',
           onSuccess: (paymentResponse) =>
             completeRecruitmentPayment(paymentResponse?.reference || reference),
           onBrowserFallback: () => {
@@ -164,7 +174,11 @@ const RecruitmentApplicationScreen = ({ route, navigation }) => {
         reference_number: application?.reference_number || route?.params?.referenceNumber || '',
       });
       setApplication((prev) => ({ ...(prev || {}), access_code_used: true }));
-      Toast.show({ type: 'success', text1: 'Access code verified', text2: response?.message || 'You can now upload documents.' });
+      Toast.show({
+        type: 'success',
+        text1: 'Access code verified',
+        text2: response?.message || 'You can now upload documents.',
+      });
     } catch (err) {
       setError(getErrorMessage(err, 'Could not verify access code'));
     } finally {
@@ -178,7 +192,11 @@ const RecruitmentApplicationScreen = ({ route, navigation }) => {
       const asset = result?.assets?.[0];
       if (!asset) return;
       setSelectedFiles((prev) => ({ ...prev, [docKey]: asset }));
-      Toast.show({ type: 'info', text1: 'File selected', text2: asset.fileName || 'Your document is ready to upload.' });
+      Toast.show({
+        type: 'info',
+        text1: 'File selected',
+        text2: asset.fileName || 'Your document is ready to upload.',
+      });
     } catch (err) {
       setError(getErrorMessage(err, 'Could not select a file'));
     }
@@ -230,7 +248,11 @@ const RecruitmentApplicationScreen = ({ route, navigation }) => {
           },
         });
       }
-      Toast.show({ type: 'success', text1: 'Documents uploaded', text2: 'Your supporting files were submitted.' });
+      Toast.show({
+        type: 'success',
+        text1: 'Documents uploaded',
+        text2: 'Your supporting files were submitted.',
+      });
       setSelectedFiles({});
       await loadApplication();
     } catch (err) {
@@ -261,140 +283,267 @@ const RecruitmentApplicationScreen = ({ route, navigation }) => {
   };
 
   if (loading) {
-    return (
-      <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#0284c7" />
-        <Text style={styles.centerText}>Loading your application...</Text>
-      </View>
-    );
+    return <PremiumCenter loading title="Loading your application" message="Preparing your recruitment progress..." />;
   }
+
+  const paymentStatus = application?.payment_status || 'pending';
+  const appStatus = application?.status || 'draft';
+  const uploadPercent = uploadProgress?.percent || 0;
 
   return (
     <>
-    <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
-      <Text style={styles.title}>Application progress</Text>
-      <Text style={styles.subtitle}>Complete payment, unlock your application, and upload your documents.</Text>
-
-      {error ? <Text style={styles.errorText}>{error}</Text> : null}
-
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>Application status</Text>
-        <Text style={styles.cardText}>Reference: {application?.reference_number || '—'}</Text>
-        <Text style={styles.cardText}>Status: {application?.status || 'draft'}</Text>
-        <Text style={styles.cardText}>Payment: {application?.payment_status || 'pending'}</Text>
-        <Text style={styles.cardText}>Access code: {application?.access_code_used ? 'Verified' : 'Pending'}</Text>
-      </View>
-
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>1. Pay application fee</Text>
-        <Text style={styles.cardText}>Start the payment flow to receive your access code.</Text>
-        <TouchableOpacity style={styles.primaryButton} onPress={openPayment} disabled={paymentLoading}>
-          {paymentLoading ? <ActivityIndicator color="#ffffff" /> : <Text style={styles.primaryButtonText}>Start payment</Text>}
-        </TouchableOpacity>
-        <TextInput
-          style={styles.input}
-          placeholder="Payment reference"
-          value={paymentReferenceInput}
-          onChangeText={setPaymentReferenceInput}
-          autoCapitalize="none"
+      <PremiumScreen>
+        <PremiumHero
+          eyebrow="Recruitment"
+          title="Application progress"
+          subtitle="Complete payment, verify your access code, then upload the documents needed for review."
+          icon="briefcase-outline"
+          right={<StatusPill label={appStatus} color={appStatus === 'approved' ? colors.success : colors.gold} />}
         />
-        <TouchableOpacity style={styles.secondaryButton} onPress={verifyPayment} disabled={paymentLoading}>
-          {paymentLoading ? <ActivityIndicator color="#0284c7" /> : <Text style={styles.secondaryButtonText}>Verify payment</Text>}
-        </TouchableOpacity>
-      </View>
 
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>2. Unlock your application</Text>
-        <Text style={styles.cardText}>Enter the access code sent after successful payment.</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Access code"
-          value={accessCodeInput}
-          onChangeText={setAccessCodeInput}
-          autoCapitalize="characters"
-        />
-        <TouchableOpacity style={styles.primaryButton} onPress={verifyAccessCode} disabled={accessLoading}>
-          {accessLoading ? <ActivityIndicator color="#ffffff" /> : <Text style={styles.primaryButtonText}>Verify access code</Text>}
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>3. Upload documents</Text>
-        <Text style={styles.cardText}>Only available after your payment and access code are verified.</Text>
-        {DOCUMENT_FIELDS.map((field) => (
-          <View key={field.key} style={styles.docRow}>
-            <View style={styles.docCopy}>
-              <Text style={styles.docLabel}>{field.label}</Text>
-              {selectedFiles[field.key] ? (
-                <FilePreviewCard
-                  title={selectedFiles[field.key].fileName || field.label}
-                  subtitle="Ready to upload"
-                  uri={selectedFiles[field.key].uri}
-                  fileName={selectedFiles[field.key].fileName}
-                  fileSize={selectedFiles[field.key].fileSize}
-                  mimeType={selectedFiles[field.key].type}
-                  actionLabel="Preview"
-                />
-              ) : null}
-            </View>
-            <TouchableOpacity
-              accessibilityRole="button"
-              accessibilityLabel={`${selectedFiles[field.key] ? 'Change' : 'Select'} ${field.label}`}
-              style={styles.docButton}
-              onPress={() => pickFile(field.key)}
-              disabled={uploading}
-            >
-              <Text style={styles.docButtonText}>{selectedFiles[field.key] ? 'Change file' : 'Select file'}</Text>
-            </TouchableOpacity>
-          </View>
-        ))}
-        {uploadProgress ? (
-          <View style={styles.uploadProgressCard}>
-            <Text style={styles.uploadProgressTitle}>
-              Uploading {uploadProgress.label} ({uploadProgress.current}/{uploadProgress.total})
-            </Text>
-            <View style={styles.progressTrack}>
-              <View style={[styles.progressFill, { width: `${uploadProgress.percent}%` }]} />
-            </View>
-            <Text style={styles.uploadProgressText}>{uploadProgress.percent}% complete</Text>
-          </View>
+        {error ? (
+          <PremiumCard style={styles.errorCard}>
+            <Text style={styles.errorText}>{error}</Text>
+          </PremiumCard>
         ) : null}
-        <TouchableOpacity style={styles.primaryButton} onPress={uploadDocuments} disabled={uploading || !canUpload}>
-          {uploading ? <ActivityIndicator color="#ffffff" /> : <Text style={styles.primaryButtonText}>Upload documents</Text>}
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
-    {NativePaystackCheckoutModal}
+
+        <PremiumCard>
+          <Text style={styles.cardTitle}>Application status</Text>
+          <InfoRow icon="pricetag-outline" label="Reference" value={application?.reference_number || '-'} />
+          <InfoRow icon="briefcase-outline" label="Status" value={appStatus} />
+          <InfoRow icon="card-outline" label="Payment" value={paymentStatus} />
+          <InfoRow
+            icon="key-outline"
+            label="Access code"
+            value={application?.access_code_used ? 'Verified' : 'Pending'}
+            valueStyle={{ color: application?.access_code_used ? colors.success : colors.warning }}
+          />
+        </PremiumCard>
+
+        <PremiumSectionTitle title="1. Pay application fee" />
+        <PremiumCard>
+          <Text style={styles.cardText}>Start the payment flow to receive your access code.</Text>
+          <PremiumButton
+            title="Start payment"
+            onPress={openPayment}
+            loading={paymentLoading}
+            icon="card-outline"
+            style={styles.blockGap}
+          />
+          <Input
+            label="Payment reference"
+            placeholder="Paste payment reference"
+            value={paymentReferenceInput}
+            onChangeText={setPaymentReferenceInput}
+            autoCapitalize="none"
+            icon="receipt-outline"
+            containerStyle={styles.inputGap}
+          />
+          <PremiumButton
+            title="Verify payment"
+            variant="secondary"
+            onPress={verifyPayment}
+            loading={paymentLoading}
+            icon="shield-checkmark-outline"
+          />
+        </PremiumCard>
+
+        <PremiumSectionTitle title="2. Unlock your application" />
+        <PremiumCard>
+          <Text style={styles.cardText}>Enter the access code sent after successful payment.</Text>
+          <Input
+            label="Access code"
+            placeholder="Access code"
+            value={accessCodeInput}
+            onChangeText={setAccessCodeInput}
+            autoCapitalize="characters"
+            icon="keypad-outline"
+            containerStyle={styles.inputGap}
+          />
+          <PremiumButton
+            title="Verify access code"
+            onPress={verifyAccessCode}
+            loading={accessLoading}
+            icon="lock-open-outline"
+          />
+        </PremiumCard>
+
+        <PremiumSectionTitle
+          title="3. Upload documents"
+          subtitle="Available after your payment and access code are verified."
+        />
+        <PremiumCard>
+          {DOCUMENT_FIELDS.map((field) => {
+            const asset = selectedFiles[field.key];
+            return (
+              <View key={field.key} style={styles.docRow}>
+                <View style={styles.docCopy}>
+                  <Text style={styles.docLabel}>{field.label}</Text>
+                  {asset ? (
+                    <FilePreviewCard
+                      title={asset.fileName || field.label}
+                      subtitle="Ready to upload"
+                      uri={asset.uri}
+                      fileName={asset.fileName}
+                      fileSize={asset.fileSize}
+                      mimeType={asset.type}
+                      actionLabel="Preview"
+                    />
+                  ) : (
+                    <Text style={styles.docHint}>No file selected</Text>
+                  )}
+                </View>
+                <TouchableOpacity
+                  accessibilityRole="button"
+                  accessibilityLabel={`${asset ? 'Change' : 'Select'} ${field.label}`}
+                  activeOpacity={0.84}
+                  style={[styles.docButton, uploading && styles.disabledButton]}
+                  onPress={() => pickFile(field.key)}
+                  disabled={uploading}
+                >
+                  <Text style={styles.docButtonText}>{asset ? 'Change' : 'Select'}</Text>
+                </TouchableOpacity>
+              </View>
+            );
+          })}
+
+          {uploadProgress ? (
+            <View style={styles.uploadProgressCard}>
+              <Text style={styles.uploadProgressTitle}>
+                Uploading {uploadProgress.label} ({uploadProgress.current}/{uploadProgress.total})
+              </Text>
+              <ProgressBar value={uploadPercent} />
+              <Text style={styles.uploadProgressText}>{uploadPercent}% complete</Text>
+            </View>
+          ) : null}
+
+          <PremiumButton
+            title="Upload documents"
+            onPress={uploadDocuments}
+            loading={uploading}
+            disabled={uploading || !canUpload}
+            icon="cloud-upload-outline"
+            style={styles.blockGap}
+          />
+          {!canUpload ? (
+            <Text style={styles.lockedCopy}>
+              Payment and access-code verification are required before uploads unlock.
+            </Text>
+          ) : null}
+        </PremiumCard>
+      </PremiumScreen>
+      {NativePaystackCheckoutModal}
     </>
   );
 };
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#f8fafc' },
-  content: { padding: 16, paddingBottom: 32 },
-  centered: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#f8fafc' },
-  centerText: { marginTop: 8, color: '#64748b' },
-  title: { fontSize: 28, fontWeight: '800', color: '#0f172a' },
-  subtitle: { color: '#64748b', marginTop: 6, marginBottom: 12 },
-  card: { backgroundColor: '#ffffff', borderColor: '#e2e8f0', borderWidth: 1, borderRadius: 14, padding: 14, marginBottom: 12 },
-  cardTitle: { color: '#0f172a', fontSize: 16, fontWeight: '700' },
-  cardText: { color: '#64748b', marginTop: 4 },
-  input: { borderWidth: 1, borderColor: '#e2e8f0', borderRadius: 10, paddingHorizontal: 12, paddingVertical: 10, marginTop: 10, color: '#0f172a' },
-  primaryButton: { marginTop: 10, backgroundColor: '#0284c7', borderRadius: 10, paddingVertical: 12, alignItems: 'center' },
-  primaryButtonText: { color: '#ffffff', fontWeight: '700' },
-  secondaryButton: { marginTop: 8, borderWidth: 1, borderColor: '#0284c7', borderRadius: 10, paddingVertical: 10, alignItems: 'center' },
-  secondaryButtonText: { color: '#0284c7', fontWeight: '700' },
-  docRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10, marginTop: 8 },
-  docCopy: { flex: 1 },
-  docLabel: { color: '#0f172a', fontWeight: '600' },
-  docButton: { borderWidth: 1, borderColor: '#cbd5e1', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 6 },
-  docButtonText: { color: '#475569' },
-  uploadProgressCard: { backgroundColor: '#eff6ff', borderColor: '#bfdbfe', borderWidth: 1, borderRadius: 10, marginTop: 12, padding: 12 },
-  uploadProgressTitle: { color: '#1e3a8a', fontWeight: '700' },
-  progressTrack: { backgroundColor: '#dbeafe', borderRadius: 999, height: 8, marginTop: 9, overflow: 'hidden' },
-  progressFill: { backgroundColor: '#0284c7', height: '100%' },
-  uploadProgressText: { color: '#1d4ed8', fontSize: 12, marginTop: 6 },
-  errorText: { color: '#dc2626', marginBottom: 10, fontWeight: '600' },
+  cardTitle: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 17,
+    marginBottom: 8,
+  },
+  cardText: {
+    color: colors.text,
+    fontFamily: typography.regular,
+    fontSize: 13,
+    lineHeight: 19,
+  },
+  blockGap: {
+    marginTop: 12,
+  },
+  inputGap: {
+    marginTop: 14,
+  },
+  docRow: {
+    alignItems: 'flex-start',
+    borderBottomColor: colors.border,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    flexDirection: 'row',
+    gap: 10,
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+  },
+  docCopy: {
+    flex: 1,
+  },
+  docLabel: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 14,
+  },
+  docHint: {
+    color: colors.muted,
+    fontFamily: typography.regular,
+    fontSize: 12,
+    marginTop: 3,
+  },
+  docButton: {
+    backgroundColor: colors.surfaceBlue,
+    borderColor: `${colors.blue}35`,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    paddingHorizontal: 13,
+    paddingVertical: 9,
+  },
+  disabledButton: {
+    opacity: 0.5,
+  },
+  docButtonText: {
+    color: colors.blue,
+    fontFamily: typography.bold,
+    fontSize: 12,
+  },
+  progressTrack: {
+    backgroundColor: colors.border,
+    borderRadius: radius.pill,
+    height: 9,
+    marginTop: 10,
+    overflow: 'hidden',
+  },
+  progressFill: {
+    backgroundColor: colors.blue,
+    borderRadius: radius.pill,
+    height: '100%',
+  },
+  uploadProgressCard: {
+    backgroundColor: colors.surfaceBlue,
+    borderColor: `${colors.blue}33`,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    marginTop: 14,
+    padding: 12,
+  },
+  uploadProgressTitle: {
+    color: colors.navy,
+    fontFamily: typography.bold,
+    fontSize: 13,
+  },
+  uploadProgressText: {
+    color: colors.blue,
+    fontFamily: typography.medium,
+    fontSize: 12,
+    marginTop: 6,
+  },
+  lockedCopy: {
+    color: colors.muted,
+    fontFamily: typography.regular,
+    fontSize: 12,
+    lineHeight: 18,
+    marginTop: 10,
+    textAlign: 'center',
+  },
+  errorCard: {
+    backgroundColor: '#FFF7F7',
+    borderColor: '#FECACA',
+  },
+  errorText: {
+    color: colors.danger,
+    fontFamily: typography.semibold,
+    fontSize: 13,
+    lineHeight: 19,
+  },
 });
 
 export default RecruitmentApplicationScreen;

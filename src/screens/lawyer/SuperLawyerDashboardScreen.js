@@ -56,7 +56,7 @@ const SuperLawyerDashboardScreen = ({ navigation }) => {
         eyebrow="SUPER LAWYER"
         title="National legal oversight"
         subtitle="Oversee nationwide cases, state reports and pending legal reviews."
-        icon="balance-scale-outline"
+        icon="scale-outline"
         onRefresh={loadDashboard}
       />
 

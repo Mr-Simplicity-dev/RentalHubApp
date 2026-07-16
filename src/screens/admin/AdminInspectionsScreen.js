@@ -1,17 +1,24 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import Toast from 'react-native-toast-message';
-import Icon from 'react-native-vector-icons/Ionicons';
 import api from '../../services/api';
 import { getErrorMessage, pickList } from '../../utils/http';
+import {
+  InfoRow,
+  PremiumCard,
+  PremiumHero,
+  PremiumListScreen,
+  StatusPill,
+} from '../../components/common/PremiumLayout';
+import { colors, typography } from '../../theme';
 
 const STATUS_COLORS = {
-  pending: '#1769E0',
-  completed: '#169B62',
-  scheduled: '#FFC928',
+  pending: colors.blue,
+  completed: colors.success,
+  scheduled: '#B7791F',
 };
 
-const AdminInspectionsScreen = ({ navigation }) => {
+const AdminInspectionsScreen = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -36,62 +43,76 @@ const AdminInspectionsScreen = ({ navigation }) => {
   }, []);
 
   return (
-    <View style={styles.screen}>
-      <View style={styles.header}>
-        <Icon name="search-outline" size={20} color="#0f172a" />
-        <Text style={styles.title}>Inspections</Text>
-      </View>
-      <FlatList
-        data={items}
-        keyExtractor={(item) => String(item.id)}
-        contentContainerStyle={styles.list}
-        refreshing={loading}
-        onRefresh={loadInspections}
-        renderItem={({ item }) => {
-          const status = item.status || 'pending';
-          const badgeColor = STATUS_COLORS[status] || '#1769E0';
-          return (
-            <View style={styles.card}>
-              <Text style={styles.cardTitle}>{item.property_name || item.property_title || 'Property'}</Text>
-              <Text style={styles.cardMeta}>Inspector: {item.inspector_name || item.inspector || 'N/A'}</Text>
-              <Text style={styles.cardMeta}>Date: {item.inspection_date || item.date || 'N/A'}</Text>
-              <View style={styles.badgeRow}>
-                <View style={[styles.badge, { backgroundColor: badgeColor }]}>
-                  <Text style={styles.badgeText}>{status}</Text>
-                </View>
+    <PremiumListScreen
+      data={items}
+      refreshing={loading}
+      onRefresh={loadInspections}
+      keyExtractor={(item) => String(item.id)}
+      emptyTitle="No inspections found"
+      emptyMessage="Scheduled or completed inspections will appear here."
+      emptyIcon="search-outline"
+      header={
+        <PremiumHero
+          eyebrow="Operations"
+          title="Inspections"
+          subtitle="Track inspection status, assigned inspectors and dates in a cleaner mobile layout."
+          icon="search-outline"
+          right={<StatusPill label={`${items.length} records`} color={colors.blue} />}
+        />
+      }
+      renderItem={({ item }) => {
+        const status = item.status || 'pending';
+        const badgeColor = STATUS_COLORS[status] || colors.blue;
+
+        return (
+          <PremiumCard>
+            <View style={styles.cardHeader}>
+              <View style={styles.inspectionIcon}>
+                <Text style={styles.inspectionIconText}>IN</Text>
+              </View>
+              <View style={styles.cardCopy}>
+                <Text style={styles.cardTitle}>{item.property_name || item.property_title || 'Property'}</Text>
+                <StatusPill label={status} color={badgeColor} />
               </View>
             </View>
-          );
-        }}
-        ListEmptyComponent={<Text style={styles.empty}>No inspections found.</Text>}
-      />
-    </View>
+            <InfoRow icon="person-outline" label="Inspector" value={item.inspector_name || item.inspector || 'N/A'} />
+            <InfoRow icon="calendar-outline" label="Date" value={item.inspection_date || item.date || 'N/A'} />
+          </PremiumCard>
+        );
+      }}
+    />
   );
 };
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#f8fafc' },
-  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginVertical: 12, gap: 8 },
-  title: { fontSize: 22, fontWeight: '800', color: '#0f172a' },
-  list: { paddingHorizontal: 14, paddingBottom: 20 },
-  card: {
-    backgroundColor: '#ffffff',
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
-    borderRadius: 12,
-    padding: 12,
-    marginBottom: 10,
+  cardHeader: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 6,
   },
-  cardTitle: { fontSize: 16, fontWeight: '700', color: '#0f172a' },
-  cardMeta: { marginTop: 4, color: '#475569' },
-  badgeRow: { flexDirection: 'row', marginTop: 8 },
-  badge: {
-    borderRadius: 999,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
+  inspectionIcon: {
+    alignItems: 'center',
+    backgroundColor: colors.surfaceBlue,
+    borderRadius: 18,
+    height: 44,
+    justifyContent: 'center',
+    width: 44,
   },
-  badgeText: { color: '#ffffff', fontWeight: '700', fontSize: 11, textTransform: 'capitalize' },
-  empty: { color: '#64748b', textAlign: 'center', marginTop: 40 },
+  inspectionIconText: {
+    color: colors.blue,
+    fontFamily: typography.bold,
+    fontSize: 12,
+  },
+  cardCopy: {
+    flex: 1,
+    gap: 7,
+  },
+  cardTitle: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 16,
+  },
 });
 
 export default AdminInspectionsScreen;

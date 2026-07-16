@@ -1,8 +1,24 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
+import {
+  InfoRow,
+  PremiumButton,
+  PremiumCard,
+  PremiumCenter,
+  PremiumHero,
+  PremiumScreen,
+  StatusPill,
+} from '../../components/common/PremiumLayout';
 import recruitmentService from '../../services/recruitmentService';
 import { getErrorMessage } from '../../utils/http';
+import { colors, radius, typography } from '../../theme';
+
+const ProgressBar = ({ value }) => (
+  <View style={styles.progressTrack}>
+    <View style={[styles.progressFill, { width: `${value}%` }]} />
+  </View>
+);
 
 const InterviewScreen = ({ route, navigation }) => {
   const applicationId = route?.params?.applicationId;
@@ -73,10 +89,18 @@ const InterviewScreen = ({ route, navigation }) => {
           challenge_token: challengeToken,
         });
         setCompletedSummary(completionResponse?.data?.data || null);
-        Toast.show({ type: 'success', text1: 'Interview complete', text2: `Score: ${completionResponse?.data?.data?.score || 0}%` });
+        Toast.show({
+          type: 'success',
+          text1: 'Interview complete',
+          text2: `Score: ${completionResponse?.data?.data?.score || 0}%`,
+        });
       }
     } catch (err) {
-      Toast.show({ type: 'error', text1: 'Interview failed', text2: getErrorMessage(err, 'Could not submit your answer') });
+      Toast.show({
+        type: 'error',
+        text1: 'Interview failed',
+        text2: getErrorMessage(err, 'Could not submit your answer'),
+      });
     } finally {
       setSubmitting(false);
     }
@@ -88,93 +112,181 @@ const InterviewScreen = ({ route, navigation }) => {
   }, [currentIndex, questions.length]);
 
   if (loading) {
-    return (
-      <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#0284c7" />
-        <Text style={styles.centerText}>Launching interview...</Text>
-      </View>
-    );
+    return <PremiumCenter loading title="Launching interview" message="Preparing your questions..." />;
   }
 
   if (error) {
     return (
-      <View style={styles.centered}>
-        <Text style={styles.errorText}>{error}</Text>
-      </View>
+      <PremiumCenter
+        icon="alert-circle-outline"
+        title="Interview unavailable"
+        message={error}
+        tone="danger"
+      />
     );
   }
 
   return (
-    <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
-      <Text style={styles.title}>Interview</Text>
-      <Text style={styles.subtitle}>Answer each question in order. You can also skip with X if needed.</Text>
-      <View style={styles.progressCard}>
-        <Text style={styles.progressLabel}>Progress</Text>
-        <Text style={styles.progressValue}>{Math.round(progress)}%</Text>
-      </View>
+    <PremiumScreen>
+      <PremiumHero
+        eyebrow="Recruitment interview"
+        title="Answer each question"
+        subtitle="Work through the questions in order. You can skip with X when needed."
+        icon="chatbubbles-outline"
+        right={<StatusPill label={`${Math.round(progress)}%`} color={colors.gold} />}
+      />
+
+      <PremiumCard>
+        <InfoRow icon="document-text-outline" label="Question" value={`${currentIndex + 1} of ${questions.length}`} />
+        <ProgressBar value={progress} />
+        <Text style={styles.progressText}>{Math.round(progress)}% complete</Text>
+      </PremiumCard>
 
       {currentQuestion ? (
-        <View style={styles.card}>
+        <PremiumCard>
           <Text style={styles.questionText}>{currentQuestion.question}</Text>
           <View style={styles.optionGrid}>
             {['option_a', 'option_b', 'option_c', 'option_d'].map((key) => (
               <TouchableOpacity
                 key={key}
+                activeOpacity={0.84}
                 style={styles.optionButton}
                 onPress={() => answerQuestion(key.replace('option_', '').toUpperCase())}
                 disabled={submitting}
               >
+                <Text style={styles.optionBadge}>{key.replace('option_', '').toUpperCase()}</Text>
                 <Text style={styles.optionText}>{currentQuestion[key]}</Text>
               </TouchableOpacity>
             ))}
-            <TouchableOpacity style={styles.skipButton} onPress={() => answerQuestion('X')} disabled={submitting}>
-              <Text style={styles.skipText}>Skip</Text>
+            <TouchableOpacity
+              activeOpacity={0.84}
+              style={styles.skipButton}
+              onPress={() => answerQuestion('X')}
+              disabled={submitting}
+            >
+              <Text style={styles.skipText}>Skip question</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </PremiumCard>
       ) : null}
 
-      {result ? <Text style={styles.resultText}>Last answer result: {result.is_correct ? 'Correct' : 'Incorrect'}</Text> : null}
+      {result ? (
+        <PremiumCard style={result.is_correct ? styles.successCard : styles.warningCard}>
+          <InfoRow
+            icon={result.is_correct ? 'checkmark-circle-outline' : 'close-circle-outline'}
+            label="Last answer"
+            value={result.is_correct ? 'Correct' : 'Incorrect'}
+            valueStyle={{ color: result.is_correct ? colors.success : colors.warning }}
+          />
+        </PremiumCard>
+      ) : null}
 
       {completedSummary ? (
-        <View style={styles.completeCard}>
+        <PremiumCard style={styles.completeCard}>
           <Text style={styles.completeTitle}>Interview complete</Text>
-          <Text style={styles.completeText}>Score: {completedSummary.score}%</Text>
-          <Text style={styles.completeText}>Correct answers: {completedSummary.correct_answers}</Text>
-          <Text style={styles.completeText}>Passed: {completedSummary.passed ? 'Yes' : 'No'}</Text>
-          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-            <Text style={styles.backButtonText}>Back to applications</Text>
-          </TouchableOpacity>
-        </View>
+          <InfoRow icon="stats-chart-outline" label="Score" value={`${completedSummary.score}%`} />
+          <InfoRow icon="checkmark-done-outline" label="Correct answers" value={completedSummary.correct_answers} />
+          <InfoRow
+            icon="shield-checkmark-outline"
+            label="Passed"
+            value={completedSummary.passed ? 'Yes' : 'No'}
+            valueStyle={{ color: completedSummary.passed ? colors.success : colors.danger }}
+          />
+          <PremiumButton
+            title="Back to applications"
+            onPress={() => navigation.goBack()}
+            icon="arrow-back-outline"
+          />
+        </PremiumCard>
       ) : null}
-    </ScrollView>
+    </PremiumScreen>
   );
 };
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#f8fafc' },
-  content: { padding: 16, paddingBottom: 24 },
-  centered: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#f8fafc' },
-  centerText: { marginTop: 8, color: '#64748b' },
-  title: { fontSize: 28, fontWeight: '800', color: '#0f172a' },
-  subtitle: { color: '#64748b', marginTop: 6, marginBottom: 12 },
-  progressCard: { backgroundColor: '#eff6ff', borderColor: '#bfdbfe', borderWidth: 1, borderRadius: 12, padding: 12, marginBottom: 12 },
-  progressLabel: { color: '#1d4ed8', fontSize: 12, fontWeight: '600' },
-  progressValue: { color: '#0f172a', fontSize: 24, fontWeight: '800', marginTop: 4 },
-  card: { backgroundColor: '#ffffff', borderColor: '#e2e8f0', borderWidth: 1, borderRadius: 14, padding: 14 },
-  questionText: { color: '#0f172a', fontSize: 16, fontWeight: '700', marginBottom: 12 },
-  optionGrid: { gap: 8 },
-  optionButton: { backgroundColor: '#f8fafc', borderWidth: 1, borderColor: '#e2e8f0', borderRadius: 12, padding: 12 },
-  optionText: { color: '#0f172a' },
-  skipButton: { backgroundColor: '#fef2f2', borderWidth: 1, borderColor: '#fecaca', borderRadius: 12, padding: 12, alignItems: 'center' },
-  skipText: { color: '#b91c1c', fontWeight: '700' },
-  resultText: { color: '#047857', marginTop: 12, fontWeight: '600' },
-  completeCard: { backgroundColor: '#ecfdf5', borderColor: '#a7f3d0', borderWidth: 1, borderRadius: 14, padding: 14, marginTop: 12 },
-  completeTitle: { color: '#065f46', fontSize: 16, fontWeight: '700' },
-  completeText: { color: '#047857', marginTop: 4 },
-  backButton: { marginTop: 10, backgroundColor: '#0284c7', borderRadius: 10, paddingVertical: 10, alignItems: 'center' },
-  backButtonText: { color: '#ffffff', fontWeight: '700' },
-  errorText: { color: '#dc2626', fontWeight: '600' },
+  progressTrack: {
+    backgroundColor: colors.border,
+    borderRadius: radius.pill,
+    height: 10,
+    marginTop: 10,
+    overflow: 'hidden',
+  },
+  progressFill: {
+    backgroundColor: colors.blue,
+    borderRadius: radius.pill,
+    height: '100%',
+  },
+  progressText: {
+    color: colors.text,
+    fontFamily: typography.semibold,
+    fontSize: 12,
+    marginTop: 8,
+    textAlign: 'center',
+  },
+  questionText: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 18,
+    lineHeight: 25,
+    marginBottom: 14,
+  },
+  optionGrid: {
+    gap: 10,
+  },
+  optionButton: {
+    alignItems: 'flex-start',
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    flexDirection: 'row',
+    gap: 10,
+    padding: 13,
+  },
+  optionBadge: {
+    color: colors.blue,
+    fontFamily: typography.bold,
+    fontSize: 13,
+    minWidth: 22,
+  },
+  optionText: {
+    color: colors.ink,
+    flex: 1,
+    fontFamily: typography.medium,
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  skipButton: {
+    alignItems: 'center',
+    backgroundColor: '#FFF7F7',
+    borderColor: '#FECACA',
+    borderRadius: radius.md,
+    borderWidth: 1,
+    padding: 13,
+  },
+  skipText: {
+    color: colors.danger,
+    fontFamily: typography.bold,
+    fontSize: 14,
+  },
+  successCard: {
+    backgroundColor: '#F0FDF4',
+    borderColor: '#BBF7D0',
+  },
+  warningCard: {
+    backgroundColor: '#FFFBEB',
+    borderColor: '#FDE68A',
+  },
+  completeCard: {
+    backgroundColor: '#F0FDF4',
+    borderColor: '#BBF7D0',
+  },
+  completeTitle: {
+    color: colors.success,
+    fontFamily: typography.bold,
+    fontSize: 18,
+    marginBottom: 8,
+  },
 });
 
 export default InterviewScreen;

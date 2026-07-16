@@ -16,6 +16,9 @@ export const colors = {
   border: '#DDE4EF',
   danger: '#D92D20',
   success: '#169B62',
+  warning: '#F59E0B',
+  info: '#06B6D4',
+  purple: '#8B5CF6',
 };
 
 export const typography = {

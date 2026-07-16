@@ -1,18 +1,30 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
+import {
+  InfoRow,
+  PremiumCard,
+  PremiumHero,
+  PremiumListScreen,
+  StatusPill,
+  formatNaira,
+} from '../../components/common/PremiumLayout';
 import { financialAdminService } from '../../services/financialAdminService';
 import { getErrorMessage, pickList } from '../../utils/http';
+import { colors, radius, typography } from '../../theme';
 
-const formatCurrency = (value) => `NGN ${Number(value || 0).toLocaleString()}`;
+const filters = ['all', 'pending', 'completed', 'failed'];
+
+const getStatusColor = (status) => {
+  if (status === 'completed' || status === 'success') return colors.success;
+  if (status === 'failed' || status === 'cancelled') return colors.danger;
+  return colors.warning;
+};
 
 const FinancialTransactionsScreen = () => {
   const [transactions, setTransactions] = useState([]);
   const [filter, setFilter] = useState('all');
-
-  useEffect(() => {
-    loadTransactions();
-  }, [filter]);
+  const [refreshing, setRefreshing] = useState(false);
 
   const loadTransactions = async () => {
     try {
@@ -27,86 +39,135 @@ const FinancialTransactionsScreen = () => {
         text1: 'Failed',
         text2: getErrorMessage(error, 'Could not load transactions'),
       });
+    } finally {
+      setRefreshing(false);
     }
   };
 
-  const filters = ['all', 'pending', 'completed', 'failed'];
+  useEffect(() => {
+    loadTransactions();
+  }, [filter]);
 
-  return (
-    <View style={styles.screen}>
+  const header = (
+    <>
+      <PremiumHero
+        eyebrow="Financial admin"
+        title="Transaction ledger"
+        subtitle="Search the pulse of RentalHub payments by status with clean native ledger cards."
+        icon="receipt-outline"
+      />
       <View style={styles.filterRow}>
-        {filters.map((f) => (
+        {filters.map((item) => (
           <TouchableOpacity
-            key={f}
-            style={[styles.filterChip, filter === f && styles.filterChipActive]}
-            onPress={() => setFilter(f)}
+            key={item}
+            accessibilityRole="button"
+            style={[styles.filterChip, filter === item && styles.filterChipActive]}
+            onPress={() => setFilter(item)}
           >
-            <Text style={[styles.filterText, filter === f && styles.filterTextActive]}>
-              {f.charAt(0).toUpperCase() + f.slice(1)}
+            <Text style={[styles.filterText, filter === item && styles.filterTextActive]}>
+              {item.charAt(0).toUpperCase() + item.slice(1)}
             </Text>
           </TouchableOpacity>
         ))}
       </View>
+    </>
+  );
 
-      <FlatList
-        data={transactions}
-        keyExtractor={(item) => String(item.id)}
-        contentContainerStyle={styles.list}
-        renderItem={({ item }) => (
-          <View style={styles.card}>
+  return (
+    <PremiumListScreen
+      data={transactions}
+      keyExtractor={(item) => String(item.id)}
+      refreshing={refreshing}
+      onRefresh={() => {
+        setRefreshing(true);
+        loadTransactions();
+      }}
+      header={header}
+      emptyTitle="No transactions found"
+      emptyMessage="Try another status filter or refresh when new payments come in."
+      emptyIcon="receipt-outline"
+      renderItem={({ item }) => {
+        const status = item.status || item.payment_status || 'pending';
+        return (
+          <PremiumCard>
             <View style={styles.cardHeader}>
-              <Text style={styles.cardRef}>#{item.reference || item.id}</Text>
-              <Text style={[styles.cardStatus, item.status === 'completed' && styles.comp, item.status === 'failed' && styles.fail]}>
-                {item.status || 'pending'}
-              </Text>
+              <View style={styles.refBlock}>
+                <Text style={styles.reference}>#{item.reference || item.id}</Text>
+                <Text style={styles.amount}>{formatNaira(item.amount || 0)}</Text>
+              </View>
+              <StatusPill label={status} color={getStatusColor(status)} />
             </View>
-            <Text style={styles.cardAmount}>{formatCurrency(item.amount || 0)}</Text>
-            <Text style={styles.cardMeta}>
-              {item.payment_method || item.method || 'N/A'} | {item.user_name || item.email || ''}
-            </Text>
-            <Text style={styles.cardDate}>
-              {item.created_at ? new Date(item.created_at).toLocaleString() : ''}
-            </Text>
-          </View>
-        )}
-        ListEmptyComponent={<Text style={styles.empty}>No transactions found.</Text>}
-      />
-    </View>
+
+            <InfoRow
+              icon="card-outline"
+              label="Method"
+              value={item.payment_method || item.method || 'N/A'}
+            />
+            <InfoRow
+              icon="person-outline"
+              label="Customer"
+              value={item.user_name || item.email || 'Not available'}
+            />
+            <InfoRow
+              icon="calendar-outline"
+              label="Date"
+              value={item.created_at ? new Date(item.created_at).toLocaleString() : 'Not available'}
+            />
+          </PremiumCard>
+        );
+      }}
+    />
   );
 };
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#f8fafc' },
-  filterRow: { flexDirection: 'row', gap: 8, padding: 16, paddingBottom: 8, flexWrap: 'wrap' },
+  filterRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 12,
+  },
   filterChip: {
+    backgroundColor: colors.white,
+    borderColor: colors.border,
+    borderRadius: radius.pill,
+    borderWidth: 1,
     paddingHorizontal: 14,
-    paddingVertical: 6,
-    borderRadius: 99,
-    backgroundColor: '#f1f5f9',
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
+    paddingVertical: 8,
   },
-  filterChipActive: { backgroundColor: '#0284c7', borderColor: '#0284c7' },
-  filterText: { fontSize: 13, color: '#475569', fontWeight: '600' },
-  filterTextActive: { color: '#ffffff' },
-  list: { paddingHorizontal: 16, paddingBottom: 24 },
-  card: {
-    backgroundColor: '#ffffff',
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
-    borderRadius: 10,
-    padding: 12,
-    marginBottom: 8,
+  filterChipActive: {
+    backgroundColor: colors.blue,
+    borderColor: colors.blue,
   },
-  cardHeader: { flexDirection: 'row', justifyContent: 'space-between' },
-  cardRef: { color: '#64748b', fontSize: 12, fontWeight: '600' },
-  cardStatus: { fontSize: 11, fontWeight: '700', color: '#d97706', textTransform: 'capitalize' },
-  comp: { color: '#059669' },
-  fail: { color: '#dc2626' },
-  cardAmount: { fontSize: 18, fontWeight: '800', color: '#0f172a', marginTop: 4 },
-  cardMeta: { color: '#475569', fontSize: 13, marginTop: 2 },
-  cardDate: { color: '#64748b', fontSize: 11, marginTop: 2 },
-  empty: { textAlign: 'center', color: '#64748b', marginTop: 40 },
+  filterText: {
+    color: colors.text,
+    fontFamily: typography.semibold,
+    fontSize: 12,
+  },
+  filterTextActive: {
+    color: colors.white,
+  },
+  cardHeader: {
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+    gap: 12,
+    justifyContent: 'space-between',
+    marginBottom: 6,
+  },
+  refBlock: {
+    flex: 1,
+  },
+  reference: {
+    color: colors.muted,
+    fontFamily: typography.semibold,
+    fontSize: 12,
+  },
+  amount: {
+    color: colors.navy,
+    fontFamily: typography.bold,
+    fontSize: 23,
+    marginTop: 4,
+  },
 });
 
 export default FinancialTransactionsScreen;

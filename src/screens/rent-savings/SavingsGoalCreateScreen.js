@@ -1,13 +1,22 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 import Input from '../../components/common/Input';
-import Button from '../../components/common/Button';
+import {
+  EmptyPanel,
+  InfoRow,
+  PremiumButton,
+  PremiumCard,
+  PremiumHero,
+  PremiumScreen,
+  PremiumSectionTitle,
+  StatusPill,
+  formatNaira,
+} from '../../components/common/PremiumLayout';
 import { applicationService } from '../../services/applicationService';
 import { rentSavingsService } from '../../services/rentSavingsService';
 import { getErrorMessage, pickList } from '../../utils/http';
-
-const formatCurrency = (value) => `NGN ${Number(value || 0).toLocaleString()}`;
+import { colors, typography } from '../../theme';
 
 const SavingsGoalCreateScreen = ({ navigation }) => {
   const [applications, setApplications] = useState([]);
@@ -83,93 +92,127 @@ const SavingsGoalCreateScreen = ({ navigation }) => {
   };
 
   return (
-    <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
-      <Text style={styles.title}>Create Savings Plan</Text>
-      <Text style={styles.sectionLabel}>Approved property</Text>
+    <PremiumScreen>
+      <PremiumHero
+        eyebrow="Rent savings"
+        title="Create a savings plan"
+        subtitle="Choose an approved property, set a due date, and keep rent progress visible every month."
+        icon="wallet-outline"
+      />
+
+      <PremiumSectionTitle
+        title="Approved property"
+        subtitle="Only approved or accepted rental applications can start a rent-savings plan."
+      />
 
       {applications.map((item) => {
         const selected = String(item.property_id) === String(selectedPropertyId);
         return (
           <TouchableOpacity
             key={item.id}
-            style={[styles.propertyCard, selected && styles.propertyCardSelected]}
+            activeOpacity={0.86}
             onPress={() => setSelectedPropertyId(item.property_id)}
           >
-            <Text style={styles.propertyTitle}>{item.property_title || 'Rental property'}</Text>
-            <Text style={styles.propertyMeta}>
-              {[item.area, item.city, item.state_name].filter(Boolean).join(', ')}
-            </Text>
-            <Text style={styles.propertyRent}>{formatCurrency(item.rent_amount)}</Text>
+            <PremiumCard style={[styles.propertyCard, selected && styles.propertyCardSelected]}>
+              <View style={styles.propertyHeader}>
+                <View style={styles.propertyCopy}>
+                  <Text style={styles.propertyTitle}>{item.property_title || 'Rental property'}</Text>
+                  <Text style={styles.propertyMeta}>
+                    {[item.area, item.city, item.state_name].filter(Boolean).join(', ') || 'Location not available'}
+                  </Text>
+                </View>
+                {selected ? <StatusPill label="Selected" color={colors.success} /> : null}
+              </View>
+              <Text style={styles.propertyRent}>{formatNaira(item.rent_amount)}</Text>
+            </PremiumCard>
           </TouchableOpacity>
         );
       })}
 
       {!loadingProperties && applications.length === 0 ? (
-        <Text style={styles.empty}>
-          No approved rental application is available for a savings plan.
-        </Text>
+        <EmptyPanel
+          title="No approved property"
+          message="You need an approved rental application before creating a savings plan."
+          icon="home-outline"
+        />
       ) : null}
       {errors.property ? <Text style={styles.error}>{errors.property}</Text> : null}
 
-      <Input
-        label="Rent Due Date"
-        value={rentDueDate}
-        onChangeText={setRentDueDate}
-        placeholder="YYYY-MM-DD"
-        icon="calendar-outline"
-        error={errors.rentDueDate}
-      />
+      <PremiumCard>
+        <Input
+          label="Rent due date"
+          value={rentDueDate}
+          onChangeText={setRentDueDate}
+          placeholder="YYYY-MM-DD"
+          icon="calendar-outline"
+          error={errors.rentDueDate}
+        />
 
-      {selectedApplication ? (
-        <View style={styles.summary}>
-          <Text style={styles.summaryLabel}>Savings target</Text>
-          <Text style={styles.summaryValue}>
-            {formatCurrency(selectedApplication.rent_amount)}
-          </Text>
-        </View>
-      ) : null}
+        {selectedApplication ? (
+          <InfoRow
+            icon="flag-outline"
+            label="Savings target"
+            value={formatNaira(selectedApplication.rent_amount)}
+          />
+        ) : null}
 
-      <Button
-        title="Create Plan"
-        onPress={handleCreate}
-        loading={submitting}
-        disabled={loadingProperties || applications.length === 0}
-        style={styles.submitBtn}
-      />
-    </ScrollView>
+        <PremiumButton
+          title="Create plan"
+          onPress={handleCreate}
+          loading={submitting}
+          disabled={loadingProperties || applications.length === 0}
+          icon="checkmark-circle-outline"
+          style={styles.submitBtn}
+        />
+      </PremiumCard>
+    </PremiumScreen>
   );
 };
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#f8fafc' },
-  content: { padding: 16, paddingBottom: 24 },
-  title: { fontSize: 24, fontWeight: '800', color: '#0f172a', marginBottom: 20 },
-  sectionLabel: { color: '#334155', fontSize: 14, fontWeight: '700', marginBottom: 8 },
   propertyCard: {
-    backgroundColor: '#ffffff',
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 8,
+    marginBottom: 10,
   },
-  propertyCardSelected: { borderColor: '#0284c7', backgroundColor: '#f0f9ff' },
-  propertyTitle: { color: '#0f172a', fontSize: 15, fontWeight: '700' },
-  propertyMeta: { color: '#64748b', fontSize: 12, marginTop: 2 },
-  propertyRent: { color: '#0284c7', fontSize: 16, fontWeight: '800', marginTop: 5 },
-  empty: { color: '#64748b', marginBottom: 16 },
-  error: { color: '#dc2626', fontSize: 12, marginBottom: 10 },
-  summary: {
-    backgroundColor: '#ffffff',
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
-    borderRadius: 8,
-    padding: 14,
-    marginBottom: 8,
+  propertyCardSelected: {
+    backgroundColor: colors.surfaceBlue,
+    borderColor: colors.blue,
   },
-  summaryLabel: { color: '#64748b', fontSize: 12 },
-  summaryValue: { color: '#0f172a', fontSize: 22, fontWeight: '800', marginTop: 3 },
-  submitBtn: { marginTop: 10 },
+  propertyHeader: {
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+    gap: 10,
+    justifyContent: 'space-between',
+  },
+  propertyCopy: {
+    flex: 1,
+  },
+  propertyTitle: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 16,
+  },
+  propertyMeta: {
+    color: colors.muted,
+    fontFamily: typography.regular,
+    fontSize: 12,
+    lineHeight: 18,
+    marginTop: 3,
+  },
+  propertyRent: {
+    color: colors.blue,
+    fontFamily: typography.bold,
+    fontSize: 20,
+    marginTop: 10,
+  },
+  error: {
+    color: colors.danger,
+    fontFamily: typography.medium,
+    fontSize: 12,
+    marginBottom: 10,
+  },
+  submitBtn: {
+    marginTop: 10,
+  },
 });
 
 export default SavingsGoalCreateScreen;

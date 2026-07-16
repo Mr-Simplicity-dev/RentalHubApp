@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import Toast from 'react-native-toast-message';
 import Input from '../../components/common/Input';
-import Button from '../../components/common/Button';
+import {
+  PremiumButton,
+  PremiumCard,
+  PremiumHero,
+  PremiumScreen,
+} from '../../components/common/PremiumLayout';
 import { authService } from '../../services/authService';
 import { getErrorMessage } from '../../utils/http';
 
@@ -82,69 +86,78 @@ const AcceptLawyerInviteScreen = ({ navigation, route }) => {
   };
 
   return (
-    <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
-      <Text style={styles.title}>Accept Lawyer Invite</Text>
-      <Text style={styles.subtitle}>
-        Paste your invitation token and set your profile/password to activate the account.
-      </Text>
-
-      <Input
-        label="Invite Token"
-        value={form.token}
-        onChangeText={(value) => onChange('token', value)}
-        placeholder="Token from email"
-      />
-      <Input
-        label="Full Name"
-        value={form.full_name}
-        onChangeText={(value) => onChange('full_name', value)}
-        placeholder="Your full name"
-      />
-      <Input
-        label="Chamber / Law Firm Name"
-        value={form.chamber_name}
-        onChangeText={(value) => onChange('chamber_name', value)}
-        placeholder="Your firm or chamber"
-      />
-      <Input
-        label="Chamber Phone"
-        value={form.chamber_phone}
-        onChangeText={(value) => onChange('chamber_phone', value)}
-        placeholder="+234..."
-        keyboardType="phone-pad"
-      />
-      <Input
-        label="Phone"
-        value={form.phone}
-        onChangeText={(value) => onChange('phone', value)}
-        placeholder="+234..."
-        keyboardType="phone-pad"
-      />
-      <Input
-        label="Password"
-        value={form.password}
-        onChangeText={(value) => onChange('password', value)}
-        placeholder="At least 8 characters"
-        secureTextEntry
-      />
-      <Input
-        label="Confirm Password"
-        value={form.confirm_password}
-        onChangeText={(value) => onChange('confirm_password', value)}
-        placeholder="Repeat password"
-        secureTextEntry
+    <PremiumScreen>
+      <PremiumHero
+        eyebrow="Legal partner"
+        title="Activate lawyer access"
+        subtitle="Set up your verified legal profile for RentalHub agreements, reviews and dispute support."
+        icon="shield-outline"
       />
 
-      <Button title="Activate Lawyer Account" onPress={handleAcceptInvite} loading={loading} />
-    </ScrollView>
+      <PremiumCard>
+        <Input
+          label="Invite token"
+          value={form.token}
+          onChangeText={(value) => onChange('token', value)}
+          placeholder="Token from email"
+          icon="ticket-outline"
+        />
+        <Input
+          label="Full name"
+          value={form.full_name}
+          onChangeText={(value) => onChange('full_name', value)}
+          placeholder="Your full name"
+          icon="person-outline"
+        />
+        <Input
+          label="Chamber / law firm name"
+          value={form.chamber_name}
+          onChangeText={(value) => onChange('chamber_name', value)}
+          placeholder="Your firm or chamber"
+          icon="business-outline"
+        />
+        <Input
+          label="Chamber phone"
+          value={form.chamber_phone}
+          onChangeText={(value) => onChange('chamber_phone', value)}
+          placeholder="+234..."
+          keyboardType="phone-pad"
+          icon="call-outline"
+        />
+        <Input
+          label="Phone"
+          value={form.phone}
+          onChangeText={(value) => onChange('phone', value)}
+          placeholder="+234..."
+          keyboardType="phone-pad"
+          icon="phone-portrait-outline"
+        />
+        <Input
+          label="Password"
+          value={form.password}
+          onChangeText={(value) => onChange('password', value)}
+          placeholder="At least 8 characters"
+          secureTextEntry
+          icon="lock-closed-outline"
+        />
+        <Input
+          label="Confirm password"
+          value={form.confirm_password}
+          onChangeText={(value) => onChange('confirm_password', value)}
+          placeholder="Repeat password"
+          secureTextEntry
+          icon="lock-closed-outline"
+        />
+
+        <PremiumButton
+          title="Activate lawyer account"
+          onPress={handleAcceptInvite}
+          loading={loading}
+          icon="checkmark-circle-outline"
+        />
+      </PremiumCard>
+    </PremiumScreen>
   );
 };
-
-const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#ffffff' },
-  content: { padding: 20, paddingBottom: 32 },
-  title: { fontSize: 28, fontWeight: '800', color: '#0f172a' },
-  subtitle: { marginTop: 8, marginBottom: 18, color: '#64748b', lineHeight: 20 },
-});
 
 export default AcceptLawyerInviteScreen;

@@ -2,15 +2,19 @@ import React, { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import recruitmentService from '../../services/recruitmentService';
 import { getErrorMessage } from '../../utils/http';
+import { PremiumHero } from '../../components/common/PremiumLayout';
+import { colors, radius, shadows, typography } from '../../theme';
 
 const emptyForm = {
   full_name: '',
@@ -150,17 +154,26 @@ const CareersScreen = ({ navigation }) => {
 
   if (loading) {
     return (
-      <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#0284c7" />
+      <SafeAreaView edges={['top']} style={styles.safeArea}>
+        <StatusBar barStyle="dark-content" backgroundColor={colors.surface} />
+        <View style={styles.centered}>
+        <ActivityIndicator size="large" color={colors.blue} />
         <Text style={styles.centerText}>Loading careers portal...</Text>
       </View>
+      </SafeAreaView>
     );
   }
 
   return (
+    <SafeAreaView edges={['top']} style={styles.safeArea}>
+      <StatusBar barStyle="dark-content" backgroundColor={colors.surface} />
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
-      <Text style={styles.title}>RentalHub Careers</Text>
-      <Text style={styles.subtitle}>Apply for available roles and track your progress from your phone.</Text>
+      <PremiumHero
+        eyebrow="Careers"
+        title="Join RentalHub"
+        subtitle="Apply for available roles and track your progress from a polished mobile portal."
+        icon="briefcase-outline"
+      />
 
       <View style={styles.noticeCard}>
         <Text style={styles.noticeTitle}>{status?.is_active ? 'Recruitment is open' : 'Recruitment is currently closed'}</Text>
@@ -322,55 +335,87 @@ const CareersScreen = ({ navigation }) => {
         })}
       </View>
     </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#f8fafc' },
-  content: { padding: 16, paddingBottom: 32 },
-  centered: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#f8fafc' },
-  centerText: { marginTop: 8, color: '#64748b' },
-  title: { fontSize: 28, fontWeight: '800', color: '#0f172a' },
-  subtitle: { color: '#64748b', marginTop: 6, marginBottom: 12 },
-  noticeCard: { backgroundColor: '#eff6ff', borderColor: '#bfdbfe', borderWidth: 1, borderRadius: 14, padding: 14, marginBottom: 16 },
-  noticeTitle: { color: '#1d4ed8', fontSize: 16, fontWeight: '700' },
-  noticeText: { color: '#1e3a8a', marginTop: 4 },
-  sectionTitle: { fontSize: 17, fontWeight: '700', color: '#0f172a', marginBottom: 8, marginTop: 4 },
+  safeArea: { flex: 1, backgroundColor: colors.surface },
+  screen: { flex: 1, backgroundColor: colors.surface },
+  content: { padding: 18, paddingBottom: 34 },
+  centered: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.surface },
+  centerText: { marginTop: 8, color: colors.muted, fontFamily: typography.medium },
+  title: { fontSize: 28, fontFamily: typography.bold, color: colors.ink },
+  subtitle: { color: colors.muted, fontFamily: typography.regular, marginTop: 6, marginBottom: 12 },
+  noticeCard: {
+    backgroundColor: colors.surfaceBlue,
+    borderColor: '#CFE2FF',
+    borderWidth: 1,
+    borderRadius: radius.md,
+    padding: 16,
+    marginBottom: 16,
+    ...shadows.soft,
+  },
+  noticeTitle: { color: colors.blue, fontSize: 16, fontFamily: typography.bold },
+  noticeText: { color: colors.navySoft, fontFamily: typography.regular, marginTop: 4, lineHeight: 20 },
+  sectionTitle: { fontSize: 18, fontFamily: typography.bold, color: colors.ink, marginBottom: 10, marginTop: 6 },
   roleGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: 10 },
-  roleCard: { width: '48%', backgroundColor: '#ffffff', borderWidth: 1, borderColor: '#e2e8f0', borderRadius: 12, padding: 12 },
-  roleCardActive: { borderColor: '#0284c7', backgroundColor: '#f0f9ff' },
-  roleTitle: { color: '#0f172a', fontWeight: '700' },
-  roleTitleActive: { color: '#0284c7' },
-  roleMeta: { color: '#64748b', fontSize: 12, marginTop: 4 },
-  selectionCard: { backgroundColor: '#ffffff', borderRadius: 12, padding: 12, borderWidth: 1, borderColor: '#e2e8f0', marginBottom: 10 },
-  selectionTitle: { fontWeight: '700', color: '#0f172a' },
-  selectionText: { color: '#0284c7', marginTop: 4, fontWeight: '600' },
-  formCard: { backgroundColor: '#ffffff', borderRadius: 14, padding: 12, borderWidth: 1, borderColor: '#e2e8f0' },
-  input: { borderWidth: 1, borderColor: '#e2e8f0', borderRadius: 10, paddingHorizontal: 12, paddingVertical: 10, marginBottom: 10, color: '#0f172a' },
+  roleCard: {
+    width: '48%',
+    backgroundColor: colors.white,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    padding: 13,
+    ...shadows.soft,
+  },
+  roleCardActive: { borderColor: colors.blue, backgroundColor: colors.surfaceBlue },
+  roleTitle: { color: colors.ink, fontFamily: typography.bold },
+  roleTitleActive: { color: colors.blue },
+  roleMeta: { color: colors.muted, fontFamily: typography.regular, fontSize: 12, marginTop: 4 },
+  selectionCard: { backgroundColor: colors.white, borderRadius: radius.md, padding: 14, borderWidth: 1, borderColor: colors.border, marginBottom: 12, ...shadows.soft },
+  selectionTitle: { fontFamily: typography.bold, color: colors.ink },
+  selectionText: { color: colors.blue, marginTop: 4, fontFamily: typography.semibold },
+  formCard: { backgroundColor: colors.white, borderRadius: radius.md, padding: 14, borderWidth: 1, borderColor: colors.border, ...shadows.soft },
+  input: {
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: radius.sm,
+    paddingHorizontal: 12,
+    paddingVertical: 11,
+    marginBottom: 10,
+    color: colors.ink,
+    fontFamily: typography.regular,
+    backgroundColor: colors.white,
+  },
   textarea: { minHeight: 86, textAlignVertical: 'top' },
-  helperLabel: { color: '#475569', fontSize: 12, fontWeight: '600', marginBottom: 6, marginTop: 4 },
+  helperLabel: { color: colors.text, fontSize: 12, fontFamily: typography.semibold, marginBottom: 6, marginTop: 4 },
   trackRow: { flexDirection: 'row', gap: 8, marginBottom: 6 },
-  trackButton: { borderWidth: 1, borderColor: '#cbd5e1', borderRadius: 999, paddingHorizontal: 12, paddingVertical: 8 },
-  trackButtonActive: { backgroundColor: '#0284c7', borderColor: '#0284c7' },
-  trackText: { color: '#334155', fontSize: 13, fontWeight: '600' },
-  trackTextActive: { color: '#ffffff' },
+  trackButton: { borderWidth: 1, borderColor: colors.border, borderRadius: radius.pill, paddingHorizontal: 12, paddingVertical: 8 },
+  trackButtonActive: { backgroundColor: colors.blue, borderColor: colors.blue },
+  trackText: { color: colors.text, fontSize: 13, fontFamily: typography.semibold },
+  trackTextActive: { color: colors.white },
   chipRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 8 },
-  chip: { borderWidth: 1, borderColor: '#e2e8f0', borderRadius: 999, paddingHorizontal: 10, paddingVertical: 8 },
-  chipActive: { backgroundColor: '#0284c7', borderColor: '#0284c7' },
-  chipText: { color: '#334155', fontSize: 12, fontWeight: '600' },
-  chipTextActive: { color: '#ffffff' },
-  submitButton: { backgroundColor: '#0284c7', borderRadius: 12, paddingVertical: 12, alignItems: 'center', marginTop: 8 },
-  submitButtonText: { color: '#ffffff', fontWeight: '700' },
-  secondaryButton: { borderWidth: 1, borderColor: '#0284c7', borderRadius: 12, paddingVertical: 10, alignItems: 'center' },
-  secondaryButtonText: { color: '#0284c7', fontWeight: '700' },
-  successCard: { backgroundColor: '#ecfdf5', borderColor: '#a7f3d0', borderWidth: 1, borderRadius: 12, padding: 12, marginTop: 12 },
-  successTitle: { color: '#047857', fontWeight: '700' },
-  successText: { color: '#065f46', marginTop: 4 },
-  lookupCard: { backgroundColor: '#ffffff', borderRadius: 14, padding: 12, borderWidth: 1, borderColor: '#e2e8f0', marginTop: 12 },
-  applicationRow: { borderTopWidth: 1, borderTopColor: '#e2e8f0', paddingTop: 8, marginTop: 8 },
-  applicationTitle: { color: '#0f172a', fontWeight: '700' },
-  emptyText: { color: '#64748b', marginBottom: 10 },
-  errorText: { color: '#dc2626', marginBottom: 10, fontWeight: '600' },
+  chip: { borderWidth: 1, borderColor: colors.border, borderRadius: radius.pill, paddingHorizontal: 10, paddingVertical: 8 },
+  chipActive: { backgroundColor: colors.blue, borderColor: colors.blue },
+  chipText: { color: colors.text, fontSize: 12, fontFamily: typography.semibold },
+  chipTextActive: { color: colors.white },
+  submitButton: { backgroundColor: colors.blue, borderRadius: radius.md, paddingVertical: 14, alignItems: 'center', marginTop: 8 },
+  submitButtonText: { color: colors.white, fontFamily: typography.bold },
+  secondaryButton: { borderWidth: 1, borderColor: colors.blue, borderRadius: radius.md, paddingVertical: 12, alignItems: 'center' },
+  secondaryButtonText: { color: colors.blue, fontFamily: typography.bold },
+  successCard: { backgroundColor: '#ECFDF5', borderColor: '#A7F3D0', borderWidth: 1, borderRadius: radius.md, padding: 14, marginTop: 12 },
+  successTitle: { color: colors.success, fontFamily: typography.bold },
+  successText: { color: '#065F46', fontFamily: typography.regular, marginTop: 4 },
+  lookupCard: { backgroundColor: colors.white, borderRadius: radius.md, padding: 14, borderWidth: 1, borderColor: colors.border, marginTop: 12, ...shadows.soft },
+  applicationRow: { borderTopWidth: 1, borderTopColor: colors.border, paddingTop: 10, marginTop: 10 },
+  applicationTitle: { color: colors.ink, fontFamily: typography.bold },
+  interviewButton: { backgroundColor: colors.blue, borderRadius: radius.sm, alignItems: 'center', marginTop: 10, paddingVertical: 11 },
+  interviewButtonText: { color: colors.white, fontFamily: typography.bold, fontSize: 13 },
+  interviewSecondaryButton: { backgroundColor: colors.white, borderColor: colors.blue, borderWidth: 1 },
+  interviewSecondaryButtonText: { color: colors.blue, fontFamily: typography.bold, fontSize: 13 },
+  emptyText: { color: colors.muted, fontFamily: typography.regular, marginBottom: 10 },
+  errorText: { color: colors.danger, marginBottom: 10, fontFamily: typography.semibold },
 });
 
 export default CareersScreen;

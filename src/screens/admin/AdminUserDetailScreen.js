@@ -1,22 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  ActivityIndicator,
-  TouchableOpacity,
-} from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
+import {
+  InfoRow,
+  PremiumButton,
+  PremiumCard,
+  PremiumCenter,
+  PremiumHero,
+  PremiumScreen,
+  PremiumSectionTitle,
+  StatusPill,
+} from '../../components/common/PremiumLayout';
 import { adminService } from '../../services/adminService';
-import Button from '../../components/common/Button';
 import { getErrorMessage, pickObject } from '../../utils/http';
+import { colors, typography } from '../../theme';
 
 const AdminUserDetailScreen = ({ route, navigation }) => {
   const userId = route?.params?.id;
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     if (userId) loadUser();
@@ -39,6 +43,7 @@ const AdminUserDetailScreen = ({ route, navigation }) => {
   };
 
   const handleDeleteUser = async () => {
+    setDeleting(true);
     try {
       await adminService.deleteUser(userId);
       Toast.show({ type: 'success', text1: 'User deleted' });
@@ -49,127 +54,128 @@ const AdminUserDetailScreen = ({ route, navigation }) => {
         text1: 'Failed',
         text2: getErrorMessage(error, 'Could not delete user'),
       });
+    } finally {
+      setDeleting(false);
     }
   };
 
   if (loading) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color="#0284c7" />
-      </View>
-    );
+    return <PremiumCenter loading title="Loading user details" />;
   }
 
   if (!user) {
     return (
-      <View style={styles.center}>
-        <Text style={styles.empty}>User not found.</Text>
-      </View>
+      <PremiumCenter
+        icon="person-circle-outline"
+        title="User not found"
+        message="This account could not be loaded from the admin API."
+      />
     );
   }
 
+  const userType = user.user_type || 'N/A';
+  const status = user.status || 'active';
+
   return (
-    <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
-      <View style={styles.profileCard}>
+    <PremiumScreen>
+      <PremiumHero
+        eyebrow="Admin user profile"
+        title={user.full_name || user.name || 'User account'}
+        subtitle={user.email || 'No email on file'}
+        icon="person-circle-outline"
+        right={<StatusPill label={userType} color={colors.gold} />}
+      />
+
+      <PremiumCard style={styles.profileCard}>
         <View style={styles.avatar}>
-          <Icon name="person-outline" size={40} color="#ffffff" />
+          <Icon name="person-outline" size={34} color={colors.white} />
         </View>
-        <Text style={styles.userName}>{user.full_name || user.name}</Text>
-        <Text style={styles.userEmail}>{user.email}</Text>
-        <Text style={styles.userType}>{user.user_type || 'N/A'}</Text>
-      </View>
+        <Text style={styles.userName}>{user.full_name || user.name || 'User account'}</Text>
+        <Text style={styles.userEmail}>{user.email || 'No email'}</Text>
+        <StatusPill label={status} color={status === 'active' ? colors.success : colors.warning} />
+      </PremiumCard>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Account Info</Text>
-        {[
-          { label: 'Phone', value: user.phone || 'N/A' },
-          { label: 'Status', value: user.status || 'active' },
-          { label: 'Verified', value: user.identity_verified ? 'Yes' : 'No' },
-          { label: 'Joined', value: user.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A' },
-          { label: 'State', value: user.state_name || user.state || 'N/A' },
-        ].map((field) => (
-          <View key={field.label} style={styles.fieldRow}>
-            <Text style={styles.fieldLabel}>{field.label}</Text>
-            <Text style={styles.fieldValue}>{field.value}</Text>
-          </View>
-        ))}
-      </View>
+      <PremiumSectionTitle title="Account information" />
+      <PremiumCard>
+        <InfoRow icon="call-outline" label="Phone" value={user.phone || 'N/A'} />
+        <InfoRow icon="shield-checkmark-outline" label="Verified" value={user.identity_verified ? 'Yes' : 'No'} />
+        <InfoRow
+          icon="calendar-outline"
+          label="Joined"
+          value={user.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A'}
+        />
+        <InfoRow icon="location-outline" label="State" value={user.state_name || user.state || 'N/A'} />
+      </PremiumCard>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Subscription</Text>
-        <Text style={styles.infoText}>
-          {user.subscription_active ? 'Active' : 'Inactive'}
-          {user.subscription_plan ? ` - ${user.subscription_plan}` : ''}
+      <PremiumSectionTitle title="Subscription" />
+      <PremiumCard>
+        <InfoRow
+          icon="diamond-outline"
+          label="Plan"
+          value={`${user.subscription_active ? 'Active' : 'Inactive'}${user.subscription_plan ? ` • ${user.subscription_plan}` : ''}`}
+        />
+      </PremiumCard>
+
+      <PremiumCard style={styles.dangerZone}>
+        <Text style={styles.dangerTitle}>Danger zone</Text>
+        <Text style={styles.dangerCopy}>
+          Delete this account only when you are sure it is no longer needed.
         </Text>
-      </View>
-
-      <View style={styles.dangerZone}>
-        <Text style={styles.dangerTitle}>Danger Zone</Text>
-        <Button
-          title="Delete User"
+        <PremiumButton
+          title="Delete user"
           variant="danger"
           onPress={handleDeleteUser}
+          loading={deleting}
+          icon="trash-outline"
         />
-      </View>
-    </ScrollView>
+      </PremiumCard>
+    </PremiumScreen>
   );
 };
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#f8fafc' },
-  content: { paddingBottom: 24 },
-  center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  empty: { fontSize: 16, color: '#64748b' },
   profileCard: {
     alignItems: 'center',
-    padding: 24,
-    backgroundColor: '#ffffff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#e2e8f0',
   },
   avatar: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-    backgroundColor: '#0284c7',
     alignItems: 'center',
+    backgroundColor: colors.blue,
+    borderRadius: 38,
+    height: 76,
     justifyContent: 'center',
     marginBottom: 12,
+    width: 76,
   },
-  userName: { fontSize: 20, fontWeight: '800', color: '#0f172a' },
-  userEmail: { color: '#475569', marginTop: 2 },
-  userType: {
-    marginTop: 6,
-    color: '#0284c7',
-    fontWeight: '700',
-    backgroundColor: '#e0f2fe',
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 99,
-    overflow: 'hidden',
-    fontSize: 12,
-    textTransform: 'capitalize',
+  userName: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 20,
+    textAlign: 'center',
   },
-  section: { padding: 16, borderBottomWidth: 1, borderBottomColor: '#e2e8f0', backgroundColor: '#ffffff' },
-  sectionTitle: { fontSize: 16, fontWeight: '700', color: '#0f172a', marginBottom: 10 },
-  fieldRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f1f5f9',
+  userEmail: {
+    color: colors.muted,
+    fontFamily: typography.regular,
+    fontSize: 13,
+    marginBottom: 10,
+    marginTop: 3,
   },
-  fieldLabel: { color: '#64748b', fontSize: 14 },
-  fieldValue: { color: '#0f172a', fontSize: 14, fontWeight: '600' },
-  infoText: { color: '#334155' },
   dangerZone: {
-    padding: 16,
-    marginTop: 16,
-    borderTopWidth: 1,
-    borderTopColor: '#fecaca',
-    backgroundColor: '#fef2f2',
+    backgroundColor: '#FFF7F7',
+    borderColor: '#FECACA',
   },
-  dangerTitle: { fontSize: 16, fontWeight: '700', color: '#dc2626', marginBottom: 10 },
+  dangerTitle: {
+    color: colors.danger,
+    fontFamily: typography.bold,
+    fontSize: 17,
+  },
+  dangerCopy: {
+    color: colors.text,
+    fontFamily: typography.regular,
+    fontSize: 12,
+    lineHeight: 18,
+    marginBottom: 12,
+    marginTop: 5,
+  },
 });
 
 export default AdminUserDetailScreen;

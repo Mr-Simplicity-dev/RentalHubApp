@@ -1,13 +1,24 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { adminService } from '../../services/adminService';
 import { getErrorMessage, pickList } from '../../utils/http';
+import {
+  InfoRow,
+  PremiumButton,
+  PremiumCard,
+  PremiumHero,
+  PremiumListScreen,
+  StatusPill,
+} from '../../components/common/PremiumLayout';
+import { colors, typography } from '../../theme';
 
 const AdminApplicationsScreen = () => {
   const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const loadApplications = async () => {
+    setLoading(true);
     try {
       const response = await adminService.getApplications();
       setItems(pickList(response, ['data', 'applications']));
@@ -17,6 +28,8 @@ const AdminApplicationsScreen = () => {
         text1: 'Failed',
         text2: getErrorMessage(error, 'Could not load applications'),
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -53,51 +66,85 @@ const AdminApplicationsScreen = () => {
   };
 
   return (
-    <View style={styles.screen}>
-      <Text style={styles.title}>Admin Applications</Text>
-      <FlatList
-        data={items}
-        keyExtractor={(item) => String(item.id)}
-        contentContainerStyle={styles.list}
-        renderItem={({ item }) => (
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>{item.property_title || 'Property'}</Text>
-            <Text style={styles.cardMeta}>Tenant: {item.tenant_name || '-'}</Text>
-            <Text style={styles.cardMeta}>Status: {item.status || 'pending'}</Text>
-            <View style={styles.row}>
-              <TouchableOpacity onPress={() => approve(item.id)}>
-                <Text style={styles.linkText}>Approve</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => reject(item.id)}>
-                <Text style={styles.warnText}>Reject</Text>
-              </TouchableOpacity>
+    <PremiumListScreen
+      data={items}
+      refreshing={loading}
+      onRefresh={loadApplications}
+      keyExtractor={(item) => String(item.id)}
+      emptyTitle="No applications found"
+      emptyMessage="Rental applications that need review will appear here."
+      emptyIcon="document-text-outline"
+      header={
+        <PremiumHero
+          eyebrow="Administration"
+          title="Applications"
+          subtitle="Review tenant applications with clear status and quick actions."
+          icon="document-text-outline"
+          right={<StatusPill label={`${items.length} records`} color={colors.blue} />}
+        />
+      }
+      renderItem={({ item }) => (
+        <PremiumCard>
+          <View style={styles.cardHeader}>
+            <View style={styles.applicationIcon}>
+              <Text style={styles.applicationIconText}>APP</Text>
+            </View>
+            <View style={styles.cardCopy}>
+              <Text style={styles.cardTitle}>{item.property_title || 'Property application'}</Text>
+              <Text style={styles.cardMeta}>{item.status || 'pending'}</Text>
             </View>
           </View>
-        )}
-        ListEmptyComponent={<Text style={styles.empty}>No applications found.</Text>}
-      />
-    </View>
+          <InfoRow icon="person-outline" label="Tenant" value={item.tenant_name || '—'} />
+          <InfoRow icon="home-outline" label="Property" value={item.property_title || '—'} />
+          <View style={styles.actions}>
+            <PremiumButton title="Approve" icon="checkmark-circle-outline" onPress={() => approve(item.id)} />
+            <PremiumButton title="Reject" variant="ghost" icon="close-circle-outline" onPress={() => reject(item.id)} />
+          </View>
+        </PremiumCard>
+      )}
+    />
   );
 };
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#f8fafc' },
-  title: { textAlign: 'center', marginVertical: 12, fontSize: 22, fontWeight: '800', color: '#0f172a' },
-  list: { paddingHorizontal: 14, paddingBottom: 20 },
-  card: {
-    backgroundColor: '#ffffff',
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
-    borderRadius: 12,
-    padding: 12,
-    marginBottom: 10,
+  cardHeader: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 6,
   },
-  cardTitle: { fontSize: 16, fontWeight: '700', color: '#0f172a' },
-  cardMeta: { marginTop: 4, color: '#475569' },
-  row: { flexDirection: 'row', gap: 16, marginTop: 10 },
-  linkText: { color: '#0284c7', fontWeight: '700' },
-  warnText: { color: '#dc2626', fontWeight: '700' },
-  empty: { color: '#64748b', textAlign: 'center', marginTop: 40 },
+  applicationIcon: {
+    alignItems: 'center',
+    backgroundColor: colors.surfaceBlue,
+    borderRadius: 18,
+    height: 44,
+    justifyContent: 'center',
+    width: 44,
+  },
+  applicationIconText: {
+    color: colors.blue,
+    fontFamily: typography.bold,
+    fontSize: 11,
+  },
+  cardCopy: {
+    flex: 1,
+  },
+  cardTitle: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 16,
+  },
+  cardMeta: {
+    color: colors.muted,
+    fontFamily: typography.semibold,
+    fontSize: 12,
+    marginTop: 3,
+    textTransform: 'capitalize',
+  },
+  actions: {
+    gap: 10,
+    marginTop: 12,
+  },
 });
 
 export default AdminApplicationsScreen;

@@ -35,6 +35,8 @@ import { hasPaystackCheckout } from '../../services/nativePaymentService';
 import { colors, radius, shadows, typography } from '../../theme';
 import { getErrorMessage } from '../../utils/http';
 
+const fallbackPropertyImage = require('../../../assets/rentalhub-app-icon.png');
+
 const formatCurrency = (value) => `₦${Number(value || 0).toLocaleString()}`;
 
 const prettyLabel = (value = '') =>
@@ -112,9 +114,7 @@ const PropertyDetailScreen = ({ route, navigation }) => {
         typeof photo === 'string' ? photo : photo?.photo_url || photo?.url
       ),
     ].filter(Boolean);
-    return [...new Set(candidates.length ? candidates : [
-      'https://via.placeholder.com/800x600?text=RentalHub+Home',
-    ])];
+    return [...new Set(candidates)];
   }, [property]);
 
   const amenities = useMemo(() => {
@@ -366,6 +366,7 @@ const PropertyDetailScreen = ({ route, navigation }) => {
       : property.payment_frequency === 'quarterly'
         ? 'quarter'
         : 'month';
+  const galleryImages = images.length ? images : [null];
 
   return (
     <SafeAreaView edges={['top']} style={styles.safeArea}>
@@ -381,11 +382,11 @@ const PropertyDetailScreen = ({ route, navigation }) => {
             }
             pagingEnabled
             showsHorizontalScrollIndicator={false}>
-            {images.map((uri, index) => (
+            {galleryImages.map((uri, index) => (
               <Image
-                key={`${uri}-${index}`}
+                key={`${uri || 'fallback'}-${index}`}
                 resizeMode="cover"
-                source={{ uri }}
+                source={uri ? { uri } : fallbackPropertyImage}
                 style={[styles.image, { width }]}
               />
             ))}
@@ -406,7 +407,7 @@ const PropertyDetailScreen = ({ route, navigation }) => {
           </View>
           <View style={styles.photoCount}>
             <Icon name="images-outline" size={14} color={colors.white} />
-            <Text style={styles.photoCountText}>{imageIndex + 1} / {images.length}</Text>
+            <Text style={styles.photoCountText}>{imageIndex + 1} / {galleryImages.length}</Text>
           </View>
           {property.featured ? (
             <View style={styles.featuredBadge}>

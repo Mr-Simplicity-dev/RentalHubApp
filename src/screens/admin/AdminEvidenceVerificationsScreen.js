@@ -1,9 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import Toast from 'react-native-toast-message';
-import Icon from 'react-native-vector-icons/Ionicons';
 import api from '../../services/api';
 import { getErrorMessage, pickList } from '../../utils/http';
+import {
+  InfoRow,
+  PremiumButton,
+  PremiumCard,
+  PremiumHero,
+  PremiumListScreen,
+  StatusPill,
+} from '../../components/common/PremiumLayout';
+import { colors, typography } from '../../theme';
 
 const AdminEvidenceVerificationsScreen = () => {
   const [items, setItems] = useState([]);
@@ -58,57 +66,83 @@ const AdminEvidenceVerificationsScreen = () => {
   };
 
   return (
-    <View style={styles.screen}>
-      <View style={styles.header}>
-        <Icon name="shield-checkmark-outline" size={20} color="#0f172a" />
-        <Text style={styles.title}>Evidence Verifications</Text>
-      </View>
-      <FlatList
-        data={items}
-        keyExtractor={(item) => String(item.id)}
-        contentContainerStyle={styles.list}
-        refreshing={loading}
-        onRefresh={loadEvidence}
-        renderItem={({ item }) => (
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>{item.evidence_type || item.type || 'Evidence'}</Text>
-            <Text style={styles.cardMeta}>User: {item.user_name || item.user?.full_name || item.user?.name || 'N/A'}</Text>
-            <Text style={styles.cardMeta}>Submitted: {item.submission_date || item.created_at || 'N/A'}</Text>
-            <View style={styles.row}>
-              <TouchableOpacity onPress={() => approve(item.id)}>
-                <Text style={styles.linkText}>Approve</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => reject(item.id)}>
-                <Text style={styles.warnText}>Reject</Text>
-              </TouchableOpacity>
+    <PremiumListScreen
+      data={items}
+      refreshing={loading}
+      onRefresh={loadEvidence}
+      keyExtractor={(item) => String(item.id)}
+      emptyTitle="No pending evidence"
+      emptyMessage="Evidence awaiting review will appear here."
+      emptyIcon="folder-open-outline"
+      header={
+        <PremiumHero
+          eyebrow="Compliance"
+          title="Evidence review"
+          subtitle="Approve or reject submitted evidence with a cleaner verification workflow."
+          icon="folder-open-outline"
+          right={<StatusPill label={`${items.length} pending`} color={colors.blue} />}
+        />
+      }
+      renderItem={({ item }) => (
+        <PremiumCard>
+          <View style={styles.cardHeader}>
+            <View style={styles.evidenceIcon}>
+              <Text style={styles.evidenceIconText}>EV</Text>
+            </View>
+            <View style={styles.cardCopy}>
+              <Text style={styles.cardTitle}>{item.evidence_type || item.type || 'Evidence'}</Text>
+              <Text style={styles.cardMeta}>{item.submission_date || item.created_at || 'Submission date unavailable'}</Text>
             </View>
           </View>
-        )}
-        ListEmptyComponent={<Text style={styles.empty}>No pending evidence.</Text>}
-      />
-    </View>
+          <InfoRow icon="person-outline" label="User" value={item.user_name || item.user?.full_name || item.user?.name || 'N/A'} />
+          <View style={styles.actions}>
+            <PremiumButton title="Approve" icon="checkmark-circle-outline" onPress={() => approve(item.id)} />
+            <PremiumButton title="Reject" variant="ghost" icon="close-circle-outline" onPress={() => reject(item.id)} />
+          </View>
+        </PremiumCard>
+      )}
+    />
   );
 };
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#f8fafc' },
-  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginVertical: 12, gap: 8 },
-  title: { fontSize: 22, fontWeight: '800', color: '#0f172a' },
-  list: { paddingHorizontal: 14, paddingBottom: 20 },
-  card: {
-    backgroundColor: '#ffffff',
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
-    borderRadius: 12,
-    padding: 12,
-    marginBottom: 10,
+  cardHeader: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 6,
   },
-  cardTitle: { fontSize: 16, fontWeight: '700', color: '#0f172a' },
-  cardMeta: { marginTop: 4, color: '#475569' },
-  row: { flexDirection: 'row', gap: 16, marginTop: 10 },
-  linkText: { color: '#0284c7', fontWeight: '700' },
-  warnText: { color: '#dc2626', fontWeight: '700' },
-  empty: { color: '#64748b', textAlign: 'center', marginTop: 40 },
+  evidenceIcon: {
+    alignItems: 'center',
+    backgroundColor: colors.surfaceBlue,
+    borderRadius: 18,
+    height: 44,
+    justifyContent: 'center',
+    width: 44,
+  },
+  evidenceIconText: {
+    color: colors.blue,
+    fontFamily: typography.bold,
+    fontSize: 12,
+  },
+  cardCopy: {
+    flex: 1,
+  },
+  cardTitle: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 16,
+  },
+  cardMeta: {
+    color: colors.muted,
+    fontFamily: typography.regular,
+    fontSize: 12,
+    marginTop: 3,
+  },
+  actions: {
+    gap: 10,
+    marginTop: 12,
+  },
 });
 
 export default AdminEvidenceVerificationsScreen;
