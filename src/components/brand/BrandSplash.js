@@ -1,21 +1,27 @@
 import React, { useEffect, useRef } from 'react';
-import { Animated, StatusBar, StyleSheet, Text, View } from 'react-native';
+import { Animated, Easing, StatusBar, StyleSheet, Text, View } from 'react-native';
 import { colors, typography } from '../../theme';
 import { useAccessibilityPreferences } from '../../hooks/useAccessibilityPreferences';
 import BrandLogoMark from './BrandLogoMark';
 
-const BrandSplash = () => {
+const LOADING_TRACK_WIDTH = 168;
+const DEFAULT_DURATION_MS = 4800;
+
+const BrandSplash = ({ duration = DEFAULT_DURATION_MS }) => {
   const { reduceMotion, scaleFont } = useAccessibilityPreferences();
   const scale = useRef(new Animated.Value(0.88)).current;
   const opacity = useRef(new Animated.Value(0)).current;
+  const progress = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     if (reduceMotion) {
       scale.setValue(1);
       opacity.setValue(1);
+      progress.setValue(1);
       return;
     }
 
+    progress.setValue(0);
     Animated.parallel([
       Animated.spring(scale, {
         toValue: 1,
@@ -28,8 +34,19 @@ const BrandSplash = () => {
         duration: 450,
         useNativeDriver: true,
       }),
+      Animated.timing(progress, {
+        toValue: 1,
+        duration,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }),
     ]).start();
-  }, [opacity, reduceMotion, scale]);
+  }, [duration, opacity, progress, reduceMotion, scale]);
+
+  const fillTranslateX = progress.interpolate({
+    inputRange: [0, 1],
+    outputRange: [-LOADING_TRACK_WIDTH, 0],
+  });
 
   return (
     <View style={styles.container}>
@@ -42,7 +59,15 @@ const BrandSplash = () => {
         <Text style={[styles.tagline, { fontSize: scaleFont(14) }]}>Trusted homes. Confident living.</Text>
       </Animated.View>
       <View style={styles.loadingTrack}>
-        <Animated.View style={[styles.loadingFill, { opacity }]} />
+        <Animated.View
+          style={[
+            styles.loadingFill,
+            {
+              opacity,
+              transform: [{ translateX: fillTranslateX }],
+            },
+          ]}
+        />
       </View>
     </View>
   );
@@ -75,18 +100,20 @@ const styles = StyleSheet.create({
   },
   loadingTrack: {
     backgroundColor: 'rgba(255, 255, 255, 0.16)',
-    borderRadius: 3,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 4,
+    borderWidth: 1,
     bottom: 64,
-    height: 3,
+    height: 5,
     overflow: 'hidden',
     position: 'absolute',
-    width: 72,
+    width: LOADING_TRACK_WIDTH,
   },
   loadingFill: {
     backgroundColor: colors.gold,
-    borderRadius: 3,
-    height: 3,
-    width: 48,
+    borderRadius: 4,
+    height: 5,
+    width: LOADING_TRACK_WIDTH,
   },
   orb: {
     position: 'absolute',

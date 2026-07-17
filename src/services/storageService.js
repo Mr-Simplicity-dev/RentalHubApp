@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
 
 const TOKEN_SERVICE = 'com.rentalhubng.auth.token';
+const SESSION_TOKEN_SERVICE = 'com.rentalhubng.auth.session-token';
 const USER_SERVICE = 'com.rentalhubng.auth.user';
 
 let Keychain = null;
@@ -56,6 +57,58 @@ export const storageService = {
       const token = await AsyncStorage.getItem('token');
       if (token && Keychain) {
         await Keychain.setGenericPassword('token', token, getKeychainOptions(TOKEN_SERVICE));
+      }
+      return token;
+    } catch (error) {
+      return null;
+    }
+  },
+
+  saveSessionToken: async (token) => {
+    if (!token) {
+      return;
+    }
+
+    try {
+      if (Keychain) {
+        await Keychain.setGenericPassword(
+          'session_token',
+          token,
+          getKeychainOptions(SESSION_TOKEN_SERVICE)
+        );
+      }
+    } catch (error) {
+      // Keychain is preferred, but AsyncStorage below remains a resilient fallback.
+    }
+
+    try {
+      await AsyncStorage.setItem('session_token', token);
+    } catch (fallbackError) {
+      // both storage methods failed
+    }
+  },
+
+  getSessionToken: async () => {
+    try {
+      if (Keychain) {
+        const credentials = await Keychain.getGenericPassword({
+          service: SESSION_TOKEN_SERVICE,
+        });
+        if (credentials?.username === 'session_token') {
+          return credentials.password;
+        }
+      }
+    } catch (error) {
+      // Keychain read failed, fall through to AsyncStorage
+    }
+    try {
+      const token = await AsyncStorage.getItem('session_token');
+      if (token && Keychain) {
+        await Keychain.setGenericPassword(
+          'session_token',
+          token,
+          getKeychainOptions(SESSION_TOKEN_SERVICE)
+        );
       }
       return token;
     } catch (error) {
@@ -120,13 +173,14 @@ export const storageService = {
     try {
       if (Keychain) {
         await Keychain.resetGenericPassword({ service: TOKEN_SERVICE });
+        await Keychain.resetGenericPassword({ service: SESSION_TOKEN_SERVICE });
         await Keychain.resetGenericPassword({ service: USER_SERVICE });
       }
     } catch (error) {
       // ignore
     }
     try {
-      await AsyncStorage.multiRemove(['token', 'user']);
+      await AsyncStorage.multiRemove(['token', 'session_token', 'user']);
     } catch (error) {
       // ignore
     }

@@ -167,6 +167,7 @@ export const biometricService = {
 
   enableForSession: async (sessionData) => {
     const token = sessionData?.token;
+    const sessionToken = sessionData?.session_token || sessionData?.sessionToken;
     const user = sessionData?.user;
     const status = await biometricService.getStatus();
     const hasAccessControl = Boolean(getBiometricAccessControl());
@@ -195,7 +196,7 @@ export const biometricService = {
     try {
       await Keychain.setGenericPassword(
         user.email || user.id || 'rentalhub-user',
-        JSON.stringify({ token, user }),
+        JSON.stringify({ token, session_token: sessionToken, user }),
         getSetOptions()
       );
 
@@ -242,7 +243,7 @@ export const biometricService = {
         };
       }
 
-      if (!isTokenActive(sessionData.token)) {
+      if (!isTokenActive(sessionData.token) && !isTokenActive(sessionData.session_token)) {
         await biometricService.clearStoredSession();
         return {
           success: false,

@@ -169,6 +169,7 @@ const ProfileScreen = ({ navigation }) => {
       }
 
       const token = await storageService.getToken();
+      const sessionToken = await storageService.getSessionToken();
       const currentUser = user || (await storageService.getUser());
 
       if (!token || !currentUser) {
@@ -182,6 +183,7 @@ const ProfileScreen = ({ navigation }) => {
 
       const response = await biometricService.enableForSession({
         token,
+        session_token: sessionToken,
         user: currentUser,
       });
 

@@ -1,7 +1,11 @@
 import * as Notifications from 'expo-notifications';
 import React, { createContext, useContext, useEffect } from 'react';
 import { Linking } from 'react-native';
-import { navigationRef, openNotificationDestination } from '../navigation/navigationRef';
+import {
+  navigationRef,
+  openNotificationDestination,
+  openRentalHubLinkInApp,
+} from '../navigation/navigationRef';
 import {
   configureNotificationPresentation,
   registerForPushNotifications,
@@ -16,6 +20,7 @@ const openResponse = (response) => {
   const data = response?.notification?.request?.content?.data || {};
   const open = () => {
     if (openNotificationDestination(data)) return;
+    if (data.link && openRentalHubLinkInApp(data.link)) return;
     if (data.link) void Linking.openURL(String(data.link));
   };
 

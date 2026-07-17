@@ -3,12 +3,26 @@ import api from './api';
 import { storageService } from './storageService';
 import { jwtDecode } from 'jwt-decode';
 
+const isTokenActive = (token) => {
+  if (!token) {
+    return false;
+  }
+
+  try {
+    const decoded = jwtDecode(token);
+    return decoded.exp * 1000 > Date.now();
+  } catch {
+    return false;
+  }
+};
+
 export const authService = {
   register: async (userData) => {
     const response = await api.post('/auth/register', userData);
     if (response.data.success) {
-      const { token, user } = response.data.data;
+      const { token, session_token: sessionToken, user } = response.data.data;
       await storageService.saveToken(token);
+      await storageService.saveSessionToken(sessionToken);
       await storageService.saveUser(user);
     }
     return response.data;
@@ -17,8 +31,9 @@ export const authService = {
   login: async (email, password) => {
     const response = await api.post('/auth/login', { email, password });
     if (response.data.success) {
-      const { token, user } = response.data.data;
+      const { token, session_token: sessionToken, user } = response.data.data;
       await storageService.saveToken(token);
+      await storageService.saveSessionToken(sessionToken);
       await storageService.saveUser(user);
     }
     return response.data;
@@ -43,23 +58,42 @@ export const authService = {
 
   hydrateSession: async (sessionData) => {
     const token = sessionData?.token;
+    const sessionToken = sessionData?.session_token || sessionData?.sessionToken;
     const user = sessionData?.user;
 
-    if (!token || !user) {
+    if (!token && !sessionToken && !user) {
       return;
     }
 
     await storageService.saveToken(token);
+    await storageService.saveSessionToken(sessionToken);
     await storageService.saveUser(user);
+  },
+
+  refreshSession: async () => {
+    const sessionToken = await storageService.getSessionToken();
+    if (!sessionToken) {
+      throw new Error('No native session token available.');
+    }
+
+    const response = await api.post('/auth/refresh-token', {
+      session_token: sessionToken,
+    });
+
+    if (response.data?.success) {
+      await authService.hydrateSession(response.data.data);
+    }
+
+    return response.data;
   },
 
   isAuthenticated: async () => {
     const token = await storageService.getToken();
-    if (!token) return false;
+    if (isTokenActive(token)) return true;
 
     try {
-      const decoded = jwtDecode(token);
-      return decoded.exp * 1000 > Date.now();
+      const refreshed = await authService.refreshSession();
+      return Boolean(refreshed?.success && refreshed?.data?.token);
     } catch {
       return false;
     }
