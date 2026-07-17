@@ -16,7 +16,7 @@ import { subscribeNetworkStatus } from './services/networkStatusService';
 import { flushOfflineQueue, hydrateOfflineQueue } from './services/offlineActionQueueService';
 import { trackMobileEvent } from './services/mobileDiagnosticsService';
 
-const APP_INTRO_DURATION_MS = 4800;
+const APP_INTRO_DURATION_MS = 6500;
 
 const AppContent = () => {
   const [showSplash, setShowSplash] = useState(true);
@@ -38,7 +38,7 @@ const AppContent = () => {
   }, []);
 
   if (showSplash) {
-    return <BrandSplash duration={APP_INTRO_DURATION_MS} />;
+    return <BrandSplash duration={APP_INTRO_DURATION_MS} showProgressPercent={false} />;
   }
 
   return (

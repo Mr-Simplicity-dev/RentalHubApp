@@ -1,6 +1,7 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import Toast from 'react-native-toast-message';
 import { financialAdminService } from '../../services/financialAdminService';
+import AdminAccountActions from '../../components/admin/AdminAccountActions';
 import { colors } from '../../theme';
 import { getErrorMessage, pickObject } from '../../utils/http';
 import {
@@ -71,6 +72,7 @@ const SuperFinancialAdminDashboardScreen = ({ navigation }) => {
         icon="analytics-outline"
         onRefresh={loadOverview}
       />
+      <AdminAccountActions navigation={navigation} />
 
       <MetricGrid>
         {summaryCards.map((card) => (

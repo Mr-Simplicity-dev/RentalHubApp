@@ -10,6 +10,6 @@
         <item name="android:windowSplashScreenAnimatedIcon">@drawable/rentalhub_splash_mark</item>
         <item name="android:windowSplashScreenBackground">@color/rentalhub_navy</item>
         <item name="android:windowSplashScreenIconBackgroundColor">@color/rentalhub_navy</item>
-        <item name="android:windowSplashScreenAnimationDuration">1600</item>
+        <item name="android:windowSplashScreenAnimationDuration">2600</item>
     </style>
 </resources>

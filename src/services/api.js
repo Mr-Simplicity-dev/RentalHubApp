@@ -55,11 +55,18 @@ let isRefreshing = false;
 let pendingRequests = [];
 
 const isSessionValidationRequest = (config = {}) => {
-  const url = String(config.url || '');
-  return Boolean(config.authCritical) || /\/auth\/me(?:$|[?#/])/i.test(url);
+  return Boolean(config.authCritical);
+};
+
+const shouldLogoutOnUnauthorized = (config = {}) => {
+  return Boolean(config.logoutOnUnauthorized);
 };
 
 const isRefreshRequest = (config = {}) => String(config.url || '').includes('/auth/refresh-token');
+
+const isAuthEntryRequest = (config = {}) =>
+  /\/auth\/(login|register|forgot-password|reset-password|verify-email|send-phone-otp|verify-phone)(?:$|[?#/])/i
+    .test(String(config.url || ''));
 
 const setRequestAuthHeader = (config, token) => {
   config.headers = {
@@ -131,7 +138,12 @@ api.interceptors.response.use(
     markNetworkProblem(error);
     const originalRequest = error.config || {};
 
-    if (error.response?.status === 401 && !originalRequest._retry && !isRefreshRequest(originalRequest)) {
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !isRefreshRequest(originalRequest) &&
+      !isAuthEntryRequest(originalRequest)
+    ) {
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           pendingRequests.push({
@@ -155,14 +167,20 @@ api.interceptors.response.use(
         return api(originalRequest);
       } catch (refreshError) {
         rejectPendingRequests(refreshError);
-        await storageService.clearAll();
-        if (typeof onUnauthorized === 'function') {
-          onUnauthorized();
+        if (shouldLogoutOnUnauthorized(originalRequest)) {
+          await storageService.clearAll();
+          if (typeof onUnauthorized === 'function') {
+            onUnauthorized();
+          }
         }
       } finally {
         isRefreshing = false;
       }
-    } else if (error.response?.status === 401 && isSessionValidationRequest(originalRequest)) {
+    } else if (
+      error.response?.status === 401 &&
+      isSessionValidationRequest(originalRequest) &&
+      shouldLogoutOnUnauthorized(originalRequest)
+    ) {
       await storageService.clearAll();
       if (typeof onUnauthorized === 'function') {
         onUnauthorized();

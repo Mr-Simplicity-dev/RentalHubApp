@@ -4,6 +4,7 @@ import { AuthContext } from '../../context/AuthContext';
 import { stateAdminService } from '../../services/stateAdminService';
 import { colors } from '../../theme';
 import { getErrorMessage, pickObject } from '../../utils/http';
+import AdminAccountActions from '../../components/admin/AdminAccountActions';
 import PropertyRequestWorkflowSection from '../../components/admin/PropertyRequestWorkflowSection';
 import TenancyWorkflowSection from '../../components/admin/TenancyWorkflowSection';
 import {
@@ -71,6 +72,7 @@ const StateAdminDashboardScreen = ({ navigation }) => {
         icon="map-outline"
         onRefresh={loadDashboard}
       />
+      <AdminAccountActions navigation={navigation} />
 
       {!stateId ? (
         <DashboardNotice

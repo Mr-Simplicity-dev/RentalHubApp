@@ -19,6 +19,7 @@ import OptionPickerModal from '../../components/common/OptionPickerModal';
 import ConfirmDialog from '../../components/common/ConfirmDialog';
 import EmptyState from '../../components/common/EmptyState';
 import StatusBadge from '../../components/common/StatusBadge';
+import AdminAccountActions from '../../components/admin/AdminAccountActions';
 import { superAdminService } from '../../services/superAdminService';
 import { authService } from '../../services/authService';
 import { buildUploadUrl, getErrorMessage, pickList, pickObject } from '../../utils/http';
@@ -100,7 +101,7 @@ const FilterChip = ({ label, active, onPress }) => (
   </TouchableOpacity>
 );
 
-const SuperAdminDashboardScreen = () => {
+const SuperAdminDashboardScreen = ({ navigation }) => {
   const [section, setSection] = useState('overview');
   const [showSectionPicker, setShowSectionPicker] = useState(false);
   const loadedSections = useRef(new Set());
@@ -2582,6 +2583,7 @@ const SuperAdminDashboardScreen = () => {
         icon="shield-checkmark-outline"
         onRefresh={() => loadSection(section, true)}
       />
+      <AdminAccountActions navigation={navigation} />
       <ActionRow
         title={selectedSection?.label || 'Choose workspace'}
         subtitle="Tap to switch administrative workspace"

@@ -40,6 +40,7 @@ export const AuthProvider = ({ children }) => {
       const isAuth = await authService.isAuthenticated();
       if (isAuth) {
         const userData = await storageService.getUser();
+        const hasCachedUser = Boolean(userData);
         if (userData) {
           setUser(userData);
           setIsAuthenticated(true);
@@ -50,18 +51,25 @@ export const AuthProvider = ({ children }) => {
           if (response.success) {
             setUser(response.data);
             setIsAuthenticated(true);
-          } else {
+          } else if (!hasCachedUser) {
             await clearLocalSessionRef.current?.();
           }
         } catch (error) {
-          if (error?.response?.status === 401) {
+          if (error?.response?.status === 401 && !hasCachedUser) {
             await clearLocalSessionRef.current?.();
           }
         }
       }
     } catch (error) {
       console.error('Auth initialization error:', error);
-      await clearLocalSessionRef.current?.();
+      const fallbackUser = await storageService.getUser();
+      const fallbackToken = await storageService.getToken();
+      if (fallbackUser && fallbackToken) {
+        setUser(fallbackUser);
+        setIsAuthenticated(true);
+      } else {
+        await clearLocalSessionRef.current?.();
+      }
     } finally {
       setLoading(false);
     }
@@ -134,8 +142,6 @@ export const AuthProvider = ({ children }) => {
         label: biometricResult.label,
       };
     } catch (error) {
-      await authService.logout();
-
       if (error?.response?.status === 401) {
         await biometricService.clearStoredSession();
       }

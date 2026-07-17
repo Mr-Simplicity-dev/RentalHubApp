@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import Toast from 'react-native-toast-message';
 import { AuthContext } from '../../context/AuthContext';
+import AdminAccountActions from '../../components/admin/AdminAccountActions';
 import { serviceAdminService } from '../../services/serviceAdminService';
 import { getErrorMessage, pickObject } from '../../utils/http';
 import { colors } from '../../theme';
@@ -125,6 +126,7 @@ const ServiceOperationsDashboardScreen = ({ navigation }) => {
         icon={profile.icon}
         onRefresh={loadOverview}
       />
+      <AdminAccountActions navigation={navigation} />
 
       <MetricGrid>
         {cards.map((card) => (

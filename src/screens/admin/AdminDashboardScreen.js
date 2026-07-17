@@ -4,6 +4,7 @@ import { adminService } from '../../services/adminService';
 import { getErrorMessage, pickObject } from '../../utils/http';
 import TenancyWorkflowSection from '../../components/admin/TenancyWorkflowSection';
 import PropertyRequestWorkflowSection from '../../components/admin/PropertyRequestWorkflowSection';
+import AdminAccountActions from '../../components/admin/AdminAccountActions';
 import { colors } from '../../theme';
 import {
   ActionRow,
@@ -58,6 +59,7 @@ const AdminDashboardScreen = ({ navigation }) => {
         icon="settings-outline"
         onRefresh={loadStats}
       />
+      <AdminAccountActions navigation={navigation} />
 
       <MetricGrid>
         {cards.map((card) => (

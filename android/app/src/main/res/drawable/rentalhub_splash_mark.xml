@@ -16,6 +16,15 @@
         android:width="112dp"
         android:height="112dp"
         android:gravity="center">
+        <shape android:shape="rectangle">
+            <corners android:radius="28dp" />
+            <solid android:color="#FFFFFFFF" />
+        </shape>
+    </item>
+    <item
+        android:width="112dp"
+        android:height="112dp"
+        android:gravity="center">
         <bitmap
             android:gravity="fill"
             android:src="@drawable/rentalhub_splash_logo" />
