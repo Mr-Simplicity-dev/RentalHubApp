@@ -13,13 +13,12 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
+import BrandImagePlaceholder from '../../components/common/BrandImagePlaceholder';
 import DamageReportCapture from '../../components/properties/DamageReportCapture';
 import { AuthContext } from '../../context/AuthContext';
 import { propertyService } from '../../services/propertyService';
 import { colors, radius, typography } from '../../theme';
 import { getErrorMessage, pickList } from '../../utils/http';
-
-const fallbackPropertyImage = require('../../../assets/rentalhub-app-icon.png');
 
 const MyPropertiesScreen = ({ navigation }) => {
   const { user } = useContext(AuthContext);
@@ -225,7 +224,11 @@ const MyPropertiesScreen = ({ navigation }) => {
               <TouchableOpacity
                 activeOpacity={0.84}
                 onPress={() => navigation.navigate('PropertyDetail', { id: item.id })}>
-                <Image source={cover ? { uri: cover } : fallbackPropertyImage} style={styles.image} />
+                {cover ? (
+                  <Image source={{ uri: cover }} style={styles.image} />
+                ) : (
+                  <BrandImagePlaceholder compact style={styles.image} />
+                )}
                 <View style={[styles.statusPill, { backgroundColor: statusBg }]}>
                   <Text style={[styles.statusText, { color: statusColor }]}>{status}</Text>
                 </View>

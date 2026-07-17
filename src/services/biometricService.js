@@ -50,14 +50,22 @@ const isTokenActive = (token) => {
   }
 };
 
+const getBiometricAccessControl = () => {
+  const accessControl = Keychain?.ACCESS_CONTROL || {};
+  return (
+    accessControl.BIOMETRY_CURRENT_SET_OR_DEVICE_PASSCODE ||
+    accessControl.BIOMETRY_CURRENT_SET ||
+    accessControl.BIOMETRY_ANY_OR_DEVICE_PASSCODE ||
+    accessControl.BIOMETRY_ANY ||
+    null
+  );
+};
+
 const getSetOptions = () => {
-  if (!Keychain?.ACCESS_CONTROL) {
-    return {};
-  }
+  const biometricAccessControl = getBiometricAccessControl();
 
   const options = {
     service: BIOMETRIC_SERVICE,
-    accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_CURRENT_SET_OR_DEVICE_PASSCODE,
     authenticationPrompt: {
       title: 'Enable biometric login',
       subtitle: 'Secure quick sign-in for RentalHub NG',
@@ -65,6 +73,10 @@ const getSetOptions = () => {
       cancel: 'Cancel',
     },
   };
+
+  if (biometricAccessControl) {
+    options.accessControl = biometricAccessControl;
+  }
 
   if (Platform.OS === 'ios' && Keychain?.ACCESSIBLE) {
     options.accessible = Keychain.ACCESSIBLE.WHEN_UNLOCKED_THIS_DEVICE_ONLY;
@@ -74,13 +86,10 @@ const getSetOptions = () => {
 };
 
 const getGetOptions = () => {
-  if (!Keychain?.ACCESS_CONTROL) {
-    return {};
-  }
+  const biometricAccessControl = getBiometricAccessControl();
 
-  return {
+  const options = {
     service: BIOMETRIC_SERVICE,
-    accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_CURRENT_SET_OR_DEVICE_PASSCODE,
     authenticationPrompt: {
       title: 'Use biometric login',
       subtitle: 'Sign in to RentalHub NG',
@@ -88,6 +97,12 @@ const getGetOptions = () => {
       cancel: 'Use password',
     },
   };
+
+  if (biometricAccessControl) {
+    options.accessControl = biometricAccessControl;
+  }
+
+  return options;
 };
 
 const parseSession = (password) => {
@@ -131,11 +146,12 @@ export const biometricService = {
 
     try {
       const biometryType = await Keychain.getSupportedBiometryType();
+      const hasAccessControl = Boolean(getBiometricAccessControl());
       const hasSession = await Keychain.hasGenericPassword({ service: BIOMETRIC_SERVICE });
 
       return {
-        available: Boolean(biometryType),
-        enabled: Boolean(biometryType && hasSession),
+        available: Boolean(biometryType && hasAccessControl),
+        enabled: Boolean(biometryType && hasAccessControl && hasSession),
         biometryType,
         label: getBiometricLabel(biometryType),
       };
@@ -153,11 +169,19 @@ export const biometricService = {
     const token = sessionData?.token;
     const user = sessionData?.user;
     const status = await biometricService.getStatus();
+    const hasAccessControl = Boolean(getBiometricAccessControl());
 
     if (!status.available) {
       return {
         success: false,
         message: 'Biometric login is not available on this device.',
+      };
+    }
+
+    if (!hasAccessControl) {
+      return {
+        success: false,
+        message: 'Secure biometric storage is not available on this device.',
       };
     }
 

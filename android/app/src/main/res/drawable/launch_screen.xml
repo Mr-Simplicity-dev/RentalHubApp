@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@android:color/white" />
+    <item android:drawable="@color/rentalhub_navy" />
     <item
-        android:width="128dp"
-        android:height="128dp"
-        android:gravity="center">
-        <bitmap
-            android:gravity="fill"
-            android:src="@mipmap/ic_launcher_round" />
-    </item>
+        android:width="126dp"
+        android:height="126dp"
+        android:drawable="@drawable/rentalhub_splash_mark"
+        android:gravity="center" />
 </layer-list>

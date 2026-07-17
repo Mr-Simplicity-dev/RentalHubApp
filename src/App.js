@@ -16,11 +16,11 @@ import { subscribeNetworkStatus } from './services/networkStatusService';
 import { flushOfflineQueue, hydrateOfflineQueue } from './services/offlineActionQueueService';
 import { trackMobileEvent } from './services/mobileDiagnosticsService';
 
-const App = () => {
+const AppContent = () => {
   const [showSplash, setShowSplash] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowSplash(false), 1600);
+    const timer = setTimeout(() => setShowSplash(false), 3200);
     return () => clearTimeout(timer);
   }, []);
 
@@ -40,18 +40,26 @@ const App = () => {
   }
 
   return (
+    <>
+      <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
+      <NetworkStatusBanner />
+      <AppNavigator />
+      <NativeCallOverlay />
+      <NativeTourManager />
+      <Toast />
+    </>
+  );
+};
+
+const App = () => {
+  return (
     <AppErrorBoundary>
       <SafeAreaProvider>
         <AuthProvider>
           <RealtimeProvider>
             <NotificationProvider>
               <TourProvider>
-                <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
-                <NetworkStatusBanner />
-                <AppNavigator />
-                <NativeCallOverlay />
-                <NativeTourManager />
-                <Toast />
+                <AppContent />
               </TourProvider>
             </NotificationProvider>
           </RealtimeProvider>

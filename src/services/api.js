@@ -50,11 +50,17 @@ export const setOnUnauthorized = (callback) => {
   onUnauthorized = callback;
 };
 
+const isSessionValidationRequest = (config = {}) => {
+  const url = String(config.url || '');
+  return Boolean(config.authCritical) || /\/auth\/me(?:$|[?#/])/i.test(url);
+};
+
 api.interceptors.request.use(
   async (config) => {
     const token = await storageService.getToken();
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+      config.__authToken = token;
     }
     return config;
   },
@@ -70,7 +76,7 @@ api.interceptors.response.use(
   },
   async (error) => {
     markNetworkProblem(error);
-    if (error.response?.status === 401) {
+    if (error.response?.status === 401 && isSessionValidationRequest(error.config)) {
       await storageService.clearAll();
       if (typeof onUnauthorized === 'function') {
         onUnauthorized();

@@ -34,7 +34,7 @@ export const authService = {
   },
 
   getCurrentUser: async () => {
-    const response = await api.get('/auth/me');
+    const response = await api.get('/auth/me', { authCritical: true });
     if (response.data.success) {
       await storageService.saveUser(response.data.data);
     }

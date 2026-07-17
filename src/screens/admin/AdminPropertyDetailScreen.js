@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import Toast from 'react-native-toast-message';
+import BrandImagePlaceholder from '../../components/common/BrandImagePlaceholder';
 import {
   InfoRow,
   PremiumButton,
@@ -15,8 +16,6 @@ import {
 import { adminService } from '../../services/adminService';
 import { getErrorMessage, pickObject } from '../../utils/http';
 import { colors, radius, typography } from '../../theme';
-
-const fallbackPropertyImage = require('../../../assets/rentalhub-app-icon.png');
 
 const getStatusColor = (status) => {
   if (status === 'approved' || status === 'active') return colors.success;
@@ -112,7 +111,11 @@ const AdminPropertyDetailScreen = ({ route }) => {
       />
 
       <PremiumCard style={styles.mediaCard}>
-        <Image source={cover ? { uri: cover } : fallbackPropertyImage} style={styles.image} />
+        {cover ? (
+          <Image source={{ uri: cover }} style={styles.image} />
+        ) : (
+          <BrandImagePlaceholder style={styles.image} title="Property media pending" />
+        )}
         <View style={styles.pricePanel}>
           <Text style={styles.price}>{formatNaira(property.rent_amount)}</Text>
           <Text style={styles.frequency}>

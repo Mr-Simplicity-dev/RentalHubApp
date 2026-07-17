@@ -13,10 +13,11 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const logoutRef = useRef();
+  const clearLocalSessionRef = useRef();
 
   useEffect(() => {
     initAuth();
-    setOnUnauthorized(() => logoutRef.current?.());
+    setOnUnauthorized(() => clearLocalSessionRef.current?.());
     return () => setOnUnauthorized(null);
   }, []);
 
@@ -50,23 +51,17 @@ export const AuthProvider = ({ children }) => {
             setUser(response.data);
             setIsAuthenticated(true);
           } else {
-            await authService.logout();
-            setUser(null);
-            setIsAuthenticated(false);
+            await clearLocalSessionRef.current?.();
           }
         } catch (error) {
           if (error?.response?.status === 401) {
-            await authService.logout();
-            setUser(null);
-            setIsAuthenticated(false);
+            await clearLocalSessionRef.current?.();
           }
         }
       }
     } catch (error) {
       console.error('Auth initialization error:', error);
-      await authService.logout();
-      setUser(null);
-      setIsAuthenticated(false);
+      await clearLocalSessionRef.current?.();
     } finally {
       setLoading(false);
     }
@@ -75,6 +70,10 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     const response = await authService.login(email, password);
     if (response.success) {
+      if (!response.data?.token || !response.data?.user) {
+        throw new Error('Login succeeded but the server did not return a complete mobile session.');
+      }
+      await authService.hydrateSession(response.data);
       setUser(response.data.user);
       setIsAuthenticated(true);
     }
@@ -90,14 +89,20 @@ export const AuthProvider = ({ children }) => {
     return response;
   };
 
-  const logout = async () => {
-    await unregisterPushDevice().catch(() => {});
-    await authService.logout();
+  const clearLocalSession = async () => {
+    await storageService.clearAll();
     await biometricService.clearStoredSession();
     setUser(null);
     setIsAuthenticated(false);
   };
+
+  const logout = async () => {
+    await unregisterPushDevice().catch(() => {});
+    await authService.logout().catch(() => {});
+    await clearLocalSession();
+  };
   logoutRef.current = logout;
+  clearLocalSessionRef.current = clearLocalSession;
 
   const establishSession = async (sessionData) => {
     await authService.hydrateSession(sessionData);

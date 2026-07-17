@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
 
 const TOKEN_SERVICE = 'com.rentalhubng.auth.token';
+const USER_SERVICE = 'com.rentalhubng.auth.user';
 
 let Keychain = null;
 if (Platform.OS !== 'web') {
@@ -12,24 +13,29 @@ if (Platform.OS !== 'web') {
   }
 }
 
-const getKeychainOptions = () => ({
-  service: TOKEN_SERVICE,
+const getKeychainOptions = (service) => ({
+  service,
   accessible: Keychain?.ACCESSIBLE?.WHEN_UNLOCKED_THIS_DEVICE_ONLY,
 });
 
 export const storageService = {
   saveToken: async (token) => {
+    if (!token) {
+      return;
+    }
+
     try {
       if (Keychain) {
-        await Keychain.setGenericPassword('token', token, getKeychainOptions());
+        await Keychain.setGenericPassword('token', token, getKeychainOptions(TOKEN_SERVICE));
       }
-      await AsyncStorage.removeItem('token');
     } catch (error) {
-      try {
-        await AsyncStorage.setItem('token', token);
-      } catch (fallbackError) {
-        // both storage methods failed
-      }
+      // Keychain is preferred, but AsyncStorage below remains a resilient fallback.
+    }
+
+    try {
+      await AsyncStorage.setItem('token', token);
+    } catch (fallbackError) {
+      // both storage methods failed
     }
   },
 
@@ -39,7 +45,7 @@ export const storageService = {
         const credentials = await Keychain.getGenericPassword({
           service: TOKEN_SERVICE,
         });
-        if (credentials) {
+        if (credentials?.username === 'token') {
           return credentials.password;
         }
       }
@@ -49,8 +55,7 @@ export const storageService = {
     try {
       const token = await AsyncStorage.getItem('token');
       if (token && Keychain) {
-        await Keychain.setGenericPassword('token', token, getKeychainOptions());
-        await AsyncStorage.removeItem('token');
+        await Keychain.setGenericPassword('token', token, getKeychainOptions(TOKEN_SERVICE));
       }
       return token;
     } catch (error) {
@@ -59,17 +64,24 @@ export const storageService = {
   },
 
   saveUser: async (user) => {
+    if (!user) {
+      return;
+    }
+
+    const serializedUser = JSON.stringify(user);
+
     try {
       if (Keychain) {
-        await Keychain.setGenericPassword('user', JSON.stringify(user), getKeychainOptions());
+        await Keychain.setGenericPassword('user', serializedUser, getKeychainOptions(USER_SERVICE));
       }
-      await AsyncStorage.removeItem('user');
     } catch (error) {
-      try {
-        await AsyncStorage.setItem('user', JSON.stringify(user));
-      } catch (fallbackError) {
-        // both storage methods failed
-      }
+      // Keychain is preferred, but AsyncStorage below remains a resilient fallback.
+    }
+
+    try {
+      await AsyncStorage.setItem('user', serializedUser);
+    } catch (fallbackError) {
+      // both storage methods failed
     }
   },
 
@@ -77,10 +89,17 @@ export const storageService = {
     try {
       if (Keychain) {
         const credentials = await Keychain.getGenericPassword({
-          service: TOKEN_SERVICE,
+          service: USER_SERVICE,
         });
         if (credentials && credentials.username === 'user') {
           return JSON.parse(credentials.password);
+        }
+
+        const legacyCredentials = await Keychain.getGenericPassword({
+          service: TOKEN_SERVICE,
+        });
+        if (legacyCredentials?.username === 'user') {
+          return JSON.parse(legacyCredentials.password);
         }
       }
     } catch (error) {
@@ -89,8 +108,7 @@ export const storageService = {
     try {
       const user = await AsyncStorage.getItem('user');
       if (user && Keychain) {
-        await Keychain.setGenericPassword('user', user, getKeychainOptions());
-        await AsyncStorage.removeItem('user');
+        await Keychain.setGenericPassword('user', user, getKeychainOptions(USER_SERVICE));
       }
       return user ? JSON.parse(user) : null;
     } catch (error) {
@@ -102,6 +120,7 @@ export const storageService = {
     try {
       if (Keychain) {
         await Keychain.resetGenericPassword({ service: TOKEN_SERVICE });
+        await Keychain.resetGenericPassword({ service: USER_SERVICE });
       }
     } catch (error) {
       // ignore

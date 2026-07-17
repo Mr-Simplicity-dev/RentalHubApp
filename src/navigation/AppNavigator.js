@@ -789,7 +789,9 @@ const StateAdminRoot = () => (
 );
 
 const RoleRouter = ({ userType }) => {
-  switch (userType) {
+  const normalizedUserType = String(userType || '').trim().toLowerCase();
+
+  switch (normalizedUserType) {
     case 'tenant':
       return <TenantRoot />;
     case 'landlord':

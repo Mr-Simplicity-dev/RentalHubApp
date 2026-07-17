@@ -17,7 +17,6 @@ import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
 import BrandMark from '../../components/brand/BrandMark';
 import Toast from 'react-native-toast-message';
-import { authService } from '../../services/authService';
 import { biometricService } from '../../services/biometricService';
 import { colors, radius, shadows, typography } from '../../theme';
 
@@ -31,7 +30,7 @@ const LoginScreen = ({ navigation }) => {
     enabled: false,
     label: 'Biometrics',
   });
-  const { establishSession, loginWithBiometrics } = useContext(AuthContext);
+  const { login, loginWithBiometrics } = useContext(AuthContext);
 
   useEffect(() => {
     const loadBiometricStatus = async () => {
@@ -89,7 +88,7 @@ const LoginScreen = ({ navigation }) => {
 
     setLoading(true);
     try {
-      const response = await authService.login(email, password);
+      const response = await login(email, password);
       if (response.success) {
         const sessionData = response.data;
         const currentBiometricStatus = await biometricService.getStatus();
@@ -118,8 +117,6 @@ const LoginScreen = ({ navigation }) => {
             }
           }
         }
-
-        await establishSession(sessionData);
 
         Toast.show({
           type: 'success',

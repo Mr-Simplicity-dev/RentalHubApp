@@ -1,9 +1,8 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import BrandImagePlaceholder from '../common/BrandImagePlaceholder';
 import { colors, radius, shadows, typography } from '../../theme';
-
-const fallbackPropertyImage = require('../../../assets/rentalhub-app-icon.png');
 
 const formatCurrency = (value) => {
   const amount = Number(value || 0);
@@ -19,7 +18,11 @@ const PropertyCard = ({ property, onPress, onSave, isSaved = false }) => {
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.9} style={styles.card}>
       <View style={styles.imageContainer}>
-        <Image source={cover ? { uri: cover } : fallbackPropertyImage} style={styles.image} resizeMode="cover" />
+        {cover ? (
+          <Image source={{ uri: cover }} style={styles.image} resizeMode="cover" />
+        ) : (
+          <BrandImagePlaceholder compact style={styles.image} />
+        )}
         {Boolean(property?.featured) && (
           <View style={styles.badge}>
             <Text style={styles.badgeText}>Featured</Text>

@@ -21,6 +21,7 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
+import BrandImagePlaceholder from '../../components/common/BrandImagePlaceholder';
 import Button from '../../components/common/Button';
 import DamageReportCapture from '../../components/properties/DamageReportCapture';
 import { AuthContext } from '../../context/AuthContext';
@@ -34,8 +35,6 @@ import useNativePaystackCheckout from '../../hooks/useNativePaystackCheckout';
 import { hasPaystackCheckout } from '../../services/nativePaymentService';
 import { colors, radius, shadows, typography } from '../../theme';
 import { getErrorMessage } from '../../utils/http';
-
-const fallbackPropertyImage = require('../../../assets/rentalhub-app-icon.png');
 
 const formatCurrency = (value) => `₦${Number(value || 0).toLocaleString()}`;
 
@@ -383,12 +382,20 @@ const PropertyDetailScreen = ({ route, navigation }) => {
             pagingEnabled
             showsHorizontalScrollIndicator={false}>
             {galleryImages.map((uri, index) => (
-              <Image
-                key={`${uri || 'fallback'}-${index}`}
-                resizeMode="cover"
-                source={uri ? { uri } : fallbackPropertyImage}
-                style={[styles.image, { width }]}
-              />
+              uri ? (
+                <Image
+                  key={`${uri}-${index}`}
+                  resizeMode="cover"
+                  source={{ uri }}
+                  style={[styles.image, { width }]}
+                />
+              ) : (
+                <BrandImagePlaceholder
+                  key={`fallback-${index}`}
+                  style={[styles.image, { width }]}
+                  title="Property media pending"
+                />
+              )
             ))}
           </ScrollView>
           <View style={styles.galleryTop}>

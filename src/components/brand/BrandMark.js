@@ -1,12 +1,11 @@
 import React from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { colors, typography } from '../../theme';
-
-const logo = require('../../../assets/rentalhub-app-icon.png');
+import BrandLogoMark from './BrandLogoMark';
 
 const BrandMark = ({ light = false, compact = false, showName = true, style }) => (
   <View style={[styles.row, style]}>
-    <Image source={logo} style={[styles.logo, compact && styles.logoCompact]} resizeMode="contain" />
+    <BrandLogoMark size={compact ? 'sm' : 'md'} surface={light ? 'dark' : 'light'} />
     {showName ? (
       <View style={styles.wordmark}>
         <Text style={[styles.name, compact && styles.nameCompact, light && styles.light]}>
@@ -24,16 +23,6 @@ const styles = StyleSheet.create({
   row: {
     alignItems: 'center',
     flexDirection: 'row',
-  },
-  logo: {
-    width: 72,
-    height: 72,
-    borderRadius: 18,
-  },
-  logoCompact: {
-    width: 44,
-    height: 44,
-    borderRadius: 12,
   },
   wordmark: {
     marginLeft: 14,
