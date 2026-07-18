@@ -26,12 +26,13 @@ const resolveSize = (size) => {
 const BrandLogoMark = ({ size = 'md', surface = 'dark', style }) => {
   const dimensions = resolveSize(size);
   const isLightSurface = surface === 'light';
+  const isGoldSurface = surface === 'gold';
 
   return (
     <View
       style={[
         styles.shell,
-        isLightSurface ? styles.shellLight : styles.shellDark,
+        isGoldSurface ? styles.shellGold : isLightSurface ? styles.shellLight : styles.shellDark,
         {
           borderRadius: dimensions.shellRadius,
           height: dimensions.shell,
@@ -77,6 +78,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 18,
     elevation: 4,
+  },
+  shellGold: {
+    backgroundColor: 'rgba(255, 201, 40, 0.2)',
+    borderColor: 'rgba(255, 232, 148, 0.96)',
+    shadowColor: colors.gold,
+    shadowOpacity: 0.28,
+    shadowRadius: 30,
+    elevation: 10,
   },
   logo: {
     backgroundColor: colors.white,

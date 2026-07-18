@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
-  Linking,
   Modal,
   Pressable,
   StyleSheet,
@@ -38,6 +37,7 @@ import {
   getMobileAppVersion,
   trackMobileEvent,
 } from '../../services/mobileDiagnosticsService';
+import { getDirectApkUrl, startAppUpdate } from '../../services/appUpdateService';
 
 const labels = {
   pushMessages: 'Messages',
@@ -45,6 +45,8 @@ const labels = {
   pushApplications: 'Applications',
   pushBookings: 'Bookings',
   adminAlerts: 'Admin work alerts',
+  updateAlerts: 'App update alerts',
+  notificationBadges: 'App icon badges',
   weakNetworkWarnings: 'Weak-network warnings',
   largerText: 'Larger text',
   reduceMotion: 'Reduce motion',
@@ -104,19 +106,29 @@ const SettingsScreen = ({ navigation }) => {
   };
 
   const openStoreLink = async () => {
-    const url = versionState?.store_url;
-    if (!url) {
+    if (!versionState) {
       Toast.show({
         type: 'info',
-        text1: 'Store link unavailable',
-        text2: 'The update link has not been configured yet.',
+        text1: 'Check updates first',
+        text2: 'Run the update check before starting an app update.',
       });
       return;
     }
     try {
-      await Linking.openURL(url);
-    } catch {
-      Toast.show({ type: 'error', text1: 'Could not open store link' });
+      const result = await startAppUpdate(versionState);
+      if (result?.reason === 'install-permission-required') {
+        Toast.show({
+          type: 'info',
+          text1: 'Permission needed',
+          text2: 'Enable APK installs for RentalHub, then tap update again.',
+        });
+      }
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Could not start update',
+        text2: getErrorMessage(error, 'Try again when your connection is stable.'),
+      });
     }
   };
 
@@ -296,6 +308,30 @@ const SettingsScreen = ({ navigation }) => {
         </View>
         <View style={styles.switchRow}>
           <View style={styles.switchCopy}>
+            <Text style={styles.switchTitle}>{labels.updateAlerts}</Text>
+            <Text style={styles.switchSubtitle}>Show a native banner or dot when a newer RentalHub APK is available.</Text>
+          </View>
+          <Switch
+            value={settings.updateAlerts}
+            onValueChange={(value) => updateSetting('updateAlerts', value)}
+            trackColor={{ false: '#cbd5e1', true: '#93c5fd' }}
+            thumbColor={settings.updateAlerts ? colors.blue : colors.white}
+          />
+        </View>
+        <View style={styles.switchRow}>
+          <View style={styles.switchCopy}>
+            <Text style={styles.switchTitle}>{labels.notificationBadges}</Text>
+            <Text style={styles.switchSubtitle}>Allow RentalHub to show home-screen badge counts for unread account activity.</Text>
+          </View>
+          <Switch
+            value={settings.notificationBadges}
+            onValueChange={(value) => updateSetting('notificationBadges', value)}
+            trackColor={{ false: '#cbd5e1', true: '#93c5fd' }}
+            thumbColor={settings.notificationBadges ? colors.blue : colors.white}
+          />
+        </View>
+        <View style={styles.switchRow}>
+          <View style={styles.switchCopy}>
             <Text style={styles.switchTitle}>{labels.largerText}</Text>
             <Text style={styles.switchSubtitle}>Increase key dashboard, tour and control text across the app.</Text>
           </View>
@@ -379,8 +415,10 @@ const SettingsScreen = ({ navigation }) => {
             </TouchableOpacity>
             {versionState?.update_available ? (
               <TouchableOpacity accessibilityRole="button" onPress={openStoreLink} style={styles.versionButtonPrimary}>
-                <Icon name="open-outline" size={15} color={colors.white} />
-                <Text style={styles.versionButtonPrimaryText}>Open store</Text>
+                <Icon name="download-outline" size={15} color={colors.white} />
+                <Text style={styles.versionButtonPrimaryText}>
+                  {getDirectApkUrl(versionState) ? 'Install update' : 'Update now'}
+                </Text>
               </TouchableOpacity>
             ) : null}
           </View>

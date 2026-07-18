@@ -24,6 +24,7 @@ class MainApplication : Application(), ReactApplication {
             PackageList(this).packages.apply {
                 add(ExpoModulesPackage())
                 add(RentalHubPaystackPackage())
+                add(RentalHubUpdatePackage())
             }
 
         override fun getJSMainModuleName(): String = "index"

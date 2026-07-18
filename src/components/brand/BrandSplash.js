@@ -5,12 +5,16 @@ import { useAccessibilityPreferences } from '../../hooks/useAccessibilityPrefere
 import BrandLogoMark from './BrandLogoMark';
 
 const LOADING_TRACK_WIDTH = 210;
-const DEFAULT_DURATION_MS = 6500;
+const DEFAULT_DURATION_MS = 8000;
 
 const BrandSplash = ({ duration = DEFAULT_DURATION_MS, showProgressPercent = false }) => {
   const { reduceMotion, scaleFont } = useAccessibilityPreferences();
-  const scale = useRef(new Animated.Value(0.88)).current;
-  const opacity = useRef(new Animated.Value(0)).current;
+  const scale = useRef(new Animated.Value(0.94)).current;
+  const opacity = useRef(new Animated.Value(0.92)).current;
+  const copyOpacity = useRef(new Animated.Value(0)).current;
+  const copyTranslateY = useRef(new Animated.Value(12)).current;
+  const loadingOpacity = useRef(new Animated.Value(0)).current;
+  const loadingTranslateY = useRef(new Animated.Value(12)).current;
   const progress = useRef(new Animated.Value(0)).current;
   const [progressPercent, setProgressPercent] = useState(0);
 
@@ -25,6 +29,10 @@ const BrandSplash = ({ duration = DEFAULT_DURATION_MS, showProgressPercent = fal
     if (reduceMotion) {
       scale.setValue(1);
       opacity.setValue(1);
+      copyOpacity.setValue(1);
+      copyTranslateY.setValue(0);
+      loadingOpacity.setValue(1);
+      loadingTranslateY.setValue(0);
       progress.setValue(1);
       if (showProgressPercent) {
         setProgressPercent(100);
@@ -40,6 +48,10 @@ const BrandSplash = ({ duration = DEFAULT_DURATION_MS, showProgressPercent = fal
       setProgressPercent(0);
     }
     progress.setValue(0);
+    copyOpacity.setValue(0);
+    copyTranslateY.setValue(12);
+    loadingOpacity.setValue(0);
+    loadingTranslateY.setValue(12);
     const introAnimation = Animated.parallel([
       Animated.spring(scale, {
         toValue: 1,
@@ -49,9 +61,43 @@ const BrandSplash = ({ duration = DEFAULT_DURATION_MS, showProgressPercent = fal
       }),
       Animated.timing(opacity, {
         toValue: 1,
-        duration: 450,
+        duration: 520,
         useNativeDriver: true,
       }),
+      Animated.sequence([
+        Animated.delay(180),
+        Animated.parallel([
+          Animated.timing(copyOpacity, {
+            toValue: 1,
+            duration: 520,
+            easing: Easing.out(Easing.cubic),
+            useNativeDriver: true,
+          }),
+          Animated.timing(copyTranslateY, {
+            toValue: 0,
+            duration: 520,
+            easing: Easing.out(Easing.cubic),
+            useNativeDriver: true,
+          }),
+        ]),
+      ]),
+      Animated.sequence([
+        Animated.delay(460),
+        Animated.parallel([
+          Animated.timing(loadingOpacity, {
+            toValue: 1,
+            duration: 420,
+            easing: Easing.out(Easing.cubic),
+            useNativeDriver: true,
+          }),
+          Animated.timing(loadingTranslateY, {
+            toValue: 0,
+            duration: 420,
+            easing: Easing.out(Easing.cubic),
+            useNativeDriver: true,
+          }),
+        ]),
+      ]),
       Animated.timing(progress, {
         toValue: 1,
         duration,
@@ -72,7 +118,18 @@ const BrandSplash = ({ duration = DEFAULT_DURATION_MS, showProgressPercent = fal
       }
       progress.stopAnimation();
     };
-  }, [duration, opacity, progress, reduceMotion, scale, showProgressPercent]);
+  }, [
+    copyOpacity,
+    copyTranslateY,
+    duration,
+    loadingOpacity,
+    loadingTranslateY,
+    opacity,
+    progress,
+    reduceMotion,
+    scale,
+    showProgressPercent,
+  ]);
 
   const fillWidth = progress.interpolate({
     inputRange: [0, 1],
@@ -85,11 +142,30 @@ const BrandSplash = ({ duration = DEFAULT_DURATION_MS, showProgressPercent = fal
       <View style={[styles.orb, styles.orbTop]} />
       <View style={[styles.orb, styles.orbBottom]} />
       <Animated.View style={[styles.brand, { opacity, transform: [{ scale }] }]}>
-        <BrandLogoMark size="lg" surface="dark" />
-        <Text style={[styles.name, { fontSize: scaleFont(34) }]}>RentalHub</Text>
-        <Text style={[styles.tagline, { fontSize: scaleFont(14) }]}>Trusted homes. Confident living.</Text>
+        <View style={styles.logoStage}>
+          <View style={styles.logoGlow} />
+          <BrandLogoMark size="lg" surface="gold" />
+        </View>
+        <Animated.View
+          style={{
+            alignItems: 'center',
+            opacity: copyOpacity,
+            transform: [{ translateY: copyTranslateY }],
+          }}
+        >
+          <Text style={[styles.name, { fontSize: scaleFont(34) }]}>RentalHub</Text>
+          <Text style={[styles.tagline, { fontSize: scaleFont(14) }]}>Trusted homes. Confident living.</Text>
+        </Animated.View>
       </Animated.View>
-      <View style={styles.loadingPanel}>
+      <Animated.View
+        style={[
+          styles.loadingPanel,
+          {
+            opacity: loadingOpacity,
+            transform: [{ translateY: loadingTranslateY }],
+          },
+        ]}
+      >
         <View style={[styles.loadingRow, !showProgressPercent && styles.loadingRowCentered]}>
           <Text style={[styles.loadingText, { fontSize: scaleFont(11) }]}>Loading mobile workspace</Text>
           {showProgressPercent ? (
@@ -105,8 +181,16 @@ const BrandSplash = ({ duration = DEFAULT_DURATION_MS, showProgressPercent = fal
               },
             ]}
           />
+          <Animated.View
+            style={[
+              styles.loadingGlint,
+              {
+                transform: [{ translateX: fillWidth }],
+              },
+            ]}
+          />
         </View>
-      </View>
+      </Animated.View>
     </View>
   );
 };
@@ -121,6 +205,17 @@ const styles = StyleSheet.create({
   },
   brand: {
     alignItems: 'center',
+  },
+  logoStage: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  logoGlow: {
+    backgroundColor: 'rgba(255, 201, 40, 0.16)',
+    borderRadius: 76,
+    height: 152,
+    position: 'absolute',
+    width: 152,
   },
   name: {
     color: colors.white,
@@ -174,6 +269,15 @@ const styles = StyleSheet.create({
     backgroundColor: colors.gold,
     borderRadius: 4,
     height: 5,
+  },
+  loadingGlint: {
+    backgroundColor: 'rgba(255, 255, 255, 0.86)',
+    borderRadius: 4,
+    height: 5,
+    left: -10,
+    position: 'absolute',
+    top: 0,
+    width: 18,
   },
   orb: {
     position: 'absolute',

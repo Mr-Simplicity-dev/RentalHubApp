@@ -11,12 +11,13 @@ import BrandSplash from './components/brand/BrandSplash';
 import NativeTourManager from './components/tour/NativeTourManager';
 import NetworkStatusBanner from './components/common/NetworkStatusBanner';
 import NativeCallOverlay from './components/calls/NativeCallOverlay';
+import AppUpdateIndicator from './components/common/AppUpdateIndicator';
 import AppErrorBoundary from './components/common/AppErrorBoundary';
 import { subscribeNetworkStatus } from './services/networkStatusService';
 import { flushOfflineQueue, hydrateOfflineQueue } from './services/offlineActionQueueService';
 import { trackMobileEvent } from './services/mobileDiagnosticsService';
 
-const APP_INTRO_DURATION_MS = 6500;
+const APP_INTRO_DURATION_MS = 8000;
 
 const AppContent = () => {
   const [showSplash, setShowSplash] = useState(true);
@@ -47,6 +48,7 @@ const AppContent = () => {
       <NetworkStatusBanner />
       <AppNavigator />
       <NativeCallOverlay />
+      <AppUpdateIndicator />
       <NativeTourManager />
       <Toast />
     </>

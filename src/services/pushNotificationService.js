@@ -14,7 +14,7 @@ export const configureNotificationPresentation = () => {
         notification.request.content.data?.screen === 'Messages';
       return {
         shouldPlaySound: !isLiveMessage,
-        shouldSetBadge: false,
+        shouldSetBadge: true,
         shouldShowBanner: !isLiveMessage,
         shouldShowList: !isLiveMessage,
       };

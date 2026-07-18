@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import {
   Modal,
+  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
@@ -13,6 +14,23 @@ import { AuthContext } from '../../context/AuthContext';
 import { useTour } from '../../context/TourContext';
 import { colors, radius, shadows, typography } from '../../theme';
 import { useAccessibilityPreferences } from '../../hooks/useAccessibilityPreferences';
+
+const getCoachCardPlacement = (zone = 'middle') => {
+  const normalizedZone = String(zone || '').toLowerCase();
+  const targetIsLow = normalizedZone.includes('bottom');
+  const targetIsLeft = normalizedZone.includes('left');
+  const targetIsRight = normalizedZone.includes('right');
+
+  return {
+    cardStyle: targetIsLow ? styles.coachCardTop : styles.coachCardBottom,
+    arrowDirection: targetIsLow ? 'down' : 'up',
+    arrowStyle: targetIsLeft
+      ? styles.coachArrowLeft
+      : targetIsRight
+        ? styles.coachArrowRight
+        : styles.coachArrowCenter,
+  };
+};
 
 const WelcomeModal = ({
   visible,
@@ -70,6 +88,7 @@ const CoachMarkOverlay = ({
   const zone = step?.targetZone || ['top', 'middle', 'bottom', 'bottomLeft', 'bottomRight'][stepIndex % 5];
   const targetStyle = styles[`target_${zone}`] || styles.target_middle;
   const targetLabel = step?.targetLabel || step?.title || 'Feature';
+  const cardPlacement = getCoachCardPlacement(zone);
   if (!visible) return null;
 
   return (
@@ -98,42 +117,56 @@ const CoachMarkOverlay = ({
         <View style={[styles.progressFill, { width: `${((stepIndex + 1) / stepCount) * 100}%` }]} />
       </View>
 
-      <View style={styles.coachCard}>
-        <View style={styles.coachArrowUp} />
-        <View style={styles.coachIcon}>
-          <Icon name={step?.icon || 'sparkles-outline'} size={25} color={colors.blue} />
-        </View>
+      <View style={[styles.coachCard, cardPlacement.cardStyle]}>
+        {cardPlacement.arrowDirection === 'up' ? (
+          <View style={[styles.coachArrowUp, cardPlacement.arrowStyle]} />
+        ) : null}
 
-        <Text style={[styles.walkthroughTitle, { fontSize: scaleFont(24), lineHeight: scaleFont(30) }]}>{step?.title}</Text>
-        <Text style={[styles.walkthroughText, { fontSize: scaleFont(14), lineHeight: scaleFont(22) }]}>{step?.description}</Text>
-        {step?.targetHint ? <Text style={[styles.targetHint, { fontSize: scaleFont(12), lineHeight: scaleFont(18) }]}>{step.targetHint}</Text> : null}
+        <View style={styles.coachGrip} />
+        <ScrollView
+          bounces={false}
+          contentContainerStyle={styles.coachCardContent}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.coachIcon}>
+            <Icon name={step?.icon || 'sparkles-outline'} size={25} color={colors.blue} />
+          </View>
 
-        <View style={styles.dots}>
-          {Array.from({ length: stepCount }).map((_, index) => (
-            <View
-              key={`tour-dot-${index}`}
-              style={[styles.dot, index === stepIndex && styles.dotActive]}
-            />
-          ))}
-        </View>
+          <Text style={[styles.walkthroughTitle, { fontSize: scaleFont(24), lineHeight: scaleFont(30) }]}>{step?.title}</Text>
+          <Text style={[styles.walkthroughText, { fontSize: scaleFont(14), lineHeight: scaleFont(22) }]}>{step?.description}</Text>
+          {step?.targetHint ? <Text style={[styles.targetHint, { fontSize: scaleFont(12), lineHeight: scaleFont(18) }]}>{step.targetHint}</Text> : null}
 
-        <View style={styles.walkthroughFooter}>
-          {stepIndex > 0 ? (
+          <View style={styles.dots}>
+            {Array.from({ length: stepCount }).map((_, index) => (
+              <View
+                key={`tour-dot-${index}`}
+                style={[styles.dot, index === stepIndex && styles.dotActive]}
+              />
+            ))}
+          </View>
+
+          <View style={styles.walkthroughFooter}>
+            {stepIndex > 0 ? (
+              <Button
+                title="Back"
+                variant="outline"
+                onPress={onBack}
+                style={styles.footerButton}
+              />
+            ) : (
+              <View style={styles.footerButton} />
+            )}
             <Button
-              title="Back"
-              variant="outline"
-              onPress={onBack}
+              title={isLast ? 'Finish Tour' : 'Next'}
+              onPress={onNext}
               style={styles.footerButton}
             />
-          ) : (
-            <View style={styles.footerButton} />
-          )}
-          <Button
-            title={isLast ? 'Finish Tour' : 'Next'}
-            onPress={onNext}
-            style={styles.footerButton}
-          />
-        </View>
+          </View>
+        </ScrollView>
+
+        {cardPlacement.arrowDirection === 'down' ? (
+          <View style={[styles.coachArrowDown, cardPlacement.arrowStyle]} />
+        ) : null}
       </View>
     </View>
   );
@@ -358,7 +391,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   coachArrowUp: {
-    alignSelf: 'center',
     borderBottomColor: colors.white,
     borderBottomWidth: ARROW_SIZE,
     borderLeftColor: 'transparent',
@@ -366,16 +398,59 @@ const styles = StyleSheet.create({
     borderRightColor: 'transparent',
     borderRightWidth: ARROW_SIZE / 1.6,
     height: 0,
-    marginTop: -ARROW_SIZE - 22,
+    marginBottom: 6,
+    marginTop: -ARROW_SIZE,
     width: 0,
+  },
+  coachArrowDown: {
+    borderLeftColor: 'transparent',
+    borderLeftWidth: ARROW_SIZE / 1.6,
+    borderRightColor: 'transparent',
+    borderRightWidth: ARROW_SIZE / 1.6,
+    borderTopColor: colors.white,
+    borderTopWidth: ARROW_SIZE,
+    height: 0,
+    marginBottom: -ARROW_SIZE,
+    marginTop: 6,
+    width: 0,
+  },
+  coachArrowCenter: {
+    alignSelf: 'center',
+  },
+  coachArrowLeft: {
+    alignSelf: 'flex-start',
+    marginLeft: 46,
+  },
+  coachArrowRight: {
+    alignSelf: 'flex-end',
+    marginRight: 46,
   },
   coachCard: {
     backgroundColor: colors.white,
-    borderTopLeftRadius: 28,
-    borderTopRightRadius: 28,
-    marginTop: 'auto',
-    padding: 22,
+    borderRadius: 28,
+    left: 16,
+    maxHeight: '58%',
+    padding: 18,
+    position: 'absolute',
+    right: 16,
     ...shadows.soft,
+  },
+  coachCardBottom: {
+    bottom: 24,
+  },
+  coachCardTop: {
+    top: 90,
+  },
+  coachGrip: {
+    alignSelf: 'center',
+    backgroundColor: '#D5DEEA',
+    borderRadius: 999,
+    height: 4,
+    marginBottom: 12,
+    width: 44,
+  },
+  coachCardContent: {
+    paddingBottom: 4,
   },
   coachIcon: {
     alignItems: 'center',

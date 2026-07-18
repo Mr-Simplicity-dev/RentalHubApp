@@ -9,6 +9,8 @@ export const DEFAULT_APP_SETTINGS = {
   pushApplications: true,
   pushBookings: true,
   adminAlerts: true,
+  updateAlerts: true,
+  notificationBadges: true,
   weakNetworkWarnings: true,
   largerText: false,
   reduceMotion: false,
@@ -30,6 +32,7 @@ const notificationPreferenceKeys = [
   'pushApplications',
   'pushBookings',
   'adminAlerts',
+  'updateAlerts',
 ];
 
 const pickNotificationPreferences = (settings = {}) =>
