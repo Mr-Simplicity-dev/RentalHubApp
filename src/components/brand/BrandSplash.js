@@ -9,8 +9,8 @@ const DEFAULT_DURATION_MS = 8000;
 
 const BrandSplash = ({ duration = DEFAULT_DURATION_MS, showProgressPercent = false }) => {
   const { reduceMotion, scaleFont } = useAccessibilityPreferences();
-  const scale = useRef(new Animated.Value(0.94)).current;
-  const opacity = useRef(new Animated.Value(0.92)).current;
+  const scale = useRef(new Animated.Value(1)).current;
+  const opacity = useRef(new Animated.Value(1)).current;
   const copyOpacity = useRef(new Animated.Value(0)).current;
   const copyTranslateY = useRef(new Animated.Value(12)).current;
   const loadingOpacity = useRef(new Animated.Value(0)).current;
@@ -48,28 +48,34 @@ const BrandSplash = ({ duration = DEFAULT_DURATION_MS, showProgressPercent = fal
       setProgressPercent(0);
     }
     progress.setValue(0);
+    scale.setValue(1);
+    opacity.setValue(1);
     copyOpacity.setValue(0);
     copyTranslateY.setValue(12);
     loadingOpacity.setValue(0);
     loadingTranslateY.setValue(12);
     const introAnimation = Animated.parallel([
-      Animated.spring(scale, {
-        toValue: 1,
-        friction: 7,
-        tension: 55,
-        useNativeDriver: true,
-      }),
-      Animated.timing(opacity, {
-        toValue: 1,
-        duration: 520,
-        useNativeDriver: true,
-      }),
       Animated.sequence([
-        Animated.delay(180),
+        Animated.delay(520),
+        Animated.timing(scale, {
+          toValue: 1.018,
+          duration: 360,
+          easing: Easing.out(Easing.cubic),
+          useNativeDriver: true,
+        }),
+        Animated.spring(scale, {
+          toValue: 1,
+          friction: 7,
+          tension: 55,
+          useNativeDriver: true,
+        }),
+      ]),
+      Animated.sequence([
+        Animated.delay(620),
         Animated.parallel([
           Animated.timing(copyOpacity, {
             toValue: 1,
-            duration: 520,
+            duration: 620,
             easing: Easing.out(Easing.cubic),
             useNativeDriver: true,
           }),
@@ -82,11 +88,11 @@ const BrandSplash = ({ duration = DEFAULT_DURATION_MS, showProgressPercent = fal
         ]),
       ]),
       Animated.sequence([
-        Animated.delay(460),
+        Animated.delay(980),
         Animated.parallel([
           Animated.timing(loadingOpacity, {
             toValue: 1,
-            duration: 420,
+            duration: 520,
             easing: Easing.out(Easing.cubic),
             useNativeDriver: true,
           }),

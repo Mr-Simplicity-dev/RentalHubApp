@@ -11,4 +11,12 @@
         <item name="android:windowLightStatusBar">false</item>
     </style>
 
+    <style name="LaunchTheme" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenAnimatedIcon">@drawable/rentalhub_splash_mark</item>
+        <item name="windowSplashScreenBackground">@color/rentalhub_navy</item>
+        <item name="windowSplashScreenIconBackgroundColor">@android:color/transparent</item>
+        <item name="windowSplashScreenAnimationDuration">900</item>
+        <item name="postSplashScreenTheme">@style/AppTheme</item>
+    </style>
+
 </resources>

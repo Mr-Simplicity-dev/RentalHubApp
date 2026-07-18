@@ -80,10 +80,10 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   shellGold: {
-    backgroundColor: 'rgba(255, 201, 40, 0.2)',
-    borderColor: 'rgba(255, 232, 148, 0.96)',
+    backgroundColor: 'rgba(255, 201, 40, 0.28)',
+    borderColor: 'rgba(255, 224, 138, 0.8)',
     shadowColor: colors.gold,
-    shadowOpacity: 0.28,
+    shadowOpacity: 0.3,
     shadowRadius: 30,
     elevation: 10,
   },

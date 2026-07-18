@@ -2,8 +2,8 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:drawable="@color/rentalhub_navy" />
     <item
-        android:width="136dp"
-        android:height="136dp"
+        android:width="152dp"
+        android:height="152dp"
         android:drawable="@drawable/rentalhub_splash_mark"
         android:gravity="center" />
 </layer-list>
