@@ -2901,7 +2901,7 @@ const styles = StyleSheet.create({
   },
   analyticsValue: {
     fontSize: 24,
-    fontWeight: '800',
+    fontFamily: typography.bold,
     color: '#0f172a',
   },
   analyticsLabel: {
@@ -2944,7 +2944,7 @@ const styles = StyleSheet.create({
   },
   checkmark: {
     color: '#ffffff',
-    fontWeight: '800',
+    fontFamily: typography.bold,
     fontSize: 14,
   },
   checkboxRow: {

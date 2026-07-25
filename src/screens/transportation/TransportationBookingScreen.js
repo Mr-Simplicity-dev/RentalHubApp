@@ -452,8 +452,8 @@ const styles = StyleSheet.create({
   },
   priceValue: { fontWeight: '600' },
   totalRow: { borderTopWidth: 1, borderTopColor: '#bbf7d0', paddingTop: 8, marginTop: 8 },
-  totalLabel: { fontSize: 16, fontWeight: '800', color: '#166534' },
-  totalValue: { fontSize: 20, fontWeight: '800', color: '#166534' },
+  totalLabel: { fontSize: 16, fontFamily: typography.bold, color: '#166534' },
+  totalValue: { fontSize: 20, fontFamily: typography.bold, color: '#166534' },
   calculatingContainer: {
     flexDirection: 'row',
     alignItems: 'center',

@@ -1171,7 +1171,7 @@ const styles = StyleSheet.create({
   },
   locationSectionLocked: { borderColor: '#e2e8f0' },
   locationHeader: { flexDirection: 'row', gap: 10, alignItems: 'flex-start', marginBottom: 10 },
-  locationTitle: { color: '#0f172a', fontSize: 16, fontWeight: '800' },
+  locationTitle: { fontFamily: typography.bold, color: '#0f172a', fontSize: 16 },
   locationHint: { color: '#475569', marginTop: 3, lineHeight: 18 },
   locationCard: {
     borderWidth: 1,
@@ -1189,7 +1189,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f1f5f9',
     opacity: 0.82,
   },
-  locationCardTitle: { color: '#0f172a', fontWeight: '800' },
+  locationCardTitle: { fontFamily: typography.bold, color: '#0f172a' },
   locationCardTitleLocked: { color: '#64748b' },
   locationAddress: { color: '#475569', marginTop: 4, lineHeight: 18 },
   locationBadges: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 8 },
@@ -1201,7 +1201,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 3,
     fontSize: 11,
-    fontWeight: '800',
+    fontFamily: typography.bold,
   },
   locationBadgeLocked: { backgroundColor: '#e2e8f0', color: '#475569' },
   locationBadgeAlt: {
@@ -1212,7 +1212,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 3,
     fontSize: 11,
-    fontWeight: '800',
+    fontFamily: typography.bold,
   },
   locationBadgeWarning: {
     overflow: 'hidden',
@@ -1222,7 +1222,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 3,
     fontSize: 11,
-    fontWeight: '800',
+    fontFamily: typography.bold,
   },
   grid: {
     flexDirection: 'row',
@@ -1290,10 +1290,10 @@ const styles = StyleSheet.create({
   referralEyebrow: {
     color: '#059669',
     fontSize: 11,
-    fontWeight: '800',
+    fontFamily: typography.bold,
     textTransform: 'uppercase',
   },
-  referralTitle: { color: '#0f172a', fontSize: 17, fontWeight: '800', marginTop: 2 },
+  referralTitle: { fontFamily: typography.bold, color: '#0f172a', fontSize: 17, marginTop: 2 },
   referralCode: {
     marginTop: 6,
     alignSelf: 'flex-start',
@@ -1314,7 +1314,7 @@ const styles = StyleSheet.create({
     paddingLeft: 8,
   },
   referralStatLabel: { color: '#64748b', fontSize: 11, fontWeight: '600' },
-  referralStatValue: { color: '#0f172a', fontSize: 16, fontWeight: '800', marginTop: 2 },
+  referralStatValue: { fontFamily: typography.bold, color: '#0f172a', fontSize: 16, marginTop: 2 },
   referralLinkLabel: { marginTop: 12, color: '#334155', fontWeight: '700', fontSize: 13 },
   referralLinkInput: {
     marginTop: 6,
@@ -1335,7 +1335,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     alignItems: 'center',
   },
-  referralBtnPrimaryText: { color: '#fff', fontWeight: '800' },
+  referralBtnPrimaryText: { color: '#fff', fontFamily: typography.bold },
   referralBtnSecondary: {
     flex: 1,
     backgroundColor: '#ecfdf5',
@@ -1345,7 +1345,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#bbf7d0',
   },
-  referralBtnSecondaryText: { color: '#047857', fontWeight: '800' },
+  referralBtnSecondaryText: { color: '#047857', fontFamily: typography.bold },
   referralLoading: { color: '#64748b', marginBottom: 12 },
 });
 

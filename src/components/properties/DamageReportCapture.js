@@ -18,6 +18,7 @@ import SelectField from '../common/SelectField';
 import OptionPickerModal from '../common/OptionPickerModal';
 import { propertyService } from '../../services/propertyService';
 import { getErrorMessage } from '../../utils/http';
+import { typography } from '../../theme';
 
 const DAMAGE_TYPES = [
   { value: 'scratch', label: 'Scratch' },
@@ -458,7 +459,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#e2e8f0',
   },
-  title: { fontSize: 17, fontWeight: '800', color: '#0f172a', flex: 1, paddingRight: 8 },
+  title: { fontSize: 17, fontFamily: typography.bold, color: '#0f172a', flex: 1, paddingRight: 8 },
   body: { padding: 16, paddingBottom: 28, gap: 12 },
   lead: { color: '#475569', lineHeight: 20 },
   preview: { width: '100%', height: 220, borderRadius: 12, backgroundColor: '#e2e8f0' },
@@ -472,7 +473,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 12,
   },
-  progressTitle: { color: '#1e3a8a', fontSize: 13, fontWeight: '800' },
+  progressTitle: { color: '#1e3a8a', fontSize: 13, fontFamily: typography.bold },
   progressTrack: { backgroundColor: '#dbeafe', borderRadius: 999, height: 8, marginTop: 9, overflow: 'hidden' },
   progressFill: { backgroundColor: '#0284c7', height: '100%' },
   progressText: { color: '#1d4ed8', fontSize: 12, marginTop: 6 },
@@ -485,7 +486,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 10,
   },
-  retryText: { color: '#1d4ed8', fontSize: 13, fontWeight: '800' },
+  retryText: { color: '#1d4ed8', fontSize: 13, fontFamily: typography.bold },
 });
 
 export default DamageReportCapture;
