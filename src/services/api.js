@@ -54,18 +54,24 @@ export const setOnUnauthorized = (callback) => {
 let sessionInvalidationPromise = null;
 
 const invalidateNativeSession = async () => {
-  if (!sessionInvalidationPromise) {
-    sessionInvalidationPromise = (async () => {
+  if (sessionInvalidationPromise) {
+    return sessionInvalidationPromise;
+  }
+
+  sessionInvalidationPromise = (async () => {
+    try {
       if (typeof onUnauthorized === 'function') {
         await onUnauthorized();
         return;
       }
-
       await storageService.clearAll();
-    })().finally(() => {
-      sessionInvalidationPromise = null;
-    });
-  }
+    } catch (err) {
+      console.error('[api] session invalidation failed:', err);
+      try { await storageService.clearAll(); } catch {}
+    }
+  })().finally(() => {
+    sessionInvalidationPromise = null;
+  });
 
   return sessionInvalidationPromise;
 };

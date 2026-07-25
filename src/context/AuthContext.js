@@ -16,6 +16,7 @@ export const AuthProvider = ({ children }) => {
   const logoutRef = useRef();
   const clearLocalSessionRef = useRef();
   const restoreOriginalSessionRef = useRef();
+  const initAuthPromiseRef = useRef(null);
 
   useEffect(() => {
     setOnUnauthorized(() => clearLocalSessionRef.current?.());
@@ -24,6 +25,11 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const initAuth = async () => {
+    if (initAuthPromiseRef.current) {
+      return initAuthPromiseRef.current;
+    }
+
+    initAuthPromiseRef.current = (async () => {
     try {
       const originalSession = await storageService.getImpersonationSession();
       const hasImpersonationSession = Boolean(
@@ -94,6 +100,10 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
+    })();
+    return initAuthPromiseRef.current.finally(() => {
+      initAuthPromiseRef.current = null;
+    });
   };
 
   const login = async (email, password) => {
@@ -154,7 +164,7 @@ export const AuthProvider = ({ children }) => {
       return;
     }
 
-    await storageService.clearAll();
+    try { await storageService.clearAll(); } catch (e) { console.error('[AuthContext] clearAll failed:', e); }
     await biometricService.clearStoredSession();
     setUser(null);
     setIsAuthenticated(false);
