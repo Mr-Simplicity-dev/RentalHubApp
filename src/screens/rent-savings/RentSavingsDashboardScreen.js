@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
   heroTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 },
   heroIcon: { width: 43, height: 43, borderRadius: 14, backgroundColor: colors.navySoft, alignItems: 'center', justifyContent: 'center' },
   refreshButton: { width: 38, height: 38, borderRadius: 19, backgroundColor: colors.navySoft, alignItems: 'center', justifyContent: 'center' },
-  summaryLabel: { color: colors.gold, fontFamily: typography.semibold, fontSize: 13, letterSpacing: 1.1 },
+  summaryLabel: { color: colors.gold, fontFamily: typography.semibold, fontSize: 13, letterSpacing: 1.25 },
   summaryValue: { color: colors.white, fontFamily: typography.bold, fontSize: 36, marginTop: 5 },
   heroCaption: { marginTop: 7, color: '#B9C9E5', fontFamily: typography.regular, lineHeight: 20 },
   summaryRow: { flexDirection: 'row', marginTop: 16, gap: 16 },

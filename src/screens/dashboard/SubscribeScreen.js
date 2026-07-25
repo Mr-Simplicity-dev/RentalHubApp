@@ -311,7 +311,7 @@ const styles = StyleSheet.create({
     color: colors.blue,
     fontFamily: typography.bold,
     fontSize: 13,
-    letterSpacing: 1.2,
+    letterSpacing: 1.25,
   },
   title: {
     color: colors.ink,
@@ -346,7 +346,7 @@ const styles = StyleSheet.create({
     color: '#9BC3F4',
     fontFamily: typography.bold,
     fontSize: 13,
-    letterSpacing: 1.2,
+    letterSpacing: 1.25,
     marginTop: 17,
   },
   statusTitle: {
@@ -395,7 +395,7 @@ const styles = StyleSheet.create({
     color: colors.blue,
     fontFamily: typography.bold,
     fontSize: 13,
-    letterSpacing: 1.2,
+    letterSpacing: 1.25,
   },
   sectionTitle: {
     color: colors.ink,
@@ -424,7 +424,7 @@ const styles = StyleSheet.create({
     color: colors.navy,
     fontFamily: typography.bold,
     fontSize: 13,
-    letterSpacing: 0.8,
+    letterSpacing: 0.5,
   },
   planName: {
     color: colors.ink,

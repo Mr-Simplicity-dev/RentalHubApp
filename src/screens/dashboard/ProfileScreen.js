@@ -448,7 +448,7 @@ const styles = StyleSheet.create({
     color: colors.blue,
     fontFamily: typography.bold,
     fontSize: 13,
-    letterSpacing: 1.2,
+    letterSpacing: 1.25,
   },
   headerTitle: {
     color: colors.ink,
@@ -515,7 +515,7 @@ const styles = StyleSheet.create({
     color: colors.blue,
     fontFamily: typography.bold,
     fontSize: 13,
-    letterSpacing: 0.7,
+    letterSpacing: 0.5,
     textTransform: 'uppercase',
   },
   card: {

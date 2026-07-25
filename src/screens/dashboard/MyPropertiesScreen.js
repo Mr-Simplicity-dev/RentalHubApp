@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
     width: 42,
   },
   headerCopy: { alignItems: 'center', flex: 1 },
-  eyebrow: { color: colors.blue, fontFamily: typography.bold, fontSize: 13, letterSpacing: 1.2 },
+  eyebrow: { color: colors.blue, fontFamily: typography.bold, fontSize: 13, letterSpacing: 1.25 },
   title: { color: colors.ink, fontFamily: typography.bold, fontSize: 20, marginTop: 2 },
   addButton: {
     alignItems: 'center',
@@ -316,7 +316,7 @@ const styles = StyleSheet.create({
     marginBottom: 13,
     padding: 19,
   },
-  summaryLabel: { color: '#9BC3F4', fontFamily: typography.bold, fontSize: 13, letterSpacing: 1.1 },
+  summaryLabel: { color: '#9BC3F4', fontFamily: typography.bold, fontSize: 13, letterSpacing: 1.25 },
   summaryValue: { color: colors.white, fontFamily: typography.bold, fontSize: 24, marginTop: 4 },
   summaryIcon: {
     alignItems: 'center',

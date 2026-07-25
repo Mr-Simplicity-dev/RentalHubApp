@@ -649,7 +649,7 @@ const styles = StyleSheet.create({
     color: colors.blue,
     fontFamily: typography.bold,
     fontSize: 13,
-    letterSpacing: 0.8,
+    letterSpacing: 0.5,
   },
   modalTitle: {
     color: colors.ink,

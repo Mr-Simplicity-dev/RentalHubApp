@@ -515,7 +515,7 @@ const styles = StyleSheet.create({
     color: colors.blue,
     fontFamily: typography.bold,
     fontSize: 13,
-    letterSpacing: 1.1,
+    letterSpacing: 1.25,
   },
   headerTitle: {
     color: colors.ink,
@@ -545,7 +545,7 @@ const styles = StyleSheet.create({
     color: colors.muted,
     fontFamily: typography.bold,
     fontSize: 13,
-    letterSpacing: 1,
+    letterSpacing: 1.25,
   },
   heroTitle: {
     color: colors.ink,
@@ -618,7 +618,7 @@ const styles = StyleSheet.create({
     color: colors.blue,
     fontFamily: typography.bold,
     fontSize: 13,
-    letterSpacing: 1,
+    letterSpacing: 1.25,
   },
   noteText: {
     color: colors.text,
@@ -637,7 +637,7 @@ const styles = StyleSheet.create({
     color: colors.blue,
     fontFamily: typography.bold,
     fontSize: 13,
-    letterSpacing: 1.2,
+    letterSpacing: 1.25,
   },
   sectionTitle: {
     color: colors.ink,

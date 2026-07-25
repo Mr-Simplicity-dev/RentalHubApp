@@ -227,14 +227,14 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontFamily: typography.bold,
     fontSize: 36,
-    letterSpacing: -1,
+    letterSpacing: -1.25,
     marginTop: 20,
   },
   tagline: {
     color: 'rgba(255, 255, 255, 0.72)',
     fontFamily: typography.medium,
     fontSize: 14,
-    letterSpacing: 0.2,
+    letterSpacing: 0,
     marginTop: 8,
   },
   loadingPanel: {
@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
     color: 'rgba(255, 255, 255, 0.7)',
     fontFamily: typography.medium,
     fontSize: 13,
-    letterSpacing: 0.2,
+    letterSpacing: 0,
   },
   loadingPercent: {
     color: colors.gold,

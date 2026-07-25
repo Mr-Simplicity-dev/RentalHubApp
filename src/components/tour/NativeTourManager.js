@@ -312,7 +312,7 @@ const styles = StyleSheet.create({
     color: colors.gold,
     fontFamily: typography.bold,
     fontSize: 13,
-    letterSpacing: 1.1,
+    letterSpacing: 1.25,
   },
   coachSkipButton: {
     paddingHorizontal: 8,

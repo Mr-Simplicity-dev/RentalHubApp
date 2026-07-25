@@ -550,7 +550,7 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontFamily: typography.bold,
     fontSize: 20,
-    letterSpacing: -0.4,
+    letterSpacing: -0.5,
     marginTop: 18,
   },
   requestText: {

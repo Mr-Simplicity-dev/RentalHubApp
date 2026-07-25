@@ -308,14 +308,14 @@ const styles = StyleSheet.create({
     color: colors.blue,
     fontFamily: typography.bold,
     fontSize: 13,
-    letterSpacing: 1.5,
+    letterSpacing: 1.25,
     marginBottom: 10,
   },
   title: {
     color: colors.ink,
     fontFamily: typography.bold,
     fontSize: 32,
-    letterSpacing: -1,
+    letterSpacing: -1.25,
     lineHeight: 39,
   },
   subtitle: {

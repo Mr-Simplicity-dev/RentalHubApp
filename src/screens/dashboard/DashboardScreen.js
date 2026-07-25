@@ -1093,13 +1093,13 @@ const styles = StyleSheet.create({
     color: colors.blue,
     fontFamily: typography.bold,
     fontSize: 13,
-    letterSpacing: 1.3,
+    letterSpacing: 1.25,
   },
   topTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
     fontSize: 32,
-    letterSpacing: -0.8,
+    letterSpacing: -1.25,
     marginTop: 3,
   },
   topActions: {

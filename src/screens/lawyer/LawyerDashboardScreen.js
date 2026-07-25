@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
   heroIcon: { alignItems: 'center', backgroundColor: 'rgba(255,201,40,0.14)', borderRadius: 21, height: 42, justifyContent: 'center', width: 42 },
   verifyButton: { alignItems: 'center', backgroundColor: colors.gold, borderRadius: radius.pill, flexDirection: 'row', gap: 6, paddingHorizontal: 12, paddingVertical: 9 },
   verifyText: { color: colors.navy, fontFamily: typography.bold, fontSize: 13 },
-  heroEyebrow: { color: '#9BC3F4', fontFamily: typography.bold, fontSize: 13, letterSpacing: 1.2, marginTop: 16 },
+  heroEyebrow: { color: '#9BC3F4', fontFamily: typography.bold, fontSize: 13, letterSpacing: 1.25, marginTop: 16 },
   title: { fontSize: 24, fontFamily: typography.bold, color: colors.white, marginTop: 4 },
   heroText: { color: '#AFC2DF', fontFamily: typography.regular, fontSize: 13, lineHeight: 18, marginTop: 6 },
   sectionTitle: { fontSize: 18, fontFamily: typography.bold, color: colors.ink, marginTop: 22, marginBottom: 9 },

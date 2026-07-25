@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
   topTitle: { fontFamily: typography.semibold, fontSize: 18, color: colors.ink },
   hero: { backgroundColor: colors.navy, borderRadius: radius.lg, padding: 22, marginBottom: 14, ...shadows.soft },
   heroIcon: { width: 42, height: 42, borderRadius: 14, backgroundColor: colors.navySoft, alignItems: 'center', justifyContent: 'center', marginBottom: 20 },
-  heroLabel: { fontFamily: typography.semibold, fontSize: 13, letterSpacing: 1.2, color: '#AFC3E6' },
+  heroLabel: { fontFamily: typography.semibold, fontSize: 13, letterSpacing: 1.25, color: '#AFC3E6' },
   heroAmount: { marginTop: 7, fontFamily: typography.bold, fontSize: 36, color: colors.white },
   heroCaption: { marginTop: 8, fontFamily: typography.regular, lineHeight: 20, color: '#B9C9E5' },
   metrics: { flexDirection: 'row', gap: 9, marginBottom: 14 },

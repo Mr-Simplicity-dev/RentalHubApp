@@ -772,7 +772,7 @@ const styles = StyleSheet.create({
     color: colors.ink,
     fontFamily: typography.bold,
     fontSize: 24,
-    letterSpacing: -0.8,
+    letterSpacing: -1.25,
     lineHeight: 32,
   },
   locationRow: {
@@ -810,7 +810,7 @@ const styles = StyleSheet.create({
     color: colors.blue,
     fontFamily: typography.bold,
     fontSize: 32,
-    letterSpacing: -0.6,
+    letterSpacing: -0.5,
   },
   frequency: {
     color: colors.muted,
@@ -866,7 +866,7 @@ const styles = StyleSheet.create({
     color: colors.ink,
     fontFamily: typography.bold,
     fontSize: 20,
-    letterSpacing: -0.35,
+    letterSpacing: -0.5,
     marginBottom: 10,
   },
   description: {
@@ -921,7 +921,7 @@ const styles = StyleSheet.create({
     color: colors.blue,
     fontFamily: typography.bold,
     fontSize: 13,
-    letterSpacing: 1.1,
+    letterSpacing: 1.25,
   },
   cardTitle: {
     color: colors.ink,

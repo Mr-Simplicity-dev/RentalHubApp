@@ -226,7 +226,7 @@ const styles = StyleSheet.create({
   caseIcon: { width: 44, height: 44, borderRadius: 14, backgroundColor: colors.navySoft, alignItems: 'center', justifyContent: 'center' },
   statusPill: { paddingVertical: 6, paddingHorizontal: 11, borderRadius: radius.pill, backgroundColor: '#244572' },
   statusText: { fontFamily: typography.semibold, fontSize: 13, color: colors.white, textTransform: 'capitalize' },
-  eyebrow: { fontFamily: typography.semibold, fontSize: 13, letterSpacing: 1.1, color: colors.gold },
+  eyebrow: { fontFamily: typography.semibold, fontSize: 13, letterSpacing: 1.25, color: colors.gold },
   title: { marginTop: 7, fontFamily: typography.bold, fontSize: 24, color: colors.white },
   partyBlock: { marginTop: 16, padding: 12, borderRadius: radius.md, backgroundColor: colors.navySoft },
   partyRow: { flexDirection: 'row', justifyContent: 'space-between', marginVertical: 4 },

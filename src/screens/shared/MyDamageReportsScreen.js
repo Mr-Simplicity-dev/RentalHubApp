@@ -211,13 +211,13 @@ const styles = StyleSheet.create({
     color: colors.blue,
     fontFamily: typography.bold,
     fontSize: 13,
-    letterSpacing: 1.2,
+    letterSpacing: 1.25,
   },
   title: {
     color: colors.ink,
     fontFamily: typography.bold,
     fontSize: 20,
-    letterSpacing: -0.4,
+    letterSpacing: -0.5,
     marginTop: 2,
   },
   list: {

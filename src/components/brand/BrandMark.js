@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     color: colors.navy,
     fontFamily: typography.bold,
     fontSize: 24,
-    letterSpacing: -0.8,
+    letterSpacing: -1.25,
   },
   nameCompact: {
     fontSize: 20,
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     color: colors.blue,
     fontFamily: typography.bold,
     fontSize: 13,
-    letterSpacing: 3.4,
+    letterSpacing: 1.25,
     marginTop: 2,
   },
   light: {

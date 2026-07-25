@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     color: 'rgba(255, 255, 255, 0.74)',
     fontFamily: typography.semibold,
     fontSize: 13,
-    letterSpacing: 0.2,
+    letterSpacing: 0,
     marginTop: 12,
   },
   orb: {

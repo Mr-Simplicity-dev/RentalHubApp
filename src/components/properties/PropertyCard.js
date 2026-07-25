@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     color: colors.ink,
     fontFamily: typography.bold,
     fontSize: 18,
-    letterSpacing: -0.25,
+    letterSpacing: 0,
   },
   row: {
     flexDirection: 'row',

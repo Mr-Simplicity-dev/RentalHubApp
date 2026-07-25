@@ -1226,7 +1226,7 @@ const styles = StyleSheet.create({
     fontFamily: typography.semibold,
     fontSize: 13,
     color: colors.muted,
-    letterSpacing: 1,
+    letterSpacing: 1.25,
     textTransform: 'uppercase',
     marginBottom: 12,
   },

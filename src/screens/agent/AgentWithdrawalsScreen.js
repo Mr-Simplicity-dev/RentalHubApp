@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
   topSpacer: { width: 42 },
   topTitle: { fontFamily: typography.semibold, fontSize: 18, color: colors.ink },
   hero: { backgroundColor: colors.navy, borderRadius: radius.lg, padding: 22, marginBottom: 12, ...shadows.soft },
-  heroEyebrow: { fontFamily: typography.semibold, fontSize: 13, letterSpacing: 1.2, color: colors.gold },
+  heroEyebrow: { fontFamily: typography.semibold, fontSize: 13, letterSpacing: 1.25, color: colors.gold },
   title: { marginTop: 8, fontFamily: typography.bold, fontSize: 24, color: colors.white },
   subtitle: { marginTop: 7, fontFamily: typography.regular, lineHeight: 20, color: '#B9C9E5' },
   summaryCard: {

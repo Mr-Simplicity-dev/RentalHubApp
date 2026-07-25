@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
     color: colors.blue,
     fontFamily: typography.bold,
     fontSize: 13,
-    letterSpacing: 1.1,
+    letterSpacing: 1.25,
   },
   sponsorName: {
     color: colors.muted,

@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
     color: colors.blue,
     fontFamily: typography.bold,
     fontSize: 13,
-    letterSpacing: 1.2,
+    letterSpacing: 1.25,
   },
   title: {
     color: colors.ink,
@@ -273,7 +273,7 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontFamily: typography.bold,
     fontSize: 32,
-    letterSpacing: -0.8,
+    letterSpacing: -1.25,
     marginTop: 3,
   },
   summaryMeta: {

@@ -406,7 +406,7 @@ const styles = StyleSheet.create({
   statusText: {
     fontFamily: typography.bold,
     fontSize: 13,
-    letterSpacing: 0.4,
+    letterSpacing: 0.5,
     textTransform: 'uppercase',
   },
   emptyPanel: {

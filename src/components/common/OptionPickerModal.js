@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
     color: colors.ink,
     fontFamily: typography.bold,
     fontSize: 20,
-    letterSpacing: -0.4,
+    letterSpacing: -0.5,
   },
   closeButton: {
     alignItems: 'center',

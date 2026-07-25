@@ -776,13 +776,13 @@ const styles = StyleSheet.create({
     color: colors.blue,
     fontFamily: typography.bold,
     fontSize: 13,
-    letterSpacing: 1.2,
+    letterSpacing: 1.25,
   },
   title: {
     color: colors.ink,
     fontFamily: typography.bold,
     fontSize: 24,
-    letterSpacing: -0.6,
+    letterSpacing: -0.5,
     marginTop: 3,
   },
   newButton: {

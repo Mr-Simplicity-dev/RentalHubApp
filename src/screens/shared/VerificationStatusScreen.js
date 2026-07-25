@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
     color: colors.blue,
     fontFamily: typography.bold,
     fontSize: 13,
-    letterSpacing: 1.2,
+    letterSpacing: 1.25,
   },
   title: {
     color: colors.ink,
@@ -287,7 +287,7 @@ const styles = StyleSheet.create({
     color: '#9BC3F4',
     fontFamily: typography.bold,
     fontSize: 13,
-    letterSpacing: 1.2,
+    letterSpacing: 1.25,
     marginTop: 17,
   },
   heroTitle: {
@@ -316,7 +316,7 @@ const styles = StyleSheet.create({
     color: colors.blue,
     fontFamily: typography.bold,
     fontSize: 13,
-    letterSpacing: 1.2,
+    letterSpacing: 1.25,
     marginBottom: 9,
     marginTop: 26,
   },

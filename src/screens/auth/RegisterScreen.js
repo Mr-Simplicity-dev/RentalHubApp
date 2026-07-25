@@ -1149,7 +1149,7 @@ const styles = StyleSheet.create({
     color: colors.blue,
     fontFamily: typography.bold,
     fontSize: 13,
-    letterSpacing: 1.2,
+    letterSpacing: 1.25,
   },
   stepPercent: {
     color: colors.muted,
@@ -1172,14 +1172,14 @@ const styles = StyleSheet.create({
     color: colors.blue,
     fontFamily: typography.bold,
     fontSize: 13,
-    letterSpacing: 1.5,
+    letterSpacing: 1.25,
     marginTop: 16,
   },
   title: {
     color: colors.ink,
     fontFamily: typography.bold,
     fontSize: 32,
-    letterSpacing: -1,
+    letterSpacing: -1.25,
     marginTop: 9,
   },
   subtitle: {
@@ -1272,7 +1272,7 @@ const styles = StyleSheet.create({
     color: '#9BC3F4',
     fontFamily: typography.bold,
     fontSize: 13,
-    letterSpacing: 1.1,
+    letterSpacing: 1.25,
   },
   reviewTitle: {
     color: colors.white,

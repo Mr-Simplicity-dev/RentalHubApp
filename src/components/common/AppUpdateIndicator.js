@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
     color: colors.gold,
     fontFamily: typography.bold,
     fontSize: 13,
-    letterSpacing: 1,
+    letterSpacing: 1.25,
   },
   bannerTitle: {
     color: colors.white,
@@ -291,7 +291,7 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontFamily: typography.bold,
     fontSize: 13,
-    letterSpacing: 0.15,
+    letterSpacing: 0,
   },
   disabled: {
     opacity: 0.68,
