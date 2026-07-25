@@ -55,13 +55,6 @@ export const AuthProvider = ({ children }) => {
         return;
       }
 
-      const userData = await storageService.getUser();
-      const hasCachedUser = Boolean(userData);
-      if (userData) {
-        setUser(userData);
-        setIsAuthenticated(true);
-      }
-
       try {
         const response = await authService.getCurrentUser();
         if (response.success && response.data) {
@@ -72,15 +65,20 @@ export const AuthProvider = ({ children }) => {
         }
       } catch (error) {
         if (error?.sessionInvalidated) {
-          // The API interceptor already restored the original super-admin
-          // session or cleared the invalid local session.
           return;
         }
 
         if (error?.response?.status === 401 || error?.response?.status === 403) {
           await clearLocalSessionRef.current?.();
-        } else if (!hasCachedUser) {
-          await clearLocalSessionRef.current?.();
+        } else {
+          const userData = await storageService.getUser();
+          const hasUsableLocalSession = await authService.hasLocallyUsableSession();
+          if (userData && hasUsableLocalSession) {
+            setUser(userData);
+            setIsAuthenticated(true);
+          } else {
+            await clearLocalSessionRef.current?.();
+          }
         }
       }
     } catch (error) {
