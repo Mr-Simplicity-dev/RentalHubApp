@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { StatusBar } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AuthProvider } from './context/AuthContext';
@@ -16,10 +16,17 @@ import AppErrorBoundary from './components/common/AppErrorBoundary';
 import { subscribeNetworkStatus } from './services/networkStatusService';
 import { flushOfflineQueue, hydrateOfflineQueue } from './services/offlineActionQueueService';
 import { trackMobileEvent } from './services/mobileDiagnosticsService';
+import { AuthContext } from './context/AuthContext';
 
 const APP_INTRO_DURATION_MS = 8000;
 
 const AppContent = () => {
+  const {
+    isAuthenticated,
+    isImpersonating,
+    loading: authLoading,
+    user,
+  } = useContext(AuthContext);
   const [showSplash, setShowSplash] = useState(true);
 
   useEffect(() => {
@@ -28,15 +35,38 @@ const AppContent = () => {
   }, []);
 
   useEffect(() => {
-    hydrateOfflineQueue().catch(() => {});
     trackMobileEvent('app_opened', { source: 'native_app_root' });
+  }, []);
+
+  useEffect(() => {
+    hydrateOfflineQueue().catch(() => {});
+  }, [
+    authLoading,
+    isAuthenticated,
+    isImpersonating,
+    user?.id,
+    user?.user_type,
+  ]);
+
+  useEffect(() => {
+    if (authLoading || !isAuthenticated) {
+      return undefined;
+    }
+
+    flushOfflineQueue().catch(() => {});
     const unsubscribe = subscribeNetworkStatus((status) => {
       if (status.online && !status.weak) {
         flushOfflineQueue().catch(() => {});
       }
     });
     return unsubscribe;
-  }, []);
+  }, [
+    authLoading,
+    isAuthenticated,
+    isImpersonating,
+    user?.id,
+    user?.user_type,
+  ]);
 
   if (showSplash) {
     return <BrandSplash duration={APP_INTRO_DURATION_MS} showProgressPercent={false} />;

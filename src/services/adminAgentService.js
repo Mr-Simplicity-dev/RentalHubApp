@@ -18,18 +18,24 @@ export const adminAgentService = {
     return response.data;
   },
 
-  revokeAssignment: async (assignmentId) => {
-    const response = await api.post(`/admin/agents/assignments/${assignmentId}/revoke`, {});
+  revokeAssignment: async (assignmentId, reason) => {
+    const response = await api.post(`/admin/agents/assignments/${assignmentId}/revoke`, {
+      reason,
+    });
     return response.data;
   },
 
-  deactivateAssignment: async (assignmentId) => {
-    const response = await api.post(`/admin/agents/assignments/${assignmentId}/deactivate`, {});
+  deactivateAssignment: async (assignmentId, reason) => {
+    const response = await api.post(`/admin/agents/assignments/${assignmentId}/deactivate`, {
+      reason,
+    });
     return response.data;
   },
 
-  reactivateAssignment: async (assignmentId) => {
-    const response = await api.post(`/admin/agents/assignments/${assignmentId}/reactivate`, {});
+  reactivateAssignment: async (assignmentId, reason) => {
+    const response = await api.post(`/admin/agents/assignments/${assignmentId}/reactivate`, {
+      reason,
+    });
     return response.data;
   },
 };

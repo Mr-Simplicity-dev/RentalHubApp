@@ -10,6 +10,7 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import Input from '../common/Input';
 import Button from '../common/Button';
+import { colors, typography } from '../../theme';
 
 const PRESET_AMOUNTS = [1000, 2000, 5000, 10000, 20000, 50000, 100000, 200000];
 
@@ -136,7 +137,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#e2e8f0',
   },
   headerTitle: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  title: { fontSize: 18, fontWeight: '800', color: '#0f172a' },
+  title: { fontFamily: typography.bold, fontSize: 18, color: '#0f172a' },
   body: { padding: 16, paddingBottom: 28, gap: 12 },
   balanceCard: {
     backgroundColor: '#f0fdfa',
@@ -146,7 +147,7 @@ const styles = StyleSheet.create({
     padding: 14,
   },
   balanceLabel: { color: '#0f766e', fontSize: 12, fontWeight: '600' },
-  balanceValue: { color: '#115e59', fontSize: 24, fontWeight: '800', marginTop: 4 },
+  balanceValue: { fontFamily: typography.bold, color: '#115e59', fontSize: 24, marginTop: 4 },
   sectionLabel: { color: '#334155', fontWeight: '700', marginTop: 4 },
   presetGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   presetBtn: {

@@ -25,7 +25,13 @@ const StateAdminDashboardScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
 
   const stateId = user?.assigned_state || user?.state_id || user?.stateId;
-  const stateName = user?.assigned_state_name || user?.state_name || 'Your state';
+  const stateName =
+    user?.assigned_state_name ||
+    user?.assigned_state ||
+    user?.state_name ||
+    'Your state';
+  const hasRecruitmentAccess =
+    user?.user_type === 'recruitment_admin' || user?.is_recruitment_admin === true;
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
@@ -98,12 +104,14 @@ const StateAdminDashboardScreen = ({ navigation }) => {
           icon="business-outline"
           onPress={() => navigation.navigate('StateAdminMigrations')}
         />
-        <ActionRow
-          title="Recruitment"
-          subtitle="Review roles, candidates and hiring activity."
-          icon="people-outline"
-          onPress={() => navigation.navigate('RecruitmentAdmin')}
-        />
+        {hasRecruitmentAccess ? (
+          <ActionRow
+            title="Recruitment"
+            subtitle="Review roles, candidates and hiring activity."
+            icon="people-outline"
+            onPress={() => navigation.navigate('RecruitmentAdmin')}
+          />
+        ) : null}
       </DashboardSection>
 
       <DashboardSection title="Property request workflow">

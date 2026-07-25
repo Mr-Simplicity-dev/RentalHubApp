@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Alert,
   FlatList,
@@ -20,6 +20,7 @@ import ConfirmDialog from '../../components/common/ConfirmDialog';
 import EmptyState from '../../components/common/EmptyState';
 import StatusBadge from '../../components/common/StatusBadge';
 import AdminAccountActions from '../../components/admin/AdminAccountActions';
+import OperationNoteModal from '../../components/admin/OperationNoteModal';
 import { superAdminService } from '../../services/superAdminService';
 import { authService } from '../../services/authService';
 import { buildUploadUrl, getErrorMessage, pickList, pickObject } from '../../utils/http';
@@ -31,6 +32,8 @@ import {
   ActionRow,
   DashboardHero,
 } from '../../components/dashboard/DashboardKit';
+import { AuthContext } from '../../context/AuthContext';
+import { colors, typography } from '../../theme';
 
 const sections = [
   'overview',
@@ -61,6 +64,28 @@ const sectionOptions = sections.map((value) => ({
   value,
   label: value.replace(/_/g, ' ').replace(/\b\w/g, (letter) => letter.toUpperCase()),
 }));
+
+const normalizeRequestedSection = (value) => {
+  const requested = String(value || '').trim().toLowerCase();
+  const aliases = {
+    broadcast: 'broadcasts',
+    live_moderation: 'moderation',
+  };
+  const normalized = aliases[requested] || requested;
+  return sections.includes(normalized) ? normalized : null;
+};
+
+const LGA_JURISDICTION_ROLES = new Set([
+  'admin',
+  'lga_admin',
+  'lga_support_admin',
+  'lga_financial_admin',
+  'lawyer',
+  'transportation_admin',
+  'lga_transportation_admin',
+  'fumigation_admin',
+  'lga_fumigation_admin',
+]);
 
 const defaultPricingForm = {
   applies_to: 'tenant_registration',
@@ -101,8 +126,11 @@ const FilterChip = ({ label, active, onPress }) => (
   </TouchableOpacity>
 );
 
-const SuperAdminDashboardScreen = ({ navigation }) => {
-  const [section, setSection] = useState('overview');
+const SuperAdminDashboardScreen = ({ navigation, route }) => {
+  const { beginImpersonation } = useContext(AuthContext);
+  const [section, setSection] = useState(
+    () => normalizeRequestedSection(route?.params?.initialPanel) || 'overview'
+  );
   const [showSectionPicker, setShowSectionPicker] = useState(false);
   const loadedSections = useRef(new Set());
   const [analytics, setAnalytics] = useState({});
@@ -153,6 +181,16 @@ const SuperAdminDashboardScreen = ({ navigation }) => {
     specialization: '',
     license_number: '',
   });
+
+  useEffect(() => {
+    const applyRequestedSection = () => {
+      const requestedSection = normalizeRequestedSection(route?.params?.initialPanel);
+      if (requestedSection) setSection(requestedSection);
+    };
+
+    applyRequestedSection();
+    return navigation.addListener('focus', applyRequestedSection);
+  }, [navigation, route?.params?.initialPanel]);
   const [editingLawyerId, setEditingLawyerId] = useState(null);
   const [lawyerApplications, setLawyerApplications] = useState([]);
   const [showLawyerApplications, setShowLawyerApplications] = useState(false);
@@ -190,6 +228,7 @@ const SuperAdminDashboardScreen = ({ navigation }) => {
   const [selectedPropertyIds, setSelectedPropertyIds] = useState([]);
   const [bulkAction, setBulkAction] = useState('');
   const [showBulkActionPicker, setShowBulkActionPicker] = useState(false);
+  const [operationPrompt, setOperationPrompt] = useState(null);
 
   const selectedPricingState = useMemo(
     () => pricingLocations.find((item) => String(item.id) === String(pricingForm.state_id)),
@@ -474,15 +513,57 @@ const SuperAdminDashboardScreen = ({ navigation }) => {
         await reload();
       }
       Toast.show({ type: 'success', text1: successMessage });
+      return true;
     } catch (error) {
       Toast.show({
         type: 'error',
         text1: 'Failed',
         text2: getErrorMessage(error, 'Action failed'),
       });
+      return false;
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const submitOperationNote = async (note) => {
+    if (!operationPrompt?.target?.id) return;
+
+    let succeeded = false;
+    if (operationPrompt.type === 'ban_user') {
+      succeeded = await runAction(
+        () => superAdminService.banUser(operationPrompt.target.id, note),
+        'User banned'
+      );
+    } else if (operationPrompt.type === 'reject_admin') {
+      succeeded = await runAction(
+        async () => {
+          await superAdminService.rejectPendingAdmin(operationPrompt.target.id, note);
+          await loadPendingAdmins();
+        },
+        'Admin rejected',
+        null
+      );
+    } else if (operationPrompt.type === 'update_jurisdiction') {
+      const jurisdiction = operationPrompt.jurisdiction || {};
+      succeeded = await runAction(
+        async () => {
+          await superAdminService.updateAdminJurisdiction(
+            operationPrompt.target.id,
+            jurisdiction.state,
+            jurisdiction.city || undefined,
+            note
+          );
+          setEditingJurisdiction(null);
+          setJurisdictionForm({ state: '', city: '' });
+          await loadAdmins();
+        },
+        'Admin jurisdiction updated',
+        null
+      );
+    }
+
+    if (succeeded) setOperationPrompt(null);
   };
 
   const resetPricingForm = () => {
@@ -758,12 +839,15 @@ const SuperAdminDashboardScreen = ({ navigation }) => {
             {item.state_name ? <Text style={styles.meta}>State: {item.state_name}</Text> : null}
             {item.is_banned !== undefined && <StatusBadge status={item.is_banned ? 'banned' : 'active'} />}
             <View style={styles.row}>
-              <TouchableOpacity onPress={() => runAction(() => superAdminService.banUser(item.id), 'User banned')}>
-                <Text style={styles.warnText}>Ban</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => runAction(() => superAdminService.unbanUser(item.id), 'User unbanned')}>
-                <Text style={styles.linkText}>Unban</Text>
-              </TouchableOpacity>
+              {item.is_banned ? (
+                <TouchableOpacity onPress={() => runAction(() => superAdminService.unbanUser(item.id), 'User unbanned')}>
+                  <Text style={styles.linkText}>Unban</Text>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity onPress={() => setOperationPrompt({ type: 'ban_user', target: item })}>
+                  <Text style={styles.warnText}>Ban</Text>
+                </TouchableOpacity>
+              )}
               <TouchableOpacity onPress={() => runAction(() => superAdminService.promoteUser(item.id), 'User promoted')}>
                 <Text style={styles.linkText}>Promote</Text>
               </TouchableOpacity>
@@ -2303,9 +2387,15 @@ const SuperAdminDashboardScreen = ({ navigation }) => {
           onPress: async () => {
             try {
               setSubmitting(true);
-              await superAdminService.impersonateAdmin(adminId);
+              const response = await superAdminService.impersonateAdmin(adminId);
+              if (!response?.success || !response?.data?.token || !response?.data?.user) {
+                throw new Error(
+                  response?.message ||
+                  'The server did not return a complete impersonation session.'
+                );
+              }
+              await beginImpersonation(response.data);
               Toast.show({ type: 'success', text1: `Now impersonating ${adminName}` });
-              // The app should navigate/login as the impersonated admin
             } catch (error) {
               Toast.show({
                 type: 'error',
@@ -2327,20 +2417,27 @@ const SuperAdminDashboardScreen = ({ navigation }) => {
       return;
     }
 
-    await runAction(
-      async () => {
-        await superAdminService.updateAdminJurisdiction(
-          adminId,
-          jurisdictionForm.state,
-          jurisdictionForm.city || undefined
-        );
-        setEditingJurisdiction(null);
-        setJurisdictionForm({ state: '', city: '' });
-        await loadAdmins();
+    const targetAdmin =
+      admins.find((admin) => String(admin.id) === String(adminId)) || { id: adminId };
+    if (
+      LGA_JURISDICTION_ROLES.has(String(targetAdmin.user_type || '').toLowerCase()) &&
+      !jurisdictionForm.city.trim()
+    ) {
+      Toast.show({
+        type: 'error',
+        text1: 'Local government is required for this LGA role',
+      });
+      return;
+    }
+
+    setOperationPrompt({
+      type: 'update_jurisdiction',
+      target: targetAdmin,
+      jurisdiction: {
+        state: jurisdictionForm.state.trim(),
+        city: jurisdictionForm.city.trim(),
       },
-      'Admin jurisdiction updated',
-      null
-    );
+    });
   };
 
   const toggleAdminExpand = (adminId) => {
@@ -2437,10 +2534,14 @@ const SuperAdminDashboardScreen = ({ navigation }) => {
                   placeholder="Enter state name"
                 />
                 <Input
-                  label="City (optional)"
+                  label={
+                    LGA_JURISDICTION_ROLES.has(String(admin.user_type || '').toLowerCase())
+                      ? 'Local government'
+                      : 'City (optional)'
+                  }
                   value={jurisdictionForm.city}
                   onChangeText={(v) => setJurisdictionForm((prev) => ({ ...prev, city: v }))}
-                  placeholder="Enter city name"
+                  placeholder="Enter city or LGA name"
                 />
                 <View style={styles.row}>
                   <Button
@@ -2528,16 +2629,7 @@ const SuperAdminDashboardScreen = ({ navigation }) => {
                 <Text style={styles.linkText}>Approve</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() =>
-                  runAction(
-                    async () => {
-                      await superAdminService.rejectPendingAdmin(admin.id);
-                      await loadPendingAdmins();
-                    },
-                    'Admin rejected',
-                    null
-                  )
-                }
+                onPress={() => setOperationPrompt({ type: 'reject_admin', target: admin })}
               >
                 <Text style={styles.warnText}>Reject</Text>
               </TouchableOpacity>
@@ -2593,6 +2685,56 @@ const SuperAdminDashboardScreen = ({ navigation }) => {
       />
 
       {loading ? <Text style={styles.meta}>Loading...</Text> : renderedSection}
+
+      <OperationNoteModal
+        visible={Boolean(operationPrompt)}
+        title={
+          operationPrompt?.type === 'ban_user'
+            ? 'Ban user account'
+            : operationPrompt?.type === 'update_jurisdiction'
+              ? 'Update admin jurisdiction'
+              : 'Reject admin request'
+        }
+        message={
+          operationPrompt?.type === 'ban_user'
+            ? `${operationPrompt?.target?.full_name || operationPrompt?.target?.email || 'This user'} will be blocked from accessing RentalHub.`
+            : operationPrompt?.type === 'update_jurisdiction'
+              ? `${operationPrompt?.target?.full_name || operationPrompt?.target?.email || 'This admin'} will be assigned to ${operationPrompt?.jurisdiction?.city ? `${operationPrompt.jurisdiction.city}, ` : ''}${operationPrompt?.jurisdiction?.state || 'the selected jurisdiction'}.`
+              : `${operationPrompt?.target?.full_name || operationPrompt?.target?.email || 'This applicant'} will be rejected and the pending account removed.`
+        }
+        label={
+          operationPrompt?.type === 'ban_user'
+            ? 'Ban reason'
+            : operationPrompt?.type === 'update_jurisdiction'
+              ? 'Change reason'
+              : 'Rejection reason'
+        }
+        placeholder={
+          operationPrompt?.type === 'ban_user'
+            ? 'Explain why this user must be banned'
+            : operationPrompt?.type === 'update_jurisdiction'
+              ? 'Explain why this jurisdiction is changing'
+              : 'Explain why this admin request is rejected'
+        }
+        confirmText={
+          operationPrompt?.type === 'ban_user'
+            ? 'Ban user'
+            : operationPrompt?.type === 'update_jurisdiction'
+              ? 'Update jurisdiction'
+              : 'Reject admin'
+        }
+        icon={
+          operationPrompt?.type === 'ban_user'
+            ? 'ban-outline'
+            : operationPrompt?.type === 'update_jurisdiction'
+              ? 'location-outline'
+              : 'close-circle-outline'
+        }
+        variant={operationPrompt?.type === 'update_jurisdiction' ? 'primary' : 'danger'}
+        loading={submitting}
+        onCancel={() => setOperationPrompt(null)}
+        onConfirm={submitOperationNote}
+      />
 
       <OptionPickerModal
         visible={showSectionPicker}
@@ -2651,7 +2793,7 @@ const SuperAdminDashboardScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: '#f8fafc' },
   content: { padding: 16, paddingBottom: 24 },
-  title: { fontSize: 28, fontWeight: '800', color: '#0f172a', marginBottom: 12 },
+  title: { fontFamily: typography.bold, fontSize: 28, color: colors.ink, marginBottom: 12 },
   tabRow: { marginBottom: 12 },
   tabBtn: {
     marginRight: 8,
@@ -2674,7 +2816,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   cardTitle: { fontSize: 16, fontWeight: '700', color: '#0f172a', marginBottom: 4 },
-  sectionTitle: { fontSize: 18, fontWeight: '800', color: '#0f172a', marginBottom: 8 },
+  sectionTitle: { fontFamily: typography.bold, fontSize: 18, color: colors.ink, marginBottom: 8 },
   meta: { marginTop: 4, color: '#475569' },
   row: { flexDirection: 'row', gap: 16, marginTop: 10, flexWrap: 'wrap' },
   linkText: { color: '#0284c7', fontWeight: '700', marginTop: 8 },

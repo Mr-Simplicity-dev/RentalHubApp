@@ -113,9 +113,18 @@ const ServiceBookingsScreen = ({ navigation, route }) => {
       } else {
         response = await serviceAdminService.getTransportationBookings({ limit: 50 });
       }
-      setBookings(pickList(response, ['data', 'bookings']));
+      const nextBookings = pickList(response, ['data', 'bookings']);
+      setBookings(nextBookings);
       setOperationsByBooking({});
-      setAssignmentByBooking({});
+      setAssignmentByBooking(
+        nextBookings.reduce((assignments, booking) => {
+          const bookingId = booking.id || booking.booking_id;
+          if (bookingId && booking.assigned_provider) {
+            assignments[bookingId] = booking.assigned_provider;
+          }
+          return assignments;
+        }, {})
+      );
     } catch (error) {
       Toast.show({
         type: 'error',
@@ -586,10 +595,15 @@ const ServiceBookingsScreen = ({ navigation, route }) => {
                     navigation.navigate('FumigationCompliance', {
                       bookingId,
                       booking,
-                      provider: assignmentByBooking[bookingId] || booking.provider,
+                      provider:
+                        assignmentByBooking[bookingId] ||
+                        booking.assigned_provider ||
+                        booking.provider,
                       providerId:
                         assignmentByBooking[bookingId]?.provider_id ||
                         assignmentByBooking[bookingId]?.id ||
+                        booking.assigned_provider?.provider_id ||
+                        booking.assigned_provider?.id ||
                         booking.provider_id ||
                         booking.provider?.id,
                     })

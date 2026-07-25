@@ -94,10 +94,11 @@ export const superAdminService = {
     return response.data;
   },
 
-  updateAdminJurisdiction: async (adminId, assignedState, assignedCity) => {
+  updateAdminJurisdiction: async (adminId, assignedState, assignedCity, reason) => {
     const response = await api.patch(`/super/admins/${adminId}/jurisdiction`, {
       assigned_state: assignedState,
       assigned_city: assignedCity,
+      reason,
     });
     return response.data;
   },
@@ -127,6 +128,11 @@ export const superAdminService = {
   // ===================== AUDIT LOGS =====================
   getLogs: async () => {
     const response = await api.get('/super/logs');
+    return response.data;
+  },
+
+  getAdminMonitor: async (params = {}) => {
+    const response = await api.get('/super/admin-monitor', { params });
     return response.data;
   },
 
@@ -311,8 +317,10 @@ export const superAdminService = {
     return response.data;
   },
 
-  rejectPendingAdmin: async (id) => {
-    const response = await api.patch(`/super/pending-admins/${id}/reject`);
+  rejectPendingAdmin: async (id, decisionNote) => {
+    const response = await api.patch(`/super/pending-admins/${id}/reject`, {
+      decision_note: decisionNote,
+    });
     return response.data;
   },
 

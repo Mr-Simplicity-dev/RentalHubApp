@@ -13,6 +13,7 @@ import Input from '../common/Input';
 import Button from '../common/Button';
 import SelectField from '../common/SelectField';
 import OptionPickerModal from '../common/OptionPickerModal';
+import { colors, typography } from '../../theme';
 import { paymentService } from '../../services/paymentService';
 import { pickList } from '../../utils/http';
 
@@ -333,7 +334,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#e2e8f0',
   },
   headerTitle: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  title: { fontSize: 18, fontWeight: '800', color: '#0f172a' },
+  title: { fontFamily: typography.bold, fontSize: 18, color: colors.ink },
   body: { padding: 16, paddingBottom: 28, gap: 12 },
   balanceCard: {
     backgroundColor: '#f0fdfa',
@@ -345,8 +346,8 @@ const styles = StyleSheet.create({
   balanceCardGreen: { backgroundColor: '#f0fdf4', borderColor: '#bbf7d0' },
   balanceCardAmber: { backgroundColor: '#fffbeb', borderColor: '#fde68a' },
   landlordGrid: { flexDirection: 'row', gap: 10 },
-  balanceLabel: { color: '#475569', fontSize: 12, fontWeight: '600' },
-  balanceValue: { color: '#0f172a', fontSize: 20, fontWeight: '800', marginTop: 4 },
+  balanceLabel: { fontFamily: typography.semibold, color: '#475569', fontSize: 12 },
+  balanceValue: { fontFamily: typography.bold, color: colors.ink, fontSize: 20, marginTop: 4 },
   warningCard: {
     flexDirection: 'row',
     gap: 8,
@@ -364,7 +365,7 @@ const styles = StyleSheet.create({
   switchLink: { alignItems: 'center' },
   switchText: { color: '#0d9488', fontWeight: '600', fontSize: 13 },
   historySection: { marginTop: 8 },
-  historyTitle: { fontWeight: '800', color: '#0f172a', marginBottom: 8 },
+  historyTitle: { fontFamily: typography.bold, color: colors.ink, marginBottom: 8 },
   historyItem: {
     borderWidth: 1,
     borderColor: '#e2e8f0',
@@ -372,8 +373,8 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 8,
   },
-  historyAmount: { fontWeight: '800', color: '#0f172a' },
-  historyMeta: { marginTop: 2, color: '#64748b', fontSize: 12 },
+  historyAmount: { fontFamily: typography.bold, color: colors.ink },
+  historyMeta: { marginTop: 2, color: colors.muted, fontSize: 12 },
 });
 
 export default WalletWithdrawModal;

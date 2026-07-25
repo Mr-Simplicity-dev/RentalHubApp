@@ -1,8 +1,8 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import Toast from 'react-native-toast-message';
-import api from '../../services/api';
+import { legalService } from '../../services/legalService';
 import { colors } from '../../theme';
-import { getErrorMessage, pickObject } from '../../utils/http';
+import { getErrorMessage, pickList } from '../../utils/http';
 import {
   ActionRow,
   DashboardHero,
@@ -13,7 +13,7 @@ import {
 } from '../../components/dashboard/DashboardKit';
 
 const StateLawyerDashboardScreen = ({ navigation }) => {
-  const [dashboard, setDashboard] = useState(null);
+  const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useLayoutEffect(() => {
@@ -23,8 +23,8 @@ const StateLawyerDashboardScreen = ({ navigation }) => {
   const loadDashboard = async () => {
     setLoading(true);
     try {
-      const response = await api.get('/lawyer/state/dashboard');
-      setDashboard(pickObject(response, ['data', 'dashboard']) || {});
+      const response = await legalService.getAuthorizedProperties();
+      setProperties(pickList(response, ['data', 'properties']));
     } catch (error) {
       Toast.show({
         type: 'error',
@@ -40,14 +40,24 @@ const StateLawyerDashboardScreen = ({ navigation }) => {
     loadDashboard();
   }, []);
 
-  const authorizedProperties = dashboard?.authorized_properties ?? dashboard?.authorizedProperties ?? 0;
-  const activeDisputes = dashboard?.active_disputes ?? dashboard?.activeDisputes ?? 0;
-  const resolvedCases = dashboard?.resolved_cases ?? dashboard?.resolvedCases ?? 0;
+  const representedClients = new Set(
+    properties
+      .map((property) => property.client_email || property.client_name)
+      .filter(Boolean)
+  ).size;
+  const coveredLocations = new Set(
+    properties
+      .map((property) => {
+        const state = property.state_name || property.state || '';
+        return [property.city, state].filter(Boolean).join(', ');
+      })
+      .filter(Boolean)
+  ).size;
 
   const summaryCards = [
-    { label: 'Authorized Properties', value: String(authorizedProperties), icon: 'business-outline', color: colors.blue },
-    { label: 'Active Disputes', value: String(activeDisputes), icon: 'warning-outline', color: '#A66B00' },
-    { label: 'Resolved Cases', value: String(resolvedCases), icon: 'checkmark-circle-outline', color: colors.success },
+    { label: 'Authorized Properties', value: String(properties.length), icon: 'business-outline', color: colors.blue },
+    { label: 'Represented Clients', value: String(representedClients), icon: 'people-outline', color: '#A66B00' },
+    { label: 'Covered Locations', value: String(coveredLocations), icon: 'location-outline', color: colors.success },
   ];
 
   return (
@@ -55,7 +65,7 @@ const StateLawyerDashboardScreen = ({ navigation }) => {
       <DashboardHero
         eyebrow="STATE LAWYER"
         title="State legal oversight"
-        subtitle="Monitor authorized properties, active disputes and resolved cases in your state."
+        subtitle="Review the property assignments and client matters you are authorised to access in your state."
         icon="scale-outline"
         onRefresh={loadDashboard}
       />

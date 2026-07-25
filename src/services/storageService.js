@@ -4,6 +4,8 @@ import { Platform } from 'react-native';
 const TOKEN_SERVICE = 'com.rentalhubng.auth.token';
 const SESSION_TOKEN_SERVICE = 'com.rentalhubng.auth.session-token';
 const USER_SERVICE = 'com.rentalhubng.auth.user';
+const IMPERSONATION_SERVICE = 'com.rentalhubng.auth.impersonation-original';
+const IMPERSONATION_STORAGE_KEY = 'impersonation_original_session';
 
 let Keychain = null;
 if (Platform.OS !== 'web') {
@@ -116,6 +118,21 @@ export const storageService = {
     }
   },
 
+  clearSessionToken: async () => {
+    try {
+      if (Keychain) {
+        await Keychain.resetGenericPassword({ service: SESSION_TOKEN_SERVICE });
+      }
+    } catch (error) {
+      // ignore
+    }
+    try {
+      await AsyncStorage.removeItem('session_token');
+    } catch (error) {
+      // ignore
+    }
+  },
+
   saveUser: async (user) => {
     if (!user) {
       return;
@@ -169,18 +186,96 @@ export const storageService = {
     }
   },
 
+  saveImpersonationSession: async (sessionData) => {
+    if (!sessionData) {
+      throw new Error('An original administrator session is required.');
+    }
+    const serialized = JSON.stringify(sessionData);
+    let keychainSaved = false;
+    let fallbackSaved = false;
+
+    try {
+      if (Keychain) {
+        await Keychain.setGenericPassword(
+          'original_session',
+          serialized,
+          getKeychainOptions(IMPERSONATION_SERVICE)
+        );
+        keychainSaved = true;
+      }
+    } catch (error) {
+      // Keychain is preferred; AsyncStorage remains the fallback.
+    }
+
+    try {
+      await AsyncStorage.setItem(IMPERSONATION_STORAGE_KEY, serialized);
+      fallbackSaved = true;
+    } catch (error) {
+      // ignore
+    }
+
+    if (!keychainSaved && !fallbackSaved) {
+      throw new Error('Could not securely preserve the original administrator session.');
+    }
+
+    return true;
+  },
+
+  getImpersonationSession: async () => {
+    try {
+      if (Keychain) {
+        const credentials = await Keychain.getGenericPassword({
+          service: IMPERSONATION_SERVICE,
+        });
+        if (credentials?.username === 'original_session') {
+          return JSON.parse(credentials.password);
+        }
+      }
+    } catch (error) {
+      // fall through to AsyncStorage
+    }
+
+    try {
+      const serialized = await AsyncStorage.getItem(IMPERSONATION_STORAGE_KEY);
+      return serialized ? JSON.parse(serialized) : null;
+    } catch (error) {
+      return null;
+    }
+  },
+
+  clearImpersonationSession: async () => {
+    try {
+      if (Keychain) {
+        await Keychain.resetGenericPassword({ service: IMPERSONATION_SERVICE });
+      }
+    } catch (error) {
+      // ignore
+    }
+    try {
+      await AsyncStorage.removeItem(IMPERSONATION_STORAGE_KEY);
+    } catch (error) {
+      // ignore
+    }
+  },
+
   clearAll: async () => {
     try {
       if (Keychain) {
         await Keychain.resetGenericPassword({ service: TOKEN_SERVICE });
         await Keychain.resetGenericPassword({ service: SESSION_TOKEN_SERVICE });
         await Keychain.resetGenericPassword({ service: USER_SERVICE });
+        await Keychain.resetGenericPassword({ service: IMPERSONATION_SERVICE });
       }
     } catch (error) {
       // ignore
     }
     try {
-      await AsyncStorage.multiRemove(['token', 'session_token', 'user']);
+      await AsyncStorage.multiRemove([
+        'token',
+        'session_token',
+        'user',
+        IMPERSONATION_STORAGE_KEY,
+      ]);
     } catch (error) {
       // ignore
     }

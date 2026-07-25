@@ -1,5 +1,6 @@
 import { Platform } from 'react-native';
 import { jwtDecode } from 'jwt-decode';
+import { storageService } from './storageService';
 
 const BIOMETRIC_SERVICE = 'com.rentalhubng.biometric.session';
 const isWeb = Platform.OS === 'web';
@@ -131,6 +132,11 @@ const normalizeErrorMessage = (error, fallbackMessage) => {
   return message;
 };
 
+const getUserIdentity = (user) => {
+  const identity = user?.id ?? user?.user_id ?? user?.email;
+  return identity == null ? null : String(identity).trim().toLowerCase();
+};
+
 export const biometricService = {
   getBiometricLabel,
 
@@ -243,7 +249,27 @@ export const biometricService = {
         };
       }
 
-      if (!isTokenActive(sessionData.token) && !isTokenActive(sessionData.session_token)) {
+      const [currentToken, currentSessionToken, currentUser] = await Promise.all([
+        storageService.getToken(),
+        storageService.getSessionToken(),
+        storageService.getUser(),
+      ]);
+
+      const storedIdentity = getUserIdentity(sessionData.user);
+      const currentIdentity = getUserIdentity(currentUser);
+
+      if (storedIdentity && currentIdentity && storedIdentity !== currentIdentity) {
+        await biometricService.clearStoredSession();
+        return {
+          success: false,
+          message: 'This biometric login belongs to a different account. Sign in with your password to enable it again.',
+        };
+      }
+
+      if (
+        !currentUser ||
+        (!isTokenActive(currentToken) && !isTokenActive(currentSessionToken))
+      ) {
         await biometricService.clearStoredSession();
         return {
           success: false,
@@ -253,7 +279,11 @@ export const biometricService = {
 
       return {
         success: true,
-        data: sessionData,
+        data: {
+          token: currentToken,
+          session_token: currentSessionToken,
+          user: currentUser,
+        },
         biometryType: status.biometryType,
         label: status.label,
       };

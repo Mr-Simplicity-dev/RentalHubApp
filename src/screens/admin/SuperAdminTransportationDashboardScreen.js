@@ -26,7 +26,8 @@ const SuperAdminTransportationDashboardScreen = ({ navigation }) => {
     setLoading(true);
     try {
       const response = await serviceAdminService.getTransportationSuperDashboard();
-      setDashboard(pickObject(response, ['data', 'dashboard']) || {});
+      const data = pickObject(response, ['data', 'dashboard']) || {};
+      setDashboard(data.national_statistics || {});
     } catch (error) {
       Toast.show({
         type: 'error',
@@ -43,15 +44,15 @@ const SuperAdminTransportationDashboardScreen = ({ navigation }) => {
   }, []);
 
   const totalBookings = dashboard?.total_bookings ?? dashboard?.totalBookings ?? 0;
-  const activeLgas = dashboard?.active_lgas ?? dashboard?.activeLgas ?? 0;
+  const completedBookings = dashboard?.completed_bookings ?? 0;
   const totalRevenue = dashboard?.total_revenue ?? dashboard?.totalRevenue ?? 0;
-  const pendingIssues = dashboard?.pending_issues ?? dashboard?.pendingIssues ?? 0;
+  const pendingBookings = dashboard?.pending_bookings ?? 0;
 
   const summaryCards = [
     { label: 'Total Bookings', value: String(totalBookings), icon: 'calendar-outline', color: colors.blue },
-    { label: 'Active LGAs', value: String(activeLgas), icon: 'map-outline', color: '#7C3AED' },
+    { label: 'Completed', value: String(completedBookings), icon: 'checkmark-circle-outline', color: '#7C3AED' },
     { label: 'Revenue', value: formatCurrency(totalRevenue), icon: 'cash-outline', color: colors.success },
-    { label: 'Pending Issues', value: String(pendingIssues), icon: 'alert-circle-outline', color: '#A66B00' },
+    { label: 'Pending', value: String(pendingBookings), icon: 'alert-circle-outline', color: '#A66B00' },
   ];
 
   return (

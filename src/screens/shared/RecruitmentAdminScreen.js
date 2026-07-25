@@ -25,6 +25,7 @@ import {
   MetricCard,
   MetricGrid,
 } from '../../components/dashboard/DashboardKit';
+import AdminAccountActions from '../../components/admin/AdminAccountActions';
 
 const statusOptions = ['all', 'submitted', 'under_review', 'shortlisted', 'approved', 'rejected', 'disqualified'];
 const paymentOptions = ['all', 'pending', 'paid', 'failed'];
@@ -265,6 +266,8 @@ const RecruitmentAdminScreen = ({ navigation }) => {
         icon="briefcase-outline"
         onRefresh={() => loadData({ soft: true })}
       />
+
+      <AdminAccountActions navigation={navigation} />
 
       <MetricGrid>
         <MetricCard label="Applicants" value={String(analytics?.total_applicants || pagination?.total || applicants.length)} icon="people-outline" color={colors.blue} />

@@ -24,7 +24,8 @@ const AdminTransportationStateDashboardScreen = ({ navigation }) => {
     setLoading(true);
     try {
       const response = await serviceAdminService.getTransportationStateDashboard();
-      setStats(pickObject(response, ['data']));
+      const data = pickObject(response, ['data']) || {};
+      setStats(data.statistics || {});
     } catch (error) {
       Toast.show({
         type: 'error',
@@ -41,9 +42,10 @@ const AdminTransportationStateDashboardScreen = ({ navigation }) => {
   }, []);
 
   const cards = [
-    { label: 'Total LGA Bookings', value: stats.total_lga_bookings ?? stats.totalLgaBookings ?? '-', icon: 'business-outline', color: colors.blue },
-    { label: 'State Revenue', value: `₦${Number(stats.state_revenue ?? stats.stateRevenue ?? 0).toLocaleString()}`, icon: 'cash-outline', color: colors.success },
-    { label: 'Active Routes', value: stats.active_routes ?? stats.activeRoutes ?? '-', icon: 'navigate-outline', color: '#7C3AED' },
+    { label: 'Total Bookings', value: stats.total_bookings ?? '-', icon: 'business-outline', color: colors.blue },
+    { label: 'State Revenue', value: `₦${Number(stats.total_revenue ?? 0).toLocaleString()}`, icon: 'cash-outline', color: colors.success },
+    { label: 'Services Used', value: stats.services_used ?? '-', icon: 'navigate-outline', color: '#7C3AED' },
+    { label: 'Pending', value: stats.pending_bookings ?? '-', icon: 'time-outline', color: '#A66B00' },
   ];
 
   return (

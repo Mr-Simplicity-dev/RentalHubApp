@@ -3,7 +3,7 @@ import { FlatList, StyleSheet, Text, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 import api from '../../services/api';
 import { colors, typography, radius } from '../../theme';
-import { getErrorMessage, pickObject, pickList } from '../../utils/http';
+import { getErrorMessage } from '../../utils/http';
 import {
   DashboardHero,
   DashboardScreen,
@@ -23,8 +23,8 @@ const SuperAdminSupportGovernanceScreen = ({ navigation }) => {
   const loadDashboard = async () => {
     setLoading(true);
     try {
-      const response = await api.get('/super/support/governance');
-      setDashboard(pickObject(response, ['data', 'dashboard']) || {});
+      const response = await api.get('/support/governance/summary');
+      setDashboard(response?.data?.data || {});
     } catch (error) {
       Toast.show({
         type: 'error',
@@ -40,15 +40,19 @@ const SuperAdminSupportGovernanceScreen = ({ navigation }) => {
     loadDashboard();
   }, []);
 
-  const openTickets = dashboard?.open_tickets ?? dashboard?.openTickets ?? 0;
-  const avgResponseTime = dashboard?.avg_response_time ?? dashboard?.avgResponseTime ?? '-';
-  const satisfactionRate = dashboard?.satisfaction_rate ?? dashboard?.satisfactionRate ?? '-';
-  const escalatedTickets = pickList(dashboard, ['escalated_tickets', 'escalated']) || [];
+  const summary = dashboard?.summary || {};
+  const escalatedTickets = Array.isArray(dashboard?.recent_escalations)
+    ? dashboard.recent_escalations
+    : [];
+  const departments = Array.isArray(dashboard?.by_department) ? dashboard.by_department : [];
+  const slaBreakdown = Array.isArray(dashboard?.by_sla) ? dashboard.by_sla : [];
 
   const summaryCards = [
-    { label: 'Open Tickets', value: String(openTickets), icon: 'chatbox-ellipses-outline', color: colors.blue },
-    { label: 'Avg Response', value: String(avgResponseTime), icon: 'time-outline', color: '#A66B00' },
-    { label: 'Satisfaction', value: String(satisfactionRate), icon: 'happy-outline', color: colors.success },
+    { label: 'Total Tickets', value: String(summary.total_tickets ?? 0), icon: 'chatbox-ellipses-outline', color: colors.blue },
+    { label: 'Active', value: String(summary.active_tickets ?? 0), icon: 'time-outline', color: '#A66B00' },
+    { label: 'Escalated', value: String(summary.escalated_tickets ?? 0), icon: 'arrow-up-circle-outline', color: '#7C3AED' },
+    { label: 'SLA Breached', value: String(summary.breached_sla ?? 0), icon: 'warning-outline', color: colors.danger },
+    { label: 'Unassigned', value: String(summary.unassigned_active ?? 0), icon: 'person-remove-outline', color: colors.warning },
   ];
 
   return (
@@ -67,6 +71,34 @@ const SuperAdminSupportGovernanceScreen = ({ navigation }) => {
         ))}
       </MetricGrid>
 
+      <DashboardSection title="Department accountability">
+        {departments.length === 0 ? (
+          <Text style={styles.empty}>No department escalations at this time.</Text>
+        ) : (
+          departments.map((item, index) => (
+            <View key={`${item.department || 'department'}-${index}`} style={styles.ticketCard}>
+              <Text style={styles.ticketTitle}>{formatLabel(item.department || 'Unassigned department')}</Text>
+              <Text style={styles.ticketMeta}>
+                {item.needs_action ?? 0} need action | {item.breached_sla ?? 0} breached | {item.total ?? 0} total
+              </Text>
+            </View>
+          ))
+        )}
+      </DashboardSection>
+
+      <DashboardSection title="SLA position">
+        {slaBreakdown.length === 0 ? (
+          <Text style={styles.empty}>No SLA breakdown is available.</Text>
+        ) : (
+          slaBreakdown.map((item, index) => (
+            <View key={`${item.sla_status || 'status'}-${index}`} style={styles.ticketCard}>
+              <Text style={styles.ticketTitle}>{formatLabel(item.sla_status || 'Not set')}</Text>
+              <Text style={styles.ticketMeta}>{item.total ?? 0} ticket(s)</Text>
+            </View>
+          ))
+        )}
+      </DashboardSection>
+
       <DashboardSection title="Recent escalated tickets">
         {escalatedTickets.length === 0 ? (
           <Text style={styles.empty}>No escalated tickets at this time.</Text>
@@ -82,7 +114,10 @@ const SuperAdminSupportGovernanceScreen = ({ navigation }) => {
                   {item.status ? `Status: ${item.status}` : ''}
                   {item.priority ? ` | Priority: ${item.priority}` : ''}
                 </Text>
-                {item.assigned_to ? <Text style={styles.ticketMeta}>Assigned to: {item.assigned_to}</Text> : null}
+                <Text style={styles.ticketMeta}>
+                  {formatLabel(item.escalation_department || 'Unassigned department')}
+                  {item.escalation_status ? ` | ${formatLabel(item.escalation_status)}` : ''}
+                </Text>
               </View>
             )}
           />
@@ -91,6 +126,8 @@ const SuperAdminSupportGovernanceScreen = ({ navigation }) => {
     </DashboardScreen>
   );
 };
+
+const formatLabel = (value) => String(value || '').replace(/_/g, ' ');
 
 const styles = StyleSheet.create({
   empty: {

@@ -129,8 +129,10 @@ export const supportService = {
     return response.data;
   },
 
-  promoteToLead: async (userId) => {
-    const response = await api.patch(`/support/admin-pool/${userId}/lead`);
+  setLeadStatus: async (userId, isLead) => {
+    const response = await api.patch(`/support/admin-pool/${userId}/lead`, {
+      is_lead: Boolean(isLead),
+    });
     return response.data;
   },
 

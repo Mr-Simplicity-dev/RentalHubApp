@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 import Button from '../common/Button';
+import OperationNoteModal from './OperationNoteModal';
 import { propertyAlertAdminService } from '../../services/propertyAlertAdminService';
 import { getErrorMessage, pickList } from '../../utils/http';
 
@@ -32,6 +33,7 @@ const PropertyRequestWorkflowSection = ({
   const [status, setStatus] = useState(
     mode === 'support' ? 'pending_support_review' : 'approved_assigned'
   );
+  const [pendingAction, setPendingAction] = useState(null);
 
   const statusOptions = mode === 'support' ? SUPPORT_STATUSES : STATE_STATUSES;
 
@@ -56,51 +58,41 @@ const PropertyRequestWorkflowSection = ({
   }, [loadRequests]);
 
   const supportReview = (request, decision) => {
-    Alert.prompt(
-      decision === 'approved' ? 'Approve request' : 'Reject request',
-      'Optional review note',
-      async (note) => {
-        try {
-          setLoading(true);
-          await propertyAlertAdminService.supportReview(request.id, {
-            decision,
-            review_note: note || undefined,
-          });
-          Toast.show({ type: 'success', text1: 'Request updated' });
-          await loadRequests();
-        } catch (error) {
-          Toast.show({
-            type: 'error',
-            text1: 'Failed',
-            text2: getErrorMessage(error, 'Could not review request'),
-          });
-        } finally {
-          setLoading(false);
-        }
-      }
-    );
+    setPendingAction({ kind: 'support', request, action: decision });
   };
 
   const stateAction = (request, action) => {
-    Alert.prompt('State action', 'Optional note', async (note) => {
-      try {
-        setLoading(true);
-        await propertyAlertAdminService.stateAction(request.id, {
-          action,
+    setPendingAction({ kind: 'state', request, action });
+  };
+
+  const submitPendingAction = async (note) => {
+    if (!pendingAction) return;
+
+    try {
+      setLoading(true);
+      if (pendingAction.kind === 'support') {
+        await propertyAlertAdminService.supportReview(pendingAction.request.id, {
+          decision: pendingAction.action,
+          review_note: note || undefined,
+        });
+      } else {
+        await propertyAlertAdminService.stateAction(pendingAction.request.id, {
+          action: pendingAction.action,
           note: note || undefined,
         });
-        Toast.show({ type: 'success', text1: 'Request updated' });
-        await loadRequests();
-      } catch (error) {
-        Toast.show({
-          type: 'error',
-          text1: 'Failed',
-          text2: getErrorMessage(error, 'Could not update request'),
-        });
-      } finally {
-        setLoading(false);
       }
-    });
+      Toast.show({ type: 'success', text1: 'Request updated' });
+      setPendingAction(null);
+      await loadRequests();
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Failed',
+        text2: getErrorMessage(error, 'Could not update request'),
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -159,6 +151,41 @@ const PropertyRequestWorkflowSection = ({
           </View>
         ))
       )}
+
+      <OperationNoteModal
+        visible={Boolean(pendingAction)}
+        title={
+          pendingAction?.kind === 'support'
+            ? pendingAction?.action === 'approved'
+              ? 'Approve property request'
+              : 'Reject property request'
+            : pendingAction?.action === 'fulfilled'
+              ? 'Mark request fulfilled'
+              : 'Start property sourcing'
+        }
+        message="Add context for the audit history, or continue without a note."
+        label="Review note"
+        placeholder="Optional context for this decision"
+        confirmText={
+          pendingAction?.action === 'approved'
+            ? 'Approve'
+            : pendingAction?.action === 'rejected'
+              ? 'Reject'
+              : pendingAction?.action === 'fulfilled'
+                ? 'Mark fulfilled'
+                : 'Start sourcing'
+        }
+        icon={
+          pendingAction?.action === 'rejected'
+            ? 'close-circle-outline'
+            : 'checkmark-circle-outline'
+        }
+        variant={pendingAction?.action === 'rejected' ? 'danger' : 'primary'}
+        required={false}
+        loading={loading}
+        onCancel={() => setPendingAction(null)}
+        onConfirm={submitPendingAction}
+      />
     </View>
   );
 };

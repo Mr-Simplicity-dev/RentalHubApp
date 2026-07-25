@@ -16,6 +16,22 @@ const isTokenActive = (token) => {
   }
 };
 
+const isTerminalSessionError = (error) => {
+  const status = error?.response?.status;
+  return (
+    error?.code === 'AUTH_SESSION_MISSING' ||
+    status === 400 ||
+    status === 401 ||
+    status === 403
+  );
+};
+
+const createMissingSessionError = () => {
+  const error = new Error('No native session token available.');
+  error.code = 'AUTH_SESSION_MISSING';
+  return error;
+};
+
 export const authService = {
   register: async (userData) => {
     const response = await api.post('/auth/register', userData);
@@ -49,7 +65,10 @@ export const authService = {
   },
 
   getCurrentUser: async () => {
-    const response = await api.get('/auth/me', { authCritical: true });
+    const response = await api.get('/auth/me', {
+      authCritical: true,
+      logoutOnUnauthorized: true,
+    });
     if (response.data.success) {
       await storageService.saveUser(response.data.data);
     }
@@ -73,7 +92,7 @@ export const authService = {
   refreshSession: async () => {
     const sessionToken = await storageService.getSessionToken();
     if (!sessionToken) {
-      throw new Error('No native session token available.');
+      throw createMissingSessionError();
     }
 
     const response = await api.post('/auth/refresh-token', {
@@ -94,9 +113,22 @@ export const authService = {
     try {
       const refreshed = await authService.refreshSession();
       return Boolean(refreshed?.success && refreshed?.data?.token);
-    } catch {
-      return false;
+    } catch (error) {
+      if (isTerminalSessionError(error)) {
+        return false;
+      }
+
+      throw error;
     }
+  },
+
+  hasLocallyUsableSession: async () => {
+    const [token, sessionToken] = await Promise.all([
+      storageService.getToken(),
+      storageService.getSessionToken(),
+    ]);
+
+    return isTokenActive(token) || isTokenActive(sessionToken);
   },
 
   verifyEmail: async (token) => {

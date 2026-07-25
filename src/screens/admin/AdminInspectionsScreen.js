@@ -26,7 +26,7 @@ const AdminInspectionsScreen = () => {
     setLoading(true);
     try {
       const response = await api.get('/admin/inspections');
-      setItems(pickList(response, ['data', 'inspections']));
+      setItems(pickList(response?.data || response, ['data']));
     } catch (error) {
       Toast.show({
         type: 'error',
@@ -75,8 +75,14 @@ const AdminInspectionsScreen = () => {
                 <StatusPill label={status} color={badgeColor} />
               </View>
             </View>
-            <InfoRow icon="person-outline" label="Inspector" value={item.inspector_name || item.inspector || 'N/A'} />
-            <InfoRow icon="calendar-outline" label="Date" value={item.inspection_date || item.date || 'N/A'} />
+            <InfoRow icon="person-outline" label="Tenant" value={item.tenant_name || 'N/A'} />
+            <InfoRow icon="shield-outline" label="Assigned admin" value={item.assigned_admin_name || 'Unassigned'} />
+            <InfoRow
+              icon="calendar-outline"
+              label="Requested"
+              value={item.requested_at ? new Date(item.requested_at).toLocaleString() : 'N/A'}
+            />
+            <InfoRow icon="location-outline" label="Location" value={[item.lga_name, item.state_name].filter(Boolean).join(', ') || 'N/A'} />
           </PremiumCard>
         );
       }}

@@ -41,8 +41,13 @@ const AdminFumigationStateDashboardScreen = ({ navigation }) => {
   }, []);
 
   const cards = [
-    { label: 'LGA Reports', value: stats.lga_reports ?? stats.lgaReports ?? '-', icon: 'business-outline', color: colors.blue },
-    { label: 'State Compliance', value: stats.state_compliance ?? stats.stateCompliance ?? '-', icon: 'shield-checkmark-outline', color: colors.success },
+    { label: 'Completed', value: stats.completed_bookings ?? '-', icon: 'checkmark-circle-outline', color: colors.blue },
+    {
+      label: 'State Compliance',
+      value: stats.compliance_rate == null ? '-' : `${stats.compliance_rate}%`,
+      icon: 'shield-checkmark-outline',
+      color: colors.success,
+    },
     { label: 'Total Bookings', value: stats.total_bookings ?? stats.totalBookings ?? '-', icon: 'calendar-outline', color: '#7C3AED' },
   ];
 
@@ -51,7 +56,7 @@ const AdminFumigationStateDashboardScreen = ({ navigation }) => {
       <DashboardHero
         eyebrow="STATE FUMIGATION"
         title="State fumigation oversight"
-        subtitle="Oversee LGA fumigation reports, state compliance and total bookings."
+        subtitle="Oversee completed work, safety compliance and total bookings across the assigned state."
         icon="sparkles-outline"
         onRefresh={loadStats}
       />
@@ -68,12 +73,6 @@ const AdminFumigationStateDashboardScreen = ({ navigation }) => {
           subtitle="Review state-level fumigation bookings."
           icon="sparkles-outline"
           onPress={() => navigation.navigate('ServiceBookings', { type: 'fumigation' })}
-        />
-        <ActionRow
-          title="Fumigation compliance"
-          subtitle="Review safety compliance records across LGAs."
-          icon="shield-checkmark-outline"
-          onPress={() => navigation.navigate('FumigationCompliance')}
         />
       </DashboardSection>
     </DashboardScreen>

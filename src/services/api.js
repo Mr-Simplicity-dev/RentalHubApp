@@ -51,6 +51,25 @@ export const setOnUnauthorized = (callback) => {
   onUnauthorized = callback;
 };
 
+let sessionInvalidationPromise = null;
+
+const invalidateNativeSession = async () => {
+  if (!sessionInvalidationPromise) {
+    sessionInvalidationPromise = (async () => {
+      if (typeof onUnauthorized === 'function') {
+        await onUnauthorized();
+        return;
+      }
+
+      await storageService.clearAll();
+    })().finally(() => {
+      sessionInvalidationPromise = null;
+    });
+  }
+
+  return sessionInvalidationPromise;
+};
+
 let isRefreshing = false;
 let pendingRequests = [];
 
@@ -60,6 +79,16 @@ const isSessionValidationRequest = (config = {}) => {
 
 const shouldLogoutOnUnauthorized = (config = {}) => {
   return Boolean(config.logoutOnUnauthorized);
+};
+
+const isTerminalSessionError = (error) => {
+  const status = error?.response?.status;
+  return (
+    error?.code === 'AUTH_SESSION_MISSING' ||
+    status === 400 ||
+    status === 401 ||
+    status === 403
+  );
 };
 
 const isRefreshRequest = (config = {}) => String(config.url || '').includes('/auth/refresh-token');
@@ -90,7 +119,9 @@ const refreshNativeSession = async () => {
   const sessionToken = await storageService.getSessionToken();
 
   if (!sessionToken) {
-    throw new Error('No native session token available.');
+    const error = new Error('No native session token available.');
+    error.code = 'AUTH_SESSION_MISSING';
+    throw error;
   }
 
   const response = await axios.post(
@@ -166,25 +197,28 @@ api.interceptors.response.use(
         setRequestAuthHeader(originalRequest, nextToken);
         return api(originalRequest);
       } catch (refreshError) {
-        rejectPendingRequests(refreshError);
-        if (shouldLogoutOnUnauthorized(originalRequest)) {
-          await storageService.clearAll();
-          if (typeof onUnauthorized === 'function') {
-            onUnauthorized();
-          }
+        markNetworkProblem(refreshError);
+        const sessionIsInvalid = isTerminalSessionError(refreshError);
+
+        if (sessionIsInvalid) {
+          error.sessionInvalidated = true;
+          refreshError.sessionInvalidated = true;
+          await invalidateNativeSession();
         }
+
+        rejectPendingRequests(refreshError);
+
+        return Promise.reject(sessionIsInvalid ? error : refreshError);
       } finally {
         isRefreshing = false;
       }
     } else if (
-      error.response?.status === 401 &&
+      (error.response?.status === 401 || error.response?.status === 403) &&
       isSessionValidationRequest(originalRequest) &&
       shouldLogoutOnUnauthorized(originalRequest)
     ) {
-      await storageService.clearAll();
-      if (typeof onUnauthorized === 'function') {
-        onUnauthorized();
-      }
+      error.sessionInvalidated = true;
+      await invalidateNativeSession();
     }
     return Promise.reject(error);
   }

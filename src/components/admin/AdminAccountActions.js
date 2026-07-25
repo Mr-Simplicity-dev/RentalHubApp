@@ -25,9 +25,35 @@ const AdminActionPill = ({ label, icon, color = colors.blue, onPress }) => {
 };
 
 const AdminAccountActions = ({ navigation }) => {
-  const { logout } = useContext(AuthContext);
+  const {
+    exitImpersonation,
+    isImpersonating,
+    logout,
+  } = useContext(AuthContext);
 
-  const confirmLogout = () => {
+  const confirmSessionAction = () => {
+    if (isImpersonating) {
+      Alert.alert(
+        'Exit impersonation',
+        'Return to your original super-admin dashboard?',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          {
+            text: 'Exit admin',
+            onPress: () => {
+              exitImpersonation().catch((error) => {
+                Alert.alert(
+                  'Could not exit impersonation',
+                  error?.message || 'Please sign out and sign in again.'
+                );
+              });
+            },
+          },
+        ]
+      );
+      return;
+    }
+
     Alert.alert('Logout', 'Do you want to sign out of this admin session?', [
       { text: 'Cancel', style: 'cancel' },
       { text: 'Logout', style: 'destructive', onPress: logout },
@@ -48,10 +74,10 @@ const AdminAccountActions = ({ navigation }) => {
         onPress={() => navigation.navigate('Settings')}
       />
       <AdminActionPill
-        label="Logout"
-        icon="log-out-outline"
-        color={colors.danger}
-        onPress={confirmLogout}
+        label={isImpersonating ? 'Exit admin' : 'Logout'}
+        icon={isImpersonating ? 'return-up-back-outline' : 'log-out-outline'}
+        color={isImpersonating ? colors.warning : colors.danger}
+        onPress={confirmSessionAction}
       />
     </View>
   );

@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import Toast from 'react-native-toast-message';
 import { financialAdminService } from '../../services/financialAdminService';
 import AdminAccountActions from '../../components/admin/AdminAccountActions';
@@ -12,10 +12,12 @@ import {
   MetricCard,
   MetricGrid,
 } from '../../components/dashboard/DashboardKit';
+import { AuthContext } from '../../context/AuthContext';
 
 const formatCurrency = (value) => `₦${Number(value || 0).toLocaleString()}`;
 
 const SuperFinancialAdminDashboardScreen = ({ navigation }) => {
+  const { user } = useContext(AuthContext);
   const [overview, setOverview] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -95,14 +97,16 @@ const SuperFinancialAdminDashboardScreen = ({ navigation }) => {
         ))}
       </DashboardSection>
 
-      <DashboardSection title="People operations">
-        <ActionRow
-          title="Recruitment"
-          subtitle="Review roles, candidates and hiring activity."
-          icon="people-outline"
-          onPress={() => navigation.navigate('RecruitmentAdmin')}
-        />
-      </DashboardSection>
+      {user?.is_recruitment_admin === true ? (
+        <DashboardSection title="People operations">
+          <ActionRow
+            title="Recruitment"
+            subtitle="Review roles, candidates and hiring activity."
+            icon="people-outline"
+            onPress={() => navigation.navigate('RecruitmentAdmin')}
+          />
+        </DashboardSection>
+      ) : null}
     </DashboardScreen>
   );
 };

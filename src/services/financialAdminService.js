@@ -94,10 +94,48 @@ export const financialAdminService = {
 
   getCommissionReports: async () => {
     const response = await api.get('/financial-admin/commissions/summary');
-    return {
-      success: response.data?.success !== false,
-      data: { commissions: response.data?.data?.summary || [] },
-    };
+    return response.data;
+  },
+
+  getPersonalWithdrawable: async () => {
+    const response = await api.get('/financial-admin/commissions/withdrawable');
+    return response.data;
+  },
+
+  getPersonalWithdrawalHistory: async () => {
+    const response = await api.get('/financial-admin/withdrawals/history');
+    return response.data;
+  },
+
+  getWithdrawalBanks: async () => {
+    const response = await api.get('/payments/banks');
+    return response.data;
+  },
+
+  verifyWithdrawalAccount: async ({ bankCode, bankName, accountNumber }) => {
+    const response = await api.post('/payments/verify-account', {
+      bank_code: bankCode,
+      bank_name: bankName,
+      account_number: accountNumber,
+    });
+    return response.data;
+  },
+
+  requestPersonalWithdrawal: async ({
+    amount,
+    bankName,
+    bankCode,
+    accountNumber,
+    accountName,
+  }) => {
+    const response = await api.post('/financial-admin/withdraw/request', {
+      amount,
+      bank_name: bankName,
+      bank_code: bankCode,
+      account_number: accountNumber,
+      account_name: accountName,
+    });
+    return response.data;
   },
 
   getCommissionConfig: async () => {

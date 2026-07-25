@@ -102,7 +102,14 @@ const ServiceOperationsDashboardScreen = ({ navigation }) => {
     loadOverview();
   }, [profile.family, profile.bookingsType]);
 
-  const stats = overview?.overview || overview?.stats || overview || {};
+  const stats =
+    overview?.overview ||
+    overview?.statistics ||
+    overview?.national_statistics ||
+    overview?.stats ||
+    overview ||
+    {};
+  const isSuperSupport = ['super_admin', 'super_support_admin'].includes(user?.user_type);
 
   const cards = profile.family === 'support'
     ? [
@@ -168,28 +175,30 @@ const ServiceOperationsDashboardScreen = ({ navigation }) => {
         title="Native operations"
         subtitle="The daily service-admin controls now stay inside the mobile app."
       >
-        <ActionRow
-          title="Admin pool"
-          subtitle="Review available support and operations admins."
-          icon="people-outline"
-          badge="Native"
-          onPress={() => navigation.navigate('AdminPool')}
-        />
-        <ActionRow
-          title="Activity feed"
-          subtitle="Track recent escalations, booking actions and audit events."
-          icon="reader-outline"
-          badge="Native"
-          onPress={() => navigation.navigate('ActivityFeed')}
-        />
         {profile.family === 'support' ? (
-          <ActionRow
-            title="Support dashboard"
-            subtitle="See support metrics and ticket governance in-app."
-            icon="analytics-outline"
-            badge="Native"
-            onPress={() => navigation.navigate('AdminSupportDashboard')}
-          />
+          <>
+            <ActionRow
+              title="Admin pool"
+              subtitle="Review available support administrators for your permitted jurisdiction."
+              icon="people-outline"
+              badge="Native"
+              onPress={() => navigation.navigate('AdminPool')}
+            />
+            <ActionRow
+              title="Activity feed"
+              subtitle="Track recent ticket escalations and support actions."
+              icon="reader-outline"
+              badge="Native"
+              onPress={() => navigation.navigate('ActivityFeed')}
+            />
+            <ActionRow
+              title="Support dashboard"
+              subtitle="See support metrics and ticket governance in-app."
+              icon="analytics-outline"
+              badge="Native"
+              onPress={() => navigation.navigate('AdminSupportDashboard')}
+            />
+          </>
         ) : null}
         {profile.family === 'transportation' ? (
           <ActionRow
@@ -221,13 +230,15 @@ const ServiceOperationsDashboardScreen = ({ navigation }) => {
             }
           />
         ) : null}
-        <ActionRow
-          title="All activity"
-          subtitle="Review complete mobile-visible operational history."
-          icon="list-outline"
-          badge="Native"
-          onPress={() => navigation.navigate('AllActivity')}
-        />
+        {profile.family === 'support' && isSuperSupport ? (
+          <ActionRow
+            title="All activity"
+            subtitle="Review the complete cross-jurisdiction support audit history."
+            icon="list-outline"
+            badge="Super"
+            onPress={() => navigation.navigate('AllActivity')}
+          />
+        ) : null}
       </DashboardSection>
     </DashboardScreen>
   );

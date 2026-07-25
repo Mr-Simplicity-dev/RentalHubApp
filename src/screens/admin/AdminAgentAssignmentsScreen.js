@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 import Input from '../../components/common/Input';
+import OperationNoteModal from '../../components/admin/OperationNoteModal';
 import {
   EmptyPanel,
   InfoRow,
@@ -28,11 +29,12 @@ const AdminAgentAssignmentsScreen = () => {
   const [actionId, setActionId] = useState(null);
   const [assignments, setAssignments] = useState([]);
   const [form, setForm] = useState({ landlordId: '', agentId: '' });
+  const [pendingAction, setPendingAction] = useState(null);
 
   const loadAssignments = async () => {
     setLoading(true);
     try {
-      const response = await adminAgentService.getAssignments({ status: 'active', limit: 50 });
+      const response = await adminAgentService.getAssignments({ limit: 50 });
       setAssignments(pickList(response, ['data']));
     } catch (error) {
       Toast.show({
@@ -75,17 +77,25 @@ const AdminAgentAssignmentsScreen = () => {
     }
   };
 
-  const setActiveState = async (item, action) => {
+  const setActiveState = async (reason) => {
+    if (!pendingAction?.item?.id || !pendingAction?.action) return;
+
+    const { item, action } = pendingAction;
     setActionId(`${item.id}-${action}`);
     try {
       if (action === 'revoke') {
-        await adminAgentService.revokeAssignment(item.id);
+        await adminAgentService.revokeAssignment(item.id, reason);
       } else if (action === 'deactivate') {
-        await adminAgentService.deactivateAssignment(item.id);
+        await adminAgentService.deactivateAssignment(item.id, reason);
       } else if (action === 'reactivate') {
-        await adminAgentService.reactivateAssignment(item.id);
+        await adminAgentService.reactivateAssignment(item.id, reason);
       }
+      setPendingAction(null);
       await loadAssignments();
+      Toast.show({
+        type: 'success',
+        text1: `Assignment ${action === 'reactivate' ? 'reactivated' : `${action}d`}`,
+      });
     } catch (error) {
       Toast.show({
         type: 'error',
@@ -97,8 +107,15 @@ const AdminAgentAssignmentsScreen = () => {
     }
   };
 
+  const actionLabel = pendingAction?.action === 'reactivate'
+    ? 'Reactivate'
+    : pendingAction?.action === 'deactivate'
+      ? 'Deactivate'
+      : 'Revoke';
+
   return (
-    <PremiumScreen>
+    <>
+      <PremiumScreen>
       <PremiumHero
         eyebrow="Admin delegation"
         title="Agent assignments"
@@ -163,14 +180,14 @@ const AdminAgentAssignmentsScreen = () => {
                   <PremiumButton
                     title="Deactivate"
                     variant="secondary"
-                    onPress={() => setActiveState(item, 'deactivate')}
+                    onPress={() => setPendingAction({ item, action: 'deactivate' })}
                     loading={actionId === `${item.id}-deactivate`}
                     style={styles.actionButton}
                   />
                   <PremiumButton
                     title="Revoke"
                     variant="ghost"
-                    onPress={() => setActiveState(item, 'revoke')}
+                    onPress={() => setPendingAction({ item, action: 'revoke' })}
                     loading={actionId === `${item.id}-revoke`}
                     style={styles.actionButton}
                   />
@@ -178,7 +195,7 @@ const AdminAgentAssignmentsScreen = () => {
               ) : (
                 <PremiumButton
                   title="Reactivate"
-                  onPress={() => setActiveState(item, 'reactivate')}
+                  onPress={() => setPendingAction({ item, action: 'reactivate' })}
                   loading={actionId === `${item.id}-reactivate`}
                   style={styles.fullButton}
                 />
@@ -187,7 +204,21 @@ const AdminAgentAssignmentsScreen = () => {
           </PremiumCard>
         );
       })}
-    </PremiumScreen>
+      </PremiumScreen>
+      <OperationNoteModal
+        visible={Boolean(pendingAction)}
+        title={`${actionLabel} agent assignment`}
+        message={`Record why access for ${pendingAction?.item?.agent_name || 'this agent'} is being ${actionLabel.toLowerCase()}d.`}
+        label="Governance note"
+        placeholder="Enter the operational reason for this change"
+        confirmText={`${actionLabel} assignment`}
+        icon={pendingAction?.action === 'reactivate' ? 'refresh-circle-outline' : 'shield-outline'}
+        variant={pendingAction?.action === 'reactivate' ? 'primary' : 'danger'}
+        loading={Boolean(actionId)}
+        onCancel={() => setPendingAction(null)}
+        onConfirm={setActiveState}
+      />
+    </>
   );
 };
 

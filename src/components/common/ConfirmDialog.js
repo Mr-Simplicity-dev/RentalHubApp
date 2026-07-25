@@ -1,7 +1,9 @@
 import React from 'react';
-import { View, Text, StyleSheet, Modal, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Modal, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import AppText from './AppText';
 import Button from './Button';
+import { colors, radius } from '../../theme';
 
 const ConfirmDialog = ({
   visible,
@@ -21,14 +23,14 @@ const ConfirmDialog = ({
           <Icon
             name={variant === 'danger' ? 'warning-outline' : 'help-circle-outline'}
             size={40}
-            color={variant === 'danger' ? '#dc2626' : '#0284c7'}
+            color={variant === 'danger' ? colors.danger : colors.blue}
           />
         </View>
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.message}>{message}</Text>
+        <AppText variant="h3" style={styles.title}>{title}</AppText>
+        <AppText variant="body" align="center" color={colors.muted} style={styles.message}>{message}</AppText>
         <View style={styles.actions}>
           <TouchableOpacity style={styles.cancelBtn} onPress={onCancel} disabled={loading}>
-            <Text style={styles.cancelText}>{cancelText}</Text>
+            <AppText variant="label" color={colors.ink}>{cancelText}</AppText>
           </TouchableOpacity>
           <Button
             title={confirmText}
@@ -53,27 +55,26 @@ const styles = StyleSheet.create({
     padding: 30,
   },
   dialog: {
-    backgroundColor: '#ffffff',
-    borderRadius: 16,
+    backgroundColor: colors.white,
+    borderRadius: radius.md,
     padding: 24,
     width: '100%',
     maxWidth: 340,
     alignItems: 'center',
   },
   iconContainer: { marginBottom: 12 },
-  title: { fontSize: 18, fontWeight: '800', color: '#0f172a', marginBottom: 8, textAlign: 'center' },
-  message: { color: '#475569', textAlign: 'center', lineHeight: 22, marginBottom: 20 },
+  title: { marginBottom: 8, textAlign: 'center' },
+  message: { marginBottom: 20, paddingHorizontal: 4 },
   actions: { flexDirection: 'row', gap: 10, width: '100%' },
   cancelBtn: {
     flex: 1,
     paddingVertical: 12,
-    borderRadius: 8,
+    borderRadius: radius.sm,
     borderWidth: 1,
-    borderColor: '#d1d5db',
+    borderColor: colors.border,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  cancelText: { color: '#374151', fontWeight: '600', fontSize: 14 },
   confirmBtn: { flex: 1 },
 });
 

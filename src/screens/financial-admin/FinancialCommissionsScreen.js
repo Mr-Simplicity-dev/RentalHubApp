@@ -10,7 +10,7 @@ import {
   formatNaira,
 } from '../../components/common/PremiumLayout';
 import { financialAdminService } from '../../services/financialAdminService';
-import { getErrorMessage, pickList } from '../../utils/http';
+import { getErrorMessage, pickObject } from '../../utils/http';
 import { colors, typography } from '../../theme';
 
 const getStatusColor = (status) => {
@@ -26,7 +26,8 @@ const FinancialCommissionsScreen = () => {
   const loadCommissions = useCallback(async () => {
     try {
       const response = await financialAdminService.getCommissionReports();
-      setCommissions(pickList(response, ['data', 'commissions']));
+      const report = pickObject(response, ['data']) || {};
+      setCommissions(Array.isArray(report.summary) ? report.summary : []);
     } catch (error) {
       Toast.show({
         type: 'error',
@@ -48,13 +49,14 @@ const FinancialCommissionsScreen = () => {
       title="Commission reports"
       subtitle="Track agent payouts, property-linked commissions and payment status in one clean mobile view."
       icon="ribbon-outline"
+      right={<StatusPill label={`${commissions.length} groups`} color={colors.blue} />}
     />
   );
 
   return (
     <PremiumListScreen
       data={commissions}
-      keyExtractor={(item) => String(item.id)}
+      keyExtractor={(item, index) => `${item.source || 'commission'}-${item.status || 'unknown'}-${index}`}
       refreshing={refreshing}
       onRefresh={() => {
         setRefreshing(true);
@@ -70,18 +72,22 @@ const FinancialCommissionsScreen = () => {
           <PremiumCard>
             <View style={styles.cardHeader}>
               <View style={styles.agentBlock}>
-                <Text style={styles.agent}>{item.agent_name || item.agent?.name || 'Agent'}</Text>
-                <Text style={styles.property}>{item.property_title || item.property?.title || 'Property'}</Text>
+                <Text style={styles.agent}>
+                  {String(item.source || 'Commission').replace(/_/g, ' ')}
+                </Text>
+                <Text style={styles.property}>
+                  {Number(item.transaction_count || 0).toLocaleString()} transactions
+                </Text>
               </View>
               <StatusPill label={status} color={getStatusColor(status)} />
             </View>
 
-            <Text style={styles.amount}>{formatNaira(item.amount || 0)}</Text>
+            <Text style={styles.amount}>{formatNaira(item.total_amount || 0)}</Text>
 
             <InfoRow
-              icon="calendar-outline"
-              label="Created"
-              value={item.created_at ? new Date(item.created_at).toLocaleDateString() : 'Not available'}
+              icon="stats-chart-outline"
+              label="Average rate"
+              value={`${Number(item.avg_rate || 0).toFixed(2)}%`}
             />
           </PremiumCard>
         );

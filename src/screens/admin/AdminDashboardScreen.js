@@ -1,5 +1,6 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import Toast from 'react-native-toast-message';
+import { AuthContext } from '../../context/AuthContext';
 import { adminService } from '../../services/adminService';
 import { getErrorMessage, pickObject } from '../../utils/http';
 import TenancyWorkflowSection from '../../components/admin/TenancyWorkflowSection';
@@ -16,8 +17,11 @@ import {
 } from '../../components/dashboard/DashboardKit';
 
 const AdminDashboardScreen = ({ navigation }) => {
+  const { user } = useContext(AuthContext);
   const [stats, setStats] = useState({});
   const [loading, setLoading] = useState(true);
+  const role = String(user?.user_type || '').trim().toLowerCase();
+  const isCoreAdmin = role === 'admin' || role === 'super_admin';
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
@@ -54,7 +58,7 @@ const AdminDashboardScreen = ({ navigation }) => {
     <DashboardScreen refreshing={loading} onRefresh={loadStats}>
       <DashboardHero
         eyebrow="OPERATIONS"
-        title="Administration hub"
+        title={role === 'lga_admin' ? 'LGA administration hub' : 'Administration hub'}
         subtitle="Monitor users, listings, verification and local workflows."
         icon="settings-outline"
         onRefresh={loadStats}
@@ -75,24 +79,45 @@ const AdminDashboardScreen = ({ navigation }) => {
         title="Priority workspaces"
         subtitle="Choose a task area instead of navigating a desktop-style control panel."
       >
-        <ActionRow
-          title="Compliance & Risk"
-          subtitle="Review platform risk and compliance activity."
-          icon="shield-outline"
-          onPress={() => navigation.navigate('AdminCompliance')}
-        />
-        <ActionRow
-          title="Agent Assignments"
-          subtitle="Assign, deactivate and reassign landlord agents."
-          icon="people-circle-outline"
-          onPress={() => navigation.navigate('AdminAgentAssignments')}
-        />
-        <ActionRow
-          title="Recruitment Admin"
-          subtitle="Manage cycles, roles and applicant reviews."
-          icon="briefcase-outline"
-          onPress={() => navigation.navigate('RecruitmentAdmin')}
-        />
+        {isCoreAdmin ? (
+          <>
+            <ActionRow
+              title="Compliance & Risk"
+              subtitle="Review platform risk and compliance activity."
+              icon="shield-outline"
+              onPress={() => navigation.navigate('AdminCompliance')}
+            />
+            <ActionRow
+              title="Agent Assignments"
+              subtitle="Assign, deactivate and reassign landlord agents."
+              icon="people-circle-outline"
+              onPress={() => navigation.navigate('AdminAgentAssignments')}
+            />
+            {user?.is_recruitment_admin === true ? (
+              <ActionRow
+                title="Recruitment Admin"
+                subtitle="Manage cycles, roles and applicant reviews."
+                icon="briefcase-outline"
+                onPress={() => navigation.navigate('RecruitmentAdmin')}
+              />
+            ) : null}
+          </>
+        ) : (
+          <>
+            <ActionRow
+              title="Transportation operations"
+              subtitle="Manage transportation activity within your assigned LGA."
+              icon="car-outline"
+              onPress={() => navigation.navigate('AdminTransportationDashboard')}
+            />
+            <ActionRow
+              title="Fumigation & cleaning"
+              subtitle="Manage local fumigation and cleaning service activity."
+              icon="sparkles-outline"
+              onPress={() => navigation.navigate('AdminFumigationDashboard')}
+            />
+          </>
+        )}
       </DashboardSection>
 
       <DashboardSection title="Property request workflow">

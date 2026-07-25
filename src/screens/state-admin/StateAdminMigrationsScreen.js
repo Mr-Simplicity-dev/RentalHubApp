@@ -38,7 +38,7 @@ const StateAdminMigrationsScreen = () => {
   const loadMigrations = async () => {
     if (!stateId) return;
     try {
-      const response = await stateAdminService.getStatePropertyApprovals(stateId, {
+      const response = await stateAdminService.getStatePropertyApprovals({
         status: activeTab,
       });
       setMigrations(pickList(response, ['data', 'approvals', 'properties']));
@@ -117,7 +117,7 @@ const StateAdminMigrationsScreen = () => {
       emptyMessage="Property migration requests for this state will appear here."
       emptyIcon="business-outline"
       renderItem={({ item }) => {
-        const status = item.status || item.approval_status || activeTab;
+        const status = item.approval_status || activeTab;
         return (
           <PremiumCard>
             <View style={styles.cardHeader}>

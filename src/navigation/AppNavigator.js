@@ -59,6 +59,8 @@ import AdminPropertiesScreen from '../screens/admin/AdminPropertiesScreen';
 import AdminApplicationsScreen from '../screens/admin/AdminApplicationsScreen';
 import AdminVerificationsScreen from '../screens/admin/AdminVerificationsScreen';
 import AdminComplianceScreen from '../screens/admin/AdminComplianceScreen';
+import AdminAppealsScreen from '../screens/admin/AdminAppealsScreen';
+import AdminMonitorScreen from '../screens/admin/AdminMonitorScreen';
 import AdminAgentAssignmentsScreen from '../screens/admin/AdminAgentAssignmentsScreen';
 
 import AgentDashboardScreen from '../screens/agent/AgentDashboardScreen';
@@ -78,6 +80,7 @@ import FinancialTransactionsScreen from '../screens/financial-admin/FinancialTra
 import FinancialWithdrawalsScreen from '../screens/financial-admin/FinancialWithdrawalsScreen';
 import FinancialCommissionsScreen from '../screens/financial-admin/FinancialCommissionsScreen';
 import FinancialControlsScreen from '../screens/financial-admin/FinancialControlsScreen';
+import LgaFinancialAdminDashboardScreen from '../screens/financial-admin/LgaFinancialAdminDashboardScreen';
 
 // ========== State Admin ==========
 import StateAdminDashboardScreen from '../screens/state-admin/StateAdminDashboardScreen';
@@ -203,6 +206,8 @@ const linkingConfig = {
       AdminApplications: 'admin/applications',
       AdminVerifications: 'admin/verifications',
       AdminCompliance: 'admin/compliance',
+      AdminAppeals: 'admin/appeals',
+      AdminMonitor: 'admin/monitor',
       AdminInspections: 'admin/inspections',
       AdminEvidenceVerifications: 'admin/evidence-verifications',
       AdminLedger: 'admin/ledger',
@@ -391,7 +396,6 @@ const ServiceAdminRoot = () => (
     <Stack.Screen name="Notifications" component={NotificationsScreen} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
     <Stack.Screen name="NativeTools" component={NativeToolsScreen} options={{ title: 'More Tools' }} />
-    <Stack.Screen name="ContactWidget" component={ContactWidgetScreen} options={{ title: 'Support' }} />
     {commonInfoScreens()}
   </Stack.Navigator>
 );
@@ -565,8 +569,8 @@ const AgentRoot = () => (
   </Stack.Navigator>
 );
 
-const LawyerRoot = () => (
-  <Stack.Navigator screenOptions={screenOptions}>
+const LawyerRoot = ({ initialRouteName = 'LawyerDashboard' }) => (
+  <Stack.Navigator initialRouteName={initialRouteName} screenOptions={screenOptions}>
     <Stack.Screen name="LawyerDashboard" component={LawyerDashboardScreen} options={{ title: 'Lawyer Dashboard' }} />
     <Stack.Screen name="PropertyList" component={PropertyListScreen} options={{ title: 'Browse Properties' }} />
     <Stack.Screen name="PropertyDetail" component={PropertyDetailScreen} options={{ title: 'Property Details' }} />
@@ -630,6 +634,8 @@ const AdminRoot = () => (
     <Stack.Screen name="AdminLedger" component={AdminLedgerScreen} options={{ title: 'Ledger' }} />
     <Stack.Screen name="AdminTransportationDashboard" component={AdminTransportationDashboardScreen} options={{ title: 'Transport Ops' }} />
     <Stack.Screen name="AdminFumigationDashboard" component={AdminFumigationDashboardScreen} options={{ title: 'Fumigation Ops' }} />
+    <Stack.Screen name="ServiceBookings" component={ServiceBookingsScreen} options={{ title: 'Service Bookings' }} />
+    <Stack.Screen name="FumigationCompliance" component={FumigationComplianceScreen} options={{ title: 'Safety Compliance' }} />
     <Stack.Screen name="PropertyDetail" component={PropertyDetailScreen} options={{ title: 'Property Details' }} />
     <Stack.Screen name="LocationInfo" component={LocationInfoScreen} options={{ title: 'Location' }} />
     <Stack.Screen name="Messages" component={MessagesScreen} />
@@ -653,12 +659,30 @@ const SuperAdminRoot = () => (
   <Stack.Navigator screenOptions={screenOptions}>
     <Stack.Screen name="SuperAdminDashboard" component={SuperAdminDashboardScreen} options={{ title: 'Super Admin' }} />
     <Stack.Screen name="AdminDashboard" component={AdminDashboardScreen} options={{ title: 'Admin Dashboard' }} />
+    <Stack.Screen name="AdminUsers" component={AdminUsersScreen} options={{ title: 'Users' }} />
+    <Stack.Screen name="AdminProperties" component={AdminPropertiesScreen} options={{ title: 'Properties' }} />
+    <Stack.Screen name="AdminApplications" component={AdminApplicationsScreen} options={{ title: 'Applications' }} />
+    <Stack.Screen name="AdminVerifications" component={AdminVerificationsScreen} options={{ title: 'Verifications' }} />
+    <Stack.Screen name="AdminCompliance" component={AdminComplianceScreen} options={{ title: 'Compliance' }} />
+    <Stack.Screen name="AdminAppeals" component={AdminAppealsScreen} options={{ title: 'Appeals' }} />
+    <Stack.Screen name="AdminMonitor" component={AdminMonitorScreen} options={{ title: 'Activity Monitor' }} />
+    <Stack.Screen name="AdminInspections" component={AdminInspectionsScreen} options={{ title: 'Inspections' }} />
+    <Stack.Screen name="AdminEvidenceVerifications" component={AdminEvidenceVerificationsScreen} options={{ title: 'Evidence Verifications' }} />
+    <Stack.Screen name="AdminLedger" component={AdminLedgerScreen} options={{ title: 'Ledger' }} />
+    <Stack.Screen name="AdminApplicationDetail" component={ApplicationDetailScreen} options={{ title: 'Application Details' }} />
     <Stack.Screen name="SuperAdminSeo" component={SuperAdminSeoDashboardScreen} options={{ title: 'SEO Dashboard' }} />
     <Stack.Screen name="SuperAdminSeoNested" component={SuperAdminSeoDashboardScreen} options={{ title: 'SEO Dashboard' }} />
     <Stack.Screen name="SuperAdminSupportGovernance" component={SuperAdminSupportGovernanceScreen} options={{ title: 'Support Governance' }} />
     <Stack.Screen name="SuperAdminTransportationDashboard" component={SuperAdminTransportationDashboardScreen} options={{ title: 'Transport Oversight' }} />
     <Stack.Screen name="SuperAdminFumigationDashboard" component={SuperAdminFumigationDashboardScreen} options={{ title: 'Fumigation Oversight' }} />
+    <Stack.Screen name="ServiceBookings" component={ServiceBookingsScreen} options={{ title: 'Service Bookings' }} />
+    <Stack.Screen name="FumigationCompliance" component={FumigationComplianceScreen} options={{ title: 'Safety Compliance' }} />
     <Stack.Screen name="SuperFinancialAdminDashboard" component={SuperFinancialAdminDashboardScreen} options={{ title: 'Super Financial' }} />
+    <Stack.Screen name="FinancialRevenueReport" component={FinancialRevenueReportScreen} options={{ title: 'Revenue Reports' }} />
+    <Stack.Screen name="FinancialTransactions" component={FinancialTransactionsScreen} options={{ title: 'Transactions' }} />
+    <Stack.Screen name="FinancialWithdrawals" component={FinancialWithdrawalsScreen} options={{ title: 'Withdrawals' }} />
+    <Stack.Screen name="FinancialCommissions" component={FinancialCommissionsScreen} options={{ title: 'Commissions' }} />
+    <Stack.Screen name="FinancialControls" component={FinancialControlsScreen} options={{ title: 'Financial Controls' }} />
     <Stack.Screen name="AdminAgentAssignments" component={AdminAgentAssignmentsScreen} options={{ title: 'Agent Assignments' }} />
     <Stack.Screen name="AdminLawyerInvites" component={AdminLawyerInvitesScreen} options={{ title: 'Lawyer Invites' }} />
     <Stack.Screen name="AdminPropertyDetail" component={AdminPropertyDetailScreen} options={{ title: 'Property Details' }} />
@@ -703,9 +727,10 @@ const SuperAdminRoot = () => (
   </Stack.Navigator>
 );
 
-const FinancialAdminRoot = () => (
-  <Stack.Navigator screenOptions={screenOptions}>
+const FinancialAdminRoot = ({ initialRouteName = 'FinancialAdminDashboard' }) => (
+  <Stack.Navigator initialRouteName={initialRouteName} screenOptions={screenOptions}>
     <Stack.Screen name="FinancialAdminDashboard" component={FinancialAdminDashboardScreen} options={{ title: 'Financial Admin' }} />
+    <Stack.Screen name="LgaFinancialAdminDashboard" component={LgaFinancialAdminDashboardScreen} options={{ title: 'LGA Financial Admin' }} />
     <Stack.Screen name="FinancialRevenueReport" component={FinancialRevenueReportScreen} options={{ title: 'Revenue Reports' }} />
     <Stack.Screen name="FinancialTransactions" component={FinancialTransactionsScreen} options={{ title: 'Transactions' }} />
     <Stack.Screen name="FinancialWithdrawals" component={FinancialWithdrawalsScreen} options={{ title: 'Withdrawals' }} />
@@ -755,6 +780,12 @@ const StateAdminRoot = () => (
   <Stack.Navigator screenOptions={screenOptions}>
     <Stack.Screen name="StateAdminDashboard" component={StateAdminDashboardScreen} options={{ title: 'State Admin' }} />
     <Stack.Screen name="StateAdminMigrations" component={StateAdminMigrationsScreen} options={{ title: 'Migrations' }} />
+    <Stack.Screen name="AdminAppeals" component={AdminAppealsScreen} options={{ title: 'Appeals' }} />
+    <Stack.Screen name="RecruitmentAdmin" component={RecruitmentAdminScreen} options={{ title: 'Recruitment Admin' }} />
+    <Stack.Screen name="AdminTransportationStateDashboard" component={AdminTransportationStateDashboardScreen} options={{ title: 'State Transport' }} />
+    <Stack.Screen name="AdminFumigationStateDashboard" component={AdminFumigationStateDashboardScreen} options={{ title: 'State Fumigation' }} />
+    <Stack.Screen name="ServiceBookings" component={ServiceBookingsScreen} options={{ title: 'Service Bookings' }} />
+    <Stack.Screen name="FumigationCompliance" component={FumigationComplianceScreen} options={{ title: 'Safety Compliance' }} />
     <Stack.Screen name="PropertyList" component={PropertyListScreen} options={{ title: 'Browse Properties' }} />
     <Stack.Screen name="PropertyDetail" component={PropertyDetailScreen} options={{ title: 'Property Details' }} />
     <Stack.Screen name="LocationInfo" component={LocationInfoScreen} options={{ title: 'Location' }} />
@@ -788,6 +819,20 @@ const StateAdminRoot = () => (
   </Stack.Navigator>
 );
 
+const RecruitmentAdminRoot = () => (
+  <Stack.Navigator screenOptions={screenOptions}>
+    <Stack.Screen name="RecruitmentAdmin" component={RecruitmentAdminScreen} options={{ title: 'Recruitment Admin' }} />
+    <Stack.Screen name="Profile" component={ProfileScreen} />
+    <Stack.Screen name="Messages" component={MessagesScreen} />
+    <Stack.Screen name="Notifications" component={NotificationsScreen} />
+    <Stack.Screen name="Careers" component={CareersScreen} options={{ title: 'Careers' }} />
+    <Stack.Screen name="Interview" component={InterviewScreen} options={{ title: 'Interview' }} />
+    <Stack.Screen name="RecruitmentApplication" component={RecruitmentApplicationScreen} options={{ title: 'Application' }} />
+    {commonVerificationScreens()}
+    {commonInfoScreens()}
+  </Stack.Navigator>
+);
+
 const RoleRouter = ({ userType }) => {
   const normalizedUserType = String(userType || '').trim().toLowerCase();
 
@@ -801,18 +846,20 @@ const RoleRouter = ({ userType }) => {
     case 'lawyer':
       return <LawyerRoot />;
     case 'state_lawyer':
+      return <LawyerRoot initialRouteName="StateLawyerDashboard" />;
     case 'super_lawyer':
-      return <LawyerRoot />;
+      return <LawyerRoot initialRouteName="SuperLawyerDashboard" />;
     case 'admin':
     case 'lga_admin':
       return <AdminRoot />;
     case 'super_admin':
       return <SuperAdminRoot />;
     case 'financial_admin':
+      return <FinancialAdminRoot />;
     case 'lga_financial_admin':
-      return <FinancialAdminRoot />;
+      return <FinancialAdminRoot initialRouteName="LgaFinancialAdminDashboard" />;
     case 'super_financial_admin':
-      return <FinancialAdminRoot />;
+      return <FinancialAdminRoot initialRouteName="SuperFinancialAdminDashboard" />;
     case 'state_admin':
     case 'state_financial_admin':
       return <StateAdminRoot />;
@@ -828,6 +875,8 @@ const RoleRouter = ({ userType }) => {
     case 'state_fumigation_admin':
     case 'super_fumigation_admin':
       return <ServiceAdminRoot />;
+    case 'recruitment_admin':
+      return <RecruitmentAdminRoot />;
     default:
       return <TenantRoot />;
   }

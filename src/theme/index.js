@@ -28,6 +28,40 @@ export const typography = {
   bold: Platform.select({ ios: 'Inter-Bold', android: 'Inter-Bold', default: 'Inter' }),
 };
 
+export const typeScale = {
+  xs: 11,
+  sm: 13,
+  base: 15,
+  md: 17,
+  lg: 20,
+  xl: 24,
+  xxl: 32,
+  hero: 36,
+};
+
+export const letterSpacing = {
+  tight: -1.25,
+  snug: -0.5,
+  normal: 0,
+  wide: 0.5,
+  wider: 1.25,
+};
+
+export const lineHeight = {
+  none: 1,
+  tight: 1.2,
+  normal: 1.4,
+  relaxed: 1.6,
+};
+
+// Maps fontWeight numbers to the correct Inter font family
+export const fontWeightToFamily = (weight) => {
+  if (weight >= 800) return typography.bold;
+  if (weight >= 600) return typography.semibold;
+  if (weight >= 500) return typography.medium;
+  return typography.regular;
+};
+
 export const shadows = {
   soft: Platform.select({
     ios: {

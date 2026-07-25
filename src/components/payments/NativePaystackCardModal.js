@@ -18,6 +18,7 @@ import {
   openPaystackBrowserCheckout,
 } from '../../services/nativePaymentService';
 import { getErrorMessage } from '../../utils/http';
+import { colors, typography } from '../../theme';
 
 const NativePaystackCardModal = ({
   visible,
@@ -173,7 +174,7 @@ const styles = StyleSheet.create({
     width: 36,
   },
   headerCopy: { flex: 1 },
-  title: { color: '#071A3D', fontSize: 20, fontWeight: '800' },
+  title: { fontFamily: typography.bold, color: '#071A3D', fontSize: 20 },
   subtitle: { color: '#64748b', fontSize: 12, lineHeight: 18, marginTop: 3 },
   closeButton: {
     alignItems: 'center',
@@ -190,7 +191,7 @@ const styles = StyleSheet.create({
     padding: 13,
   },
   amountLabel: { color: '#2563eb', fontSize: 11, fontWeight: '700' },
-  amountValue: { color: '#071A3D', fontSize: 21, fontWeight: '900', marginTop: 3 },
+  amountValue: { fontFamily: typography.bold, color: '#071A3D', fontSize: 21, marginTop: 3 },
   nativeCard: {
     alignItems: 'center',
     backgroundColor: '#f8fafc',
@@ -199,7 +200,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 16,
   },
-  nativeTitle: { color: '#071A3D', fontSize: 16, fontWeight: '800', marginTop: 8 },
+  nativeTitle: { fontFamily: typography.bold, color: '#071A3D', fontSize: 16, marginTop: 8 },
   nativeText: {
     color: '#475569',
     fontSize: 12,
@@ -215,7 +216,7 @@ const styles = StyleSheet.create({
     marginTop: 14,
     paddingVertical: 14,
   },
-  primaryText: { color: '#ffffff', fontSize: 15, fontWeight: '800' },
+  primaryText: { fontFamily: typography.bold, color: '#ffffff', fontSize: 15 },
   secondaryButton: {
     alignItems: 'center',
     borderColor: '#0A66C2',
@@ -224,7 +225,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     paddingVertical: 13,
   },
-  secondaryText: { color: '#0A66C2', fontSize: 14, fontWeight: '800' },
+  secondaryText: { fontFamily: typography.bold, color: '#0A66C2', fontSize: 14 },
   fallbackCard: {
     alignItems: 'flex-start',
     backgroundColor: '#eff6ff',
@@ -234,7 +235,7 @@ const styles = StyleSheet.create({
     gap: 6,
     padding: 14,
   },
-  fallbackTitle: { color: '#1e3a8a', fontSize: 14, fontWeight: '800' },
+  fallbackTitle: { fontFamily: typography.bold, color: '#1e3a8a', fontSize: 14 },
   fallbackText: { color: '#475569', fontSize: 12, lineHeight: 18 },
   platformNote: {
     color: '#64748b',

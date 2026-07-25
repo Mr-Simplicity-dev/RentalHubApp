@@ -16,8 +16,10 @@ export const adminService = {
     return response.data;
   },
 
-  deleteUser: async (id) => {
-    const response = await api.delete(`/admin/users/${id}`);
+  deleteUser: async (id, reason) => {
+    const response = await api.delete(`/admin/users/${id}`, {
+      data: { reason },
+    });
     return response.data;
   },
 
@@ -66,13 +68,18 @@ export const adminService = {
     return response.data;
   },
 
-  approveApplication: async (id) => {
-    const response = await api.post(`/admin/applications/${id}/approve`);
+  approveApplication: async (id, reason) => {
+    const response = await api.post(`/admin/applications/${id}/approve`, { reason });
     return response.data;
   },
 
-  rejectApplication: async (id) => {
-    const response = await api.post(`/admin/applications/${id}/reject`);
+  rejectApplication: async (id, reason) => {
+    const response = await api.post(`/admin/applications/${id}/reject`, { reason });
+    return response.data;
+  },
+
+  verifyLedgerIntegrity: async () => {
+    const response = await api.get('/admin/ledger/verify');
     return response.data;
   },
 };

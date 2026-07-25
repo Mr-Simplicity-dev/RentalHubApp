@@ -33,7 +33,11 @@ const makePublicFeatures = () => [
   { label: 'Careers', path: '/careers' },
 ];
 
-const makeProtectedFeatures = (userType) => {
+const makeProtectedFeatures = (
+  userType,
+  hasRecruitmentAccess = false,
+  hasLgaJurisdiction = false
+) => {
   const base = [
     { label: 'Profile', path: '/profile' },
     { label: 'Payment History', path: '/payment-history' },
@@ -57,9 +61,10 @@ const makeProtectedFeatures = (userType) => {
     return [
       ...base,
       { label: 'Admin Dashboard', path: '/admin' },
-      { label: 'Recruitment Admin', path: '/admin/recruitment' },
+      ...(hasRecruitmentAccess
+        ? [{ label: 'Recruitment Admin', path: '/admin/recruitment' }]
+        : []),
       { label: 'Admin Lawyer Invites', path: '/admin/lawyer-invites' },
-      { label: 'Appeals', path: '/admin/appeals' },
       { label: 'Admin Users', path: '/admin/users' },
       { label: 'Admin Properties', path: '/admin/properties' },
       { label: 'Admin Applications', path: '/admin/applications' },
@@ -71,16 +76,36 @@ const makeProtectedFeatures = (userType) => {
       { label: 'Admin Agent Management', path: '/admin/agents' },
       { label: 'Admin Financial Dashboard', path: '/admin/financial-dashboard' },
       { label: 'Admin State Dashboard', path: '/admin/state-dashboard' },
-      { label: 'LGA Transportation Dashboard', path: '/admin/transportation' },
-      { label: 'LGA Fumigation Dashboard', path: '/admin/fumigation-cleaning' },
+      ...(hasLgaJurisdiction
+        ? [
+            { label: 'LGA Transportation Dashboard', path: '/admin/transportation' },
+            { label: 'LGA Fumigation Dashboard', path: '/admin/fumigation-cleaning' },
+          ]
+        : []),
     ];
   }
 
-  if (userType === 'financial_admin' || userType === 'lga_financial_admin') {
+  if (userType === 'recruitment_admin') {
+    return [
+      { label: 'Profile', path: '/profile' },
+      { label: 'Messages', path: '/messages' },
+      { label: 'Settings', path: '/settings' },
+      { label: 'Recruitment Dashboard', path: '/dashboard' },
+      { label: 'Recruitment Workspace', path: '/admin/recruitment' },
+    ];
+  }
+
+  if (userType === 'financial_admin') {
     return [
       ...base,
       { label: 'Financial Dashboard', path: '/admin/financial-dashboard' },
-      { label: 'Admin Dashboard', path: '/admin' },
+    ];
+  }
+
+  if (userType === 'lga_financial_admin') {
+    return [
+      ...base,
+      { label: 'LGA Financial Dashboard', path: '/admin/financial-dashboard' },
     ];
   }
 
@@ -88,7 +113,6 @@ const makeProtectedFeatures = (userType) => {
     return [
       ...base,
       { label: 'Super Financial Dashboard', path: '/admin/super-financial-dashboard' },
-      { label: 'Admin Dashboard', path: '/admin' },
     ];
   }
 
@@ -97,6 +121,7 @@ const makeProtectedFeatures = (userType) => {
       ...base,
       { label: 'State Dashboard', path: '/admin/state-dashboard' },
       { label: 'Admin Dashboard', path: '/admin' },
+      { label: 'Appeals', path: '/admin/appeals' },
       { label: 'State Transportation Dashboard', path: '/admin/transportation/state' },
       { label: 'State Fumigation Dashboard', path: '/admin/fumigation-cleaning/state' },
     ];
@@ -116,7 +141,9 @@ const makeProtectedFeatures = (userType) => {
     return [
       ...base,
       { label: 'Super Admin Dashboard', path: '/super-admin' },
-      { label: 'Recruitment Admin', path: '/admin/recruitment' },
+      ...(hasRecruitmentAccess
+        ? [{ label: 'Recruitment Admin', path: '/admin/recruitment' }]
+        : []),
       { label: 'Admin Dashboard', path: '/admin' },
       { label: 'Admin Users', path: '/admin/users' },
       { label: 'Admin Properties', path: '/admin/properties' },
@@ -226,7 +253,21 @@ const makeProtectedFeatures = (userType) => {
     return [
       ...base,
       { label: 'Lawyer Dashboard', path: '/lawyer' },
+      { label: 'Case Verification', path: '/verify-case' },
+    ];
+  }
+
+  if (userType === 'state_lawyer') {
+    return [
+      ...base,
       { label: 'State Lawyer Dashboard', path: '/lawyer/state' },
+      { label: 'Case Verification', path: '/verify-case' },
+    ];
+  }
+
+  if (userType === 'super_lawyer') {
+    return [
+      ...base,
       { label: 'Super Lawyer Dashboard', path: '/lawyer/super' },
       { label: 'Case Verification', path: '/verify-case' },
     ];
@@ -253,8 +294,18 @@ const NativeToolsScreen = ({ navigation }) => {
 
   const publicFeatures = useMemo(() => makePublicFeatures(), []);
   const protectedFeatures = useMemo(
-    () => makeProtectedFeatures(user?.user_type),
-    [user?.user_type]
+    () =>
+      makeProtectedFeatures(
+        user?.user_type,
+        user?.is_recruitment_admin === true,
+        Boolean(user?.assigned_state && user?.assigned_city)
+      ),
+    [
+      user?.assigned_city,
+      user?.assigned_state,
+      user?.is_recruitment_admin,
+      user?.user_type,
+    ]
   );
 
   const dashboardTarget = {
@@ -262,12 +313,15 @@ const NativeToolsScreen = ({ navigation }) => {
     landlord: { name: 'MainTabs', params: { screen: 'DashboardTab' } },
     agent: { name: 'AgentDashboard' },
     lawyer: { name: 'LawyerDashboard' },
+    state_lawyer: { name: 'StateLawyerDashboard' },
+    super_lawyer: { name: 'SuperLawyerDashboard' },
     admin: { name: 'AdminDashboard' },
     lga_admin: { name: 'AdminDashboard' },
     super_admin: { name: 'SuperAdminDashboard' },
     financial_admin: { name: 'FinancialAdminDashboard' },
-    lga_financial_admin: { name: 'FinancialAdminDashboard' },
-    super_financial_admin: { name: 'FinancialAdminDashboard' },
+    lga_financial_admin: { name: 'LgaFinancialAdminDashboard' },
+    super_financial_admin: { name: 'SuperFinancialAdminDashboard' },
+    recruitment_admin: { name: 'RecruitmentAdmin' },
     state_admin: { name: 'StateAdminDashboard' },
     state_financial_admin: { name: 'StateAdminDashboard' },
     lga_support_admin: { name: 'ServiceOperationsDashboard' },
@@ -283,6 +337,11 @@ const NativeToolsScreen = ({ navigation }) => {
     super_fumigation_admin: { name: 'ServiceOperationsDashboard' },
   }[user?.user_type];
   const usesMainTabs = user?.user_type === 'tenant' || user?.user_type === 'landlord';
+  const financialDashboardTarget = user?.user_type === 'lga_financial_admin'
+    ? { name: 'LgaFinancialAdminDashboard' }
+    : user?.user_type === 'super_financial_admin'
+      ? { name: 'SuperFinancialAdminDashboard' }
+      : { name: 'FinancialAdminDashboard' };
 
   const nativeTargets = {
     '/': usesMainTabs
@@ -327,10 +386,7 @@ const NativeToolsScreen = ({ navigation }) => {
     '/admin': { name: 'AdminDashboard' },
     '/admin/recruitment': { name: 'RecruitmentAdmin' },
     '/admin/lawyer-invites': { name: 'AdminLawyerInvites' },
-    '/admin/appeals': [
-      { name: 'SuperAdminDashboard', params: { initialPanel: 'appeals' } },
-      { name: 'AdminCompliance' },
-    ],
+    '/admin/appeals': { name: 'AdminAppeals' },
     '/admin/users': { name: 'AdminUsers' },
     '/admin/properties': { name: 'AdminProperties' },
     '/admin/applications': { name: 'AdminApplications' },
@@ -340,13 +396,13 @@ const NativeToolsScreen = ({ navigation }) => {
     '/admin/evidence-verifications': { name: 'AdminEvidenceVerifications' },
     '/admin/ledger': { name: 'AdminLedger' },
     '/admin/agents': { name: 'AdminAgentAssignments' },
-    '/admin/financial-dashboard': { name: 'FinancialAdminDashboard' },
+    '/admin/financial-dashboard': financialDashboardTarget,
     '/admin/state-dashboard': { name: 'StateAdminDashboard' },
     '/admin/withdrawals': { name: 'FinancialWithdrawals' },
     '/admin/seo': { name: 'SuperAdminSeo' },
-    '/admin/monitor': { name: 'SuperAdminDashboard', params: { initialPanel: 'monitor' } },
+    '/admin/monitor': { name: 'AdminMonitor' },
     '/admin/live-moderation': { name: 'SuperAdminDashboard', params: { initialPanel: 'moderation' } },
-    '/super-admin?tab=broadcast': { name: 'SuperAdminDashboard', params: { initialPanel: 'broadcast' } },
+    '/super-admin?tab=broadcast': { name: 'SuperAdminDashboard', params: { initialPanel: 'broadcasts' } },
     '/admin/lga-support-dashboard': [
       { name: 'AdminSupportDashboard' },
       { name: 'ServiceOperationsDashboard' },

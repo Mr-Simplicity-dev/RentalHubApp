@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
+import OperationNoteModal from '../../components/admin/OperationNoteModal';
 import {
   InfoRow,
   PremiumButton,
@@ -21,6 +22,7 @@ const AdminUserDetailScreen = ({ route, navigation }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
+  const [disablePromptVisible, setDisablePromptVisible] = useState(false);
 
   useEffect(() => {
     if (userId) loadUser();
@@ -42,17 +44,18 @@ const AdminUserDetailScreen = ({ route, navigation }) => {
     }
   };
 
-  const handleDeleteUser = async () => {
+  const handleDeleteUser = async (reason) => {
     setDeleting(true);
     try {
-      await adminService.deleteUser(userId);
-      Toast.show({ type: 'success', text1: 'User deleted' });
+      await adminService.deleteUser(userId, reason);
+      setDisablePromptVisible(false);
+      Toast.show({ type: 'success', text1: 'User disabled' });
       navigation.goBack();
     } catch (error) {
       Toast.show({
         type: 'error',
         text1: 'Failed',
-        text2: getErrorMessage(error, 'Could not delete user'),
+        text2: getErrorMessage(error, 'Could not disable user'),
       });
     } finally {
       setDeleting(false);
@@ -76,8 +79,11 @@ const AdminUserDetailScreen = ({ route, navigation }) => {
   const userType = user.user_type || 'N/A';
   const status = user.status || 'active';
 
+  const canDisable = ['tenant', 'landlord'].includes(userType);
+
   return (
-    <PremiumScreen>
+    <>
+      <PremiumScreen>
       <PremiumHero
         eyebrow="Admin user profile"
         title={user.full_name || user.name || 'User account'}
@@ -116,20 +122,36 @@ const AdminUserDetailScreen = ({ route, navigation }) => {
         />
       </PremiumCard>
 
-      <PremiumCard style={styles.dangerZone}>
-        <Text style={styles.dangerTitle}>Danger zone</Text>
-        <Text style={styles.dangerCopy}>
-          Delete this account only when you are sure it is no longer needed.
-        </Text>
-        <PremiumButton
-          title="Delete user"
-          variant="danger"
-          onPress={handleDeleteUser}
-          loading={deleting}
-          icon="trash-outline"
-        />
-      </PremiumCard>
-    </PremiumScreen>
+        {canDisable ? (
+          <PremiumCard style={styles.dangerZone}>
+            <Text style={styles.dangerTitle}>Danger zone</Text>
+            <Text style={styles.dangerCopy}>
+              Disabling this account immediately blocks access and records the reason in the audit history.
+            </Text>
+            <PremiumButton
+              title="Disable user"
+              variant="danger"
+              onPress={() => setDisablePromptVisible(true)}
+              loading={deleting}
+              icon="ban-outline"
+            />
+          </PremiumCard>
+        ) : null}
+      </PremiumScreen>
+      <OperationNoteModal
+        visible={disablePromptVisible}
+        title="Disable user account"
+        message={`${user.full_name || user.email || 'This user'} will no longer be able to sign in.`}
+        label="Disable reason"
+        placeholder="Explain why this account must be disabled"
+        confirmText="Disable account"
+        icon="ban-outline"
+        variant="danger"
+        loading={deleting}
+        onCancel={() => setDisablePromptVisible(false)}
+        onConfirm={handleDeleteUser}
+      />
+    </>
   );
 };
 

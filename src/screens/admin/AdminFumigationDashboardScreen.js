@@ -43,7 +43,12 @@ const AdminFumigationDashboardScreen = ({ navigation }) => {
   const cards = [
     { label: 'Pending Bookings', value: stats.pending_bookings ?? stats.pendingBookings ?? '-', icon: 'time-outline', color: '#A66B00' },
     { label: 'Completed', value: stats.completed_bookings ?? stats.completedBookings ?? '-', icon: 'checkmark-circle-outline', color: colors.success },
-    { label: 'Compliance Rate', value: stats.compliance_rate ?? stats.complianceRate ?? '-', icon: 'shield-checkmark-outline', color: colors.blue },
+    {
+      label: 'Compliance Rate',
+      value: stats.compliance_rate == null ? '-' : `${stats.compliance_rate}%`,
+      icon: 'shield-checkmark-outline',
+      color: colors.blue,
+    },
   ];
 
   return (
@@ -68,12 +73,6 @@ const AdminFumigationDashboardScreen = ({ navigation }) => {
           subtitle="Review and manage fumigation bookings."
           icon="sparkles-outline"
           onPress={() => navigation.navigate('ServiceBookings', { type: 'fumigation' })}
-        />
-        <ActionRow
-          title="Fumigation compliance"
-          subtitle="Submit and review safety compliance records."
-          icon="shield-checkmark-outline"
-          onPress={() => navigation.navigate('FumigationCompliance')}
         />
       </DashboardSection>
     </DashboardScreen>

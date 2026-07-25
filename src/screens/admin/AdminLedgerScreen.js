@@ -1,114 +1,187 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/Ionicons';
-import api from '../../services/api';
-import { getErrorMessage, pickObject } from '../../utils/http';
-import { colors } from '../../theme';
-import { MetricCard, MetricGrid } from '../../components/dashboard/DashboardKit';
-
-const formatCurrency = (value) => `₦${Number(value || 0).toLocaleString()}`;
+import {
+  InfoRow,
+  PremiumButton,
+  PremiumCard,
+  PremiumHero,
+  PremiumScreen,
+  PremiumSectionTitle,
+  StatusPill,
+} from '../../components/common/PremiumLayout';
+import { adminService } from '../../services/adminService';
+import { getErrorMessage } from '../../utils/http';
+import { colors, radius, typography } from '../../theme';
 
 const AdminLedgerScreen = () => {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [verification, setVerification] = useState(null);
+  const [checking, setChecking] = useState(false);
+  const [lastCheckedAt, setLastCheckedAt] = useState(null);
 
-  const loadLedger = async () => {
-    setLoading(true);
+  const verifyIntegrity = async () => {
+    setChecking(true);
     try {
-      const response = await api.get('/admin/ledger');
-      setData(pickObject(response, ['data']));
+      const result = await adminService.verifyLedgerIntegrity();
+      setVerification(result);
+      setLastCheckedAt(new Date());
+
+      if (result?.success) {
+        Toast.show({
+          type: 'success',
+          text1: 'Integrity confirmed',
+          text2: result.message || 'The audit ledger hash chain is intact.',
+        });
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: 'Integrity issue detected',
+          text2: result?.compromisedAt
+            ? `The hash chain differs at audit record #${result.compromisedAt}.`
+            : result?.message || 'The ledger could not be verified as intact.',
+        });
+      }
     } catch (error) {
+      const message = getErrorMessage(error, 'Could not verify ledger integrity');
+      setVerification({ requestFailed: true, message });
+      setLastCheckedAt(new Date());
       Toast.show({
         type: 'error',
-        text1: 'Failed',
-        text2: getErrorMessage(error, 'Could not load ledger'),
+        text1: 'Verification failed',
+        text2: message,
       });
     } finally {
-      setLoading(false);
+      setChecking(false);
     }
   };
 
-  useEffect(() => {
-    loadLedger();
-  }, []);
+  const status = checking
+    ? { label: 'Checking', color: colors.blue }
+    : verification?.requestFailed
+      ? { label: 'Check failed', color: colors.danger }
+      : verification?.success
+        ? { label: 'Integrity intact', color: colors.success }
+        : verification
+          ? { label: 'Issue detected', color: colors.danger }
+          : { label: 'Not checked', color: colors.muted };
 
-  const totals = data?.totals || data?.summary || {};
-  const transactions = data?.transactions || data?.recent_transactions || data?.entries || [];
-
-  const summaryCards = [
-    { label: 'Total In', value: formatCurrency(totals.total_in ?? totals.totalIn ?? 0), icon: 'arrow-down-circle-outline', color: colors.success },
-    { label: 'Total Out', value: formatCurrency(totals.total_out ?? totals.totalOut ?? 0), icon: 'arrow-up-circle-outline', color: colors.danger },
-    { label: 'Balance', value: formatCurrency(totals.balance ?? 0), icon: 'wallet-outline', color: colors.blue },
-  ];
+  const lastCheckedLabel = lastCheckedAt
+    ? lastCheckedAt.toLocaleString()
+    : 'Run a check to create a current result';
 
   return (
-    <View style={styles.screen}>
-      <View style={styles.header}>
-        <Icon name="book-outline" size={20} color="#0f172a" />
-        <Text style={styles.title}>Ledger</Text>
-      </View>
-      <FlatList
-        data={transactions}
-        keyExtractor={(item, index) => String(item.id || index)}
-        contentContainerStyle={styles.list}
-        refreshing={loading}
-        onRefresh={loadLedger}
-        ListHeaderComponent={
-          <MetricGrid>
-            {summaryCards.map((card) => (
-              <MetricCard key={card.label} {...card} />
-            ))}
-          </MetricGrid>
-        }
-        renderItem={({ item }) => {
-          const type = item.type || item.entry_type || 'debit';
-          const isCredit = type === 'credit' || type === 'in';
-          return (
-            <View style={styles.row}>
-              <View style={styles.rowCopy}>
-                <Text style={styles.rowTitle}>{item.description || item.narration || 'Transaction'}</Text>
-                <Text style={styles.rowMeta}>{item.date || item.created_at || 'N/A'}</Text>
-              </View>
-              <View style={styles.amountCol}>
-                <Text style={[styles.amount, { color: isCredit ? colors.success : colors.danger }]}>
-                  {formatCurrency(item.amount ?? 0)}
-                </Text>
-                <Text style={[styles.typeBadge, { color: isCredit ? colors.success : colors.danger }]}>
-                  {isCredit ? 'credit' : 'debit'}
-                </Text>
-              </View>
-            </View>
-          );
-        }}
-        ListEmptyComponent={<Text style={styles.empty}>No transactions found.</Text>}
+    <PremiumScreen>
+      <PremiumHero
+        eyebrow="Security operations"
+        title="Audit ledger integrity"
+        subtitle="Verify that RentalHub's append-only audit records still form an unbroken cryptographic hash chain."
+        icon="shield-checkmark-outline"
+        right={<StatusPill label={status.label} color={status.color} />}
       />
-    </View>
+
+      <PremiumSectionTitle
+        title="Integrity check"
+        subtitle="This is an explicit server verification. It does not load balances, payments or transaction history."
+      />
+      <PremiumCard>
+        <View style={[styles.resultIcon, { backgroundColor: `${status.color}14` }]}>
+          <Icon
+            name={verification?.success ? 'checkmark-circle-outline' : verification ? 'warning-outline' : 'finger-print-outline'}
+            size={30}
+            color={status.color}
+          />
+        </View>
+        <Text style={styles.resultTitle}>{status.label}</Text>
+        <Text style={styles.resultMessage}>
+          {verification?.message
+            || 'Run the integrity check when you need a current confirmation of the audit chain.'}
+        </Text>
+
+        <View style={styles.details}>
+          <InfoRow icon="time-outline" label="Last checked" value={lastCheckedLabel} />
+          {verification && !verification.success && !verification.requestFailed ? (
+            <InfoRow
+              icon="alert-circle-outline"
+              label="Compromised audit record"
+              value={verification.compromisedAt ? `#${verification.compromisedAt}` : 'Not identified'}
+              valueStyle={styles.dangerText}
+            />
+          ) : null}
+        </View>
+
+        <PremiumButton
+          title={verification ? 'Run integrity check again' : 'Run integrity check'}
+          icon="shield-checkmark-outline"
+          loading={checking}
+          onPress={verifyIntegrity}
+          style={styles.button}
+        />
+      </PremiumCard>
+
+      <PremiumCard style={styles.noteCard}>
+        <View style={styles.noteIcon}>
+          <Icon name="information-circle-outline" size={20} color={colors.blue} />
+        </View>
+        <Text style={styles.noteText}>
+          A detected mismatch identifies the first audit-record ID whose stored hash differs from the server's recalculation. Escalate that result before relying on later audit entries.
+        </Text>
+      </PremiumCard>
+    </PremiumScreen>
   );
 };
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#f8fafc' },
-  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginVertical: 12, gap: 8 },
-  title: { fontSize: 22, fontWeight: '800', color: '#0f172a' },
-  list: { paddingHorizontal: 14, paddingBottom: 20 },
-  row: {
+  resultIcon: {
     alignItems: 'center',
-    backgroundColor: '#ffffff',
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
-    borderRadius: 12,
-    flexDirection: 'row',
-    marginBottom: 8,
-    padding: 12,
+    borderRadius: radius.md,
+    height: 54,
+    justifyContent: 'center',
+    width: 54,
   },
-  rowCopy: { flex: 1 },
-  rowTitle: { fontSize: 14, fontWeight: '700', color: '#0f172a' },
-  rowMeta: { marginTop: 3, color: '#475569', fontSize: 12 },
-  amountCol: { alignItems: 'flex-end' },
-  amount: { fontSize: 15, fontWeight: '800' },
-  typeBadge: { fontSize: 11, fontWeight: '600', marginTop: 2, textTransform: 'capitalize' },
-  empty: { color: '#64748b', textAlign: 'center', marginTop: 40 },
+  resultTitle: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 20,
+    marginTop: 14,
+  },
+  resultMessage: {
+    color: colors.text,
+    fontFamily: typography.regular,
+    fontSize: 14,
+    lineHeight: 21,
+    marginTop: 5,
+  },
+  details: {
+    marginTop: 12,
+  },
+  dangerText: {
+    color: colors.danger,
+  },
+  button: {
+    marginTop: 18,
+  },
+  noteCard: {
+    alignItems: 'flex-start',
+    backgroundColor: colors.surfaceBlue,
+    flexDirection: 'row',
+    gap: 11,
+  },
+  noteIcon: {
+    alignItems: 'center',
+    backgroundColor: colors.white,
+    borderRadius: 16,
+    height: 34,
+    justifyContent: 'center',
+    width: 34,
+  },
+  noteText: {
+    color: colors.text,
+    flex: 1,
+    fontFamily: typography.regular,
+    fontSize: 13,
+    lineHeight: 20,
+  },
 });
 
 export default AdminLedgerScreen;

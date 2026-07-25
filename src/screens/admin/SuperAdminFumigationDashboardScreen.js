@@ -41,12 +41,17 @@ const SuperAdminFumigationDashboardScreen = ({ navigation }) => {
   }, []);
 
   const totalBookings = stats?.total_bookings ?? stats?.totalBookings ?? 0;
-  const compliancePercent = stats?.compliance_percent ?? stats?.compliancePercent ?? '-';
+  const compliancePercent = stats?.compliance_rate;
   const activeProviders = stats?.active_providers ?? stats?.activeProviders ?? 0;
 
   const summaryCards = [
     { label: 'Nationwide Bookings', value: String(totalBookings), icon: 'calendar-outline', color: colors.blue },
-    { label: 'Compliance %', value: String(compliancePercent), icon: 'shield-checkmark-outline', color: colors.success },
+    {
+      label: 'Compliance %',
+      value: compliancePercent == null ? '-' : `${compliancePercent}%`,
+      icon: 'shield-checkmark-outline',
+      color: colors.success,
+    },
     { label: 'Active Providers', value: String(activeProviders), icon: 'people-outline', color: '#7C3AED' },
   ];
 
@@ -72,12 +77,6 @@ const SuperAdminFumigationDashboardScreen = ({ navigation }) => {
           subtitle="Review recent fumigation and cleaning bookings."
           icon="sparkles-outline"
           onPress={() => navigation.navigate('ServiceBookings', { type: 'fumigation' })}
-        />
-        <ActionRow
-          title="Compliance records"
-          subtitle="Review safety compliance and provider records."
-          icon="shield-checkmark-outline"
-          onPress={() => navigation.navigate('FumigationCompliance')}
         />
         <ActionRow
           title="Messages"

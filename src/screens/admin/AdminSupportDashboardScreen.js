@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useContext, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import { StyleSheet, Text } from 'react-native';
 import Toast from 'react-native-toast-message';
 import api from '../../services/api';
@@ -12,6 +12,7 @@ import {
   MetricCard,
   MetricGrid,
 } from '../../components/dashboard/DashboardKit';
+import { AuthContext } from '../../context/AuthContext';
 
 const LABELS = {
   lga: { eyebrow: 'LGA SUPPORT', title: 'Local support desk' },
@@ -20,7 +21,14 @@ const LABELS = {
 };
 
 const AdminSupportDashboardScreen = ({ navigation, route }) => {
-  const level = route?.params?.level || 'lga';
+  const { user } = useContext(AuthContext);
+  const role = String(user?.user_type || '').trim().toLowerCase();
+  const level = useMemo(() => {
+    if (role === 'super_admin' || role === 'super_support_admin') return 'super';
+    if (role === 'state_support_admin') return 'state';
+    return 'lga';
+  }, [role]);
+  const isSuperSupport = level === 'super';
   const [dashboard, setDashboard] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -111,12 +119,14 @@ const AdminSupportDashboardScreen = ({ navigation, route }) => {
           icon="pulse-outline"
           onPress={() => navigation.navigate('ActivityFeed')}
         />
-        <ActionRow
-          title="All Activity"
-          subtitle="Full activity log across all locations."
-          icon="list-outline"
-          onPress={() => navigation.navigate('AllActivity')}
-        />
+        {isSuperSupport ? (
+          <ActionRow
+            title="All Activity"
+            subtitle="Full activity log across all locations."
+            icon="list-outline"
+            onPress={() => navigation.navigate('AllActivity')}
+          />
+        ) : null}
       </DashboardSection>
     </DashboardScreen>
   );

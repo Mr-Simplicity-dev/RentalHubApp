@@ -1,8 +1,8 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import Toast from 'react-native-toast-message';
-import api from '../../services/api';
+import { legalService } from '../../services/legalService';
 import { colors } from '../../theme';
-import { getErrorMessage, pickObject } from '../../utils/http';
+import { getErrorMessage, pickList } from '../../utils/http';
 import {
   ActionRow,
   DashboardHero,
@@ -13,7 +13,7 @@ import {
 } from '../../components/dashboard/DashboardKit';
 
 const SuperLawyerDashboardScreen = ({ navigation }) => {
-  const [dashboard, setDashboard] = useState(null);
+  const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useLayoutEffect(() => {
@@ -23,8 +23,8 @@ const SuperLawyerDashboardScreen = ({ navigation }) => {
   const loadDashboard = async () => {
     setLoading(true);
     try {
-      const response = await api.get('/lawyer/super/dashboard');
-      setDashboard(pickObject(response, ['data', 'dashboard']) || {});
+      const response = await legalService.getAuthorizedProperties();
+      setProperties(pickList(response, ['data', 'properties']));
     } catch (error) {
       Toast.show({
         type: 'error',
@@ -40,22 +40,29 @@ const SuperLawyerDashboardScreen = ({ navigation }) => {
     loadDashboard();
   }, []);
 
-  const nationwideCases = dashboard?.nationwide_cases ?? dashboard?.nationwideCases ?? 0;
-  const stateReports = dashboard?.state_reports ?? dashboard?.stateReports ?? 0;
-  const pendingReviews = dashboard?.pending_reviews ?? dashboard?.pendingReviews ?? 0;
+  const representedClients = new Set(
+    properties
+      .map((property) => property.client_email || property.client_name)
+      .filter(Boolean)
+  ).size;
+  const coveredStates = new Set(
+    properties
+      .map((property) => property.state_name || property.state)
+      .filter(Boolean)
+  ).size;
 
   const summaryCards = [
-    { label: 'Nationwide Cases', value: String(nationwideCases), icon: 'globe-outline', color: colors.blue },
-    { label: 'State Reports', value: String(stateReports), icon: 'document-text-outline', color: '#7C3AED' },
-    { label: 'Pending Reviews', value: String(pendingReviews), icon: 'time-outline', color: '#A66B00' },
+    { label: 'Authorized Properties', value: String(properties.length), icon: 'business-outline', color: colors.blue },
+    { label: 'Represented Clients', value: String(representedClients), icon: 'people-outline', color: '#7C3AED' },
+    { label: 'Covered States', value: String(coveredStates), icon: 'map-outline', color: '#A66B00' },
   ];
 
   return (
     <DashboardScreen refreshing={loading} onRefresh={loadDashboard}>
       <DashboardHero
         eyebrow="SUPER LAWYER"
-        title="National legal oversight"
-        subtitle="Oversee nationwide cases, state reports and pending legal reviews."
+        title="Senior legal oversight"
+        subtitle="Review authorised property assignments and client matters without exposing unassigned confidential cases."
         icon="scale-outline"
         onRefresh={loadDashboard}
       />
@@ -69,7 +76,7 @@ const SuperLawyerDashboardScreen = ({ navigation }) => {
       <DashboardSection title="Legal tools">
         <ActionRow
           title="Properties & disputes"
-          subtitle="Review authorized properties and manage disputes across all states."
+          subtitle="Review authorised properties and manage disputes assigned to you."
           icon="business-outline"
           onPress={() => navigation.navigate('LawyerDashboard')}
         />

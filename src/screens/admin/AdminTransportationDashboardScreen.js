@@ -24,7 +24,8 @@ const AdminTransportationDashboardScreen = ({ navigation }) => {
     setLoading(true);
     try {
       const response = await serviceAdminService.getTransportationDashboard();
-      setStats(pickObject(response, ['data']));
+      const data = pickObject(response, ['data']) || {};
+      setStats(data.overview || {});
     } catch (error) {
       Toast.show({
         type: 'error',
@@ -42,8 +43,13 @@ const AdminTransportationDashboardScreen = ({ navigation }) => {
 
   const cards = [
     { label: 'Total Bookings', value: stats.total_bookings ?? stats.totalBookings ?? '-', icon: 'calendar-outline', color: colors.blue },
-    { label: 'Active Trips', value: stats.active_trips ?? stats.activeTrips ?? '-', icon: 'car-outline', color: colors.success },
-    { label: 'Pending Dispatches', value: stats.pending_dispatches ?? stats.pendingDispatches ?? '-', icon: 'time-outline', color: '#A66B00' },
+    {
+      label: 'Active Trips',
+      value: Number(stats.confirmed_bookings || 0) + Number(stats.in_progress_bookings || 0),
+      icon: 'car-outline',
+      color: colors.success,
+    },
+    { label: 'Pending', value: stats.pending_bookings ?? '-', icon: 'time-outline', color: '#A66B00' },
     { label: 'Revenue', value: `₦${Number(stats.total_revenue ?? stats.totalRevenue ?? 0).toLocaleString()}`, icon: 'cash-outline', color: '#7C3AED' },
   ];
 
@@ -69,12 +75,6 @@ const AdminTransportationDashboardScreen = ({ navigation }) => {
           subtitle="Review and manage transportation bookings."
           icon="car-outline"
           onPress={() => navigation.navigate('ServiceBookings', { type: 'transportation' })}
-        />
-        <ActionRow
-          title="Fumigation compliance"
-          subtitle="Review safety compliance records."
-          icon="shield-checkmark-outline"
-          onPress={() => navigation.navigate('FumigationCompliance')}
         />
       </DashboardSection>
     </DashboardScreen>

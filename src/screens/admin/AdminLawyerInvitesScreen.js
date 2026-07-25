@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Toast from 'react-native-toast-message';
-import { superAdminService } from '../../services/superAdminService';
+import Input from '../../components/common/Input';
+import { authService } from '../../services/authService';
 import { getErrorMessage, pickList } from '../../utils/http';
 import {
   InfoRow,
@@ -16,6 +17,9 @@ import { colors, typography } from '../../theme';
 const AdminLawyerInvitesScreen = () => {
   const [invites, setInvites] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [editingInviteId, setEditingInviteId] = useState(null);
+  const [editingEmail, setEditingEmail] = useState('');
+  const [busyAction, setBusyAction] = useState(null);
 
   useEffect(() => {
     loadInvites();
@@ -24,8 +28,8 @@ const AdminLawyerInvitesScreen = () => {
   const loadInvites = async () => {
     setLoading(true);
     try {
-      const response = await superAdminService.getLawyerInvites();
-      setInvites(pickList(response, ['data', 'invites']));
+      const response = await authService.getLawyerInvites();
+      setInvites(pickList(response, ['data']));
     } catch (error) {
       Toast.show({
         type: 'error',
@@ -38,31 +42,71 @@ const AdminLawyerInvitesScreen = () => {
   };
 
   const handleResend = async (inviteId) => {
+    setBusyAction(`resend:${inviteId}`);
     try {
-      await superAdminService.resendLawyerInvite(inviteId);
+      await authService.resendLawyerInvite(inviteId);
       Toast.show({ type: 'success', text1: 'Invite resent' });
+      await loadInvites();
     } catch (error) {
       Toast.show({
         type: 'error',
         text1: 'Failed',
         text2: getErrorMessage(error, 'Could not resend invite'),
       });
+    } finally {
+      setBusyAction(null);
     }
   };
 
-  const handleRevoke = async (inviteId) => {
+  const startEmailEdit = (invite) => {
+    setEditingInviteId(invite.id);
+    setEditingEmail(invite.lawyer_email || '');
+  };
+
+  const cancelEmailEdit = () => {
+    setEditingInviteId(null);
+    setEditingEmail('');
+  };
+
+  const handleEmailUpdate = async (inviteId) => {
+    const lawyerEmail = editingEmail.trim().toLowerCase();
+    if (!/^\S+@\S+\.\S+$/.test(lawyerEmail)) {
+      Toast.show({
+        type: 'error',
+        text1: 'Check the email',
+        text2: 'Enter a valid lawyer email address.',
+      });
+      return;
+    }
+
+    setBusyAction(`email:${inviteId}`);
     try {
-      await superAdminService.revokeLawyerInvite(inviteId);
-      Toast.show({ type: 'success', text1: 'Invite revoked' });
-      loadInvites();
+      await authService.updateLawyerInviteEmail(inviteId, lawyerEmail);
+      cancelEmailEdit();
+      Toast.show({ type: 'success', text1: 'Invite email updated' });
+      await loadInvites();
     } catch (error) {
       Toast.show({
         type: 'error',
         text1: 'Failed',
-        text2: getErrorMessage(error, 'Could not revoke invite'),
+        text2: getErrorMessage(error, 'Could not update the invite email'),
       });
+    } finally {
+      setBusyAction(null);
     }
   };
+
+  const getStatus = (invite) => {
+    if (invite.status === 'accepted') return 'accepted';
+    if (invite.expires_at && new Date(invite.expires_at).getTime() < Date.now()) {
+      return 'expired';
+    }
+    return invite.status || 'pending';
+  };
+
+  const formatDate = (value) => (
+    value ? new Date(value).toLocaleString() : 'Not available'
+  );
 
   return (
     <PremiumListScreen
@@ -77,7 +121,7 @@ const AdminLawyerInvitesScreen = () => {
         <PremiumHero
           eyebrow="Legal network"
           title="Lawyer invites"
-          subtitle="Monitor invitations, resend access and revoke pending invites from mobile."
+          subtitle="Monitor invitations, refresh access and correct pending invite email addresses."
           icon="briefcase-outline"
           right={<StatusPill label={`${invites.length} invites`} color={colors.blue} />}
         />
@@ -89,18 +133,66 @@ const AdminLawyerInvitesScreen = () => {
               <Text style={styles.inviteIconText}>LG</Text>
             </View>
             <View style={styles.cardCopy}>
-              <Text style={styles.cardTitle}>{item.email || 'No email provided'}</Text>
-              <Text style={styles.cardMeta}>{item.name || item.full_name || 'Name unavailable'}</Text>
+              <Text style={styles.cardTitle}>{item.lawyer_email || 'No email provided'}</Text>
+              <Text style={styles.cardMeta}>
+                {item.lawyer_name || `Invited by ${item.assigned_by_name || item.client_name || 'an administrator'}`}
+              </Text>
             </View>
           </View>
-          <InfoRow icon="mail-outline" label="Status" value={item.status || 'pending'} />
-          {item.used_at ? (
-            <InfoRow icon="checkmark-done-outline" label="Used" value={new Date(item.used_at).toLocaleDateString()} />
+          <InfoRow icon="mail-outline" label="Status" value={getStatus(item)} />
+          <InfoRow icon="person-outline" label="Assigned by" value={item.assigned_by_name || item.client_name} />
+          <InfoRow icon="time-outline" label="Expires" value={formatDate(item.expires_at)} />
+          <InfoRow icon="paper-plane-outline" label="Last sent" value={formatDate(item.last_sent_at)} />
+          <InfoRow icon="refresh-outline" label="Resends" value={String(item.resent_count ?? 0)} />
+          {item.accepted_at ? (
+            <InfoRow icon="checkmark-done-outline" label="Accepted" value={formatDate(item.accepted_at)} />
           ) : null}
-          {item.status === 'pending' ? (
+
+          {editingInviteId === item.id ? (
+            <View style={styles.editPanel}>
+              <Input
+                label="New lawyer email"
+                value={editingEmail}
+                onChangeText={setEditingEmail}
+                placeholder="lawyer@example.com"
+                keyboardType="email-address"
+                autoCapitalize="none"
+                autoCorrect={false}
+                containerStyle={styles.emailInput}
+              />
+              <View style={styles.actions}>
+                <PremiumButton
+                  title="Save and resend"
+                  icon="checkmark-circle-outline"
+                  loading={busyAction === `email:${item.id}`}
+                  onPress={() => handleEmailUpdate(item.id)}
+                />
+                <PremiumButton
+                  title="Cancel"
+                  variant="secondary"
+                  icon="close-outline"
+                  disabled={busyAction === `email:${item.id}`}
+                  onPress={cancelEmailEdit}
+                />
+              </View>
+            </View>
+          ) : null}
+
+          {item.status !== 'accepted' && editingInviteId !== item.id ? (
             <View style={styles.actions}>
-              <PremiumButton title="Resend invite" icon="send-outline" onPress={() => handleResend(item.id)} />
-              <PremiumButton title="Revoke" variant="ghost" icon="close-circle-outline" onPress={() => handleRevoke(item.id)} />
+              <PremiumButton
+                title="Resend invite"
+                icon="send-outline"
+                loading={busyAction === `resend:${item.id}`}
+                onPress={() => handleResend(item.id)}
+              />
+              <PremiumButton
+                title="Change email"
+                variant="secondary"
+                icon="create-outline"
+                disabled={Boolean(busyAction)}
+                onPress={() => startEmailEdit(item)}
+              />
             </View>
           ) : null}
         </PremiumCard>
@@ -146,6 +238,17 @@ const styles = StyleSheet.create({
   actions: {
     gap: 10,
     marginTop: 12,
+  },
+  editPanel: {
+    backgroundColor: colors.surfaceBlue,
+    borderColor: colors.border,
+    borderRadius: 14,
+    borderWidth: 1,
+    marginTop: 14,
+    padding: 14,
+  },
+  emailInput: {
+    marginBottom: 4,
   },
 });
 
