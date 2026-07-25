@@ -1,16 +1,13 @@
 import React, { useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import {
-  ActivityIndicator,
+import {ActivityIndicator,
   Alert,
   KeyboardAvoidingView,
   Linking,
   Platform,
-  StyleSheet,
-  Text,
+  StyleSheet
   TextInput,
   TouchableOpacity,
-  View,
-} from 'react-native';
+  View,} from 'react-native';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { launchImageLibrary } from 'react-native-image-picker';

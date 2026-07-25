@@ -1,7 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import {
-  View,
-  Text,
+import {View
   StyleSheet,
   ScrollView,
   TextInput,
@@ -10,8 +8,7 @@ import {
   Platform,
   SafeAreaView,
   Linking,
-  ActivityIndicator,
-} from 'react-native';
+  ActivityIndicator,} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { colors, radius, typography } from '../../theme';
 

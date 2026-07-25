@@ -1,17 +1,14 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import {
-  ActivityIndicator,
+import {ActivityIndicator,
   Alert,
   Modal,
   Pressable,
   ScrollView,
   Share,
-  StyleSheet,
-  Text,
+  StyleSheet
   TextInput,
   TouchableOpacity,
-  View,
-} from 'react-native';
+  View,} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
 import { financialAdminService } from '../../services/financialAdminService';

@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
-import {
-  Modal,
-  View,
-  Text,
+import {Modal,
+  View
   StyleSheet,
   TouchableOpacity,
   ScrollView,
   Image,
-  ActivityIndicator,
-} from 'react-native';
+  ActivityIndicator,} from 'react-native';
 import { launchCamera } from 'react-native-image-picker';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';

@@ -6,17 +6,14 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import {
-  ActivityIndicator,
+import {ActivityIndicator,
   KeyboardAvoidingView,
   Modal,
   Platform,
   ScrollView,
-  StyleSheet,
-  Text,
+  StyleSheet
   TouchableOpacity,
-  View,
-} from 'react-native';
+  View,} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
 import { AuthContext } from '../../context/AuthContext';

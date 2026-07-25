@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { StyleSheet, Switch, Text, View } from 'react-native';
+import {StyleSheet, Switch View} from 'react-native';
 
 import AppText from '../../components/common/AppText';
 const FLAG_LABELS = {

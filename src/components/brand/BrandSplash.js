@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Animated, Easing, StatusBar, StyleSheet, Text, View } from 'react-native';
+import {Animated, Easing, StatusBar, StyleSheet View} from 'react-native';
 import { colors, typography } from '../../theme';
 import { useAccessibilityPreferences } from '../../hooks/useAccessibilityPreferences';
 import BrandLogoMark from './BrandLogoMark';

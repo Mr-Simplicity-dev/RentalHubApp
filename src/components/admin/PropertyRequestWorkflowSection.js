@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {StyleSheet TouchableOpacity, View} from 'react-native';
 import Toast from 'react-native-toast-message';
 import Button from '../common/Button';
 import OperationNoteModal from './OperationNoteModal';

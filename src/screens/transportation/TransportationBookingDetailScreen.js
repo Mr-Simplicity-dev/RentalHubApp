@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, StyleSheet, Text, View } from 'react-native';
+import {Alert, StyleSheet View} from 'react-native';
 import Toast from 'react-native-toast-message';
 import { transportationService } from '../../services/transportationService';
 import { getErrorMessage } from '../../utils/http';

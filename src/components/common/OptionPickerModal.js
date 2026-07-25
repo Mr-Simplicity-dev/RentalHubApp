@@ -1,14 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import {
-  FlatList,
+import {FlatList,
   Modal,
   SafeAreaView,
-  StyleSheet,
-  Text,
+  StyleSheet
   TextInput,
   TouchableOpacity,
-  View,
-} from 'react-native';
+  View,} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { colors, radius, typography } from '../../theme';
 

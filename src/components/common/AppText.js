@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, StyleSheet } from 'react-native';
-import { colors, typography, typeScale, letterSpacing, lineHeight as lh } from '../../theme';
+import { colors, typography, typeScale, letterSpacing, fontWeightToFamily } from '../../theme';
 
 const variantConfig = {
   h1:       { size: typeScale.hero,  family: typography.bold,     ls: letterSpacing.tight, lh: 42 },
@@ -15,24 +15,26 @@ const variantConfig = {
   eyebrow:  { size: typeScale.xs,    family: typography.bold,     ls: letterSpacing.wider,  lh: 14 },
 };
 
-const AppText = ({ variant = 'body', style, color, align, children, ...props }) => {
-  const cfg = variantConfig[variant] || variantConfig.body;
+const AppText = ({ variant, style, color, align, children, ...props }) => {
+  const cfg = variant ? (variantConfig[variant] || variantConfig.body) : null;
+  const flatStyle = style ? StyleSheet.flatten(style) : {};
+
+  const baseStyle = cfg
+    ? { color: colors.text, fontFamily: cfg.family, fontSize: cfg.size, letterSpacing: cfg.ls, lineHeight: cfg.lh }
+    : { color: colors.text };
+
+  if (flatStyle.fontWeight && !flatStyle.fontFamily) {
+    const w = typeof flatStyle.fontWeight === 'string'
+      ? parseInt(flatStyle.fontWeight, 10) || 400
+      : flatStyle.fontWeight || 400;
+    baseStyle.fontFamily = fontWeightToFamily(w);
+  }
+
+  if (color) baseStyle.color = color;
+  if (align) baseStyle.textAlign = align;
 
   return (
-    <Text
-      style={[
-        {
-          fontFamily: cfg.family,
-          fontSize: cfg.size,
-          letterSpacing: cfg.ls,
-          lineHeight: cfg.lh,
-          color: color || colors.text,
-          textAlign: align || 'left',
-        },
-        style,
-      ]}
-      {...props}
-    >
+    <Text style={[baseStyle, style]} {...props}>
       {children}
     </Text>
   );

@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useRef, useContext, useCallback } from 'react';
-import {
-  View,
-  Text,
+import {View
   StyleSheet,
   ScrollView,
   TextInput,
@@ -10,8 +8,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Linking,
-  RefreshControl,
-} from 'react-native';
+  RefreshControl,} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
 import { launchImageLibrary } from 'react-native-image-picker';

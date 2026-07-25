@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import {StyleSheet TextInput, TouchableOpacity, View} from 'react-native';
 import Toast from 'react-native-toast-message';
 import Button from '../common/Button';
 import SelectField from '../common/SelectField';

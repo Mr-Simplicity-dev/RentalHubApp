@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import {View StyleSheet, ActivityIndicator} from 'react-native';
 
 import AppText from '../../components/common/AppText';
 const LoadingScreen = ({ message = 'Loading...' }) => (

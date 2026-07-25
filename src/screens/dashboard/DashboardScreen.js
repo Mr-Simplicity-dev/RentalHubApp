@@ -1,16 +1,13 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
-import {
-  ActivityIndicator,
+import {ActivityIndicator,
   Linking,
   RefreshControl,
   ScrollView,
   Share,
-  StyleSheet,
-  Text,
+  StyleSheet
   TextInput,
   TouchableOpacity,
-  View,
-} from 'react-native';
+  View,} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';

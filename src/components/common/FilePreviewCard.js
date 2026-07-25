@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { ActivityIndicator, Alert, Image, Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {ActivityIndicator, Alert, Image, Linking, StyleSheet TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { colors, radius, typography } from '../../theme';
 import { trackMobileEvent } from '../../services/mobileDiagnosticsService';

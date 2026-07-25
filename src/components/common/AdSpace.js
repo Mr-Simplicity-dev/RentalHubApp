@@ -1,12 +1,9 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import {
-  Image,
+import {Image,
   Linking,
-  StyleSheet,
-  Text,
+  StyleSheet
   TouchableOpacity,
-  View,
-} from 'react-native';
+  View,} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
 import api from '../../services/api';

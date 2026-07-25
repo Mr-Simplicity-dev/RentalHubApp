@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect, useLayoutEffect, useState } from 'react';
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {FlatList, StyleSheet TouchableOpacity, View} from 'react-native';
 import Toast from 'react-native-toast-message';
 import { AuthContext } from '../../context/AuthContext';
 import { supportService } from '../../services/supportService';

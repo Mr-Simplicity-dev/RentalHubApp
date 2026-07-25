@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { StyleSheet, Text, TextInput, View } from 'react-native';
+import {StyleSheet TextInput, View} from 'react-native';
 import Toast from 'react-native-toast-message';
 import {
   InfoRow,

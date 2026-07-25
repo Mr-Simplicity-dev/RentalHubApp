@@ -1,14 +1,11 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
-import {
-  KeyboardAvoidingView,
+import {KeyboardAvoidingView,
   Linking,
   Platform,
   ScrollView,
-  StyleSheet,
-  Text,
+  StyleSheet
   TouchableOpacity,
-  View,
-} from 'react-native';
+  View,} from 'react-native';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Input from '../../components/common/Input';

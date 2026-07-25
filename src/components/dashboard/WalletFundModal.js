@@ -1,12 +1,9 @@
 import React, { useMemo, useState } from 'react';
-import {
-  Modal,
-  View,
-  Text,
+import {Modal,
+  View
   StyleSheet,
   TouchableOpacity,
-  ScrollView,
-} from 'react-native';
+  ScrollView,} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Input from '../common/Input';
 import Button from '../common/Button';

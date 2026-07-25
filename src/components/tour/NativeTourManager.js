@@ -1,13 +1,10 @@
 import React, { useContext } from 'react';
-import {
-  Modal,
+import {Modal,
   ScrollView,
   StatusBar,
-  StyleSheet,
-  Text,
+  StyleSheet
   TouchableOpacity,
-  View,
-} from 'react-native';
+  View,} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Button from '../common/Button';
 import { AuthContext } from '../../context/AuthContext';

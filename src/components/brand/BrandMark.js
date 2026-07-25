@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import {StyleSheet View} from 'react-native';
 import { colors, typography } from '../../theme';
 import BrandLogoMark from './BrandLogoMark';
 

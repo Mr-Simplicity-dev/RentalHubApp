@@ -1,14 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import {
-  ActivityIndicator,
+import {ActivityIndicator,
   ScrollView,
   StatusBar,
-  StyleSheet,
-  Text,
+  StyleSheet
   TextInput,
   TouchableOpacity,
-  View,
-} from 'react-native';
+  View,} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import recruitmentService from '../../services/recruitmentService';

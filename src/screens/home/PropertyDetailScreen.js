@@ -5,19 +5,16 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import {
-  ActivityIndicator,
+import {ActivityIndicator,
   Image,
   Linking,
   ScrollView,
   Share,
   StatusBar,
-  StyleSheet,
-  Text,
+  StyleSheet
   TouchableOpacity,
   useWindowDimensions,
-  View,
-} from 'react-native';
+  View,} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';

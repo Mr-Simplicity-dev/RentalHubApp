@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, Alert, StyleSheet, Switch, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import {ActivityIndicator, Alert, StyleSheet, Switch TextInput, TouchableOpacity, View} from 'react-native';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { serviceAdminService } from '../../services/serviceAdminService';

@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import {ActivityIndicator, StyleSheet View} from 'react-native';
 import Toast from 'react-native-toast-message';
 import { propertyService } from '../../services/propertyService';
 import { getErrorMessage, pickList } from '../../utils/http';

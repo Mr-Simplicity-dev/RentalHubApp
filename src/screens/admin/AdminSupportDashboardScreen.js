@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useLayoutEffect, useMemo, useState } from 'react';
-import { StyleSheet, Text } from 'react-native';
+import {StyleSheet} from 'react-native';
 import Toast from 'react-native-toast-message';
 import api from '../../services/api';
 import { colors, typography } from '../../theme';

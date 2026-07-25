@@ -1,15 +1,12 @@
 import React, { useState, useContext, useEffect } from 'react';
-import {
-  View,
-  Text,
+import {View
   StyleSheet,
   ScrollView,
   KeyboardAvoidingView,
   Platform,
   TouchableOpacity,
   Alert,
-  StatusBar,
-} from 'react-native';
+  StatusBar,} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AuthContext } from '../../context/AuthContext';

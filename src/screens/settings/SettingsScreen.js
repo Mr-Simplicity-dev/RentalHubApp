@@ -1,16 +1,13 @@
 import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
-import {
-  ActivityIndicator,
+import {ActivityIndicator,
   Alert,
   Modal,
   Pressable,
   StyleSheet,
-  Switch,
-  Text,
+  Switch
   TextInput,
   TouchableOpacity,
-  View,
-} from 'react-native';
+  View,} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
 import { AuthContext } from '../../context/AuthContext';

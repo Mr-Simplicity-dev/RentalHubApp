@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import {
-  KeyboardAvoidingView,
+import {KeyboardAvoidingView,
   Modal,
   Platform,
-  StyleSheet,
-  Text,
+  StyleSheet
   TouchableOpacity,
-  View,
-} from 'react-native';
+  View,} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Input from '../common/Input';
 import { PremiumButton } from '../common/PremiumLayout';

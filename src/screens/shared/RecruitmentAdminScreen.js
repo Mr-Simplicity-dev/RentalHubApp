@@ -1,16 +1,13 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import {
-  Alert,
+import {Alert,
   ActivityIndicator,
   Modal,
   Pressable,
   ScrollView,
-  StyleSheet,
-  Text,
+  StyleSheet
   TextInput,
   TouchableOpacity,
-  View,
-} from 'react-native';
+  View,} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
 import recruitmentService from '../../services/recruitmentService';

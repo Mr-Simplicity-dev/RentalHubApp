@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {Alert, StyleSheet TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { AuthContext } from '../../context/AuthContext';
 import { colors, radius, shadows, typography } from '../../theme';

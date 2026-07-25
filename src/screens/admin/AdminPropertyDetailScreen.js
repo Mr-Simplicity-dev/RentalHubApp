@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import {Image, StyleSheet View} from 'react-native';
 import Toast from 'react-native-toast-message';
 import BrandImagePlaceholder from '../../components/common/BrandImagePlaceholder';
 import {

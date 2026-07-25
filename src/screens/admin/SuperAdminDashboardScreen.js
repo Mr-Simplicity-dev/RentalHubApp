@@ -1,16 +1,13 @@
 import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import {
-  Alert,
+import {Alert,
   FlatList,
   Linking,
   ScrollView,
   StyleSheet,
-  Switch,
-  Text,
+  Switch
   TextInput,
   TouchableOpacity,
-  View,
-} from 'react-native';
+  View,} from 'react-native';
 import Toast from 'react-native-toast-message';
 import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';

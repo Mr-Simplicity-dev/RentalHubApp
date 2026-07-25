@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import {
-  KeyboardAvoidingView,
+import {KeyboardAvoidingView,
   Modal,
   Platform,
   ScrollView,
-  StyleSheet,
-  Text,
+  StyleSheet
   TextInput,
   TouchableOpacity,
-  View,
-} from 'react-native';
+  View,} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Button from '../common/Button';

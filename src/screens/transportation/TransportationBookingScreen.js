@@ -1,14 +1,11 @@
 import React, { useState, useEffect, useCallback, useLayoutEffect } from 'react';
-import {
-  View,
-  Text,
+import {View
   StyleSheet,
   ScrollView,
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
-  Platform,
-} from 'react-native';
+  Platform,} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';

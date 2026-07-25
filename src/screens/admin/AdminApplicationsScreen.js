@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import {StyleSheet View} from 'react-native';
 import Toast from 'react-native-toast-message';
 import OperationNoteModal from '../../components/admin/OperationNoteModal';
 import { adminService } from '../../services/adminService';
