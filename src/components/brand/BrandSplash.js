@@ -254,13 +254,13 @@ const styles = StyleSheet.create({
   loadingText: {
     color: 'rgba(255, 255, 255, 0.7)',
     fontFamily: typography.medium,
-    fontSize: 11,
+    fontSize: 13,
     letterSpacing: 0.2,
   },
   loadingPercent: {
     color: colors.gold,
     fontFamily: typography.bold,
-    fontSize: 11,
+    fontSize: 13,
   },
   loadingTrack: {
     backgroundColor: 'rgba(255, 255, 255, 0.16)',

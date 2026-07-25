@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
   country: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 10,
+    fontSize: 13,
     letterSpacing: 3.4,
     marginTop: 2,
   },

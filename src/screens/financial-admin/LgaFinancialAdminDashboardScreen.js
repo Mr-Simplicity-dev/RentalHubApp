@@ -703,7 +703,7 @@ const styles = StyleSheet.create({
   historyLabel: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 11,
+    fontSize: 13,
     textTransform: 'uppercase',
   },
   historyAmount: {
@@ -760,7 +760,7 @@ const styles = StyleSheet.create({
   modalSubtitle: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
     marginTop: 2,
   },
   closeButton: {
@@ -789,7 +789,7 @@ const styles = StyleSheet.create({
   balanceLabel: {
     color: '#047857',
     fontFamily: typography.semibold,
-    fontSize: 12,
+    fontSize: 13,
     textTransform: 'uppercase',
   },
   balanceValue: {
@@ -801,7 +801,7 @@ const styles = StyleSheet.create({
   balanceHint: {
     color: '#047857',
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
     marginTop: 4,
   },
   verifyButton: {
@@ -828,7 +828,7 @@ const styles = StyleSheet.create({
   verificationText: {
     flex: 1,
     fontFamily: typography.medium,
-    fontSize: 12,
+    fontSize: 13,
     lineHeight: 18,
   },
   verificationTextSuccess: {

@@ -476,7 +476,7 @@ const styles = StyleSheet.create({
   docHint: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
     marginTop: 3,
   },
   docButton: {
@@ -493,7 +493,7 @@ const styles = StyleSheet.create({
   docButtonText: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 12,
+    fontSize: 13,
   },
   progressTrack: {
     backgroundColor: colors.border,
@@ -523,13 +523,13 @@ const styles = StyleSheet.create({
   uploadProgressText: {
     color: colors.blue,
     fontFamily: typography.medium,
-    fontSize: 12,
+    fontSize: 13,
     marginTop: 6,
   },
   lockedCopy: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
     lineHeight: 18,
     marginTop: 10,
     textAlign: 'center',

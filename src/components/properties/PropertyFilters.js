@@ -269,7 +269,7 @@ const styles = StyleSheet.create({
   eyebrow: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 9,
+    fontSize: 13,
     letterSpacing: 1.2,
   },
   title: {
@@ -343,7 +343,7 @@ const styles = StyleSheet.create({
   selectLabel: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 10,
+    fontSize: 13,
   },
   selectValue: {
     color: colors.ink,

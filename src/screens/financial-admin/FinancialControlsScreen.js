@@ -654,7 +654,7 @@ const styles = StyleSheet.create({
   pillLabel: {
     color: colors.blue,
     fontFamily: typography.semibold,
-    fontSize: 10,
+    fontSize: 13,
     textTransform: 'capitalize',
   },
   pillValue: {
@@ -709,14 +709,14 @@ const styles = StyleSheet.create({
   recordMeta: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
     lineHeight: 18,
     marginTop: 6,
   },
   recordDate: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 11,
+    fontSize: 13,
     lineHeight: 16,
     marginTop: 5,
   },
@@ -732,7 +732,7 @@ const styles = StyleSheet.create({
   emptyText: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 12,
+    fontSize: 13,
     textAlign: 'center',
   },
   statsGrid: {
@@ -765,7 +765,7 @@ const styles = StyleSheet.create({
   modalSubtitle: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
     lineHeight: 18,
     marginTop: 6,
   },

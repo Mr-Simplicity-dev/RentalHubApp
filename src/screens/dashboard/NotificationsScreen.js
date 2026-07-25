@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
   eyebrow: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 9,
+    fontSize: 13,
     letterSpacing: 1.2,
   },
   title: {
@@ -256,7 +256,7 @@ const styles = StyleSheet.create({
   summary: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 12,
+    fontSize: 13,
     marginBottom: 12,
   },
   card: {
@@ -298,14 +298,14 @@ const styles = StyleSheet.create({
   cardMessage: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
     lineHeight: 18,
     marginTop: 5,
   },
   cardDate: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 10,
+    fontSize: 13,
     marginTop: 7,
   },
   deleteButton: { marginLeft: 5, padding: 4 },
@@ -319,7 +319,7 @@ const styles = StyleSheet.create({
   loadingText: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 12,
+    fontSize: 13,
     marginTop: 12,
   },
   emptyIcon: {

@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
   totalHint: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 11,
+    fontSize: 13,
     marginTop: 3,
   },
   totalValue: {
@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
   methodText: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
     lineHeight: 18,
     marginTop: 3,
   },

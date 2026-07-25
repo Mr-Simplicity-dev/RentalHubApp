@@ -2905,7 +2905,7 @@ const styles = StyleSheet.create({
     color: '#0f172a',
   },
   analyticsLabel: {
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: '600',
     color: '#64748b',
     marginTop: 4,

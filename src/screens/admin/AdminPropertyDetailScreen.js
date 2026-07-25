@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
   frequency: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 12,
+    fontSize: 13,
     marginTop: 2,
     textTransform: 'uppercase',
   },
@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 12,
+    fontSize: 13,
     marginTop: 6,
     overflow: 'hidden',
     paddingHorizontal: 12,

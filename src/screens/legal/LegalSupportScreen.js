@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.pill,
     color: colors.blue,
     fontFamily: typography.semibold,
-    fontSize: 10,
+    fontSize: 13,
     overflow: 'hidden',
     paddingHorizontal: 8,
     paddingVertical: 4,
@@ -222,14 +222,14 @@ const styles = StyleSheet.create({
   requestDescription: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
     lineHeight: 18,
     marginTop: 8,
   },
   requestMeta: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 11,
+    fontSize: 13,
     marginTop: 8,
   },
   empty: {

@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
   errorText: {
     color: colors.danger,
     fontFamily: typography.medium,
-    fontSize: 12,
+    fontSize: 13,
     marginTop: 5,
   },
 });

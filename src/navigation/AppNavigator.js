@@ -408,7 +408,7 @@ const MainTabs = () => (
       tabBarInactiveTintColor: colors.muted,
       tabBarLabelStyle: {
         fontFamily: typography.semibold,
-        fontSize: 10,
+        fontSize: 13,
         marginBottom: Platform.OS === 'android' ? 7 : 1,
       },
       tabBarIconStyle: {

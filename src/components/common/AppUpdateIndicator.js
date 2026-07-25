@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
   bannerEyebrow: {
     color: colors.gold,
     fontFamily: typography.bold,
-    fontSize: 9,
+    fontSize: 13,
     letterSpacing: 1,
   },
   bannerTitle: {
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
   bannerText: {
     color: 'rgba(255, 255, 255, 0.75)',
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
     lineHeight: 17,
     marginTop: 5,
   },
@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
   primaryButtonText: {
     color: colors.navy,
     fontFamily: typography.bold,
-    fontSize: 12,
+    fontSize: 13,
   },
   secondaryButton: {
     alignItems: 'center',
@@ -249,7 +249,7 @@ const styles = StyleSheet.create({
   secondaryButtonText: {
     color: colors.white,
     fontFamily: typography.semibold,
-    fontSize: 12,
+    fontSize: 13,
   },
   dotContainer: {
     alignItems: 'center',
@@ -290,7 +290,7 @@ const styles = StyleSheet.create({
   dotLabel: {
     color: colors.white,
     fontFamily: typography.bold,
-    fontSize: 11,
+    fontSize: 13,
     letterSpacing: 0.15,
   },
   disabled: {

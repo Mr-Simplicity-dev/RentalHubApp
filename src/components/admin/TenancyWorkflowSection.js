@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   cardTitle: { fontSize: 14, fontWeight: '600', color: '#0f172a' },
-  meta: { fontSize: 12, color: '#64748b', marginTop: 4 },
+  meta: { fontSize: 13, color: '#64748b', marginTop: 4 },
   input: {
     borderWidth: 1,
     borderColor: '#e2e8f0',

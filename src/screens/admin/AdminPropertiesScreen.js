@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
   propertyIconText: {
     color: colors.gold,
     fontFamily: typography.bold,
-    fontSize: 12,
+    fontSize: 13,
   },
   cardCopy: {
     flex: 1,
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
   cardMeta: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
     marginTop: 3,
   },
 });

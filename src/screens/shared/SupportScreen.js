@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
   contactText: {
     color: '#B9C9E5',
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
     lineHeight: 18,
     marginTop: 4,
   },

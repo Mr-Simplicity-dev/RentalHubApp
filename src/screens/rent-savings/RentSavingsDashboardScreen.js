@@ -152,13 +152,13 @@ const styles = StyleSheet.create({
   heroTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 },
   heroIcon: { width: 43, height: 43, borderRadius: 14, backgroundColor: colors.navySoft, alignItems: 'center', justifyContent: 'center' },
   refreshButton: { width: 38, height: 38, borderRadius: 19, backgroundColor: colors.navySoft, alignItems: 'center', justifyContent: 'center' },
-  summaryLabel: { color: colors.gold, fontFamily: typography.semibold, fontSize: 11, letterSpacing: 1.1 },
+  summaryLabel: { color: colors.gold, fontFamily: typography.semibold, fontSize: 13, letterSpacing: 1.1 },
   summaryValue: { color: colors.white, fontFamily: typography.bold, fontSize: 34, marginTop: 5 },
   heroCaption: { marginTop: 7, color: '#B9C9E5', fontFamily: typography.regular, lineHeight: 20 },
   summaryRow: { flexDirection: 'row', marginTop: 16, gap: 16 },
   summaryItem: { flex: 1, backgroundColor: colors.navySoft, borderRadius: radius.md, padding: 12 },
   summaryItemValue: { color: colors.white, fontFamily: typography.bold, fontSize: 21 },
-  summaryItemLabel: { color: '#AFC3E6', fontFamily: typography.regular, fontSize: 11, marginTop: 2 },
+  summaryItemLabel: { color: '#AFC3E6', fontFamily: typography.regular, fontSize: 13, marginTop: 2 },
   actionsGrid: { gap: 9, marginBottom: 22 },
   actionCard: {
     flexDirection: 'row',
@@ -172,10 +172,10 @@ const styles = StyleSheet.create({
   actionIcon: { width: 42, height: 42, borderRadius: 13, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.surfaceBlue, marginRight: 11 },
   actionCopy: { flex: 1 },
   actionText: { color: colors.ink, fontFamily: typography.semibold },
-  actionSub: { marginTop: 3, color: colors.muted, fontFamily: typography.regular, fontSize: 12 },
+  actionSub: { marginTop: 3, color: colors.muted, fontFamily: typography.regular, fontSize: 13 },
   sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 },
   sectionTitle: { fontFamily: typography.bold, fontSize: 18, color: colors.ink },
-  sectionCount: { fontFamily: typography.medium, fontSize: 12, color: colors.muted },
+  sectionCount: { fontFamily: typography.medium, fontSize: 13, color: colors.muted },
   goalCard: {
     backgroundColor: colors.white,
     borderWidth: 1,
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
   goalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   goalIcon: { width: 34, height: 34, borderRadius: 11, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.surfaceBlue, marginRight: 9 },
   goalName: { flex: 1, fontFamily: typography.semibold, color: colors.ink },
-  goalStatus: { fontFamily: typography.semibold, fontSize: 11, color: colors.blue },
+  goalStatus: { fontFamily: typography.semibold, fontSize: 13, color: colors.blue },
   goalTarget: { fontFamily: typography.bold, fontSize: 22, color: colors.ink, marginTop: 12 },
   progressBar: {
     height: 8,
@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   progressFill: { height: '100%', backgroundColor: colors.blue, borderRadius: 4 },
-  goalProgress: { color: colors.muted, fontFamily: typography.regular, fontSize: 12, marginTop: 6 },
+  goalProgress: { color: colors.muted, fontFamily: typography.regular, fontSize: 13, marginTop: 6 },
 });
 
 export default RentSavingsDashboardScreen;

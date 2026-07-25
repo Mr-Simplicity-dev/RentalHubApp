@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
   tabText: {
     color: colors.text,
     fontFamily: typography.semibold,
-    fontSize: 12,
+    fontSize: 13,
   },
   tabTextActive: {
     color: colors.white,
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
   cardOwner: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
     marginTop: 4,
   },
   actions: {

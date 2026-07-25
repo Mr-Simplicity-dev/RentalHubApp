@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
   applicationIconText: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 11,
+    fontSize: 13,
   },
   cardCopy: {
     flex: 1,
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
   cardMeta: {
     color: colors.muted,
     fontFamily: typography.semibold,
-    fontSize: 12,
+    fontSize: 13,
     marginTop: 3,
     textTransform: 'capitalize',
   },

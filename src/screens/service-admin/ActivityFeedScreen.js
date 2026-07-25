@@ -81,10 +81,10 @@ const styles = StyleSheet.create({
   dot: { width: 10, height: 10, borderRadius: 5, marginTop: 6, marginRight: spacing.sm },
   body: { flex: 1 },
   action: { fontSize: 14, fontWeight: '600', color: '#1E293B', textTransform: 'capitalize' },
-  actor: { fontSize: 12, color: '#64748B', marginTop: 2 },
-  location: { fontSize: 11, color: '#94A3B8', marginTop: 1 },
-  meta: { fontSize: 11, color: '#94A3B8', marginTop: 2, fontFamily: 'monospace' },
-  time: { fontSize: 11, color: '#94A3B8', marginLeft: spacing.sm },
+  actor: { fontSize: 13, color: '#64748B', marginTop: 2 },
+  location: { fontSize: 13, color: '#94A3B8', marginTop: 1 },
+  meta: { fontSize: 13, color: '#94A3B8', marginTop: 2, fontFamily: 'monospace' },
+  time: { fontSize: 13, color: '#94A3B8', marginLeft: spacing.sm },
   empty: { textAlign: 'center', color: '#94A3B8', marginTop: 60 },
 });
 

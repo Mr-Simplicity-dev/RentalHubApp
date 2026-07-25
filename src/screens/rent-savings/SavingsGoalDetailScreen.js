@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
   amountLabel: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 11,
+    fontSize: 13,
     textTransform: 'uppercase',
   },
   amountValue: {

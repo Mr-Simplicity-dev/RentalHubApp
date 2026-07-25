@@ -515,7 +515,7 @@ const styles = StyleSheet.create({
   switchSubtitle: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
     lineHeight: 17,
     marginTop: 3,
   },
@@ -543,7 +543,7 @@ const styles = StyleSheet.create({
   versionMeta: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
     marginTop: 3,
   },
   versionBadge: {
@@ -561,7 +561,7 @@ const styles = StyleSheet.create({
   versionBadgeText: {
     color: colors.success,
     fontFamily: typography.bold,
-    fontSize: 10,
+    fontSize: 13,
   },
   versionBadgeTextWarning: {
     color: '#92400E',
@@ -572,7 +572,7 @@ const styles = StyleSheet.create({
   versionMessage: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
     lineHeight: 18,
     marginTop: 10,
   },
@@ -594,7 +594,7 @@ const styles = StyleSheet.create({
   versionButtonText: {
     color: colors.blue,
     fontFamily: typography.semibold,
-    fontSize: 12,
+    fontSize: 13,
   },
   versionButtonPrimary: {
     alignItems: 'center',
@@ -608,7 +608,7 @@ const styles = StyleSheet.create({
   versionButtonPrimaryText: {
     color: colors.white,
     fontFamily: typography.semibold,
-    fontSize: 12,
+    fontSize: 13,
   },
   modalBackdrop: {
     backgroundColor: 'rgba(7, 26, 61, 0.55)',
@@ -634,7 +634,7 @@ const styles = StyleSheet.create({
   modalSubtitle: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
     marginTop: 3,
   },
   warningBox: {
@@ -652,13 +652,13 @@ const styles = StyleSheet.create({
     color: colors.danger,
     flex: 1,
     fontFamily: typography.medium,
-    fontSize: 12,
+    fontSize: 13,
     lineHeight: 18,
   },
   inputLabel: {
     color: colors.ink,
     fontFamily: typography.semibold,
-    fontSize: 12,
+    fontSize: 13,
     marginBottom: 6,
     marginTop: 16,
   },

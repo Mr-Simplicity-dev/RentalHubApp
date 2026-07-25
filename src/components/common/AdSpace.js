@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
   playText: {
     color: colors.white,
     fontFamily: typography.semibold,
-    fontSize: 11,
+    fontSize: 13,
   },
   image: {
     height: 160,
@@ -199,13 +199,13 @@ const styles = StyleSheet.create({
   sponsored: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 9,
+    fontSize: 13,
     letterSpacing: 1.1,
   },
   sponsorName: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 10,
+    fontSize: 13,
   },
   title: {
     color: colors.ink,
@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
   description: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
     lineHeight: 18,
     marginTop: 5,
   },
@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
   ctaText: {
     color: colors.white,
     fontFamily: typography.semibold,
-    fontSize: 11,
+    fontSize: 13,
   },
 });
 

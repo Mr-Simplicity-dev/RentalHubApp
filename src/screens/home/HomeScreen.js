@@ -400,7 +400,7 @@ const styles = StyleSheet.create({
   typeText: {
     color: colors.text,
     fontFamily: typography.semibold,
-    fontSize: 12,
+    fontSize: 13,
     marginHorizontal: 9,
   },
   sectionHeader: {
@@ -414,7 +414,7 @@ const styles = StyleSheet.create({
   sectionEyebrow: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 9,
+    fontSize: 13,
     letterSpacing: 1.25,
   },
   sectionTitle: {
@@ -447,7 +447,7 @@ const styles = StyleSheet.create({
   loadingText: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 12,
+    fontSize: 13,
     marginTop: 12,
   },
   featuredRow: {
@@ -479,7 +479,7 @@ const styles = StyleSheet.create({
   emptyText: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
     marginTop: 3,
   },
   locationRow: {
@@ -514,7 +514,7 @@ const styles = StyleSheet.create({
   locationMeta: {
     color: '#B6C9E6',
     fontFamily: typography.medium,
-    fontSize: 11,
+    fontSize: 13,
     marginTop: 4,
   },
   locationArrow: {
@@ -574,7 +574,7 @@ const styles = StyleSheet.create({
   requestActionText: {
     color: colors.navy,
     fontFamily: typography.bold,
-    fontSize: 12,
+    fontSize: 13,
     marginRight: 9,
   },
   trustLine: {
@@ -587,7 +587,7 @@ const styles = StyleSheet.create({
   trustText: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 11,
+    fontSize: 13,
     marginLeft: 7,
   },
 });

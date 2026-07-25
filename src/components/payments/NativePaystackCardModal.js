@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
   },
   headerCopy: { flex: 1 },
   title: { fontFamily: typography.bold, color: '#071A3D', fontSize: 20 },
-  subtitle: { color: '#64748b', fontSize: 12, lineHeight: 18, marginTop: 3 },
+  subtitle: { color: '#64748b', fontSize: 13, lineHeight: 18, marginTop: 3 },
   closeButton: {
     alignItems: 'center',
     height: 34,
@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
     marginBottom: 14,
     padding: 13,
   },
-  amountLabel: { color: '#2563eb', fontSize: 11, fontWeight: '700' },
+  amountLabel: { color: '#2563eb', fontSize: 13, fontWeight: '700' },
   amountValue: { fontFamily: typography.bold, color: '#071A3D', fontSize: 21, marginTop: 3 },
   nativeCard: {
     alignItems: 'center',
@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
   nativeTitle: { fontFamily: typography.bold, color: '#071A3D', fontSize: 16, marginTop: 8 },
   nativeText: {
     color: '#475569',
-    fontSize: 12,
+    fontSize: 13,
     lineHeight: 18,
     marginTop: 6,
     textAlign: 'center',
@@ -236,10 +236,10 @@ const styles = StyleSheet.create({
     padding: 14,
   },
   fallbackTitle: { fontFamily: typography.bold, color: '#1e3a8a', fontSize: 14 },
-  fallbackText: { color: '#475569', fontSize: 12, lineHeight: 18 },
+  fallbackText: { color: '#475569', fontSize: 13, lineHeight: 18 },
   platformNote: {
     color: '#64748b',
-    fontSize: 11,
+    fontSize: 13,
     lineHeight: 16,
     marginTop: 10,
     textAlign: 'center',

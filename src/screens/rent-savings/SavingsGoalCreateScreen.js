@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
   propertyMeta: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
     lineHeight: 18,
     marginTop: 3,
   },
@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
   error: {
     color: colors.danger,
     fontFamily: typography.medium,
-    fontSize: 12,
+    fontSize: 13,
     marginBottom: 10,
   },
   submitBtn: {

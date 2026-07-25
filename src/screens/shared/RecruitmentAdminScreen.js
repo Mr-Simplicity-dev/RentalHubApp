@@ -463,7 +463,7 @@ const styles = StyleSheet.create({
   filterLabel: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 12,
+    fontSize: 13,
     marginTop: 7,
   },
   chipRow: {
@@ -485,7 +485,7 @@ const styles = StyleSheet.create({
   chipText: {
     color: colors.text,
     fontFamily: typography.semibold,
-    fontSize: 11,
+    fontSize: 13,
     textTransform: 'capitalize',
   },
   chipTextActive: {
@@ -507,7 +507,7 @@ const styles = StyleSheet.create({
   funnelLabel: {
     color: colors.muted,
     fontFamily: typography.semibold,
-    fontSize: 11,
+    fontSize: 13,
     textTransform: 'capitalize',
   },
   funnelValue: {
@@ -552,7 +552,7 @@ const styles = StyleSheet.create({
   applicantMeta: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 11,
+    fontSize: 13,
     marginTop: 2,
   },
   statusBadge: {
@@ -560,7 +560,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.pill,
     color: colors.success,
     fontFamily: typography.bold,
-    fontSize: 10,
+    fontSize: 13,
     overflow: 'hidden',
     paddingHorizontal: 8,
     paddingVertical: 4,
@@ -577,7 +577,7 @@ const styles = StyleSheet.create({
   detailText: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
     lineHeight: 17,
   },
   actions: {
@@ -595,22 +595,22 @@ const styles = StyleSheet.create({
   actionText: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 11,
+    fontSize: 13,
   },
   approveText: {
     color: colors.success,
     fontFamily: typography.bold,
-    fontSize: 11,
+    fontSize: 13,
   },
   rejectText: {
     color: colors.danger,
     fontFamily: typography.bold,
-    fontSize: 11,
+    fontSize: 13,
   },
   reportText: {
     color: colors.navy,
     fontFamily: typography.bold,
-    fontSize: 11,
+    fontSize: 13,
   },
   emptyCard: {
     alignItems: 'center',
@@ -624,7 +624,7 @@ const styles = StyleSheet.create({
   emptyText: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 12,
+    fontSize: 13,
     textAlign: 'center',
   },
   modalBackdrop: {
@@ -648,7 +648,7 @@ const styles = StyleSheet.create({
   modalEyebrow: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 11,
+    fontSize: 13,
     letterSpacing: 0.8,
   },
   modalTitle: {
@@ -665,7 +665,7 @@ const styles = StyleSheet.create({
   modalMuted: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 12,
+    fontSize: 13,
   },
   detailList: {
     gap: 9,
@@ -688,7 +688,7 @@ const styles = StyleSheet.create({
   detailLabel: {
     color: colors.muted,
     fontFamily: typography.semibold,
-    fontSize: 11,
+    fontSize: 13,
     textTransform: 'uppercase',
   },
   detailValue: {

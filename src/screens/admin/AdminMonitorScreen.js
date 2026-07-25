@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
   summary: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 12,
+    fontSize: 13,
     marginBottom: 14,
   },
   cardHeader: {
@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
   email: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 11,
+    fontSize: 13,
     marginTop: 3,
   },
 });

@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
   badgeText: {
     color: colors.white,
     fontFamily: typography.bold,
-    fontSize: 11,
+    fontSize: 13,
   },
   saveButton: {
     position: 'absolute',

@@ -345,7 +345,7 @@ const styles = StyleSheet.create({
   headerTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 },
   backButton: { width: 40, height: 40, borderRadius: 20, backgroundColor: colors.navySoft, alignItems: 'center', justifyContent: 'center' },
   headerIcon: { width: 42, height: 42, borderRadius: 14, backgroundColor: colors.navySoft, alignItems: 'center', justifyContent: 'center' },
-  headerEyebrow: { fontFamily: typography.semibold, fontSize: 11, letterSpacing: 1.2, color: colors.gold },
+  headerEyebrow: { fontFamily: typography.semibold, fontSize: 13, letterSpacing: 1.2, color: colors.gold },
   headerTitle: { marginTop: 7, color: colors.white, fontFamily: typography.bold, fontSize: 25 },
   headerSub: { color: '#B9C9E5', fontFamily: typography.regular, fontSize: 14, lineHeight: 20, marginTop: 6 },
   section: {
@@ -401,7 +401,7 @@ const styles = StyleSheet.create({
     color: colors.blue,
     marginTop: 8,
   },
-  durationText: { color: '#94a3b8', fontSize: 12, marginTop: 4 },
+  durationText: { color: '#94a3b8', fontSize: 13, marginTop: 4 },
   inputGroup: { marginBottom: 14 },
   label: { fontSize: 14, fontWeight: '600', color: '#334155', marginBottom: 6 },
   input: {

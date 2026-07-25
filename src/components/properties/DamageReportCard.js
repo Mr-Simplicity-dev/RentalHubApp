@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
   severityDot: { width: 10, height: 10, borderRadius: 5 },
   compactContent: { flex: 1 },
   compactTitle: { fontSize: 14, fontWeight: '600', color: '#0f172a' },
-  compactMeta: { color: '#64748b', fontSize: 12, marginTop: 1 },
+  compactMeta: { color: '#64748b', fontSize: 13, marginTop: 1 },
   card: {
     backgroundColor: '#ffffff',
     borderWidth: 1,
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
     borderRadius: 99,
   },
-  badgeText: { fontSize: 11, fontWeight: '700', textTransform: 'capitalize' },
+  badgeText: { fontSize: 13, fontWeight: '700', textTransform: 'capitalize' },
   location: { color: '#475569', fontSize: 13, marginTop: 4 },
   description: { color: '#334155', marginTop: 8, lineHeight: 20 },
   recommendation: {
@@ -124,8 +124,8 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#f1f5f9',
   },
-  date: { color: '#64748b', fontSize: 12 },
-  status: { color: '#64748b', fontSize: 12, fontWeight: '600', textTransform: 'capitalize' },
+  date: { color: '#64748b', fontSize: 13 },
+  status: { color: '#64748b', fontSize: 13, fontWeight: '600', textTransform: 'capitalize' },
 });
 
 export default DamageReportCard;

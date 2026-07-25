@@ -278,7 +278,7 @@ const styles = StyleSheet.create({
   eyebrow: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 9,
+    fontSize: 13,
     letterSpacing: 1.2,
   },
   title: {
@@ -298,7 +298,7 @@ const styles = StyleSheet.create({
   summary: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 12,
+    fontSize: 13,
     marginBottom: 13,
   },
   center: {
@@ -311,7 +311,7 @@ const styles = StyleSheet.create({
   loadingText: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 12,
+    fontSize: 13,
     marginTop: 12,
   },
   emptyIcon: {
@@ -377,7 +377,7 @@ const styles = StyleSheet.create({
   },
   statusText: {
     fontFamily: typography.bold,
-    fontSize: 10,
+    fontSize: 13,
     textTransform: 'uppercase',
   },
   metaRow: {
@@ -388,7 +388,7 @@ const styles = StyleSheet.create({
   metaText: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
     marginLeft: 7,
   },
   cardArrow: {
@@ -449,7 +449,7 @@ const styles = StyleSheet.create({
   hint: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 11,
+    fontSize: 13,
     marginTop: 8,
     textAlign: 'center',
   },

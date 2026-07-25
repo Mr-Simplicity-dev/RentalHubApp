@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     borderRadius: 99,
     alignSelf: 'flex-start',
   },
-  text: { fontSize: 12, fontWeight: '700', textTransform: 'capitalize' },
+  text: { fontSize: 13, fontWeight: '700', textTransform: 'capitalize' },
 });
 
 export default StatusBadge;

@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
   },
   chipActive: { backgroundColor: '#4f46e5', borderColor: '#4f46e5' },
-  chipText: { fontSize: 12, color: '#334155' },
+  chipText: { fontSize: 13, color: '#334155' },
   chipTextActive: { color: '#fff' },
   card: {
     backgroundColor: '#fff',
@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   cardTitle: { fontSize: 14, fontWeight: '600', color: '#0f172a' },
-  meta: { fontSize: 12, color: '#64748b', marginTop: 4 },
+  meta: { fontSize: 13, color: '#64748b', marginTop: 4 },
   row: { flexDirection: 'row', gap: 16, marginTop: 8 },
   link: { color: '#2563eb', fontWeight: '600' },
   danger: { color: '#dc2626', fontWeight: '600' },

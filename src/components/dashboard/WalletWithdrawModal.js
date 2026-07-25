@@ -346,7 +346,7 @@ const styles = StyleSheet.create({
   balanceCardGreen: { backgroundColor: '#f0fdf4', borderColor: '#bbf7d0' },
   balanceCardAmber: { backgroundColor: '#fffbeb', borderColor: '#fde68a' },
   landlordGrid: { flexDirection: 'row', gap: 10 },
-  balanceLabel: { fontFamily: typography.semibold, color: '#475569', fontSize: 12 },
+  balanceLabel: { fontFamily: typography.semibold, color: '#475569', fontSize: 13 },
   balanceValue: { fontFamily: typography.bold, color: colors.ink, fontSize: 20, marginTop: 4 },
   warningCard: {
     flexDirection: 'row',
@@ -358,8 +358,8 @@ const styles = StyleSheet.create({
     padding: 12,
     alignItems: 'flex-start',
   },
-  warningText: { flex: 1, color: '#92400e', fontSize: 12, lineHeight: 18 },
-  errorText: { color: '#dc2626', fontSize: 12 },
+  warningText: { flex: 1, color: '#92400e', fontSize: 13, lineHeight: 18 },
+  errorText: { color: '#dc2626', fontSize: 13 },
   consentRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   consentText: { flex: 1, color: '#334155', fontSize: 13 },
   switchLink: { alignItems: 'center' },
@@ -374,7 +374,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   historyAmount: { fontFamily: typography.bold, color: colors.ink },
-  historyMeta: { marginTop: 2, color: colors.muted, fontSize: 12 },
+  historyMeta: { marginTop: 2, color: colors.muted, fontSize: 13 },
 });
 
 export default WalletWithdrawModal;

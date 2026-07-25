@@ -639,7 +639,7 @@ const styles = StyleSheet.create({
   statusLabel: {
     color: colors.muted,
     fontFamily: typography.semibold,
-    fontSize: 10,
+    fontSize: 13,
     textTransform: 'uppercase',
   },
   statusValue: {
@@ -652,7 +652,7 @@ const styles = StyleSheet.create({
   controlLabel: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 12,
+    fontSize: 13,
     marginTop: 12,
   },
   controlRow: {
@@ -682,7 +682,7 @@ const styles = StyleSheet.create({
   controlText: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 11,
+    fontSize: 13,
   },
   controlTextStrong: {
     color: colors.white,
@@ -696,7 +696,7 @@ const styles = StyleSheet.create({
   busyText: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 12,
+    fontSize: 13,
   },
   noteInput: {
     backgroundColor: colors.white,
@@ -730,7 +730,7 @@ const styles = StyleSheet.create({
   replyAuthor: {
     color: colors.ink,
     fontFamily: typography.semibold,
-    fontSize: 12,
+    fontSize: 13,
   },
   replyMessage: {
     color: colors.text,
@@ -742,19 +742,19 @@ const styles = StyleSheet.create({
   replyAttachment: {
     color: colors.blue,
     fontFamily: typography.medium,
-    fontSize: 12,
+    fontSize: 13,
     marginTop: 6,
   },
   replyTime: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 10,
+    fontSize: 13,
     marginTop: 8,
   },
   editedText: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 10,
+    fontSize: 13,
     marginTop: 3,
   },
   inlineActions: {
@@ -765,17 +765,17 @@ const styles = StyleSheet.create({
   inlineAction: {
     color: colors.muted,
     fontFamily: typography.semibold,
-    fontSize: 12,
+    fontSize: 13,
   },
   inlineActionPrimary: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 12,
+    fontSize: 13,
   },
   inlineActionDanger: {
     color: colors.danger,
     fontFamily: typography.bold,
-    fontSize: 12,
+    fontSize: 13,
   },
   editInput: {
     backgroundColor: colors.white,
@@ -812,7 +812,7 @@ const styles = StyleSheet.create({
   noteRole: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 10,
+    fontSize: 13,
     textTransform: 'capitalize',
   },
   noteText: {
@@ -852,7 +852,7 @@ const styles = StyleSheet.create({
   attachmentLabel: {
     color: colors.blue,
     fontFamily: typography.medium,
-    fontSize: 11,
+    fontSize: 13,
     marginBottom: 2,
     marginLeft: 14,
   },

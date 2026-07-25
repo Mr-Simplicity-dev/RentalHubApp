@@ -655,7 +655,7 @@ const styles = StyleSheet.create({
   meta: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 11,
+    fontSize: 13,
     marginTop: 3,
   },
   badge: {
@@ -666,13 +666,13 @@ const styles = StyleSheet.create({
   badgeText: {
     color: colors.white,
     fontFamily: typography.semibold,
-    fontSize: 10,
+    fontSize: 13,
     textTransform: 'capitalize',
   },
   detail: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
     lineHeight: 18,
     marginTop: 10,
   },
@@ -685,7 +685,7 @@ const styles = StyleSheet.create({
   paymentText: {
     color: colors.text,
     fontFamily: typography.medium,
-    fontSize: 12,
+    fontSize: 13,
     textTransform: 'capitalize',
   },
   recordGrid: {
@@ -700,7 +700,7 @@ const styles = StyleSheet.create({
   recordText: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 11,
+    fontSize: 13,
     lineHeight: 16,
   },
   actionGroup: {
@@ -730,7 +730,7 @@ const styles = StyleSheet.create({
   actionChipText: {
     color: colors.blue,
     fontFamily: typography.semibold,
-    fontSize: 11,
+    fontSize: 13,
   },
   actionChipTextDanger: {
     color: colors.danger,
@@ -768,7 +768,7 @@ const styles = StyleSheet.create({
   operationsSubtitle: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 11,
+    fontSize: 13,
     marginTop: 2,
   },
   timelineButton: {
@@ -783,7 +783,7 @@ const styles = StyleSheet.create({
   timelineButtonText: {
     color: colors.blue,
     fontFamily: typography.semibold,
-    fontSize: 11,
+    fontSize: 13,
   },
   operationRow: {
     flexDirection: 'row',
@@ -803,26 +803,26 @@ const styles = StyleSheet.create({
   operationTitle: {
     color: colors.ink,
     fontFamily: typography.semibold,
-    fontSize: 12,
+    fontSize: 13,
     textTransform: 'capitalize',
   },
   operationMeta: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 10,
+    fontSize: 13,
     marginTop: 2,
   },
   operationNote: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 11,
+    fontSize: 13,
     lineHeight: 16,
     marginTop: 3,
   },
   operationsEmpty: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 11,
+    fontSize: 13,
     marginTop: 10,
   },
   complianceButton: {
@@ -841,7 +841,7 @@ const styles = StyleSheet.create({
   complianceText: {
     color: colors.success,
     fontFamily: typography.semibold,
-    fontSize: 12,
+    fontSize: 13,
   },
   empty: {
     color: colors.muted,

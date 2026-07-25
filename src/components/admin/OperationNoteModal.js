@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
   auditHint: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 11,
+    fontSize: 13,
     lineHeight: 17,
     marginTop: 8,
   },

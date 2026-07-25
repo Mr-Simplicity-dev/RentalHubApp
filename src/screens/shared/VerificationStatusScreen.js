@@ -252,7 +252,7 @@ const styles = StyleSheet.create({
   eyebrow: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 9,
+    fontSize: 13,
     letterSpacing: 1.2,
   },
   title: {
@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
   loadingText: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 12,
+    fontSize: 13,
     marginTop: 12,
   },
   hero: {
@@ -286,7 +286,7 @@ const styles = StyleSheet.create({
   heroEyebrow: {
     color: '#9BC3F4',
     fontFamily: typography.bold,
-    fontSize: 9,
+    fontSize: 13,
     letterSpacing: 1.2,
     marginTop: 17,
   },
@@ -315,7 +315,7 @@ const styles = StyleSheet.create({
   sectionEyebrow: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 9,
+    fontSize: 13,
     letterSpacing: 1.2,
     marginBottom: 9,
     marginTop: 26,
@@ -349,7 +349,7 @@ const styles = StyleSheet.create({
   stepStatus: {
     color: colors.muted,
     fontFamily: typography.bold,
-    fontSize: 8,
+    fontSize: 13,
     textTransform: 'uppercase',
   },
   stepStatusComplete: { color: colors.success },
@@ -358,14 +358,14 @@ const styles = StyleSheet.create({
   stepText: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 11,
+    fontSize: 13,
     lineHeight: 17,
     marginTop: 4,
   },
   documentText: {
     color: colors.text,
     fontFamily: typography.medium,
-    fontSize: 10,
+    fontSize: 13,
     marginTop: 5,
     textTransform: 'capitalize',
   },
@@ -373,7 +373,7 @@ const styles = StyleSheet.create({
   stepActionText: {
     color: colors.blue,
     fontFamily: typography.semibold,
-    fontSize: 11,
+    fontSize: 13,
     marginRight: 5,
   },
   divider: { backgroundColor: colors.border, height: 1, marginLeft: 54 },
@@ -392,12 +392,12 @@ const styles = StyleSheet.create({
   privacyTitle: {
     color: colors.ink,
     fontFamily: typography.semibold,
-    fontSize: 12,
+    fontSize: 13,
   },
   privacyText: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 10,
+    fontSize: 13,
     lineHeight: 15,
     marginTop: 3,
   },

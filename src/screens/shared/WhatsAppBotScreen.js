@@ -496,7 +496,7 @@ const styles = StyleSheet.create({
   headerSubtitle: {
     color: '#E8FFF0',
     fontFamily: typography.regular,
-    fontSize: 11,
+    fontSize: 13,
     marginTop: 1,
   },
   chatArea: {
@@ -552,7 +552,7 @@ const styles = StyleSheet.create({
   },
   botLabel: {
     fontFamily: typography.semibold,
-    fontSize: 11,
+    fontSize: 13,
     color: '#25D366',
     marginBottom: 3,
   },
@@ -567,7 +567,7 @@ const styles = StyleSheet.create({
   },
   bubbleTime: {
     fontFamily: typography.regular,
-    fontSize: 10,
+    fontSize: 13,
     color: colors.muted,
     marginTop: 4,
     alignSelf: 'flex-end',
@@ -589,7 +589,7 @@ const styles = StyleSheet.create({
   },
   qrChipText: {
     fontFamily: typography.medium,
-    fontSize: 12,
+    fontSize: 13,
     color: '#128C7E',
   },
   typingBubble: {
@@ -629,7 +629,7 @@ const styles = StyleSheet.create({
   },
   agentSub: {
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
     color: '#4CAF50',
     marginTop: 4,
     textAlign: 'center',

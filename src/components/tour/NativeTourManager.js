@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
   welcomeEyebrow: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 10,
+    fontSize: 13,
     letterSpacing: 1.25,
     marginTop: 20,
   },
@@ -273,7 +273,7 @@ const styles = StyleSheet.create({
   durationText: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 12,
+    fontSize: 13,
     marginLeft: 8,
   },
   startButton: {
@@ -311,7 +311,7 @@ const styles = StyleSheet.create({
   coachStepCount: {
     color: colors.gold,
     fontFamily: typography.bold,
-    fontSize: 11,
+    fontSize: 13,
     letterSpacing: 1.1,
   },
   coachSkipButton: {
@@ -388,7 +388,7 @@ const styles = StyleSheet.create({
   targetLabelText: {
     color: colors.white,
     fontFamily: typography.bold,
-    fontSize: 12,
+    fontSize: 13,
   },
   coachArrowUp: {
     borderBottomColor: colors.white,
@@ -480,7 +480,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.md,
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 12,
+    fontSize: 13,
     lineHeight: 18,
     marginTop: 12,
     padding: 12,

@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
   locationMeta: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
     marginTop: 4,
   },
   empty: {

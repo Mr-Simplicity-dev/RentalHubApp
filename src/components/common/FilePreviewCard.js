@@ -131,13 +131,13 @@ const styles = StyleSheet.create({
   subtitle: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 11,
+    fontSize: 13,
     marginTop: 2,
   },
   meta: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 10,
+    fontSize: 13,
     marginTop: 3,
   },
   actions: {
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
   actionText: {
     color: colors.blue,
     fontFamily: typography.semibold,
-    fontSize: 11,
+    fontSize: 13,
   },
   retryButton: {
     alignItems: 'center',
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
   retryText: {
     color: colors.danger,
     fontFamily: typography.semibold,
-    fontSize: 11,
+    fontSize: 13,
   },
 });
 

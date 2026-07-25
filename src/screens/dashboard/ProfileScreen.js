@@ -447,7 +447,7 @@ const styles = StyleSheet.create({
   headerEyebrow: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 9,
+    fontSize: 13,
     letterSpacing: 1.2,
   },
   headerTitle: {
@@ -514,7 +514,7 @@ const styles = StyleSheet.create({
   roleText: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 9,
+    fontSize: 13,
     letterSpacing: 0.7,
     textTransform: 'uppercase',
   },
@@ -546,7 +546,7 @@ const styles = StyleSheet.create({
   cardCaption: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 10,
+    fontSize: 13,
     marginTop: 2,
   },
   statusText: { color: colors.text, fontFamily: typography.regular, marginBottom: 7 },
@@ -598,7 +598,7 @@ const styles = StyleSheet.create({
   switchDescription: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
     lineHeight: 18,
     marginTop: 4,
   },

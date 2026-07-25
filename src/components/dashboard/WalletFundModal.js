@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 14,
   },
-  balanceLabel: { color: '#0f766e', fontSize: 12, fontWeight: '600' },
+  balanceLabel: { color: '#0f766e', fontSize: 13, fontWeight: '600' },
   balanceValue: { fontFamily: typography.bold, color: '#115e59', fontSize: 24, marginTop: 4 },
   sectionLabel: { color: '#334155', fontWeight: '700', marginTop: 4 },
   presetGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
     padding: 12,
     alignItems: 'flex-start',
   },
-  noteText: { flex: 1, color: '#166534', fontSize: 12, lineHeight: 18 },
+  noteText: { flex: 1, color: '#166534', fontSize: 13, lineHeight: 18 },
   switchLink: { marginTop: 4, alignItems: 'center' },
   switchText: { color: '#4f46e5', fontWeight: '600', fontSize: 13 },
 });

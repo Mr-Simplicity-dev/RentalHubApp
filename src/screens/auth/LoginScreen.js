@@ -307,7 +307,7 @@ const styles = StyleSheet.create({
   eyebrow: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 11,
+    fontSize: 13,
     letterSpacing: 1.5,
     marginBottom: 10,
   },
@@ -376,7 +376,7 @@ const styles = StyleSheet.create({
   inviteText: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 12,
+    fontSize: 13,
   },
 });
 

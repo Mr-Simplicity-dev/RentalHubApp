@@ -482,7 +482,7 @@ const styles = StyleSheet.create({
   loadingText: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 12,
+    fontSize: 13,
     marginTop: 12,
   },
   notFoundTitle: {
@@ -514,7 +514,7 @@ const styles = StyleSheet.create({
   eyebrow: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 8,
+    fontSize: 13,
     letterSpacing: 1.1,
   },
   headerTitle: {
@@ -544,7 +544,7 @@ const styles = StyleSheet.create({
   heroEyebrow: {
     color: colors.muted,
     fontFamily: typography.bold,
-    fontSize: 8,
+    fontSize: 13,
     letterSpacing: 1,
   },
   heroTitle: {
@@ -556,7 +556,7 @@ const styles = StyleSheet.create({
   heroText: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 10,
+    fontSize: 13,
     lineHeight: 15,
     marginTop: 4,
   },
@@ -584,7 +584,7 @@ const styles = StyleSheet.create({
   propertyLocation: {
     color: '#AFC2DF',
     fontFamily: typography.regular,
-    fontSize: 10,
+    fontSize: 13,
     marginTop: 3,
   },
   propertyFacts: {
@@ -595,11 +595,11 @@ const styles = StyleSheet.create({
     marginTop: 15,
     paddingTop: 14,
   },
-  factLabel: { color: '#8FA8CA', fontFamily: typography.medium, fontSize: 9 },
+  factLabel: { color: '#8FA8CA', fontFamily: typography.medium, fontSize: 13 },
   factValue: {
     color: colors.white,
     fontFamily: typography.semibold,
-    fontSize: 12,
+    fontSize: 13,
     marginTop: 3,
     maxWidth: 145,
   },
@@ -617,13 +617,13 @@ const styles = StyleSheet.create({
   noteLabel: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 8,
+    fontSize: 13,
     letterSpacing: 1,
   },
   noteText: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 11,
+    fontSize: 13,
     lineHeight: 17,
     marginTop: 4,
   },
@@ -636,7 +636,7 @@ const styles = StyleSheet.create({
   sectionEyebrow: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 9,
+    fontSize: 13,
     letterSpacing: 1.2,
   },
   sectionTitle: {
@@ -654,7 +654,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 9,
     paddingVertical: 6,
   },
-  agreedText: { color: colors.success, fontFamily: typography.bold, fontSize: 9 },
+  agreedText: { color: colors.success, fontFamily: typography.bold, fontSize: 13 },
   offerRow: { flexDirection: 'row', gap: 10, marginTop: 12 },
   offerCard: {
     backgroundColor: colors.white,
@@ -664,7 +664,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 14,
   },
-  offerLabel: { color: colors.muted, fontFamily: typography.medium, fontSize: 9 },
+  offerLabel: { color: colors.muted, fontFamily: typography.medium, fontSize: 13 },
   offerValue: {
     color: colors.ink,
     fontFamily: typography.bold,
@@ -680,7 +680,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     padding: 14,
   },
-  agreedLabel: { color: colors.success, fontFamily: typography.medium, fontSize: 9 },
+  agreedLabel: { color: colors.success, fontFamily: typography.medium, fontSize: 13 },
   agreedValue: {
     color: '#08714A',
     fontFamily: typography.bold,
@@ -716,25 +716,25 @@ const styles = StyleSheet.create({
   timelineAction: {
     color: colors.ink,
     fontFamily: typography.semibold,
-    fontSize: 12,
+    fontSize: 13,
   },
   timelineMeta: {
     color: colors.blue,
     fontFamily: typography.medium,
-    fontSize: 9,
+    fontSize: 13,
     marginTop: 3,
   },
   timelineNote: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 10,
+    fontSize: 13,
     lineHeight: 15,
     marginTop: 5,
   },
   timelineDate: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 8,
+    fontSize: 13,
     marginTop: 5,
   },
   formCard: {
@@ -767,7 +767,7 @@ const styles = StyleSheet.create({
     color: colors.text,
     flex: 1,
     fontFamily: typography.medium,
-    fontSize: 10,
+    fontSize: 13,
     lineHeight: 15,
     marginLeft: 8,
   },

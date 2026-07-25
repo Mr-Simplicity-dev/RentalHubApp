@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
   progressText: {
     color: colors.text,
     fontFamily: typography.semibold,
-    fontSize: 12,
+    fontSize: 13,
     marginTop: 8,
     textAlign: 'center',
   },

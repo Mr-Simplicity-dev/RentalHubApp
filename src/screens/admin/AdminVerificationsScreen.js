@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
   cardMeta: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
     marginTop: 3,
   },
   actions: {

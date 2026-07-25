@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
   ticketMeta: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
     marginTop: 4,
   },
 });

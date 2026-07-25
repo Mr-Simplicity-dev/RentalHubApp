@@ -265,7 +265,7 @@ const styles = StyleSheet.create({
   filterText: {
     color: colors.text,
     fontFamily: typography.semibold,
-    fontSize: 11,
+    fontSize: 13,
   },
   filterTextActive: {
     color: colors.white,
@@ -289,7 +289,7 @@ const styles = StyleSheet.create({
   appellant: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 11,
+    fontSize: 13,
     marginTop: 4,
   },
   fullButton: {

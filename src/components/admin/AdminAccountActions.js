@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontFamily: typography.semibold,
-    fontSize: 12,
+    fontSize: 13,
   },
 });
 

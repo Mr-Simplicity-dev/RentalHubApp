@@ -152,12 +152,12 @@ const styles = StyleSheet.create({
   issueMeta: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
     marginTop: 4,
   },
   issueStatus: {
     fontFamily: typography.semibold,
-    fontSize: 11,
+    fontSize: 13,
     marginTop: 6,
     textTransform: 'capitalize',
   },

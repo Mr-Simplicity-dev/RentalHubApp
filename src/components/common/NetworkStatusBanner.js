@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
     color: '#78350F',
     flex: 1,
     fontFamily: typography.semibold,
-    fontSize: 12,
+    fontSize: 13,
     lineHeight: 17,
   },
 });

@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
   progressCopy: {
     color: colors.text,
     fontFamily: typography.medium,
-    fontSize: 12,
+    fontSize: 13,
     marginTop: 8,
   },
 });

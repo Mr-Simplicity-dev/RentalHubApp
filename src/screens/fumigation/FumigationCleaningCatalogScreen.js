@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
   priceLabel: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 11,
+    fontSize: 13,
   },
   priceValue: {
     color: colors.ink,

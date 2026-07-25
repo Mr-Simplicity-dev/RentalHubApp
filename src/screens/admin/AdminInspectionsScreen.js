@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
   inspectionIconText: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 12,
+    fontSize: 13,
   },
   cardCopy: {
     flex: 1,

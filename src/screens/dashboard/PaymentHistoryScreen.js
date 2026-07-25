@@ -237,7 +237,7 @@ const styles = StyleSheet.create({
   eyebrow: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 9,
+    fontSize: 13,
     letterSpacing: 1.2,
   },
   title: {
@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
   summaryLabel: {
     color: '#AFC2DF',
     fontFamily: typography.medium,
-    fontSize: 11,
+    fontSize: 13,
     marginTop: 16,
   },
   summaryAmount: {
@@ -279,7 +279,7 @@ const styles = StyleSheet.create({
   summaryMeta: {
     color: '#8FA8CA',
     fontFamily: typography.regular,
-    fontSize: 10,
+    fontSize: 13,
     marginTop: 6,
   },
   filterRow: {
@@ -302,7 +302,7 @@ const styles = StyleSheet.create({
   filterText: {
     color: colors.text,
     fontFamily: typography.medium,
-    fontSize: 10,
+    fontSize: 13,
   },
   filterTextActive: {
     color: colors.white,
@@ -334,19 +334,19 @@ const styles = StyleSheet.create({
   meta: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 11,
+    fontSize: 13,
     marginTop: 4,
   },
   date: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 9,
+    fontSize: 13,
     marginTop: 5,
   },
   reference: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 9,
+    fontSize: 13,
     marginTop: 3,
   },
   paymentRight: { alignItems: 'flex-end', marginLeft: 7 },
@@ -363,7 +363,7 @@ const styles = StyleSheet.create({
   },
   statusText: {
     fontFamily: typography.bold,
-    fontSize: 8,
+    fontSize: 13,
     textTransform: 'uppercase',
   },
   center: {
@@ -376,7 +376,7 @@ const styles = StyleSheet.create({
   loadingText: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 12,
+    fontSize: 13,
     marginTop: 12,
   },
   emptyIcon: {

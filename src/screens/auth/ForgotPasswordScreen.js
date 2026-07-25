@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
   helper: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
     lineHeight: 18,
     marginTop: 14,
     textAlign: 'center',

@@ -552,7 +552,7 @@ const styles = StyleSheet.create({
   },
   tabBadgeText: {
     color: colors.white,
-    fontSize: 10,
+    fontSize: 13,
     fontFamily: typography.bold,
     textAlign: 'center',
   },
@@ -592,7 +592,7 @@ const styles = StyleSheet.create({
   oppContext: {
     color: colors.blue,
     fontFamily: typography.semibold,
-    fontSize: 12,
+    fontSize: 13,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
@@ -605,7 +605,7 @@ const styles = StyleSheet.create({
   oppLocation: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
     marginTop: 3,
   },
   publicCard: {
@@ -653,12 +653,12 @@ const styles = StyleSheet.create({
   publicVerifiedText: {
     color: colors.success,
     fontFamily: typography.medium,
-    fontSize: 11,
+    fontSize: 13,
   },
   publicTime: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
   },
   publicComment: {
     color: colors.text,
@@ -670,7 +670,7 @@ const styles = StyleSheet.create({
   publicContext: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
     marginTop: 8,
     fontStyle: 'italic',
   },
@@ -739,7 +739,7 @@ const styles = StyleSheet.create({
   modalContextText: {
     color: colors.blue,
     fontFamily: typography.semibold,
-    fontSize: 12,
+    fontSize: 13,
   },
   modalSource: {
     color: colors.text,
@@ -835,7 +835,7 @@ const styles = StyleSheet.create({
     color: colors.muted,
     fontFamily: typography.regular,
     flex: 1,
-    fontSize: 12,
+    fontSize: 13,
     lineHeight: 17,
   },
   modalFooter: {

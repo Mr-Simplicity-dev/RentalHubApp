@@ -760,7 +760,7 @@ const styles = StyleSheet.create({
   loadingText: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 12,
+    fontSize: 13,
     marginTop: 12,
   },
   header: {
@@ -775,7 +775,7 @@ const styles = StyleSheet.create({
   eyebrow: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 9,
+    fontSize: 13,
     letterSpacing: 1.2,
   },
   title: {
@@ -823,7 +823,7 @@ const styles = StyleSheet.create({
   summary: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 11,
+    fontSize: 13,
     marginBottom: 12,
     marginTop: 13,
   },
@@ -857,14 +857,14 @@ const styles = StyleSheet.create({
   conversationTime: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 9,
+    fontSize: 13,
   },
   conversationPreview: { alignItems: 'center', flexDirection: 'row', marginTop: 4 },
   conversationMessage: {
     color: colors.muted,
     flex: 1,
     fontFamily: typography.regular,
-    fontSize: 11,
+    fontSize: 13,
   },
   conversationMessageUnread: { color: colors.ink, fontFamily: typography.semibold },
   unreadBadge: {
@@ -877,11 +877,11 @@ const styles = StyleSheet.create({
     minWidth: 18,
     paddingHorizontal: 4,
   },
-  unreadText: { color: colors.white, fontFamily: typography.bold, fontSize: 8 },
+  unreadText: { color: colors.white, fontFamily: typography.bold, fontSize: 13 },
   conversationRole: {
     color: colors.blue,
     fontFamily: typography.medium,
-    fontSize: 9,
+    fontSize: 13,
     marginTop: 5,
     textTransform: 'capitalize',
   },
@@ -924,7 +924,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 17,
     paddingVertical: 12,
   },
-  startButtonText: { color: colors.white, fontFamily: typography.semibold, fontSize: 12 },
+  startButtonText: { color: colors.white, fontFamily: typography.semibold, fontSize: 13 },
   threadHeader: {
     alignItems: 'center',
     borderBottomColor: colors.border,
@@ -948,13 +948,13 @@ const styles = StyleSheet.create({
     marginLeft: 3,
     width: 38,
   },
-  smallAvatarText: { color: colors.white, fontFamily: typography.bold, fontSize: 11 },
+  smallAvatarText: { color: colors.white, fontFamily: typography.bold, fontSize: 13 },
   threadHeaderCopy: { flex: 1, marginLeft: 10 },
   threadName: { color: colors.ink, fontFamily: typography.semibold, fontSize: 14 },
   threadRole: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 9,
+    fontSize: 13,
     marginTop: 2,
     textTransform: 'capitalize',
   },
@@ -977,7 +977,7 @@ const styles = StyleSheet.create({
     color: colors.blue,
     flex: 1,
     fontFamily: typography.medium,
-    fontSize: 10,
+    fontSize: 13,
     marginHorizontal: 7,
   },
   threadList: { flexGrow: 1, padding: 14, paddingBottom: 18 },
@@ -1005,7 +1005,7 @@ const styles = StyleSheet.create({
   emptyThreadText: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 11,
+    fontSize: 13,
     lineHeight: 17,
     marginTop: 5,
     textAlign: 'center',
@@ -1014,7 +1014,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 9,
+    fontSize: 13,
     marginBottom: 10,
     marginTop: 5,
   },
@@ -1040,7 +1040,7 @@ const styles = StyleSheet.create({
   messageSubject: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 11,
+    fontSize: 13,
     marginBottom: 4,
   },
   messageText: {
@@ -1051,7 +1051,7 @@ const styles = StyleSheet.create({
   },
   myMessageText: { color: colors.white },
   messageMeta: { alignItems: 'center', alignSelf: 'flex-end', flexDirection: 'row', gap: 4, marginTop: 5 },
-  messageTime: { color: colors.muted, fontFamily: typography.regular, fontSize: 8 },
+  messageTime: { color: colors.muted, fontFamily: typography.regular, fontSize: 13 },
   myMessageMeta: { color: '#DCE9FA' },
   composer: {
     alignItems: 'flex-end',
@@ -1098,7 +1098,7 @@ const styles = StyleSheet.create({
   readOnlyText: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 10,
+    fontSize: 13,
     marginLeft: 7,
   },
 });

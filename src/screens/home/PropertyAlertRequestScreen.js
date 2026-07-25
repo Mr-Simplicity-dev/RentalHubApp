@@ -562,7 +562,7 @@ const styles = StyleSheet.create({
   headerEyebrow: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 9,
+    fontSize: 13,
     letterSpacing: 1.2,
   },
   headerTitle: {
@@ -627,14 +627,14 @@ const styles = StyleSheet.create({
   priceMeta: {
     color: '#AFC2DF',
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
     lineHeight: 18,
     marginTop: 6,
   },
   sectionLabel: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 9,
+    fontSize: 13,
     letterSpacing: 1.25,
     marginBottom: 9,
     marginLeft: 3,

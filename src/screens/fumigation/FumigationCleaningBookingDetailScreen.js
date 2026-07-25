@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
   paymentStatus: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 11,
+    fontSize: 13,
     marginTop: 3,
   },
   totalValue: {

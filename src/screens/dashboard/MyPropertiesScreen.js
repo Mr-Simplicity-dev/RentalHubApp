@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
     width: 42,
   },
   headerCopy: { alignItems: 'center', flex: 1 },
-  eyebrow: { color: colors.blue, fontFamily: typography.bold, fontSize: 9, letterSpacing: 1.2 },
+  eyebrow: { color: colors.blue, fontFamily: typography.bold, fontSize: 13, letterSpacing: 1.2 },
   title: { color: colors.ink, fontFamily: typography.bold, fontSize: 20, marginTop: 2 },
   addButton: {
     alignItems: 'center',
@@ -316,7 +316,7 @@ const styles = StyleSheet.create({
     marginBottom: 13,
     padding: 19,
   },
-  summaryLabel: { color: '#9BC3F4', fontFamily: typography.bold, fontSize: 8, letterSpacing: 1.1 },
+  summaryLabel: { color: '#9BC3F4', fontFamily: typography.bold, fontSize: 13, letterSpacing: 1.1 },
   summaryValue: { color: colors.white, fontFamily: typography.bold, fontSize: 22, marginTop: 4 },
   summaryIcon: {
     alignItems: 'center',
@@ -336,7 +336,7 @@ const styles = StyleSheet.create({
     paddingVertical: 7,
   },
   filterChipActive: { backgroundColor: colors.blue, borderColor: colors.blue },
-  filterText: { color: colors.text, fontFamily: typography.medium, fontSize: 9 },
+  filterText: { color: colors.text, fontFamily: typography.medium, fontSize: 13 },
   filterTextActive: { color: colors.white, fontFamily: typography.semibold },
   card: {
     backgroundColor: colors.white,
@@ -355,10 +355,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 12,
   },
-  statusText: { fontFamily: typography.bold, fontSize: 8, textTransform: 'uppercase' },
+  statusText: { fontFamily: typography.bold, fontSize: 13, textTransform: 'uppercase' },
   cardBody: { padding: 14 },
   cardTitle: { color: colors.ink, fontFamily: typography.bold, fontSize: 16 },
-  cardMeta: { color: colors.muted, fontFamily: typography.regular, fontSize: 11, marginTop: 4 },
+  cardMeta: { color: colors.muted, fontFamily: typography.regular, fontSize: 13, marginTop: 4 },
   price: { color: colors.blue, fontFamily: typography.bold, fontSize: 18, marginTop: 8 },
   actions: { borderTopColor: colors.border, borderTopWidth: 1, flexDirection: 'row' },
   action: {
@@ -369,8 +369,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     minHeight: 45,
   },
-  actionText: { color: colors.blue, fontFamily: typography.semibold, fontSize: 10 },
-  dangerText: { color: colors.danger, fontFamily: typography.semibold, fontSize: 10 },
+  actionText: { color: colors.blue, fontFamily: typography.semibold, fontSize: 13 },
+  dangerText: { color: colors.danger, fontFamily: typography.semibold, fontSize: 13 },
   center: {
     alignItems: 'center',
     backgroundColor: colors.surface,
@@ -399,7 +399,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 17,
     paddingVertical: 12,
   },
-  emptyActionText: { color: colors.white, fontFamily: typography.semibold, fontSize: 12 },
+  emptyActionText: { color: colors.white, fontFamily: typography.semibold, fontSize: 13 },
 });
 
 export default MyPropertiesScreen;

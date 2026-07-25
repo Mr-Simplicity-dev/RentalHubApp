@@ -1003,7 +1003,7 @@ const styles = StyleSheet.create({
   headerSubtitle: {
     color: '#B9C9E5',
     fontFamily: typography.regular,
-    fontSize: 11,
+    fontSize: 13,
     marginTop: 1,
   },
   body: {
@@ -1073,7 +1073,7 @@ const styles = StyleSheet.create({
   },
   menuRowSub: {
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
     color: colors.muted,
     marginTop: 2,
   },
@@ -1132,7 +1132,7 @@ const styles = StyleSheet.create({
   },
   chipText: {
     fontFamily: typography.medium,
-    fontSize: 12,
+    fontSize: 13,
     color: colors.text,
   },
   chipTextActive: {
@@ -1209,7 +1209,7 @@ const styles = StyleSheet.create({
   },
   infoLabel: {
     fontFamily: typography.regular,
-    fontSize: 10,
+    fontSize: 13,
     color: colors.muted,
     marginBottom: 2,
   },
@@ -1224,7 +1224,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontFamily: typography.semibold,
-    fontSize: 11,
+    fontSize: 13,
     color: colors.muted,
     letterSpacing: 1,
     textTransform: 'uppercase',
@@ -1271,12 +1271,12 @@ const styles = StyleSheet.create({
   },
   statusText: {
     fontFamily: typography.semibold,
-    fontSize: 10,
+    fontSize: 13,
     textTransform: 'capitalize',
   },
   ticketMeta: {
     fontFamily: typography.regular,
-    fontSize: 11,
+    fontSize: 13,
     color: colors.muted,
     marginTop: 6,
   },
@@ -1290,7 +1290,7 @@ const styles = StyleSheet.create({
   },
   unreadText: {
     fontFamily: typography.semibold,
-    fontSize: 10,
+    fontSize: 13,
     color: colors.danger,
   },
 
@@ -1348,7 +1348,7 @@ const styles = StyleSheet.create({
   },
   bubbleAuthor: {
     fontFamily: typography.semibold,
-    fontSize: 10,
+    fontSize: 13,
     color: colors.blue,
     marginBottom: 2,
   },
@@ -1363,7 +1363,7 @@ const styles = StyleSheet.create({
   },
   bubbleTime: {
     fontFamily: typography.regular,
-    fontSize: 10,
+    fontSize: 13,
     color: colors.muted,
     marginTop: 4,
   },
@@ -1383,13 +1383,13 @@ const styles = StyleSheet.create({
   },
   attachmentText: {
     fontFamily: typography.medium,
-    fontSize: 12,
+    fontSize: 13,
     color: colors.white,
     flex: 1,
   },
   failedText: {
     fontFamily: typography.regular,
-    fontSize: 10,
+    fontSize: 13,
     color: '#FCA5A5',
     marginTop: 2,
   },
@@ -1399,7 +1399,7 @@ const styles = StyleSheet.create({
   },
   typingText: {
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
     color: colors.muted,
     fontStyle: 'italic',
   },
@@ -1457,7 +1457,7 @@ const styles = StyleSheet.create({
   filePreviewText: {
     flex: 1,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
     color: colors.text,
   },
 
@@ -1494,7 +1494,7 @@ const styles = StyleSheet.create({
   },
   contactBubbleAuthor: {
     fontFamily: typography.semibold,
-    fontSize: 10,
+    fontSize: 13,
     color: colors.blue,
     marginBottom: 2,
   },
@@ -1506,14 +1506,14 @@ const styles = StyleSheet.create({
   },
   contactBubbleLink: {
     fontFamily: typography.medium,
-    fontSize: 12,
+    fontSize: 13,
     color: colors.blue,
     marginTop: 4,
     textDecorationLine: 'underline',
   },
   contactBubbleTime: {
     fontFamily: typography.regular,
-    fontSize: 10,
+    fontSize: 13,
     color: colors.muted,
     marginTop: 4,
   },
@@ -1537,7 +1537,7 @@ const styles = StyleSheet.create({
   },
   statusIndicatorText: {
     fontFamily: typography.regular,
-    fontSize: 11,
+    fontSize: 13,
     color: colors.success,
     fontStyle: 'italic',
   },

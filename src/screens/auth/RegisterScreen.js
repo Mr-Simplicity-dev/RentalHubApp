@@ -1148,13 +1148,13 @@ const styles = StyleSheet.create({
   stepCount: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 9,
+    fontSize: 13,
     letterSpacing: 1.2,
   },
   stepPercent: {
     color: colors.muted,
     fontFamily: typography.semibold,
-    fontSize: 10,
+    fontSize: 13,
   },
   progressTrack: {
     backgroundColor: colors.border,
@@ -1171,7 +1171,7 @@ const styles = StyleSheet.create({
   eyebrow: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 11,
+    fontSize: 13,
     letterSpacing: 1.5,
     marginTop: 16,
   },
@@ -1203,7 +1203,7 @@ const styles = StyleSheet.create({
   choiceLabel: {
     color: colors.text,
     fontFamily: typography.semibold,
-    fontSize: 12,
+    fontSize: 13,
     marginBottom: 8,
     marginLeft: 2,
   },
@@ -1271,7 +1271,7 @@ const styles = StyleSheet.create({
   reviewEyebrow: {
     color: '#9BC3F4',
     fontFamily: typography.bold,
-    fontSize: 8,
+    fontSize: 13,
     letterSpacing: 1.1,
   },
   reviewTitle: {
@@ -1299,7 +1299,7 @@ const styles = StyleSheet.create({
     color: '#D8E4F5',
     flex: 1,
     fontFamily: typography.regular,
-    fontSize: 11,
+    fontSize: 13,
     marginLeft: 8,
   },
   reviewSupport: {
@@ -1314,7 +1314,7 @@ const styles = StyleSheet.create({
     color: '#D8E4F5',
     flex: 1,
     fontFamily: typography.medium,
-    fontSize: 10,
+    fontSize: 13,
   },
   agentBlock: {
     marginBottom: 8,
@@ -1333,7 +1333,7 @@ const styles = StyleSheet.create({
   agentToggleLabel: {
     color: colors.blue,
     fontFamily: typography.semibold,
-    fontSize: 12,
+    fontSize: 13,
     textAlign: 'center',
   },
   termsRow: {
@@ -1360,7 +1360,7 @@ const styles = StyleSheet.create({
     color: colors.text,
     flex: 1,
     fontFamily: typography.regular,
-    fontSize: 11,
+    fontSize: 13,
     lineHeight: 17,
   },
   termsLink: {

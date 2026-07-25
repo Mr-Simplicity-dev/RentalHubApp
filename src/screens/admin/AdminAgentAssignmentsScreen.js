@@ -246,7 +246,7 @@ const styles = StyleSheet.create({
   meta: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
     marginTop: 3,
   },
   actions: {

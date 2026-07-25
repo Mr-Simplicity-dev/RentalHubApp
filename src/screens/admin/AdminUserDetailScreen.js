@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
   dangerCopy: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
     lineHeight: 18,
     marginBottom: 12,
     marginTop: 5,

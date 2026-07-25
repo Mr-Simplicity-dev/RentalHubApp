@@ -245,14 +245,14 @@ const styles = StyleSheet.create({
   checkSubtitle: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
     lineHeight: 17,
     marginTop: 3,
   },
   label: {
     color: colors.ink,
     fontFamily: typography.semibold,
-    fontSize: 12,
+    fontSize: 13,
     marginBottom: 6,
     marginTop: 4,
   },

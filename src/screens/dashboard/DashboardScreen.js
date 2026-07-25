@@ -1092,7 +1092,7 @@ const styles = StyleSheet.create({
   topEyebrow: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 9,
+    fontSize: 13,
     letterSpacing: 1.3,
   },
   topTitle: {
@@ -1159,8 +1159,8 @@ const styles = StyleSheet.create({
   },
   bannerBody: { flex: 1 },
   bannerTitle: { fontFamily: typography.bold, fontSize: 14 },
-  bannerText: { fontFamily: typography.regular, fontSize: 12, marginTop: 4, lineHeight: 18 },
-  bannerAction: { marginTop: 7, fontFamily: typography.semibold, fontSize: 12 },
+  bannerText: { fontFamily: typography.regular, fontSize: 13, marginTop: 4, lineHeight: 18 },
+  bannerAction: { marginTop: 7, fontFamily: typography.semibold, fontSize: 13 },
   locationSection: {
     backgroundColor: '#ffffff',
     borderWidth: 1,
@@ -1200,7 +1200,7 @@ const styles = StyleSheet.create({
     color: '#15803d',
     paddingHorizontal: 8,
     paddingVertical: 3,
-    fontSize: 11,
+    fontSize: 13,
     fontFamily: typography.bold,
   },
   locationBadgeLocked: { backgroundColor: '#e2e8f0', color: '#475569' },
@@ -1211,7 +1211,7 @@ const styles = StyleSheet.create({
     color: '#1d4ed8',
     paddingHorizontal: 8,
     paddingVertical: 3,
-    fontSize: 11,
+    fontSize: 13,
     fontFamily: typography.bold,
   },
   locationBadgeWarning: {
@@ -1221,7 +1221,7 @@ const styles = StyleSheet.create({
     color: '#b45309',
     paddingHorizontal: 8,
     paddingVertical: 3,
-    fontSize: 11,
+    fontSize: 13,
     fontFamily: typography.bold,
   },
   grid: {
@@ -1240,7 +1240,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     ...shadows.soft,
   },
-  statTitle: { color: colors.muted, fontFamily: typography.medium, fontSize: 11 },
+  statTitle: { color: colors.muted, fontFamily: typography.medium, fontSize: 13 },
   statValue: { fontSize: 21, fontFamily: typography.bold, color: colors.ink, marginTop: 5 },
   quickActions: {
     flexDirection: 'row',
@@ -1258,7 +1258,7 @@ const styles = StyleSheet.create({
     width: '48%',
   },
   quickTitle: { color: colors.navy, fontFamily: typography.bold, fontSize: 13 },
-  quickText: { marginTop: 5, color: colors.muted, fontFamily: typography.regular, fontSize: 11, lineHeight: 16 },
+  quickText: { marginTop: 5, color: colors.muted, fontFamily: typography.regular, fontSize: 13, lineHeight: 16 },
   sectionTitle: {
     marginTop: 24,
     marginBottom: 10,
@@ -1275,9 +1275,9 @@ const styles = StyleSheet.create({
     padding: 12,
     marginBottom: 8,
   },
-  activityType: { color: '#0284c7', fontSize: 11, fontWeight: '700' },
+  activityType: { color: '#0284c7', fontSize: 13, fontWeight: '700' },
   activityText: { marginTop: 4, color: '#0f172a', fontWeight: '600' },
-  activityDate: { marginTop: 4, color: '#64748b', fontSize: 12 },
+  activityDate: { marginTop: 4, color: '#64748b', fontSize: 13 },
   referralCard: {
     backgroundColor: '#ffffff',
     borderWidth: 1,
@@ -1289,7 +1289,7 @@ const styles = StyleSheet.create({
   referralHeader: { flexDirection: 'row', gap: 10, alignItems: 'flex-start' },
   referralEyebrow: {
     color: '#059669',
-    fontSize: 11,
+    fontSize: 13,
     fontFamily: typography.bold,
     textTransform: 'uppercase',
   },
@@ -1300,7 +1300,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ecfdf5',
     color: '#047857',
     fontWeight: '700',
-    fontSize: 12,
+    fontSize: 13,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 999,
@@ -1313,7 +1313,7 @@ const styles = StyleSheet.create({
     borderLeftColor: '#6ee7b7',
     paddingLeft: 8,
   },
-  referralStatLabel: { color: '#64748b', fontSize: 11, fontWeight: '600' },
+  referralStatLabel: { color: '#64748b', fontSize: 13, fontWeight: '600' },
   referralStatValue: { fontFamily: typography.bold, color: '#0f172a', fontSize: 16, marginTop: 2 },
   referralLinkLabel: { marginTop: 12, color: '#334155', fontWeight: '700', fontSize: 13 },
   referralLinkInput: {
@@ -1325,7 +1325,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 10,
     color: '#0f172a',
-    fontSize: 12,
+    fontSize: 13,
   },
   referralActions: { flexDirection: 'row', gap: 10, marginTop: 12 },
   referralBtnPrimary: {

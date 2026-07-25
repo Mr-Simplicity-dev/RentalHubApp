@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
   eyebrow: {
     color: colors.gold,
     fontFamily: typography.semibold,
-    fontSize: 10,
+    fontSize: 13,
     letterSpacing: 1.25,
   },
   heroTitle: {
@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
   metricLabel: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 11,
+    fontSize: 13,
   },
   metricValue: {
     color: colors.ink,
@@ -278,7 +278,7 @@ const styles = StyleSheet.create({
   sectionSubtitle: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
     lineHeight: 18,
     marginTop: 4,
   },
@@ -322,7 +322,7 @@ const styles = StyleSheet.create({
   actionSubtitle: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 11,
+    fontSize: 13,
     lineHeight: 16,
     marginTop: 3,
   },
@@ -331,7 +331,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.pill,
     color: colors.blue,
     fontFamily: typography.semibold,
-    fontSize: 9,
+    fontSize: 13,
     marginLeft: 8,
     overflow: 'hidden',
     paddingHorizontal: 7,
@@ -365,7 +365,7 @@ const styles = StyleSheet.create({
   noticeMessage: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
     lineHeight: 18,
     marginTop: 4,
   },

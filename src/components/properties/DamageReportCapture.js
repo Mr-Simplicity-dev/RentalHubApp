@@ -476,7 +476,7 @@ const styles = StyleSheet.create({
   progressTitle: { color: '#1e3a8a', fontSize: 13, fontFamily: typography.bold },
   progressTrack: { backgroundColor: '#dbeafe', borderRadius: 999, height: 8, marginTop: 9, overflow: 'hidden' },
   progressFill: { backgroundColor: '#0284c7', height: '100%' },
-  progressText: { color: '#1d4ed8', fontSize: 12, marginTop: 6 },
+  progressText: { color: '#1d4ed8', fontSize: 13, marginTop: 6 },
   retryButton: {
     alignItems: 'center',
     backgroundColor: '#eff6ff',

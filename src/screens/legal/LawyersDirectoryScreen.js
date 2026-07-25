@@ -137,13 +137,13 @@ const styles = StyleSheet.create({
   meta: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 11,
+    fontSize: 13,
     marginTop: 3,
   },
   bio: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
     lineHeight: 18,
     marginTop: 8,
   },
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
   badgeText: {
     color: '#166534',
     fontFamily: typography.semibold,
-    fontSize: 10,
+    fontSize: 13,
   },
   empty: {
     color: colors.muted,

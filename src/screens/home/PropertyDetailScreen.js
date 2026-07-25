@@ -668,7 +668,7 @@ const styles = StyleSheet.create({
   loadingText: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 12,
+    fontSize: 13,
     marginTop: 12,
   },
   notFoundIcon: {
@@ -737,7 +737,7 @@ const styles = StyleSheet.create({
   photoCountText: {
     color: colors.white,
     fontFamily: typography.semibold,
-    fontSize: 11,
+    fontSize: 13,
   },
   featuredBadge: {
     alignItems: 'center',
@@ -754,7 +754,7 @@ const styles = StyleSheet.create({
   featuredText: {
     color: colors.navy,
     fontFamily: typography.bold,
-    fontSize: 10,
+    fontSize: 13,
   },
   content: {
     backgroundColor: colors.surface,
@@ -851,7 +851,7 @@ const styles = StyleSheet.create({
   factLabel: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 9,
+    fontSize: 13,
     marginTop: 2,
   },
   factDivider: {
@@ -894,7 +894,7 @@ const styles = StyleSheet.create({
   amenityText: {
     color: colors.text,
     fontFamily: typography.medium,
-    fontSize: 11,
+    fontSize: 13,
   },
   conditionCard: {
     backgroundColor: '#FFF9E9',
@@ -920,7 +920,7 @@ const styles = StyleSheet.create({
   cardEyebrow: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 8,
+    fontSize: 13,
     letterSpacing: 1.1,
   },
   cardTitle: {
@@ -932,7 +932,7 @@ const styles = StyleSheet.create({
   conditionMeta: {
     color: '#855400',
     fontFamily: typography.medium,
-    fontSize: 12,
+    fontSize: 13,
     marginTop: 9,
   },
   conditionText: {
@@ -945,7 +945,7 @@ const styles = StyleSheet.create({
   recommendation: {
     color: colors.navySoft,
     fontFamily: typography.semibold,
-    fontSize: 12,
+    fontSize: 13,
     lineHeight: 19,
     marginTop: 10,
   },
@@ -993,7 +993,7 @@ const styles = StyleSheet.create({
   contactActionText: {
     color: colors.blue,
     fontFamily: typography.semibold,
-    fontSize: 12,
+    fontSize: 13,
   },
   lockedCard: {
     alignItems: 'center',
@@ -1044,7 +1044,7 @@ const styles = StyleSheet.create({
     color: colors.muted,
     flex: 1,
     fontFamily: typography.medium,
-    fontSize: 10,
+    fontSize: 13,
     lineHeight: 15,
     marginLeft: 7,
   },

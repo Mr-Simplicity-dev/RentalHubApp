@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
   title: {
     color: 'rgba(255, 255, 255, 0.74)',
     fontFamily: typography.semibold,
-    fontSize: 12,
+    fontSize: 13,
     letterSpacing: 0.2,
     marginTop: 12,
   },

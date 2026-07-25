@@ -29,7 +29,7 @@ export const typography = {
 };
 
 export const typeScale = {
-  xs: 11,
+  xs: 13,
   sm: 13,
   base: 15,
   md: 17,

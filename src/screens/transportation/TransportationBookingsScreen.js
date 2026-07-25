@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
   statLabel: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 10,
+    fontSize: 13,
     marginTop: 2,
     textTransform: 'uppercase',
   },
@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
   routeText: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
     lineHeight: 18,
     marginTop: 4,
   },

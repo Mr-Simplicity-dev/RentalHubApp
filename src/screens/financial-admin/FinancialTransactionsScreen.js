@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
   filterText: {
     color: colors.text,
     fontFamily: typography.semibold,
-    fontSize: 12,
+    fontSize: 13,
   },
   filterTextActive: {
     color: colors.white,
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
   reference: {
     color: colors.muted,
     fontFamily: typography.semibold,
-    fontSize: 12,
+    fontSize: 13,
   },
   amount: {
     color: colors.navy,

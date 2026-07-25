@@ -310,7 +310,7 @@ const styles = StyleSheet.create({
   eyebrow: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 9,
+    fontSize: 13,
     letterSpacing: 1.2,
   },
   title: {
@@ -324,7 +324,7 @@ const styles = StyleSheet.create({
   loadingText: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 12,
+    fontSize: 13,
     marginTop: 12,
   },
   statusCard: {
@@ -345,7 +345,7 @@ const styles = StyleSheet.create({
   statusEyebrow: {
     color: '#9BC3F4',
     fontFamily: typography.bold,
-    fontSize: 9,
+    fontSize: 13,
     letterSpacing: 1.2,
     marginTop: 17,
   },
@@ -385,7 +385,7 @@ const styles = StyleSheet.create({
   benefitText: {
     color: colors.text,
     fontFamily: typography.medium,
-    fontSize: 9,
+    fontSize: 13,
     lineHeight: 13,
     marginTop: 8,
     textAlign: 'center',
@@ -394,7 +394,7 @@ const styles = StyleSheet.create({
   sectionEyebrow: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 9,
+    fontSize: 13,
     letterSpacing: 1.2,
   },
   sectionTitle: {
@@ -423,7 +423,7 @@ const styles = StyleSheet.create({
   recommendedText: {
     color: colors.navy,
     fontFamily: typography.bold,
-    fontSize: 8,
+    fontSize: 13,
     letterSpacing: 0.8,
   },
   planName: {
@@ -439,17 +439,17 @@ const styles = StyleSheet.create({
     fontSize: 27,
     letterSpacing: -0.5,
   },
-  duration: { color: colors.muted, fontFamily: typography.regular, fontSize: 11 },
+  duration: { color: colors.muted, fontFamily: typography.regular, fontSize: 13 },
   planDesc: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
     lineHeight: 18,
     marginBottom: 13,
     marginTop: 7,
   },
   featureRow: { alignItems: 'center', flexDirection: 'row', gap: 8, marginTop: 7 },
-  featureText: { color: colors.text, fontFamily: typography.medium, fontSize: 11 },
+  featureText: { color: colors.text, fontFamily: typography.medium, fontSize: 13 },
   button: { marginTop: 17 },
   emptyCard: {
     alignItems: 'center',
@@ -475,7 +475,7 @@ const styles = StyleSheet.create({
   safetyText: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 10,
+    fontSize: 13,
     marginLeft: 6,
   },
 });

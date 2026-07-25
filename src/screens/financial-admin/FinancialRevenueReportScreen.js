@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
   filterText: {
     color: colors.text,
     fontFamily: typography.semibold,
-    fontSize: 12,
+    fontSize: 13,
   },
   filterTextActive: {
     color: colors.white,
@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
   summaryLabel: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 11,
+    fontSize: 13,
     textTransform: 'uppercase',
   },
   summaryValue: {
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
   txRef: {
     color: colors.muted,
     fontFamily: typography.semibold,
-    fontSize: 12,
+    fontSize: 13,
   },
   txAmount: {
     color: colors.navy,

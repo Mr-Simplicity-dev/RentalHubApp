@@ -270,7 +270,7 @@ const styles = StyleSheet.create({
   eyebrow: {
     color: colors.gold,
     fontFamily: typography.semibold,
-    fontSize: 10,
+    fontSize: 13,
     letterSpacing: 1.25,
     textTransform: 'uppercase',
   },
@@ -309,7 +309,7 @@ const styles = StyleSheet.create({
   sectionSubtitle: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
     lineHeight: 18,
     marginTop: 3,
   },
@@ -335,7 +335,7 @@ const styles = StyleSheet.create({
   infoLabel: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 11,
+    fontSize: 13,
     textTransform: 'uppercase',
   },
   infoValue: {
@@ -405,7 +405,7 @@ const styles = StyleSheet.create({
   },
   statusText: {
     fontFamily: typography.bold,
-    fontSize: 11,
+    fontSize: 13,
     letterSpacing: 0.4,
     textTransform: 'uppercase',
   },
@@ -431,7 +431,7 @@ const styles = StyleSheet.create({
   emptyMessage: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
     lineHeight: 18,
     marginTop: 4,
     textAlign: 'center',

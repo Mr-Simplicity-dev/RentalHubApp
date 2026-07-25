@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
   property: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: 13,
     lineHeight: 18,
     marginTop: 3,
   },

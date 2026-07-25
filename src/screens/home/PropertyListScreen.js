@@ -604,7 +604,7 @@ const styles = StyleSheet.create({
   eyebrow: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 9,
+    fontSize: 13,
     letterSpacing: 1.2,
   },
   title: {
@@ -666,7 +666,7 @@ const styles = StyleSheet.create({
   filterCountText: {
     color: colors.navy,
     fontFamily: typography.bold,
-    fontSize: 9,
+    fontSize: 13,
   },
   list: {
     padding: 16,
@@ -689,7 +689,7 @@ const styles = StyleSheet.create({
   filterSummary: {
     color: colors.blue,
     fontFamily: typography.medium,
-    fontSize: 11,
+    fontSize: 13,
   },
   accessCard: {
     backgroundColor: colors.navy,
@@ -709,7 +709,7 @@ const styles = StyleSheet.create({
   accessEyebrow: {
     color: '#9BC3F4',
     fontFamily: typography.bold,
-    fontSize: 9,
+    fontSize: 13,
     letterSpacing: 1.2,
     marginTop: 17,
   },
@@ -730,7 +730,7 @@ const styles = StyleSheet.create({
   accessMeta: {
     color: '#8FA8CA',
     fontFamily: typography.medium,
-    fontSize: 11,
+    fontSize: 13,
     marginTop: 6,
   },
   accessButton: {
@@ -748,7 +748,7 @@ const styles = StyleSheet.create({
   accessButtonText: {
     color: colors.navy,
     fontFamily: typography.bold,
-    fontSize: 12,
+    fontSize: 13,
   },
   disabled: {
     opacity: 0.6,
@@ -762,7 +762,7 @@ const styles = StyleSheet.create({
   loadingText: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 12,
+    fontSize: 13,
     marginTop: 12,
   },
   emptyState: {
@@ -805,7 +805,7 @@ const styles = StyleSheet.create({
   emptyActionText: {
     color: colors.blue,
     fontFamily: typography.semibold,
-    fontSize: 12,
+    fontSize: 13,
   },
   footer: {
     paddingVertical: 15,
@@ -824,7 +824,7 @@ const styles = StyleSheet.create({
   endText: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 10,
+    fontSize: 13,
   },
 });
 

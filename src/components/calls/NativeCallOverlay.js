@@ -478,7 +478,7 @@ const styles = StyleSheet.create({
   eyebrow: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 10,
+    fontSize: 13,
     letterSpacing: 1.2,
     marginTop: 18,
     textTransform: 'uppercase',
@@ -511,7 +511,7 @@ const styles = StyleSheet.create({
   propertyText: {
     color: colors.muted,
     fontFamily: typography.semibold,
-    fontSize: 12,
+    fontSize: 13,
     marginTop: 7,
     textAlign: 'center',
   },
