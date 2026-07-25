@@ -5,6 +5,7 @@ import { AuthContext } from '../../context/AuthContext';
 import { colors, radius, shadows, typography } from '../../theme';
 import { useAccessibilityPreferences } from '../../hooks/useAccessibilityPreferences';
 
+import AppText from '../../components/common/AppText';
 const AdminActionPill = ({ label, icon, color = colors.blue, onPress }) => {
   const { scaleFont, hitSlop } = useAccessibilityPreferences();
 
@@ -19,7 +20,7 @@ const AdminActionPill = ({ label, icon, color = colors.blue, onPress }) => {
       <View style={[styles.iconWrap, { backgroundColor: `${color}16` }]}>
         <Icon name={icon} size={18} color={color} />
       </View>
-      <Text style={[styles.label, { color, fontSize: scaleFont(12) }]}>{label}</Text>
+      <AppText style={[styles.label, { color, fontSize: scaleFont(12) }]}>{label}</AppText>
     </TouchableOpacity>
   );
 };

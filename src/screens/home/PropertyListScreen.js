@@ -32,6 +32,7 @@ import { colors, radius, shadows, typography } from
 '../../theme';
 import { getErrorMessage, pickList } from '../../utils/http';
 
+import AppText from '../../components/common/AppText';
 const PAGE_SIZE = 15;
 const FILTER_KEYS = [
   'min_price',
@@ -368,21 +369,21 @@ const PropertyListScreen = ({ route, navigation }) => {
           <View style={styles.accessIcon}>
             <Icon name="location" size={20} color={colors.gold} />
           </View>
-          <Text style={styles.accessEyebrow}>LOCATION ACCESS</Text>
-          <Text style={styles.accessTitle}>
+          <AppText style={styles.accessEyebrow}>LOCATION ACCESS</AppText>
+          <AppText style={styles.accessTitle}>
             Unlock homes in {locationLabel}
-          </Text>
-          <Text style={styles.accessText}>
+          </AppText>
+          <AppText style={styles.accessText}>
             {locationAccessRequirement.message ||
               'Pay once to browse verified homes outside your registered location.'}
-          </Text>
+          </AppText>
           {homeLocationLabel ? (
-            <Text style={styles.accessMeta}>Your registered area: {homeLocationLabel}</Text>
+            <AppText style={styles.accessMeta}>Your registered area: {homeLocationLabel}</AppText>
           ) : null}
           {locationAccessRequirement.access_days ? (
-            <Text style={styles.accessMeta}>
+            <AppText style={styles.accessMeta}>
               Access remains active for {locationAccessRequirement.access_days} days.
-            </Text>
+            </AppText>
           ) : null}
           <TouchableOpacity
             disabled={locationAccessLoading}
@@ -396,11 +397,11 @@ const PropertyListScreen = ({ route, navigation }) => {
               <ActivityIndicator color={colors.navy} size="small" />
             ) : (
               <>
-                <Text style={styles.accessButtonText}>
+                <AppText style={styles.accessButtonText}>
                   {pendingLocationAccessReference
                     ? 'Confirm payment'
                     : `Unlock for ${accessFeeLabel}`}
-                </Text>
+                </AppText>
                 <Icon name="arrow-forward" size={18} color={colors.navy} />
               </>
             )}
@@ -410,11 +411,11 @@ const PropertyListScreen = ({ route, navigation }) => {
 
       {!locationAccessRequirement && !loading ? (
         <View style={styles.resultRow}>
-          <Text style={styles.resultText}>
+          <AppText style={styles.resultText}>
             {items.length ? `${items.length}${hasMore ? '+' : ''} homes found` : 'No homes found'}
-          </Text>
+          </AppText>
           {activeFilterCount ? (
-            <Text style={styles.filterSummary}>{activeFilterCount} filters active</Text>
+            <AppText style={styles.filterSummary}>{activeFilterCount} filters active</AppText>
           ) : null}
         </View>
       ) : null}
@@ -435,8 +436,8 @@ const PropertyListScreen = ({ route, navigation }) => {
             <Icon name="arrow-back" size={22} color={colors.navy} />
           </TouchableOpacity>
           <View style={styles.headerCopy}>
-            <Text style={styles.eyebrow}>EXPLORE</Text>
-            <Text style={styles.title}>Verified homes</Text>
+            <AppText style={styles.eyebrow}>EXPLORE</AppText>
+            <AppText style={styles.title}>Verified homes</AppText>
           </View>
           <TouchableOpacity
             accessibilityLabel="Create property request"
@@ -487,7 +488,7 @@ const PropertyListScreen = ({ route, navigation }) => {
             />
             {activeFilterCount ? (
               <View style={styles.filterCount}>
-                <Text style={styles.filterCountText}>{activeFilterCount}</Text>
+                <AppText style={styles.filterCountText}>{activeFilterCount}</AppText>
               </View>
             ) : null}
           </TouchableOpacity>
@@ -506,21 +507,21 @@ const PropertyListScreen = ({ route, navigation }) => {
           loading ? (
             <View style={styles.loadingState}>
               <ActivityIndicator color={colors.blue} size="large" />
-              <Text style={styles.loadingText}>Finding the right homes…</Text>
+              <AppText style={styles.loadingText}>Finding the right homes…</AppText>
             </View>
           ) : !locationAccessRequirement ? (
             <View style={styles.emptyState}>
               <View style={styles.emptyIcon}>
                 <Icon name="search-outline" size={30} color={colors.blue} />
               </View>
-              <Text style={styles.emptyTitle}>No matching homes yet</Text>
-              <Text style={styles.emptyText}>
+              <AppText style={styles.emptyTitle}>No matching homes yet</AppText>
+              <AppText style={styles.emptyText}>
                 Adjust your filters or create a request and we’ll notify you when one arrives.
-              </Text>
+              </AppText>
               <TouchableOpacity
                 onPress={() => navigation.navigate('PropertyAlertRequest', filters)}
                 style={styles.emptyAction}>
-                <Text style={styles.emptyActionText}>Create property request</Text>
+                <AppText style={styles.emptyActionText}>Create property request</AppText>
               </TouchableOpacity>
             </View>
           ) : null
@@ -533,7 +534,7 @@ const PropertyListScreen = ({ route, navigation }) => {
           ) : !hasMore && items.length ? (
             <View style={styles.endRow}>
               <View style={styles.endLine} />
-              <Text style={styles.endText}>You’ve seen every home</Text>
+              <AppText style={styles.endText}>You’ve seen every home</AppText>
               <View style={styles.endLine} />
             </View>
           ) : null

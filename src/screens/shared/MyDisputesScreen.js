@@ -19,6 +19,7 @@ import api from '../../services/api';
 import { colors, radius, typography } from '../../theme';
 import { getErrorMessage, pickList } from '../../utils/http';
 
+import AppText from '../../components/common/AppText';
 const STATUS_CONFIG = {
   pending: { color: colors.blue, bg: '#EFF6FF', label: 'Pending' },
   resolved: { color: colors.success, bg: '#F0FBF6', label: 'Resolved' },
@@ -123,11 +124,11 @@ const MyDisputesScreen = ({ navigation }) => {
             <Icon name="shield-outline" size={20} color={colors.blue} />
           </View>
           <View style={styles.cardHeader}>
-            <Text style={styles.cardTitle} numberOfLines={1}>
+            <AppText style={styles.cardTitle} numberOfLines={1}>
               {item.title || 'Untitled Dispute'}
-            </Text>
+            </AppText>
             <View style={[styles.statusBadge, { backgroundColor: status.bg }]}>
-              <Text style={[styles.statusText, { color: status.color }]}>{status.label}</Text>
+              <AppText style={[styles.statusText, { color: status.color }]}>{status.label}</AppText>
             </View>
           </View>
         </View>
@@ -135,15 +136,15 @@ const MyDisputesScreen = ({ navigation }) => {
         {item.property_name ? (
           <View style={styles.metaRow}>
             <Icon name="business-outline" size={14} color={colors.muted} />
-            <Text style={styles.metaText} numberOfLines={1}>
+            <AppText style={styles.metaText} numberOfLines={1}>
               {item.property_name}
-            </Text>
+            </AppText>
           </View>
         ) : null}
 
         <View style={styles.metaRow}>
           <Icon name="calendar-outline" size={14} color={colors.muted} />
-          <Text style={styles.metaText}>{formatDate(item.created_at || item.date)}</Text>
+          <AppText style={styles.metaText}>{formatDate(item.created_at || item.date)}</AppText>
         </View>
 
         <View style={styles.cardArrow}>
@@ -163,8 +164,8 @@ const MyDisputesScreen = ({ navigation }) => {
           <Icon name="arrow-back" size={22} color={colors.navy} />
         </TouchableOpacity>
         <View style={styles.headerCopy}>
-          <Text style={styles.eyebrow}>CONFLICT RESOLUTION</Text>
-          <Text style={styles.title}>My disputes</Text>
+          <AppText style={styles.eyebrow}>CONFLICT RESOLUTION</AppText>
+          <AppText style={styles.title}>My disputes</AppText>
         </View>
         <TouchableOpacity
           accessibilityLabel="Create dispute"
@@ -180,26 +181,26 @@ const MyDisputesScreen = ({ navigation }) => {
         keyExtractor={(item) => String(item.id)}
         ListHeaderComponent={
           !loading && items.length ? (
-            <Text style={styles.summary}>
+            <AppText style={styles.summary}>
               {items.length} {items.length === 1 ? 'dispute' : 'disputes'} on file
-            </Text>
+            </AppText>
           ) : null
         }
         ListEmptyComponent={
           loading ? (
             <View style={styles.center}>
               <ActivityIndicator color={colors.blue} size="large" />
-              <Text style={styles.loadingText}>Loading your disputes…</Text>
+              <AppText style={styles.loadingText}>Loading your disputes…</AppText>
             </View>
           ) : (
             <View style={styles.center}>
               <View style={styles.emptyIcon}>
                 <Icon name="shield-outline" size={31} color={colors.blue} />
               </View>
-              <Text style={styles.emptyTitle}>No disputes yet</Text>
-              <Text style={styles.emptyText}>
+              <AppText style={styles.emptyTitle}>No disputes yet</AppText>
+              <AppText style={styles.emptyText}>
                 You have not filed any disputes. If you run into an issue with a property, you can raise a dispute from the property or application screen.
-              </Text>
+              </AppText>
             </View>
           )
         }
@@ -219,24 +220,24 @@ const MyDisputesScreen = ({ navigation }) => {
         <Pressable style={styles.modalBackdrop} onPress={() => setCreateOpen(false)}>
           <Pressable style={styles.modalCard}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Create dispute</Text>
+              <AppText style={styles.modalTitle}>Create dispute</AppText>
               <TouchableOpacity onPress={() => setCreateOpen(false)}>
                 <Icon name="close" size={22} color={colors.muted} />
               </TouchableOpacity>
             </View>
             <ScrollView>
-              <Text style={styles.fieldLabel}>Property ID *</Text>
+              <AppText style={styles.fieldLabel}>Property ID *</AppText>
               <TextInput style={styles.input} value={createForm.property_id} onChangeText={(v) => setCreateForm((p) => ({ ...p, property_id: v }))} placeholder="e.g. 42" keyboardType="number-pad" placeholderTextColor={colors.muted} />
-              <Text style={styles.fieldLabel}>User ID to dispute against *</Text>
+              <AppText style={styles.fieldLabel}>User ID to dispute against *</AppText>
               <TextInput style={styles.input} value={createForm.against_user} onChangeText={(v) => setCreateForm((p) => ({ ...p, against_user: v }))} placeholder="e.g. 7" keyboardType="number-pad" placeholderTextColor={colors.muted} />
-              <Text style={styles.fieldLabel}>Title *</Text>
+              <AppText style={styles.fieldLabel}>Title *</AppText>
               <TextInput style={styles.input} value={createForm.title} onChangeText={(v) => setCreateForm((p) => ({ ...p, title: v }))} placeholder="Dispute title" placeholderTextColor={colors.muted} />
-              <Text style={styles.fieldLabel}>Description *</Text>
+              <AppText style={styles.fieldLabel}>Description *</AppText>
               <TextInput style={[styles.input, styles.descInput]} value={createForm.description} onChangeText={(v) => setCreateForm((p) => ({ ...p, description: v }))} placeholder="Describe the issue" multiline placeholderTextColor={colors.muted} />
-              <Text style={styles.hint}>Find Property ID and user IDs on the property detail page.</Text>
+              <AppText style={styles.hint}>Find Property ID and user IDs on the property detail page.</AppText>
             </ScrollView>
             <TouchableOpacity style={[styles.submitBtn, creating && { opacity: 0.6 }]} disabled={creating} onPress={handleCreateDispute}>
-              {creating ? <ActivityIndicator color={colors.white} /> : <Text style={styles.submitBtnText}>Create dispute</Text>}
+              {creating ? <ActivityIndicator color={colors.white} /> : <AppText style={styles.submitBtnText}>Create dispute</AppText>}
             </TouchableOpacity>
           </Pressable>
         </Pressable>

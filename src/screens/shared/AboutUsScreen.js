@@ -9,6 +9,7 @@ import {
 } from '../../components/dashboard/DashboardKit';
 import { colors, radius, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const AboutUsScreen = ({ navigation }) => {
   return (
     <DashboardScreen>
@@ -21,9 +22,9 @@ const AboutUsScreen = ({ navigation }) => {
 
       <DashboardSection title="Our mission">
         <View style={styles.card}>
-          <Text style={styles.text}>
+          <AppText style={styles.text}>
             RentalHub NG makes renting in Nigeria transparent, secure, and hassle-free. We connect tenants with verified properties and provide landlords with powerful management tools.
-          </Text>
+          </AppText>
         </View>
       </DashboardSection>
 

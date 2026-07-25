@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import BrandImagePlaceholder from '../common/BrandImagePlaceholder';
 import { colors, radius, shadows, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const formatCurrency = (value) => {
   const amount = Number(value || 0);
   return `₦${amount.toLocaleString()}`;
@@ -25,7 +26,7 @@ const PropertyCard = ({ property, onPress, onSave, isSaved = false }) => {
         )}
         {Boolean(property?.featured) && (
           <View style={styles.badge}>
-            <Text style={styles.badgeText}>Featured</Text>
+            <AppText style={styles.badgeText}>Featured</AppText>
           </View>
         )}
         {onSave && (
@@ -46,29 +47,29 @@ const PropertyCard = ({ property, onPress, onSave, isSaved = false }) => {
       </View>
 
       <View style={styles.content}>
-        <Text style={styles.title} numberOfLines={2}>
+        <AppText style={styles.title} numberOfLines={2}>
           {property?.title || 'Untitled Property'}
-        </Text>
+        </AppText>
 
         <View style={styles.row}>
           <Icon name="location-outline" size={15} color={colors.muted} />
-          <Text style={styles.meta} numberOfLines={1}>
+          <AppText style={styles.meta} numberOfLines={1}>
             {[property?.area, property?.city, property?.state_name].filter(Boolean).join(', ') || 'Location unavailable'}
-          </Text>
+          </AppText>
         </View>
 
         <View style={styles.row}>
           <Icon name="bed-outline" size={15} color={colors.muted} />
-          <Text style={styles.meta}>{Number(property?.bedrooms || 0)} bed</Text>
+          <AppText style={styles.meta}>{Number(property?.bedrooms || 0)} bed</AppText>
           <Icon name="water-outline" size={15} color={colors.muted} style={styles.gap} />
-          <Text style={styles.meta}>{Number(property?.bathrooms || 0)} bath</Text>
+          <AppText style={styles.meta}>{Number(property?.bathrooms || 0)} bath</AppText>
         </View>
 
         <View style={styles.footer}>
-          <Text style={styles.price}>{formatCurrency(property?.rent_amount)}</Text>
-          <Text style={styles.frequency}>
+          <AppText style={styles.price}>{formatCurrency(property?.rent_amount)}</AppText>
+          <AppText style={styles.frequency}>
             / {property?.payment_frequency === 'yearly' ? 'year' : 'month'}
-          </Text>
+          </AppText>
         </View>
       </View>
     </TouchableOpacity>

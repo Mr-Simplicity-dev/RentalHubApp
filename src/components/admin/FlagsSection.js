@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { StyleSheet, Switch, Text, View } from 'react-native';
 
+import AppText from '../../components/common/AppText';
 const FLAG_LABELS = {
   allow_registration: {
     label: 'Allow Registration',
@@ -68,17 +69,17 @@ const FlagsSection = ({ flags = [], onToggle }) => {
         style={[styles.card, nested && styles.nestedCard, forceInactive && styles.inactiveCard]}
       >
         <View style={styles.cardBody}>
-          <Text style={styles.cardTitle}>{meta.label}</Text>
-          {meta.description ? <Text style={styles.meta}>{meta.description}</Text> : null}
+          <AppText style={styles.cardTitle}>{meta.label}</AppText>
+          {meta.description ? <AppText style={styles.meta}>{meta.description}</AppText> : null}
           {forceInactive && flag.enabled ? (
-            <Text style={styles.hint}>Saved on, inactive while master registration is off.</Text>
+            <AppText style={styles.hint}>Saved on, inactive while master registration is off.</AppText>
           ) : null}
-          <Text style={styles.keyText}>{key}</Text>
+          <AppText style={styles.keyText}>{key}</AppText>
         </View>
         <View style={styles.switchWrap}>
-          <Text style={[styles.status, effective ? styles.on : styles.off]}>
+          <AppText style={[styles.status, effective ? styles.on : styles.off]}>
             {effective ? 'On' : 'Off'}
-          </Text>
+          </AppText>
           <Switch value={flag.enabled === true} onValueChange={(value) => onToggle(key, value)} />
         </View>
       </View>
@@ -87,13 +88,13 @@ const FlagsSection = ({ flags = [], onToggle }) => {
 
   return (
     <View style={styles.wrap}>
-      <Text style={styles.heading}>Registration Controls</Text>
-      <Text style={styles.subheading}>
+      <AppText style={styles.heading}>Registration Controls</AppText>
+      <AppText style={styles.subheading}>
         Master switch plus per-role registration. Location rules are under Registration Access.
-      </Text>
+      </AppText>
       {renderRow(PARENT_KEY)}
       {CHILD_KEYS.map((key) => renderRow(key, { nested: true, forceInactive: !masterEnabled }))}
-      <Text style={[styles.heading, styles.sectionGap]}>Other Registration & Platform Flags</Text>
+      <AppText style={[styles.heading, styles.sectionGap]}>Other Registration & Platform Flags</AppText>
       {OTHER_KEYS.map((key) => renderRow(key))}
     </View>
   );

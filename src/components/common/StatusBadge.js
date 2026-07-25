@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
+import AppText from '../../components/common/AppText';
 const statusColorMap = {
   active: { bg: '#dcfce7', text: '#166534' },
   pending: { bg: '#fef3c7', text: '#92400e' },
@@ -24,9 +25,9 @@ const StatusBadge = ({ status, style, textStyle }) => {
 
   return (
     <View style={[styles.badge, { backgroundColor: colors.bg }, style]}>
-      <Text style={[styles.text, { color: colors.text }, textStyle]}>
+      <AppText style={[styles.text, { color: colors.text }, textStyle]}>
         {status || 'Unknown'}
-      </Text>
+      </AppText>
     </View>
   );
 };

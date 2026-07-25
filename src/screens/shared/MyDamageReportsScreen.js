@@ -15,6 +15,7 @@ import api from '../../services/api';
 import { colors, radius, typography } from '../../theme';
 import { getErrorMessage, pickList } from '../../utils/http';
 
+import AppText from '../../components/common/AppText';
 const STATUS_CONFIG = {
   pending: { color: colors.blue, bg: '#EFF6FF', label: 'Pending' },
   resolved: { color: colors.success, bg: '#F0FBF6', label: 'Resolved' },
@@ -90,24 +91,24 @@ const MyDamageReportsScreen = ({ navigation }) => {
             <Icon name="warning-outline" size={20} color={colors.blue} />
           </View>
           <View style={styles.cardHeader}>
-            <Text style={styles.cardTitle} numberOfLines={1}>
+            <AppText style={styles.cardTitle} numberOfLines={1}>
               {item.property_name || 'Untitled Property'}
-            </Text>
+            </AppText>
             <View style={[styles.statusBadge, { backgroundColor: status.bg }]}>
-              <Text style={[styles.statusText, { color: status.color }]}>{status.label}</Text>
+              <AppText style={[styles.statusText, { color: status.color }]}>{status.label}</AppText>
             </View>
           </View>
         </View>
 
         {item.description ? (
-          <Text style={styles.description} numberOfLines={2}>
+          <AppText style={styles.description} numberOfLines={2}>
             {truncate(item.description)}
-          </Text>
+          </AppText>
         ) : null}
 
         <View style={styles.metaRow}>
           <Icon name="calendar-outline" size={14} color={colors.muted} />
-          <Text style={styles.metaText}>{formatDate(item.created_at || item.date)}</Text>
+          <AppText style={styles.metaText}>{formatDate(item.created_at || item.date)}</AppText>
         </View>
 
         <View style={styles.cardArrow}>
@@ -127,8 +128,8 @@ const MyDamageReportsScreen = ({ navigation }) => {
           <Icon name="arrow-back" size={22} color={colors.navy} />
         </TouchableOpacity>
         <View style={styles.headerCopy}>
-          <Text style={styles.eyebrow}>PROPERTY REPORTS</Text>
-          <Text style={styles.title}>Damage reports</Text>
+          <AppText style={styles.eyebrow}>PROPERTY REPORTS</AppText>
+          <AppText style={styles.title}>Damage reports</AppText>
         </View>
         <View style={styles.headerSpacer} />
       </View>
@@ -139,26 +140,26 @@ const MyDamageReportsScreen = ({ navigation }) => {
         keyExtractor={(item) => String(item.id)}
         ListHeaderComponent={
           !loading && items.length ? (
-            <Text style={styles.summary}>
+            <AppText style={styles.summary}>
               {items.length} {items.length === 1 ? 'report' : 'reports'} submitted
-            </Text>
+            </AppText>
           ) : null
         }
         ListEmptyComponent={
           loading ? (
             <View style={styles.center}>
               <ActivityIndicator color={colors.blue} size="large" />
-              <Text style={styles.loadingText}>Loading your reports…</Text>
+              <AppText style={styles.loadingText}>Loading your reports…</AppText>
             </View>
           ) : (
             <View style={styles.center}>
               <View style={styles.emptyIcon}>
                 <Icon name="warning-outline" size={31} color={colors.blue} />
               </View>
-              <Text style={styles.emptyTitle}>No damage reports</Text>
-              <Text style={styles.emptyText}>
+              <AppText style={styles.emptyTitle}>No damage reports</AppText>
+              <AppText style={styles.emptyText}>
                 You have not filed any damage reports. If you notice damage in a property, you can submit a report from the property detail screen.
-              </Text>
+              </AppText>
             </View>
           )
         }

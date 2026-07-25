@@ -5,7 +5,8 @@ import api from '../../services/api';
 import { colors, typography, radius } from '../../theme';
 import { getErrorMessage } from '../../utils/http';
 import {
-  ActionRow,
+
+import AppText from '../../components/common/AppText';  ActionRow,
   DashboardHero,
   DashboardScreen,
   DashboardSection,
@@ -108,7 +109,7 @@ const SuperAdminSeoDashboardScreen = ({ navigation }) => {
 
       <DashboardSection title="State page coverage">
         {stateBreakdown.length === 0 ? (
-          <Text style={styles.empty}>No state coverage data is available.</Text>
+          <AppText style={styles.empty}>No state coverage data is available.</AppText>
         ) : (
           <FlatList
             data={stateBreakdown}
@@ -116,11 +117,11 @@ const SuperAdminSeoDashboardScreen = ({ navigation }) => {
             keyExtractor={(item, index) => String(item.id ?? item.state_slug ?? index)}
             renderItem={({ item }) => (
               <View style={styles.issueCard}>
-                <Text style={styles.issueTitle}>{item.state_name || 'State'}</Text>
-                <Text style={styles.issueMeta}>{item.property_count ?? 0} verified property page(s)</Text>
-                <Text style={[styles.issueStatus, Number(item.property_count) > 0 ? styles.statusResolved : styles.statusOpen]}>
+                <AppText style={styles.issueTitle}>{item.state_name || 'State'}</AppText>
+                <AppText style={styles.issueMeta}>{item.property_count ?? 0} verified property page(s)</AppText>
+                <AppText style={[styles.issueStatus, Number(item.property_count) > 0 ? styles.statusResolved : styles.statusOpen]}>
                   {Number(item.property_count) > 0 ? 'Covered' : 'No available properties'}
-                </Text>
+                </AppText>
               </View>
             )}
           />

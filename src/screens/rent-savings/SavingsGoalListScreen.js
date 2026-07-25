@@ -14,6 +14,7 @@ import { rentSavingsService } from '../../services/rentSavingsService';
 import { getErrorMessage, pickList } from '../../utils/http';
 import { colors, radius, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const getProgress = (item) => {
   const target = Number(item.target_savings_amount || 0);
   const saved = Number(item.total_saved || 0);
@@ -92,15 +93,15 @@ const SavingsGoalListScreen = ({ navigation }) => {
             <PremiumCard>
               <View style={styles.cardHeader}>
                 <View style={styles.titleBlock}>
-                  <Text style={styles.cardTitle}>{item.property_title || 'Rent savings plan'}</Text>
-                  <Text style={styles.cardTarget}>{formatNaira(item.target_savings_amount)}</Text>
+                  <AppText style={styles.cardTitle}>{item.property_title || 'Rent savings plan'}</AppText>
+                  <AppText style={styles.cardTarget}>{formatNaira(item.target_savings_amount)}</AppText>
                 </View>
                 <StatusPill label={status} color={status === 'active' ? colors.blue : colors.muted} />
               </View>
               <ProgressBar value={progress} />
-              <Text style={styles.progressCopy}>
+              <AppText style={styles.progressCopy}>
                 {formatNaira(item.total_saved || 0)} saved • {Math.round(progress)}% complete
-              </Text>
+              </AppText>
               {item.rent_due_date ? (
                 <InfoRow
                   icon="calendar-outline"

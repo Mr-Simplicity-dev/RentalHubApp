@@ -12,6 +12,7 @@ import {
 } from '../../components/common/PremiumLayout';
 import { colors, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const STATUS_COLORS = {
   pending: colors.blue,
   completed: colors.success,
@@ -68,10 +69,10 @@ const AdminInspectionsScreen = () => {
           <PremiumCard>
             <View style={styles.cardHeader}>
               <View style={styles.inspectionIcon}>
-                <Text style={styles.inspectionIconText}>IN</Text>
+                <AppText style={styles.inspectionIconText}>IN</AppText>
               </View>
               <View style={styles.cardCopy}>
-                <Text style={styles.cardTitle}>{item.property_name || item.property_title || 'Property'}</Text>
+                <AppText style={styles.cardTitle}>{item.property_name || item.property_title || 'Property'}</AppText>
                 <StatusPill label={status} color={badgeColor} />
               </View>
             </View>

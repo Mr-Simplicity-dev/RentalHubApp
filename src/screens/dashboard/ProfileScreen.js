@@ -15,6 +15,7 @@ import { cameraService } from '../../services/cameraService';
 import { getErrorMessage, getReviewStatus, pickObject } from '../../utils/http';
 import { colors, radius, shadows, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const ProfileScreen = ({ navigation }) => {
   const { user, updateUser, logout } = useContext(AuthContext);
   const { replayTour } = useTour();
@@ -236,8 +237,8 @@ const ProfileScreen = ({ navigation }) => {
           <Icon name="arrow-back" size={22} color={colors.navy} />
         </TouchableOpacity>
         <View style={styles.headerCopy}>
-          <Text style={styles.headerEyebrow}>ACCOUNT</Text>
-          <Text style={styles.headerTitle}>Profile</Text>
+          <AppText style={styles.headerEyebrow}>ACCOUNT</AppText>
+          <AppText style={styles.headerTitle}>Profile</AppText>
         </View>
         <TouchableOpacity
           accessibilityLabel="Open notifications"
@@ -254,21 +255,21 @@ const ProfileScreen = ({ navigation }) => {
       showsVerticalScrollIndicator={false}>
       <View style={styles.profileHero}>
         <View style={styles.avatar}>
-          <Text style={styles.avatarText}>
+          <AppText style={styles.avatarText}>
             {String(user?.full_name || 'U').trim().charAt(0).toUpperCase()}
-          </Text>
+          </AppText>
           {reviewStatus === 'verified' ? (
             <View style={styles.verifiedDot}>
               <Icon name="checkmark" size={11} color={colors.white} />
             </View>
           ) : null}
         </View>
-        <Text style={styles.title}>{user?.full_name || 'RentalHub member'}</Text>
-        <Text style={styles.subtitle}>{user?.email || 'No email available'}</Text>
+        <AppText style={styles.title}>{user?.full_name || 'RentalHub member'}</AppText>
+        <AppText style={styles.subtitle}>{user?.email || 'No email available'}</AppText>
         <View style={styles.rolePill}>
-          <Text style={styles.roleText}>
+          <AppText style={styles.roleText}>
             {String(user?.user_type || 'member').replace(/_/g, ' ')}
-          </Text>
+          </AppText>
         </View>
       </View>
 
@@ -277,7 +278,7 @@ const ProfileScreen = ({ navigation }) => {
           <View style={styles.cardIcon}>
             <Icon name="person-outline" size={19} color={colors.blue} />
           </View>
-          <Text style={styles.cardTitle}>Personal information</Text>
+          <AppText style={styles.cardTitle}>Personal information</AppText>
         </View>
         <Input
           label="Full Name"
@@ -307,29 +308,29 @@ const ProfileScreen = ({ navigation }) => {
             <Icon name="shield-checkmark-outline" size={19} color={colors.blue} />
           </View>
           <View style={styles.cardHeaderCopy}>
-            <Text style={styles.cardTitle}>Identity verification</Text>
-            <Text style={styles.cardCaption}>Status: {reviewStatusLabel}</Text>
+            <AppText style={styles.cardTitle}>Identity verification</AppText>
+            <AppText style={styles.cardCaption}>Status: {reviewStatusLabel}</AppText>
           </View>
         </View>
-        <Text style={styles.statusText}>
+        <AppText style={styles.statusText}>
           Email: {status?.email ? 'Verified' : 'Pending'} | Phone: {status?.phone ? 'Verified' : 'Pending'}
-        </Text>
-        <Text style={styles.statusText}>
+        </AppText>
+        <AppText style={styles.statusText}>
           Identity: {status?.identity ? 'Verified' : 'Pending'} | Document: {status?.identity_document_type || '-'}
-        </Text>
-        <Text style={styles.statusText}>Review Status: {reviewStatusLabel}</Text>
+        </AppText>
+        <AppText style={styles.statusText}>Review Status: {reviewStatusLabel}</AppText>
 
         {reviewStatus === 'rejected' ? (
           <View style={styles.warningBox}>
-            <Text style={styles.warningText}>
+            <AppText style={styles.warningText}>
               Your verification was rejected. Capture a new live passport photo and upload it again.
-            </Text>
+            </AppText>
           </View>
         ) : reviewStatus === 'pending' ? (
           <View style={styles.infoBox}>
-            <Text style={styles.infoText}>
+            <AppText style={styles.infoText}>
               Your passport has been submitted and is waiting for review.
-            </Text>
+            </AppText>
           </View>
         ) : null}
 
@@ -362,16 +363,16 @@ const ProfileScreen = ({ navigation }) => {
           <View style={styles.cardIcon}>
             <Icon name="finger-print-outline" size={20} color={colors.blue} />
           </View>
-          <Text style={styles.cardTitle}>Security</Text>
+          <AppText style={styles.cardTitle}>Security</AppText>
         </View>
         {biometricStatus.available ? (
           <>
             <View style={styles.switchRow}>
               <View style={styles.switchTextWrap}>
-                <Text style={styles.switchTitle}>Use {biometricStatus.label} to unlock the app</Text>
-                <Text style={styles.switchDescription}>
+                <AppText style={styles.switchTitle}>Use {biometricStatus.label} to unlock the app</AppText>
+                <AppText style={styles.switchDescription}>
                   When enabled, we will ask for your biometric before restoring your saved session.
-                </Text>
+                </AppText>
               </View>
               <Switch
                 value={biometricStatus.enabled}
@@ -381,14 +382,14 @@ const ProfileScreen = ({ navigation }) => {
                 thumbColor={biometricStatus.enabled ? '#0284c7' : '#f8fafc'}
               />
             </View>
-            <Text style={styles.helperText}>
+            <AppText style={styles.helperText}>
               Status: {biometricStatus.enabled ? `${biometricStatus.label} enabled` : 'Disabled'}
-            </Text>
+            </AppText>
           </>
         ) : (
-          <Text style={styles.helperText}>
+          <AppText style={styles.helperText}>
             Biometric login is not available on this device.
-          </Text>
+          </AppText>
         )}
       </View>
 

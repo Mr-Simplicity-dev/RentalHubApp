@@ -15,6 +15,7 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import { colors, radius, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const WHATSAPP_NUMBER = '2348030601238';
 const BOT_DELAY = 1000;
 
@@ -339,15 +340,15 @@ const WhatsAppBotScreen = ({ navigation }) => {
         )}
         <View style={[styles.bubble, isUser ? styles.bubbleUser : styles.bubbleBot]}>
           {!isUser && (
-            <Text style={styles.botLabel}>RentalHub</Text>
+            <AppText style={styles.botLabel}>RentalHub</AppText>
           )}
-          <Text style={[styles.bubbleText, isUser && styles.bubbleTextUser]}>
+          <AppText style={[styles.bubbleText, isUser && styles.bubbleTextUser]}>
             {msg.text}
-          </Text>
+          </AppText>
           {msg.created_at && (
-            <Text style={[styles.bubbleTime, isUser && styles.bubbleTimeUser]}>
+            <AppText style={[styles.bubbleTime, isUser && styles.bubbleTimeUser]}>
               {formatTime(msg.created_at)}
-            </Text>
+            </AppText>
           )}
           {msg.showQuickReplies && (
             <View style={styles.quickRepliesWrap}>
@@ -358,7 +359,7 @@ const WhatsAppBotScreen = ({ navigation }) => {
                   onPress={() => handleQuickReply(qr)}
                   activeOpacity={0.7}
                 >
-                  <Text style={styles.qrChipText}>{qr}</Text>
+                  <AppText style={styles.qrChipText}>{qr}</AppText>
                 </TouchableOpacity>
               ))}
             </View>
@@ -383,8 +384,8 @@ const WhatsAppBotScreen = ({ navigation }) => {
           <Icon name="logo-whatsapp" size={18} color={colors.white} />
         </View>
         <View style={styles.headerText}>
-          <Text style={styles.headerTitle}>RentalHub Assistant</Text>
-          <Text style={styles.headerSubtitle}>Need help? Chat with us!</Text>
+          <AppText style={styles.headerTitle}>RentalHub Assistant</AppText>
+          <AppText style={styles.headerSubtitle}>Need help? Chat with us!</AppText>
         </View>
       </View>
 
@@ -415,8 +416,8 @@ const WhatsAppBotScreen = ({ navigation }) => {
           {connectedToAgent && (
             <View style={styles.agentCard}>
               <Icon name="headset-outline" size={24} color={colors.success} />
-              <Text style={styles.agentTitle}>Connected to agent on WhatsApp</Text>
-              <Text style={styles.agentSub}>Continue your conversation there</Text>
+              <AppText style={styles.agentTitle}>Connected to agent on WhatsApp</AppText>
+              <AppText style={styles.agentSub}>Continue your conversation there</AppText>
             </View>
           )}
         </ScrollView>
@@ -425,7 +426,7 @@ const WhatsAppBotScreen = ({ navigation }) => {
           <View style={styles.menuBtnWrap}>
             <TouchableOpacity style={styles.menuBtn} onPress={showMenu} activeOpacity={0.7}>
               <Icon name="list" size={14} color={colors.success} />
-              <Text style={styles.menuBtnText}>Menu</Text>
+              <AppText style={styles.menuBtnText}>Menu</AppText>
             </TouchableOpacity>
           </View>
         )}

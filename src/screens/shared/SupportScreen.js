@@ -9,6 +9,7 @@ import {
 } from '../../components/dashboard/DashboardKit';
 import { colors, radius, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const SupportScreen = ({ navigation }) => {
   return (
     <DashboardScreen>
@@ -26,10 +27,10 @@ const SupportScreen = ({ navigation }) => {
               <Icon name="headset-outline" size={23} color={colors.gold} />
             </View>
             <View style={styles.contactCopy}>
-              <Text style={styles.contactTitle}>We are here to help</Text>
-              <Text style={styles.contactText}>
+              <AppText style={styles.contactTitle}>We are here to help</AppText>
+              <AppText style={styles.contactText}>
                 Our support team responds within 24 hours during business days.
-              </Text>
+              </AppText>
             </View>
           </View>
         </View>
@@ -56,16 +57,16 @@ const SupportScreen = ({ navigation }) => {
 
       <DashboardSection title="Report an issue">
         <View style={styles.infoCard}>
-          <Text style={styles.bullet}>•</Text>
-          <Text style={styles.infoText}>
+          <AppText style={styles.bullet}>•</AppText>
+          <AppText style={styles.infoText}>
             If you are experiencing a problem with a property, payment or another user, you can file a dispute or damage report from the relevant screen.
-          </Text>
+          </AppText>
         </View>
         <View style={styles.infoCard}>
-          <Text style={styles.bullet}>•</Text>
-          <Text style={styles.infoText}>
+          <AppText style={styles.bullet}>•</AppText>
+          <AppText style={styles.infoText}>
             For urgent safety concerns, please contact local authorities and then reach out to support so we can take appropriate action on the platform.
-          </Text>
+          </AppText>
         </View>
       </DashboardSection>
     </DashboardScreen>

@@ -4,6 +4,7 @@ import { colors, typography } from '../../theme';
 import { useAccessibilityPreferences } from '../../hooks/useAccessibilityPreferences';
 import BrandLogoMark from './BrandLogoMark';
 
+import AppText from '../../components/common/AppText';
 const LOADING_TRACK_WIDTH = 210;
 const DEFAULT_DURATION_MS = 8000;
 
@@ -159,8 +160,8 @@ const BrandSplash = ({ duration = DEFAULT_DURATION_MS, showProgressPercent = fal
             transform: [{ translateY: copyTranslateY }],
           }}
         >
-          <Text style={[styles.name, { fontSize: scaleFont(34) }]}>RentalHub</Text>
-          <Text style={[styles.tagline, { fontSize: scaleFont(14) }]}>Trusted homes. Confident living.</Text>
+          <AppText style={[styles.name, { fontSize: scaleFont(34) }]}>RentalHub</AppText>
+          <AppText style={[styles.tagline, { fontSize: scaleFont(14) }]}>Trusted homes. Confident living.</AppText>
         </Animated.View>
       </Animated.View>
       <Animated.View
@@ -173,9 +174,9 @@ const BrandSplash = ({ duration = DEFAULT_DURATION_MS, showProgressPercent = fal
         ]}
       >
         <View style={[styles.loadingRow, !showProgressPercent && styles.loadingRowCentered]}>
-          <Text style={[styles.loadingText, { fontSize: scaleFont(11) }]}>Loading mobile workspace</Text>
+          <AppText style={[styles.loadingText, { fontSize: scaleFont(11) }]}>Loading mobile workspace</AppText>
           {showProgressPercent ? (
-            <Text style={[styles.loadingPercent, { fontSize: scaleFont(11) }]}>{progressPercent}%</Text>
+            <AppText style={[styles.loadingPercent, { fontSize: scaleFont(11) }]}>{progressPercent}%</AppText>
           ) : null}
         </View>
         <View style={styles.loadingTrack}>

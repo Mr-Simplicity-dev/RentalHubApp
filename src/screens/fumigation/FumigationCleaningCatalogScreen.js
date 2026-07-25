@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { colors, radius, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const SERVICE_CATEGORIES = [
   {
     id: 'fumigation',
@@ -63,8 +64,8 @@ const FumigationCleaningCatalogScreen = ({ navigation }) => {
   return (
     <SafeAreaView edges={['top']} style={styles.safeArea}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Fumigation & Cleaning</Text>
-        <Text style={styles.headerSubtitle}>Choose a service category to book</Text>
+        <AppText style={styles.headerTitle}>Fumigation & Cleaning</AppText>
+        <AppText style={styles.headerSubtitle}>Choose a service category to book</AppText>
       </View>
 
       <FlatList
@@ -79,11 +80,11 @@ const FumigationCleaningCatalogScreen = ({ navigation }) => {
               </View>
               <Icon name="chevron-forward" size={18} color={colors.muted} />
             </View>
-            <Text style={styles.cardTitle}>{item.name}</Text>
-            <Text style={styles.cardDesc}>{item.description}</Text>
+            <AppText style={styles.cardTitle}>{item.name}</AppText>
+            <AppText style={styles.cardDesc}>{item.description}</AppText>
             <View style={styles.cardFooter}>
-              <Text style={styles.priceLabel}>Estimated price range</Text>
-              <Text style={styles.priceValue}>{item.priceRange}</Text>
+              <AppText style={styles.priceLabel}>Estimated price range</AppText>
+              <AppText style={styles.priceValue}>{item.priceRange}</AppText>
             </View>
           </TouchableOpacity>
         )}

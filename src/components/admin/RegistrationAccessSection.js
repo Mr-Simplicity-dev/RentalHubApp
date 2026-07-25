@@ -7,6 +7,7 @@ import OptionPickerModal from '../common/OptionPickerModal';
 import { superAdminService } from '../../services/superAdminService';
 import { getErrorMessage, pickList, pickObject } from '../../utils/http';
 
+import AppText from '../../components/common/AppText';
 const defaultForm = {
   applies_to: 'tenant',
   state_id: '',
@@ -119,11 +120,11 @@ const RegistrationAccessSection = () => {
 
   return (
     <View style={styles.wrap}>
-      <Text style={styles.heading}>Registration Access Rules</Text>
-      <Text style={styles.subheading}>
+      <AppText style={styles.heading}>Registration Access Rules</AppText>
+      <AppText style={styles.subheading}>
         When active rules exist for a role, registration is only allowed in those state/LGA
         locations. Global role switches on Flags must also be enabled.
-      </Text>
+      </AppText>
 
       <SelectField
         label="Applies To"
@@ -145,7 +146,7 @@ const RegistrationAccessSection = () => {
         disabled={!form.state_id}
       />
       <View style={styles.switchRow}>
-        <Text style={styles.switchLabel}>Rule active</Text>
+        <AppText style={styles.switchLabel}>Rule active</AppText>
         <Switch
           value={form.is_active}
           onValueChange={(value) => setForm((prev) => ({ ...prev, is_active: value }))}
@@ -157,17 +158,17 @@ const RegistrationAccessSection = () => {
         loading={loading}
       />
 
-      <Text style={[styles.heading, styles.sectionGap]}>Existing Rules</Text>
+      <AppText style={[styles.heading, styles.sectionGap]}>Existing Rules</AppText>
       {rules.length === 0 ? (
-        <Text style={styles.meta}>No rules configured.</Text>
+        <AppText style={styles.meta}>No rules configured.</AppText>
       ) : (
         rules.map((rule) => (
           <View key={rule.id} style={styles.card}>
-            <Text style={styles.cardTitle}>
+            <AppText style={styles.cardTitle}>
               {rule.applies_to} · {rule.state_name}
               {rule.lga_name ? ` · ${rule.lga_name}` : ' · Whole state'}
-            </Text>
-            <Text style={styles.meta}>{rule.is_active ? 'Active' : 'Inactive'}</Text>
+            </AppText>
+            <AppText style={styles.meta}>{rule.is_active ? 'Active' : 'Inactive'}</AppText>
             <View style={styles.row}>
               <TouchableOpacity
                 onPress={() => {
@@ -180,10 +181,10 @@ const RegistrationAccessSection = () => {
                   });
                 }}
               >
-                <Text style={styles.link}>Edit</Text>
+                <AppText style={styles.link}>Edit</AppText>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => deleteRule(rule.id)}>
-                <Text style={styles.danger}>Delete</Text>
+                <AppText style={styles.danger}>Delete</AppText>
               </TouchableOpacity>
             </View>
           </View>

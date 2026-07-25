@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
+import AppText from '../../components/common/AppText';
 const EmptyState = ({
   icon = 'file-tray-outline',
   title = 'Nothing here yet',
@@ -10,8 +11,8 @@ const EmptyState = ({
 }) => (
   <View style={styles.container}>
     <Icon name={icon} size={56} color="#cbd5e1" />
-    <Text style={styles.title}>{title}</Text>
-    {message ? <Text style={styles.message}>{message}</Text> : null}
+    <AppText style={styles.title}>{title}</AppText>
+    {message ? <AppText style={styles.message}>{message}</AppText> : null}
     {action}
   </View>
 );

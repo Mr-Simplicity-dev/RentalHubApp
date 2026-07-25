@@ -13,6 +13,7 @@ import Input from '../common/Input';
 import { PremiumButton } from '../common/PremiumLayout';
 import { colors, radius, shadows, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const OperationNoteModal = ({
   visible,
   title,
@@ -76,8 +77,8 @@ const OperationNoteModal = ({
               />
             </View>
             <View style={styles.headingCopy}>
-              <Text style={styles.title}>{title}</Text>
-              {message ? <Text style={styles.message}>{message}</Text> : null}
+              <AppText style={styles.title}>{title}</AppText>
+              {message ? <AppText style={styles.message}>{message}</AppText> : null}
             </View>
             <TouchableOpacity
               accessibilityLabel="Close"
@@ -103,9 +104,9 @@ const OperationNoteModal = ({
             containerStyle={styles.input}
           />
 
-          <Text style={styles.auditHint}>
+          <AppText style={styles.auditHint}>
             This note is recorded in the administration audit history.
-          </Text>
+          </AppText>
 
           <View style={styles.actions}>
             <PremiumButton

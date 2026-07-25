@@ -16,6 +16,7 @@ import { userService } from '../../services/userService';
 import { colors, radius, typography } from '../../theme';
 import { getErrorMessage, pickObject } from '../../utils/http';
 
+import AppText from '../../components/common/AppText';
 const VerificationStatusScreen = ({ navigation }) => {
   const [status, setStatus] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -102,8 +103,8 @@ const VerificationStatusScreen = ({ navigation }) => {
           <Icon name="arrow-back" size={22} color={colors.navy} />
         </TouchableOpacity>
         <View style={styles.headerCopy}>
-          <Text style={styles.eyebrow}>TRUST AND SAFETY</Text>
-          <Text style={styles.title}>Verification</Text>
+          <AppText style={styles.eyebrow}>TRUST AND SAFETY</AppText>
+          <AppText style={styles.title}>Verification</AppText>
         </View>
         <View style={styles.headerSpacer} />
       </View>
@@ -122,7 +123,7 @@ const VerificationStatusScreen = ({ navigation }) => {
         {loading ? (
           <View style={styles.center}>
             <ActivityIndicator color={colors.blue} size="large" />
-            <Text style={styles.loadingText}>Checking verification…</Text>
+            <AppText style={styles.loadingText}>Checking verification…</AppText>
           </View>
         ) : (
           <>
@@ -134,23 +135,23 @@ const VerificationStatusScreen = ({ navigation }) => {
                   color={colors.gold}
                 />
               </View>
-              <Text style={styles.heroEyebrow}>
+              <AppText style={styles.heroEyebrow}>
                 {completedCount === 3 ? 'FULLY VERIFIED' : 'ACCOUNT PROGRESS'}
-              </Text>
-              <Text style={styles.heroTitle}>
+              </AppText>
+              <AppText style={styles.heroTitle}>
                 {completedCount === 3 ? 'Your identity is verified' : `${completedCount} of 3 steps complete`}
-              </Text>
-              <Text style={styles.heroText}>
+              </AppText>
+              <AppText style={styles.heroText}>
                 {completedCount === 3
                   ? 'Your verified profile helps create a safer RentalHub community.'
                   : 'Complete verification to unlock the full RentalHub workflow.'}
-              </Text>
+              </AppText>
               <View style={styles.progressTrack}>
                 <View style={[styles.progressFill, { width: progress }]} />
               </View>
             </View>
 
-            <Text style={styles.sectionEyebrow}>VERIFICATION STEPS</Text>
+            <AppText style={styles.sectionEyebrow}>VERIFICATION STEPS</AppText>
             <View style={styles.stepsCard}>
               {steps.map((step, index) => (
                 <View key={step.key}>
@@ -175,8 +176,8 @@ const VerificationStatusScreen = ({ navigation }) => {
                     </View>
                     <View style={styles.stepBody}>
                       <View style={styles.stepHeading}>
-                        <Text style={styles.stepTitle}>{step.title}</Text>
-                        <Text
+                        <AppText style={styles.stepTitle}>{step.title}</AppText>
+                        <AppText 
                           style={[
                             styles.stepStatus,
                             step.complete && styles.stepStatusComplete,
@@ -184,17 +185,17 @@ const VerificationStatusScreen = ({ navigation }) => {
                             step.rejected && styles.stepStatusRejected,
                           ]}>
                           {step.complete ? 'Verified' : step.pending ? 'In review' : step.rejected ? 'Action needed' : 'Incomplete'}
-                        </Text>
+                        </AppText>
                       </View>
-                      <Text style={styles.stepText}>{step.description}</Text>
+                      <AppText style={styles.stepText}>{step.description}</AppText>
                       {step.key === 'identity' && status?.identity_document_type ? (
-                        <Text style={styles.documentText}>
+                        <AppText style={styles.documentText}>
                           Document: {String(status.identity_document_type).replace(/_/g, ' ')}
-                        </Text>
+                        </AppText>
                       ) : null}
                       {step.action ? (
                         <TouchableOpacity onPress={step.action} style={styles.stepAction}>
-                          <Text style={styles.stepActionText}>{step.actionLabel}</Text>
+                          <AppText style={styles.stepActionText}>{step.actionLabel}</AppText>
                           <Icon name="arrow-forward" size={15} color={colors.blue} />
                         </TouchableOpacity>
                       ) : null}
@@ -208,10 +209,10 @@ const VerificationStatusScreen = ({ navigation }) => {
             <View style={styles.privacyCard}>
               <Icon name="lock-closed-outline" size={20} color={colors.success} />
               <View style={styles.privacyBody}>
-                <Text style={styles.privacyTitle}>Your information is protected</Text>
-                <Text style={styles.privacyText}>
+                <AppText style={styles.privacyTitle}>Your information is protected</AppText>
+                <AppText style={styles.privacyText}>
                   Verification documents are used only for account trust and safety checks.
-                </Text>
+                </AppText>
               </View>
             </View>
 

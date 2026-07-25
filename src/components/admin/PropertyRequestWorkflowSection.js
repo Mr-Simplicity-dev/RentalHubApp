@@ -6,6 +6,7 @@ import OperationNoteModal from './OperationNoteModal';
 import { propertyAlertAdminService } from '../../services/propertyAlertAdminService';
 import { getErrorMessage, pickList } from '../../utils/http';
 
+import AppText from '../../components/common/AppText';
 const SUPPORT_STATUSES = [
   ['pending_support_review', 'Pending Review'],
   ['approved_assigned', 'Approved'],
@@ -97,7 +98,7 @@ const PropertyRequestWorkflowSection = ({
 
   return (
     <View style={styles.wrap}>
-      <Text style={styles.heading}>{title}</Text>
+      <AppText style={styles.heading}>{title}</AppText>
       <View style={styles.chipRow}>
         {statusOptions.map(([value, label]) => (
           <TouchableOpacity
@@ -105,46 +106,46 @@ const PropertyRequestWorkflowSection = ({
             style={[styles.chip, status === value && styles.chipActive]}
             onPress={() => setStatus(value)}
           >
-            <Text style={[styles.chipText, status === value && styles.chipTextActive]}>
+            <AppText style={[styles.chipText, status === value && styles.chipTextActive]}>
               {label}
-            </Text>
+            </AppText>
           </TouchableOpacity>
         ))}
       </View>
       <Button title="Refresh" onPress={loadRequests} loading={loading} />
 
       {requests.length === 0 ? (
-        <Text style={styles.meta}>No requests for this filter.</Text>
+        <AppText style={styles.meta}>No requests for this filter.</AppText>
       ) : (
         requests.map((item) => (
           <View key={item.id} style={styles.card}>
-            <Text style={styles.cardTitle}>
+            <AppText style={styles.cardTitle}>
               {item.tenant_name || 'Tenant'} · {item.state_name || 'State'}
               {item.lga_name ? ` · ${item.lga_name}` : ''}
-            </Text>
-            <Text style={styles.meta}>Status: {item.status}</Text>
+            </AppText>
+            <AppText style={styles.meta}>Status: {item.status}</AppText>
             {item.budget_min || item.budget_max ? (
-              <Text style={styles.meta}>
+              <AppText style={styles.meta}>
                 Budget: ₦{Number(item.budget_min || 0).toLocaleString()} - ₦
                 {Number(item.budget_max || 0).toLocaleString()}
-              </Text>
+              </AppText>
             ) : null}
             {mode === 'support' ? (
               <View style={styles.row}>
                 <TouchableOpacity onPress={() => supportReview(item, 'approved')}>
-                  <Text style={styles.link}>Approve</Text>
+                  <AppText style={styles.link}>Approve</AppText>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => supportReview(item, 'rejected')}>
-                  <Text style={styles.danger}>Reject</Text>
+                  <AppText style={styles.danger}>Reject</AppText>
                 </TouchableOpacity>
               </View>
             ) : (
               <View style={styles.row}>
                 <TouchableOpacity onPress={() => stateAction(item, 'sourcing')}>
-                  <Text style={styles.link}>Sourcing</Text>
+                  <AppText style={styles.link}>Sourcing</AppText>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => stateAction(item, 'fulfilled')}>
-                  <Text style={styles.link}>Fulfilled</Text>
+                  <AppText style={styles.link}>Fulfilled</AppText>
                 </TouchableOpacity>
               </View>
             )}

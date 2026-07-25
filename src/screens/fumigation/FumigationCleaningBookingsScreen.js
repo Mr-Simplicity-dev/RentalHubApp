@@ -13,6 +13,7 @@ import { fumigationCleaningService } from '../../services/fumigationCleaningServ
 import { getErrorMessage } from '../../utils/http';
 import { colors, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const STATUS_COLORS = {
   pending: colors.warning,
   confirmed: colors.blue,
@@ -35,8 +36,8 @@ const STATUS_LABELS = {
 
 const StatCard = ({ value, label, tone }) => (
   <PremiumCard style={styles.statCard}>
-    <Text style={[styles.statNumber, tone ? { color: tone } : null]}>{value || 0}</Text>
-    <Text style={styles.statLabel}>{label}</Text>
+    <AppText style={[styles.statNumber, tone ? { color: tone } : null]}>{value || 0}</AppText>
+    <AppText style={styles.statLabel}>{label}</AppText>
   </PremiumCard>
 );
 
@@ -116,8 +117,8 @@ const FumigationCleaningBookingsScreen = ({ navigation }) => {
             <PremiumCard>
               <View style={styles.bookingHeader}>
                 <View style={styles.titleBlock}>
-                  <Text style={styles.serviceName}>{item.service_name || 'Fumigation/Cleaning'}</Text>
-                  <Text style={styles.serviceMeta}>{item.property_title || item.address || 'Service booking'}</Text>
+                  <AppText style={styles.serviceName}>{item.service_name || 'Fumigation/Cleaning'}</AppText>
+                  <AppText style={styles.serviceMeta}>{item.property_title || item.address || 'Service booking'}</AppText>
                 </View>
                 <StatusPill label={STATUS_LABELS[status] || status} color={STATUS_COLORS[status] || colors.muted} />
               </View>

@@ -17,6 +17,7 @@ import { applicationService } from '../../services/applicationService';
 import { colors, radius, typography } from '../../theme';
 import { getErrorMessage, pickList } from '../../utils/http';
 
+import AppText from '../../components/common/AppText';
 const statusVisual = (status = 'pending') => {
   const value = String(status).toLowerCase();
   if (['approved', 'accepted'].includes(value)) {
@@ -166,8 +167,8 @@ const ApplicationsScreen = ({ navigation }) => {
     <SafeAreaView edges={['top']} style={styles.safeArea}>
       <View style={styles.header}>
         <View>
-          <Text style={styles.eyebrow}>RENTAL WORKFLOW</Text>
-          <Text style={styles.title}>{isTenant ? 'My applications' : 'Applications'}</Text>
+          <AppText style={styles.eyebrow}>RENTAL WORKFLOW</AppText>
+          <AppText style={styles.title}>{isTenant ? 'My applications' : 'Applications'}</AppText>
         </View>
         <View style={styles.headerIcon}>
           <Icon name="documents-outline" size={22} color={colors.blue} />
@@ -182,16 +183,16 @@ const ApplicationsScreen = ({ navigation }) => {
           <>
             <View style={styles.summaryRow}>
               <View style={styles.summaryCard}>
-                <Text style={styles.summaryValue}>{items.length}</Text>
-                <Text style={styles.summaryLabel}>{isTenant ? 'Submitted' : 'Received'}</Text>
+                <AppText style={styles.summaryValue}>{items.length}</AppText>
+                <AppText style={styles.summaryLabel}>{isTenant ? 'Submitted' : 'Received'}</AppText>
               </View>
               <View style={styles.summaryCard}>
-                <Text style={[styles.summaryValue, styles.pendingValue]}>{counts.pending || 0}</Text>
-                <Text style={styles.summaryLabel}>Pending</Text>
+                <AppText style={[styles.summaryValue, styles.pendingValue]}>{counts.pending || 0}</AppText>
+                <AppText style={styles.summaryLabel}>Pending</AppText>
               </View>
               <View style={styles.summaryCard}>
-                <Text style={[styles.summaryValue, styles.approvedValue]}>{counts.approved || 0}</Text>
-                <Text style={styles.summaryLabel}>Approved</Text>
+                <AppText style={[styles.summaryValue, styles.approvedValue]}>{counts.approved || 0}</AppText>
+                <AppText style={styles.summaryLabel}>Approved</AppText>
               </View>
             </View>
             <View style={styles.filterRow}>
@@ -200,9 +201,9 @@ const ApplicationsScreen = ({ navigation }) => {
                   key={value}
                   onPress={() => setFilter(value)}
                   style={[styles.filterChip, filter === value && styles.filterChipActive]}>
-                  <Text style={[styles.filterText, filter === value && styles.filterTextActive]}>
+                  <AppText style={[styles.filterText, filter === value && styles.filterTextActive]}>
                     {value.charAt(0).toUpperCase() + value.slice(1)}
-                  </Text>
+                  </AppText>
                 </TouchableOpacity>
               ))}
             </View>
@@ -212,26 +213,26 @@ const ApplicationsScreen = ({ navigation }) => {
           loading ? (
             <View style={styles.center}>
               <ActivityIndicator color={colors.blue} size="large" />
-              <Text style={styles.loadingText}>Loading applications…</Text>
+              <AppText style={styles.loadingText}>Loading applications…</AppText>
             </View>
           ) : (
             <View style={styles.center}>
               <View style={styles.emptyIcon}>
                 <Icon name="document-text-outline" size={31} color={colors.blue} />
               </View>
-              <Text style={styles.emptyTitle}>
+              <AppText style={styles.emptyTitle}>
                 {filter === 'all' ? 'No applications yet' : `No ${filter} applications`}
-              </Text>
-              <Text style={styles.emptyText}>
+              </AppText>
+              <AppText style={styles.emptyText}>
                 {isTenant
                   ? 'When you apply for a verified home, its progress will appear here.'
                   : 'Applications from prospective tenants will appear here.'}
-              </Text>
+              </AppText>
               {isTenant && filter === 'all' ? (
                 <TouchableOpacity
                   onPress={() => navigation.navigate('PropertyList')}
                   style={styles.exploreButton}>
-                  <Text style={styles.exploreText}>Explore verified homes</Text>
+                  <AppText style={styles.exploreText}>Explore verified homes</AppText>
                   <Icon name="arrow-forward" size={17} color={colors.white} />
                 </TouchableOpacity>
               ) : null}
@@ -260,17 +261,17 @@ const ApplicationsScreen = ({ navigation }) => {
                     <Icon name={visual.icon} size={20} color={visual.color} />
                   </View>
                   <View style={styles.cardHeading}>
-                    <Text style={styles.cardTitle} numberOfLines={2}>
+                    <AppText style={styles.cardTitle} numberOfLines={2}>
                       {item.property_title || 'Rental property'}
-                    </Text>
-                    <Text style={styles.cardMeta}>
+                    </AppText>
+                    <AppText style={styles.cardMeta}>
                       {isTenant
                         ? `Landlord: ${item.landlord_name || 'RentalHub landlord'}`
                         : `Applicant: ${item.tenant_name || 'RentalHub tenant'}`}
-                    </Text>
+                    </AppText>
                   </View>
                   <View style={[styles.statusPill, { backgroundColor: visual.bg }]}>
-                    <Text style={[styles.statusText, { color: visual.color }]}>{status}</Text>
+                    <AppText style={[styles.statusText, { color: visual.color }]}>{status}</AppText>
                   </View>
                 </View>
               </TouchableOpacity>
@@ -278,17 +279,17 @@ const ApplicationsScreen = ({ navigation }) => {
               {item.message ? (
                 <View style={styles.messageBox}>
                   <Icon name="chatbubble-ellipses-outline" size={16} color={colors.muted} />
-                  <Text style={styles.cardText}>{item.message}</Text>
+                  <AppText style={styles.cardText}>{item.message}</AppText>
                 </View>
               ) : null}
 
               <View style={styles.detailRow}>
                 <Icon name="calendar-outline" size={14} color={colors.muted} />
-                <Text style={styles.detailText}>
+                <AppText style={styles.detailText}>
                   {item.created_at
                     ? `Submitted ${new Date(item.created_at).toLocaleDateString()}`
                     : 'Submission date unavailable'}
-                </Text>
+                </AppText>
               </View>
 
               {pending ? (
@@ -301,7 +302,7 @@ const ApplicationsScreen = ({ navigation }) => {
                       {busyId === item.id ? (
                         <ActivityIndicator color={colors.danger} size="small" />
                       ) : (
-                        <Text style={styles.withdrawText}>Withdraw</Text>
+                        <AppText style={styles.withdrawText}>Withdraw</AppText>
                       )}
                     </TouchableOpacity>
                   ) : (
@@ -310,7 +311,7 @@ const ApplicationsScreen = ({ navigation }) => {
                         disabled={busyId === item.id}
                         onPress={() => confirmAction(item, 'reject')}
                         style={styles.secondaryAction}>
-                        <Text style={styles.rejectText}>Reject</Text>
+                        <AppText style={styles.rejectText}>Reject</AppText>
                       </TouchableOpacity>
                       <TouchableOpacity
                         disabled={busyId === item.id}
@@ -320,7 +321,7 @@ const ApplicationsScreen = ({ navigation }) => {
                           <ActivityIndicator color={colors.white} size="small" />
                         ) : (
                           <>
-                            <Text style={styles.primaryActionText}>Approve</Text>
+                            <AppText style={styles.primaryActionText}>Approve</AppText>
                             <Icon name="checkmark" size={17} color={colors.white} />
                           </>
                         )}

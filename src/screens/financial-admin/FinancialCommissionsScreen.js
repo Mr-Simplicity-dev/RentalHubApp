@@ -13,6 +13,7 @@ import { financialAdminService } from '../../services/financialAdminService';
 import { getErrorMessage, pickObject } from '../../utils/http';
 import { colors, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const getStatusColor = (status) => {
   if (status === 'paid' || status === 'completed' || status === 'approved') return colors.success;
   if (status === 'failed' || status === 'rejected') return colors.danger;
@@ -72,17 +73,17 @@ const FinancialCommissionsScreen = () => {
           <PremiumCard>
             <View style={styles.cardHeader}>
               <View style={styles.agentBlock}>
-                <Text style={styles.agent}>
+                <AppText style={styles.agent}>
                   {String(item.source || 'Commission').replace(/_/g, ' ')}
-                </Text>
-                <Text style={styles.property}>
+                </AppText>
+                <AppText style={styles.property}>
                   {Number(item.transaction_count || 0).toLocaleString()} transactions
-                </Text>
+                </AppText>
               </View>
               <StatusPill label={status} color={getStatusColor(status)} />
             </View>
 
-            <Text style={styles.amount}>{formatNaira(item.total_amount || 0)}</Text>
+            <AppText style={styles.amount}>{formatNaira(item.total_amount || 0)}</AppText>
 
             <InfoRow
               icon="stats-chart-outline"

@@ -6,7 +6,8 @@ import { getErrorMessage, pickList, pickObject } from '../../utils/http';
 import { colors, radius, typography } from '../../theme';
 import Button from '../../components/common/Button';
 import {
-  DashboardHero,
+
+import AppText from '../../components/common/AppText';  DashboardHero,
   DashboardNotice,
   DashboardScreen,
   DashboardSection,
@@ -115,7 +116,7 @@ const LegalSupportScreen = ({ navigation }) => {
           />
           <View style={styles.urgencyRow}>
             {urgencyOptions.map((option) => (
-              <Text
+              <AppText 
                 key={option}
                 onPress={() => setForm((prev) => ({ ...prev, urgency: option }))}
                 style={[
@@ -124,7 +125,7 @@ const LegalSupportScreen = ({ navigation }) => {
                 ]}
               >
                 {option}
-              </Text>
+              </AppText>
             ))}
           </View>
           <Button title="Submit request" loading={submitting} onPress={submitRequest} />
@@ -134,17 +135,17 @@ const LegalSupportScreen = ({ navigation }) => {
       <DashboardSection title="Your requests">
         {loading && !requests.length ? <ActivityIndicator color={colors.blue} /> : null}
         {!loading && !requests.length ? (
-          <Text style={styles.empty}>No legal assistance requests yet.</Text>
+          <AppText style={styles.empty}>No legal assistance requests yet.</AppText>
         ) : null}
         {requests.map((request) => (
           <View key={String(request.id)} style={styles.requestCard}>
             <View style={styles.requestTop}>
-              <Text style={styles.requestTitle}>{request.subject}</Text>
-              <Text style={styles.statusPill}>{request.status || 'pending'}</Text>
+              <AppText style={styles.requestTitle}>{request.subject}</AppText>
+              <AppText style={styles.statusPill}>{request.status || 'pending'}</AppText>
             </View>
-            <Text style={styles.requestDescription}>{request.description}</Text>
+            <AppText style={styles.requestDescription}>{request.description}</AppText>
             {request.assigned_lawyer_name ? (
-              <Text style={styles.requestMeta}>Assigned to {request.assigned_lawyer_name}</Text>
+              <AppText style={styles.requestMeta}>Assigned to {request.assigned_lawyer_name}</AppText>
             ) : null}
           </View>
         ))}

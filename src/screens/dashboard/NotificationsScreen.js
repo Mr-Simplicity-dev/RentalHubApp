@@ -15,6 +15,7 @@ import { notificationService } from '../../services/notificationService';
 import { colors, radius, typography } from '../../theme';
 import { getErrorMessage, pickList } from '../../utils/http';
 
+import AppText from '../../components/common/AppText';
 const notificationVisual = (type = '') => {
   const value = String(type).toLowerCase();
   if (value.includes('payment')) return { icon: 'card-outline', color: '#8B5CF6', bg: '#F3EEFF' };
@@ -124,8 +125,8 @@ const NotificationsScreen = ({ navigation }) => {
           <Icon name="arrow-back" size={22} color={colors.navy} />
         </TouchableOpacity>
         <View style={styles.headerCopy}>
-          <Text style={styles.eyebrow}>UPDATES</Text>
-          <Text style={styles.title}>Notifications</Text>
+          <AppText style={styles.eyebrow}>UPDATES</AppText>
+          <AppText style={styles.title}>Notifications</AppText>
         </View>
         <TouchableOpacity
           disabled={!unreadCount}
@@ -141,26 +142,26 @@ const NotificationsScreen = ({ navigation }) => {
         keyExtractor={(item) => String(item.id)}
         ListHeaderComponent={
           !loading && items.length ? (
-            <Text style={styles.summary}>
+            <AppText style={styles.summary}>
               {unreadCount ? `${unreadCount} unread update${unreadCount === 1 ? '' : 's'}` : 'You’re all caught up'}
-            </Text>
+            </AppText>
           ) : null
         }
         ListEmptyComponent={
           loading ? (
             <View style={styles.center}>
               <ActivityIndicator color={colors.blue} size="large" />
-              <Text style={styles.loadingText}>Loading updates…</Text>
+              <AppText style={styles.loadingText}>Loading updates…</AppText>
             </View>
           ) : (
             <View style={styles.center}>
               <View style={styles.emptyIcon}>
                 <Icon name="notifications-off-outline" size={31} color={colors.blue} />
               </View>
-              <Text style={styles.emptyTitle}>Quiet for now</Text>
-              <Text style={styles.emptyText}>
+              <AppText style={styles.emptyTitle}>Quiet for now</AppText>
+              <AppText style={styles.emptyText}>
                 Important property, payment and account updates will appear here.
-              </Text>
+              </AppText>
             </View>
           )
         }
@@ -184,15 +185,15 @@ const NotificationsScreen = ({ navigation }) => {
               </View>
               <View style={styles.cardBody}>
                 <View style={styles.cardHeading}>
-                  <Text style={styles.cardTitle} numberOfLines={1}>
+                  <AppText style={styles.cardTitle} numberOfLines={1}>
                     {item.title || item.notification_type || 'RentalHub update'}
-                  </Text>
+                  </AppText>
                   {!item.is_read ? <View style={styles.unreadDot} /> : null}
                 </View>
-                <Text style={styles.cardMessage}>{item.message || 'No message available'}</Text>
-                <Text style={styles.cardDate}>
+                <AppText style={styles.cardMessage}>{item.message || 'No message available'}</AppText>
+                <AppText style={styles.cardDate}>
                   {item.created_at ? new Date(item.created_at).toLocaleString() : ''}
-                </Text>
+                </AppText>
               </View>
               <TouchableOpacity
                 accessibilityLabel="Delete notification"

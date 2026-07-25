@@ -19,6 +19,7 @@ import { AuthContext } from '../../context/AuthContext';
 import { supportService } from '../../services/supportService';
 import { colors, radius, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const MAX_FILE_SIZE = 15 * 1024 * 1024;
 
 const STATES_AND_LGAS = {
@@ -355,8 +356,8 @@ const ContactWidgetScreen = ({ navigation }) => {
       )}
       <Icon name="headset-outline" size={20} color={colors.gold} />
       <View style={styles.headerText}>
-        <Text style={styles.headerTitle}>RentalHub Support</Text>
-        <Text style={styles.headerSubtitle}>We typically reply within minutes</Text>
+        <AppText style={styles.headerTitle}>RentalHub Support</AppText>
+        <AppText style={styles.headerSubtitle}>We typically reply within minutes</AppText>
       </View>
     </View>
   );
@@ -367,10 +368,10 @@ const ContactWidgetScreen = ({ navigation }) => {
         <View style={styles.heroIconWrap}>
           <Icon name="headset-outline" size={28} color={colors.gold} />
         </View>
-        <Text style={styles.heroTitle}>How can we help?</Text>
-        <Text style={styles.heroText}>
+        <AppText style={styles.heroTitle}>How can we help?</AppText>
+        <AppText style={styles.heroText}>
           Submit a support request and our team will get back to you via email.
-        </Text>
+        </AppText>
       </View>
 
       <TouchableOpacity style={styles.menuRow} onPress={() => setView(isAuthenticated ? 'auth-form' : 'form')}>
@@ -378,8 +379,8 @@ const ContactWidgetScreen = ({ navigation }) => {
           <Icon name="chatbubble-ellipses-outline" size={20} color={colors.blue} />
         </View>
         <View style={styles.menuRowText}>
-          <Text style={styles.menuRowTitle}>Start a conversation</Text>
-          <Text style={styles.menuRowSub}>Send us a message about any issue</Text>
+          <AppText style={styles.menuRowTitle}>Start a conversation</AppText>
+          <AppText style={styles.menuRowSub}>Send us a message about any issue</AppText>
         </View>
         <Icon name="chevron-forward" size={18} color={colors.muted} />
       </TouchableOpacity>
@@ -390,8 +391,8 @@ const ContactWidgetScreen = ({ navigation }) => {
             <Icon name="document-text-outline" size={20} color="#D97706" />
           </View>
           <View style={styles.menuRowText}>
-            <Text style={styles.menuRowTitle}>My tickets</Text>
-            <Text style={styles.menuRowSub}>View and reply to your support tickets</Text>
+            <AppText style={styles.menuRowTitle}>My tickets</AppText>
+            <AppText style={styles.menuRowSub}>View and reply to your support tickets</AppText>
           </View>
           <Icon name="chevron-forward" size={18} color={colors.muted} />
         </TouchableOpacity>
@@ -405,8 +406,8 @@ const ContactWidgetScreen = ({ navigation }) => {
           <Icon name="search-outline" size={20} color="#059669" />
         </View>
         <View style={styles.menuRowText}>
-          <Text style={styles.menuRowTitle}>Check ticket status</Text>
-          <Text style={styles.menuRowSub}>Look up existing tickets by email</Text>
+          <AppText style={styles.menuRowTitle}>Check ticket status</AppText>
+          <AppText style={styles.menuRowSub}>Look up existing tickets by email</AppText>
         </View>
         <Icon name="chevron-forward" size={18} color={colors.muted} />
       </TouchableOpacity>
@@ -416,8 +417,8 @@ const ContactWidgetScreen = ({ navigation }) => {
           <Icon name="mail-outline" size={20} color="#7C3AED" />
         </View>
         <View style={styles.menuRowText}>
-          <Text style={styles.menuRowTitle}>Email support</Text>
-          <Text style={styles.menuRowSub}>support@rentalhub.com.ng</Text>
+          <AppText style={styles.menuRowTitle}>Email support</AppText>
+          <AppText style={styles.menuRowSub}>support@rentalhub.com.ng</AppText>
         </View>
         <Icon name="chevron-forward" size={18} color={colors.muted} />
       </TouchableOpacity>
@@ -427,8 +428,8 @@ const ContactWidgetScreen = ({ navigation }) => {
           <Icon name="call-outline" size={20} color={colors.danger} />
         </View>
         <View style={styles.menuRowText}>
-          <Text style={styles.menuRowTitle}>Call us</Text>
-          <Text style={styles.menuRowSub}>Business hours: Mon-Fri 9am-5pm</Text>
+          <AppText style={styles.menuRowTitle}>Call us</AppText>
+          <AppText style={styles.menuRowSub}>Business hours: Mon-Fri 9am-5pm</AppText>
         </View>
         <Icon name="chevron-forward" size={18} color={colors.muted} />
       </TouchableOpacity>
@@ -437,9 +438,9 @@ const ContactWidgetScreen = ({ navigation }) => {
 
   const renderContactForm = () => (
     <View style={styles.formContainer}>
-      <Text style={styles.formHint}>Fill this form and we'll get back to you via email.</Text>
+      <AppText style={styles.formHint}>Fill this form and we'll get back to you via email.</AppText>
 
-      <Text style={styles.label}>Name *</Text>
+      <AppText style={styles.label}>Name *</AppText>
       <TextInput
         style={styles.input}
         value={form.name}
@@ -448,7 +449,7 @@ const ContactWidgetScreen = ({ navigation }) => {
         placeholderTextColor={colors.muted}
       />
 
-      <Text style={styles.label}>Email *</Text>
+      <AppText style={styles.label}>Email *</AppText>
       <TextInput
         style={styles.input}
         value={form.email}
@@ -459,7 +460,7 @@ const ContactWidgetScreen = ({ navigation }) => {
         autoCapitalize="none"
       />
 
-      <Text style={styles.label}>State *</Text>
+      <AppText style={styles.label}>State *</AppText>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipScroll}>
         <View style={styles.chipRow}>
           {states.map((s) => (
@@ -468,7 +469,7 @@ const ContactWidgetScreen = ({ navigation }) => {
               style={[styles.chip, form.state === s && styles.chipActive]}
               onPress={() => setForm((p) => ({ ...p, state: s, lga: '' }))}
             >
-              <Text style={[styles.chipText, form.state === s && styles.chipTextActive]}>{s}</Text>
+              <AppText style={[styles.chipText, form.state === s && styles.chipTextActive]}>{s}</AppText>
             </TouchableOpacity>
           ))}
         </View>
@@ -476,7 +477,7 @@ const ContactWidgetScreen = ({ navigation }) => {
 
       {lgas.length > 0 && (
         <>
-          <Text style={styles.label}>LGA</Text>
+          <AppText style={styles.label}>LGA</AppText>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipScroll}>
             <View style={styles.chipRow}>
               {lgas.map((l) => (
@@ -485,7 +486,7 @@ const ContactWidgetScreen = ({ navigation }) => {
                   style={[styles.chip, form.lga === l && styles.chipActive]}
                   onPress={() => setForm((p) => ({ ...p, lga: l }))}
                 >
-                  <Text style={[styles.chipText, form.lga === l && styles.chipTextActive]}>{l}</Text>
+                  <AppText style={[styles.chipText, form.lga === l && styles.chipTextActive]}>{l}</AppText>
                 </TouchableOpacity>
               ))}
             </View>
@@ -493,7 +494,7 @@ const ContactWidgetScreen = ({ navigation }) => {
         </>
       )}
 
-      <Text style={styles.label}>Subject</Text>
+      <AppText style={styles.label}>Subject</AppText>
       <TextInput
         style={styles.input}
         value={form.subject}
@@ -502,7 +503,7 @@ const ContactWidgetScreen = ({ navigation }) => {
         placeholderTextColor={colors.muted}
       />
 
-      <Text style={styles.label}>Priority</Text>
+      <AppText style={styles.label}>Priority</AppText>
       <View style={styles.chipRow}>
         {PRIORITY_OPTIONS.map((p) => (
           <TouchableOpacity
@@ -510,14 +511,14 @@ const ContactWidgetScreen = ({ navigation }) => {
             style={[styles.chip, form.priority === p && styles.chipActive]}
             onPress={() => setForm((pr) => ({ ...pr, priority: p }))}
           >
-            <Text style={[styles.chipText, form.priority === p && styles.chipTextActive]}>
+            <AppText style={[styles.chipText, form.priority === p && styles.chipTextActive]}>
               {p.charAt(0).toUpperCase() + p.slice(1)}
-            </Text>
+            </AppText>
           </TouchableOpacity>
         ))}
       </View>
 
-      <Text style={styles.label}>Message *</Text>
+      <AppText style={styles.label}>Message *</AppText>
       <TextInput
         style={[styles.input, styles.textArea]}
         value={form.message}
@@ -539,7 +540,7 @@ const ContactWidgetScreen = ({ navigation }) => {
         ) : (
           <>
             <Icon name="paper-plane" size={16} color={colors.white} />
-            <Text style={styles.primaryBtnText}>Send message</Text>
+            <AppText style={styles.primaryBtnText}>Send message</AppText>
           </>
         )}
       </TouchableOpacity>
@@ -548,27 +549,27 @@ const ContactWidgetScreen = ({ navigation }) => {
         setLookupEmail(form.email || '');
         setView('check-status');
       }}>
-        <Text style={styles.linkText}>Already contacted us? Check your ticket status</Text>
+        <AppText style={styles.linkText}>Already contacted us? Check your ticket status</AppText>
       </TouchableOpacity>
     </View>
   );
 
   const renderAuthForm = () => (
     <View style={styles.formContainer}>
-      <Text style={styles.formHint}>Start a new conversation</Text>
+      <AppText style={styles.formHint}>Start a new conversation</AppText>
 
       <View style={styles.infoRow}>
         <View style={styles.infoBox}>
-          <Text style={styles.infoLabel}>Name</Text>
-          <Text style={styles.infoValue} numberOfLines={1}>{user?.full_name || form.name}</Text>
+          <AppText style={styles.infoLabel}>Name</AppText>
+          <AppText style={styles.infoValue} numberOfLines={1}>{user?.full_name || form.name}</AppText>
         </View>
         <View style={styles.infoBox}>
-          <Text style={styles.infoLabel}>Email</Text>
-          <Text style={styles.infoValue} numberOfLines={1}>{user?.email || form.email}</Text>
+          <AppText style={styles.infoLabel}>Email</AppText>
+          <AppText style={styles.infoValue} numberOfLines={1}>{user?.email || form.email}</AppText>
         </View>
       </View>
 
-      <Text style={styles.label}>State *</Text>
+      <AppText style={styles.label}>State *</AppText>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipScroll}>
         <View style={styles.chipRow}>
           {states.map((s) => (
@@ -577,7 +578,7 @@ const ContactWidgetScreen = ({ navigation }) => {
               style={[styles.chip, form.state === s && styles.chipActive]}
               onPress={() => setForm((p) => ({ ...p, state: s, lga: '' }))}
             >
-              <Text style={[styles.chipText, form.state === s && styles.chipTextActive]}>{s}</Text>
+              <AppText style={[styles.chipText, form.state === s && styles.chipTextActive]}>{s}</AppText>
             </TouchableOpacity>
           ))}
         </View>
@@ -585,7 +586,7 @@ const ContactWidgetScreen = ({ navigation }) => {
 
       {lgas.length > 0 && (
         <>
-          <Text style={styles.label}>LGA</Text>
+          <AppText style={styles.label}>LGA</AppText>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipScroll}>
             <View style={styles.chipRow}>
               {lgas.map((l) => (
@@ -594,7 +595,7 @@ const ContactWidgetScreen = ({ navigation }) => {
                   style={[styles.chip, form.lga === l && styles.chipActive]}
                   onPress={() => setForm((p) => ({ ...p, lga: l }))}
                 >
-                  <Text style={[styles.chipText, form.lga === l && styles.chipTextActive]}>{l}</Text>
+                  <AppText style={[styles.chipText, form.lga === l && styles.chipTextActive]}>{l}</AppText>
                 </TouchableOpacity>
               ))}
             </View>
@@ -602,7 +603,7 @@ const ContactWidgetScreen = ({ navigation }) => {
         </>
       )}
 
-      <Text style={styles.label}>Subject (optional)</Text>
+      <AppText style={styles.label}>Subject (optional)</AppText>
       <TextInput
         style={styles.input}
         value={form.subject}
@@ -611,7 +612,7 @@ const ContactWidgetScreen = ({ navigation }) => {
         placeholderTextColor={colors.muted}
       />
 
-      <Text style={styles.label}>Priority</Text>
+      <AppText style={styles.label}>Priority</AppText>
       <View style={styles.chipRow}>
         {PRIORITY_OPTIONS.map((p) => (
           <TouchableOpacity
@@ -619,14 +620,14 @@ const ContactWidgetScreen = ({ navigation }) => {
             style={[styles.chip, form.priority === p && styles.chipActive]}
             onPress={() => setForm((pr) => ({ ...pr, priority: p }))}
           >
-            <Text style={[styles.chipText, form.priority === p && styles.chipTextActive]}>
+            <AppText style={[styles.chipText, form.priority === p && styles.chipTextActive]}>
               {p.charAt(0).toUpperCase() + p.slice(1)}
-            </Text>
+            </AppText>
           </TouchableOpacity>
         ))}
       </View>
 
-      <Text style={styles.label}>Message *</Text>
+      <AppText style={styles.label}>Message *</AppText>
       <TextInput
         style={[styles.input, styles.textArea]}
         value={form.message}
@@ -648,7 +649,7 @@ const ContactWidgetScreen = ({ navigation }) => {
         ) : (
           <>
             <Icon name="paper-plane" size={16} color={colors.white} />
-            <Text style={styles.primaryBtnText}>Start conversation</Text>
+            <AppText style={styles.primaryBtnText}>Start conversation</AppText>
           </>
         )}
       </TouchableOpacity>
@@ -660,25 +661,25 @@ const ContactWidgetScreen = ({ navigation }) => {
       <View style={styles.successIcon}>
         <Icon name="checkmark-circle" size={56} color={colors.success} />
       </View>
-      <Text style={styles.successTitle}>Message sent!</Text>
-      <Text style={styles.successSub}>We'll get back to you shortly.</Text>
+      <AppText style={styles.successTitle}>Message sent!</AppText>
+      <AppText style={styles.successSub}>We'll get back to you shortly.</AppText>
       <TouchableOpacity style={styles.secondaryBtn} onPress={resetForm}>
-        <Text style={styles.secondaryBtnText}>Back to menu</Text>
+        <AppText style={styles.secondaryBtnText}>Back to menu</AppText>
       </TouchableOpacity>
     </View>
   );
 
   const renderTicketList = () => (
     <View style={styles.listContainer}>
-      <Text style={styles.sectionTitle}>YOUR TICKETS</Text>
+      <AppText style={styles.sectionTitle}>YOUR TICKETS</AppText>
       {loadingTickets ? (
         <ActivityIndicator color={colors.blue} style={{ marginTop: 24 }} />
       ) : tickets.length === 0 ? (
         <View style={styles.emptyState}>
           <Icon name="document-text-outline" size={40} color={colors.border} />
-          <Text style={styles.emptyText}>No tickets yet.</Text>
+          <AppText style={styles.emptyText}>No tickets yet.</AppText>
           <TouchableOpacity onPress={() => setView('auth-form')}>
-            <Text style={styles.linkText}>Start a new conversation</Text>
+            <AppText style={styles.linkText}>Start a new conversation</AppText>
           </TouchableOpacity>
         </View>
       ) : (
@@ -694,15 +695,15 @@ const ContactWidgetScreen = ({ navigation }) => {
                 onPress={() => { setActiveTicket(ticket); setView('conversation'); }}
               >
                 <View style={styles.ticketHeader}>
-                  <Text style={styles.ticketSubject} numberOfLines={1}>{ticket.subject}</Text>
+                  <AppText style={styles.ticketSubject} numberOfLines={1}>{ticket.subject}</AppText>
                   <View style={[styles.statusBadge, { backgroundColor: sc.bg }]}>
-                    <Text style={[styles.statusText, { color: sc.text }]}>{ticket.status?.replace(/_/g, ' ')}</Text>
+                    <AppText style={[styles.statusText, { color: sc.text }]}>{ticket.status?.replace(/_/g, ' ')}</AppText>
                   </View>
                 </View>
-                <Text style={styles.ticketMeta}>#{ticket.id} · {formatDate(ticket.created_at)}</Text>
+                <AppText style={styles.ticketMeta}>#{ticket.id} · {formatDate(ticket.created_at)}</AppText>
                 {ticket.unread_admin_replies > 0 && (
                   <View style={styles.unreadBadge}>
-                    <Text style={styles.unreadText}>{ticket.unread_admin_replies} new</Text>
+                    <AppText style={styles.unreadText}>{ticket.unread_admin_replies} new</AppText>
                   </View>
                 )}
               </TouchableOpacity>
@@ -718,16 +719,16 @@ const ContactWidgetScreen = ({ navigation }) => {
     return (
       <View style={[styles.bubble, isOwn ? styles.bubbleOwn : styles.bubbleOther]}>
         {!isOwn && msg.author_name && (
-          <Text style={styles.bubbleAuthor}>{msg.author_name}</Text>
+          <AppText style={styles.bubbleAuthor}>{msg.author_name}</AppText>
         )}
-        {msg.message ? <Text style={[styles.bubbleText, isOwn && styles.bubbleTextOwn]}>{msg.message}</Text> : null}
+        {msg.message ? <AppText style={[styles.bubbleText, isOwn && styles.bubbleTextOwn]}>{msg.message}</AppText> : null}
         {isAudio && msg.attachment_url ? (
           <TouchableOpacity
             style={styles.attachmentChip}
             onPress={() => Linking.openURL(msg.attachment_url)}
           >
             <Icon name="mic" size={12} color={isOwn ? colors.white : colors.blue} />
-            <Text style={[styles.attachmentText, isOwn && { color: colors.white }]}>Voice message</Text>
+            <AppText style={[styles.attachmentText, isOwn && { color: colors.white }]}>Voice message</AppText>
           </TouchableOpacity>
         ) : msg.attachment_url ? (
           <TouchableOpacity
@@ -735,16 +736,16 @@ const ContactWidgetScreen = ({ navigation }) => {
             onPress={() => Linking.openURL(msg.attachment_url)}
           >
             <Icon name="document-outline" size={12} color={isOwn ? colors.white : colors.blue} />
-            <Text style={[styles.attachmentText, isOwn && { color: colors.white }]} numberOfLines={1}>
+            <AppText style={[styles.attachmentText, isOwn && { color: colors.white }]} numberOfLines={1}>
               {msg.attachment_name || 'Attachment'}
-            </Text>
+            </AppText>
           </TouchableOpacity>
         ) : null}
-        <Text style={[styles.bubbleTime, isOwn && styles.bubbleTimeOwn]}>
+        <AppText style={[styles.bubbleTime, isOwn && styles.bubbleTimeOwn]}>
           {formatTime(msg.created_at)}{msg._temp ? ' · Sending...' : ''}
-        </Text>
+        </AppText>
         {msg._failed && (
-          <Text style={styles.failedText}>Failed to send</Text>
+          <AppText style={styles.failedText}>Failed to send</AppText>
         )}
       </View>
     );
@@ -753,12 +754,12 @@ const ContactWidgetScreen = ({ navigation }) => {
   const renderConversation = () => (
     <View style={styles.conversationContainer}>
       <View style={styles.convSubject}>
-        <Text style={styles.convSubjectText} numberOfLines={1}>{activeTicket?.subject}</Text>
+        <AppText style={styles.convSubjectText} numberOfLines={1}>{activeTicket?.subject}</AppText>
         {activeTicket?.status && (() => {
           const sc = STATUS_COLORS[activeTicket.status] || STATUS_COLORS.open;
           return (
             <View style={[styles.statusBadge, { backgroundColor: sc.bg }]}>
-              <Text style={[styles.statusText, { color: sc.text }]}>{activeTicket.status?.replace(/_/g, ' ')}</Text>
+              <AppText style={[styles.statusText, { color: sc.text }]}>{activeTicket.status?.replace(/_/g, ' ')}</AppText>
             </View>
           );
         })()}
@@ -768,7 +769,7 @@ const ContactWidgetScreen = ({ navigation }) => {
         {loadingConv ? (
           <ActivityIndicator color={colors.blue} style={{ marginTop: 24 }} />
         ) : conversation.length === 0 ? (
-          <Text style={styles.emptyConvText}>No messages yet.</Text>
+          <AppText style={styles.emptyConvText}>No messages yet.</AppText>
         ) : (
           conversation.map((reply) => (
             <View key={reply.id} style={styles.bubbleWrap}>
@@ -778,7 +779,7 @@ const ContactWidgetScreen = ({ navigation }) => {
         )}
         {typingUser && (
           <View style={styles.typingRow}>
-            <Text style={styles.typingText}>{typingUser.userName || 'Admin'} is typing...</Text>
+            <AppText style={styles.typingText}>{typingUser.userName || 'Admin'} is typing...</AppText>
           </View>
         )}
       </ScrollView>
@@ -788,7 +789,7 @@ const ContactWidgetScreen = ({ navigation }) => {
           {attachmentFile && (
             <View style={styles.filePreview}>
               <Icon name="document-outline" size={14} color={colors.text} />
-              <Text style={styles.filePreviewText} numberOfLines={1}>{attachmentFile.fileName}</Text>
+              <AppText style={styles.filePreviewText} numberOfLines={1}>{attachmentFile.fileName}</AppText>
               <TouchableOpacity onPress={() => setAttachmentFile(null)}>
                 <Icon name="close-circle" size={16} color={colors.danger} />
               </TouchableOpacity>
@@ -826,7 +827,7 @@ const ContactWidgetScreen = ({ navigation }) => {
 
   const renderCheckStatus = () => (
     <View style={styles.formContainer}>
-      <Text style={styles.formHint}>Enter the email you used to contact us.</Text>
+      <AppText style={styles.formHint}>Enter the email you used to contact us.</AppText>
       <TextInput
         style={styles.input}
         value={lookupEmail}
@@ -844,13 +845,13 @@ const ContactWidgetScreen = ({ navigation }) => {
         {lookupLoading ? (
           <ActivityIndicator color={colors.white} size="small" />
         ) : (
-          <Text style={styles.primaryBtnText}>Check Tickets Status</Text>
+          <AppText style={styles.primaryBtnText}>Check Tickets Status</AppText>
         )}
       </TouchableOpacity>
 
       {lookupTickets.length > 0 && (
         <View style={{ marginTop: 12 }}>
-          <Text style={styles.sectionTitle}>YOUR TICKETS</Text>
+          <AppText style={styles.sectionTitle}>YOUR TICKETS</AppText>
           {lookupTickets.map((ticket) => {
             const isViewing = viewingContactTicket?.id === ticket.id;
             const sc = STATUS_COLORS[ticket.status] || STATUS_COLORS.open;
@@ -861,32 +862,32 @@ const ContactWidgetScreen = ({ navigation }) => {
                   onPress={() => viewContactConversation(ticket)}
                 >
                   <View style={styles.ticketHeader}>
-                    <Text style={styles.ticketSubject} numberOfLines={1}>{ticket.subject}</Text>
+                    <AppText style={styles.ticketSubject} numberOfLines={1}>{ticket.subject}</AppText>
                     <View style={[styles.statusBadge, { backgroundColor: sc.bg }]}>
-                      <Text style={[styles.statusText, { color: sc.text }]}>{ticket.status}</Text>
+                      <AppText style={[styles.statusText, { color: sc.text }]}>{ticket.status}</AppText>
                     </View>
                   </View>
-                  <Text style={styles.ticketMeta}>{formatDate(ticket.created_at)}</Text>
+                  <AppText style={styles.ticketMeta}>{formatDate(ticket.created_at)}</AppText>
                 </TouchableOpacity>
 
                 {isViewing && (
                   <View style={styles.contactConvWrap}>
                     {contactConv.length === 0 ? (
-                      <Text style={styles.emptyConvText}>No replies yet.</Text>
+                      <AppText style={styles.emptyConvText}>No replies yet.</AppText>
                     ) : (
                       contactConv.map((r) => (
                         <View key={r.id} style={[styles.contactBubble, r.is_admin ? styles.contactBubbleAdmin : styles.contactBubbleUser, r._failed && styles.contactBubbleFailed]}>
-                          {r.is_admin && <Text style={styles.contactBubbleAuthor}>{r.author_name || 'Support'}</Text>}
-                          {r.message ? <Text style={styles.contactBubbleMsg}>{r.message}</Text> : null}
+                          {r.is_admin && <AppText style={styles.contactBubbleAuthor}>{r.author_name || 'Support'}</AppText>}
+                          {r.message ? <AppText style={styles.contactBubbleMsg}>{r.message}</AppText> : null}
                           {r.attachment_url ? (
                             <TouchableOpacity onPress={() => Linking.openURL(r.attachment_url)}>
-                              <Text style={styles.contactBubbleLink}>{r.attachment_name || 'Attachment'}</Text>
+                              <AppText style={styles.contactBubbleLink}>{r.attachment_name || 'Attachment'}</AppText>
                             </TouchableOpacity>
                           ) : null}
-                          <Text style={styles.contactBubbleTime}>
+                          <AppText style={styles.contactBubbleTime}>
                             {formatDateTime(r.created_at)}{r._temp ? ' · Sending...' : ''}
-                          </Text>
-                          {r._failed && <Text style={styles.failedText}>Failed</Text>}
+                          </AppText>
+                          {r._failed && <AppText style={styles.failedText}>Failed</AppText>}
                         </View>
                       ))
                     )}
@@ -894,20 +895,20 @@ const ContactWidgetScreen = ({ navigation }) => {
                     {adminViewingName && (
                       <View style={styles.statusIndicator}>
                         <View style={styles.dotGreen} />
-                        <Text style={styles.statusIndicatorText}>{adminViewingName} is viewing this conversation</Text>
+                        <AppText style={styles.statusIndicatorText}>{adminViewingName} is viewing this conversation</AppText>
                       </View>
                     )}
                     {adminTypingName && (
                       <View style={styles.statusIndicator}>
                         <View style={styles.dotBlue} />
-                        <Text style={[styles.statusIndicatorText, { color: colors.blue }]}>{adminTypingName} is typing...</Text>
+                        <AppText style={[styles.statusIndicatorText, { color: colors.blue }]}>{adminTypingName} is typing...</AppText>
                       </View>
                     )}
 
                     {contactReplyFile && (
                       <View style={styles.filePreview}>
                         <Icon name="document-outline" size={14} color={colors.text} />
-                        <Text style={styles.filePreviewText} numberOfLines={1}>{contactReplyFile.fileName}</Text>
+                        <AppText style={styles.filePreviewText} numberOfLines={1}>{contactReplyFile.fileName}</AppText>
                         <TouchableOpacity onPress={() => setContactReplyFile(null)}>
                           <Icon name="close-circle" size={16} color={colors.danger} />
                         </TouchableOpacity>
@@ -947,11 +948,11 @@ const ContactWidgetScreen = ({ navigation }) => {
       )}
 
       {lookupTickets.length === 0 && !lookupLoading && lookupEmail.trim() && (
-        <Text style={styles.emptyConvText}>No tickets found for this email.</Text>
+        <AppText style={styles.emptyConvText}>No tickets found for this email.</AppText>
       )}
 
       <TouchableOpacity onPress={() => setView('menu')}>
-        <Text style={styles.linkText}>Start a new conversation</Text>
+        <AppText style={styles.linkText}>Start a new conversation</AppText>
       </TouchableOpacity>
     </View>
   );

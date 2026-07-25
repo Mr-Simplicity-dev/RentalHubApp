@@ -19,6 +19,7 @@ import { getErrorMessage, pickList } from '../../utils/http';
 import Button from '../../components/common/Button';
 import { colors, radius, shadows, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const CONTEXT_LABELS = {
   property_secured: 'Property Secured',
   property_listed: 'Property Listed',
@@ -140,7 +141,7 @@ const RatingModal = ({ visible, opportunity, onClose, onSubmit }) => {
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
       <SafeAreaView edges={['top', 'bottom']} style={styles.modalSafe}>
         <View style={styles.modalHeader}>
-          <Text style={styles.modalTitle}>Rate Your Experience</Text>
+          <AppText style={styles.modalTitle}>Rate Your Experience</AppText>
           <TouchableOpacity accessibilityLabel="Close" style={styles.modalCloseBtn} onPress={onClose}>
             <Icon name="close" size={24} color={colors.navy} />
           </TouchableOpacity>
@@ -149,17 +150,17 @@ const RatingModal = ({ visible, opportunity, onClose, onSubmit }) => {
         <View style={styles.modalBody}>
           <View style={styles.modalContextBadge}>
             <Icon name="ribbon-outline" size={14} color={colors.blue} />
-            <Text style={styles.modalContextText}>{contextLabel}</Text>
+            <AppText style={styles.modalContextText}>{contextLabel}</AppText>
           </View>
-          <Text style={styles.modalSource}>{opportunity.source_title || opportunity.detail}</Text>
+          <AppText style={styles.modalSource}>{opportunity.source_title || opportunity.detail}</AppText>
 
           <View style={styles.modalSection}>
-            <Text style={styles.modalLabel}>Your Rating</Text>
+            <AppText style={styles.modalLabel}>Your Rating</AppText>
             <StarPicker value={stars} onChange={setStars} />
           </View>
 
           <View style={styles.modalSection}>
-            <Text style={styles.modalLabel}>Comment (optional)</Text>
+            <AppText style={styles.modalLabel}>Comment (optional)</AppText>
             <TextInput
               style={styles.commentInput}
               value={comment}
@@ -173,13 +174,13 @@ const RatingModal = ({ visible, opportunity, onClose, onSubmit }) => {
           </View>
 
           <View style={styles.modalSection}>
-            <Text style={styles.modalLabel}>Public Display Name</Text>
+            <AppText style={styles.modalLabel}>Public Display Name</AppText>
             <TouchableOpacity
               style={styles.pickerButton}
               activeOpacity={0.7}
               onPress={() => setPickerVisible(!pickerVisible)}
             >
-              <Text style={styles.pickerButtonText}>{selectedLabel}</Text>
+              <AppText style={styles.pickerButtonText}>{selectedLabel}</AppText>
               <Icon name={pickerVisible ? 'chevron-up' : 'chevron-down'} size={18} color={colors.muted} />
             </TouchableOpacity>
             {pickerVisible && (
@@ -197,14 +198,14 @@ const RatingModal = ({ visible, opportunity, onClose, onSubmit }) => {
                       setPickerVisible(false);
                     }}
                   >
-                    <Text
+                    <AppText 
                       style={[
                         styles.pickerOptionText,
                         displayNameMode === option.value && styles.pickerOptionTextActive,
                       ]}
                     >
                       {option.label}
-                    </Text>
+                    </AppText>
                     {displayNameMode === option.value && (
                       <Icon name="checkmark" size={16} color={colors.blue} />
                     )}
@@ -216,9 +217,9 @@ const RatingModal = ({ visible, opportunity, onClose, onSubmit }) => {
 
           <View style={styles.privacyNote}>
             <Icon name="lock-closed-outline" size={13} color={colors.muted} />
-            <Text style={styles.privacyNoteText}>
+            <AppText style={styles.privacyNoteText}>
               Your rating will be reviewed before going public. Your identity stays protected.
-            </Text>
+            </AppText>
           </View>
         </View>
 
@@ -246,12 +247,12 @@ const OpportunityCard = ({ item, onPress }) => {
         <Icon name="ribbon-outline" size={20} color={colors.blue} />
       </View>
       <View style={styles.oppContent}>
-        <Text style={styles.oppContext}>{contextLabel}</Text>
-        <Text style={styles.oppTitle} numberOfLines={2}>
+        <AppText style={styles.oppContext}>{contextLabel}</AppText>
+        <AppText style={styles.oppTitle} numberOfLines={2}>
           {item.title || item.source_title}
-        </Text>
+        </AppText>
         {item.location_label ? (
-          <Text style={styles.oppLocation}>{item.location_label}</Text>
+          <AppText style={styles.oppLocation}>{item.location_label}</AppText>
         ) : null}
       </View>
       <Icon name="chevron-forward" size={18} color={colors.muted} />
@@ -266,26 +267,26 @@ const PublicRatingCard = ({ item }) => (
         {item.image_url ? (
           <></>
         ) : (
-          <Text style={styles.publicAvatarText}>{item.initials || '?'}</Text>
+          <AppText style={styles.publicAvatarText}>{item.initials || '?'}</AppText>
         )}
       </View>
       <View style={styles.publicCardMeta}>
-        <Text style={styles.publicName}>{item.display_name}</Text>
+        <AppText style={styles.publicName}>{item.display_name}</AppText>
         <View style={styles.publicVerifiedRow}>
           <Icon name="checkmark-circle" size={13} color={colors.success} />
-          <Text style={styles.publicVerifiedText}>Verified</Text>
+          <AppText style={styles.publicVerifiedText}>Verified</AppText>
         </View>
       </View>
-      <Text style={styles.publicTime}>{timeAgo(item.created_at)}</Text>
+      <AppText style={styles.publicTime}>{timeAgo(item.created_at)}</AppText>
     </View>
     <StarDisplay stars={item.stars} />
     {item.comment ? (
-      <Text style={styles.publicComment} numberOfLines={3}>
+      <AppText style={styles.publicComment} numberOfLines={3}>
         {item.comment}
-      </Text>
+      </AppText>
     ) : null}
     {item.context_label ? (
-      <Text style={styles.publicContext}>{item.context_label}</Text>
+      <AppText style={styles.publicContext}>{item.context_label}</AppText>
     ) : null}
   </View>
 );
@@ -407,8 +408,8 @@ const PlatformRatingsScreen = () => {
     return (
       <View style={styles.emptyState}>
         <Icon name="chatbubbles-outline" size={48} color={colors.border} />
-        <Text style={styles.emptyTitle}>No ratings yet</Text>
-        <Text style={styles.emptySubtitle}>Public ratings will appear here once submitted and approved.</Text>
+        <AppText style={styles.emptyTitle}>No ratings yet</AppText>
+        <AppText style={styles.emptySubtitle}>Public ratings will appear here once submitted and approved.</AppText>
       </View>
     );
   };
@@ -426,10 +427,10 @@ const PlatformRatingsScreen = () => {
               onPress={() => setActiveTab(tab.key)}
             >
               <Icon name={tab.icon} size={18} color={isActive ? colors.blue : colors.muted} />
-              <Text style={[styles.tabLabel, isActive && styles.tabLabelActive]}>{tab.label}</Text>
+              <AppText style={[styles.tabLabel, isActive && styles.tabLabelActive]}>{tab.label}</AppText>
               {tab.key === 'opportunities' && opportunities.length > 0 && (
                 <View style={styles.tabBadge}>
-                  <Text style={styles.tabBadgeText}>{opportunities.length}</Text>
+                  <AppText style={styles.tabBadgeText}>{opportunities.length}</AppText>
                 </View>
               )}
             </TouchableOpacity>
@@ -460,10 +461,10 @@ const PlatformRatingsScreen = () => {
               ListEmptyComponent={
                 <View style={styles.emptyState}>
                   <Icon name="checkmark-done-circle-outline" size={48} color={colors.success} />
-                  <Text style={styles.emptyTitle}>All caught up!</Text>
-                  <Text style={styles.emptySubtitle}>
+                  <AppText style={styles.emptyTitle}>All caught up!</AppText>
+                  <AppText style={styles.emptySubtitle}>
                     No pending rating opportunities right now. We'll prompt you after your next service.
-                  </Text>
+                  </AppText>
                 </View>
               }
             />

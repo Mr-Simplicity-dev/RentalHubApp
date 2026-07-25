@@ -12,6 +12,7 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import { colors, radius, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const OptionPickerModal = ({
   visible,
   title,
@@ -48,7 +49,7 @@ const OptionPickerModal = ({
     <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.header}>
-          <Text style={styles.title}>{title}</Text>
+          <AppText style={styles.title}>{title}</AppText>
           <TouchableOpacity onPress={onClose} style={styles.closeButton}>
             <Icon name="close-outline" size={24} color={colors.navy} />
           </TouchableOpacity>
@@ -81,16 +82,16 @@ const OptionPickerModal = ({
                   onClose();
                 }}
               >
-                <Text style={[styles.optionText, active && styles.optionTextActive]}>
+                <AppText style={[styles.optionText, active && styles.optionTextActive]}>
                   {optionLabel}
-                </Text>
+                </AppText>
                 {active ? (
                   <Icon name="checkmark-circle" size={20} color={colors.blue} />
                 ) : null}
               </TouchableOpacity>
             );
           }}
-          ListEmptyComponent={<Text style={styles.emptyText}>{emptyText}</Text>}
+          ListEmptyComponent={<AppText style={styles.emptyText}>{emptyText}</AppText>}
         />
       </SafeAreaView>
     </Modal>

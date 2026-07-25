@@ -6,7 +6,8 @@ import { serviceAdminService } from '../../services/serviceAdminService';
 import { getErrorMessage, pickList } from '../../utils/http';
 import { colors, radius, typography } from '../../theme';
 import {
-  DashboardHero,
+
+import AppText from '../../components/common/AppText';  DashboardHero,
   DashboardNotice,
   DashboardScreen,
   DashboardSection,
@@ -405,7 +406,7 @@ const ServiceBookingsScreen = ({ navigation, route }) => {
         ) : (
           <Icon name={action.icon} size={14} color={action.danger ? colors.danger : colors.blue} />
         )}
-        <Text style={[styles.actionChipText, action.danger ? styles.actionChipTextDanger : null]}>{action.label}</Text>
+        <AppText style={[styles.actionChipText, action.danger ? styles.actionChipTextDanger : null]}>{action.label}</AppText>
       </TouchableOpacity>
     );
   };
@@ -431,7 +432,7 @@ const ServiceBookingsScreen = ({ navigation, route }) => {
         ) : (
           <Icon name={action.icon} size={14} color={action.danger ? colors.danger : colors.blue} />
         )}
-        <Text style={[styles.actionChipText, action.danger ? styles.actionChipTextDanger : null]}>{action.label}</Text>
+        <AppText style={[styles.actionChipText, action.danger ? styles.actionChipTextDanger : null]}>{action.label}</AppText>
       </TouchableOpacity>
     );
   };
@@ -446,12 +447,12 @@ const ServiceBookingsScreen = ({ navigation, route }) => {
       <View style={styles.operationsBox}>
         <View style={styles.operationsHeader}>
           <View>
-            <Text style={styles.operationsTitle}>Operations</Text>
-            <Text style={styles.operationsSubtitle}>
+            <AppText style={styles.operationsTitle}>Operations</AppText>
+            <AppText style={styles.operationsSubtitle}>
               {assignment
                 ? `Assigned: ${assignment.company_name || assignment.provider_name || assignment.contact_person || 'Provider'}`
                 : 'Load timeline and assignment details.'}
-            </Text>
+            </AppText>
           </View>
           <TouchableOpacity
             accessibilityLabel={`Load operations for booking ${bookingId}`}
@@ -461,7 +462,7 @@ const ServiceBookingsScreen = ({ navigation, route }) => {
             style={styles.timelineButton}
           >
             {loadingOperations ? <ActivityIndicator color={colors.blue} size="small" /> : <Icon name="time-outline" size={14} color={colors.blue} />}
-            <Text style={styles.timelineButtonText}>Timeline</Text>
+            <AppText style={styles.timelineButtonText}>Timeline</AppText>
           </TouchableOpacity>
         </View>
 
@@ -475,7 +476,7 @@ const ServiceBookingsScreen = ({ navigation, route }) => {
               style={styles.lifecycleChip}
             >
               <Icon name="people-outline" size={14} color={colors.blue} />
-              <Text style={styles.actionChipText}>Assign provider</Text>
+              <AppText style={styles.actionChipText}>Assign provider</AppText>
             </TouchableOpacity>
             {FUMIGATION_LIFECYCLE_ACTIONS.map((action) => renderLifecycleButton(booking, action, 'provider'))}
           </View>
@@ -489,18 +490,18 @@ const ServiceBookingsScreen = ({ navigation, route }) => {
           <View key={String(operation.id || `${operation.event_type}-${operation.created_at}`)} style={styles.operationRow}>
             <View style={styles.operationDot} />
             <View style={styles.operationCopy}>
-              <Text style={styles.operationTitle}>
+              <AppText style={styles.operationTitle}>
                 {String(operation.event_type || operation.action || 'operation').replace(/_/g, ' ')}
-              </Text>
-              <Text style={styles.operationMeta}>
+              </AppText>
+              <AppText style={styles.operationMeta}>
                 {operation.actor_name || operation.provider_name || 'System'} · {operation.created_at || operation.updated_at || ''}
-              </Text>
-              {operation.note ? <Text style={styles.operationNote}>{operation.note}</Text> : null}
+              </AppText>
+              {operation.note ? <AppText style={styles.operationNote}>{operation.note}</AppText> : null}
             </View>
           </View>
         ))}
         {!operations.length && !loadingOperations ? (
-          <Text style={styles.operationsEmpty}>No operation timeline loaded yet.</Text>
+          <AppText style={styles.operationsEmpty}>No operation timeline loaded yet.</AppText>
         ) : null}
       </View>
     );
@@ -524,7 +525,7 @@ const ServiceBookingsScreen = ({ navigation, route }) => {
       <DashboardSection title="Recent bookings">
         {loading && !bookings.length ? <ActivityIndicator color={colors.blue} /> : null}
         {!loading && !bookings.length ? (
-          <Text style={styles.empty}>No bookings found for this workspace.</Text>
+          <AppText style={styles.empty}>No bookings found for this workspace.</AppText>
         ) : null}
         {bookings.map((booking) => {
           const bookingId = booking.id || booking.booking_id;
@@ -539,39 +540,39 @@ const ServiceBookingsScreen = ({ navigation, route }) => {
                   <Icon name={config.icon} size={18} color={colors.blue} />
                 </View>
                 <View style={styles.copy}>
-                  <Text numberOfLines={1} style={styles.title}>
+                  <AppText numberOfLines={1} style={styles.title}>
                     {booking.service_name || booking.service_type || booking.property_title || `Booking #${bookingId}`}
-                  </Text>
-                  <Text numberOfLines={1} style={styles.meta}>
+                  </AppText>
+                  <AppText numberOfLines={1} style={styles.meta}>
                     {booking.tenant_name || booking.customer_name || booking.user_name || 'Customer'} · {getBookingDate(booking)}
-                  </Text>
+                  </AppText>
                 </View>
                 <View style={[styles.badge, { backgroundColor: statusColor(status) }]}>
-                  <Text style={styles.badgeText}>{status}</Text>
+                  <AppText style={styles.badgeText}>{status}</AppText>
                 </View>
               </View>
-              <Text numberOfLines={3} style={styles.detail}>
+              <AppText numberOfLines={3} style={styles.detail}>
                 {booking.pickup_address && booking.destination_address
                   ? `${booking.pickup_address} → ${booking.destination_address}`
                   : booking.property_address || booking.address || booking.admin_notes || 'Review the full service record.'}
-              </Text>
+              </AppText>
 
               <View style={styles.recordGrid}>
-                <Text style={styles.recordText}>
+                <AppText style={styles.recordText}>
                   Reference: {booking.reference || booking.booking_reference || booking.payment_reference || `#${bookingId}`}
-                </Text>
-                <Text style={styles.recordText}>
+                </AppText>
+                <AppText style={styles.recordText}>
                   Amount: ₦{Number(booking.total_amount || booking.amount || booking.estimated_cost || 0).toLocaleString()}
-                </Text>
-                <Text style={styles.recordText}>
+                </AppText>
+                <AppText style={styles.recordText}>
                   Contact: {booking.phone || booking.customer_phone || booking.user_phone || booking.email || 'Not supplied'}
-                </Text>
+                </AppText>
               </View>
 
               {paymentStatus ? (
                 <View style={styles.paymentRow}>
                   <Icon name="wallet-outline" size={14} color={statusColor(paymentStatus)} />
-                  <Text style={styles.paymentText}>Payment: {String(paymentStatus).replace(/_/g, ' ')}</Text>
+                  <AppText style={styles.paymentText}>Payment: {String(paymentStatus).replace(/_/g, ' ')}</AppText>
                 </View>
               ) : null}
 
@@ -611,7 +612,7 @@ const ServiceBookingsScreen = ({ navigation, route }) => {
                   style={styles.complianceButton}
                 >
                   <Icon name="shield-checkmark-outline" size={15} color={colors.success} />
-                  <Text style={styles.complianceText}>Safety compliance</Text>
+                  <AppText style={styles.complianceText}>Safety compliance</AppText>
                 </TouchableOpacity>
               ) : null}
 

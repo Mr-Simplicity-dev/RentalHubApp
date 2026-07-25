@@ -21,6 +21,7 @@ import { applicationService } from '../../services/applicationService';
 import { colors, radius, typography } from '../../theme';
 import { getErrorMessage, pickObject } from '../../utils/http';
 
+import AppText from '../../components/common/AppText';
 const money = (value) => `₦${Number(value || 0).toLocaleString()}`;
 
 const pretty = (value = '') =>
@@ -151,7 +152,7 @@ const ApplicationDetailScreen = ({ route, navigation }) => {
     return (
       <SafeAreaView style={styles.center}>
         <ActivityIndicator color={colors.blue} size="large" />
-        <Text style={styles.loadingText}>Loading application…</Text>
+        <AppText style={styles.loadingText}>Loading application…</AppText>
       </SafeAreaView>
     );
   }
@@ -160,7 +161,7 @@ const ApplicationDetailScreen = ({ route, navigation }) => {
     return (
       <SafeAreaView style={styles.center}>
         <Icon name="document-text-outline" size={34} color={colors.blue} />
-        <Text style={styles.notFoundTitle}>Application unavailable</Text>
+        <AppText style={styles.notFoundTitle}>Application unavailable</AppText>
         <Button title="Go back" onPress={() => navigation.goBack()} style={styles.backAction} />
       </SafeAreaView>
     );
@@ -183,8 +184,8 @@ const ApplicationDetailScreen = ({ route, navigation }) => {
           <Icon name="arrow-back" size={22} color={colors.navy} />
         </TouchableOpacity>
         <View style={styles.headerCopy}>
-          <Text style={styles.eyebrow}>APPLICATION #{application.id}</Text>
-          <Text style={styles.headerTitle}>Application details</Text>
+          <AppText style={styles.eyebrow}>APPLICATION #{application.id}</AppText>
+          <AppText style={styles.headerTitle}>Application details</AppText>
         </View>
         <TouchableOpacity
           accessibilityLabel="Open property"
@@ -215,9 +216,9 @@ const ApplicationDetailScreen = ({ route, navigation }) => {
               <Icon name={visual.icon} size={23} color={visual.color} />
             </View>
             <View style={styles.heroBody}>
-              <Text style={styles.heroEyebrow}>CURRENT STATUS</Text>
-              <Text style={styles.heroTitle}>{pretty(applicationStatus)}</Text>
-              <Text style={styles.heroText}>
+              <AppText style={styles.heroEyebrow}>CURRENT STATUS</AppText>
+              <AppText style={styles.heroTitle}>{pretty(applicationStatus)}</AppText>
+              <AppText style={styles.heroText}>
                 {applicationStatus === 'pending'
                   ? 'This application is still active and awaiting the next step.'
                   : applicationStatus === 'approved'
@@ -225,7 +226,7 @@ const ApplicationDetailScreen = ({ route, navigation }) => {
                     : applicationStatus === 'rejected'
                       ? 'This application was not approved.'
                       : 'This application has been withdrawn.'}
-              </Text>
+              </AppText>
             </View>
           </View>
 
@@ -235,28 +236,28 @@ const ApplicationDetailScreen = ({ route, navigation }) => {
                 <Icon name="home-outline" size={20} color={colors.blue} />
               </View>
               <View style={styles.propertyCopy}>
-                <Text style={styles.propertyTitle}>
+                <AppText style={styles.propertyTitle}>
                   {application.property_title || 'Rental property'}
-                </Text>
-                <Text style={styles.propertyLocation}>
+                </AppText>
+                <AppText style={styles.propertyLocation}>
                   {[application.area, application.city, application.state_name]
                     .filter(Boolean)
                     .join(', ') || 'Location unavailable'}
-                </Text>
+                </AppText>
               </View>
             </View>
             <View style={styles.propertyFacts}>
               <View>
-                <Text style={styles.factLabel}>Listed rent</Text>
-                <Text style={styles.factValue}>{money(application.rent_amount)}</Text>
+                <AppText style={styles.factLabel}>Listed rent</AppText>
+                <AppText style={styles.factValue}>{money(application.rent_amount)}</AppText>
               </View>
               <View>
-                <Text style={styles.factLabel}>
+                <AppText style={styles.factLabel}>
                   {isTenant ? 'Landlord' : 'Applicant'}
-                </Text>
-                <Text style={styles.factValue}>
+                </AppText>
+                <AppText style={styles.factValue}>
                   {isTenant ? application.landlord_name : application.tenant_name || '—'}
-                </Text>
+                </AppText>
               </View>
             </View>
           </View>
@@ -265,49 +266,49 @@ const ApplicationDetailScreen = ({ route, navigation }) => {
             <View style={styles.noteCard}>
               <Icon name="chatbubble-ellipses-outline" size={19} color={colors.blue} />
               <View style={styles.noteBody}>
-                <Text style={styles.noteLabel}>APPLICATION NOTE</Text>
-                <Text style={styles.noteText}>{application.message}</Text>
+                <AppText style={styles.noteLabel}>APPLICATION NOTE</AppText>
+                <AppText style={styles.noteText}>{application.message}</AppText>
               </View>
             </View>
           ) : null}
 
           <View style={styles.negotiationHeader}>
             <View>
-              <Text style={styles.sectionEyebrow}>RENT NEGOTIATION</Text>
-              <Text style={styles.sectionTitle}>{pretty(negotiationStatus)}</Text>
+              <AppText style={styles.sectionEyebrow}>RENT NEGOTIATION</AppText>
+              <AppText style={styles.sectionTitle}>{pretty(negotiationStatus)}</AppText>
             </View>
             {agreed ? (
               <View style={styles.agreedPill}>
                 <Icon name="checkmark" size={13} color={colors.success} />
-                <Text style={styles.agreedText}>Agreed</Text>
+                <AppText style={styles.agreedText}>Agreed</AppText>
               </View>
             ) : null}
           </View>
 
           <View style={styles.offerRow}>
             <View style={styles.offerCard}>
-              <Text style={styles.offerLabel}>Tenant offer</Text>
-              <Text style={styles.offerValue}>
+              <AppText style={styles.offerLabel}>Tenant offer</AppText>
+              <AppText style={styles.offerValue}>
                 {application.proposed_rent ? money(application.proposed_rent) : '—'}
-              </Text>
+              </AppText>
             </View>
             <View style={styles.offerCard}>
-              <Text style={styles.offerLabel}>Landlord counter</Text>
-              <Text style={styles.offerValue}>
+              <AppText style={styles.offerLabel}>Landlord counter</AppText>
+              <AppText style={styles.offerValue}>
                 {application.counter_offer_rent ? money(application.counter_offer_rent) : '—'}
-              </Text>
+              </AppText>
             </View>
           </View>
           {application.agreed_rent ? (
             <View style={styles.agreedCard}>
-              <Text style={styles.agreedLabel}>Agreed rent</Text>
-              <Text style={styles.agreedValue}>{money(application.agreed_rent)}</Text>
+              <AppText style={styles.agreedLabel}>Agreed rent</AppText>
+              <AppText style={styles.agreedValue}>{money(application.agreed_rent)}</AppText>
             </View>
           ) : null}
 
           {history.length ? (
             <View style={styles.timelineCard}>
-              <Text style={styles.timelineTitle}>Negotiation history</Text>
+              <AppText style={styles.timelineTitle}>Negotiation history</AppText>
               {history.map((event, index) => (
                 <View key={event.id || index} style={styles.timelineItem}>
                   <View style={styles.timelineRail}>
@@ -315,15 +316,15 @@ const ApplicationDetailScreen = ({ route, navigation }) => {
                     {index < history.length - 1 ? <View style={styles.timelineLine} /> : null}
                   </View>
                   <View style={styles.timelineBody}>
-                    <Text style={styles.timelineAction}>{pretty(event.action_type)}</Text>
-                    <Text style={styles.timelineMeta}>
+                    <AppText style={styles.timelineAction}>{pretty(event.action_type)}</AppText>
+                    <AppText style={styles.timelineMeta}>
                       {event.actor_name || pretty(event.actor_role)}
                       {event.offer_amount ? ` · ${money(event.offer_amount)}` : ''}
-                    </Text>
-                    {event.note ? <Text style={styles.timelineNote}>{event.note}</Text> : null}
-                    <Text style={styles.timelineDate}>
+                    </AppText>
+                    {event.note ? <AppText style={styles.timelineNote}>{event.note}</AppText> : null}
+                    <AppText style={styles.timelineDate}>
                       {event.created_at ? new Date(event.created_at).toLocaleString() : ''}
-                    </Text>
+                    </AppText>
                   </View>
                 </View>
               ))}
@@ -332,7 +333,7 @@ const ApplicationDetailScreen = ({ route, navigation }) => {
 
           {formMode ? (
             <View style={styles.formCard}>
-              <Text style={styles.formTitle}>
+              <AppText style={styles.formTitle}>
                 {formMode === 'tenant_offer'
                   ? 'Propose rent'
                   : formMode === 'landlord_counter'
@@ -340,7 +341,7 @@ const ApplicationDetailScreen = ({ route, navigation }) => {
                     : formMode === 'reject'
                       ? 'Reject application'
                       : 'Add a note'}
-              </Text>
+              </AppText>
               {['tenant_offer', 'landlord_counter'].includes(formMode) ? (
                 <Input
                   icon="cash-outline"
@@ -459,9 +460,9 @@ const ApplicationDetailScreen = ({ route, navigation }) => {
 
           <View style={styles.safetyCard}>
             <Icon name="shield-checkmark-outline" size={18} color={colors.success} />
-            <Text style={styles.safetyText}>
+            <AppText style={styles.safetyText}>
               Keep rent negotiations and payments inside RentalHub for your protection.
-            </Text>
+            </AppText>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

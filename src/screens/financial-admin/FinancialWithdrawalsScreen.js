@@ -14,6 +14,7 @@ import { financialAdminService } from '../../services/financialAdminService';
 import { getErrorMessage, pickList } from '../../utils/http';
 import { colors, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const getStatusColor = (status) => {
   if (status === 'approved' || status === 'paid' || status === 'completed') return colors.success;
   if (status === 'rejected' || status === 'failed') return colors.danger;
@@ -90,8 +91,8 @@ const FinancialWithdrawalsScreen = () => {
           <PremiumCard>
             <View style={styles.cardHeader}>
               <View>
-                <Text style={styles.amount}>{formatNaira(item.amount || 0)}</Text>
-                <Text style={styles.user}>{item.user_name || item.user?.name || 'Unknown user'}</Text>
+                <AppText style={styles.amount}>{formatNaira(item.amount || 0)}</AppText>
+                <AppText style={styles.user}>{item.user_name || item.user?.name || 'Unknown user'}</AppText>
               </View>
               <StatusPill label={status} color={getStatusColor(status)} />
             </View>

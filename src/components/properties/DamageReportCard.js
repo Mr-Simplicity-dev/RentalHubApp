@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
+import AppText from '../../components/common/AppText';
 const DamageReportCard = ({ report, onPress, compact = false }) => {
   if (!report) return null;
 
@@ -20,12 +21,12 @@ const DamageReportCard = ({ report, onPress, compact = false }) => {
       <TouchableOpacity style={styles.compactCard} onPress={onPress} activeOpacity={0.7}>
         <View style={[styles.severityDot, { backgroundColor: severityColor }]} />
         <View style={styles.compactContent}>
-          <Text style={styles.compactTitle} numberOfLines={1}>
+          <AppText style={styles.compactTitle} numberOfLines={1}>
             {report.damage_type || 'Damage Report'}
-          </Text>
-          <Text style={styles.compactMeta}>
+          </AppText>
+          <AppText style={styles.compactMeta}>
             {report.room_location || 'N/A'} | Severity: {report.severity || 'N/A'}
-          </Text>
+          </AppText>
         </View>
         <Icon name="chevron-forward-outline" size={18} color="#94a3b8" />
       </TouchableOpacity>
@@ -39,32 +40,32 @@ const DamageReportCard = ({ report, onPress, compact = false }) => {
       )}
       <View style={styles.content}>
         <View style={styles.header}>
-          <Text style={styles.title}>{report.damage_type || 'Damage Report'}</Text>
+          <AppText style={styles.title}>{report.damage_type || 'Damage Report'}</AppText>
           <View style={[styles.badge, { backgroundColor: severityColor + '20' }]}>
-            <Text style={[styles.badgeText, { color: severityColor }]}>
+            <AppText style={[styles.badgeText, { color: severityColor }]}>
               {report.severity || 'N/A'}
-            </Text>
+            </AppText>
           </View>
         </View>
-        <Text style={styles.location}>Location: {report.room_location || 'N/A'}</Text>
+        <AppText style={styles.location}>Location: {report.room_location || 'N/A'}</AppText>
         {report.description && (
-          <Text style={styles.description} numberOfLines={3}>
+          <AppText style={styles.description} numberOfLines={3}>
             {report.description}
-          </Text>
+          </AppText>
         )}
         {report.ai_analysis?.repair_recommendation && (
           <View style={styles.recommendation}>
             <Icon name="bulb-outline" size={16} color="#1d4ed8" />
-            <Text style={styles.recommendationText} numberOfLines={2}>
+            <AppText style={styles.recommendationText} numberOfLines={2}>
               {report.ai_analysis.repair_recommendation}
-            </Text>
+            </AppText>
           </View>
         )}
         <View style={styles.footer}>
-          <Text style={styles.date}>
+          <AppText style={styles.date}>
             {report.created_at ? new Date(report.created_at).toLocaleDateString() : ''}
-          </Text>
-          <Text style={styles.status}>{report.status || 'draft'}</Text>
+          </AppText>
+          <AppText style={styles.status}>{report.status || 'draft'}</AppText>
         </View>
       </View>
     </TouchableOpacity>

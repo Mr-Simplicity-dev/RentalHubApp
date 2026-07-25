@@ -16,6 +16,7 @@ import { paymentService } from '../../services/paymentService';
 import { colors, radius, typography } from '../../theme';
 import { getErrorMessage, pickList } from '../../utils/http';
 
+import AppText from '../../components/common/AppText';
 const SubscribedPropertiesScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -56,8 +57,8 @@ const SubscribedPropertiesScreen = ({ navigation }) => {
           <Icon name="arrow-back" size={22} color={colors.navy} />
         </TouchableOpacity>
         <View style={styles.headerCopy}>
-          <Text style={styles.eyebrow}>UNLOCKED ACCESS</Text>
-          <Text style={styles.title}>Subscribed properties</Text>
+          <AppText style={styles.eyebrow}>UNLOCKED ACCESS</AppText>
+          <AppText style={styles.title}>Subscribed properties</AppText>
         </View>
         <View style={styles.headerSpacer} />
       </View>
@@ -68,30 +69,30 @@ const SubscribedPropertiesScreen = ({ navigation }) => {
         keyExtractor={(item) => String(item.id)}
         ListHeaderComponent={
           !loading && items.length ? (
-            <Text style={styles.summary}>
+            <AppText style={styles.summary}>
               {items.length} {items.length === 1 ? 'property' : 'properties'} unlocked
-            </Text>
+            </AppText>
           ) : null
         }
         ListEmptyComponent={
           loading ? (
             <View style={styles.center}>
               <ActivityIndicator color={colors.blue} size="large" />
-              <Text style={styles.loadingText}>Loading your subscriptions…</Text>
+              <AppText style={styles.loadingText}>Loading your subscriptions…</AppText>
             </View>
           ) : (
             <View style={styles.center}>
               <View style={styles.emptyIcon}>
                 <Icon name="key-outline" size={31} color={colors.blue} />
               </View>
-              <Text style={styles.emptyTitle}>No subscribed properties</Text>
-              <Text style={styles.emptyText}>
+              <AppText style={styles.emptyTitle}>No subscribed properties</AppText>
+              <AppText style={styles.emptyText}>
                 You have not unlocked any properties yet. Browse verified listings and unlock a property to access full details.
-              </Text>
+              </AppText>
               <TouchableOpacity
                 onPress={() => navigation.navigate('PropertyList')}
                 style={styles.exploreButton}>
-                <Text style={styles.exploreText}>Browse properties</Text>
+                <AppText style={styles.exploreText}>Browse properties</AppText>
                 <Icon name="arrow-forward" size={17} color={colors.white} />
               </TouchableOpacity>
             </View>

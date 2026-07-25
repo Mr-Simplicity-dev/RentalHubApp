@@ -12,6 +12,7 @@ import { authService } from '../../services/authService';
 import { getErrorMessage } from '../../utils/http';
 import { colors, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const VerifyEmailScreen = ({ navigation, route }) => {
   const [token, setToken] = useState(route?.params?.token || '');
   const [loading, setLoading] = useState(false);
@@ -65,7 +66,7 @@ const VerifyEmailScreen = ({ navigation, route }) => {
           icon="ticket-outline"
         />
 
-        {message ? <Text style={styles.message}>{message}</Text> : null}
+        {message ? <AppText style={styles.message}>{message}</AppText> : null}
 
         <PremiumButton
           title="Verify email"

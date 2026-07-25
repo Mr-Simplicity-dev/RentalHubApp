@@ -5,6 +5,7 @@ import { supportService } from '../../services/supportService';
 import { colors, spacing, typography } from '../../theme';
 import { getErrorMessage } from '../../utils/http';
 
+import AppText from '../../components/common/AppText';
 const ActivityFeedScreen = ({ navigation, route }) => {
   const allMode = route?.params?.all === true;
   const [logs, setLogs] = useState([]);
@@ -46,28 +47,28 @@ const ActivityFeedScreen = ({ navigation, route }) => {
     <View style={styles.log}>
       <View style={[styles.dot, { backgroundColor: actionColor(item.action) }]} />
       <View style={styles.body}>
-        <Text style={styles.action}>{item.action.replace(/_/g, ' ')}</Text>
-        <Text style={styles.actor}>
+        <AppText style={styles.action}>{item.action.replace(/_/g, ' ')}</AppText>
+        <AppText style={styles.actor}>
           by {item.user_name || 'System'} ({item.user_type})
-        </Text>
-        {item.state && <Text style={styles.location}>{item.state}{item.lga ? ` / ${item.lga}` : ''}</Text>}
-        {item.metadata && <Text style={styles.meta}>{JSON.stringify(item.metadata)}</Text>}
+        </AppText>
+        {item.state && <AppText style={styles.location}>{item.state}{item.lga ? ` / ${item.lga}` : ''}</AppText>}
+        {item.metadata && <AppText style={styles.meta}>{JSON.stringify(item.metadata)}</AppText>}
       </View>
-      <Text style={styles.time}>{formatDate(item.created_at)}</Text>
+      <AppText style={styles.time}>{formatDate(item.created_at)}</AppText>
     </View>
   );
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{allMode ? 'All Activity' : 'Activity Feed'}</Text>
-      <TouchableOpacity onPress={load} style={styles.refresh}><Text>Refresh</Text></TouchableOpacity>
+      <AppText style={styles.title}>{allMode ? 'All Activity' : 'Activity Feed'}</AppText>
+      <TouchableOpacity onPress={load} style={styles.refresh}><AppText>Refresh</AppText></TouchableOpacity>
       <FlatList
         data={logs}
         keyExtractor={(item) => String(item.id)}
         renderItem={renderItem}
         refreshing={loading}
         onRefresh={load}
-        ListEmptyComponent={<Text style={styles.empty}>No activity logs found</Text>}
+        ListEmptyComponent={<AppText style={styles.empty}>No activity logs found</AppText>}
       />
     </View>
   );

@@ -15,6 +15,7 @@ import { fumigationCleaningService } from '../../services/fumigationCleaningServ
 import { colors, radius, shadows, typography } from '../../theme';
 import { getErrorMessage } from '../../utils/http';
 
+import AppText from '../../components/common/AppText';
 const FumigationCleaningBookingScreen = ({ route, navigation }) => {
   const { propertyId } = route.params || {};
 
@@ -178,16 +179,16 @@ const FumigationCleaningBookingScreen = ({ route, navigation }) => {
           </TouchableOpacity>
           <View style={styles.headerIcon}><Icon name="sparkles-outline" size={23} color={colors.gold} /></View>
         </View>
-        <Text style={styles.headerEyebrow}>HOME CARE</Text>
-        <Text style={styles.headerTitle}>Fumigation & cleaning</Text>
-        <Text style={styles.headerSub}>
+        <AppText style={styles.headerEyebrow}>HOME CARE</AppText>
+        <AppText style={styles.headerTitle}>Fumigation & cleaning</AppText>
+        <AppText style={styles.headerSub}>
           Professional fumigation and cleaning services
-        </Text>
+        </AppText>
       </View>
 
       {/* Category Selection */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Service Type</Text>
+        <AppText style={styles.sectionTitle}>Service Type</AppText>
         <View style={styles.categoryRow}>
           {categories.map((cat) => (
             <TouchableOpacity
@@ -198,14 +199,14 @@ const FumigationCleaningBookingScreen = ({ route, navigation }) => {
               ]}
               onPress={() => setSelectedCategory(cat)}
             >
-              <Text
+              <AppText 
                 style={[
                   styles.categoryChipText,
                   selectedCategory?.id === cat.id && styles.categoryChipTextSelected,
                 ]}
               >
                 {cat.category_name}
-              </Text>
+              </AppText>
             </TouchableOpacity>
           ))}
         </View>
@@ -213,7 +214,7 @@ const FumigationCleaningBookingScreen = ({ route, navigation }) => {
 
       {/* Service Selection */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Select Service Package</Text>
+        <AppText style={styles.sectionTitle}>Select Service Package</AppText>
         {filteredServices.map((service) => (
           <TouchableOpacity
             key={service.id}
@@ -224,19 +225,19 @@ const FumigationCleaningBookingScreen = ({ route, navigation }) => {
             onPress={() => setSelectedService(service)}
           >
             <View style={styles.serviceHeader}>
-              <Text style={styles.serviceName}>{service.service_name}</Text>
+              <AppText style={styles.serviceName}>{service.service_name}</AppText>
               {selectedService?.id === service.id && (
                 <Icon name="checkmark-circle" size={20} color="#16a34a" />
               )}
             </View>
-            <Text style={styles.serviceDesc}>{service.description}</Text>
-            <Text style={styles.servicePrice}>
+            <AppText style={styles.serviceDesc}>{service.description}</AppText>
+            <AppText style={styles.servicePrice}>
               ₦{service.base_price?.toLocaleString()}
-            </Text>
+            </AppText>
             {service.estimated_duration && (
-              <Text style={styles.durationText}>
+              <AppText style={styles.durationText}>
                 Duration: ~{service.estimated_duration} mins
-              </Text>
+              </AppText>
             )}
           </TouchableOpacity>
         ))}
@@ -244,10 +245,10 @@ const FumigationCleaningBookingScreen = ({ route, navigation }) => {
 
       {/* Booking Form */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Booking Details</Text>
+        <AppText style={styles.sectionTitle}>Booking Details</AppText>
 
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>Preferred Date *</Text>
+          <AppText style={styles.label}>Preferred Date *</AppText>
           <TextInput
             style={styles.input}
             value={formData.booking_date}
@@ -258,7 +259,7 @@ const FumigationCleaningBookingScreen = ({ route, navigation }) => {
         </View>
 
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>Preferred Time</Text>
+          <AppText style={styles.label}>Preferred Time</AppText>
           <TextInput
             style={styles.input}
             value={formData.booking_time}
@@ -268,7 +269,7 @@ const FumigationCleaningBookingScreen = ({ route, navigation }) => {
         </View>
 
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>Special Requirements</Text>
+          <AppText style={styles.label}>Special Requirements</AppText>
           <TextInput
             style={[styles.input, styles.textArea]}
             value={formData.special_requirements}
@@ -282,26 +283,26 @@ const FumigationCleaningBookingScreen = ({ route, navigation }) => {
         {/* Price Summary */}
         {priceCalculation && (
           <View style={styles.priceCard}>
-            <Text style={styles.priceTitle}>Price Summary</Text>
+            <AppText style={styles.priceTitle}>Price Summary</AppText>
             <View style={styles.priceRow}>
-              <Text>Service Price:</Text>
-              <Text style={styles.priceValue}>
+              <AppText>Service Price:</AppText>
+              <AppText style={styles.priceValue}>
                 ₦{priceCalculation.service_price?.toLocaleString()}
-              </Text>
+              </AppText>
             </View>
             {priceCalculation.addons_price > 0 && (
               <View style={styles.priceRow}>
-                <Text>Add-ons:</Text>
-                <Text style={styles.priceValue}>
+                <AppText>Add-ons:</AppText>
+                <AppText style={styles.priceValue}>
                   ₦{priceCalculation.addons_price?.toLocaleString()}
-                </Text>
+                </AppText>
               </View>
             )}
             <View style={[styles.priceRow, styles.totalRow]}>
-              <Text style={styles.totalLabel}>Total:</Text>
-              <Text style={styles.totalValue}>
+              <AppText style={styles.totalLabel}>Total:</AppText>
+              <AppText style={styles.totalValue}>
                 ₦{priceCalculation.total_price?.toLocaleString()}
-              </Text>
+              </AppText>
             </View>
           </View>
         )}
@@ -309,7 +310,7 @@ const FumigationCleaningBookingScreen = ({ route, navigation }) => {
         {calculatingPrice && (
           <View style={styles.calculatingContainer}>
             <ActivityIndicator size="small" color="#0284c7" />
-            <Text style={styles.calculatingText}>Calculating...</Text>
+            <AppText style={styles.calculatingText}>Calculating...</AppText>
           </View>
         )}
 
@@ -321,7 +322,7 @@ const FumigationCleaningBookingScreen = ({ route, navigation }) => {
           {creatingBooking ? (
             <ActivityIndicator color="#ffffff" />
           ) : (
-            <Text style={styles.submitButtonText}>Proceed to Payment</Text>
+            <AppText style={styles.submitButtonText}>Proceed to Payment</AppText>
           )}
         </TouchableOpacity>
       </View>

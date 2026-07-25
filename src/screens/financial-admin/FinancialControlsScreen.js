@@ -19,7 +19,8 @@ import { trackMobileEvent } from '../../services/mobileDiagnosticsService';
 import { colors, radius, shadows, typography } from '../../theme';
 import { getErrorMessage, pickList, pickObject } from '../../utils/http';
 import {
-  ActionRow,
+
+import AppText from '../../components/common/AppText';  ActionRow,
   DashboardHero,
   DashboardNotice,
   DashboardScreen,
@@ -64,15 +65,15 @@ const buildExportName = (label) =>
 
 const SummaryPill = ({ label, value, tone = 'blue' }) => (
   <View style={[styles.pill, tone === 'warning' && styles.warningPill]}>
-    <Text style={[styles.pillLabel, tone === 'warning' && styles.warningText]}>{label}</Text>
-    <Text style={[styles.pillValue, tone === 'warning' && styles.warningText]}>{value}</Text>
+    <AppText style={[styles.pillLabel, tone === 'warning' && styles.warningText]}>{label}</AppText>
+    <AppText style={[styles.pillValue, tone === 'warning' && styles.warningText]}>{value}</AppText>
   </View>
 );
 
 const EmptyState = ({ message }) => (
   <View style={styles.emptyState}>
     <Icon name="file-tray-outline" size={24} color={colors.muted} />
-    <Text style={styles.emptyText}>{message}</Text>
+    <AppText style={styles.emptyText}>{message}</AppText>
   </View>
 );
 
@@ -409,11 +410,11 @@ const FinancialControlsScreen = ({ navigation }) => {
             {frozenRows.slice(0, 4).map((item) => (
               <View key={String(item.id)} style={styles.recordCard}>
                 <View style={styles.recordTop}>
-                  <Text style={styles.recordTitle}>{item.user_name || item.user_email || `User #${item.user_id}`}</Text>
-                  <Text style={styles.dangerValue}>{formatCurrency(item.amount)}</Text>
+                  <AppText style={styles.recordTitle}>{item.user_name || item.user_email || `User #${item.user_id}`}</AppText>
+                  <AppText style={styles.dangerValue}>{formatCurrency(item.amount)}</AppText>
                 </View>
-                <Text style={styles.recordMeta}>{item.reason || 'No freeze reason recorded'}</Text>
-                <Text style={styles.recordDate}>Frozen {compactDate(item.frozen_at || item.created_at)}</Text>
+                <AppText style={styles.recordMeta}>{item.reason || 'No freeze reason recorded'}</AppText>
+                <AppText style={styles.recordDate}>Frozen {compactDate(item.frozen_at || item.created_at)}</AppText>
               </View>
             ))}
             {frozenRows.length === 0 ? <EmptyState message="No frozen funds found." /> : null}
@@ -439,13 +440,13 @@ const FinancialControlsScreen = ({ navigation }) => {
             {auditRows.slice(0, 6).map((item) => (
               <View key={String(item.id)} style={styles.recordCard}>
                 <View style={styles.recordTop}>
-                  <Text style={styles.recordTitle}>{String(item.action_type || 'audit').replace(/_/g, ' ')}</Text>
-                  <Text style={styles.recordAmount}>{formatCurrency(item.amount || 0)}</Text>
+                  <AppText style={styles.recordTitle}>{String(item.action_type || 'audit').replace(/_/g, ' ')}</AppText>
+                  <AppText style={styles.recordAmount}>{formatCurrency(item.amount || 0)}</AppText>
                 </View>
-                <Text style={styles.recordMeta}>{item.description || item.user_email || 'No description recorded'}</Text>
-                <Text style={styles.recordDate}>
+                <AppText style={styles.recordMeta}>{item.description || item.user_email || 'No description recorded'}</AppText>
+                <AppText style={styles.recordDate}>
                   {item.performed_by_name || item.admin_name || 'System'} • {compactDate(item.performed_at || item.created_at)}
-                </Text>
+                </AppText>
               </View>
             ))}
             {auditRows.length === 0 ? <EmptyState message="No audit activity returned." /> : null}
@@ -465,15 +466,15 @@ const FinancialControlsScreen = ({ navigation }) => {
             {performanceRows.slice(0, 5).map((item) => (
               <View key={String(item.admin_id || item.id)} style={styles.recordCard}>
                 <View style={styles.recordTop}>
-                  <Text style={styles.recordTitle}>{item.full_name || item.admin_name || `Admin #${item.admin_id}`}</Text>
-                  <Text style={styles.recordAmount}>{formatCurrency(item.total_pending)}</Text>
+                  <AppText style={styles.recordTitle}>{item.full_name || item.admin_name || `Admin #${item.admin_id}`}</AppText>
+                  <AppText style={styles.recordAmount}>{formatCurrency(item.total_pending)}</AppText>
                 </View>
-                <Text style={styles.recordMeta}>
+                <AppText style={styles.recordMeta}>
                   {(item.assigned_state || 'Unassigned state')} {item.assigned_city ? `• ${item.assigned_city}` : ''}
-                </Text>
-                <Text style={styles.recordDate}>
+                </AppText>
+                <AppText style={styles.recordDate}>
                   Paid {formatCurrency(item.total_paid)} • Withdrawn {formatCurrency(item.total_withdrawn)}
-                </Text>
+                </AppText>
               </View>
             ))}
             {performanceRows.length === 0 ? <EmptyState message="No admin performance rows found." /> : null}
@@ -495,11 +496,11 @@ const FinancialControlsScreen = ({ navigation }) => {
             {commissionEntries.slice(0, 8).map(([key, config]) => (
               <View key={key} style={styles.configCard}>
                 <View style={styles.recordTop}>
-                  <Text style={styles.recordTitle}>{key.replace(/_/g, ' ')}</Text>
-                  <Text style={styles.recordAmount}>{Number(config?.value || 0).toLocaleString()}</Text>
+                  <AppText style={styles.recordTitle}>{key.replace(/_/g, ' ')}</AppText>
+                  <AppText style={styles.recordAmount}>{Number(config?.value || 0).toLocaleString()}</AppText>
                 </View>
-                <Text style={styles.recordMeta}>{config?.description || 'No description'}</Text>
-                <Text style={styles.recordDate}>Updated {compactDate(config?.updated_at)}</Text>
+                <AppText style={styles.recordMeta}>{config?.description || 'No description'}</AppText>
+                <AppText style={styles.recordDate}>Updated {compactDate(config?.updated_at)}</AppText>
               </View>
             ))}
             {commissionEntries.length === 0 ? <EmptyState message="Commission config is not available for this role." /> : null}
@@ -552,14 +553,14 @@ const FinancialControlsScreen = ({ navigation }) => {
         <Pressable style={styles.modalBackdrop} onPress={() => setFreezeModalVisible(false)}>
           <Pressable style={styles.modalCard}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Freeze user funds</Text>
+              <AppText style={styles.modalTitle}>Freeze user funds</AppText>
               <TouchableOpacity accessibilityRole="button" onPress={() => setFreezeModalVisible(false)}>
                 <Icon name="close" size={22} color={colors.muted} />
               </TouchableOpacity>
             </View>
-            <Text style={styles.modalSubtitle}>
+            <AppText style={styles.modalSubtitle}>
               Enter the user ID, amount and finance reason. The backend will still reject this if your role is not allowed.
-            </Text>
+            </AppText>
             <TextInput
               style={styles.input}
               value={freezeForm.userId}
@@ -590,7 +591,7 @@ const FinancialControlsScreen = ({ navigation }) => {
               style={[styles.freezeButton, submittingFreeze && styles.disabledButton]}
               onPress={confirmFreezeFunds}
             >
-              {submittingFreeze ? <ActivityIndicator color={colors.white} /> : <Text style={styles.freezeButtonText}>Confirm freeze</Text>}
+              {submittingFreeze ? <ActivityIndicator color={colors.white} /> : <AppText style={styles.freezeButtonText}>Confirm freeze</AppText>}
             </TouchableOpacity>
           </Pressable>
         </Pressable>
@@ -600,7 +601,7 @@ const FinancialControlsScreen = ({ navigation }) => {
         <Pressable style={styles.modalBackdrop} onPress={() => setCommEditVisible(false)}>
           <Pressable style={styles.modalCard}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Edit commission config</Text>
+              <AppText style={styles.modalTitle}>Edit commission config</AppText>
               <TouchableOpacity accessibilityRole="button" onPress={() => setCommEditVisible(false)}>
                 <Icon name="close" size={22} color={colors.muted} />
               </TouchableOpacity>
@@ -608,7 +609,7 @@ const FinancialControlsScreen = ({ navigation }) => {
             <ScrollView style={{ maxHeight: 400 }}>
               {Object.entries(commEditValues).map(([key, val]) => (
                 <View key={key} style={{ marginBottom: 12 }}>
-                  <Text style={[styles.recordMeta, { marginBottom: 4 }]}>{key.replace(/_/g, ' ')}</Text>
+                  <AppText style={[styles.recordMeta, { marginBottom: 4 }]}>{key.replace(/_/g, ' ')}</AppText>
                   <TextInput
                     style={styles.input}
                     value={val}
@@ -625,7 +626,7 @@ const FinancialControlsScreen = ({ navigation }) => {
               style={[styles.freezeButton, savingComm && styles.disabledButton]}
               onPress={saveCommissionConfig}
             >
-              {savingComm ? <ActivityIndicator color={colors.white} /> : <Text style={styles.freezeButtonText}>Save changes</Text>}
+              {savingComm ? <ActivityIndicator color={colors.white} /> : <AppText style={styles.freezeButtonText}>Save changes</AppText>}
             </TouchableOpacity>
           </Pressable>
         </Pressable>

@@ -5,7 +5,8 @@ import { propertyService } from '../../services/propertyService';
 import { getErrorMessage, pickList } from '../../utils/http';
 import { colors, radius, typography } from '../../theme';
 import {
-  ActionRow,
+
+import AppText from '../../components/common/AppText';  ActionRow,
   DashboardHero,
   DashboardScreen,
   DashboardSection,
@@ -126,15 +127,15 @@ const LocationInfoScreen = ({ navigation, route }) => {
 
           return (
             <View key={`${label}-${index}`} style={styles.locationCard}>
-              <Text style={styles.locationName}>{label}</Text>
-              <Text style={styles.locationMeta}>
+              <AppText style={styles.locationName}>{label}</AppText>
+              <AppText style={styles.locationMeta}>
                 {count ? `${count} listed properties` : 'Tap property search to browse availability'}
-              </Text>
+              </AppText>
             </View>
           );
         })}
         {!loading && !(selectedState ? lgas : popular).length ? (
-          <Text style={styles.empty}>No detailed areas are available yet.</Text>
+          <AppText style={styles.empty}>No detailed areas are available yet.</AppText>
         ) : null}
       </DashboardSection>
     </DashboardScreen>

@@ -13,6 +13,7 @@ import { financialAdminService } from '../../services/financialAdminService';
 import { getErrorMessage, pickList, pickObject } from '../../utils/http';
 import { colors, radius, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const periods = ['daily', 'weekly', 'monthly', 'yearly'];
 
 const getStatusColor = (status) => {
@@ -67,9 +68,9 @@ const FinancialRevenueReportScreen = () => {
             style={[styles.filterChip, period === item && styles.filterChipActive]}
             onPress={() => setPeriod(item)}
           >
-            <Text style={[styles.filterText, period === item && styles.filterTextActive]}>
+            <AppText style={[styles.filterText, period === item && styles.filterTextActive]}>
               {item.charAt(0).toUpperCase() + item.slice(1)}
-            </Text>
+            </AppText>
           </TouchableOpacity>
         ))}
       </View>
@@ -77,22 +78,22 @@ const FinancialRevenueReportScreen = () => {
       {revenueData ? (
         <View style={styles.summaryRow}>
           <PremiumCard style={styles.summaryCard}>
-            <Text style={styles.summaryLabel}>Total revenue</Text>
-            <Text style={styles.summaryValue}>{formatNaira(revenueData.total_revenue || 0)}</Text>
+            <AppText style={styles.summaryLabel}>Total revenue</AppText>
+            <AppText style={styles.summaryValue}>{formatNaira(revenueData.total_revenue || 0)}</AppText>
           </PremiumCard>
           <PremiumCard style={styles.summaryCard}>
-            <Text style={styles.summaryLabel}>Growth</Text>
-            <Text style={[
+            <AppText style={styles.summaryLabel}>Growth</AppText>
+            <AppText style={[
               styles.summaryValue,
               { color: (growth || 0) >= 0 ? colors.success : colors.danger },
             ]}>
               {growth != null ? `${growth.toFixed(1)}%` : 'N/A'}
-            </Text>
+            </AppText>
           </PremiumCard>
         </View>
       ) : null}
 
-      <Text style={styles.sectionTitle}>Recent transactions</Text>
+      <AppText style={styles.sectionTitle}>Recent transactions</AppText>
     </>
   );
 
@@ -115,8 +116,8 @@ const FinancialRevenueReportScreen = () => {
           <PremiumCard>
             <View style={styles.txHeader}>
               <View style={styles.txBlock}>
-                <Text style={styles.txRef}>#{item.reference || item.id}</Text>
-                <Text style={styles.txAmount}>{formatNaira(item.amount || 0)}</Text>
+                <AppText style={styles.txRef}>#{item.reference || item.id}</AppText>
+                <AppText style={styles.txAmount}>{formatNaira(item.amount || 0)}</AppText>
               </View>
               <StatusPill label={status} color={getStatusColor(status)} />
             </View>

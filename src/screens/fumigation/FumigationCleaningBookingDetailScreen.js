@@ -19,6 +19,7 @@ import {
 } from '../../components/common/PremiumLayout';
 import { colors, radius, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const STATUS_COLORS = {
   pending: '#B7791F',
   confirmed: colors.blue,
@@ -181,19 +182,19 @@ const FumigationCleaningBookingDetailScreen = ({ route, navigation }) => {
           <PremiumSectionTitle title="Payment" subtitle="Total amount and completion status." />
           <View style={styles.totalPanel}>
             <View>
-              <Text style={styles.totalLabel}>Total</Text>
-              <Text style={styles.paymentStatus}>
+              <AppText style={styles.totalLabel}>Total</AppText>
+              <AppText style={styles.paymentStatus}>
                 Payment {booking.payment_status === 'paid' ? 'completed' : 'pending'}
-              </Text>
+              </AppText>
             </View>
-            <Text style={styles.totalValue}>{formatNaira(booking.total_price)}</Text>
+            <AppText style={styles.totalValue}>{formatNaira(booking.total_price)}</AppText>
           </View>
         </PremiumCard>
 
         {booking.special_requirements ? (
           <PremiumCard>
             <PremiumSectionTitle title="Special requirements" />
-            <Text style={styles.bodyText}>{booking.special_requirements}</Text>
+            <AppText style={styles.bodyText}>{booking.special_requirements}</AppText>
           </PremiumCard>
         ) : null}
 

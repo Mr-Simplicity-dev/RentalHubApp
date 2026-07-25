@@ -21,6 +21,7 @@ import { hasPaystackCheckout } from '../../services/nativePaymentService';
 import { getErrorMessage, pickList, pickObject } from '../../utils/http';
 import { colors, radius, shadows, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const propertyTypes = [
   { label: 'Apartment', value: 'apartment' },
   { label: 'House', value: 'house' },
@@ -324,8 +325,8 @@ const PropertyAlertRequestScreen = ({ route, navigation }) => {
           <Icon name="arrow-back" size={22} color={colors.navy} />
         </TouchableOpacity>
         <View style={styles.headerCopy}>
-          <Text style={styles.headerEyebrow}>PERSONALISED SEARCH</Text>
-          <Text style={styles.headerTitle}>Property request</Text>
+          <AppText style={styles.headerEyebrow}>PERSONALISED SEARCH</AppText>
+          <AppText style={styles.headerTitle}>Property request</AppText>
         </View>
         <View style={styles.headerSpacer} />
       </View>
@@ -340,10 +341,10 @@ const PropertyAlertRequestScreen = ({ route, navigation }) => {
         <View style={styles.introIcon}>
           <Icon name="notifications-outline" size={24} color={colors.blue} />
         </View>
-        <Text style={styles.title}>Tell us what home you need</Text>
-        <Text style={styles.subtitle}>
+        <AppText style={styles.title}>Tell us what home you need</AppText>
+        <AppText style={styles.subtitle}>
           We’ll notify you by email and WhatsApp when a matching verified property becomes available.
-        </Text>
+        </AppText>
 
         <View style={styles.priceCard}>
           <View style={styles.priceIcon}>
@@ -353,27 +354,27 @@ const PropertyAlertRequestScreen = ({ route, navigation }) => {
               color={config.payment_required ? colors.gold : colors.success}
             />
           </View>
-          <Text style={styles.priceLabel}>
+          <AppText style={styles.priceLabel}>
             {config.payment_required ? 'Current request fee' : 'Request status'}
-          </Text>
-          <Text style={styles.priceAmount}>
+          </AppText>
+          <AppText style={styles.priceAmount}>
             {config.payment_required
               ? `₦${Number(config.amount || 0).toLocaleString()}`
               : 'No payment required'}
-          </Text>
-          <Text style={styles.priceMeta}>
+          </AppText>
+          <AppText style={styles.priceMeta}>
             {config.payment_required
               ? 'A one-time payment is required before the request is processed.'
               : 'Requests currently go through immediately without payment.'}
-          </Text>
+          </AppText>
           {config.payment_required && !config.location_complete ? (
-            <Text style={styles.priceMeta}>
+            <AppText style={styles.priceMeta}>
               Select both state and local government area to confirm the exact fee.
-            </Text>
+            </AppText>
           ) : null}
         </View>
 
-        <Text style={styles.sectionLabel}>YOUR CONTACT</Text>
+        <AppText style={styles.sectionLabel}>YOUR CONTACT</AppText>
         <View style={styles.formCard}>
         <Input
           label="Full Name"
@@ -398,7 +399,7 @@ const PropertyAlertRequestScreen = ({ route, navigation }) => {
         />
         </View>
 
-        <Text style={styles.sectionLabel}>PROPERTY PREFERENCES</Text>
+        <AppText style={styles.sectionLabel}>PROPERTY PREFERENCES</AppText>
         <View style={styles.formCard}>
         <SelectField
           label="Property Type"
@@ -430,7 +431,7 @@ const PropertyAlertRequestScreen = ({ route, navigation }) => {
         />
         </View>
 
-        <Text style={styles.sectionLabel}>BUDGET AND SPACE</Text>
+        <AppText style={styles.sectionLabel}>BUDGET AND SPACE</AppText>
         <View style={styles.formCard}>
         <Input
           label="Minimum Price"
@@ -474,9 +475,9 @@ const PropertyAlertRequestScreen = ({ route, navigation }) => {
           <View style={styles.pendingCard}>
             <View style={styles.pendingHeading}>
               <Icon name="time-outline" size={21} color={colors.blue} />
-              <Text style={styles.pendingTitle}>Payment pending</Text>
+              <AppText style={styles.pendingTitle}>Payment pending</AppText>
             </View>
-            <Text style={styles.pendingText}>Reference: {paymentState.reference}</Text>
+            <AppText style={styles.pendingText}>Reference: {paymentState.reference}</AppText>
             <Button
               title="Complete Request"
               onPress={() => completePaidRequest()}

@@ -16,6 +16,7 @@ import Button from '../common/Button';
 import OptionPickerModal from '../common/OptionPickerModal';
 import { colors, radius, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const propertyTypes = [
   { label: 'Any property type', value: '' },
   { label: 'Apartment', value: 'apartment' },
@@ -102,10 +103,10 @@ const PropertyFilters = ({ visible, onClose, onApply, initialFilters = {} }) => 
         onPress={() => setShowPicker(picker)}
         style={styles.select}>
         <View>
-          <Text style={styles.selectLabel}>{label}</Text>
-          <Text style={[styles.selectValue, !value && styles.placeholder]}>
+          <AppText style={styles.selectLabel}>{label}</AppText>
+          <AppText style={[styles.selectValue, !value && styles.placeholder]}>
             {selected?.label || `Any ${label.toLowerCase()}`}
-          </Text>
+          </AppText>
         </View>
         <Icon name="chevron-down" size={18} color={colors.muted} />
       </TouchableOpacity>
@@ -124,8 +125,8 @@ const PropertyFilters = ({ visible, onClose, onApply, initialFilters = {} }) => 
           style={styles.keyboardView}>
           <View style={styles.header}>
             <View>
-              <Text style={styles.eyebrow}>REFINE RESULTS</Text>
-              <Text style={styles.title}>Property filters</Text>
+              <AppText style={styles.eyebrow}>REFINE RESULTS</AppText>
+              <AppText style={styles.title}>Property filters</AppText>
             </View>
             <TouchableOpacity
               accessibilityLabel="Close filters"
@@ -139,10 +140,10 @@ const PropertyFilters = ({ visible, onClose, onApply, initialFilters = {} }) => 
             contentContainerStyle={styles.body}
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}>
-            <Text style={styles.sectionTitle}>Budget</Text>
+            <AppText style={styles.sectionTitle}>Budget</AppText>
             <View style={styles.priceRow}>
               <View style={styles.priceField}>
-                <Text style={styles.currency}>₦</Text>
+                <AppText style={styles.currency}>₦</AppText>
                 <TextInput
                   keyboardType="numeric"
                   onChangeText={(value) => updateFilter('min_price', value)}
@@ -153,7 +154,7 @@ const PropertyFilters = ({ visible, onClose, onApply, initialFilters = {} }) => 
                 />
               </View>
               <View style={styles.priceField}>
-                <Text style={styles.currency}>₦</Text>
+                <AppText style={styles.currency}>₦</AppText>
                 <TextInput
                   keyboardType="numeric"
                   onChangeText={(value) => updateFilter('max_price', value)}
@@ -165,7 +166,7 @@ const PropertyFilters = ({ visible, onClose, onApply, initialFilters = {} }) => 
               </View>
             </View>
 
-            <Text style={styles.sectionTitle}>Property</Text>
+            <AppText style={styles.sectionTitle}>Property</AppText>
             {renderSelect('Property type', filters.property_type, propertyTypes, 'property_type')}
             <View style={styles.twoColumn}>
               <View style={styles.column}>
@@ -182,7 +183,7 @@ const PropertyFilters = ({ visible, onClose, onApply, initialFilters = {} }) => 
               'payment_frequency'
             )}
 
-            <Text style={styles.sectionTitle}>Location</Text>
+            <AppText style={styles.sectionTitle}>Location</AppText>
             <View style={styles.textField}>
               <Icon name="location-outline" size={19} color={colors.muted} />
               <TextInput
@@ -209,7 +210,7 @@ const PropertyFilters = ({ visible, onClose, onApply, initialFilters = {} }) => 
             <TouchableOpacity
               onPress={() => setFilters(emptyFilters)}
               style={styles.resetButton}>
-              <Text style={styles.resetText}>Reset all</Text>
+              <AppText style={styles.resetText}>Reset all</AppText>
             </TouchableOpacity>
             <Button
               title={`Show properties${activeCount ? ` (${activeCount})` : ''}`}

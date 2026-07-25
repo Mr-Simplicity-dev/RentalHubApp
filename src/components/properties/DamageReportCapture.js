@@ -20,6 +20,7 @@ import { propertyService } from '../../services/propertyService';
 import { getErrorMessage } from '../../utils/http';
 import { typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const DAMAGE_TYPES = [
   { value: 'scratch', label: 'Scratch' },
   { value: 'crack', label: 'Crack' },
@@ -299,7 +300,7 @@ const DamageReportCapture = ({ visible, propertyId, onClose, onSaved }) => {
       <View style={styles.overlay}>
         <View style={styles.sheet}>
           <View style={styles.header}>
-            <Text style={styles.title}>Property Maintenance Assessment</Text>
+            <AppText style={styles.title}>Property Maintenance Assessment</AppText>
             <TouchableOpacity accessibilityLabel="Close damage assessment" accessibilityRole="button" onPress={handleClose}>
               <Icon name="close" size={24} color="#64748b" />
             </TouchableOpacity>
@@ -308,9 +309,9 @@ const DamageReportCapture = ({ visible, propertyId, onClose, onSaved }) => {
           <ScrollView contentContainerStyle={styles.body}>
             {stage === 'workflow' ? (
               <>
-                <Text style={styles.lead}>
+                <AppText style={styles.lead}>
                   Capture a clear photo of the damage. AI will suggest details you can review before saving.
-                </Text>
+                </AppText>
                 <Button title="Open Camera" onPress={capturePhoto} />
               </>
             ) : null}
@@ -324,21 +325,21 @@ const DamageReportCapture = ({ visible, propertyId, onClose, onSaved }) => {
                 {analyzing ? (
                   <View style={styles.analyzingRow}>
                     <ActivityIndicator color="#0284c7" />
-                    <Text style={styles.analyzingText}>Analyzing damage photo...</Text>
+                    <AppText style={styles.analyzingText}>Analyzing damage photo...</AppText>
                   </View>
                 ) : null}
 
                 {uploadProgress ? (
                   <View style={styles.progressCard}>
-                    <Text style={styles.progressTitle}>{uploadProgress.label}</Text>
+                    <AppText style={styles.progressTitle}>{uploadProgress.label}</AppText>
                     <View style={styles.progressTrack}>
                       <View style={[styles.progressFill, { width: `${uploadProgress.percent}%` }]} />
                     </View>
-                    <Text style={styles.progressText}>{uploadProgress.percent}% complete</Text>
+                    <AppText style={styles.progressText}>{uploadProgress.percent}% complete</AppText>
                   </View>
                 ) : null}
 
-                {analysisError ? <Text style={styles.warningText}>{analysisError}</Text> : null}
+                {analysisError ? <AppText style={styles.warningText}>{analysisError}</AppText> : null}
                 {retryAction ? (
                   <TouchableOpacity
                     accessibilityLabel="Retry last damage evidence upload step"
@@ -347,7 +348,7 @@ const DamageReportCapture = ({ visible, propertyId, onClose, onSaved }) => {
                     onPress={retryAction}
                   >
                     <Icon name="refresh-outline" size={17} color="#1d4ed8" />
-                    <Text style={styles.retryText}>Retry last upload step</Text>
+                    <AppText style={styles.retryText}>Retry last upload step</AppText>
                   </TouchableOpacity>
                 ) : null}
 

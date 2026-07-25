@@ -15,6 +15,7 @@ import { adminService } from '../../services/adminService';
 import { getErrorMessage } from '../../utils/http';
 import { colors, radius, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const AdminLedgerScreen = () => {
   const [verification, setVerification] = useState(null);
   const [checking, setChecking] = useState(false);
@@ -92,11 +93,11 @@ const AdminLedgerScreen = () => {
             color={status.color}
           />
         </View>
-        <Text style={styles.resultTitle}>{status.label}</Text>
-        <Text style={styles.resultMessage}>
+        <AppText style={styles.resultTitle}>{status.label}</AppText>
+        <AppText style={styles.resultMessage}>
           {verification?.message
             || 'Run the integrity check when you need a current confirmation of the audit chain.'}
-        </Text>
+        </AppText>
 
         <View style={styles.details}>
           <InfoRow icon="time-outline" label="Last checked" value={lastCheckedLabel} />
@@ -123,9 +124,9 @@ const AdminLedgerScreen = () => {
         <View style={styles.noteIcon}>
           <Icon name="information-circle-outline" size={20} color={colors.blue} />
         </View>
-        <Text style={styles.noteText}>
+        <AppText style={styles.noteText}>
           A detected mismatch identifies the first audit-record ID whose stored hash differs from the server's recalculation. Escalate that result before relying on later audit entries.
-        </Text>
+        </AppText>
       </PremiumCard>
     </PremiumScreen>
   );

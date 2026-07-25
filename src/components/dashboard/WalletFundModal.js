@@ -12,6 +12,7 @@ import Input from '../common/Input';
 import Button from '../common/Button';
 import { colors, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const PRESET_AMOUNTS = [1000, 2000, 5000, 10000, 20000, 50000, 100000, 200000];
 
 const WalletFundModal = ({
@@ -43,7 +44,7 @@ const WalletFundModal = ({
           <View style={styles.header}>
             <View style={styles.headerTitle}>
               <Icon name="wallet-outline" size={22} color="#0d9488" />
-              <Text style={styles.title}>Fund Wallet</Text>
+              <AppText style={styles.title}>Fund Wallet</AppText>
             </View>
             <TouchableOpacity onPress={handleClose}>
               <Icon name="close" size={24} color="#64748b" />
@@ -53,14 +54,14 @@ const WalletFundModal = ({
           <ScrollView contentContainerStyle={styles.body}>
             {selectedBalance !== null && selectedBalance !== undefined ? (
               <View style={styles.balanceCard}>
-                <Text style={styles.balanceLabel}>Current Balance</Text>
-                <Text style={styles.balanceValue}>
+                <AppText style={styles.balanceLabel}>Current Balance</AppText>
+                <AppText style={styles.balanceValue}>
                   ₦{Number(selectedBalance || 0).toLocaleString()}
-                </Text>
+                </AppText>
               </View>
             ) : null}
 
-            <Text style={styles.sectionLabel}>Select or enter amount</Text>
+            <AppText style={styles.sectionLabel}>Select or enter amount</AppText>
             <View style={styles.presetGrid}>
               {PRESET_AMOUNTS.map((preset) => (
                 <TouchableOpacity
@@ -71,14 +72,14 @@ const WalletFundModal = ({
                   ]}
                   onPress={() => setAmount(String(preset))}
                 >
-                  <Text
+                  <AppText 
                     style={[
                       styles.presetText,
                       Number(amount) === preset && styles.presetTextActive,
                     ]}
                   >
                     ₦{preset >= 1000 ? `${preset / 1000}k` : preset}
-                  </Text>
+                  </AppText>
                 </TouchableOpacity>
               ))}
             </View>
@@ -93,9 +94,9 @@ const WalletFundModal = ({
 
             <View style={styles.noteCard}>
               <Icon name="shield-checkmark-outline" size={18} color="#16a34a" />
-              <Text style={styles.noteText}>
+              <AppText style={styles.noteText}>
                 Payment is processed securely via Paystack. Your wallet is credited after successful payment.
-              </Text>
+              </AppText>
             </View>
 
             <Button
@@ -106,7 +107,7 @@ const WalletFundModal = ({
             />
 
             <TouchableOpacity style={styles.switchLink} onPress={onSwitchToWithdraw}>
-              <Text style={styles.switchText}>Need to withdraw instead? Open Withdraw Funds</Text>
+              <AppText style={styles.switchText}>Need to withdraw instead? Open Withdraw Funds</AppText>
             </TouchableOpacity>
           </ScrollView>
         </View>

@@ -19,6 +19,7 @@ import { hasPaystackCheckout } from '../../services/nativePaymentService';
 import { colors, radius, shadows, typography } from '../../theme';
 import { getErrorMessage, pickList, pickObject } from '../../utils/http';
 
+import AppText from '../../components/common/AppText';
 const SubscribeScreen = ({ navigation }) => {
   const [plans, setPlans] = useState([]);
   const [status, setStatus] = useState(null);
@@ -149,8 +150,8 @@ const SubscribeScreen = ({ navigation }) => {
           <Icon name="arrow-back" size={22} color={colors.navy} />
         </TouchableOpacity>
         <View style={styles.headerCopy}>
-          <Text style={styles.eyebrow}>MEMBERSHIP</Text>
-          <Text style={styles.title}>Subscription</Text>
+          <AppText style={styles.eyebrow}>MEMBERSHIP</AppText>
+          <AppText style={styles.title}>Subscription</AppText>
         </View>
         <View style={styles.headerSpacer} />
       </View>
@@ -169,7 +170,7 @@ const SubscribeScreen = ({ navigation }) => {
         {loading ? (
           <View style={styles.center}>
             <ActivityIndicator color={colors.blue} size="large" />
-            <Text style={styles.loadingText}>Loading membership options…</Text>
+            <AppText style={styles.loadingText}>Loading membership options…</AppText>
           </View>
         ) : (
           <>
@@ -181,21 +182,21 @@ const SubscribeScreen = ({ navigation }) => {
                   color={colors.gold}
                 />
               </View>
-              <Text style={styles.statusEyebrow}>
+              <AppText style={styles.statusEyebrow}>
                 {status?.subscription_active ? 'ACTIVE MEMBERSHIP' : 'PREMIUM ACCESS'}
-              </Text>
-              <Text style={styles.statusTitle}>
+              </AppText>
+              <AppText style={styles.statusTitle}>
                 {status?.subscription_active
                   ? activePlanName || 'Your subscription is active'
                   : 'Unlock the complete rental experience'}
-              </Text>
-              <Text style={styles.statusText}>
+              </AppText>
+              <AppText style={styles.statusText}>
                 {status?.subscription_active
                   ? expiry
                     ? `Your access remains active until ${new Date(expiry).toLocaleDateString()}.`
                     : 'Your premium RentalHub access is currently active.'
                   : 'View full property details, verified contacts and premium tenant tools.'}
-              </Text>
+              </AppText>
             </View>
 
             <View style={styles.benefits}>
@@ -208,14 +209,14 @@ const SubscribeScreen = ({ navigation }) => {
                   <View style={styles.benefitIcon}>
                     <Icon name={icon} size={18} color={colors.blue} />
                   </View>
-                  <Text style={styles.benefitText}>{label}</Text>
+                  <AppText style={styles.benefitText}>{label}</AppText>
                 </View>
               ))}
             </View>
 
             <View style={styles.sectionHeading}>
-              <Text style={styles.sectionEyebrow}>CHOOSE YOUR ACCESS</Text>
-              <Text style={styles.sectionTitle}>Available plans</Text>
+              <AppText style={styles.sectionEyebrow}>CHOOSE YOUR ACCESS</AppText>
+              <AppText style={styles.sectionTitle}>Available plans</AppText>
             </View>
 
             {plans.map((plan, index) => {
@@ -228,24 +229,24 @@ const SubscribeScreen = ({ navigation }) => {
                 <View key={plan.id} style={[styles.planCard, index === 0 && styles.planCardFeatured]}>
                   {index === 0 ? (
                     <View style={styles.recommendedPill}>
-                      <Text style={styles.recommendedText}>RECOMMENDED</Text>
+                      <AppText style={styles.recommendedText}>RECOMMENDED</AppText>
                     </View>
                   ) : null}
-                  <Text style={styles.planName}>{plan.name || 'RentalHub membership'}</Text>
+                  <AppText style={styles.planName}>{plan.name || 'RentalHub membership'}</AppText>
                   <View style={styles.priceRow}>
-                    <Text style={styles.planPrice}>₦{Number(plan.amount || 0).toLocaleString()}</Text>
+                    <AppText style={styles.planPrice}>₦{Number(plan.amount || 0).toLocaleString()}</AppText>
                     {plan.duration_days ? (
-                      <Text style={styles.duration}> / {plan.duration_days} days</Text>
+                      <AppText style={styles.duration}> / {plan.duration_days} days</AppText>
                     ) : null}
                   </View>
-                  <Text style={styles.planDesc}>
+                  <AppText style={styles.planDesc}>
                     {plan.description || 'Premium tenant access and complete property information.'}
-                  </Text>
+                  </AppText>
                   {(features.length ? features : ['Full property details', 'Verified contact access']).map(
                     (feature) => (
                       <View key={String(feature)} style={styles.featureRow}>
                         <Icon name="checkmark-circle" size={17} color={colors.success} />
-                        <Text style={styles.featureText}>{String(feature)}</Text>
+                        <AppText style={styles.featureText}>{String(feature)}</AppText>
                       </View>
                     )
                   )}
@@ -268,14 +269,14 @@ const SubscribeScreen = ({ navigation }) => {
             {!plans.length ? (
               <View style={styles.emptyCard}>
                 <Icon name="time-outline" size={26} color={colors.blue} />
-                <Text style={styles.emptyTitle}>Plans are being updated</Text>
-                <Text style={styles.emptyText}>Please check again shortly.</Text>
+                <AppText style={styles.emptyTitle}>Plans are being updated</AppText>
+                <AppText style={styles.emptyText}>Please check again shortly.</AppText>
               </View>
             ) : null}
 
             <View style={styles.safetyRow}>
               <Icon name="shield-checkmark-outline" size={17} color={colors.success} />
-              <Text style={styles.safetyText}>Secure payment processing powered by Paystack</Text>
+              <AppText style={styles.safetyText}>Secure payment processing powered by Paystack</AppText>
             </View>
           </>
         )}

@@ -13,6 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { colors, radius, shadows, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 export const formatNaira = (value, fallback = '—') => {
   if (value === null || value === undefined || value === '') return fallback;
   const numeric = Number(value);
@@ -51,11 +52,11 @@ export const PremiumCenter = ({ icon, title, message, loading = false, tone = 'i
             <Icon name={icon} size={42} color={iconColor} />
           </View>
         ) : null}
-        {title ? <Text style={styles.centerTitle}>{title}</Text> : null}
-        {message ? <Text style={styles.centerMessage}>{message}</Text> : null}
+        {title ? <AppText style={styles.centerTitle}>{title}</AppText> : null}
+        {message ? <AppText style={styles.centerMessage}>{message}</AppText> : null}
         {actionLabel && onAction ? (
           <TouchableOpacity activeOpacity={0.86} style={styles.primaryButton} onPress={onAction}>
-            <Text style={styles.primaryButtonText}>{actionLabel}</Text>
+            <AppText style={styles.primaryButtonText}>{actionLabel}</AppText>
           </TouchableOpacity>
         ) : null}
       </View>
@@ -71,9 +72,9 @@ export const PremiumHero = ({ eyebrow, title, subtitle, icon = 'sparkles-outline
       </View>
       {right}
     </View>
-    {eyebrow ? <Text style={styles.eyebrow}>{eyebrow}</Text> : null}
-    <Text style={styles.heroTitle}>{title}</Text>
-    {subtitle ? <Text style={styles.heroSubtitle}>{subtitle}</Text> : null}
+    {eyebrow ? <AppText style={styles.eyebrow}>{eyebrow}</AppText> : null}
+    <AppText style={styles.heroTitle}>{title}</AppText>
+    {subtitle ? <AppText style={styles.heroSubtitle}>{subtitle}</AppText> : null}
   </View>
 );
 
@@ -83,8 +84,8 @@ export const PremiumCard = ({ children, style }) => (
 
 export const PremiumSectionTitle = ({ title, subtitle }) => (
   <View style={styles.sectionHeading}>
-    <Text style={styles.sectionTitle}>{title}</Text>
-    {subtitle ? <Text style={styles.sectionSubtitle}>{subtitle}</Text> : null}
+    <AppText style={styles.sectionTitle}>{title}</AppText>
+    {subtitle ? <AppText style={styles.sectionSubtitle}>{subtitle}</AppText> : null}
   </View>
 );
 
@@ -96,8 +97,8 @@ export const InfoRow = ({ icon, label, value, valueStyle }) => (
       </View>
     ) : null}
     <View style={styles.infoCopy}>
-      <Text style={styles.infoLabel}>{label}</Text>
-      <Text style={[styles.infoValue, valueStyle]}>{value || '—'}</Text>
+      <AppText style={styles.infoLabel}>{label}</AppText>
+      <AppText style={[styles.infoValue, valueStyle]}>{value || '—'}</AppText>
     </View>
   </View>
 );
@@ -135,11 +136,11 @@ export const PremiumButton = ({
       ) : (
         <>
           {icon ? <Icon name={icon} size={18} color={contentColor} /> : null}
-          <Text style={[
+          <AppText style={[
             styles.buttonText,
             isGhost && styles.buttonTextDanger,
             isSecondary && styles.buttonTextSecondary,
-          ]}>{title}</Text>
+          ]}>{title}</AppText>
         </>
       )}
     </TouchableOpacity>
@@ -148,7 +149,7 @@ export const PremiumButton = ({
 
 export const StatusPill = ({ label, color = colors.muted }) => (
   <View style={[styles.statusPill, { backgroundColor: `${color}18`, borderColor: `${color}45` }]}>
-    <Text style={[styles.statusText, { color }]}>{String(label || 'Pending').replace(/_/g, ' ')}</Text>
+    <AppText style={[styles.statusText, { color }]}>{String(label || 'Pending').replace(/_/g, ' ')}</AppText>
   </View>
 );
 
@@ -157,8 +158,8 @@ export const EmptyPanel = ({ title = 'Nothing here yet', message, icon = 'file-t
     <View style={styles.emptyIcon}>
       <Icon name={icon} size={24} color={colors.blue} />
     </View>
-    <Text style={styles.emptyTitle}>{title}</Text>
-    {message ? <Text style={styles.emptyMessage}>{message}</Text> : null}
+    <AppText style={styles.emptyTitle}>{title}</AppText>
+    {message ? <AppText style={styles.emptyMessage}>{message}</AppText> : null}
   </PremiumCard>
 );
 

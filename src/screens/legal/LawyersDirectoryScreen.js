@@ -6,7 +6,8 @@ import { legalService } from '../../services/legalService';
 import { getErrorMessage, pickList } from '../../utils/http';
 import { colors, radius, typography } from '../../theme';
 import {
-  ActionRow,
+
+import AppText from '../../components/common/AppText';  ActionRow,
   DashboardHero,
   DashboardNotice,
   DashboardScreen,
@@ -74,27 +75,27 @@ const LawyersDirectoryScreen = ({ navigation }) => {
       <DashboardSection title="Available lawyers">
         {loading && !lawyers.length ? <ActivityIndicator color={colors.blue} /> : null}
         {!loading && !lawyers.length ? (
-          <Text style={styles.empty}>No platform lawyers are listed yet.</Text>
+          <AppText style={styles.empty}>No platform lawyers are listed yet.</AppText>
         ) : null}
         {lawyers.map((lawyer, index) => (
           <View key={String(lawyer.id || lawyer.email || index)} style={styles.card}>
             <View style={styles.avatar}>
-              <Text style={styles.avatarText}>
+              <AppText style={styles.avatarText}>
                 {String(lawyer.full_name || lawyer.name || 'L').charAt(0).toUpperCase()}
-              </Text>
+              </AppText>
             </View>
             <View style={styles.cardCopy}>
-              <Text style={styles.name}>{lawyer.full_name || lawyer.name || 'Platform Lawyer'}</Text>
-              <Text style={styles.meta}>
+              <AppText style={styles.name}>{lawyer.full_name || lawyer.name || 'Platform Lawyer'}</AppText>
+              <AppText style={styles.meta}>
                 {[lawyer.state, lawyer.city, lawyer.lga].filter(Boolean).join(' · ') || 'RentalHub legal network'}
-              </Text>
-              <Text style={styles.bio} numberOfLines={3}>
+              </AppText>
+              <AppText style={styles.bio} numberOfLines={3}>
                 {lawyer.bio || lawyer.specialization || lawyer.experience || 'Verified legal support for tenancy and property matters.'}
-              </Text>
+              </AppText>
               <View style={styles.badgeRow}>
                 <View style={styles.badge}>
                   <Icon name="checkmark-circle" size={13} color={colors.success} />
-                  <Text style={styles.badgeText}>Platform listed</Text>
+                  <AppText style={styles.badgeText}>Platform listed</AppText>
                 </View>
               </View>
             </View>

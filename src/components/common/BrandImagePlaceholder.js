@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import BrandLogoMark from '../brand/BrandLogoMark';
 import { colors, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const BrandImagePlaceholder = ({
   compact = false,
   style,
@@ -12,7 +13,7 @@ const BrandImagePlaceholder = ({
     <View style={[styles.orb, styles.orbTop]} />
     <View style={[styles.orb, styles.orbBottom]} />
     <BrandLogoMark size={compact ? 'sm' : 'md'} surface="dark" />
-    {!compact ? <Text style={styles.title}>{title}</Text> : null}
+    {!compact ? <AppText style={styles.title}>{title}</AppText> : null}
   </View>
 );
 

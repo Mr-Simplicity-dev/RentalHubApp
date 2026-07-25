@@ -16,6 +16,7 @@ import { propertyService } from '../../services/propertyService';
 import { colors, radius, typography } from '../../theme';
 import { getErrorMessage, pickList } from '../../utils/http';
 
+import AppText from '../../components/common/AppText';
 const SavedPropertiesScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -77,8 +78,8 @@ const SavedPropertiesScreen = ({ navigation }) => {
           <Icon name="arrow-back" size={22} color={colors.navy} />
         </TouchableOpacity>
         <View style={styles.headerCopy}>
-          <Text style={styles.eyebrow}>YOUR SHORTLIST</Text>
-          <Text style={styles.title}>Saved homes</Text>
+          <AppText style={styles.eyebrow}>YOUR SHORTLIST</AppText>
+          <AppText style={styles.title}>Saved homes</AppText>
         </View>
         <View style={styles.headerSpacer} />
       </View>
@@ -89,30 +90,30 @@ const SavedPropertiesScreen = ({ navigation }) => {
         keyExtractor={(item) => String(item.id)}
         ListHeaderComponent={
           !loading && items.length ? (
-            <Text style={styles.summary}>
+            <AppText style={styles.summary}>
               {items.length} {items.length === 1 ? 'home' : 'homes'} saved for later
-            </Text>
+            </AppText>
           ) : null
         }
         ListEmptyComponent={
           loading ? (
             <View style={styles.center}>
               <ActivityIndicator color={colors.blue} size="large" />
-              <Text style={styles.loadingText}>Loading your shortlist…</Text>
+              <AppText style={styles.loadingText}>Loading your shortlist…</AppText>
             </View>
           ) : (
             <View style={styles.center}>
               <View style={styles.emptyIcon}>
                 <Icon name="heart-outline" size={31} color={colors.blue} />
               </View>
-              <Text style={styles.emptyTitle}>Your shortlist is waiting</Text>
-              <Text style={styles.emptyText}>
+              <AppText style={styles.emptyTitle}>Your shortlist is waiting</AppText>
+              <AppText style={styles.emptyText}>
                 Tap the heart on any property to keep it here for easy comparison.
-              </Text>
+              </AppText>
               <TouchableOpacity
                 onPress={() => navigation.navigate('PropertyList')}
                 style={styles.exploreButton}>
-                <Text style={styles.exploreText}>Explore verified homes</Text>
+                <AppText style={styles.exploreText}>Explore verified homes</AppText>
                 <Icon name="arrow-forward" size={17} color={colors.white} />
               </TouchableOpacity>
             </View>

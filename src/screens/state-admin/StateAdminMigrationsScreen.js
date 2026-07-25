@@ -14,6 +14,7 @@ import { stateAdminService } from '../../services/stateAdminService';
 import { getErrorMessage, pickList } from '../../utils/http';
 import { colors, radius, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const tabs = [
   { key: 'pending', label: 'Pending' },
   { key: 'approved', label: 'Approved' },
@@ -94,9 +95,9 @@ const StateAdminMigrationsScreen = () => {
             style={[styles.tab, activeTab === tab.key && styles.tabActive]}
             onPress={() => setActiveTab(tab.key)}
           >
-            <Text style={[styles.tabText, activeTab === tab.key && styles.tabTextActive]}>
+            <AppText style={[styles.tabText, activeTab === tab.key && styles.tabTextActive]}>
               {tab.label}
-            </Text>
+            </AppText>
           </TouchableOpacity>
         ))}
       </View>
@@ -122,8 +123,8 @@ const StateAdminMigrationsScreen = () => {
           <PremiumCard>
             <View style={styles.cardHeader}>
               <View style={styles.titleBlock}>
-                <Text style={styles.cardTitle}>{item.title || item.property_name || 'Property'}</Text>
-                <Text style={styles.cardOwner}>Owner: {item.owner_name || item.landlord_name || 'N/A'}</Text>
+                <AppText style={styles.cardTitle}>{item.title || item.property_name || 'Property'}</AppText>
+                <AppText style={styles.cardOwner}>Owner: {item.owner_name || item.landlord_name || 'N/A'}</AppText>
               </View>
               <StatusPill label={status} color={getStatusColor(status)} />
             </View>

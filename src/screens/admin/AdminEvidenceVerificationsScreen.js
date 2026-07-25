@@ -12,6 +12,7 @@ import {
 } from '../../components/common/PremiumLayout';
 import { colors, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const AdminEvidenceVerificationsScreen = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -58,11 +59,11 @@ const AdminEvidenceVerificationsScreen = () => {
         <PremiumCard>
           <View style={styles.cardHeader}>
             <View style={styles.evidenceIcon}>
-              <Text style={styles.evidenceIconText}>EV</Text>
+              <AppText style={styles.evidenceIconText}>EV</AppText>
             </View>
             <View style={styles.cardCopy}>
-              <Text style={styles.cardTitle}>{item.dispute_title || `Dispute #${item.dispute_id || '-'}`}</Text>
-              <Text style={styles.cardMeta}>{item.created_at ? new Date(item.created_at).toLocaleString() : 'Date unavailable'}</Text>
+              <AppText style={styles.cardTitle}>{item.dispute_title || `Dispute #${item.dispute_id || '-'}`}</AppText>
+              <AppText style={styles.cardMeta}>{item.created_at ? new Date(item.created_at).toLocaleString() : 'Date unavailable'}</AppText>
             </View>
             <StatusPill
               label={String(item.payment_status || 'unknown').replace(/_/g, ' ')}

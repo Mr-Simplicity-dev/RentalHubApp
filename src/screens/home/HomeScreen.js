@@ -21,6 +21,7 @@ import { propertyService } from '../../services/propertyService';
 import { colors, radius, shadows, typography } from '../../theme';
 import { getErrorMessage, pickList } from '../../utils/http';
 
+import AppText from '../../components/common/AppText';
 const propertyTypes = [
   { label: 'Apartment', value: 'apartment', icon: 'business-outline' },
   { label: 'House', value: 'house', icon: 'home-outline' },
@@ -112,11 +113,11 @@ const HomeScreen = ({ navigation }) => {
         </View>
 
         <View style={styles.intro}>
-          {firstName ? <Text style={styles.greeting}>Hello, {firstName}</Text> : null}
-          <Text style={styles.title}>Find a place that{'\n'}feels like yours.</Text>
-          <Text style={styles.subtitle}>
+          {firstName ? <AppText style={styles.greeting}>Hello, {firstName}</AppText> : null}
+          <AppText style={styles.title}>Find a place that{'\n'}feels like yours.</AppText>
+          <AppText style={styles.subtitle}>
             Search verified homes and move with confidence.
-          </Text>
+          </AppText>
         </View>
 
         <View style={styles.searchCard}>
@@ -154,21 +155,21 @@ const HomeScreen = ({ navigation }) => {
               <View style={styles.typeIcon}>
                 <Icon name={type.icon} size={18} color={colors.blue} />
               </View>
-              <Text style={styles.typeText}>{type.label}</Text>
+              <AppText style={styles.typeText}>{type.label}</AppText>
             </TouchableOpacity>
           ))}
         </ScrollView>
 
         <View style={styles.sectionHeader}>
           <View>
-            <Text style={styles.sectionEyebrow}>CURATED FOR YOU</Text>
-            <Text style={styles.sectionTitle}>Featured homes</Text>
+            <AppText style={styles.sectionEyebrow}>CURATED FOR YOU</AppText>
+            <AppText style={styles.sectionTitle}>Featured homes</AppText>
           </View>
           <TouchableOpacity
             accessibilityRole="button"
             onPress={() => goToPropertyList()}
             style={styles.seeAllButton}>
-            <Text style={styles.seeAllText}>See all</Text>
+            <AppText style={styles.seeAllText}>See all</AppText>
             <Icon name="chevron-forward" size={16} color={colors.blue} />
           </TouchableOpacity>
         </View>
@@ -176,7 +177,7 @@ const HomeScreen = ({ navigation }) => {
         {loading ? (
           <View style={styles.loadingState}>
             <ActivityIndicator size="large" color={colors.blue} />
-            <Text style={styles.loadingText}>Finding verified homes…</Text>
+            <AppText style={styles.loadingText}>Finding verified homes…</AppText>
           </View>
         ) : featuredCards.length ? (
           <ScrollView
@@ -198,16 +199,16 @@ const HomeScreen = ({ navigation }) => {
           <View style={styles.emptyState}>
             <Icon name="home-outline" size={25} color={colors.blue} />
             <View style={styles.emptyCopy}>
-              <Text style={styles.emptyTitle}>Fresh listings are on the way</Text>
-              <Text style={styles.emptyText}>Browse all available properties for now.</Text>
+              <AppText style={styles.emptyTitle}>Fresh listings are on the way</AppText>
+              <AppText style={styles.emptyText}>Browse all available properties for now.</AppText>
             </View>
           </View>
         )}
 
         <View style={styles.sectionHeader}>
           <View>
-            <Text style={styles.sectionEyebrow}>EXPLORE NIGERIA</Text>
-            <Text style={styles.sectionTitle}>Popular locations</Text>
+            <AppText style={styles.sectionEyebrow}>EXPLORE NIGERIA</AppText>
+            <AppText style={styles.sectionTitle}>Popular locations</AppText>
           </View>
         </View>
 
@@ -224,12 +225,12 @@ const HomeScreen = ({ navigation }) => {
               <View style={styles.locationIcon}>
                 <Icon name="location" size={18} color={colors.white} />
               </View>
-              <Text style={styles.locationName} numberOfLines={1}>
+              <AppText style={styles.locationName} numberOfLines={1}>
                 {item.state_name || item.name}
-              </Text>
-              <Text style={styles.locationMeta}>
+              </AppText>
+              <AppText style={styles.locationMeta}>
                 {Number(item.property_count || 0).toLocaleString()} homes
-              </Text>
+              </AppText>
               <Icon
                 name="arrow-forward-circle-outline"
                 size={23}
@@ -242,8 +243,8 @@ const HomeScreen = ({ navigation }) => {
 
         <View style={styles.sectionHeader}>
           <View style={{ flex: 1 }}>
-            <Text style={styles.sectionEyebrow}>SPONSORED</Text>
-            <Text style={styles.sectionTitle}>Featured offers</Text>
+            <AppText style={styles.sectionEyebrow}>SPONSORED</AppText>
+            <AppText style={styles.sectionTitle}>Featured offers</AppText>
           </View>
         </View>
         <View style={styles.adSection}>
@@ -260,19 +261,19 @@ const HomeScreen = ({ navigation }) => {
           <View style={styles.requestIcon}>
             <Icon name="sparkles" size={20} color={colors.gold} />
           </View>
-          <Text style={styles.requestTitle}>Can’t find the right home?</Text>
-          <Text style={styles.requestText}>
+          <AppText style={styles.requestTitle}>Can’t find the right home?</AppText>
+          <AppText style={styles.requestText}>
             Tell us what you need and we’ll alert you when a matching property arrives.
-          </Text>
+          </AppText>
           <View style={styles.requestAction}>
-            <Text style={styles.requestActionText}>Create property request</Text>
+            <AppText style={styles.requestActionText}>Create property request</AppText>
             <Icon name="arrow-forward" size={18} color={colors.navy} />
           </View>
         </TouchableOpacity>
 
         <View style={styles.trustLine}>
           <Icon name="shield-checkmark" size={16} color={colors.success} />
-          <Text style={styles.trustText}>Listings reviewed for a safer rental journey</Text>
+          <AppText style={styles.trustText}>Listings reviewed for a safer rental journey</AppText>
         </View>
       </ScrollView>
     </SafeAreaView>

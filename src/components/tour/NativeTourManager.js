@@ -15,6 +15,7 @@ import { useTour } from '../../context/TourContext';
 import { colors, radius, shadows, typography } from '../../theme';
 import { useAccessibilityPreferences } from '../../hooks/useAccessibilityPreferences';
 
+import AppText from '../../components/common/AppText';
 const getCoachCardPlacement = (zone = 'middle') => {
   const normalizedZone = String(zone || '').toLowerCase();
   const targetIsLow = normalizedZone.includes('bottom');
@@ -53,20 +54,20 @@ const WelcomeModal = ({
         <View style={styles.welcomeIcon}>
           <Icon name="compass-outline" size={34} color={colors.blue} />
         </View>
-        <Text style={[styles.welcomeEyebrow, { fontSize: scaleFont(10) }]}>WELCOME TO YOUR APP</Text>
-        <Text style={[styles.welcomeTitle, { fontSize: scaleFont(27), lineHeight: scaleFont(33) }]}>
+        <AppText style={[styles.welcomeEyebrow, { fontSize: scaleFont(10) }]}>WELCOME TO YOUR APP</AppText>
+        <AppText style={[styles.welcomeTitle, { fontSize: scaleFont(27), lineHeight: scaleFont(33) }]}>
           {firstName ? `Hello, ${firstName}` : 'Let us show you around'}
-        </Text>
-        <Text style={[styles.welcomeText, { fontSize: scaleFont(14), lineHeight: scaleFont(22) }]}>
+        </AppText>
+        <AppText style={[styles.welcomeText, { fontSize: scaleFont(14), lineHeight: scaleFont(22) }]}>
           Take a short role-based tour of the tools designed for your account.
-        </Text>
+        </AppText>
         <View style={styles.durationRow}>
           <Icon name="time-outline" size={17} color={colors.muted} />
-          <Text style={styles.durationText}>{stepCount} quick steps • about 1 minute</Text>
+          <AppText style={styles.durationText}>{stepCount} quick steps • about 1 minute</AppText>
         </View>
         <Button title="Start Tour" onPress={onStart} style={styles.startButton} />
         <TouchableOpacity accessibilityRole="button" onPress={onDismiss} style={styles.laterButton}>
-          <Text style={styles.laterText}>Maybe later</Text>
+          <AppText style={styles.laterText}>Maybe later</AppText>
         </TouchableOpacity>
       </View>
     </View>
@@ -101,15 +102,15 @@ const CoachMarkOverlay = ({
           <View style={styles.targetPulse} />
           <View style={styles.targetLabel}>
             <Icon name="scan-outline" size={15} color={colors.white} />
-            <Text style={styles.targetLabelText}>{targetLabel}</Text>
+            <AppText style={styles.targetLabelText}>{targetLabel}</AppText>
           </View>
         </View>
       </View>
 
       <View style={styles.coachHeader}>
-        <Text style={styles.coachStepCount}>STEP {stepIndex + 1} OF {stepCount}</Text>
+        <AppText style={styles.coachStepCount}>STEP {stepIndex + 1} OF {stepCount}</AppText>
         <TouchableOpacity accessibilityRole="button" onPress={onSkip} style={styles.coachSkipButton}>
-          <Text style={styles.coachSkipText}>Skip</Text>
+          <AppText style={styles.coachSkipText}>Skip</AppText>
         </TouchableOpacity>
       </View>
 
@@ -132,9 +133,9 @@ const CoachMarkOverlay = ({
             <Icon name={step?.icon || 'sparkles-outline'} size={25} color={colors.blue} />
           </View>
 
-          <Text style={[styles.walkthroughTitle, { fontSize: scaleFont(24), lineHeight: scaleFont(30) }]}>{step?.title}</Text>
-          <Text style={[styles.walkthroughText, { fontSize: scaleFont(14), lineHeight: scaleFont(22) }]}>{step?.description}</Text>
-          {step?.targetHint ? <Text style={[styles.targetHint, { fontSize: scaleFont(12), lineHeight: scaleFont(18) }]}>{step.targetHint}</Text> : null}
+          <AppText style={[styles.walkthroughTitle, { fontSize: scaleFont(24), lineHeight: scaleFont(30) }]}>{step?.title}</AppText>
+          <AppText style={[styles.walkthroughText, { fontSize: scaleFont(14), lineHeight: scaleFont(22) }]}>{step?.description}</AppText>
+          {step?.targetHint ? <AppText style={[styles.targetHint, { fontSize: scaleFont(12), lineHeight: scaleFont(18) }]}>{step.targetHint}</AppText> : null}
 
           <View style={styles.dots}>
             {Array.from({ length: stepCount }).map((_, index) => (

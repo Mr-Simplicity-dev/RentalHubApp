@@ -17,6 +17,7 @@ import { subscribeAppSettings } from '../../services/appSettingsService';
 import { trackMobileEvent } from '../../services/mobileDiagnosticsService';
 import { colors, shadows, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const CHECK_DELAY_MS = 4200;
 const CHECK_INTERVAL_MS = 4 * 60 * 60 * 1000;
 
@@ -109,7 +110,7 @@ const AppUpdateIndicator = () => {
           <View style={styles.dot} />
         </View>
         <Icon name="sparkles-outline" size={14} color={colors.white} />
-        <Text style={styles.dotLabel}>Update</Text>
+        <AppText style={styles.dotLabel}>Update</AppText>
       </TouchableOpacity>
     );
   }
@@ -120,14 +121,14 @@ const AppUpdateIndicator = () => {
         <Icon name="cloud-download-outline" size={21} color={colors.navy} />
       </View>
       <View style={styles.bannerCopy}>
-        <Text style={styles.bannerEyebrow}>
+        <AppText style={styles.bannerEyebrow}>
           {directApkAvailable ? 'DIRECT APK UPDATE' : 'APP UPDATE'}
-        </Text>
-        <Text style={styles.bannerTitle}>{title}</Text>
-        <Text style={styles.bannerText}>
+        </AppText>
+        <AppText style={styles.bannerTitle}>{title}</AppText>
+        <AppText style={styles.bannerText}>
           {message}
           {versionState.latest_version ? ` Latest: ${versionState.latest_version}.` : ''}
-        </Text>
+        </AppText>
         <View style={styles.bannerActions}>
           <TouchableOpacity
             accessibilityRole="button"
@@ -140,9 +141,9 @@ const AppUpdateIndicator = () => {
             ) : (
               <Icon name="download-outline" size={15} color={colors.navy} />
             )}
-            <Text style={styles.primaryButtonText}>
+            <AppText style={styles.primaryButtonText}>
               {updating ? 'Starting...' : directApkAvailable ? 'Install update' : 'Update now'}
-            </Text>
+            </AppText>
           </TouchableOpacity>
           <TouchableOpacity
             accessibilityRole="button"
@@ -159,9 +160,9 @@ const AppUpdateIndicator = () => {
               versionState.update_required ? styles.secondaryDisabled : null,
             ]}
           >
-            <Text style={styles.secondaryButtonText}>
+            <AppText style={styles.secondaryButtonText}>
               {versionState.update_required ? 'Required' : 'Later'}
-            </Text>
+            </AppText>
           </TouchableOpacity>
         </View>
       </View>

@@ -8,6 +8,7 @@ import { agentService } from '../../services/agentService';
 import { colors, radius, shadows, typography } from '../../theme';
 import { getErrorMessage, pickList } from '../../utils/http';
 
+import AppText from '../../components/common/AppText';
 const AgentEarningsScreen = ({ navigation }) => {
   const { user } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
@@ -65,7 +66,7 @@ const AgentEarningsScreen = ({ navigation }) => {
         <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
           <Icon name="arrow-back" size={21} color={colors.ink} />
         </TouchableOpacity>
-        <Text style={styles.topTitle}>Earnings</Text>
+        <AppText style={styles.topTitle}>Earnings</AppText>
         <TouchableOpacity style={styles.refreshButton} onPress={loadData}>
           <Icon name="refresh" size={20} color={colors.blue} />
         </TouchableOpacity>
@@ -73,26 +74,26 @@ const AgentEarningsScreen = ({ navigation }) => {
 
       <View style={styles.hero}>
         <View style={styles.heroIcon}><Icon name="wallet-outline" size={22} color={colors.gold} /></View>
-        <Text style={styles.heroLabel}>TOTAL COMMISSION EARNED</Text>
-        <Text style={styles.heroAmount}>{amount(earnings?.total_earned)}</Text>
-        <Text style={styles.heroCaption}>A clear record of every commission generated.</Text>
+        <AppText style={styles.heroLabel}>TOTAL COMMISSION EARNED</AppText>
+        <AppText style={styles.heroAmount}>{amount(earnings?.total_earned)}</AppText>
+        <AppText style={styles.heroCaption}>A clear record of every commission generated.</AppText>
       </View>
 
       <View style={styles.metrics}>
         <View style={styles.statCard}>
           <View style={[styles.statIcon, styles.paidIcon]}><Icon name="checkmark-circle-outline" size={19} color={colors.success} /></View>
-          <Text style={styles.statLabel}>Paid</Text>
-          <Text style={styles.statValue}>{amount(earnings?.total_paid)}</Text>
+          <AppText style={styles.statLabel}>Paid</AppText>
+          <AppText style={styles.statValue}>{amount(earnings?.total_paid)}</AppText>
         </View>
         <View style={styles.statCard}>
           <View style={[styles.statIcon, styles.pendingIcon]}><Icon name="time-outline" size={19} color="#A66B00" /></View>
-          <Text style={styles.statLabel}>Pending</Text>
-          <Text style={styles.statValue}>{amount(earnings?.total_pending)}</Text>
+          <AppText style={styles.statLabel}>Pending</AppText>
+          <AppText style={styles.statValue}>{amount(earnings?.total_pending)}</AppText>
         </View>
         <View style={styles.statCard}>
           <View style={[styles.statIcon, styles.countIcon]}><Icon name="receipt-outline" size={19} color={colors.blue} /></View>
-          <Text style={styles.statLabel}>Transactions</Text>
-          <Text style={styles.statValue}>{Number(earnings?.transaction_count || 0)}</Text>
+          <AppText style={styles.statLabel}>Transactions</AppText>
+          <AppText style={styles.statValue}>{Number(earnings?.transaction_count || 0)}</AppText>
         </View>
       </View>
 
@@ -101,21 +102,21 @@ const AgentEarningsScreen = ({ navigation }) => {
         onPress={() => navigation.navigate('AgentWithdrawals')}
       >
         <Icon name="cash-outline" size={19} color={colors.white} />
-        <Text style={styles.primaryBtnText}>Request withdrawal</Text>
+        <AppText style={styles.primaryBtnText}>Request withdrawal</AppText>
         <Icon name="arrow-forward" size={18} color={colors.white} />
       </TouchableOpacity>
 
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>Recent activity</Text>
-        <Text style={styles.sectionCount}>{history.length} entries</Text>
+        <AppText style={styles.sectionTitle}>Recent activity</AppText>
+        <AppText style={styles.sectionCount}>{history.length} entries</AppText>
       </View>
       {loading && history.length === 0 ? <ActivityIndicator color={colors.blue} /> : null}
 
       {!loading && history.length === 0 ? (
         <View style={styles.emptyCard}>
           <Icon name="document-text-outline" size={28} color={colors.muted} />
-          <Text style={styles.emptyTitle}>No commission entries yet</Text>
-          <Text style={styles.muted}>New commissions will appear here automatically.</Text>
+          <AppText style={styles.emptyTitle}>No commission entries yet</AppText>
+          <AppText style={styles.muted}>New commissions will appear here automatically.</AppText>
         </View>
       ) : null}
 
@@ -124,19 +125,19 @@ const AgentEarningsScreen = ({ navigation }) => {
           <View style={styles.entryTop}>
             <View style={styles.entryIcon}><Icon name="trending-up" size={18} color={colors.blue} /></View>
             <View style={styles.entryCopy}>
-              <Text style={styles.entryType}>{String(entry.transaction_type || 'Commission').replace(/_/g, ' ')}</Text>
-              <Text style={styles.entryMeta}>
+              <AppText style={styles.entryType}>{String(entry.transaction_type || 'Commission').replace(/_/g, ' ')}</AppText>
+              <AppText style={styles.entryMeta}>
                 {entry.created_at ? new Date(entry.created_at).toLocaleString() : ''}
-              </Text>
+              </AppText>
             </View>
-            <Text style={styles.entryAmount}>+{amount(entry.amount)}</Text>
+            <AppText style={styles.entryAmount}>+{amount(entry.amount)}</AppText>
           </View>
           <View style={styles.statusRow}>
             <View style={[styles.statusPill, statusStyle(entry.status)]}>
-              <Text style={styles.statusText}>{entry.status || 'pending'}</Text>
+              <AppText style={styles.statusText}>{entry.status || 'pending'}</AppText>
             </View>
             {entry.payment_status ? (
-              <Text style={styles.paymentText}>Payment: {entry.payment_status}</Text>
+              <AppText style={styles.paymentText}>Payment: {entry.payment_status}</AppText>
             ) : null}
           </View>
         </View>

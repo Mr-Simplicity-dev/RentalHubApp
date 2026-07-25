@@ -18,6 +18,7 @@ import { adminAgentService } from '../../services/adminAgentService';
 import { getErrorMessage, pickList } from '../../utils/http';
 import { colors, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const getStatusColor = (status) => {
   if (status === 'active') return colors.success;
   if (status === 'revoked') return colors.danger;
@@ -124,7 +125,7 @@ const AdminAgentAssignmentsScreen = () => {
       />
 
       <PremiumCard>
-        <Text style={styles.formTitle}>Create assignment</Text>
+        <AppText style={styles.formTitle}>Create assignment</AppText>
         <Input
           label="Landlord user ID"
           value={form.landlordId}
@@ -167,8 +168,8 @@ const AdminAgentAssignmentsScreen = () => {
           <PremiumCard key={String(item.id)}>
             <View style={styles.rowHeader}>
               <View style={styles.rowTitleBlock}>
-                <Text style={styles.name}>{item.agent_name || `Agent #${item.agent_user_id}`}</Text>
-                <Text style={styles.meta}>Landlord: {item.landlord_name || item.landlord_user_id}</Text>
+                <AppText style={styles.name}>{item.agent_name || `Agent #${item.agent_user_id}`}</AppText>
+                <AppText style={styles.meta}>Landlord: {item.landlord_name || item.landlord_user_id}</AppText>
               </View>
               <StatusPill label={status} color={getStatusColor(status)} />
             </View>

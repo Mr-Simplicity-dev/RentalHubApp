@@ -7,6 +7,7 @@ import OptionPickerModal from '../common/OptionPickerModal';
 import { paymentService } from '../../services/paymentService';
 import { getErrorMessage, pickList } from '../../utils/http';
 
+import AppText from '../../components/common/AppText';
 const TenancyGracePanel = ({ userType = 'tenant' }) => {
   const isTenant = userType === 'tenant';
   const isLandlord = userType === 'landlord';
@@ -163,11 +164,11 @@ const TenancyGracePanel = ({ userType = 'tenant' }) => {
 
   return (
     <View style={styles.wrap}>
-      <Text style={styles.heading}>Tenancy Grace Period</Text>
+      <AppText style={styles.heading}>Tenancy Grace Period</AppText>
 
       {isTenant ? (
         <>
-          <Text style={styles.subheading}>Request extra time after tenancy expiry.</Text>
+          <AppText style={styles.subheading}>Request extra time after tenancy expiry.</AppText>
           <SelectField
             label="Tenancy payment"
             value={
@@ -206,11 +207,11 @@ const TenancyGracePanel = ({ userType = 'tenant' }) => {
 
           {myRequests.length > 0 ? (
             <>
-              <Text style={styles.sectionTitle}>Your requests</Text>
+              <AppText style={styles.sectionTitle}>Your requests</AppText>
               {myRequests.map((item) => (
                 <View key={item.id} style={styles.card}>
-                  <Text style={styles.cardTitle}>{item.property_title || 'Property'}</Text>
-                  <Text style={styles.meta}>Status: {item.status}</Text>
+                  <AppText style={styles.cardTitle}>{item.property_title || 'Property'}</AppText>
+                  <AppText style={styles.meta}>Status: {item.status}</AppText>
                 </View>
               ))}
             </>
@@ -242,21 +243,21 @@ const TenancyGracePanel = ({ userType = 'tenant' }) => {
                 style={[styles.chip, landlordFilter === filter && styles.chipActive]}
                 onPress={() => setLandlordFilter(filter)}
               >
-                <Text
+                <AppText 
                   style={[styles.chipText, landlordFilter === filter && styles.chipTextActive]}
                 >
                   {filter.replace(/_/g, ' ')}
-                </Text>
+                </AppText>
               </TouchableOpacity>
             ))}
           </View>
           <Button title="Refresh" onPress={loadLandlordData} loading={loading} />
           {landlordRequests.map((item) => (
             <View key={item.id} style={styles.card}>
-              <Text style={styles.cardTitle}>
+              <AppText style={styles.cardTitle}>
                 {item.tenant_name || 'Tenant'} · {item.property_title || 'Property'}
-              </Text>
-              <Text style={styles.meta}>Status: {item.status}</Text>
+              </AppText>
+              <AppText style={styles.meta}>Status: {item.status}</AppText>
               {activeRequestId === item.id ? (
                 <>
                   <TextInput
@@ -293,19 +294,19 @@ const TenancyGracePanel = ({ userType = 'tenant' }) => {
                   />
                   <View style={styles.row}>
                     <TouchableOpacity onPress={() => respondLandlord(item.id, 'approve')}>
-                      <Text style={styles.link}>Approve</Text>
+                      <AppText style={styles.link}>Approve</AppText>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => respondLandlord(item.id, 'reject')}>
-                      <Text style={styles.danger}>Reject</Text>
+                      <AppText style={styles.danger}>Reject</AppText>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => setActiveRequestId(null)}>
-                      <Text style={styles.meta}>Cancel</Text>
+                      <AppText style={styles.meta}>Cancel</AppText>
                     </TouchableOpacity>
                   </View>
                 </>
               ) : (
                 <TouchableOpacity onPress={() => setActiveRequestId(item.id)}>
-                  <Text style={styles.link}>Review</Text>
+                  <AppText style={styles.link}>Review</AppText>
                 </TouchableOpacity>
               )}
             </View>

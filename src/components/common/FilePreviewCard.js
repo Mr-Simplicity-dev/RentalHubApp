@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { colors, radius, typography } from '../../theme';
 import { trackMobileEvent } from '../../services/mobileDiagnosticsService';
 
+import AppText from '../../components/common/AppText';
 const IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'heic'];
 
 const getExtension = (value = '') => {
@@ -74,20 +75,20 @@ const FilePreviewCard = ({
         )}
       </View>
       <View style={styles.copy}>
-        <Text numberOfLines={1} style={styles.title}>{displayName}</Text>
-        {subtitle ? <Text numberOfLines={1} style={styles.subtitle}>{subtitle}</Text> : null}
-        {meta ? <Text style={styles.meta}>{meta}</Text> : null}
+        <AppText numberOfLines={1} style={styles.title}>{displayName}</AppText>
+        {subtitle ? <AppText numberOfLines={1} style={styles.subtitle}>{subtitle}</AppText> : null}
+        {meta ? <AppText style={styles.meta}>{meta}</AppText> : null}
         <View style={styles.actions}>
           {uri ? (
             <TouchableOpacity accessibilityRole="button" onPress={openFile} style={styles.actionButton}>
               {opening ? <ActivityIndicator size="small" color={colors.blue} /> : <Icon name="open-outline" size={14} color={colors.blue} />}
-              <Text style={styles.actionText}>{actionLabel}</Text>
+              <AppText style={styles.actionText}>{actionLabel}</AppText>
             </TouchableOpacity>
           ) : null}
           {onRetry ? (
             <TouchableOpacity accessibilityRole="button" onPress={onRetry} style={styles.retryButton}>
               <Icon name="refresh-outline" size={14} color={colors.danger} />
-              <Text style={styles.retryText}>Retry</Text>
+              <AppText style={styles.retryText}>Retry</AppText>
             </TouchableOpacity>
           ) : null}
         </View>

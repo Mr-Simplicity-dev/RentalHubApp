@@ -14,6 +14,7 @@ import { appealsService } from '../../services/appealsService';
 import { colors, radius, typography } from '../../theme';
 import { getErrorMessage, pickList, pickObject } from '../../utils/http';
 
+import AppText from '../../components/common/AppText';
 const STATUS_FILTERS = [
   ['pending', 'Pending'],
   ['under_review', 'Under review'],
@@ -141,9 +142,9 @@ const AdminAppealsScreen = () => {
             onPress={() => setStatus(value)}
             style={[styles.filter, status === value && styles.filterActive]}
           >
-            <Text style={[styles.filterText, status === value && styles.filterTextActive]}>
+            <AppText style={[styles.filterText, status === value && styles.filterTextActive]}>
               {label}
-            </Text>
+            </AppText>
           </TouchableOpacity>
         ))}
       </View>
@@ -167,12 +168,12 @@ const AdminAppealsScreen = () => {
             <PremiumCard>
               <View style={styles.cardHeader}>
                 <View style={styles.cardCopy}>
-                  <Text style={styles.title}>
+                  <AppText style={styles.title}>
                     Appeal #{item.id} - {String(item.appeal_type || 'appeal').replace(/_/g, ' ')}
-                  </Text>
-                  <Text style={styles.appellant}>
+                  </AppText>
+                  <AppText style={styles.appellant}>
                     {item.appellant_name || item.appellant_email || 'Unknown appellant'}
-                  </Text>
+                  </AppText>
                 </View>
                 <StatusPill label={item.status} color={statusColor(item.status)} />
               </View>

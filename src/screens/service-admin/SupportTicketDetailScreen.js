@@ -19,7 +19,8 @@ import { supportService } from '../../services/supportService';
 import { buildUploadUrl, getErrorMessage, pickList, pickObject } from '../../utils/http';
 import { colors, radius, typography } from '../../theme';
 import {
-  DashboardHero,
+
+import AppText from '../../components/common/AppText';  DashboardHero,
   DashboardNotice,
   DashboardScreen,
   DashboardSection,
@@ -63,9 +64,9 @@ const ControlButton = ({ disabled, icon, label, onPress, variant = 'light' }) =>
         color={variant === 'light' ? colors.blue : colors.white}
       />
     ) : null}
-    <Text style={[styles.controlText, variant !== 'light' && styles.controlTextStrong]}>
+    <AppText style={[styles.controlText, variant !== 'light' && styles.controlTextStrong]}>
       {label}
-    </Text>
+    </AppText>
   </TouchableOpacity>
 );
 
@@ -341,16 +342,16 @@ const SupportTicketDetailScreen = ({ navigation, route }) => {
         >
           <View style={styles.statusGrid}>
             <View style={styles.statusCard}>
-              <Text style={styles.statusLabel}>Ticket status</Text>
-              <Text style={styles.statusValue}>{ticketStatus.replace(/_/g, ' ')}</Text>
+              <AppText style={styles.statusLabel}>Ticket status</AppText>
+              <AppText style={styles.statusValue}>{ticketStatus.replace(/_/g, ' ')}</AppText>
             </View>
             <View style={styles.statusCard}>
-              <Text style={styles.statusLabel}>Priority</Text>
-              <Text style={styles.statusValue}>{ticket?.priority || 'normal'}</Text>
+              <AppText style={styles.statusLabel}>Priority</AppText>
+              <AppText style={styles.statusValue}>{ticket?.priority || 'normal'}</AppText>
             </View>
             <View style={styles.statusCard}>
-              <Text style={styles.statusLabel}>Escalation</Text>
-              <Text style={styles.statusValue}>{escalationStatus.replace(/_/g, ' ')}</Text>
+              <AppText style={styles.statusLabel}>Escalation</AppText>
+              <AppText style={styles.statusValue}>{escalationStatus.replace(/_/g, ' ')}</AppText>
             </View>
           </View>
 
@@ -390,7 +391,7 @@ const SupportTicketDetailScreen = ({ navigation, route }) => {
             />
           </View>
 
-          <Text style={styles.controlLabel}>Escalate to department</Text>
+          <AppText style={styles.controlLabel}>Escalate to department</AppText>
           <View style={styles.controlRow}>
             {DEPARTMENTS.map((department) => (
               <ControlButton
@@ -409,7 +410,7 @@ const SupportTicketDetailScreen = ({ navigation, route }) => {
             ))}
           </View>
 
-          <Text style={styles.controlLabel}>Escalation status</Text>
+          <AppText style={styles.controlLabel}>Escalation status</AppText>
           <View style={styles.controlRow}>
             {ESCALATION_STATUSES.map((status) => (
               <ControlButton
@@ -430,7 +431,7 @@ const SupportTicketDetailScreen = ({ navigation, route }) => {
           {actionBusy ? (
             <View style={styles.busyRow}>
               <ActivityIndicator color={colors.blue} size="small" />
-              <Text style={styles.busyText}>{actionBusy} in progress...</Text>
+              <AppText style={styles.busyText}>{actionBusy} in progress...</AppText>
             </View>
           ) : null}
         </DashboardSection>
@@ -438,7 +439,7 @@ const SupportTicketDetailScreen = ({ navigation, route }) => {
         <DashboardSection title="Conversation">
           {loading && !replies.length ? <ActivityIndicator color={colors.blue} /> : null}
           {!loading && !replies.length ? (
-            <Text style={styles.empty}>No replies yet. Start the conversation below.</Text>
+            <AppText style={styles.empty}>No replies yet. Start the conversation below.</AppText>
           ) : null}
           {replies.map((reply) => {
             const adminReply = Boolean(reply.is_admin);
@@ -452,9 +453,9 @@ const SupportTicketDetailScreen = ({ navigation, route }) => {
                   adminReply ? styles.adminBubble : styles.customerBubble,
                 ]}
               >
-                <Text style={styles.replyAuthor}>
+                <AppText style={styles.replyAuthor}>
                   {reply.author_name || (adminReply ? 'Support admin' : 'Customer')}
-                </Text>
+                </AppText>
                 {editing ? (
                   <>
                     <TextInput
@@ -466,36 +467,36 @@ const SupportTicketDetailScreen = ({ navigation, route }) => {
                     />
                     <View style={styles.inlineActions}>
                       <TouchableOpacity onPress={saveReplyEdit}>
-                        <Text style={styles.inlineActionPrimary}>Save</Text>
+                        <AppText style={styles.inlineActionPrimary}>Save</AppText>
                       </TouchableOpacity>
                       <TouchableOpacity onPress={() => setEditingReplyId(null)}>
-                        <Text style={styles.inlineAction}>Cancel</Text>
+                        <AppText style={styles.inlineAction}>Cancel</AppText>
                       </TouchableOpacity>
                     </View>
                   </>
                 ) : (
                   <>
-                    <Text style={styles.replyMessage}>{reply.message}</Text>
-                    {reply.edited_at ? <Text style={styles.editedText}>Edited</Text> : null}
+                    <AppText style={styles.replyMessage}>{reply.message}</AppText>
+                    {reply.edited_at ? <AppText style={styles.editedText}>Edited</AppText> : null}
                   </>
                 )}
                 {reply.attachment_url ? (
                   <TouchableOpacity onPress={() => openAttachment(reply.attachment_url)}>
-                    <Text style={styles.replyAttachment} numberOfLines={1}>
+                    <AppText style={styles.replyAttachment} numberOfLines={1}>
                       {reply.attachment_name || 'Open attachment'}
-                    </Text>
+                    </AppText>
                   </TouchableOpacity>
                 ) : null}
-                <Text style={styles.replyTime}>
+                <AppText style={styles.replyTime}>
                   {reply.created_at ? new Date(reply.created_at).toLocaleString() : ''}
-                </Text>
+                </AppText>
                 {ownReply && !editing ? (
                   <View style={styles.inlineActions}>
                     <TouchableOpacity onPress={() => startReplyEdit(reply)}>
-                      <Text style={styles.inlineActionPrimary}>Edit</Text>
+                      <AppText style={styles.inlineActionPrimary}>Edit</AppText>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => confirmDeleteReply(reply)}>
-                      <Text style={styles.inlineActionDanger}>Delete</Text>
+                      <AppText style={styles.inlineActionDanger}>Delete</AppText>
                     </TouchableOpacity>
                   </View>
                 ) : null}
@@ -515,8 +516,8 @@ const SupportTicketDetailScreen = ({ navigation, route }) => {
               return (
                 <View key={String(note.id)} style={styles.noteCard}>
                   <View style={styles.noteHeader}>
-                    <Text style={styles.noteAuthor}>{note.author_name || 'Support admin'}</Text>
-                    <Text style={styles.noteRole}>{String(note.author_role || '').replace(/_/g, ' ')}</Text>
+                    <AppText style={styles.noteAuthor}>{note.author_name || 'Support admin'}</AppText>
+                    <AppText style={styles.noteRole}>{String(note.author_role || '').replace(/_/g, ' ')}</AppText>
                   </View>
                   {editing ? (
                     <>
@@ -529,26 +530,26 @@ const SupportTicketDetailScreen = ({ navigation, route }) => {
                       />
                       <View style={styles.inlineActions}>
                         <TouchableOpacity onPress={saveNoteEdit}>
-                          <Text style={styles.inlineActionPrimary}>Save</Text>
+                          <AppText style={styles.inlineActionPrimary}>Save</AppText>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => setEditingNoteId(null)}>
-                          <Text style={styles.inlineAction}>Cancel</Text>
+                          <AppText style={styles.inlineAction}>Cancel</AppText>
                         </TouchableOpacity>
                       </View>
                     </>
                   ) : (
-                    <Text style={styles.noteText}>{note.message}</Text>
+                    <AppText style={styles.noteText}>{note.message}</AppText>
                   )}
-                  <Text style={styles.replyTime}>
+                  <AppText style={styles.replyTime}>
                     {note.created_at ? new Date(note.created_at).toLocaleString() : ''}
-                  </Text>
+                  </AppText>
                   {ownNote && !editing ? (
                     <View style={styles.inlineActions}>
                       <TouchableOpacity onPress={() => startNoteEdit(note)}>
-                        <Text style={styles.inlineActionPrimary}>Edit</Text>
+                        <AppText style={styles.inlineActionPrimary}>Edit</AppText>
                       </TouchableOpacity>
                       <TouchableOpacity onPress={() => confirmDeleteNote(note)}>
-                        <Text style={styles.inlineActionDanger}>Delete</Text>
+                        <AppText style={styles.inlineActionDanger}>Delete</AppText>
                       </TouchableOpacity>
                     </View>
                   ) : null}
@@ -556,7 +557,7 @@ const SupportTicketDetailScreen = ({ navigation, route }) => {
               );
             })
           ) : (
-            <Text style={styles.empty}>No internal notes yet.</Text>
+            <AppText style={styles.empty}>No internal notes yet.</AppText>
           )}
 
           <TextInput
@@ -589,7 +590,7 @@ const SupportTicketDetailScreen = ({ navigation, route }) => {
         </TouchableOpacity>
         <View style={styles.inputWrap}>
           {attachment ? (
-            <Text style={styles.attachmentLabel} numberOfLines={1}>{attachment.fileName || 'File attached'}</Text>
+            <AppText style={styles.attachmentLabel} numberOfLines={1}>{attachment.fileName || 'File attached'}</AppText>
           ) : null}
           <TextInput
             accessibilityLabel="Support reply message"

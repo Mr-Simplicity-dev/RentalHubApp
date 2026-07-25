@@ -17,6 +17,7 @@ import { adminService } from '../../services/adminService';
 import { getErrorMessage, pickObject } from '../../utils/http';
 import { colors, radius, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const getStatusColor = (status) => {
   if (status === 'approved' || status === 'active') return colors.success;
   if (status === 'rejected' || status === 'inactive') return colors.danger;
@@ -117,10 +118,10 @@ const AdminPropertyDetailScreen = ({ route }) => {
           <BrandImagePlaceholder style={styles.image} title="Property media pending" />
         )}
         <View style={styles.pricePanel}>
-          <Text style={styles.price}>{formatNaira(property.rent_amount)}</Text>
-          <Text style={styles.frequency}>
+          <AppText style={styles.price}>{formatNaira(property.rent_amount)}</AppText>
+          <AppText style={styles.frequency}>
             per {property.payment_frequency === 'yearly' ? 'year' : 'month'}
-          </Text>
+          </AppText>
         </View>
       </PremiumCard>
 
@@ -149,12 +150,12 @@ const AdminPropertyDetailScreen = ({ route }) => {
 
       <PremiumSectionTitle title="Description" />
       <PremiumCard>
-        <Text style={styles.description}>{property.description || 'No description provided.'}</Text>
+        <AppText style={styles.description}>{property.description || 'No description provided.'}</AppText>
       </PremiumCard>
 
       {status === 'pending' ? (
         <PremiumCard>
-          <Text style={styles.actionTitle}>Approval decision</Text>
+          <AppText style={styles.actionTitle}>Approval decision</AppText>
           <View style={styles.actions}>
             <PremiumButton
               title="Approve"
@@ -175,7 +176,7 @@ const AdminPropertyDetailScreen = ({ route }) => {
         </PremiumCard>
       ) : null}
 
-      <Text style={styles.meta}>Property ID: {property.id}</Text>
+      <AppText style={styles.meta}>Property ID: {property.id}</AppText>
     </PremiumScreen>
   );
 };

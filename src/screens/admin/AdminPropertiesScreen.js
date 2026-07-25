@@ -12,6 +12,7 @@ import {
 } from '../../components/common/PremiumLayout';
 import { colors, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const AdminPropertiesScreen = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -64,11 +65,11 @@ const AdminPropertiesScreen = () => {
           <PremiumCard>
             <View style={styles.cardHeader}>
               <View style={styles.propertyIcon}>
-                <Text style={styles.propertyIconText}>RH</Text>
+                <AppText style={styles.propertyIconText}>RH</AppText>
               </View>
               <View style={styles.cardCopy}>
-                <Text style={styles.cardTitle}>{item.title || 'Untitled property'}</Text>
-                <Text style={styles.cardMeta}>{location}</Text>
+                <AppText style={styles.cardTitle}>{item.title || 'Untitled property'}</AppText>
+                <AppText style={styles.cardMeta}>{location}</AppText>
               </View>
             </View>
             <InfoRow icon="person-outline" label="Landlord" value={item.landlord_name || 'No landlord name'} />

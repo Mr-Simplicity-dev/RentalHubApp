@@ -16,6 +16,7 @@ import { getErrorMessage } from '../../utils/http';
 import { PremiumHero } from '../../components/common/PremiumLayout';
 import { colors, radius, shadows, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const emptyForm = {
   full_name: '',
   phone_number: '',
@@ -158,7 +159,7 @@ const CareersScreen = ({ navigation }) => {
         <StatusBar barStyle="dark-content" backgroundColor={colors.surface} />
         <View style={styles.centered}>
         <ActivityIndicator size="large" color={colors.blue} />
-        <Text style={styles.centerText}>Loading careers portal...</Text>
+        <AppText style={styles.centerText}>Loading careers portal...</AppText>
       </View>
       </SafeAreaView>
     );
@@ -176,15 +177,15 @@ const CareersScreen = ({ navigation }) => {
       />
 
       <View style={styles.noticeCard}>
-        <Text style={styles.noticeTitle}>{status?.is_active ? 'Recruitment is open' : 'Recruitment is currently closed'}</Text>
-        <Text style={styles.noticeText}>
+        <AppText style={styles.noticeTitle}>{status?.is_active ? 'Recruitment is open' : 'Recruitment is currently closed'}</AppText>
+        <AppText style={styles.noticeText}>
           {status?.message || (status?.is_active ? 'Applications are currently being accepted.' : 'Please check back later for the next opportunities.')}
-        </Text>
+        </AppText>
       </View>
 
-      {error ? <Text style={styles.errorText}>{error}</Text> : null}
+      {error ? <AppText style={styles.errorText}>{error}</AppText> : null}
 
-      <Text style={styles.sectionTitle}>Choose a role</Text>
+      <AppText style={styles.sectionTitle}>Choose a role</AppText>
       {roles.length > 0 ? (
         <View style={styles.roleGrid}>
           {roles.map((role) => {
@@ -195,26 +196,26 @@ const CareersScreen = ({ navigation }) => {
                 style={[styles.roleCard, active && styles.roleCardActive]}
                 onPress={() => setSelectedRoleId(role.id)}
               >
-                <Text style={[styles.roleTitle, active && styles.roleTitleActive]}>{role.title}</Text>
-                <Text style={styles.roleMeta}>{role.type || 'Role'}</Text>
-                <Text style={styles.roleMeta}>₦{Number(role.application_fee || 0).toLocaleString()} standard</Text>
+                <AppText style={[styles.roleTitle, active && styles.roleTitleActive]}>{role.title}</AppText>
+                <AppText style={styles.roleMeta}>{role.type || 'Role'}</AppText>
+                <AppText style={styles.roleMeta}>₦{Number(role.application_fee || 0).toLocaleString()} standard</AppText>
               </TouchableOpacity>
             );
           })}
         </View>
       ) : (
-        <Text style={styles.emptyText}>No active roles are available right now.</Text>
+        <AppText style={styles.emptyText}>No active roles are available right now.</AppText>
       )}
 
       {selectedRole ? (
         <View style={styles.selectionCard}>
-          <Text style={styles.selectionTitle}>Selected role</Text>
-          <Text style={styles.selectionText}>{selectedRole.title}</Text>
-          <Text style={styles.roleMeta}>{selectedRole.description || 'A professional role in the RentalHub team.'}</Text>
+          <AppText style={styles.selectionTitle}>Selected role</AppText>
+          <AppText style={styles.selectionText}>{selectedRole.title}</AppText>
+          <AppText style={styles.roleMeta}>{selectedRole.description || 'A professional role in the RentalHub team.'}</AppText>
         </View>
       ) : null}
 
-      <Text style={styles.sectionTitle}>Your details</Text>
+      <AppText style={styles.sectionTitle}>Your details</AppText>
       <View style={styles.formCard}>
         <TextInput style={styles.input} placeholder="Full name" value={form.full_name} onChangeText={(v) => updateField('full_name', v)} />
         <TextInput style={styles.input} placeholder="Phone number" value={form.phone_number} onChangeText={(v) => updateField('phone_number', v)} keyboardType="phone-pad" />
@@ -227,7 +228,7 @@ const CareersScreen = ({ navigation }) => {
         <TextInput style={[styles.input, styles.textarea]} placeholder="Skills and qualifications" value={form.skills_qualifications} onChangeText={(v) => updateField('skills_qualifications', v)} multiline />
         <TextInput style={[styles.input, styles.textarea]} placeholder="Why you are suitable for this role" value={form.suitability_reason} onChangeText={(v) => updateField('suitability_reason', v)} multiline />
 
-        <Text style={styles.helperLabel}>Application track</Text>
+        <AppText style={styles.helperLabel}>Application track</AppText>
         <View style={styles.trackRow}>
           {['standard', 'premium'].map((track) => {
             const active = form.application_track === track;
@@ -237,13 +238,13 @@ const CareersScreen = ({ navigation }) => {
                 style={[styles.trackButton, active && styles.trackButtonActive]}
                 onPress={() => updateField('application_track', track)}
               >
-                <Text style={[styles.trackText, active && styles.trackTextActive]}>{track === 'standard' ? 'Standard' : 'Premium'}</Text>
+                <AppText style={[styles.trackText, active && styles.trackTextActive]}>{track === 'standard' ? 'Standard' : 'Premium'}</AppText>
               </TouchableOpacity>
             );
           })}
         </View>
 
-        <Text style={styles.helperLabel}>State</Text>
+        <AppText style={styles.helperLabel}>State</AppText>
         <View style={styles.chipRow}>
           {states.map((state) => {
             const active = form.state_name === (state.displayName || state.name);
@@ -253,7 +254,7 @@ const CareersScreen = ({ navigation }) => {
                 style={[styles.chip, active && styles.chipActive]}
                 onPress={() => updateField('state_name', state.displayName || state.name)}
               >
-                <Text style={[styles.chipText, active && styles.chipTextActive]}>{state.displayName || state.name}</Text>
+                <AppText style={[styles.chipText, active && styles.chipTextActive]}>{state.displayName || state.name}</AppText>
               </TouchableOpacity>
             );
           })}
@@ -261,7 +262,7 @@ const CareersScreen = ({ navigation }) => {
 
         {form.state_name ? (
           <>
-            <Text style={styles.helperLabel}>LGA</Text>
+            <AppText style={styles.helperLabel}>LGA</AppText>
             <View style={styles.chipRow}>
               {lgas.length > 0 ? lgas.map((lga) => {
                 const active = form.lga_name === lga;
@@ -271,41 +272,41 @@ const CareersScreen = ({ navigation }) => {
                     style={[styles.chip, active && styles.chipActive]}
                     onPress={() => updateField('lga_name', lga)}
                   >
-                    <Text style={[styles.chipText, active && styles.chipTextActive]}>{lga}</Text>
+                    <AppText style={[styles.chipText, active && styles.chipTextActive]}>{lga}</AppText>
                   </TouchableOpacity>
                 );
-              }) : <Text style={styles.emptyText}>No LGAs available for this state.</Text>}
+              }) : <AppText style={styles.emptyText}>No LGAs available for this state.</AppText>}
             </View>
           </>
         ) : null}
 
         <TouchableOpacity style={styles.submitButton} onPress={handleSubmit} disabled={submitting}>
-          {submitting ? <ActivityIndicator color="#ffffff" /> : <Text style={styles.submitButtonText}>Submit application</Text>}
+          {submitting ? <ActivityIndicator color="#ffffff" /> : <AppText style={styles.submitButtonText}>Submit application</AppText>}
         </TouchableOpacity>
       </View>
 
       {submittedApplication ? (
         <View style={styles.successCard}>
-          <Text style={styles.successTitle}>Application started</Text>
-          <Text style={styles.successText}>Reference: {submittedApplication.reference_number}</Text>
-          <Text style={styles.successText}>Status: {submittedApplication.status}</Text>
-          <Text style={styles.successText}>Next: complete payment and upload your supporting documents.</Text>
+          <AppText style={styles.successTitle}>Application started</AppText>
+          <AppText style={styles.successText}>Reference: {submittedApplication.reference_number}</AppText>
+          <AppText style={styles.successText}>Status: {submittedApplication.status}</AppText>
+          <AppText style={styles.successText}>Next: complete payment and upload your supporting documents.</AppText>
         </View>
       ) : null}
 
-      <Text style={styles.sectionTitle}>Check your applications</Text>
+      <AppText style={styles.sectionTitle}>Check your applications</AppText>
       <View style={styles.lookupCard}>
         <TextInput style={styles.input} placeholder="Enter your email" value={lookupEmail} onChangeText={setLookupEmail} keyboardType="email-address" autoCapitalize="none" />
         <TouchableOpacity style={styles.secondaryButton} onPress={lookupApplications} disabled={lookupLoading}>
-          {lookupLoading ? <ActivityIndicator color="#0284c7" /> : <Text style={styles.secondaryButtonText}>Lookup applications</Text>}
+          {lookupLoading ? <ActivityIndicator color="#0284c7" /> : <AppText style={styles.secondaryButtonText}>Lookup applications</AppText>}
         </TouchableOpacity>
         {applications.map((application) => {
           const canStartInterview = String(application.status || '').toLowerCase() === 'shortlisted';
           return (
             <View key={application.id} style={styles.applicationRow}>
-              <Text style={styles.applicationTitle}>{application.role_title || 'Application'}</Text>
-              <Text style={styles.roleMeta}>Status: {application.status}</Text>
-              <Text style={styles.roleMeta}>Reference: {application.reference_number}</Text>
+              <AppText style={styles.applicationTitle}>{application.role_title || 'Application'}</AppText>
+              <AppText style={styles.roleMeta}>Status: {application.status}</AppText>
+              <AppText style={styles.roleMeta}>Reference: {application.reference_number}</AppText>
               <TouchableOpacity
                 style={styles.interviewButton}
                 onPress={() => navigation.navigate('RecruitmentApplication', {
@@ -315,7 +316,7 @@ const CareersScreen = ({ navigation }) => {
                   referenceNumber: application.reference_number,
                 })}
               >
-                <Text style={styles.interviewButtonText}>Open application</Text>
+                <AppText style={styles.interviewButtonText}>Open application</AppText>
               </TouchableOpacity>
               {canStartInterview ? (
                 <TouchableOpacity
@@ -327,7 +328,7 @@ const CareersScreen = ({ navigation }) => {
                     referenceNumber: application.reference_number,
                   })}
                 >
-                  <Text style={styles.interviewSecondaryButtonText}>Start interview</Text>
+                  <AppText style={styles.interviewSecondaryButtonText}>Start interview</AppText>
                 </TouchableOpacity>
               ) : null}
             </View>

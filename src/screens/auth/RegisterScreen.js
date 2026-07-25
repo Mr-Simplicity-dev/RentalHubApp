@@ -22,6 +22,7 @@ import { propertyService } from '../../services/propertyService';
 import { getErrorMessage, pickList, pickObject } from '../../utils/http';
 import { colors, radius, shadows, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const LAWYER_ACCESS_FEE = 2000;
 const AGENT_ACCESS_FEE = 5000;
 const TENANT_REGISTRATION_FEE = 3000;
@@ -620,8 +621,8 @@ const RegisterScreen = ({ navigation, route }) => {
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}>
         <View style={styles.progressHeader}>
-          <Text style={styles.stepCount}>STEP {currentStep + 1} OF {steps.length}</Text>
-          <Text style={styles.stepPercent}>{Math.round(((currentStep + 1) / steps.length) * 100)}%</Text>
+          <AppText style={styles.stepCount}>STEP {currentStep + 1} OF {steps.length}</AppText>
+          <AppText style={styles.stepPercent}>{Math.round(((currentStep + 1) / steps.length) * 100)}%</AppText>
         </View>
         <View style={styles.progressTrack}>
           <View
@@ -631,9 +632,9 @@ const RegisterScreen = ({ navigation, route }) => {
             ]}
           />
         </View>
-        <Text style={styles.eyebrow}>{steps[currentStep].short.toUpperCase()}</Text>
-        <Text style={styles.title}>{steps[currentStep].title}</Text>
-        <Text style={styles.subtitle}>
+        <AppText style={styles.eyebrow}>{steps[currentStep].short.toUpperCase()}</AppText>
+        <AppText style={styles.title}>{steps[currentStep].title}</AppText>
+        <AppText style={styles.subtitle}>
           {currentStep === 0
             ? 'Choose how you’ll use RentalHub and tell us how to reach you.'
             : currentStep === 1
@@ -641,23 +642,23 @@ const RegisterScreen = ({ navigation, route }) => {
               : currentStep === 2
                 ? 'Add your location and the identity details required for verification.'
                 : 'Create a secure password and review everything before continuing.'}
-        </Text>
+        </AppText>
 
         {!registrationFlags.loaded ? (
           <View style={styles.noticeCard}>
-            <Text style={styles.noticeTitle}>Loading registration settings</Text>
-            <Text style={styles.noticeText}>
+            <AppText style={styles.noticeTitle}>Loading registration settings</AppText>
+            <AppText style={styles.noticeText}>
               We are checking the current registration and payment rules for this role.
-            </Text>
+            </AppText>
           </View>
         ) : null}
 
         {registrationFlags.loaded && !registrationFlags.registration_master_enabled ? (
           <View style={styles.warningCard}>
-            <Text style={styles.warningTitle}>Registration is currently disabled</Text>
-            <Text style={styles.warningText}>
+            <AppText style={styles.warningTitle}>Registration is currently disabled</AppText>
+            <AppText style={styles.warningText}>
               Please try again later or contact support if this should already be open.
-            </Text>
+            </AppText>
           </View>
         ) : null}
 
@@ -665,9 +666,9 @@ const RegisterScreen = ({ navigation, route }) => {
         registrationFlags.registration_master_enabled &&
         !registrationFlags.registration_global_allowed ? (
           <View style={styles.warningCard}>
-            <Text style={styles.warningTitle}>
+            <AppText style={styles.warningTitle}>
               {userType === 'landlord' ? 'Landlord registration disabled' : 'Tenant registration disabled'}
-            </Text>
+            </AppText>
           </View>
         ) : null}
 
@@ -675,13 +676,13 @@ const RegisterScreen = ({ navigation, route }) => {
         !registrationFlags.registration_allowed &&
         registrationFlags.registration_access_message ? (
           <View style={styles.noticeCard}>
-            <Text style={styles.noticeText}>{registrationFlags.registration_access_message}</Text>
+            <AppText style={styles.noticeText}>{registrationFlags.registration_access_message}</AppText>
           </View>
         ) : null}
 
         {currentStep === 0 ? (
           <>
-        <Text style={styles.choiceLabel}>I’m registering as</Text>
+        <AppText style={styles.choiceLabel}>I’m registering as</AppText>
         <View style={styles.toggleRow}>
           {['tenant', 'landlord'].map((role) => (
             <TouchableOpacity
@@ -689,14 +690,14 @@ const RegisterScreen = ({ navigation, route }) => {
               onPress={() => setUserType(role)}
               style={[styles.toggleBtn, userType === role && styles.toggleBtnActive]}
             >
-              <Text style={[styles.toggleText, userType === role && styles.toggleTextActive]}>
+              <AppText style={[styles.toggleText, userType === role && styles.toggleTextActive]}>
                 {role === 'tenant' ? 'Tenant' : 'Landlord'}
-              </Text>
+              </AppText>
             </TouchableOpacity>
           ))}
         </View>
 
-        <Text style={styles.choiceLabel}>Citizenship</Text>
+        <AppText style={styles.choiceLabel}>Citizenship</AppText>
         <View style={styles.toggleRow}>
           {[false, true].map((value) => (
             <TouchableOpacity
@@ -704,9 +705,9 @@ const RegisterScreen = ({ navigation, route }) => {
               onPress={() => setIsForeigner(value)}
               style={[styles.toggleBtn, isForeigner === value && styles.toggleBtnActive]}
             >
-              <Text style={[styles.toggleText, isForeigner === value && styles.toggleTextActive]}>
+              <AppText style={[styles.toggleText, isForeigner === value && styles.toggleTextActive]}>
                 {value ? 'Foreigner' : 'Nigerian'}
-              </Text>
+              </AppText>
             </TouchableOpacity>
           ))}
         </View>
@@ -715,26 +716,26 @@ const RegisterScreen = ({ navigation, route }) => {
 
         {currentStep === 3 ? (
         <View style={styles.priceCard}>
-          <Text style={styles.priceLabel}>
+          <AppText style={styles.priceLabel}>
             AMOUNT DUE TODAY
-          </Text>
-          <Text style={styles.priceAmount}>
+          </AppText>
+          <AppText style={styles.priceAmount}>
             {requiresPayment
               ? `₦${Number(displayedRegistrationAmount || 0).toLocaleString()}`
               : 'No payment required'}
-          </Text>
-          <Text style={styles.priceMeta}>
+          </AppText>
+          <AppText style={styles.priceMeta}>
             {requiresPayment
               ? 'Includes registration and any selected RentalHub NG lawyer or agent access fees.'
               : `No payment required for ${userType} registration right now.`}
-          </Text>
-          <Text style={styles.priceMeta}>
+          </AppText>
+          <AppText style={styles.priceMeta}>
             Pricing scope: {String(registrationPricing.rule_scope || 'base').replace(/_/g, ' ')}
-          </Text>
+          </AppText>
           {requiresRegistrationPayment && form.state_id && form.lga_name && !registrationPricing.location_complete ? (
-            <Text style={styles.pendingMeta}>
+            <AppText style={styles.pendingMeta}>
               Confirming your exact state and LGA pricing. Please wait a moment before continuing.
-            </Text>
+            </AppText>
           ) : null}
         </View>
         ) : null}
@@ -780,11 +781,11 @@ const RegisterScreen = ({ navigation, route }) => {
             }))
           }
         >
-          <Text style={styles.agentToggleLabel}>
+          <AppText style={styles.agentToggleLabel}>
             {form.use_rentalhub_lawyers
               ? 'Using RentalHub NG lawyers (₦2,000)'
               : 'Use RentalHub NG lawyers instead (₦2,000)'}
-          </Text>
+          </AppText>
         </TouchableOpacity>
 
         {!form.use_rentalhub_lawyers ? (
@@ -810,11 +811,11 @@ const RegisterScreen = ({ navigation, route }) => {
               }))
             }
           >
-            <Text style={styles.agentToggleLabel}>
+            <AppText style={styles.agentToggleLabel}>
               {form.use_rentalhub_agents
                 ? 'Using RentalHub NG agents (₦5,000)'
                 : 'Use RentalHub NG agents instead (₦5,000)'}
-            </Text>
+            </AppText>
           </TouchableOpacity>
         ) : null}
           </View>
@@ -832,9 +833,9 @@ const RegisterScreen = ({ navigation, route }) => {
         />
 
         {initialReferralCode && form.referral_code ? (
-          <Text style={styles.helperBlock}>
+          <AppText style={styles.helperBlock}>
             Referral code applied from your invite link.
-          </Text>
+          </AppText>
         ) : null}
           </View>
         ) : null}
@@ -845,9 +846,9 @@ const RegisterScreen = ({ navigation, route }) => {
               style={styles.agentToggle}
               onPress={() => onChange('add_agent', !form.add_agent)}
             >
-              <Text style={styles.agentToggleLabel}>
+              <AppText style={styles.agentToggleLabel}>
                 {form.add_agent ? 'Remove optional agent setup' : 'Add optional agent setup'}
-              </Text>
+              </AppText>
             </TouchableOpacity>
 
             {form.add_agent ? (
@@ -912,7 +913,7 @@ const RegisterScreen = ({ navigation, route }) => {
               maxLength={11}
             />
           ) : (
-            <Text style={styles.helperBlock}>NIN collection is currently disabled.</Text>
+            <AppText style={styles.helperBlock}>NIN collection is currently disabled.</AppText>
           )
         ) : registrationFlags.passport_number ? (
           <>
@@ -933,7 +934,7 @@ const RegisterScreen = ({ navigation, route }) => {
             />
           </>
         ) : (
-          <Text style={styles.helperBlock}>Passport collection is currently disabled.</Text>
+          <AppText style={styles.helperBlock}>Passport collection is currently disabled.</AppText>
         )}
           </View>
         ) : null}
@@ -943,10 +944,10 @@ const RegisterScreen = ({ navigation, route }) => {
           <View style={styles.reviewCard}>
             <View style={styles.reviewHeading}>
               <View>
-                <Text style={styles.reviewEyebrow}>ACCOUNT SUMMARY</Text>
-                <Text style={styles.reviewTitle}>
+                <AppText style={styles.reviewEyebrow}>ACCOUNT SUMMARY</AppText>
+                <AppText style={styles.reviewTitle}>
                   {form.full_name || 'Your RentalHub account'}
-                </Text>
+                </AppText>
               </View>
               <TouchableOpacity onPress={() => changeStep(0)} style={styles.editButton}>
                 <Icon name="pencil-outline" size={16} color={colors.blue} />
@@ -954,26 +955,26 @@ const RegisterScreen = ({ navigation, route }) => {
             </View>
             <View style={styles.reviewRow}>
               <Icon name="person-outline" size={17} color={colors.muted} />
-              <Text style={styles.reviewText}>
+              <AppText style={styles.reviewText}>
                 {userType === 'landlord' ? 'Landlord' : 'Tenant'} · {isForeigner ? 'International' : 'Nigerian'}
-              </Text>
+              </AppText>
             </View>
             <View style={styles.reviewRow}>
               <Icon name="mail-outline" size={17} color={colors.muted} />
-              <Text style={styles.reviewText}>{form.email || 'Email not entered'}</Text>
+              <AppText style={styles.reviewText}>{form.email || 'Email not entered'}</AppText>
             </View>
             <View style={styles.reviewRow}>
               <Icon name="location-outline" size={17} color={colors.muted} />
-              <Text style={styles.reviewText}>
+              <AppText style={styles.reviewText}>
                 {[form.lga_name, selectedState?.state_name].filter(Boolean).join(', ') || 'Location not required'}
-              </Text>
+              </AppText>
             </View>
             <TouchableOpacity onPress={() => changeStep(1)} style={styles.reviewSupport}>
-              <Text style={styles.reviewSupportText}>
+              <AppText style={styles.reviewSupportText}>
                 {form.use_rentalhub_lawyers
                   ? 'RentalHub lawyer support selected'
                   : `Personal lawyer: ${form.lawyer_email || 'not entered'}`}
-              </Text>
+              </AppText>
               <Icon name="chevron-forward" size={16} color={colors.blue} />
             </TouchableOpacity>
           </View>
@@ -1004,27 +1005,27 @@ const RegisterScreen = ({ navigation, route }) => {
             <View style={[styles.checkbox, acceptedTerms && styles.checkboxChecked]}>
               {acceptedTerms ? <Icon name="checkmark" size={15} color={colors.white} /> : null}
             </View>
-            <Text style={styles.termsText}>
+            <AppText style={styles.termsText}>
               I agree to RentalHub’s{' '}
-              <Text
+              <AppText 
                 onPress={(event) => {
                   event.stopPropagation();
                   Linking.openURL('https://rentalhub.com.ng/terms');
                 }}
                 style={styles.termsLink}>
                 Terms
-              </Text>{' '}
+              </AppText>{' '}
               and{' '}
-              <Text
+              <AppText 
                 onPress={(event) => {
                   event.stopPropagation();
                   Linking.openURL('https://rentalhub.com.ng/privacy');
                 }}
                 style={styles.termsLink}>
                 Privacy Policy
-              </Text>
+              </AppText>
               .
-            </Text>
+            </AppText>
           </TouchableOpacity>
           </View>
 
@@ -1038,11 +1039,11 @@ const RegisterScreen = ({ navigation, route }) => {
 
         {paymentState.reference ? (
           <View style={styles.paymentCard}>
-            <Text style={styles.paymentTitle}>Payment Pending</Text>
-            <Text style={styles.paymentText}>Reference: {paymentState.reference}</Text>
-            <Text style={styles.paymentText}>
+            <AppText style={styles.paymentTitle}>Payment Pending</AppText>
+            <AppText style={styles.paymentText}>Reference: {paymentState.reference}</AppText>
+            <AppText style={styles.paymentText}>
               Finish the Paystack flow in your browser, then return here.
-            </Text>
+            </AppText>
             <Button
               title="Complete Registration"
               onPress={completePaidRegistration}
@@ -1081,9 +1082,9 @@ const RegisterScreen = ({ navigation, route }) => {
         </View>
 
         <View style={styles.footer}>
-          <Text style={styles.footerText}>Already have an account?</Text>
+          <AppText style={styles.footerText}>Already have an account?</AppText>
           <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-            <Text style={styles.footerLink}> Sign in</Text>
+            <AppText style={styles.footerLink}> Sign in</AppText>
           </TouchableOpacity>
         </View>
       </ScrollView>

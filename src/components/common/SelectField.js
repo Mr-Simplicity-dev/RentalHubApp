@@ -3,6 +3,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { colors, radius, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const SelectField = ({
   label,
   value,
@@ -12,23 +13,23 @@ const SelectField = ({
   helperText,
 }) => (
   <View style={styles.container}>
-    {label ? <Text style={styles.label}>{label}</Text> : null}
+    {label ? <AppText style={styles.label}>{label}</AppText> : null}
     <TouchableOpacity
       style={[styles.field, disabled && styles.fieldDisabled]}
       onPress={onPress}
       disabled={disabled}
       activeOpacity={0.8}
     >
-      <Text style={[styles.value, !value && styles.placeholder]}>
+      <AppText style={[styles.value, !value && styles.placeholder]}>
         {value || placeholder}
-      </Text>
+      </AppText>
       <Icon
         name="chevron-down-outline"
         size={20}
         color={disabled ? '#AAB3C3' : colors.muted}
       />
     </TouchableOpacity>
-    {helperText ? <Text style={styles.helperText}>{helperText}</Text> : null}
+    {helperText ? <AppText style={styles.helperText}>{helperText}</AppText> : null}
   </View>
 );
 

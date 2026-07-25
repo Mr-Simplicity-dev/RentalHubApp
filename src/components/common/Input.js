@@ -3,6 +3,7 @@ import { View, TextInput, Text, StyleSheet, TouchableOpacity } from 'react-nativ
 import Icon from 'react-native-vector-icons/Ionicons';
 import { colors, radius, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const Input = ({
   label,
   value,
@@ -22,7 +23,7 @@ const Input = ({
 
   return (
     <View style={[styles.container, containerStyle]}>
-      {label && <Text style={styles.label}>{label}</Text>}
+      {label && <AppText style={styles.label}>{label}</AppText>}
       <View
         style={[
           styles.inputContainer,
@@ -67,7 +68,7 @@ const Input = ({
           </TouchableOpacity>
         ) : null}
       </View>
-      {error && <Text accessibilityLiveRegion="polite" style={styles.errorText}>{error}</Text>}
+      {error && <AppText accessibilityLiveRegion="polite" style={styles.errorText}>{error}</AppText>}
     </View>
   );
 };

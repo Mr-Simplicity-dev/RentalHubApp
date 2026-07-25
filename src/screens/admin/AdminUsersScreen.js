@@ -14,6 +14,7 @@ import {
 } from '../../components/common/PremiumLayout';
 import { colors, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const AdminUsersScreen = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -83,11 +84,11 @@ const AdminUsersScreen = () => {
           <PremiumCard>
             <View style={styles.cardHeader}>
               <View style={styles.avatar}>
-                <Text style={styles.avatarText}>{String(item.full_name || item.email || 'U').slice(0, 1).toUpperCase()}</Text>
+                <AppText style={styles.avatarText}>{String(item.full_name || item.email || 'U').slice(0, 1).toUpperCase()}</AppText>
               </View>
               <View style={styles.cardCopy}>
-                <Text style={styles.cardTitle}>{item.full_name || 'Unnamed user'}</Text>
-                <Text style={styles.cardMeta}>{item.email || 'No email provided'}</Text>
+                <AppText style={styles.cardTitle}>{item.full_name || 'Unnamed user'}</AppText>
+                <AppText style={styles.cardMeta}>{item.email || 'No email provided'}</AppText>
               </View>
             </View>
             <InfoRow icon="shield-outline" label="Role" value={item.user_type || '—'} />

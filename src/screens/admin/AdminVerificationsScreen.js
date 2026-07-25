@@ -13,6 +13,7 @@ import {
 } from '../../components/common/PremiumLayout';
 import { colors, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const AdminVerificationsScreen = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -93,11 +94,11 @@ const AdminVerificationsScreen = () => {
           <PremiumCard>
             <View style={styles.cardHeader}>
               <View style={styles.avatar}>
-                <Text style={styles.avatarText}>{String(item.full_name || item.email || 'V').slice(0, 1).toUpperCase()}</Text>
+                <AppText style={styles.avatarText}>{String(item.full_name || item.email || 'V').slice(0, 1).toUpperCase()}</AppText>
               </View>
               <View style={styles.cardCopy}>
-                <Text style={styles.cardTitle}>{item.full_name || 'Verification request'}</Text>
-                <Text style={styles.cardMeta}>{item.email || 'No email provided'}</Text>
+                <AppText style={styles.cardTitle}>{item.full_name || 'Verification request'}</AppText>
+                <AppText style={styles.cardMeta}>{item.email || 'No email provided'}</AppText>
               </View>
             </View>
             <InfoRow icon="id-card-outline" label="Document" value={documentLabel} />

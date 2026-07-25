@@ -13,6 +13,7 @@ import { financialAdminService } from '../../services/financialAdminService';
 import { getErrorMessage, pickList } from '../../utils/http';
 import { colors, radius, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const filters = ['all', 'pending', 'completed', 'failed'];
 
 const getStatusColor = (status) => {
@@ -64,9 +65,9 @@ const FinancialTransactionsScreen = () => {
             style={[styles.filterChip, filter === item && styles.filterChipActive]}
             onPress={() => setFilter(item)}
           >
-            <Text style={[styles.filterText, filter === item && styles.filterTextActive]}>
+            <AppText style={[styles.filterText, filter === item && styles.filterTextActive]}>
               {item.charAt(0).toUpperCase() + item.slice(1)}
-            </Text>
+            </AppText>
           </TouchableOpacity>
         ))}
       </View>
@@ -92,8 +93,8 @@ const FinancialTransactionsScreen = () => {
           <PremiumCard>
             <View style={styles.cardHeader}>
               <View style={styles.refBlock}>
-                <Text style={styles.reference}>#{item.reference || item.id}</Text>
-                <Text style={styles.amount}>{formatNaira(item.amount || 0)}</Text>
+                <AppText style={styles.reference}>#{item.reference || item.id}</AppText>
+                <AppText style={styles.amount}>{formatNaira(item.amount || 0)}</AppText>
               </View>
               <StatusPill label={status} color={getStatusColor(status)} />
             </View>

@@ -39,6 +39,7 @@ import {
 } from '../../services/mobileDiagnosticsService';
 import { getDirectApkUrl, startAppUpdate } from '../../services/appUpdateService';
 
+import AppText from '../../components/common/AppText';
 const labels = {
   pushMessages: 'Messages',
   pushPayments: 'Payments',
@@ -259,8 +260,8 @@ const SettingsScreen = ({ navigation }) => {
         {notificationKeys.map((key) => (
           <View key={key} style={styles.switchRow}>
             <View style={styles.switchCopy}>
-              <Text style={styles.switchTitle}>{labels[key]}</Text>
-              <Text style={styles.switchSubtitle}>Allow native alerts for {labels[key].toLowerCase()}.</Text>
+              <AppText style={styles.switchTitle}>{labels[key]}</AppText>
+              <AppText style={styles.switchSubtitle}>Allow native alerts for {labels[key].toLowerCase()}.</AppText>
             </View>
             <Switch
               value={settings[key]}
@@ -296,8 +297,8 @@ const SettingsScreen = ({ navigation }) => {
       <DashboardSection title="App experience">
         <View style={styles.switchRow}>
           <View style={styles.switchCopy}>
-            <Text style={styles.switchTitle}>{labels.weakNetworkWarnings}</Text>
-            <Text style={styles.switchSubtitle}>Show a banner when API requests detect poor connectivity.</Text>
+            <AppText style={styles.switchTitle}>{labels.weakNetworkWarnings}</AppText>
+            <AppText style={styles.switchSubtitle}>Show a banner when API requests detect poor connectivity.</AppText>
           </View>
           <Switch
             value={settings.weakNetworkWarnings}
@@ -308,8 +309,8 @@ const SettingsScreen = ({ navigation }) => {
         </View>
         <View style={styles.switchRow}>
           <View style={styles.switchCopy}>
-            <Text style={styles.switchTitle}>{labels.updateAlerts}</Text>
-            <Text style={styles.switchSubtitle}>Show a native banner or dot when a newer RentalHub APK is available.</Text>
+            <AppText style={styles.switchTitle}>{labels.updateAlerts}</AppText>
+            <AppText style={styles.switchSubtitle}>Show a native banner or dot when a newer RentalHub APK is available.</AppText>
           </View>
           <Switch
             value={settings.updateAlerts}
@@ -320,8 +321,8 @@ const SettingsScreen = ({ navigation }) => {
         </View>
         <View style={styles.switchRow}>
           <View style={styles.switchCopy}>
-            <Text style={styles.switchTitle}>{labels.notificationBadges}</Text>
-            <Text style={styles.switchSubtitle}>Allow RentalHub to show home-screen badge counts for unread account activity.</Text>
+            <AppText style={styles.switchTitle}>{labels.notificationBadges}</AppText>
+            <AppText style={styles.switchSubtitle}>Allow RentalHub to show home-screen badge counts for unread account activity.</AppText>
           </View>
           <Switch
             value={settings.notificationBadges}
@@ -332,8 +333,8 @@ const SettingsScreen = ({ navigation }) => {
         </View>
         <View style={styles.switchRow}>
           <View style={styles.switchCopy}>
-            <Text style={styles.switchTitle}>{labels.largerText}</Text>
-            <Text style={styles.switchSubtitle}>Increase key dashboard, tour and control text across the app.</Text>
+            <AppText style={styles.switchTitle}>{labels.largerText}</AppText>
+            <AppText style={styles.switchSubtitle}>Increase key dashboard, tour and control text across the app.</AppText>
           </View>
           <Switch
             value={settings.largerText}
@@ -344,8 +345,8 @@ const SettingsScreen = ({ navigation }) => {
         </View>
         <View style={styles.switchRow}>
           <View style={styles.switchCopy}>
-            <Text style={styles.switchTitle}>{labels.reduceMotion}</Text>
-            <Text style={styles.switchSubtitle}>Reduce splash and guided-tour animations for calmer navigation.</Text>
+            <AppText style={styles.switchTitle}>{labels.reduceMotion}</AppText>
+            <AppText style={styles.switchSubtitle}>Reduce splash and guided-tour animations for calmer navigation.</AppText>
           </View>
           <Switch
             value={settings.reduceMotion}
@@ -372,10 +373,10 @@ const SettingsScreen = ({ navigation }) => {
         <View style={styles.versionCard}>
           <View style={styles.versionTop}>
             <View style={styles.versionCopy}>
-              <Text style={styles.versionTitle}>RentalHub app version</Text>
-              <Text style={styles.versionMeta}>Installed: {getMobileAppVersion() || 'Unknown'}</Text>
+              <AppText style={styles.versionTitle}>RentalHub app version</AppText>
+              <AppText style={styles.versionMeta}>Installed: {getMobileAppVersion() || 'Unknown'}</AppText>
               {versionState?.latest_version ? (
-                <Text style={styles.versionMeta}>Latest: {versionState.latest_version}</Text>
+                <AppText style={styles.versionMeta}>Latest: {versionState.latest_version}</AppText>
               ) : null}
             </View>
             <View
@@ -385,7 +386,7 @@ const SettingsScreen = ({ navigation }) => {
                 versionState?.update_available && !versionState?.update_required ? styles.versionBadgeWarning : null,
               ]}
             >
-              <Text
+              <AppText 
                 style={[
                   styles.versionBadgeText,
                   versionState?.update_required ? styles.versionBadgeTextDanger : null,
@@ -397,12 +398,12 @@ const SettingsScreen = ({ navigation }) => {
                   : versionState?.update_available
                     ? 'Update'
                     : 'Current'}
-              </Text>
+              </AppText>
             </View>
           </View>
-          <Text style={styles.versionMessage}>
+          <AppText style={styles.versionMessage}>
             {versionState?.message || 'Check whether a newer app version is available before release testing.'}
-          </Text>
+          </AppText>
           <View style={styles.versionActions}>
             <TouchableOpacity
               accessibilityRole="button"
@@ -411,14 +412,14 @@ const SettingsScreen = ({ navigation }) => {
               style={styles.versionButton}
             >
               {checkingVersion ? <ActivityIndicator color={colors.blue} /> : <Icon name="refresh-outline" size={15} color={colors.blue} />}
-              <Text style={styles.versionButtonText}>{checkingVersion ? 'Checking...' : 'Check update'}</Text>
+              <AppText style={styles.versionButtonText}>{checkingVersion ? 'Checking...' : 'Check update'}</AppText>
             </TouchableOpacity>
             {versionState?.update_available ? (
               <TouchableOpacity accessibilityRole="button" onPress={openStoreLink} style={styles.versionButtonPrimary}>
                 <Icon name="download-outline" size={15} color={colors.white} />
-                <Text style={styles.versionButtonPrimaryText}>
+                <AppText style={styles.versionButtonPrimaryText}>
                   {getDirectApkUrl(versionState) ? 'Install update' : 'Update now'}
-                </Text>
+                </AppText>
               </TouchableOpacity>
             ) : null}
           </View>
@@ -445,8 +446,8 @@ const SettingsScreen = ({ navigation }) => {
           <Pressable style={styles.modalCard}>
             <View style={styles.modalHeader}>
               <View>
-                <Text style={styles.modalTitle}>Delete account</Text>
-                <Text style={styles.modalSubtitle}>This is protected by password confirmation.</Text>
+                <AppText style={styles.modalTitle}>Delete account</AppText>
+                <AppText style={styles.modalSubtitle}>This is protected by password confirmation.</AppText>
               </View>
               <TouchableOpacity
                 accessibilityLabel="Close account deletion"
@@ -460,12 +461,12 @@ const SettingsScreen = ({ navigation }) => {
 
             <View style={styles.warningBox}>
               <Icon name="warning-outline" size={20} color={colors.danger} />
-              <Text style={styles.warningText}>
+              <AppText style={styles.warningText}>
                 We will not delete accounts with active property listings, tenancies, ongoing disputes or pending payments.
-              </Text>
+              </AppText>
             </View>
 
-            <Text style={styles.inputLabel}>Current password</Text>
+            <AppText style={styles.inputLabel}>Current password</AppText>
             <TextInput
               accessibilityLabel="Current password for account deletion"
               autoCapitalize="none"
@@ -484,7 +485,7 @@ const SettingsScreen = ({ navigation }) => {
               style={[styles.deleteButton, deletingAccount ? styles.disabled : null]}
             >
               {deletingAccount ? <ActivityIndicator color={colors.white} /> : <Icon name="trash-outline" size={18} color={colors.white} />}
-              <Text style={styles.deleteButtonText}>{deletingAccount ? 'Deleting...' : 'Delete account'}</Text>
+              <AppText style={styles.deleteButtonText}>{deletingAccount ? 'Deleting...' : 'Delete account'}</AppText>
             </TouchableOpacity>
           </Pressable>
         </Pressable>

@@ -43,6 +43,7 @@ import { financialAdminService } from '../../services/financialAdminService';
 import { colors, radius, shadows, typography } from '../../theme';
 import { getErrorMessage, pickList, pickObject } from '../../utils/http';
 
+import AppText from '../../components/common/AppText';
 const EMPTY_FORM = {
   amount: '',
   bank_name: '',
@@ -315,8 +316,8 @@ const WithdrawalRequestModal = ({
                   <Icon name="cash-outline" size={20} color={colors.blue} />
                 </View>
                 <View style={styles.modalTitleCopy}>
-                  <Text style={styles.modalTitle}>Request withdrawal</Text>
-                  <Text style={styles.modalSubtitle}>Personal admin commission payout</Text>
+                  <AppText style={styles.modalTitle}>Request withdrawal</AppText>
+                  <AppText style={styles.modalSubtitle}>Personal admin commission payout</AppText>
                 </View>
               </View>
               <TouchableOpacity
@@ -336,9 +337,9 @@ const WithdrawalRequestModal = ({
               showsVerticalScrollIndicator={false}
             >
               <View style={styles.balancePanel}>
-                <Text style={styles.balanceLabel}>Available to withdraw</Text>
-                <Text style={styles.balanceValue}>{formatCurrency(withdrawable)}</Text>
-                <Text style={styles.balanceHint}>Minimum request: ₦1,000</Text>
+                <AppText style={styles.balanceLabel}>Available to withdraw</AppText>
+                <AppText style={styles.balanceValue}>{formatCurrency(withdrawable)}</AppText>
+                <AppText style={styles.balanceHint}>Minimum request: ₦1,000</AppText>
               </View>
 
               <Input
@@ -392,12 +393,12 @@ const WithdrawalRequestModal = ({
                     size={18}
                     color={accountVerified ? colors.success : '#A66B00'}
                   />
-                  <Text style={[
+                  <AppText style={[
                     styles.verificationText,
                     accountVerified ? styles.verificationTextSuccess : styles.verificationTextWarning,
                   ]}>
                     {verificationMessage}
-                  </Text>
+                  </AppText>
                 </View>
               ) : null}
 
@@ -605,10 +606,10 @@ const LgaFinancialAdminDashboardScreen = ({ navigation }) => {
             <View style={styles.emptyIcon}>
               <Icon name="receipt-outline" size={23} color={colors.blue} />
             </View>
-            <Text style={styles.emptyTitle}>No withdrawal requests yet</Text>
-            <Text style={styles.emptyMessage}>
+            <AppText style={styles.emptyTitle}>No withdrawal requests yet</AppText>
+            <AppText style={styles.emptyMessage}>
               Your personal commission payout requests will appear here.
-            </Text>
+            </AppText>
           </PremiumCard>
         ) : (
           withdrawals.map((withdrawal, index) => {
@@ -619,8 +620,8 @@ const LgaFinancialAdminDashboardScreen = ({ navigation }) => {
               >
                 <View style={styles.historyHeader}>
                   <View style={styles.historyAmountWrap}>
-                    <Text style={styles.historyLabel}>Requested amount</Text>
-                    <Text style={styles.historyAmount}>{formatCurrency(withdrawal?.amount)}</Text>
+                    <AppText style={styles.historyLabel}>Requested amount</AppText>
+                    <AppText style={styles.historyAmount}>{formatCurrency(withdrawal?.amount)}</AppText>
                   </View>
                   <StatusPill label={status} color={getStatusColor(status)} />
                 </View>

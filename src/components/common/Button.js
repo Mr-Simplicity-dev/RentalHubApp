@@ -2,6 +2,7 @@ import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { colors, radius, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const Button = ({
   title,
   onPress,
@@ -50,7 +51,7 @@ const Button = ({
       {loading ? (
         <ActivityIndicator color={variant === 'outline' ? colors.blue : colors.white} />
       ) : (
-        <Text style={computedTextStyle}>{title}</Text>
+        <AppText style={computedTextStyle}>{title}</AppText>
       )}
     </TouchableOpacity>
   );

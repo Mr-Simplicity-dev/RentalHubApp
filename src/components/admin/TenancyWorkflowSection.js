@@ -5,6 +5,7 @@ import Button from '../common/Button';
 import { tenancyAdjustmentService } from '../../services/tenancyAdjustmentService';
 import { getErrorMessage, pickList } from '../../utils/http';
 
+import AppText from '../../components/common/AppText';
 const TenancyWorkflowSection = ({ title = 'Tenancy Grace and Refund Enablement' }) => {
   const [loading, setLoading] = useState(false);
   const [graceRequests, setGraceRequests] = useState([]);
@@ -91,25 +92,25 @@ const TenancyWorkflowSection = ({ title = 'Tenancy Grace and Refund Enablement' 
 
   return (
     <View style={styles.wrap}>
-      <Text style={styles.heading}>{title}</Text>
-      <Text style={styles.subheading}>
+      <AppText style={styles.heading}>{title}</AppText>
+      <AppText style={styles.subheading}>
         Pending grace: {graceRequests.length} · Pending relocation refunds:{' '}
         {relocationRefunds.length}
-      </Text>
+      </AppText>
       <Button title="Refresh" onPress={loadRequests} loading={loading} />
 
-      <Text style={styles.sectionTitle}>Grace Period Requests</Text>
+      <AppText style={styles.sectionTitle}>Grace Period Requests</AppText>
       {graceRequests.length === 0 ? (
-        <Text style={styles.meta}>No pending grace requests.</Text>
+        <AppText style={styles.meta}>No pending grace requests.</AppText>
       ) : (
         graceRequests.map((item) => {
           const key = `grace_${item.id}`;
           return (
             <View key={item.id} style={styles.card}>
-              <Text style={styles.cardTitle}>
+              <AppText style={styles.cardTitle}>
                 {item.tenant_name || 'Tenant'} · {item.property_title || 'Property'}
-              </Text>
-              <Text style={styles.meta}>Status: {item.status}</Text>
+              </AppText>
+              <AppText style={styles.meta}>Status: {item.status}</AppText>
               <TextInput
                 style={styles.input}
                 placeholder="Admin note (optional)"
@@ -118,10 +119,10 @@ const TenancyWorkflowSection = ({ title = 'Tenancy Grace and Refund Enablement' 
               />
               <View style={styles.row}>
                 <TouchableOpacity onPress={() => reviewGrace(item.id, 'enable')}>
-                  <Text style={styles.link}>Enable</Text>
+                  <AppText style={styles.link}>Enable</AppText>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => reviewGrace(item.id, 'reject')}>
-                  <Text style={styles.danger}>Reject</Text>
+                  <AppText style={styles.danger}>Reject</AppText>
                 </TouchableOpacity>
               </View>
             </View>
@@ -129,18 +130,18 @@ const TenancyWorkflowSection = ({ title = 'Tenancy Grace and Refund Enablement' 
         })
       )}
 
-      <Text style={styles.sectionTitle}>Relocation Refunds</Text>
+      <AppText style={styles.sectionTitle}>Relocation Refunds</AppText>
       {relocationRefunds.length === 0 ? (
-        <Text style={styles.meta}>No pending relocation refunds.</Text>
+        <AppText style={styles.meta}>No pending relocation refunds.</AppText>
       ) : (
         relocationRefunds.map((item) => {
           const key = `refund_${item.id}`;
           return (
             <View key={item.id} style={styles.card}>
-              <Text style={styles.cardTitle}>
+              <AppText style={styles.cardTitle}>
                 {item.tenant_name || 'Tenant'} · ₦{Number(item.amount || 0).toLocaleString()}
-              </Text>
-              <Text style={styles.meta}>Status: {item.status}</Text>
+              </AppText>
+              <AppText style={styles.meta}>Status: {item.status}</AppText>
               <TextInput
                 style={styles.input}
                 placeholder="Admin note (optional)"
@@ -149,10 +150,10 @@ const TenancyWorkflowSection = ({ title = 'Tenancy Grace and Refund Enablement' 
               />
               <View style={styles.row}>
                 <TouchableOpacity onPress={() => reviewRefund(item.id, 'enable')}>
-                  <Text style={styles.link}>Enable</Text>
+                  <AppText style={styles.link}>Enable</AppText>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => reviewRefund(item.id, 'reject')}>
-                  <Text style={styles.danger}>Reject</Text>
+                  <AppText style={styles.danger}>Reject</AppText>
                 </TouchableOpacity>
               </View>
             </View>

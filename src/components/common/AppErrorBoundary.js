@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { colors, radius, typography } from '../../theme';
 import { reportMobileCrash } from '../../services/mobileDiagnosticsService';
 
+import AppText from '../../components/common/AppText';
 class AppErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
@@ -36,12 +37,12 @@ class AppErrorBoundary extends React.Component {
           <View style={styles.iconBubble}>
             <Icon name="warning-outline" color={colors.danger} size={30} />
           </View>
-          <Text style={styles.title}>Something needs a quick refresh</Text>
-          <Text style={styles.subtitle}>
+          <AppText style={styles.title}>Something needs a quick refresh</AppText>
+          <AppText style={styles.subtitle}>
             The app hit an unexpected issue. We have saved a diagnostic report so the team can trace it.
-          </Text>
+          </AppText>
           <TouchableOpacity accessibilityRole="button" onPress={this.reset} style={styles.button}>
-            <Text style={styles.buttonText}>Try again</Text>
+            <AppText style={styles.buttonText}>Try again</AppText>
           </TouchableOpacity>
         </View>
       </View>

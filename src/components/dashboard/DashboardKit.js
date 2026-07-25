@@ -12,6 +12,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { colors, radius, shadows, typography } from '../../theme';
 import { useAccessibilityPreferences } from '../../hooks/useAccessibilityPreferences';
 
+import AppText from '../../components/common/AppText';
 export const DashboardScreen = ({
   children,
   refreshing = false,
@@ -66,9 +67,9 @@ export const DashboardHero = ({
           </TouchableOpacity>
         ) : null}
       </View>
-      <Text style={[styles.eyebrow, { fontSize: scaleFont(10) }]}>{eyebrow}</Text>
-      <Text style={[styles.heroTitle, { fontSize: scaleFont(27), lineHeight: scaleFont(33) }]}>{title}</Text>
-      <Text style={[styles.heroSubtitle, { fontSize: scaleFont(13), lineHeight: scaleFont(20) }]}>{subtitle}</Text>
+      <AppText style={[styles.eyebrow, { fontSize: scaleFont(10) }]}>{eyebrow}</AppText>
+      <AppText style={[styles.heroTitle, { fontSize: scaleFont(27), lineHeight: scaleFont(33) }]}>{title}</AppText>
+      <AppText style={[styles.heroSubtitle, { fontSize: scaleFont(13), lineHeight: scaleFont(20) }]}>{subtitle}</AppText>
     </View>
   );
 };
@@ -97,8 +98,8 @@ export const MetricCard = ({
       <View style={[styles.metricIcon, { backgroundColor: `${color}16` }]}>
         <Icon name={icon} size={18} color={color} />
       </View>
-      <Text numberOfLines={1} style={[styles.metricLabel, { fontSize: scaleFont(11) }]}>{label}</Text>
-      <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.metricValue, { fontSize: scaleFont(22) }]}>{value}</Text>
+      <AppText numberOfLines={1} style={[styles.metricLabel, { fontSize: scaleFont(11) }]}>{label}</AppText>
+      <AppText numberOfLines={1} adjustsFontSizeToFit style={[styles.metricValue, { fontSize: scaleFont(22) }]}>{value}</AppText>
     </Container>
   );
 };
@@ -108,8 +109,8 @@ export const DashboardSection = ({ title, subtitle, children }) => {
 
   return (
     <View style={styles.section}>
-      <Text style={[styles.sectionTitle, { fontSize: scaleFont(18) }]}>{title}</Text>
-      {subtitle ? <Text style={[styles.sectionSubtitle, { fontSize: scaleFont(12), lineHeight: scaleFont(18) }]}>{subtitle}</Text> : null}
+      <AppText style={[styles.sectionTitle, { fontSize: scaleFont(18) }]}>{title}</AppText>
+      {subtitle ? <AppText style={[styles.sectionSubtitle, { fontSize: scaleFont(12), lineHeight: scaleFont(18) }]}>{subtitle}</AppText> : null}
       <View style={styles.sectionBody}>{children}</View>
     </View>
   );
@@ -141,10 +142,10 @@ const ActionRowInner = ({ title, subtitle, icon, onPress, badge }) => {
       </View>
       <View style={styles.actionCopy}>
         <View style={styles.actionTitleRow}>
-          <Text style={[styles.actionTitle, { fontSize: scaleFont(14) }]}>{title}</Text>
-          {badge ? <Text style={[styles.actionBadge, { fontSize: scaleFont(10) }]}>{badge}</Text> : null}
+          <AppText style={[styles.actionTitle, { fontSize: scaleFont(14) }]}>{title}</AppText>
+          {badge ? <AppText style={[styles.actionBadge, { fontSize: scaleFont(10) }]}>{badge}</AppText> : null}
         </View>
-        {subtitle ? <Text style={[styles.actionSubtitle, { fontSize: scaleFont(12), lineHeight: scaleFont(18) }]}>{subtitle}</Text> : null}
+        {subtitle ? <AppText style={[styles.actionSubtitle, { fontSize: scaleFont(12), lineHeight: scaleFont(18) }]}>{subtitle}</AppText> : null}
       </View>
       <Icon name="chevron-forward" size={18} color={colors.muted} />
     </TouchableOpacity>
@@ -163,8 +164,8 @@ export const DashboardNotice = ({ title, message, variant = 'info' }) => {
         color={warning ? '#92400E' : colors.blue}
       />
       <View style={styles.noticeCopy}>
-        <Text style={[styles.noticeTitle, warning && styles.noticeTitleWarning, { fontSize: scaleFont(13) }]}>{title}</Text>
-        <Text style={[styles.noticeMessage, warning && styles.noticeMessageWarning, { fontSize: scaleFont(12), lineHeight: scaleFont(18) }]}>{message}</Text>
+        <AppText style={[styles.noticeTitle, warning && styles.noticeTitleWarning, { fontSize: scaleFont(13) }]}>{title}</AppText>
+        <AppText style={[styles.noticeMessage, warning && styles.noticeMessageWarning, { fontSize: scaleFont(12), lineHeight: scaleFont(18) }]}>{message}</AppText>
       </View>
     </View>
   );

@@ -12,6 +12,7 @@ import { authService } from '../../services/authService';
 import { getErrorMessage } from '../../utils/http';
 import { colors, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const ForgotPasswordScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
@@ -72,9 +73,9 @@ const ForgotPasswordScreen = ({ navigation }) => {
           icon="send-outline"
         />
 
-        <Text style={styles.helper}>
+        <AppText style={styles.helper}>
           For your security, reset links are time-sensitive. Use the latest email if you request more than one.
-        </Text>
+        </AppText>
       </PremiumCard>
     </PremiumScreen>
   );

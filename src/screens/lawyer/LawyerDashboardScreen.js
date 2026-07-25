@@ -7,6 +7,7 @@ import { legalService } from '../../services/legalService';
 import { getErrorMessage, pickList } from '../../utils/http';
 import { colors, radius, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const LawyerDashboardScreen = ({ navigation }) => {
   const [properties, setProperties] = useState([]);
   const [selectedProperty, setSelectedProperty] = useState(null);
@@ -75,17 +76,17 @@ const LawyerDashboardScreen = ({ navigation }) => {
           <View style={styles.heroIcon}><Icon name="scale-outline" size={24} color={colors.gold} /></View>
           <TouchableOpacity onPress={() => navigation.navigate('VerifyCase')} style={styles.verifyButton}>
             <Icon name="shield-checkmark-outline" size={17} color={colors.navy} />
-            <Text style={styles.verifyText}>Verify evidence</Text>
+            <AppText style={styles.verifyText}>Verify evidence</AppText>
           </TouchableOpacity>
         </View>
-        <Text style={styles.heroEyebrow}>LEGAL WORKSPACE</Text>
-        <Text style={styles.title}>Cases and property access</Text>
-        <Text style={styles.heroText}>Review authorised properties, trace evidence and resolve disputes.</Text>
+        <AppText style={styles.heroEyebrow}>LEGAL WORKSPACE</AppText>
+        <AppText style={styles.title}>Cases and property access</AppText>
+        <AppText style={styles.heroText}>Review authorised properties, trace evidence and resolve disputes.</AppText>
       </View>
 
-      <Text style={styles.sectionTitle}>Authorised properties</Text>
+      <AppText style={styles.sectionTitle}>Authorised properties</AppText>
       {loading ? (
-        <Text style={styles.empty}>Loading...</Text>
+        <AppText style={styles.empty}>Loading...</AppText>
       ) : (
         <FlatList
           data={properties}
@@ -96,42 +97,42 @@ const LawyerDashboardScreen = ({ navigation }) => {
               style={[styles.card, selectedProperty?.id === item.id && styles.cardActive]}
               onPress={() => loadDisputes(item)}
             >
-              <Text style={styles.cardTitle}>{item.title}</Text>
-              <Text style={styles.cardMeta}>
+              <AppText style={styles.cardTitle}>{item.title}</AppText>
+              <AppText style={styles.cardMeta}>
                 {[item.city, item.state_name || item.state].filter(Boolean).join(', ')}
-              </Text>
+              </AppText>
               <View style={styles.cardArrow}><Icon name="chevron-forward" size={18} color={colors.blue} /></View>
-              <Text style={styles.cardMeta}>
+              <AppText style={styles.cardMeta}>
                 Assigned by {item.assigned_by_name || item.client_name || 'Unknown'}
                 {item.client_name ? ` for ${item.client_name}` : ''}
-              </Text>
+              </AppText>
             </TouchableOpacity>
           )}
-          ListEmptyComponent={<Text style={styles.empty}>No authorized properties.</Text>}
+          ListEmptyComponent={<AppText style={styles.empty}>No authorized properties.</AppText>}
         />
       )}
 
       {selectedProperty ? (
         <>
-          <Text style={styles.sectionTitle}>Disputes for {selectedProperty.title}</Text>
+          <AppText style={styles.sectionTitle}>Disputes for {selectedProperty.title}</AppText>
           {disputes.length === 0 ? (
-            <Text style={styles.empty}>No disputes found.</Text>
+            <AppText style={styles.empty}>No disputes found.</AppText>
           ) : (
             disputes.map((item) => (
               <View key={item.id} style={styles.card}>
-                <Text style={styles.cardTitle}>Dispute #{item.id}</Text>
-                <Text style={styles.cardMeta}>Status: {item.status || 'open'}</Text>
-                <Text style={styles.cardText}>{item.description || 'No description available'}</Text>
+                <AppText style={styles.cardTitle}>Dispute #{item.id}</AppText>
+                <AppText style={styles.cardMeta}>Status: {item.status || 'open'}</AppText>
+                <AppText style={styles.cardText}>{item.description || 'No description available'}</AppText>
                 <View style={styles.row}>
                   <TouchableOpacity
                     onPress={() => navigation.navigate('VerifyCase', { disputeId: item.id })}
                   >
-                    <Text style={styles.linkText}>Verify Integrity</Text>
+                    <AppText style={styles.linkText}>Verify Integrity</AppText>
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => navigation.navigate('DisputeDetails', { disputeId: item.id })}
                   >
-                    <Text style={styles.linkText}>Trace Dispute</Text>
+                    <AppText style={styles.linkText}>Trace Dispute</AppText>
                   </TouchableOpacity>
                   {item.status !== 'resolved' ? (
                     <TouchableOpacity onPress={() =>
@@ -140,7 +141,7 @@ const LawyerDashboardScreen = ({ navigation }) => {
                         { text: 'Resolve', onPress: () => resolveDispute(item.id) },
                       ])
                     }>
-                      <Text style={styles.linkWarn}>Resolve</Text>
+                      <AppText style={styles.linkWarn}>Resolve</AppText>
                     </TouchableOpacity>
                   ) : null}
                 </View>

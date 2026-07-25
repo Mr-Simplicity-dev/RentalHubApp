@@ -14,6 +14,7 @@ import {
 } from '../../components/common/PremiumLayout';
 import { colors, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const AdminLawyerInvitesScreen = () => {
   const [invites, setInvites] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -130,13 +131,13 @@ const AdminLawyerInvitesScreen = () => {
         <PremiumCard>
           <View style={styles.cardHeader}>
             <View style={styles.inviteIcon}>
-              <Text style={styles.inviteIconText}>LG</Text>
+              <AppText style={styles.inviteIconText}>LG</AppText>
             </View>
             <View style={styles.cardCopy}>
-              <Text style={styles.cardTitle}>{item.lawyer_email || 'No email provided'}</Text>
-              <Text style={styles.cardMeta}>
+              <AppText style={styles.cardTitle}>{item.lawyer_email || 'No email provided'}</AppText>
+              <AppText style={styles.cardMeta}>
                 {item.lawyer_name || `Invited by ${item.assigned_by_name || item.client_name || 'an administrator'}`}
-              </Text>
+              </AppText>
             </View>
           </View>
           <InfoRow icon="mail-outline" label="Status" value={getStatus(item)} />

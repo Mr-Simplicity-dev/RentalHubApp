@@ -14,6 +14,7 @@ import recruitmentService from '../../services/recruitmentService';
 import { getErrorMessage } from '../../utils/http';
 import { colors, radius, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const ProgressBar = ({ value }) => (
   <View style={styles.progressTrack}>
     <View style={[styles.progressFill, { width: `${value}%` }]} />
@@ -139,12 +140,12 @@ const InterviewScreen = ({ route, navigation }) => {
       <PremiumCard>
         <InfoRow icon="document-text-outline" label="Question" value={`${currentIndex + 1} of ${questions.length}`} />
         <ProgressBar value={progress} />
-        <Text style={styles.progressText}>{Math.round(progress)}% complete</Text>
+        <AppText style={styles.progressText}>{Math.round(progress)}% complete</AppText>
       </PremiumCard>
 
       {currentQuestion ? (
         <PremiumCard>
-          <Text style={styles.questionText}>{currentQuestion.question}</Text>
+          <AppText style={styles.questionText}>{currentQuestion.question}</AppText>
           <View style={styles.optionGrid}>
             {['option_a', 'option_b', 'option_c', 'option_d'].map((key) => (
               <TouchableOpacity
@@ -154,8 +155,8 @@ const InterviewScreen = ({ route, navigation }) => {
                 onPress={() => answerQuestion(key.replace('option_', '').toUpperCase())}
                 disabled={submitting}
               >
-                <Text style={styles.optionBadge}>{key.replace('option_', '').toUpperCase()}</Text>
-                <Text style={styles.optionText}>{currentQuestion[key]}</Text>
+                <AppText style={styles.optionBadge}>{key.replace('option_', '').toUpperCase()}</AppText>
+                <AppText style={styles.optionText}>{currentQuestion[key]}</AppText>
               </TouchableOpacity>
             ))}
             <TouchableOpacity
@@ -164,7 +165,7 @@ const InterviewScreen = ({ route, navigation }) => {
               onPress={() => answerQuestion('X')}
               disabled={submitting}
             >
-              <Text style={styles.skipText}>Skip question</Text>
+              <AppText style={styles.skipText}>Skip question</AppText>
             </TouchableOpacity>
           </View>
         </PremiumCard>
@@ -183,7 +184,7 @@ const InterviewScreen = ({ route, navigation }) => {
 
       {completedSummary ? (
         <PremiumCard style={styles.completeCard}>
-          <Text style={styles.completeTitle}>Interview complete</Text>
+          <AppText style={styles.completeTitle}>Interview complete</AppText>
           <InfoRow icon="stats-chart-outline" label="Score" value={`${completedSummary.score}%`} />
           <InfoRow icon="checkmark-done-outline" label="Correct answers" value={completedSummary.correct_answers} />
           <InfoRow

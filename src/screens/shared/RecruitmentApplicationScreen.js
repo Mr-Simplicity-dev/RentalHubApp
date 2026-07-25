@@ -22,6 +22,7 @@ import recruitmentService from '../../services/recruitmentService';
 import { getErrorMessage } from '../../utils/http';
 import { colors, radius, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const DOCUMENT_FIELDS = [
   { key: 'cv', label: 'CV / Resume' },
   { key: 'cover_letter', label: 'Cover Letter' },
@@ -303,12 +304,12 @@ const RecruitmentApplicationScreen = ({ route }) => {
 
         {error ? (
           <PremiumCard style={styles.errorCard}>
-            <Text style={styles.errorText}>{error}</Text>
+            <AppText style={styles.errorText}>{error}</AppText>
           </PremiumCard>
         ) : null}
 
         <PremiumCard>
-          <Text style={styles.cardTitle}>Application status</Text>
+          <AppText style={styles.cardTitle}>Application status</AppText>
           <InfoRow icon="pricetag-outline" label="Reference" value={application?.reference_number || '-'} />
           <InfoRow icon="briefcase-outline" label="Status" value={appStatus} />
           <InfoRow icon="card-outline" label="Payment" value={paymentStatus} />
@@ -322,7 +323,7 @@ const RecruitmentApplicationScreen = ({ route }) => {
 
         <PremiumSectionTitle title="1. Pay application fee" />
         <PremiumCard>
-          <Text style={styles.cardText}>Start the payment flow to receive your access code.</Text>
+          <AppText style={styles.cardText}>Start the payment flow to receive your access code.</AppText>
           <PremiumButton
             title="Start payment"
             onPress={openPayment}
@@ -350,7 +351,7 @@ const RecruitmentApplicationScreen = ({ route }) => {
 
         <PremiumSectionTitle title="2. Unlock your application" />
         <PremiumCard>
-          <Text style={styles.cardText}>Enter the access code sent after successful payment.</Text>
+          <AppText style={styles.cardText}>Enter the access code sent after successful payment.</AppText>
           <Input
             label="Access code"
             placeholder="Access code"
@@ -378,7 +379,7 @@ const RecruitmentApplicationScreen = ({ route }) => {
             return (
               <View key={field.key} style={styles.docRow}>
                 <View style={styles.docCopy}>
-                  <Text style={styles.docLabel}>{field.label}</Text>
+                  <AppText style={styles.docLabel}>{field.label}</AppText>
                   {asset ? (
                     <FilePreviewCard
                       title={asset.fileName || field.label}
@@ -390,7 +391,7 @@ const RecruitmentApplicationScreen = ({ route }) => {
                       actionLabel="Preview"
                     />
                   ) : (
-                    <Text style={styles.docHint}>No file selected</Text>
+                    <AppText style={styles.docHint}>No file selected</AppText>
                   )}
                 </View>
                 <TouchableOpacity
@@ -401,7 +402,7 @@ const RecruitmentApplicationScreen = ({ route }) => {
                   onPress={() => pickFile(field.key)}
                   disabled={uploading}
                 >
-                  <Text style={styles.docButtonText}>{asset ? 'Change' : 'Select'}</Text>
+                  <AppText style={styles.docButtonText}>{asset ? 'Change' : 'Select'}</AppText>
                 </TouchableOpacity>
               </View>
             );
@@ -409,11 +410,11 @@ const RecruitmentApplicationScreen = ({ route }) => {
 
           {uploadProgress ? (
             <View style={styles.uploadProgressCard}>
-              <Text style={styles.uploadProgressTitle}>
+              <AppText style={styles.uploadProgressTitle}>
                 Uploading {uploadProgress.label} ({uploadProgress.current}/{uploadProgress.total})
-              </Text>
+              </AppText>
               <ProgressBar value={uploadPercent} />
-              <Text style={styles.uploadProgressText}>{uploadPercent}% complete</Text>
+              <AppText style={styles.uploadProgressText}>{uploadPercent}% complete</AppText>
             </View>
           ) : null}
 
@@ -426,9 +427,9 @@ const RecruitmentApplicationScreen = ({ route }) => {
             style={styles.blockGap}
           />
           {!canUpload ? (
-            <Text style={styles.lockedCopy}>
+            <AppText style={styles.lockedCopy}>
               Payment and access-code verification are required before uploads unlock.
-            </Text>
+            </AppText>
           ) : null}
         </PremiumCard>
       </PremiumScreen>

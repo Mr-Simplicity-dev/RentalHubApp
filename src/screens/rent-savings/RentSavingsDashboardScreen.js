@@ -7,6 +7,7 @@ import { rentSavingsService } from '../../services/rentSavingsService';
 import { getErrorMessage, pickObject } from '../../utils/http';
 import { colors, radius, shadows, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const formatCurrency = (value) => `₦${Number(value || 0).toLocaleString()}`;
 
 const RentSavingsDashboardScreen = ({ navigation }) => {
@@ -59,17 +60,17 @@ const RentSavingsDashboardScreen = ({ navigation }) => {
           <View style={styles.heroIcon}><Icon name="leaf-outline" size={22} color={colors.gold} /></View>
           <TouchableOpacity style={styles.refreshButton} onPress={onRefresh}><Icon name="refresh" size={19} color={colors.white} /></TouchableOpacity>
         </View>
-        <Text style={styles.summaryLabel}>TOTAL SAVED FOR RENT</Text>
-        <Text style={styles.summaryValue}>{formatCurrency(totalSaved)}</Text>
-        <Text style={styles.heroCaption}>Build your next rent payment steadily and confidently.</Text>
+        <AppText style={styles.summaryLabel}>TOTAL SAVED FOR RENT</AppText>
+        <AppText style={styles.summaryValue}>{formatCurrency(totalSaved)}</AppText>
+        <AppText style={styles.heroCaption}>Build your next rent payment steadily and confidently.</AppText>
         <View style={styles.summaryRow}>
           <View style={styles.summaryItem}>
-            <Text style={styles.summaryItemValue}>{totalGoals}</Text>
-            <Text style={styles.summaryItemLabel}>Total plans</Text>
+            <AppText style={styles.summaryItemValue}>{totalGoals}</AppText>
+            <AppText style={styles.summaryItemLabel}>Total plans</AppText>
           </View>
           <View style={styles.summaryItem}>
-            <Text style={styles.summaryItemValue}>{activeGoals}</Text>
-            <Text style={styles.summaryItemLabel}>Active plans</Text>
+            <AppText style={styles.summaryItemValue}>{activeGoals}</AppText>
+            <AppText style={styles.summaryItemLabel}>Active plans</AppText>
           </View>
         </View>
       </View>
@@ -80,7 +81,7 @@ const RentSavingsDashboardScreen = ({ navigation }) => {
           onPress={() => navigation.navigate('SavingsGoalCreate')}
         >
           <View style={styles.actionIcon}><Icon name="add" size={23} color={colors.blue} /></View>
-          <View style={styles.actionCopy}><Text style={styles.actionText}>Create a plan</Text><Text style={styles.actionSub}>Set a new rent target</Text></View>
+          <View style={styles.actionCopy}><AppText style={styles.actionText}>Create a plan</AppText><AppText style={styles.actionSub}>Set a new rent target</AppText></View>
           <Icon name="chevron-forward" size={17} color={colors.muted} />
         </TouchableOpacity>
 
@@ -89,14 +90,14 @@ const RentSavingsDashboardScreen = ({ navigation }) => {
           onPress={() => navigation.navigate('SavingsGoalList')}
         >
           <View style={styles.actionIcon}><Icon name="list-outline" size={22} color={colors.blue} /></View>
-          <View style={styles.actionCopy}><Text style={styles.actionText}>My plans</Text><Text style={styles.actionSub}>Track every goal</Text></View>
+          <View style={styles.actionCopy}><AppText style={styles.actionText}>My plans</AppText><AppText style={styles.actionSub}>Track every goal</AppText></View>
           <Icon name="chevron-forward" size={17} color={colors.muted} />
         </TouchableOpacity>
       </View>
 
       {dashboard?.upcoming_due?.length > 0 && (
         <>
-          <View style={styles.sectionHeader}><Text style={styles.sectionTitle}>Upcoming rent</Text><Text style={styles.sectionCount}>{dashboard.upcoming_due.length} due</Text></View>
+          <View style={styles.sectionHeader}><AppText style={styles.sectionTitle}>Upcoming rent</AppText><AppText style={styles.sectionCount}>{dashboard.upcoming_due.length} due</AppText></View>
           {dashboard.upcoming_due.map((goal) => (
             <TouchableOpacity
               key={goal.id}
@@ -105,12 +106,12 @@ const RentSavingsDashboardScreen = ({ navigation }) => {
             >
               <View style={styles.goalHeader}>
                 <View style={styles.goalIcon}><Icon name="home-outline" size={18} color={colors.blue} /></View>
-                <Text style={styles.goalName}>Plan #{goal.id}</Text>
-                <Text style={styles.goalStatus}>
+                <AppText style={styles.goalName}>Plan #{goal.id}</AppText>
+                <AppText style={styles.goalStatus}>
                   {new Date(goal.rent_due_date).toLocaleDateString()}
-                </Text>
+                </AppText>
               </View>
-              <Text style={styles.goalTarget}>{formatCurrency(goal.target_savings_amount)}</Text>
+              <AppText style={styles.goalTarget}>{formatCurrency(goal.target_savings_amount)}</AppText>
               <View style={styles.progressBar}>
                 <View
                   style={[
@@ -126,9 +127,9 @@ const RentSavingsDashboardScreen = ({ navigation }) => {
                   ]}
                 />
               </View>
-              <Text style={styles.goalProgress}>
+              <AppText style={styles.goalProgress}>
                 {formatCurrency(goal.total_saved || 0)} saved
-              </Text>
+              </AppText>
             </TouchableOpacity>
           ))}
         </>

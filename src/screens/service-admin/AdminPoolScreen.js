@@ -6,6 +6,7 @@ import { supportService } from '../../services/supportService';
 import { colors, spacing, typography } from '../../theme';
 import { getErrorMessage } from '../../utils/http';
 
+import AppText from '../../components/common/AppText';
 const AdminPoolScreen = ({ navigation }) => {
   const { user } = useContext(AuthContext);
   const [pool, setPool] = useState([]);
@@ -55,19 +56,19 @@ const AdminPoolScreen = ({ navigation }) => {
   const renderItem = ({ item }) => (
     <View style={styles.row}>
       <View style={styles.info}>
-        <Text style={styles.name}>{item.full_name}</Text>
-        <Text style={styles.meta}>
+        <AppText style={styles.name}>{item.full_name}</AppText>
+        <AppText style={styles.meta}>
           {item.user_type} · {item.assigned_state || 'No state'}
           {item.assigned_city ? ` / ${item.assigned_city}` : ''}
-        </Text>
+        </AppText>
       </View>
       <View style={styles.stats}>
-        <Text style={styles.count}>{item.open_tickets}</Text>
-        <Text style={styles.label}>open</Text>
+        <AppText style={styles.count}>{item.open_tickets}</AppText>
+        <AppText style={styles.label}>open</AppText>
       </View>
       {!canManageLeads && item.is_lead ? (
         <View style={styles.leadBadge}>
-          <Text style={styles.leadText}>Lead</Text>
+          <AppText style={styles.leadText}>Lead</AppText>
         </View>
       ) : canManageLeads ? (
         <TouchableOpacity
@@ -75,9 +76,9 @@ const AdminPoolScreen = ({ navigation }) => {
           style={[styles.promoteBtn, item.is_lead && styles.demoteBtn]}
           onPress={() => setLead(item)}
         >
-          <Text style={[styles.promoteText, item.is_lead && styles.demoteText]}>
+          <AppText style={[styles.promoteText, item.is_lead && styles.demoteText]}>
             {updatingId === item.id ? 'Saving…' : item.is_lead ? 'Remove Lead' : 'Make Lead'}
-          </Text>
+          </AppText>
         </TouchableOpacity>
       ) : null}
     </View>
@@ -85,9 +86,9 @@ const AdminPoolScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Admin Pool</Text>
+      <AppText style={styles.title}>Admin Pool</AppText>
       <TouchableOpacity onPress={load} style={styles.refresh}>
-        <Text style={styles.refreshText}>Refresh</Text>
+        <AppText style={styles.refreshText}>Refresh</AppText>
       </TouchableOpacity>
       <FlatList
         data={pool}
@@ -95,7 +96,7 @@ const AdminPoolScreen = ({ navigation }) => {
         renderItem={renderItem}
         refreshing={loading}
         onRefresh={load}
-        ListEmptyComponent={<Text style={styles.empty}>No support admins found</Text>}
+        ListEmptyComponent={<AppText style={styles.empty}>No support admins found</AppText>}
       />
     </View>
   );

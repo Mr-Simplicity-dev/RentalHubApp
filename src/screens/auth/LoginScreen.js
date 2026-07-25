@@ -20,6 +20,7 @@ import Toast from 'react-native-toast-message';
 import { biometricService } from '../../services/biometricService';
 import { colors, radius, shadows, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -195,11 +196,11 @@ const LoginScreen = ({ navigation }) => {
           </View>
 
           <View style={styles.header}>
-            <Text style={styles.eyebrow}>WELCOME BACK</Text>
-            <Text style={styles.title}>Good to see you again.</Text>
-            <Text style={styles.subtitle}>
+            <AppText style={styles.eyebrow}>WELCOME BACK</AppText>
+            <AppText style={styles.title}>Good to see you again.</AppText>
+            <AppText style={styles.subtitle}>
               Sign in to continue managing your RentalHub experience.
-            </Text>
+            </AppText>
           </View>
 
           <View style={styles.formCard}>
@@ -227,7 +228,7 @@ const LoginScreen = ({ navigation }) => {
             <TouchableOpacity
               onPress={() => navigation.navigate('ForgotPassword')}
               style={styles.forgotPassword}>
-              <Text style={styles.forgotPasswordText}>Forgot password?</Text>
+              <AppText style={styles.forgotPasswordText}>Forgot password?</AppText>
             </TouchableOpacity>
 
             <Button
@@ -250,9 +251,9 @@ const LoginScreen = ({ navigation }) => {
           </View>
 
           <View style={styles.footer}>
-            <Text style={styles.footerText}>New to RentalHub?</Text>
+            <AppText style={styles.footerText}>New to RentalHub?</AppText>
             <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-              <Text style={styles.signUpText}> Create an account</Text>
+              <AppText style={styles.signUpText}> Create an account</AppText>
             </TouchableOpacity>
           </View>
 
@@ -260,7 +261,7 @@ const LoginScreen = ({ navigation }) => {
             onPress={() => navigation.navigate('AcceptLawyerInvite')}
             style={styles.inviteLink}>
             <Icon name="briefcase-outline" size={16} color={colors.muted} />
-            <Text style={styles.inviteText}>I received a lawyer invitation</Text>
+            <AppText style={styles.inviteText}>I received a lawyer invitation</AppText>
           </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>

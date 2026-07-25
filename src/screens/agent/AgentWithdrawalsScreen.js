@@ -10,6 +10,7 @@ import { agentService } from '../../services/agentService';
 import { colors, radius, shadows, typography } from '../../theme';
 import { getErrorMessage, pickList, pickObject } from '../../utils/http';
 
+import AppText from '../../components/common/AppText';
 const AgentWithdrawalsScreen = ({ navigation }) => {
   const { user } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
@@ -114,22 +115,22 @@ const AgentWithdrawalsScreen = ({ navigation }) => {
         <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
           <Icon name="arrow-back" size={21} color={colors.ink} />
         </TouchableOpacity>
-        <Text style={styles.topTitle}>Withdraw funds</Text>
+        <AppText style={styles.topTitle}>Withdraw funds</AppText>
         <View style={styles.topSpacer} />
       </View>
 
       {!landlordId ? (
         <View style={styles.warningCard}>
           <View style={styles.warningIcon}><Icon name="alert-circle-outline" size={24} color="#A66B00" /></View>
-          <Text style={styles.warningTitle}>No assigned landlord</Text>
-          <Text style={styles.warningText}>You need an active assignment before withdrawals can be requested.</Text>
+          <AppText style={styles.warningTitle}>No assigned landlord</AppText>
+          <AppText style={styles.warningText}>You need an active assignment before withdrawals can be requested.</AppText>
         </View>
       ) : (
         <>
           <View style={styles.hero}>
-            <Text style={styles.heroEyebrow}>PAYOUT CENTRE</Text>
-            <Text style={styles.title}>Move your earnings</Text>
-            <Text style={styles.subtitle}>Request a secure bank transfer from your commission balance.</Text>
+            <AppText style={styles.heroEyebrow}>PAYOUT CENTRE</AppText>
+            <AppText style={styles.title}>Move your earnings</AppText>
+            <AppText style={styles.subtitle}>Request a secure bank transfer from your commission balance.</AppText>
           </View>
 
           <View style={styles.summaryCard}>
@@ -140,8 +141,8 @@ const AgentWithdrawalsScreen = ({ navigation }) => {
             ].map(([label, value, icon, color]) => (
               <View key={label} style={styles.summaryItem}>
                 <Icon name={icon} size={18} color={color} />
-                <Text style={styles.summaryLabel}>{label}</Text>
-                <Text style={styles.summaryValue}>₦{Number(value || 0).toLocaleString()}</Text>
+                <AppText style={styles.summaryLabel}>{label}</AppText>
+                <AppText style={styles.summaryValue}>₦{Number(value || 0).toLocaleString()}</AppText>
               </View>
             ))}
           </View>
@@ -150,8 +151,8 @@ const AgentWithdrawalsScreen = ({ navigation }) => {
             <View style={styles.formHeading}>
               <View style={styles.formIcon}><Icon name="cash-outline" size={20} color={colors.blue} /></View>
               <View>
-                <Text style={styles.formTitle}>New request</Text>
-                <Text style={styles.formSubtitle}>Funds are sent by bank transfer.</Text>
+                <AppText style={styles.formTitle}>New request</AppText>
+                <AppText style={styles.formSubtitle}>Funds are sent by bank transfer.</AppText>
               </View>
             </View>
             <Input
@@ -171,24 +172,24 @@ const AgentWithdrawalsScreen = ({ navigation }) => {
           </View>
 
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Request history</Text>
-            <Text style={styles.sectionCount}>{requests.length} requests</Text>
+            <AppText style={styles.sectionTitle}>Request history</AppText>
+            <AppText style={styles.sectionCount}>{requests.length} requests</AppText>
           </View>
           {requests.length === 0 ? (
-            <View style={styles.emptyCard}><Text style={styles.empty}>No withdrawal requests yet.</Text></View>
+            <View style={styles.emptyCard}><AppText style={styles.empty}>No withdrawal requests yet.</AppText></View>
           ) : null}
 
           {requests.map((item) => (
             <View key={String(item.id)} style={styles.row}>
               <View style={styles.rowTop}>
                 <View>
-                  <Text style={styles.amount}>₦{Number(item.amount || 0).toLocaleString()}</Text>
-                  <Text style={styles.meta}>{new Date(item.created_at).toLocaleDateString()}</Text>
+                  <AppText style={styles.amount}>₦{Number(item.amount || 0).toLocaleString()}</AppText>
+                  <AppText style={styles.meta}>{new Date(item.created_at).toLocaleDateString()}</AppText>
                 </View>
-                <View style={styles.statusPill}><Text style={styles.statusText}>{item.status || 'pending'}</Text></View>
+                <View style={styles.statusPill}><AppText style={styles.statusText}>{item.status || 'pending'}</AppText></View>
               </View>
               {item.reason_for_rejection ? (
-                <Text style={styles.reject}>Reason: {item.reason_for_rejection}</Text>
+                <AppText style={styles.reject}>Reason: {item.reason_for_rejection}</AppText>
               ) : null}
             </View>
           ))}

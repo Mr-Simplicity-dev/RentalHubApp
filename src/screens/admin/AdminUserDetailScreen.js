@@ -17,6 +17,7 @@ import { adminService } from '../../services/adminService';
 import { getErrorMessage, pickObject } from '../../utils/http';
 import { colors, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const AdminUserDetailScreen = ({ route, navigation }) => {
   const userId = route?.params?.id;
   const [user, setUser] = useState(null);
@@ -96,8 +97,8 @@ const AdminUserDetailScreen = ({ route, navigation }) => {
         <View style={styles.avatar}>
           <Icon name="person-outline" size={34} color={colors.white} />
         </View>
-        <Text style={styles.userName}>{user.full_name || user.name || 'User account'}</Text>
-        <Text style={styles.userEmail}>{user.email || 'No email'}</Text>
+        <AppText style={styles.userName}>{user.full_name || user.name || 'User account'}</AppText>
+        <AppText style={styles.userEmail}>{user.email || 'No email'}</AppText>
         <StatusPill label={status} color={status === 'active' ? colors.success : colors.warning} />
       </PremiumCard>
 
@@ -124,10 +125,10 @@ const AdminUserDetailScreen = ({ route, navigation }) => {
 
         {canDisable ? (
           <PremiumCard style={styles.dangerZone}>
-            <Text style={styles.dangerTitle}>Danger zone</Text>
-            <Text style={styles.dangerCopy}>
+            <AppText style={styles.dangerTitle}>Danger zone</AppText>
+            <AppText style={styles.dangerCopy}>
               Disabling this account immediately blocks access and records the reason in the audit history.
-            </Text>
+            </AppText>
             <PremiumButton
               title="Disable user"
               variant="danger"

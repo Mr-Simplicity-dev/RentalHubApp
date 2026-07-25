@@ -20,6 +20,7 @@ import { propertyService } from '../../services/propertyService';
 import { colors, radius, typography } from '../../theme';
 import { getErrorMessage, pickList } from '../../utils/http';
 
+import AppText from '../../components/common/AppText';
 const MyPropertiesScreen = ({ navigation }) => {
   const { user } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
@@ -120,8 +121,8 @@ const MyPropertiesScreen = ({ navigation }) => {
     return (
       <SafeAreaView style={styles.center}>
         <Icon name="lock-closed-outline" size={32} color={colors.blue} />
-        <Text style={styles.emptyTitle}>Property management unavailable</Text>
-        <Text style={styles.emptyText}>This area is for landlords and assigned agents.</Text>
+        <AppText style={styles.emptyTitle}>Property management unavailable</AppText>
+        <AppText style={styles.emptyText}>This area is for landlords and assigned agents.</AppText>
       </SafeAreaView>
     );
   }
@@ -133,8 +134,8 @@ const MyPropertiesScreen = ({ navigation }) => {
           <Icon name="arrow-back" size={22} color={colors.navy} />
         </TouchableOpacity>
         <View style={styles.headerCopy}>
-          <Text style={styles.eyebrow}>PORTFOLIO</Text>
-          <Text style={styles.title}>My properties</Text>
+          <AppText style={styles.eyebrow}>PORTFOLIO</AppText>
+          <AppText style={styles.title}>My properties</AppText>
         </View>
         <TouchableOpacity
           onPress={() => navigation.navigate('AddProperty')}
@@ -151,8 +152,8 @@ const MyPropertiesScreen = ({ navigation }) => {
           <>
             <View style={styles.summaryCard}>
               <View>
-                <Text style={styles.summaryLabel}>TOTAL PORTFOLIO</Text>
-                <Text style={styles.summaryValue}>{items.length} properties</Text>
+                <AppText style={styles.summaryLabel}>TOTAL PORTFOLIO</AppText>
+                <AppText style={styles.summaryValue}>{items.length} properties</AppText>
               </View>
               <View style={styles.summaryIcon}>
                 <Icon name="business-outline" size={23} color={colors.gold} />
@@ -164,9 +165,9 @@ const MyPropertiesScreen = ({ navigation }) => {
                   key={value}
                   onPress={() => setFilter(value)}
                   style={[styles.filterChip, filter === value && styles.filterChipActive]}>
-                  <Text style={[styles.filterText, filter === value && styles.filterTextActive]}>
+                  <AppText style={[styles.filterText, filter === value && styles.filterTextActive]}>
                     {value.charAt(0).toUpperCase() + value.slice(1)}
-                  </Text>
+                  </AppText>
                 </TouchableOpacity>
               ))}
             </View>
@@ -182,19 +183,19 @@ const MyPropertiesScreen = ({ navigation }) => {
               <View style={styles.emptyIcon}>
                 <Icon name="home-outline" size={31} color={colors.blue} />
               </View>
-              <Text style={styles.emptyTitle}>
+              <AppText style={styles.emptyTitle}>
                 {filter === 'all' ? 'Build your property portfolio' : `No ${filter} properties`}
-              </Text>
-              <Text style={styles.emptyText}>
+              </AppText>
+              <AppText style={styles.emptyText}>
                 {filter === 'all'
                   ? 'Add your first property and submit it for verification.'
                   : 'Try another portfolio filter.'}
-              </Text>
+              </AppText>
               {filter === 'all' ? (
                 <TouchableOpacity
                   onPress={() => navigation.navigate('AddProperty')}
                   style={styles.emptyAction}>
-                  <Text style={styles.emptyActionText}>Add a property</Text>
+                  <AppText style={styles.emptyActionText}>Add a property</AppText>
                   <Icon name="arrow-forward" size={17} color={colors.white} />
                 </TouchableOpacity>
               ) : null}
@@ -230,15 +231,15 @@ const MyPropertiesScreen = ({ navigation }) => {
                   <BrandImagePlaceholder compact style={styles.image} />
                 )}
                 <View style={[styles.statusPill, { backgroundColor: statusBg }]}>
-                  <Text style={[styles.statusText, { color: statusColor }]}>{status}</Text>
+                  <AppText style={[styles.statusText, { color: statusColor }]}>{status}</AppText>
                 </View>
                 <View style={styles.cardBody}>
-                  <Text style={styles.cardTitle}>{item.title || 'Rental property'}</Text>
-                  <Text style={styles.cardMeta}>
+                  <AppText style={styles.cardTitle}>{item.title || 'Rental property'}</AppText>
+                  <AppText style={styles.cardMeta}>
                     {[item.area, item.city, item.state_name].filter(Boolean).join(', ') ||
                       'Location unavailable'}
-                  </Text>
-                  <Text style={styles.price}>₦{Number(item.rent_amount || 0).toLocaleString()}</Text>
+                  </AppText>
+                  <AppText style={styles.price}>₦{Number(item.rent_amount || 0).toLocaleString()}</AppText>
                 </View>
               </TouchableOpacity>
               <View style={styles.actions}>
@@ -247,15 +248,15 @@ const MyPropertiesScreen = ({ navigation }) => {
                   onPress={() => updateAvailability(item)}
                   style={styles.action}>
                   <Icon name={item.is_available ? 'pause-circle-outline' : 'play-circle-outline'} size={18} color={colors.blue} />
-                  <Text style={styles.actionText}>{item.is_available ? 'Pause' : 'Activate'}</Text>
+                  <AppText style={styles.actionText}>{item.is_available ? 'Pause' : 'Activate'}</AppText>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => setDamagePropertyId(item.id)} style={styles.action}>
                   <Icon name="construct-outline" size={18} color={colors.blue} />
-                  <Text style={styles.actionText}>Damage</Text>
+                  <AppText style={styles.actionText}>Damage</AppText>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => confirmUnlist(item)} style={styles.action}>
                   <Icon name="trash-outline" size={18} color={colors.danger} />
-                  <Text style={styles.dangerText}>Unlist</Text>
+                  <AppText style={styles.dangerText}>Unlist</AppText>
                 </TouchableOpacity>
               </View>
             </View>

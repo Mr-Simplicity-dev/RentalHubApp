@@ -9,6 +9,7 @@ import {
 } from '../../components/dashboard/DashboardKit';
 import { colors, radius, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const INFO_PAGES = {
   faq: {
     eyebrow: 'HELP CENTER',
@@ -159,8 +160,8 @@ const PublicInfoScreen = ({ navigation, route }) => {
         <DashboardSection key={section.title} title={section.title}>
           {section.items.map((item) => (
             <View key={item} style={styles.infoCard}>
-              <Text style={styles.bullet}>•</Text>
-              <Text style={styles.infoText}>{item}</Text>
+              <AppText style={styles.bullet}>•</AppText>
+              <AppText style={styles.infoText}>{item}</AppText>
             </View>
           ))}
         </DashboardSection>

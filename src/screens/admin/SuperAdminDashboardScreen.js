@@ -35,6 +35,7 @@ import {
 import { AuthContext } from '../../context/AuthContext';
 import { colors, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const sections = [
   'overview',
   'users',
@@ -122,7 +123,7 @@ const defaultAdSpaceForm = {
 
 const FilterChip = ({ label, active, onPress }) => (
   <TouchableOpacity style={[styles.filterChip, active && styles.filterChipActive]} onPress={onPress}>
-    <Text style={[styles.filterChipText, active && styles.filterChipTextActive]}>{label}</Text>
+    <AppText style={[styles.filterChipText, active && styles.filterChipTextActive]}>{label}</AppText>
   </TouchableOpacity>
 );
 
@@ -712,10 +713,10 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
     return (
       <View>
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Analytics Overview</Text>
-          <Text style={styles.meta}>
+          <AppText style={styles.cardTitle}>Analytics Overview</AppText>
+          <AppText style={styles.meta}>
             Quick platform statistics at a glance. Use the Analytics tab for detailed metrics.
-          </Text>
+          </AppText>
         </View>
 
         {analyticEntries.length === 0 ? (
@@ -728,12 +729,12 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
           <View style={styles.analyticsGrid}>
             {analyticEntries.map(([key, value]) => (
               <View key={key} style={styles.analyticsCard}>
-                <Text style={styles.analyticsValue}>
+                <AppText style={styles.analyticsValue}>
                   {typeof value === 'number' ? value.toLocaleString() : String(value)}
-                </Text>
-                <Text style={styles.analyticsLabel}>
+                </AppText>
+                <AppText style={styles.analyticsLabel}>
                   {key.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
-                </Text>
+                </AppText>
               </View>
             ))}
           </View>
@@ -741,12 +742,12 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
 
         {users.length > 0 && (
           <View style={styles.card}>
-            <Text style={styles.cardTitle}>Quick Stats</Text>
-            <Text style={styles.meta}>Total Users: {users.length}</Text>
-            <Text style={styles.meta}>Total Properties: {properties.length}</Text>
-            <Text style={styles.meta}>Total Reports: {reports.length}</Text>
-            <Text style={styles.meta}>Active Lawyers: {platformLawyers.length}</Text>
-            <Text style={styles.meta}>Pending Admins: {pendingAdmins.length}</Text>
+            <AppText style={styles.cardTitle}>Quick Stats</AppText>
+            <AppText style={styles.meta}>Total Users: {users.length}</AppText>
+            <AppText style={styles.meta}>Total Properties: {properties.length}</AppText>
+            <AppText style={styles.meta}>Total Reports: {reports.length}</AppText>
+            <AppText style={styles.meta}>Active Lawyers: {platformLawyers.length}</AppText>
+            <AppText style={styles.meta}>Pending Admins: {pendingAdmins.length}</AppText>
           </View>
         )}
 
@@ -783,13 +784,13 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
   const renderUsers = () => (
     <>
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>Users ({users.length})</Text>
-        <Text style={styles.meta}>
+        <AppText style={styles.cardTitle}>Users ({users.length})</AppText>
+        <AppText style={styles.meta}>
           Select multiple users for bulk actions (ban, unban, promote, delete).
-        </Text>
+        </AppText>
         {selectedUserIds.length > 0 && (
           <View style={styles.bulkActions}>
-            <Text style={styles.filterLabel}>{selectedUserIds.length} selected</Text>
+            <AppText style={styles.filterLabel}>{selectedUserIds.length} selected</AppText>
             <View style={styles.filtersRow}>
               {['ban', 'unban', 'promote', 'delete'].map((action) => (
                 <FilterChip
@@ -808,7 +809,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                 size="sm"
               />
               <TouchableOpacity onPress={() => setSelectedUserIds([])}>
-                <Text style={styles.warnText}>Clear Selection</Text>
+                <AppText style={styles.warnText}>Clear Selection</AppText>
               </TouchableOpacity>
             </View>
           </View>
@@ -827,32 +828,32 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
             <TouchableOpacity onPress={() => toggleUserSelection(item.id)}>
               <View style={styles.checkboxRow}>
                 <View style={[styles.checkbox, selectedUserIds.includes(item.id) && styles.checkboxActive]}>
-                  {selectedUserIds.includes(item.id) && <Text style={styles.checkmark}>✓</Text>}
+                  {selectedUserIds.includes(item.id) && <AppText style={styles.checkmark}>✓</AppText>}
                 </View>
                 <View>
-                  <Text style={styles.cardTitle}>{item.full_name}</Text>
-                  <Text style={styles.meta}>{item.email}</Text>
+                  <AppText style={styles.cardTitle}>{item.full_name}</AppText>
+                  <AppText style={styles.meta}>{item.email}</AppText>
                 </View>
               </View>
             </TouchableOpacity>
-            <Text style={styles.meta}>Role: {item.user_type}</Text>
-            {item.state_name ? <Text style={styles.meta}>State: {item.state_name}</Text> : null}
+            <AppText style={styles.meta}>Role: {item.user_type}</AppText>
+            {item.state_name ? <AppText style={styles.meta}>State: {item.state_name}</AppText> : null}
             {item.is_banned !== undefined && <StatusBadge status={item.is_banned ? 'banned' : 'active'} />}
             <View style={styles.row}>
               {item.is_banned ? (
                 <TouchableOpacity onPress={() => runAction(() => superAdminService.unbanUser(item.id), 'User unbanned')}>
-                  <Text style={styles.linkText}>Unban</Text>
+                  <AppText style={styles.linkText}>Unban</AppText>
                 </TouchableOpacity>
               ) : (
                 <TouchableOpacity onPress={() => setOperationPrompt({ type: 'ban_user', target: item })}>
-                  <Text style={styles.warnText}>Ban</Text>
+                  <AppText style={styles.warnText}>Ban</AppText>
                 </TouchableOpacity>
               )}
               <TouchableOpacity onPress={() => runAction(() => superAdminService.promoteUser(item.id), 'User promoted')}>
-                <Text style={styles.linkText}>Promote</Text>
+                <AppText style={styles.linkText}>Promote</AppText>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => runAction(() => superAdminService.deleteUser(item.id), 'User deleted')}>
-                <Text style={styles.warnText}>Delete</Text>
+                <AppText style={styles.warnText}>Delete</AppText>
               </TouchableOpacity>
             </View>
           </View>
@@ -864,7 +865,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
   const renderVerifications = () => (
     <>
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>Verification Filters</Text>
+        <AppText style={styles.cardTitle}>Verification Filters</AppText>
         <Input
           label="Search"
           value={verificationFilters.search}
@@ -873,7 +874,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
           }
           placeholder="Name, email, NIN, passport"
         />
-        <Text style={styles.filterLabel}>Status</Text>
+        <AppText style={styles.filterLabel}>Status</AppText>
         <View style={styles.filtersRow}>
           {['pending', 'verified', 'rejected', 'all'].map((value) => (
             <FilterChip
@@ -887,7 +888,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
           ))}
         </View>
 
-        <Text style={styles.filterLabel}>Role</Text>
+        <AppText style={styles.filterLabel}>Role</AppText>
         <View style={styles.filtersRow}>
           {['all', 'admin', 'landlord', 'tenant'].map((value) => (
             <FilterChip
@@ -916,18 +917,18 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
 
         return (
           <View key={item.id} style={styles.card}>
-            <Text style={styles.cardTitle}>{item.full_name}</Text>
-            <Text style={styles.meta}>{item.email}</Text>
-            <Text style={styles.meta}>Role: {item.user_type}</Text>
-            <Text style={styles.meta}>Document: {item.identity_document_type || 'nin'}</Text>
-            <Text style={styles.meta}>Number: {documentNumber || '-'}</Text>
-            <Text style={styles.meta}>Status: {reviewStatus}</Text>
-            <Text style={styles.meta}>Verified By: {item.identity_verified_by_name || '-'}</Text>
+            <AppText style={styles.cardTitle}>{item.full_name}</AppText>
+            <AppText style={styles.meta}>{item.email}</AppText>
+            <AppText style={styles.meta}>Role: {item.user_type}</AppText>
+            <AppText style={styles.meta}>Document: {item.identity_document_type || 'nin'}</AppText>
+            <AppText style={styles.meta}>Number: {documentNumber || '-'}</AppText>
+            <AppText style={styles.meta}>Status: {reviewStatus}</AppText>
+            <AppText style={styles.meta}>Verified By: {item.identity_verified_by_name || '-'}</AppText>
             {item.passport_photo_url ? (
               <TouchableOpacity
                 onPress={() => Linking.openURL(buildUploadUrl(item.passport_photo_url))}
               >
-                <Text style={styles.linkText}>Open passport photo</Text>
+                <AppText style={styles.linkText}>Open passport photo</AppText>
               </TouchableOpacity>
             ) : null}
             <View style={styles.row}>
@@ -940,7 +941,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                     )
                   }
                 >
-                  <Text style={styles.linkText}>Approve</Text>
+                  <AppText style={styles.linkText}>Approve</AppText>
                 </TouchableOpacity>
               ) : null}
               {reviewStatus === 'pending' ? (
@@ -952,7 +953,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                     )
                   }
                 >
-                  <Text style={styles.warnText}>Reject</Text>
+                  <AppText style={styles.warnText}>Reject</AppText>
                 </TouchableOpacity>
               ) : null}
               {reviewStatus === 'rejected' ? (
@@ -964,7 +965,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                     )
                   }
                 >
-                  <Text style={styles.warnText}>Delete</Text>
+                  <AppText style={styles.warnText}>Delete</AppText>
                 </TouchableOpacity>
               ) : null}
             </View>
@@ -973,21 +974,21 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
       })}
 
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>Admin Verification Performance</Text>
+        <AppText style={styles.cardTitle}>Admin Verification Performance</AppText>
         {adminPerformance.length === 0 ? (
-          <Text style={styles.meta}>No admin verification activity yet.</Text>
+          <AppText style={styles.meta}>No admin verification activity yet.</AppText>
         ) : (
           adminPerformance.map((item) => (
             <View key={item.id} style={styles.listRow}>
-              <Text style={styles.listTitle}>{item.full_name}</Text>
-              <Text style={styles.meta}>{item.email}</Text>
-              <Text style={styles.meta}>Verified: {item.credentials_verified_count ?? 0}</Text>
-              <Text style={styles.meta}>
+              <AppText style={styles.listTitle}>{item.full_name}</AppText>
+              <AppText style={styles.meta}>{item.email}</AppText>
+              <AppText style={styles.meta}>Verified: {item.credentials_verified_count ?? 0}</AppText>
+              <AppText style={styles.meta}>
                 Last activity:{' '}
                 {item.last_verification_at
                   ? new Date(item.last_verification_at).toLocaleString()
                   : 'No activity'}
-              </Text>
+              </AppText>
             </View>
           ))
         )}
@@ -1009,7 +1010,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
   const renderLawyerInvites = () => (
     <>
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>Lawyer Invite Search</Text>
+        <AppText style={styles.cardTitle}>Lawyer Invite Search</AppText>
         <Input
           label="Search"
           value={lawyerInviteSearch}
@@ -1024,26 +1025,26 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
 
       {lawyerInvites.length === 0 ? (
         <View style={styles.card}>
-          <Text style={styles.meta}>No lawyer invites found.</Text>
+          <AppText style={styles.meta}>No lawyer invites found.</AppText>
         </View>
       ) : null}
 
       {lawyerInvites.map((invite) => (
         <View key={invite.id} style={styles.card}>
-          <Text style={styles.cardTitle}>{invite.client_name}</Text>
-          <Text style={styles.meta}>Assigned By: {invite.assigned_by_name || invite.client_name || '-'}</Text>
-          <Text style={styles.meta}>Role: {invite.client_role}</Text>
-          <Text style={styles.meta}>Lawyer Email: {invite.lawyer_email}</Text>
-          <Text style={styles.meta}>Status: {getInviteStatusLabel(invite)}</Text>
-          <Text style={styles.meta}>
+          <AppText style={styles.cardTitle}>{invite.client_name}</AppText>
+          <AppText style={styles.meta}>Assigned By: {invite.assigned_by_name || invite.client_name || '-'}</AppText>
+          <AppText style={styles.meta}>Role: {invite.client_role}</AppText>
+          <AppText style={styles.meta}>Lawyer Email: {invite.lawyer_email}</AppText>
+          <AppText style={styles.meta}>Status: {getInviteStatusLabel(invite)}</AppText>
+          <AppText style={styles.meta}>
             Expires:{' '}
             {invite.expires_at ? new Date(invite.expires_at).toLocaleString() : '-'}
-          </Text>
-          <Text style={styles.meta}>
+          </AppText>
+          <AppText style={styles.meta}>
             Last Sent:{' '}
             {invite.last_sent_at ? new Date(invite.last_sent_at).toLocaleString() : '-'}
-          </Text>
-          <Text style={styles.meta}>Resends: {invite.resent_count ?? 0}</Text>
+          </AppText>
+          <AppText style={styles.meta}>Resends: {invite.resent_count ?? 0}</AppText>
 
           {editingInviteId === invite.id ? (
             <>
@@ -1070,7 +1071,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                     )
                   }
                 >
-                  <Text style={styles.linkText}>Save Email</Text>
+                  <AppText style={styles.linkText}>Save Email</AppText>
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => {
@@ -1078,7 +1079,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                     setEditingInviteEmail('');
                   }}
                 >
-                  <Text style={styles.warnText}>Cancel</Text>
+                  <AppText style={styles.warnText}>Cancel</AppText>
                 </TouchableOpacity>
               </View>
             </>
@@ -1098,7 +1099,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                   )
                 }
               >
-                <Text style={styles.linkText}>Resend Invite</Text>
+                <AppText style={styles.linkText}>Resend Invite</AppText>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {
@@ -1106,7 +1107,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                   setEditingInviteEmail(invite.lawyer_email || '');
                 }}
               >
-                <Text style={styles.linkText}>Change Email</Text>
+                <AppText style={styles.linkText}>Change Email</AppText>
               </TouchableOpacity>
             </View>
           ) : null}
@@ -1118,26 +1119,26 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
   const renderPricing = () => (
     <>
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>Location Pricing Rules</Text>
-        <Text style={styles.meta}>
+        <AppText style={styles.cardTitle}>Location Pricing Rules</AppText>
+        <AppText style={styles.meta}>
           Configure final amounts by state or local government area. LGA rules override state rules.
-        </Text>
+        </AppText>
         <View style={styles.targetGrid}>
           {pricingTargets.map((target) => (
             <View key={target.key} style={styles.targetCard}>
-              <Text style={styles.listTitle}>{target.label}</Text>
-              <Text style={styles.meta}>
+              <AppText style={styles.listTitle}>{target.label}</AppText>
+              <AppText style={styles.meta}>
                 Base fee: N{Number(target.base_amount || 0).toLocaleString()}
-              </Text>
+              </AppText>
             </View>
           ))}
         </View>
       </View>
 
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>
+        <AppText style={styles.cardTitle}>
           {editingPricingRuleId ? 'Edit Pricing Rule' : 'Create Pricing Rule'}
-        </Text>
+        </AppText>
         <View style={styles.filtersRow}>
           {pricingTargets.map((target) => (
             <FilterChip
@@ -1176,7 +1177,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
         />
 
         <View style={styles.switchRow}>
-          <Text style={styles.meta}>Rule is active</Text>
+          <AppText style={styles.meta}>Rule is active</AppText>
           <Switch
             value={pricingForm.is_active}
             onValueChange={(value) =>
@@ -1205,13 +1206,13 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
 
         return (
           <View key={rule.id} style={styles.card}>
-            <Text style={styles.cardTitle}>{target?.label || rule.applies_to}</Text>
-            <Text style={styles.meta}>State: {rule.state_name}</Text>
-            <Text style={styles.meta}>LGA: {rule.lga_name || 'Whole state'}</Text>
-            <Text style={styles.meta}>
+            <AppText style={styles.cardTitle}>{target?.label || rule.applies_to}</AppText>
+            <AppText style={styles.meta}>State: {rule.state_name}</AppText>
+            <AppText style={styles.meta}>LGA: {rule.lga_name || 'Whole state'}</AppText>
+            <AppText style={styles.meta}>
               Amount: N{Number(rule.amount || 0).toLocaleString()}
-            </Text>
-            <Text style={styles.meta}>Status: {rule.is_active ? 'Active' : 'Inactive'}</Text>
+            </AppText>
+            <AppText style={styles.meta}>Status: {rule.is_active ? 'Active' : 'Inactive'}</AppText>
             <View style={styles.row}>
               <TouchableOpacity
                 onPress={() => {
@@ -1226,7 +1227,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                   setSection('pricing');
                 }}
               >
-                <Text style={styles.linkText}>Edit</Text>
+                <AppText style={styles.linkText}>Edit</AppText>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() =>
@@ -1243,7 +1244,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                   )
                 }
               >
-                <Text style={styles.linkText}>{rule.is_active ? 'Disable' : 'Enable'}</Text>
+                <AppText style={styles.linkText}>{rule.is_active ? 'Disable' : 'Enable'}</AppText>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() =>
@@ -1253,7 +1254,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                   )
                 }
               >
-                <Text style={styles.warnText}>Delete</Text>
+                <AppText style={styles.warnText}>Delete</AppText>
               </TouchableOpacity>
             </View>
           </View>
@@ -1290,13 +1291,13 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
   const renderProperties = () => (
     <>
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>Properties ({properties.length})</Text>
-        <Text style={styles.meta}>
+        <AppText style={styles.cardTitle}>Properties ({properties.length})</AppText>
+        <AppText style={styles.meta}>
           Select multiple properties for bulk actions, or manage individually below.
-        </Text>
+        </AppText>
         {selectedPropertyIds.length > 0 && (
           <View style={styles.bulkActions}>
-            <Text style={styles.filterLabel}>{selectedPropertyIds.length} selected</Text>
+            <AppText style={styles.filterLabel}>{selectedPropertyIds.length} selected</AppText>
             <View style={styles.filtersRow}>
               {['unlist', 'feature', 'unfeature', 'delete'].map((action) => (
                 <FilterChip
@@ -1315,7 +1316,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                 size="sm"
               />
               <TouchableOpacity onPress={() => setSelectedPropertyIds([])}>
-                <Text style={styles.warnText}>Clear Selection</Text>
+                <AppText style={styles.warnText}>Clear Selection</AppText>
               </TouchableOpacity>
             </View>
           </View>
@@ -1335,31 +1336,31 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
               <TouchableOpacity onPress={() => togglePropertySelection(item.id)}>
                 <View style={styles.checkboxRow}>
                   <View style={[styles.checkbox, selectedPropertyIds.includes(item.id) && styles.checkboxActive]}>
-                    {selectedPropertyIds.includes(item.id) && <Text style={styles.checkmark}>✓</Text>}
+                    {selectedPropertyIds.includes(item.id) && <AppText style={styles.checkmark}>✓</AppText>}
                   </View>
-                  <Text style={styles.cardTitle}>{item.title}</Text>
+                  <AppText style={styles.cardTitle}>{item.title}</AppText>
                 </View>
               </TouchableOpacity>
               {item.is_featured !== undefined && (
                 <StatusBadge status={item.is_featured ? 'featured' : 'standard'} />
               )}
             </View>
-            <Text style={styles.meta}>{item.landlord_name || 'No landlord'}</Text>
-            {item.state_name ? <Text style={styles.meta}>State: {item.state_name}</Text> : null}
-            {item.city ? <Text style={styles.meta}>City: {item.city}</Text> : null}
-            {item.price ? <Text style={styles.meta}>Price: N{Number(item.price).toLocaleString()}</Text> : null}
+            <AppText style={styles.meta}>{item.landlord_name || 'No landlord'}</AppText>
+            {item.state_name ? <AppText style={styles.meta}>State: {item.state_name}</AppText> : null}
+            {item.city ? <AppText style={styles.meta}>City: {item.city}</AppText> : null}
+            {item.price ? <AppText style={styles.meta}>Price: N{Number(item.price).toLocaleString()}</AppText> : null}
             <StatusBadge status={item.status || 'active'} />
             <View style={styles.row}>
               <TouchableOpacity onPress={() => runAction(() => superAdminService.unlistProperty(item.id), 'Property unlisted')}>
-                <Text style={styles.warnText}>Unlist</Text>
+                <AppText style={styles.warnText}>Unlist</AppText>
               </TouchableOpacity>
               {item.is_featured ? (
                 <TouchableOpacity onPress={() => runAction(() => superAdminService.unfeatureProperty(item.id), 'Property unfeatured')}>
-                  <Text style={styles.linkText}>Unfeature</Text>
+                  <AppText style={styles.linkText}>Unfeature</AppText>
                 </TouchableOpacity>
               ) : (
                 <TouchableOpacity onPress={() => runAction(() => superAdminService.featureProperty(item.id), 'Property featured')}>
-                  <Text style={styles.linkText}>Feature</Text>
+                  <AppText style={styles.linkText}>Feature</AppText>
                 </TouchableOpacity>
               )}
             </View>
@@ -1407,25 +1408,25 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
         <View style={styles.card}>
           <View style={styles.rowBetween}>
             <View style={styles.flex1}>
-              <Text style={styles.cardTitle}>Live Moderation Queue</Text>
-              <Text style={styles.meta}>
+              <AppText style={styles.cardTitle}>Live Moderation Queue</AppText>
+              <AppText style={styles.meta}>
                 Review identity checks, user reports, and fraud flags from one native screen.
-              </Text>
+              </AppText>
             </View>
             <View style={styles.liveDot} />
           </View>
           <View style={styles.analyticsGrid}>
             <View style={styles.analyticsCard}>
-              <Text style={styles.analyticsValue}>{pendingVerifications.length}</Text>
-              <Text style={styles.analyticsLabel}>Verifications</Text>
+              <AppText style={styles.analyticsValue}>{pendingVerifications.length}</AppText>
+              <AppText style={styles.analyticsLabel}>Verifications</AppText>
             </View>
             <View style={styles.analyticsCard}>
-              <Text style={styles.analyticsValue}>{openReports.length}</Text>
-              <Text style={styles.analyticsLabel}>Reports</Text>
+              <AppText style={styles.analyticsValue}>{openReports.length}</AppText>
+              <AppText style={styles.analyticsLabel}>Reports</AppText>
             </View>
             <View style={styles.analyticsCard}>
-              <Text style={styles.analyticsValue}>{openFraud.length}</Text>
-              <Text style={styles.analyticsLabel}>Fraud Flags</Text>
+              <AppText style={styles.analyticsValue}>{openFraud.length}</AppText>
+              <AppText style={styles.analyticsLabel}>Fraud Flags</AppText>
             </View>
           </View>
           <Button
@@ -1443,14 +1444,14 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
           />
         </View>
 
-        <Text style={styles.sectionTitle}>Pending Verifications</Text>
+        <AppText style={styles.sectionTitle}>Pending Verifications</AppText>
         {pendingVerifications.length === 0 ? (
-          <Text style={styles.meta}>No pending identity verifications.</Text>
+          <AppText style={styles.meta}>No pending identity verifications.</AppText>
         ) : (
           pendingVerifications.slice(0, 6).map((item) => (
             <View key={`verification-${item.id}`} style={styles.card}>
-              <Text style={styles.cardTitle}>{item.full_name}</Text>
-              <Text style={styles.meta}>{item.email}</Text>
+              <AppText style={styles.cardTitle}>{item.full_name}</AppText>
+              <AppText style={styles.meta}>{item.email}</AppText>
               <View style={styles.row}>
                 <TouchableOpacity
                   onPress={() =>
@@ -1460,7 +1461,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                     )
                   }
                 >
-                  <Text style={styles.linkText}>Approve</Text>
+                  <AppText style={styles.linkText}>Approve</AppText>
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() =>
@@ -1470,20 +1471,20 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                     )
                   }
                 >
-                  <Text style={styles.warnText}>Reject</Text>
+                  <AppText style={styles.warnText}>Reject</AppText>
                 </TouchableOpacity>
               </View>
             </View>
           ))
         )}
 
-        <Text style={styles.sectionTitle}>Open Reports</Text>
+        <AppText style={styles.sectionTitle}>Open Reports</AppText>
         {openReports.length === 0 ? (
-          <Text style={styles.meta}>No open reports.</Text>
+          <AppText style={styles.meta}>No open reports.</AppText>
         ) : (
           openReports.slice(0, 6).map((item) => (
             <View key={`report-${item.id}`} style={styles.card}>
-              <Text style={styles.cardTitle}>{item.reason || item.report_reason || `Report #${item.id}`}</Text>
+              <AppText style={styles.cardTitle}>{item.reason || item.report_reason || `Report #${item.id}`}</AppText>
               <StatusBadge status={item.status || 'open'} />
               <TouchableOpacity
                 onPress={() =>
@@ -1493,20 +1494,20 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                   )
                 }
               >
-                <Text style={styles.linkText}>Resolve</Text>
+                <AppText style={styles.linkText}>Resolve</AppText>
               </TouchableOpacity>
             </View>
           ))
         )}
 
-        <Text style={styles.sectionTitle}>Fraud Flags</Text>
+        <AppText style={styles.sectionTitle}>Fraud Flags</AppText>
         {openFraud.length === 0 ? (
-          <Text style={styles.meta}>No open fraud flags.</Text>
+          <AppText style={styles.meta}>No open fraud flags.</AppText>
         ) : (
           openFraud.slice(0, 6).map((item) => (
             <View key={`fraud-${item.id}`} style={styles.card}>
-              <Text style={styles.cardTitle}>{item.rule || 'Fraud flag'}</Text>
-              <Text style={styles.meta}>Score: {item.score ?? '-'}</Text>
+              <AppText style={styles.cardTitle}>{item.rule || 'Fraud flag'}</AppText>
+              <AppText style={styles.meta}>Score: {item.score ?? '-'}</AppText>
               <TouchableOpacity
                 onPress={() =>
                   runAction(
@@ -1515,7 +1516,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                   )
                 }
               >
-                <Text style={styles.linkText}>Resolve</Text>
+                <AppText style={styles.linkText}>Resolve</AppText>
               </TouchableOpacity>
             </View>
           ))
@@ -1530,10 +1531,10 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
     return (
       <>
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Reports ({reports.length})</Text>
-          <Text style={styles.meta}>
+          <AppText style={styles.cardTitle}>Reports ({reports.length})</AppText>
+          <AppText style={styles.meta}>
             Manage reported content. Update status to track investigation progress.
-          </Text>
+          </AppText>
         </View>
 
         {reports.length === 0 ? (
@@ -1545,34 +1546,34 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
         ) : (
           reports.map((item) => (
             <View key={item.id} style={styles.card}>
-              <Text style={styles.cardTitle}>{item.reason || item.report_reason || `Report #${item.id}`}</Text>
+              <AppText style={styles.cardTitle}>{item.reason || item.report_reason || `Report #${item.id}`}</AppText>
               <View style={styles.rowBetween}>
                 <StatusBadge status={item.status || 'open'} />
                 <TouchableOpacity onPress={() => toggleReportStatusPicker(item.id)}>
-                  <Text style={styles.linkText}>Change Status</Text>
+                  <AppText style={styles.linkText}>Change Status</AppText>
                 </TouchableOpacity>
               </View>
               {item.reporter_name ? (
-                <Text style={styles.meta}>Reported by: {item.reporter_name}</Text>
+                <AppText style={styles.meta}>Reported by: {item.reporter_name}</AppText>
               ) : null}
               {item.reported_user_name ? (
-                <Text style={styles.meta}>Against: {item.reported_user_name}</Text>
+                <AppText style={styles.meta}>Against: {item.reported_user_name}</AppText>
               ) : null}
               {item.property_title ? (
-                <Text style={styles.meta}>Property: {item.property_title}</Text>
+                <AppText style={styles.meta}>Property: {item.property_title}</AppText>
               ) : null}
               {item.description ? (
-                <Text style={styles.meta}>Details: {item.description}</Text>
+                <AppText style={styles.meta}>Details: {item.description}</AppText>
               ) : null}
               {item.created_at ? (
-                <Text style={styles.meta}>
+                <AppText style={styles.meta}>
                   Created: {new Date(item.created_at).toLocaleString()}
-                </Text>
+                </AppText>
               ) : null}
 
               {reportStatusTargets[item.id] && (
                 <View style={styles.statusOptions}>
-                  <Text style={styles.filterLabel}>Set Status:</Text>
+                  <AppText style={styles.filterLabel}>Set Status:</AppText>
                   <View style={styles.filtersRow}>
                     {reportStatusOptions.map((status) => (
                       <FilterChip
@@ -1588,7 +1589,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
 
               <View style={styles.row}>
                 <TouchableOpacity onPress={() => runAction(() => superAdminService.resolveReport(item.id), 'Report resolved')}>
-                  <Text style={styles.linkText}>Resolve</Text>
+                  <AppText style={styles.linkText}>Resolve</AppText>
                 </TouchableOpacity>
               </View>
             </View>
@@ -1601,7 +1602,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
   const renderBroadcasts = () => (
     <>
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>Send Broadcast</Text>
+        <AppText style={styles.cardTitle}>Send Broadcast</AppText>
         <Input
           label="Title"
           value={broadcastForm.title}
@@ -1632,9 +1633,9 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
 
       {broadcasts.map((item) => (
         <View key={item.id} style={styles.card}>
-          <Text style={styles.cardTitle}>{item.title}</Text>
-          <Text style={styles.meta}>{item.message}</Text>
-          <Text style={styles.meta}>Target: {item.target_role || 'all'}</Text>
+          <AppText style={styles.cardTitle}>{item.title}</AppText>
+          <AppText style={styles.meta}>{item.message}</AppText>
+          <AppText style={styles.meta}>Target: {item.target_role || 'all'}</AppText>
         </View>
       ))}
     </>
@@ -1657,14 +1658,14 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
 
   const renderSfaPermissions = () => (
     <>
-      <Text style={styles.sectionTitle}>Super Financial Admin Permissions</Text>
+      <AppText style={styles.sectionTitle}>Super Financial Admin Permissions</AppText>
       {sfaList.length === 0 ? (
-        <Text style={styles.meta}>No SFA records found.</Text>
+        <AppText style={styles.meta}>No SFA records found.</AppText>
       ) : (
         sfaList.map((item) => (
           <View key={item.id || item.super_financial_admin_id} style={styles.card}>
-            <Text style={styles.cardTitle}>{item.full_name || item.email}</Text>
-            <Text style={styles.meta}>Approve admins: {String(item.can_approve_admins)}</Text>
+            <AppText style={styles.cardTitle}>{item.full_name || item.email}</AppText>
+            <AppText style={styles.meta}>Approve admins: {String(item.can_approve_admins)}</AppText>
             <TouchableOpacity
               onPress={() =>
                 runAction(
@@ -1677,7 +1678,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                 )
               }
             >
-              <Text style={styles.linkText}>Toggle approve admins</Text>
+              <AppText style={styles.linkText}>Toggle approve admins</AppText>
             </TouchableOpacity>
           </View>
         ))
@@ -1687,15 +1688,15 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
 
   const renderPlatformAgents = () => (
     <>
-      <Text style={styles.sectionTitle}>Platform Agents</Text>
+      <AppText style={styles.sectionTitle}>Platform Agents</AppText>
       {platformAgents.length === 0 ? (
-        <Text style={styles.meta}>No platform agents loaded.</Text>
+        <AppText style={styles.meta}>No platform agents loaded.</AppText>
       ) : (
         platformAgents.map((agent) => (
           <View key={agent.id} style={styles.card}>
-            <Text style={styles.cardTitle}>{agent.full_name || agent.email}</Text>
-            <Text style={styles.meta}>{agent.email}</Text>
-            <Text style={styles.meta}>Status: {agent.status || 'active'}</Text>
+            <AppText style={styles.cardTitle}>{agent.full_name || agent.email}</AppText>
+            <AppText style={styles.meta}>{agent.email}</AppText>
+            <AppText style={styles.meta}>Status: {agent.status || 'active'}</AppText>
           </View>
         ))
       )}
@@ -1705,10 +1706,10 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
   const renderAdSpaces = () => (
     <>
       <View style={styles.card}>
-        <Text style={styles.sectionTitle}>{editingAdSpaceId ? 'Edit Ad Space' : 'Create Ad Space'}</Text>
-        <Text style={styles.meta}>Create, update, pause, and delete sponsored placements from mobile.</Text>
+        <AppText style={styles.sectionTitle}>{editingAdSpaceId ? 'Edit Ad Space' : 'Create Ad Space'}</AppText>
+        <AppText style={styles.meta}>Create, update, pause, and delete sponsored placements from mobile.</AppText>
 
-        <Text style={styles.filterLabel}>Placement</Text>
+        <AppText style={styles.filterLabel}>Placement</AppText>
         <View style={styles.filtersRow}>
           {adPlacements.map((placement) => (
             <FilterChip
@@ -1734,7 +1735,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
           onChangeText={(value) => setAdSpaceForm((prev) => ({ ...prev, sponsor_name: value }))}
           placeholder="Sponsor name"
         />
-        <Text style={styles.filterLabel}>Description</Text>
+        <AppText style={styles.filterLabel}>Description</AppText>
         <TextInput
           value={adSpaceForm.description}
           onChangeText={(value) => setAdSpaceForm((prev) => ({ ...prev, description: value }))}
@@ -1804,7 +1805,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
         />
 
         <View style={styles.switchRow}>
-          <Text style={styles.filterLabel}>Active</Text>
+          <AppText style={styles.filterLabel}>Active</AppText>
           <Switch
             value={adSpaceForm.is_active}
             onValueChange={(value) => setAdSpaceForm((prev) => ({ ...prev, is_active: value }))}
@@ -1817,12 +1818,12 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
             { backgroundColor: adSpaceForm.background_color || '#ffffff' },
           ]}
         >
-          <Text style={[styles.cardTitle, { color: adSpaceForm.text_color || '#111827' }]}>
+          <AppText style={[styles.cardTitle, { color: adSpaceForm.text_color || '#111827' }]}>
             {adSpaceForm.title || 'Ad preview title'}
-          </Text>
-          <Text style={[styles.meta, { color: adSpaceForm.text_color || '#111827' }]}>
+          </AppText>
+          <AppText style={[styles.meta, { color: adSpaceForm.text_color || '#111827' }]}>
             {adSpaceForm.description || 'Description preview'}
-          </Text>
+          </AppText>
         </View>
 
         <View style={styles.row}>
@@ -1838,7 +1839,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
         </View>
       </View>
 
-      <Text style={styles.sectionTitle}>Ad Spaces</Text>
+      <AppText style={styles.sectionTitle}>Ad Spaces</AppText>
       {adSpaces.length === 0 ? (
         <EmptyState
           icon="megaphone-outline"
@@ -1848,22 +1849,22 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
       ) : (
         adSpaces.map((ad) => (
           <View key={ad.id} style={styles.card}>
-            <Text style={styles.cardTitle}>{ad.title || ad.placement}</Text>
-            <Text style={styles.meta}>Placement: {ad.placement}</Text>
-            <Text style={styles.meta}>Sponsor: {ad.sponsor_name || '-'}</Text>
-            <Text style={styles.meta}>Target: {ad.target_url || '-'}</Text>
-            <Text style={styles.meta}>Active: {ad.is_active ? 'Yes' : 'No'}</Text>
-            <Text style={styles.meta}>Impressions: {ad.impression_count ?? 0}</Text>
-            <Text style={styles.meta}>Clicks: {ad.click_count ?? 0}</Text>
+            <AppText style={styles.cardTitle}>{ad.title || ad.placement}</AppText>
+            <AppText style={styles.meta}>Placement: {ad.placement}</AppText>
+            <AppText style={styles.meta}>Sponsor: {ad.sponsor_name || '-'}</AppText>
+            <AppText style={styles.meta}>Target: {ad.target_url || '-'}</AppText>
+            <AppText style={styles.meta}>Active: {ad.is_active ? 'Yes' : 'No'}</AppText>
+            <AppText style={styles.meta}>Impressions: {ad.impression_count ?? 0}</AppText>
+            <AppText style={styles.meta}>Clicks: {ad.click_count ?? 0}</AppText>
             <View style={styles.row}>
               <TouchableOpacity onPress={() => handleEditAdSpace(ad)}>
-                <Text style={styles.linkText}>Edit</Text>
+                <AppText style={styles.linkText}>Edit</AppText>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => handleToggleAdSpace(ad)}>
-                <Text style={styles.linkText}>{ad.is_active ? 'Pause' : 'Activate'}</Text>
+                <AppText style={styles.linkText}>{ad.is_active ? 'Pause' : 'Activate'}</AppText>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => handleDeleteAdSpace(ad.id)}>
-                <Text style={styles.warnText}>Delete</Text>
+                <AppText style={styles.warnText}>Delete</AppText>
               </TouchableOpacity>
             </View>
           </View>
@@ -1875,10 +1876,10 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
   const renderFraud = () =>
     fraud.map((item) => (
       <View key={item.id} style={styles.card}>
-        <Text style={styles.cardTitle}>{item.rule || 'Fraud rule'}</Text>
-        <Text style={styles.meta}>Score: {item.score}</Text>
+        <AppText style={styles.cardTitle}>{item.rule || 'Fraud rule'}</AppText>
+        <AppText style={styles.meta}>Score: {item.score}</AppText>
         <TouchableOpacity onPress={() => runAction(() => superAdminService.resolveFraudFlag(item.id), 'Fraud flag resolved')}>
-          <Text style={styles.linkText}>Resolve</Text>
+          <AppText style={styles.linkText}>Resolve</AppText>
         </TouchableOpacity>
       </View>
     ));
@@ -1886,11 +1887,11 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
   const renderLogs = () =>
     logs.map((item, index) => (
       <View key={`${item.id || 'log'}-${index}`} style={styles.card}>
-        <Text style={styles.cardTitle}>{item.action || item.event_type || 'Audit log'}</Text>
-        <Text style={styles.meta}>{item.user_name || item.actor_name || 'System'}</Text>
-        <Text style={styles.meta}>
+        <AppText style={styles.cardTitle}>{item.action || item.event_type || 'Audit log'}</AppText>
+        <AppText style={styles.meta}>{item.user_name || item.actor_name || 'System'}</AppText>
+        <AppText style={styles.meta}>
           {item.created_at ? new Date(item.created_at).toLocaleString() : ''}
-        </Text>
+        </AppText>
       </View>
     ));
 
@@ -1907,8 +1908,8 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
     return (
       <View>
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Analytics Dashboard</Text>
-          <Text style={styles.filterLabel}>Time Range</Text>
+          <AppText style={styles.cardTitle}>Analytics Dashboard</AppText>
+          <AppText style={styles.filterLabel}>Time Range</AppText>
           <View style={styles.filtersRow}>
             {timeRangeOptions.map((opt) => (
               <FilterChip
@@ -1936,12 +1937,12 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
           <View style={styles.analyticsGrid}>
             {analyticEntries.map(([key, value]) => (
               <View key={key} style={styles.analyticsCard}>
-                <Text style={styles.analyticsValue}>
+                <AppText style={styles.analyticsValue}>
                   {typeof value === 'number' ? value.toLocaleString() : String(value)}
-                </Text>
-                <Text style={styles.analyticsLabel}>
+                </AppText>
+                <AppText style={styles.analyticsLabel}>
                   {key.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
-                </Text>
+                </AppText>
               </View>
             ))}
           </View>
@@ -2041,7 +2042,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
     <>
       <View style={styles.card}>
         <View style={styles.rowBetween}>
-          <Text style={styles.cardTitle}>Platform Lawyers</Text>
+          <AppText style={styles.cardTitle}>Platform Lawyers</AppText>
           <TouchableOpacity
             style={styles.smallBtn}
             onPress={() => {
@@ -2049,7 +2050,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
               setShowAddLawyerModal(true);
             }}
           >
-            <Text style={styles.smallBtnText}>+ Add Lawyer</Text>
+            <AppText style={styles.smallBtnText}>+ Add Lawyer</AppText>
           </TouchableOpacity>
         </View>
         <TouchableOpacity
@@ -2058,9 +2059,9 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
             setShowLawyerApplications(!showLawyerApplications);
           }}
         >
-          <Text style={styles.linkText}>
+          <AppText style={styles.linkText}>
             {showLawyerApplications ? 'Hide' : 'View'} Pending Applications
-          </Text>
+          </AppText>
         </TouchableOpacity>
       </View>
 
@@ -2071,19 +2072,19 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
           ) : (
             lawyerApplications.map((app) => (
               <View key={app.id} style={styles.card}>
-                <Text style={styles.cardTitle}>{app.full_name || app.name}</Text>
-                {app.email ? <Text style={styles.meta}>Email: {app.email}</Text> : null}
-                {app.phone ? <Text style={styles.meta}>Phone: {app.phone}</Text> : null}
-                {app.specialization ? <Text style={styles.meta}>Specialization: {app.specialization}</Text> : null}
-                {app.license_number ? <Text style={styles.meta}>License: {app.license_number}</Text> : null}
-                {app.state_name ? <Text style={styles.meta}>State: {app.state_name}</Text> : null}
-                {app.notes ? <Text style={styles.meta}>Notes: {app.notes}</Text> : null}
+                <AppText style={styles.cardTitle}>{app.full_name || app.name}</AppText>
+                {app.email ? <AppText style={styles.meta}>Email: {app.email}</AppText> : null}
+                {app.phone ? <AppText style={styles.meta}>Phone: {app.phone}</AppText> : null}
+                {app.specialization ? <AppText style={styles.meta}>Specialization: {app.specialization}</AppText> : null}
+                {app.license_number ? <AppText style={styles.meta}>License: {app.license_number}</AppText> : null}
+                {app.state_name ? <AppText style={styles.meta}>State: {app.state_name}</AppText> : null}
+                {app.notes ? <AppText style={styles.meta}>Notes: {app.notes}</AppText> : null}
                 <View style={styles.row}>
                   <TouchableOpacity onPress={() => handleReviewApplication(app.id, 'approve')}>
-                    <Text style={styles.linkText}>Approve</Text>
+                    <AppText style={styles.linkText}>Approve</AppText>
                   </TouchableOpacity>
                   <TouchableOpacity onPress={() => handleReviewApplication(app.id, 'reject')}>
-                    <Text style={styles.warnText}>Reject</Text>
+                    <AppText style={styles.warnText}>Reject</AppText>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -2102,14 +2103,14 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
         platformLawyers.map((lawyer) => (
           <View key={lawyer.id} style={styles.card}>
             <View style={styles.rowBetween}>
-              <Text style={styles.cardTitle}>{lawyer.full_name || lawyer.name}</Text>
+              <AppText style={styles.cardTitle}>{lawyer.full_name || lawyer.name}</AppText>
               <StatusBadge status={lawyer.status || lawyer.invite_status || 'active'} />
             </View>
-            {lawyer.email ? <Text style={styles.meta}>Email: {lawyer.email}</Text> : null}
-            {lawyer.phone ? <Text style={styles.meta}>Phone: {lawyer.phone}</Text> : null}
-            {lawyer.specialization ? <Text style={styles.meta}>Specialization: {lawyer.specialization}</Text> : null}
-            {lawyer.license_number ? <Text style={styles.meta}>License: {lawyer.license_number}</Text> : null}
-            {lawyer.state_name ? <Text style={styles.meta}>State: {lawyer.state_name}</Text> : null}
+            {lawyer.email ? <AppText style={styles.meta}>Email: {lawyer.email}</AppText> : null}
+            {lawyer.phone ? <AppText style={styles.meta}>Phone: {lawyer.phone}</AppText> : null}
+            {lawyer.specialization ? <AppText style={styles.meta}>Specialization: {lawyer.specialization}</AppText> : null}
+            {lawyer.license_number ? <AppText style={styles.meta}>License: {lawyer.license_number}</AppText> : null}
+            {lawyer.state_name ? <AppText style={styles.meta}>State: {lawyer.state_name}</AppText> : null}
 
             <View style={styles.row}>
               {lawyer.invite_status !== 'accepted' ? (
@@ -2125,7 +2126,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                     )
                   }
                 >
-                  <Text style={styles.linkText}>Resend Invite</Text>
+                  <AppText style={styles.linkText}>Resend Invite</AppText>
                 </TouchableOpacity>
               ) : null}
               <TouchableOpacity
@@ -2142,10 +2143,10 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                   setShowAddLawyerModal(true);
                 }}
               >
-                <Text style={styles.linkText}>Edit</Text>
+                <AppText style={styles.linkText}>Edit</AppText>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => handleDeleteLawyer(lawyer.id, lawyer.full_name || lawyer.name)}>
-                <Text style={styles.warnText}>Remove</Text>
+                <AppText style={styles.warnText}>Remove</AppText>
               </TouchableOpacity>
             </View>
           </View>
@@ -2170,7 +2171,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
       {showAddLawyerModal && (
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <Text style={styles.cardTitle}>{editingLawyerId ? 'Edit Platform Lawyer' : 'Add Platform Lawyer'}</Text>
+            <AppText style={styles.cardTitle}>{editingLawyerId ? 'Edit Platform Lawyer' : 'Add Platform Lawyer'}</AppText>
             <Input
               label="Full Name"
               value={lawyerForm.full_name}
@@ -2251,9 +2252,9 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
       {showReviewDialog && (
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <Text style={styles.cardTitle}>
+            <AppText style={styles.cardTitle}>
               {reviewAction === 'approve' ? 'Approve Application' : 'Reject Application'}
-            </Text>
+            </AppText>
             <TextInput
               style={styles.textArea}
               value={reviewNote}
@@ -2300,8 +2301,8 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
     return (
       <View>
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Lawyer Activity Stats</Text>
-          <Text style={styles.filterLabel}>Time Range</Text>
+          <AppText style={styles.cardTitle}>Lawyer Activity Stats</AppText>
+          <AppText style={styles.filterLabel}>Time Range</AppText>
           <View style={styles.filtersRow}>
             {timeRangeOptions.map((opt) => (
               <FilterChip
@@ -2326,47 +2327,47 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
         ) : (
           lawyerActivities.map((activity, index) => (
             <View key={activity.id || index} style={styles.card}>
-              <Text style={styles.cardTitle}>{activity.lawyer_name || activity.full_name || 'Lawyer'}</Text>
-              {activity.email ? <Text style={styles.meta}>Email: {activity.email}</Text> : null}
+              <AppText style={styles.cardTitle}>{activity.lawyer_name || activity.full_name || 'Lawyer'}</AppText>
+              {activity.email ? <AppText style={styles.meta}>Email: {activity.email}</AppText> : null}
               <View style={styles.activityStatRow}>
                 {activity.properties_managed !== undefined && (
                   <View style={styles.activityStat}>
-                    <Text style={styles.analyticsValue}>{activity.properties_managed}</Text>
-                    <Text style={styles.analyticsLabel}>Properties</Text>
+                    <AppText style={styles.analyticsValue}>{activity.properties_managed}</AppText>
+                    <AppText style={styles.analyticsLabel}>Properties</AppText>
                   </View>
                 )}
                 {activity.clients_served !== undefined && (
                   <View style={styles.activityStat}>
-                    <Text style={styles.analyticsValue}>{activity.clients_served}</Text>
-                    <Text style={styles.analyticsLabel}>Clients</Text>
+                    <AppText style={styles.analyticsValue}>{activity.clients_served}</AppText>
+                    <AppText style={styles.analyticsLabel}>Clients</AppText>
                   </View>
                 )}
                 {activity.documents_filed !== undefined && (
                   <View style={styles.activityStat}>
-                    <Text style={styles.analyticsValue}>{activity.documents_filed}</Text>
-                    <Text style={styles.analyticsLabel}>Documents</Text>
+                    <AppText style={styles.analyticsValue}>{activity.documents_filed}</AppText>
+                    <AppText style={styles.analyticsLabel}>Documents</AppText>
                   </View>
                 )}
                 {activity.disputes_handled !== undefined && (
                   <View style={styles.activityStat}>
-                    <Text style={styles.analyticsValue}>{activity.disputes_handled}</Text>
-                    <Text style={styles.analyticsLabel}>Disputes</Text>
+                    <AppText style={styles.analyticsValue}>{activity.disputes_handled}</AppText>
+                    <AppText style={styles.analyticsLabel}>Disputes</AppText>
                   </View>
                 )}
                 {activity.agreements_generated !== undefined && (
                   <View style={styles.activityStat}>
-                    <Text style={styles.analyticsValue}>{activity.agreements_generated}</Text>
-                    <Text style={styles.analyticsLabel}>Agreements</Text>
+                    <AppText style={styles.analyticsValue}>{activity.agreements_generated}</AppText>
+                    <AppText style={styles.analyticsLabel}>Agreements</AppText>
                   </View>
                 )}
               </View>
               {activity.last_active_at ? (
-                <Text style={styles.meta}>
+                <AppText style={styles.meta}>
                   Last active: {new Date(activity.last_active_at).toLocaleString()}
-                </Text>
+                </AppText>
               ) : null}
               {activity.total_hours_logged ? (
-                <Text style={styles.meta}>Total hours logged: {activity.total_hours_logged}</Text>
+                <AppText style={styles.meta}>Total hours logged: {activity.total_hours_logged}</AppText>
               ) : null}
             </View>
           ))
@@ -2453,10 +2454,10 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
   const renderAdminManagement = () => (
     <>
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>Admin Management</Text>
-        <Text style={styles.meta}>
+        <AppText style={styles.cardTitle}>Admin Management</AppText>
+        <AppText style={styles.meta}>
           Manage admin accounts, impersonate admins, and edit jurisdictions.
-        </Text>
+        </AppText>
       </View>
 
       {admins.length === 0 ? (
@@ -2470,28 +2471,28 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
           <View key={admin.id} style={styles.card}>
             <TouchableOpacity onPress={() => toggleAdminExpand(admin.id)}>
               <View style={styles.rowBetween}>
-                <Text style={styles.cardTitle}>{admin.full_name}</Text>
-                <Text style={styles.meta}>{expandedAdminId === admin.id ? '▲' : '▼'}</Text>
+                <AppText style={styles.cardTitle}>{admin.full_name}</AppText>
+                <AppText style={styles.meta}>{expandedAdminId === admin.id ? '▲' : '▼'}</AppText>
               </View>
             </TouchableOpacity>
-            <Text style={styles.meta}>Email: {admin.email}</Text>
+            <AppText style={styles.meta}>Email: {admin.email}</AppText>
             {admin.assigned_state ? (
-              <Text style={styles.meta}>Jurisdiction: {admin.assigned_state}{admin.assigned_city ? ` - ${admin.assigned_city}` : ''}</Text>
+              <AppText style={styles.meta}>Jurisdiction: {admin.assigned_state}{admin.assigned_city ? ` - ${admin.assigned_city}` : ''}</AppText>
             ) : (
-              <Text style={styles.meta}>Jurisdiction: Not assigned</Text>
+              <AppText style={styles.meta}>Jurisdiction: Not assigned</AppText>
             )}
-            <Text style={styles.meta}>
+            <AppText style={styles.meta}>
               Verified: {admin.credentials_verified_count ?? 0} users
-            </Text>
+            </AppText>
             {admin.last_verification_at ? (
-              <Text style={styles.meta}>
+              <AppText style={styles.meta}>
                 Last activity: {new Date(admin.last_verification_at).toLocaleString()}
-              </Text>
+              </AppText>
             ) : null}
 
             <View style={styles.row}>
               <TouchableOpacity onPress={() => handleImpersonateAdmin(admin.id, admin.full_name)}>
-                <Text style={styles.linkText}>Impersonate</Text>
+                <AppText style={styles.linkText}>Impersonate</AppText>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {
@@ -2502,23 +2503,23 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                   });
                 }}
               >
-                <Text style={styles.linkText}>Edit Jurisdiction</Text>
+                <AppText style={styles.linkText}>Edit Jurisdiction</AppText>
               </TouchableOpacity>
             </View>
 
             {expandedAdminId === admin.id && (
               <View style={styles.expandedSection}>
-                <Text style={styles.filterLabel}>State Users</Text>
+                <AppText style={styles.filterLabel}>State Users</AppText>
                 {loadingStateUsers ? (
-                  <Text style={styles.meta}>Loading...</Text>
+                  <AppText style={styles.meta}>Loading...</AppText>
                 ) : adminStateUsers.length === 0 ? (
-                  <Text style={styles.meta}>No users in this admin's jurisdiction.</Text>
+                  <AppText style={styles.meta}>No users in this admin's jurisdiction.</AppText>
                 ) : (
                   adminStateUsers.map((user) => (
                     <View key={user.id} style={styles.listRow}>
-                      <Text style={styles.listTitle}>{user.full_name || user.name}</Text>
-                      <Text style={styles.meta}>{user.email}</Text>
-                      <Text style={styles.meta}>Role: {user.user_type}</Text>
+                      <AppText style={styles.listTitle}>{user.full_name || user.name}</AppText>
+                      <AppText style={styles.meta}>{user.email}</AppText>
+                      <AppText style={styles.meta}>Role: {user.user_type}</AppText>
                     </View>
                   ))
                 )}
@@ -2572,10 +2573,10 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
   const renderPendingApprovals = () => (
     <>
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>Pending Admin Approvals</Text>
-        <Text style={styles.meta}>
+        <AppText style={styles.cardTitle}>Pending Admin Approvals</AppText>
+        <AppText style={styles.meta}>
           Review and approve/reject admin account requests.
-        </Text>
+        </AppText>
         <Button
           title="Refresh"
           onPress={() => runAction(() => loadPendingAdmins(), 'Pending admins refreshed', null)}
@@ -2593,23 +2594,23 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
       ) : (
         pendingAdmins.map((admin) => (
           <View key={admin.id} style={styles.card}>
-            <Text style={styles.cardTitle}>{admin.full_name || admin.name || 'Unknown'}</Text>
-            <Text style={styles.meta}>Email: {admin.email}</Text>
-            {admin.phone ? <Text style={styles.meta}>Phone: {admin.phone}</Text> : null}
+            <AppText style={styles.cardTitle}>{admin.full_name || admin.name || 'Unknown'}</AppText>
+            <AppText style={styles.meta}>Email: {admin.email}</AppText>
+            {admin.phone ? <AppText style={styles.meta}>Phone: {admin.phone}</AppText> : null}
             {admin.state_name || admin.state ? (
-              <Text style={styles.meta}>State: {admin.state_name || admin.state}</Text>
+              <AppText style={styles.meta}>State: {admin.state_name || admin.state}</AppText>
             ) : null}
-            {admin.city ? <Text style={styles.meta}>City: {admin.city}</Text> : null}
+            {admin.city ? <AppText style={styles.meta}>City: {admin.city}</AppText> : null}
             {admin.role_requested ? (
-              <Text style={styles.meta}>Role requested: {admin.role_requested}</Text>
+              <AppText style={styles.meta}>Role requested: {admin.role_requested}</AppText>
             ) : null}
             {admin.created_at ? (
-              <Text style={styles.meta}>
+              <AppText style={styles.meta}>
                 Requested: {new Date(admin.created_at).toLocaleDateString()}
-              </Text>
+              </AppText>
             ) : null}
             {admin.reason ? (
-              <Text style={styles.meta}>Reason: {admin.reason}</Text>
+              <AppText style={styles.meta}>Reason: {admin.reason}</AppText>
             ) : null}
             <StatusBadge status={admin.status || 'pending'} />
 
@@ -2626,12 +2627,12 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                   )
                 }
               >
-                <Text style={styles.linkText}>Approve</Text>
+                <AppText style={styles.linkText}>Approve</AppText>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => setOperationPrompt({ type: 'reject_admin', target: admin })}
               >
-                <Text style={styles.warnText}>Reject</Text>
+                <AppText style={styles.warnText}>Reject</AppText>
               </TouchableOpacity>
             </View>
           </View>
@@ -2684,7 +2685,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
         onPress={() => setShowSectionPicker(true)}
       />
 
-      {loading ? <Text style={styles.meta}>Loading...</Text> : renderedSection}
+      {loading ? <AppText style={styles.meta}>Loading...</AppText> : renderedSection}
 
       <OperationNoteModal
         visible={Boolean(operationPrompt)}

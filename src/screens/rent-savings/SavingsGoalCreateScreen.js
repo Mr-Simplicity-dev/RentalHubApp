@@ -18,6 +18,7 @@ import { rentSavingsService } from '../../services/rentSavingsService';
 import { getErrorMessage, pickList } from '../../utils/http';
 import { colors, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const SavingsGoalCreateScreen = ({ navigation }) => {
   const [applications, setApplications] = useState([]);
   const [selectedPropertyId, setSelectedPropertyId] = useState(null);
@@ -116,14 +117,14 @@ const SavingsGoalCreateScreen = ({ navigation }) => {
             <PremiumCard style={[styles.propertyCard, selected && styles.propertyCardSelected]}>
               <View style={styles.propertyHeader}>
                 <View style={styles.propertyCopy}>
-                  <Text style={styles.propertyTitle}>{item.property_title || 'Rental property'}</Text>
-                  <Text style={styles.propertyMeta}>
+                  <AppText style={styles.propertyTitle}>{item.property_title || 'Rental property'}</AppText>
+                  <AppText style={styles.propertyMeta}>
                     {[item.area, item.city, item.state_name].filter(Boolean).join(', ') || 'Location not available'}
-                  </Text>
+                  </AppText>
                 </View>
                 {selected ? <StatusPill label="Selected" color={colors.success} /> : null}
               </View>
-              <Text style={styles.propertyRent}>{formatNaira(item.rent_amount)}</Text>
+              <AppText style={styles.propertyRent}>{formatNaira(item.rent_amount)}</AppText>
             </PremiumCard>
           </TouchableOpacity>
         );
@@ -136,7 +137,7 @@ const SavingsGoalCreateScreen = ({ navigation }) => {
           icon="home-outline"
         />
       ) : null}
-      {errors.property ? <Text style={styles.error}>{errors.property}</Text> : null}
+      {errors.property ? <AppText style={styles.error}>{errors.property}</AppText> : null}
 
       <PremiumCard>
         <Input

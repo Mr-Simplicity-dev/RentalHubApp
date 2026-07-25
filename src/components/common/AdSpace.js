@@ -12,6 +12,7 @@ import Toast from 'react-native-toast-message';
 import api from '../../services/api';
 import { colors, radius, shadows, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const PLACEMENTS = {
   home_top: 'home_top',
   home_featured: 'home_featured',
@@ -105,7 +106,7 @@ const AdSpace = ({ placement, limit = 10, onRefresh }) => {
               )}
               <View style={styles.playBadge}>
                 <Icon name="play" size={16} color={colors.white} />
-                <Text style={styles.playText}>Play video</Text>
+                <AppText style={styles.playText}>Play video</AppText>
               </View>
             </View>
           ) : ad.image_url ? (
@@ -118,18 +119,18 @@ const AdSpace = ({ placement, limit = 10, onRefresh }) => {
 
           <View style={styles.body}>
             <View style={styles.sponsorRow}>
-              <Text style={styles.sponsored}>SPONSORED</Text>
+              <AppText style={styles.sponsored}>SPONSORED</AppText>
               {ad.sponsor_name ? (
-                <Text style={styles.sponsorName}>{ad.sponsor_name}</Text>
+                <AppText style={styles.sponsorName}>{ad.sponsor_name}</AppText>
               ) : null}
             </View>
-            <Text style={styles.title} numberOfLines={2}>{ad.title}</Text>
+            <AppText style={styles.title} numberOfLines={2}>{ad.title}</AppText>
             {ad.description ? (
-              <Text style={styles.description} numberOfLines={2}>{ad.description}</Text>
+              <AppText style={styles.description} numberOfLines={2}>{ad.description}</AppText>
             ) : null}
             {ad.target_url ? (
               <View style={styles.cta}>
-                <Text style={styles.ctaText}>{ad.cta_label || 'Learn more'}</Text>
+                <AppText style={styles.ctaText}>{ad.cta_label || 'Learn more'}</AppText>
                 <Icon name="arrow-forward" size={14} color={colors.white} />
               </View>
             ) : null}

@@ -3,16 +3,17 @@ import { StyleSheet, Text, View } from 'react-native';
 import { colors, typography } from '../../theme';
 import BrandLogoMark from './BrandLogoMark';
 
+import AppText from '../../components/common/AppText';
 const BrandMark = ({ light = false, compact = false, showName = true, style }) => (
   <View style={[styles.row, style]}>
     <BrandLogoMark size={compact ? 'sm' : 'md'} surface={light ? 'dark' : 'light'} />
     {showName ? (
       <View style={styles.wordmark}>
-        <Text style={[styles.name, compact && styles.nameCompact, light && styles.light]}>
+        <AppText style={[styles.name, compact && styles.nameCompact, light && styles.light]}>
           RentalHub
-        </Text>
+        </AppText>
         {!compact ? (
-          <Text style={[styles.country, light && styles.countryLight]}>NIGERIA</Text>
+          <AppText style={[styles.country, light && styles.countryLight]}>NIGERIA</AppText>
         ) : null}
       </View>
     ) : null}

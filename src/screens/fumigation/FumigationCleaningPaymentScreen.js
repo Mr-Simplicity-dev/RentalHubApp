@@ -19,6 +19,7 @@ import {
 } from '../../components/common/PremiumLayout';
 import { colors, radius, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const FumigationCleaningPaymentScreen = ({ route, navigation }) => {
   const { bookingId } = route.params;
   const [booking, setBooking] = useState(null);
@@ -144,10 +145,10 @@ const FumigationCleaningPaymentScreen = ({ route, navigation }) => {
           <InfoRow icon="calendar-outline" label="Date" value={booking.booking_date} />
           <View style={styles.totalPanel}>
             <View>
-              <Text style={styles.totalLabel}>Total amount</Text>
-              <Text style={styles.totalHint}>Processed securely via Paystack</Text>
+              <AppText style={styles.totalLabel}>Total amount</AppText>
+              <AppText style={styles.totalHint}>Processed securely via Paystack</AppText>
             </View>
-            <Text style={styles.totalValue}>{formatNaira(booking.total_price)}</Text>
+            <AppText style={styles.totalValue}>{formatNaira(booking.total_price)}</AppText>
           </View>
         </PremiumCard>
 
@@ -158,8 +159,8 @@ const FumigationCleaningPaymentScreen = ({ route, navigation }) => {
               <Icon name="shield-checkmark-outline" size={22} color={colors.blue} />
             </View>
             <View style={styles.methodCopy}>
-              <Text style={styles.methodTitle}>Paystack secure checkout</Text>
-              <Text style={styles.methodText}>Encrypted payment, instant verification and recovery if the session is interrupted.</Text>
+              <AppText style={styles.methodTitle}>Paystack secure checkout</AppText>
+              <AppText style={styles.methodText}>Encrypted payment, instant verification and recovery if the session is interrupted.</AppText>
             </View>
           </View>
           <PremiumButton

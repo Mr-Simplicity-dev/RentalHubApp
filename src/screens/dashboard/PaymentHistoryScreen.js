@@ -15,6 +15,7 @@ import { paymentService } from '../../services/paymentService';
 import { colors, radius, typography } from '../../theme';
 import { getErrorMessage, pickList } from '../../utils/http';
 
+import AppText from '../../components/common/AppText';
 const PAYMENT_TYPE_LABELS = {
   tenant_subscription: 'Subscription',
   property_unlock: 'Property details',
@@ -110,8 +111,8 @@ const PaymentHistoryScreen = ({ navigation }) => {
           <Icon name="arrow-back" size={22} color={colors.navy} />
         </TouchableOpacity>
         <View style={styles.headerCopy}>
-          <Text style={styles.eyebrow}>TRANSACTIONS</Text>
-          <Text style={styles.title}>Payment history</Text>
+          <AppText style={styles.eyebrow}>TRANSACTIONS</AppText>
+          <AppText style={styles.title}>Payment history</AppText>
         </View>
         <View style={styles.headerSpacer} />
       </View>
@@ -126,11 +127,11 @@ const PaymentHistoryScreen = ({ navigation }) => {
               <View style={styles.summaryIcon}>
                 <Icon name="wallet-outline" size={23} color={colors.gold} />
               </View>
-              <Text style={styles.summaryLabel}>Completed transaction value</Text>
-              <Text style={styles.summaryAmount}>{formatAmount(completedTotal)}</Text>
-              <Text style={styles.summaryMeta}>
+              <AppText style={styles.summaryLabel}>Completed transaction value</AppText>
+              <AppText style={styles.summaryAmount}>{formatAmount(completedTotal)}</AppText>
+              <AppText style={styles.summaryMeta}>
                 {completedPayments.length} completed · {payments.length} total transactions
-              </Text>
+              </AppText>
             </View>
             <View style={styles.filterRow}>
               {['all', 'completed', 'pending', 'failed'].map((value) => (
@@ -138,9 +139,9 @@ const PaymentHistoryScreen = ({ navigation }) => {
                   key={value}
                   onPress={() => setFilter(value)}
                   style={[styles.filterChip, filter === value && styles.filterChipActive]}>
-                  <Text style={[styles.filterText, filter === value && styles.filterTextActive]}>
+                  <AppText style={[styles.filterText, filter === value && styles.filterTextActive]}>
                     {value.charAt(0).toUpperCase() + value.slice(1)}
-                  </Text>
+                  </AppText>
                 </TouchableOpacity>
               ))}
             </View>
@@ -150,19 +151,19 @@ const PaymentHistoryScreen = ({ navigation }) => {
           loading ? (
             <View style={styles.center}>
               <ActivityIndicator color={colors.blue} size="large" />
-              <Text style={styles.loadingText}>Loading transactions…</Text>
+              <AppText style={styles.loadingText}>Loading transactions…</AppText>
             </View>
           ) : (
             <View style={styles.center}>
               <View style={styles.emptyIcon}>
                 <Icon name="receipt-outline" size={31} color={colors.blue} />
               </View>
-              <Text style={styles.emptyTitle}>No transactions here</Text>
-              <Text style={styles.emptyText}>
+              <AppText style={styles.emptyTitle}>No transactions here</AppText>
+              <AppText style={styles.emptyText}>
                 {filter === 'all'
                   ? 'Your RentalHub payments will appear here.'
                   : `You don’t have any ${filter} transactions.`}
-              </Text>
+              </AppText>
             </View>
           )
         }
@@ -182,25 +183,25 @@ const PaymentHistoryScreen = ({ navigation }) => {
                 <Icon name={visual.icon} size={20} color={visual.color} />
               </View>
               <View style={styles.paymentBody}>
-                <Text style={styles.type}>{formatPaymentType(item.payment_type)}</Text>
-                <Text style={styles.meta} numberOfLines={1}>
+                <AppText style={styles.type}>{formatPaymentType(item.payment_type)}</AppText>
+                <AppText style={styles.meta} numberOfLines={1}>
                   {item.property_title || item.payment_method || 'RentalHub transaction'}
-                </Text>
-                <Text style={styles.date}>
+                </AppText>
+                <AppText style={styles.date}>
                   {item.created_at ? new Date(item.created_at).toLocaleString() : ''}
-                </Text>
+                </AppText>
                 {item.transaction_reference ? (
-                  <Text style={styles.reference} numberOfLines={1}>
+                  <AppText style={styles.reference} numberOfLines={1}>
                     Ref: {item.transaction_reference}
-                  </Text>
+                  </AppText>
                 ) : null}
               </View>
               <View style={styles.paymentRight}>
-                <Text style={styles.amount}>{formatAmount(item.amount)}</Text>
+                <AppText style={styles.amount}>{formatAmount(item.amount)}</AppText>
                 <View style={[styles.statusPill, { backgroundColor: visual.background }]}>
-                  <Text style={[styles.statusText, { color: visual.color }]}>
+                  <AppText style={[styles.statusText, { color: visual.color }]}>
                     {item.payment_status || 'unknown'}
-                  </Text>
+                  </AppText>
                 </View>
               </View>
             </View>

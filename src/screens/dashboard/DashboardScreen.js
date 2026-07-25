@@ -34,11 +34,12 @@ import { getErrorMessage, getReviewStatus, pickList, pickObject } from '../../ut
 import TenancyGracePanel from '../../components/dashboard/TenancyGracePanel';
 import { colors, radius, shadows, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const StatCard = ({ title, value, icon, onPress }) => (
   <TouchableOpacity style={styles.statCard} onPress={onPress}>
     <View>
-      <Text style={styles.statTitle}>{title}</Text>
-      <Text style={styles.statValue}>{value ?? 0}</Text>
+      <AppText style={styles.statTitle}>{title}</AppText>
+      <AppText style={styles.statValue}>{value ?? 0}</AppText>
     </View>
     <Icon name={icon} size={26} color="#0284c7" />
   </TouchableOpacity>
@@ -52,10 +53,10 @@ const StatusBanner = ({ icon, title, description, colors, onPress, actionLabel }
   >
     <Icon name={icon} size={22} color={colors.icon} />
     <View style={styles.bannerBody}>
-      <Text style={[styles.bannerTitle, { color: colors.title }]}>{title}</Text>
-      <Text style={[styles.bannerText, { color: colors.text }]}>{description}</Text>
+      <AppText style={[styles.bannerTitle, { color: colors.title }]}>{title}</AppText>
+      <AppText style={[styles.bannerText, { color: colors.text }]}>{description}</AppText>
       {actionLabel ? (
-        <Text style={[styles.bannerAction, { color: colors.title }]}>{actionLabel}</Text>
+        <AppText style={[styles.bannerAction, { color: colors.title }]}>{actionLabel}</AppText>
       ) : null}
     </View>
   </TouchableOpacity>
@@ -640,8 +641,8 @@ const DashboardScreen = ({ navigation }) => {
       }>
       <View style={styles.topBar}>
         <View>
-          <Text style={styles.topEyebrow}>MY HUB</Text>
-          <Text style={styles.topTitle}>Hello, {String(user?.full_name || 'there').split(' ')[0]}</Text>
+          <AppText style={styles.topEyebrow}>MY HUB</AppText>
+          <AppText style={styles.topTitle}>Hello, {String(user?.full_name || 'there').split(' ')[0]}</AppText>
         </View>
         <View style={styles.topActions}>
           <TouchableOpacity
@@ -657,13 +658,13 @@ const DashboardScreen = ({ navigation }) => {
             accessibilityLabel="Open profile"
             onPress={() => navigation.navigate('Profile')}
             style={styles.avatar}>
-            <Text style={styles.avatarText}>
+            <AppText style={styles.avatarText}>
               {String(user?.full_name || 'U').trim().charAt(0).toUpperCase()}
-            </Text>
+            </AppText>
           </TouchableOpacity>
         </View>
       </View>
-      <Text style={styles.subtitle}>Everything about your rental journey, in one place.</Text>
+      <AppText style={styles.subtitle}>Everything about your rental journey, in one place.</AppText>
 
       {verificationBanner ? (
         <StatusBanner
@@ -708,12 +709,12 @@ const DashboardScreen = ({ navigation }) => {
               color={hasActivePropertyLocation ? '#047857' : '#64748b'}
             />
             <View style={{ flex: 1 }}>
-              <Text style={styles.locationTitle}>Property Location</Text>
-              <Text style={styles.locationHint}>
+              <AppText style={styles.locationTitle}>Property Location</AppText>
+              <AppText style={styles.locationHint}>
                 {hasActivePropertyLocation
                   ? 'Tap any active property card to open its location in Google Maps.'
                   : 'This card becomes clickable after your rent payment is confirmed.'}
-              </Text>
+              </AppText>
             </View>
           </View>
 
@@ -729,23 +730,23 @@ const DashboardScreen = ({ navigation }) => {
                 onPress={() => openPropertyInGoogleMaps(property)}
               >
                 <View style={{ flex: 1 }}>
-                  <Text style={[styles.locationCardTitle, !isActive && styles.locationCardTitleLocked]}>
+                  <AppText style={[styles.locationCardTitle, !isActive && styles.locationCardTitleLocked]}>
                     {property.title || 'Property location'}
-                  </Text>
-                  <Text style={styles.locationAddress}>
+                  </AppText>
+                  <AppText style={styles.locationAddress}>
                     {getPropertyMapAddress(property) ||
                       (isActive ? 'Location available' : 'Pay rent to activate Google Maps location')}
-                  </Text>
+                  </AppText>
                   <View style={styles.locationBadges}>
-                    <Text style={[styles.locationBadge, !isActive && styles.locationBadgeLocked]}>
+                    <AppText style={[styles.locationBadge, !isActive && styles.locationBadgeLocked]}>
                       {isActive ? 'Rent paid' : 'Rent not paid'}
-                    </Text>
+                    </AppText>
                     {isActive ? (
-                      <Text style={styles.locationBadgeAlt}>
+                      <AppText style={styles.locationBadgeAlt}>
                         {property.latitude && property.longitude ? 'Map pin ready' : 'Address search'}
-                      </Text>
+                      </AppText>
                     ) : (
-                      <Text style={styles.locationBadgeWarning}>Locked until confirmed</Text>
+                      <AppText style={styles.locationBadgeWarning}>Locked until confirmed</AppText>
                     )}
                   </View>
                 </View>
@@ -879,38 +880,38 @@ const DashboardScreen = ({ navigation }) => {
           <View style={styles.referralHeader}>
             <Icon name="gift-outline" size={24} color="#059669" />
             <View style={{ flex: 1 }}>
-              <Text style={styles.referralEyebrow}>Invite & Earn</Text>
-              <Text style={styles.referralTitle}>
+              <AppText style={styles.referralEyebrow}>Invite & Earn</AppText>
+              <AppText style={styles.referralTitle}>
                 Earn ₦{Number(referralInfo.reward_amount || 1000).toLocaleString()} per successful invite
-              </Text>
+              </AppText>
               {referralInfo.referral_code ? (
-                <Text style={styles.referralCode}>{referralInfo.referral_code}</Text>
+                <AppText style={styles.referralCode}>{referralInfo.referral_code}</AppText>
               ) : null}
             </View>
           </View>
 
           <View style={styles.referralStatsRow}>
             <View style={styles.referralStat}>
-              <Text style={styles.referralStatLabel}>Referrals</Text>
-              <Text style={styles.referralStatValue}>
+              <AppText style={styles.referralStatLabel}>Referrals</AppText>
+              <AppText style={styles.referralStatValue}>
                 {Number(referralInfo.total_referrals || 0).toLocaleString()}
-              </Text>
+              </AppText>
             </View>
             <View style={styles.referralStat}>
-              <Text style={styles.referralStatLabel}>Earned</Text>
-              <Text style={styles.referralStatValue}>
+              <AppText style={styles.referralStatLabel}>Earned</AppText>
+              <AppText style={styles.referralStatValue}>
                 ₦{Number(referralInfo.total_earned || 0).toLocaleString()}
-              </Text>
+              </AppText>
             </View>
             <View style={styles.referralStat}>
-              <Text style={styles.referralStatLabel}>Credit</Text>
-              <Text style={styles.referralStatValue}>
+              <AppText style={styles.referralStatLabel}>Credit</AppText>
+              <AppText style={styles.referralStatValue}>
                 ₦{Number(referralInfo.subscription_credit_balance || 0).toLocaleString()}
-              </Text>
+              </AppText>
             </View>
           </View>
 
-          <Text style={styles.referralLinkLabel}>Invite link</Text>
+          <AppText style={styles.referralLinkLabel}>Invite link</AppText>
           <TextInput
             style={styles.referralLinkInput}
             value={referralInfo.invite_url}
@@ -920,15 +921,15 @@ const DashboardScreen = ({ navigation }) => {
 
           <View style={styles.referralActions}>
             <TouchableOpacity style={styles.referralBtnPrimary} onPress={shareReferralInvite}>
-              <Text style={styles.referralBtnPrimaryText}>Share</Text>
+              <AppText style={styles.referralBtnPrimaryText}>Share</AppText>
             </TouchableOpacity>
             <TouchableOpacity style={styles.referralBtnSecondary} onPress={openWhatsappReferralShare}>
-              <Text style={styles.referralBtnSecondaryText}>WhatsApp</Text>
+              <AppText style={styles.referralBtnSecondaryText}>WhatsApp</AppText>
             </TouchableOpacity>
           </View>
         </View>
       ) : referralLoading ? (
-        <Text style={styles.referralLoading}>Loading invite link...</Text>
+        <AppText style={styles.referralLoading}>Loading invite link...</AppText>
       ) : null}
 
       <DashboardSection title="Property tools">
@@ -1023,19 +1024,19 @@ const DashboardScreen = ({ navigation }) => {
         <TenancyGracePanel userType={user?.user_type} />
       ) : null}
 
-      <Text style={styles.sectionTitle}>Recent Activities</Text>
+      <AppText style={styles.sectionTitle}>Recent Activities</AppText>
       {activities.length === 0 ? (
-        <Text style={styles.emptyText}>No recent activities.</Text>
+        <AppText style={styles.emptyText}>No recent activities.</AppText>
       ) : (
         activities.map((item) => (
           <View key={`${item.type}-${item.id}`} style={styles.activityItem}>
-            <Text style={styles.activityType}>{String(item.type || 'activity').toUpperCase()}</Text>
-            <Text style={styles.activityText}>
+            <AppText style={styles.activityType}>{String(item.type || 'activity').toUpperCase()}</AppText>
+            <AppText style={styles.activityText}>
               {item.property_title || item.message_text || 'Activity update'}
-            </Text>
-            <Text style={styles.activityDate}>
+            </AppText>
+            <AppText style={styles.activityDate}>
               {item.activity_date ? new Date(item.activity_date).toLocaleString() : ''}
-            </Text>
+            </AppText>
           </View>
         ))
       )}

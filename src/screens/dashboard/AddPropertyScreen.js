@@ -9,6 +9,7 @@ import { propertyService } from '../../services/propertyService';
 import { getErrorMessage } from '../../utils/http';
 import { colors, radius, shadows, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const propertyTypes = ['apartment', 'house', 'duplex', 'studio', 'bungalow', 'flat', 'room'];
 
 const AddPropertyScreen = ({ navigation }) => {
@@ -107,8 +108,8 @@ const AddPropertyScreen = ({ navigation }) => {
           <Icon name="arrow-back" size={22} color={colors.navy} />
         </TouchableOpacity>
         <View style={styles.headerCopy}>
-          <Text style={styles.eyebrow}>NEW LISTING</Text>
-          <Text style={styles.headerTitle}>Add property</Text>
+          <AppText style={styles.eyebrow}>NEW LISTING</AppText>
+          <AppText style={styles.headerTitle}>Add property</AppText>
         </View>
         <View style={styles.headerSpacer} />
       </View>
@@ -121,11 +122,11 @@ const AddPropertyScreen = ({ navigation }) => {
         <View style={styles.introIcon}>
           <Icon name="business-outline" size={23} color={colors.gold} />
         </View>
-        <Text style={styles.title}>Create a verified listing</Text>
-        <Text style={styles.subtitle}>Provide accurate property and map information for review.</Text>
+        <AppText style={styles.title}>Create a verified listing</AppText>
+        <AppText style={styles.subtitle}>Provide accurate property and map information for review.</AppText>
       </View>
 
-      <Text style={styles.sectionLabel}>PROPERTY DETAILS</Text>
+      <AppText style={styles.sectionLabel}>PROPERTY DETAILS</AppText>
       <View style={styles.card}>
       <Input label="Title" value={form.title} onChangeText={(value) => onChange('title', value)} />
       <Input
@@ -135,16 +136,16 @@ const AddPropertyScreen = ({ navigation }) => {
         multiline
         numberOfLines={4}
       />
-      <Text style={styles.fieldLabel}>Property type</Text>
+      <AppText style={styles.fieldLabel}>Property type</AppText>
       <View style={styles.chipGrid}>
         {propertyTypes.map((type) => (
           <TouchableOpacity
             key={type}
             onPress={() => onChange('property_type', type)}
             style={[styles.chip, form.property_type === type && styles.chipActive]}>
-            <Text style={[styles.chipText, form.property_type === type && styles.chipTextActive]}>
+            <AppText style={[styles.chipText, form.property_type === type && styles.chipTextActive]}>
               {type.charAt(0).toUpperCase() + type.slice(1)}
-            </Text>
+            </AppText>
           </TouchableOpacity>
         ))}
       </View>
@@ -168,7 +169,7 @@ const AddPropertyScreen = ({ navigation }) => {
       </View>
       </View>
 
-      <Text style={styles.sectionLabel}>LOCATION</Text>
+      <AppText style={styles.sectionLabel}>LOCATION</AppText>
       <View style={styles.card}>
       <Input label="State" value={form.state} onChangeText={(value) => onChange('state', value)} />
       <Input label="City" value={form.city} onChangeText={(value) => onChange('city', value)} />
@@ -179,9 +180,9 @@ const AddPropertyScreen = ({ navigation }) => {
         onChangeText={(value) => onChange('full_address', value)}
         placeholder="Street and building details"
       />
-      <Text style={styles.coordinateHint}>
+      <AppText style={styles.coordinateHint}>
         Copy the latitude and longitude from the property’s Google Maps pin.
-      </Text>
+      </AppText>
       <View style={styles.numberRow}>
         <View style={styles.numberField}>
           <Input label="Latitude" value={form.latitude} onChangeText={(value) => onChange('latitude', value)} keyboardType="decimal-pad" placeholder="6.5244" />
@@ -192,7 +193,7 @@ const AddPropertyScreen = ({ navigation }) => {
       </View>
       </View>
 
-      <Text style={styles.sectionLabel}>PRICING</Text>
+      <AppText style={styles.sectionLabel}>PRICING</AppText>
       <View style={styles.card}>
       <Input
         label="Rent Amount"
@@ -200,16 +201,16 @@ const AddPropertyScreen = ({ navigation }) => {
         onChangeText={(value) => onChange('rent_amount', value)}
         keyboardType="number-pad"
       />
-      <Text style={styles.fieldLabel}>Payment frequency</Text>
+      <AppText style={styles.fieldLabel}>Payment frequency</AppText>
       <View style={styles.frequencyRow}>
         {['monthly', 'yearly'].map((frequency) => (
           <TouchableOpacity
             key={frequency}
             onPress={() => onChange('payment_frequency', frequency)}
             style={[styles.frequency, form.payment_frequency === frequency && styles.frequencyActive]}>
-            <Text style={[styles.frequencyText, form.payment_frequency === frequency && styles.frequencyTextActive]}>
+            <AppText style={[styles.frequencyText, form.payment_frequency === frequency && styles.frequencyTextActive]}>
               {frequency.charAt(0).toUpperCase() + frequency.slice(1)}
-            </Text>
+            </AppText>
           </TouchableOpacity>
         ))}
       </View>
@@ -218,7 +219,7 @@ const AddPropertyScreen = ({ navigation }) => {
       <Button title="Submit for verification" onPress={handleSubmit} loading={loading} size="lg" />
       <View style={styles.reviewNote}>
         <Icon name="shield-checkmark-outline" size={17} color={colors.success} />
-        <Text style={styles.reviewText}>RentalHub reviews listings before they become publicly available.</Text>
+        <AppText style={styles.reviewText}>RentalHub reviews listings before they become publicly available.</AppText>
       </View>
     </ScrollView>
     </SafeAreaView>

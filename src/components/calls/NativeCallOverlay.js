@@ -13,6 +13,7 @@ import { getWebRtcIceServers, isVideoEnabledCall } from '../../config/webrtcConf
 import { useRealtime } from '../../context/RealtimeContext';
 import { colors, radius, shadows, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 let mediaDevices, RTCIceCandidate, RTCPeerConnection, RTCSessionDescription, RTCView;
 try {
   const WebRTC = require('react-native-webrtc');
@@ -293,11 +294,11 @@ const NativeCallOverlay = () => {
                   ) : (
                     <Icon name={videoCall ? 'videocam-outline' : 'call-outline'} size={42} color={colors.white} />
                   )}
-                  <Text style={styles.remotePlaceholderText}>
+                  <AppText style={styles.remotePlaceholderText}>
                     {mediaStatus === 'connected'
                       ? videoCall ? 'Waiting for remote video…' : 'Audio session connected'
                       : 'Connecting media…'}
-                  </Text>
+                  </AppText>
                 </View>
               )}
               {localUrl && videoCall ? (
@@ -319,19 +320,19 @@ const NativeCallOverlay = () => {
             </View>
           )}
 
-          <Text style={[styles.eyebrow, isAccepted && styles.liveEyebrow]}>
+          <AppText style={[styles.eyebrow, isAccepted && styles.liveEyebrow]}>
             {isAccepted ? String(mediaStatus).replace(/_/g, ' ') : activeCall.status || 'RINGING'}
-          </Text>
-          <Text style={[styles.title, isAccepted && styles.liveTitle]}>{callTitle(activeCall)}</Text>
-          <Text style={[styles.subtitle, isAccepted && styles.liveSubtitle]}>
+          </AppText>
+          <AppText style={[styles.title, isAccepted && styles.liveTitle]}>{callTitle(activeCall)}</AppText>
+          <AppText style={[styles.subtitle, isAccepted && styles.liveSubtitle]}>
             {isIncoming
               ? `${otherPartyName(activeCall)} is requesting this session.`
               : `With ${otherPartyName(activeCall)}`}
-          </Text>
+          </AppText>
           {activeCall.propertyTitle ? (
-            <Text style={[styles.propertyText, isAccepted && styles.livePropertyText]}>
+            <AppText style={[styles.propertyText, isAccepted && styles.livePropertyText]}>
               {activeCall.propertyTitle}
-            </Text>
+            </AppText>
           ) : null}
 
           <View style={styles.actions}>
@@ -385,7 +386,7 @@ const NativeCallOverlay = () => {
               </>
             ) : isClosing ? (
               <TouchableOpacity accessibilityRole="button" style={styles.closeButton} onPress={clearCall}>
-                <Text style={styles.closeButtonText}>Close</Text>
+                <AppText style={styles.closeButtonText}>Close</AppText>
               </TouchableOpacity>
             ) : (
               <TouchableOpacity
@@ -394,7 +395,7 @@ const NativeCallOverlay = () => {
                 onPress={() => safeAction(hangUp, 'Could not cancel call')}
               >
                 <Icon name="close" size={18} color={colors.white} />
-                <Text style={styles.endButtonText}>Cancel request</Text>
+                <AppText style={styles.endButtonText}>Cancel request</AppText>
               </TouchableOpacity>
             )}
           </View>

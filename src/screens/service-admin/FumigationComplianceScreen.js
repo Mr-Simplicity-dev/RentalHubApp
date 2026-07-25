@@ -6,7 +6,8 @@ import { serviceAdminService } from '../../services/serviceAdminService';
 import { getErrorMessage } from '../../utils/http';
 import { colors, radius, typography } from '../../theme';
 import {
-  DashboardHero,
+
+import AppText from '../../components/common/AppText';  DashboardHero,
   DashboardNotice,
   DashboardScreen,
   DashboardSection,
@@ -164,8 +165,8 @@ const FumigationComplianceScreen = ({ navigation, route }) => {
         {CHECK_ITEMS.map(([key, title, subtitle]) => (
           <View key={key} style={styles.checkRow}>
             <View style={styles.checkCopy}>
-              <Text style={styles.checkTitle}>{title}</Text>
-              <Text style={styles.checkSubtitle}>{subtitle}</Text>
+              <AppText style={styles.checkTitle}>{title}</AppText>
+              <AppText style={styles.checkSubtitle}>{subtitle}</AppText>
             </View>
             <Switch
               accessibilityLabel={title}
@@ -179,7 +180,7 @@ const FumigationComplianceScreen = ({ navigation, route }) => {
       </DashboardSection>
 
       <DashboardSection title="Inspection details">
-        <Text style={styles.label}>Compliance officer</Text>
+        <AppText style={styles.label}>Compliance officer</AppText>
         <TextInput
           accessibilityLabel="Compliance officer name"
           value={officerName}
@@ -188,7 +189,7 @@ const FumigationComplianceScreen = ({ navigation, route }) => {
           placeholderTextColor={colors.muted}
           style={styles.input}
         />
-        <Text style={styles.label}>Inspection date</Text>
+        <AppText style={styles.label}>Inspection date</AppText>
         <TextInput
           accessibilityLabel="Inspection date"
           value={inspectionDate}
@@ -197,7 +198,7 @@ const FumigationComplianceScreen = ({ navigation, route }) => {
           placeholderTextColor={colors.muted}
           style={styles.input}
         />
-        <Text style={styles.label}>Notes</Text>
+        <AppText style={styles.label}>Notes</AppText>
         <TextInput
           accessibilityLabel="Compliance notes"
           value={notes}
@@ -217,7 +218,7 @@ const FumigationComplianceScreen = ({ navigation, route }) => {
         style={[styles.submitButton, submitting ? styles.disabled : null]}
       >
         {submitting ? <ActivityIndicator color={colors.white} /> : <Icon name="send-outline" size={18} color={colors.white} />}
-        <Text style={styles.submitText}>{submitting ? 'Submitting...' : 'Submit compliance'}</Text>
+        <AppText style={styles.submitText}>{submitting ? 'Submitting...' : 'Submit compliance'}</AppText>
       </TouchableOpacity>
     </DashboardScreen>
   );

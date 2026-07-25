@@ -27,6 +27,7 @@ import {
 } from '../../components/dashboard/DashboardKit';
 import AdminAccountActions from '../../components/admin/AdminAccountActions';
 
+import AppText from '../../components/common/AppText';
 const statusOptions = ['all', 'submitted', 'under_review', 'shortlisted', 'approved', 'rejected', 'disqualified'];
 const paymentOptions = ['all', 'pending', 'paid', 'failed'];
 
@@ -49,7 +50,7 @@ const Chip = ({ label, active, onPress }) => (
     style={[styles.chip, active && styles.chipActive]}
     onPress={onPress}
   >
-    <Text style={[styles.chipText, active && styles.chipTextActive]}>{label.replace(/_/g, ' ')}</Text>
+    <AppText style={[styles.chipText, active && styles.chipTextActive]}>{label.replace(/_/g, ' ')}</AppText>
   </TouchableOpacity>
 );
 
@@ -61,34 +62,34 @@ const ApplicantCard = ({ applicant, onDecision, onReport }) => {
     <View style={styles.applicantCard}>
       <View style={styles.applicantHeader}>
         <View style={styles.avatar}>
-          <Text style={styles.avatarText}>{String(applicant.full_name || applicant.email_address || '?').slice(0, 1).toUpperCase()}</Text>
+          <AppText style={styles.avatarText}>{String(applicant.full_name || applicant.email_address || '?').slice(0, 1).toUpperCase()}</AppText>
         </View>
         <View style={styles.applicantMain}>
-          <Text style={styles.applicantName}>{applicant.full_name || 'Unnamed applicant'}</Text>
-          <Text style={styles.applicantMeta}>{applicant.reference_number || applicant.email_address || 'No reference'}</Text>
+          <AppText style={styles.applicantName}>{applicant.full_name || 'Unnamed applicant'}</AppText>
+          <AppText style={styles.applicantMeta}>{applicant.reference_number || applicant.email_address || 'No reference'}</AppText>
         </View>
-        <Text style={[styles.statusBadge, hasViolation && styles.statusDanger]}>{applicant.status || 'draft'}</Text>
+        <AppText style={[styles.statusBadge, hasViolation && styles.statusDanger]}>{applicant.status || 'draft'}</AppText>
       </View>
 
       <View style={styles.detailGrid}>
-        <Text style={styles.detailText}>Role: {applicant.role_title || 'N/A'}</Text>
-        <Text style={styles.detailText}>Payment: {applicant.payment_status || 'pending'}</Text>
-        <Text style={styles.detailText}>Location: {[applicant.state_name, applicant.lga_name].filter(Boolean).join(', ') || 'N/A'}</Text>
-        <Text style={styles.detailText}>Interview: {score != null ? `${Math.round(Number(score))}%` : 'Not completed'}</Text>
+        <AppText style={styles.detailText}>Role: {applicant.role_title || 'N/A'}</AppText>
+        <AppText style={styles.detailText}>Payment: {applicant.payment_status || 'pending'}</AppText>
+        <AppText style={styles.detailText}>Location: {[applicant.state_name, applicant.lga_name].filter(Boolean).join(', ') || 'N/A'}</AppText>
+        <AppText style={styles.detailText}>Interview: {score != null ? `${Math.round(Number(score))}%` : 'Not completed'}</AppText>
       </View>
 
       <View style={styles.actions}>
         <TouchableOpacity style={styles.actionButton} onPress={() => onDecision(applicant, 'shortlist')}>
-          <Text style={styles.actionText}>Shortlist</Text>
+          <AppText style={styles.actionText}>Shortlist</AppText>
         </TouchableOpacity>
         <TouchableOpacity style={styles.actionButton} onPress={() => onDecision(applicant, 'approve')}>
-          <Text style={styles.approveText}>Approve</Text>
+          <AppText style={styles.approveText}>Approve</AppText>
         </TouchableOpacity>
         <TouchableOpacity style={styles.actionButton} onPress={() => onDecision(applicant, 'reject')}>
-          <Text style={styles.rejectText}>Reject</Text>
+          <AppText style={styles.rejectText}>Reject</AppText>
         </TouchableOpacity>
         <TouchableOpacity style={styles.actionButton} onPress={() => onReport(applicant)}>
-          <Text style={styles.reportText}>Report</Text>
+          <AppText style={styles.reportText}>Report</AppText>
         </TouchableOpacity>
       </View>
     </View>
@@ -296,21 +297,21 @@ const RecruitmentAdminScreen = ({ navigation }) => {
           style={styles.searchInput}
         />
 
-        <Text style={styles.filterLabel}>Status</Text>
+        <AppText style={styles.filterLabel}>Status</AppText>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipRow}>
           {statusOptions.map((option) => (
             <Chip key={option} label={option} active={filters.status === option} onPress={() => updateFilter('status', option)} />
           ))}
         </ScrollView>
 
-        <Text style={styles.filterLabel}>Payment</Text>
+        <AppText style={styles.filterLabel}>Payment</AppText>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipRow}>
           {paymentOptions.map((option) => (
             <Chip key={option} label={option} active={filters.payment_status === option} onPress={() => updateFilter('payment_status', option)} />
           ))}
         </ScrollView>
 
-        <Text style={styles.filterLabel}>Cycles</Text>
+        <AppText style={styles.filterLabel}>Cycles</AppText>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipRow}>
           <Chip label="All cycles" active={!filters.cycle_id} onPress={() => updateFilter('cycle_id', '')} />
           {cycles.map((cycle) => (
@@ -323,7 +324,7 @@ const RecruitmentAdminScreen = ({ navigation }) => {
           ))}
         </ScrollView>
 
-        <Text style={styles.filterLabel}>Roles</Text>
+        <AppText style={styles.filterLabel}>Roles</AppText>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipRow}>
           <Chip label="All roles" active={!filters.role_id} onPress={() => updateFilter('role_id', '')} />
           {roles.map((role) => (
@@ -344,13 +345,13 @@ const RecruitmentAdminScreen = ({ navigation }) => {
         <View style={styles.funnelGrid}>
           {funnel.length ? funnel.map((item) => (
             <View key={item.status || 'unknown'} style={styles.funnelCard}>
-              <Text style={styles.funnelLabel}>{String(item.status || 'unknown').replace(/_/g, ' ')}</Text>
-              <Text style={styles.funnelValue}>{item.count || 0}</Text>
+              <AppText style={styles.funnelLabel}>{String(item.status || 'unknown').replace(/_/g, ' ')}</AppText>
+              <AppText style={styles.funnelValue}>{item.count || 0}</AppText>
             </View>
           )) : (
             <View style={styles.funnelCard}>
-              <Text style={styles.funnelLabel}>No funnel data</Text>
-              <Text style={styles.funnelValue}>0</Text>
+              <AppText style={styles.funnelLabel}>No funnel data</AppText>
+              <AppText style={styles.funnelValue}>0</AppText>
             </View>
           )}
         </View>
@@ -371,7 +372,7 @@ const RecruitmentAdminScreen = ({ navigation }) => {
         {!applicants.length ? (
           <View style={styles.emptyCard}>
             <Icon name="search-outline" size={24} color={colors.muted} />
-            <Text style={styles.emptyText}>No applicants match the current filters.</Text>
+            <AppText style={styles.emptyText}>No applicants match the current filters.</AppText>
           </View>
         ) : null}
       </DashboardSection>
@@ -398,10 +399,10 @@ const RecruitmentAdminScreen = ({ navigation }) => {
           <Pressable style={styles.modalCard}>
             <View style={styles.modalHeader}>
               <View>
-                <Text style={styles.modalEyebrow}>APPLICANT REPORT</Text>
-                <Text style={styles.modalTitle}>
+                <AppText style={styles.modalEyebrow}>APPLICANT REPORT</AppText>
+                <AppText style={styles.modalTitle}>
                   {detailModal.applicant?.full_name || 'Applicant details'}
-                </Text>
+                </AppText>
               </View>
               <TouchableOpacity accessibilityRole="button" onPress={closeApplicantDetails}>
                 <Icon name="close" size={22} color={colors.muted} />
@@ -411,7 +412,7 @@ const RecruitmentAdminScreen = ({ navigation }) => {
             {detailModal.loading ? (
               <View style={styles.modalLoading}>
                 <ActivityIndicator color={colors.blue} />
-                <Text style={styles.modalMuted}>Loading applicant record…</Text>
+                <AppText style={styles.modalMuted}>Loading applicant record…</AppText>
               </View>
             ) : (
               <ScrollView contentContainerStyle={styles.detailList}>
@@ -429,14 +430,14 @@ const RecruitmentAdminScreen = ({ navigation }) => {
                   ['Submitted', detailModal.applicant?.created_at],
                 ].map(([label, value]) => (
                   <View key={label} style={styles.detailRow}>
-                    <Text style={styles.detailLabel}>{label}</Text>
-                    <Text style={styles.detailValue}>{value || 'N/A'}</Text>
+                    <AppText style={styles.detailLabel}>{label}</AppText>
+                    <AppText style={styles.detailValue}>{value || 'N/A'}</AppText>
                   </View>
                 ))}
                 {detailModal.applicant?.suitability_reason ? (
                   <View style={styles.detailBlock}>
-                    <Text style={styles.detailLabel}>Suitability note</Text>
-                    <Text style={styles.detailValue}>{detailModal.applicant.suitability_reason}</Text>
+                    <AppText style={styles.detailLabel}>Suitability note</AppText>
+                    <AppText style={styles.detailValue}>{detailModal.applicant.suitability_reason}</AppText>
                   </View>
                 ) : null}
               </ScrollView>

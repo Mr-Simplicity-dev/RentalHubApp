@@ -16,6 +16,7 @@ import { transportationService } from '../../services/transportationService';
 import { colors, radius, shadows, typography } from '../../theme';
 import { getErrorMessage } from '../../utils/http';
 
+import AppText from '../../components/common/AppText';
 const SERVICE_ICONS = {
   van: 'car-sport-outline',
   truck: 'car-outline',
@@ -191,16 +192,16 @@ const TransportationBookingScreen = ({ route, navigation }) => {
           </TouchableOpacity>
           <View style={styles.headerIcon}><Icon name="car-sport-outline" size={23} color={colors.gold} /></View>
         </View>
-        <Text style={styles.headerEyebrow}>MOVING SUPPORT</Text>
-        <Text style={styles.headerTitle}>Book transportation</Text>
-        <Text style={styles.headerSub}>
+        <AppText style={styles.headerEyebrow}>MOVING SUPPORT</AppText>
+        <AppText style={styles.headerTitle}>Book transportation</AppText>
+        <AppText style={styles.headerSub}>
           Arrange transportation to move your items
-        </Text>
+        </AppText>
       </View>
 
       {/* Service Selection */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Select Service</Text>
+        <AppText style={styles.sectionTitle}>Select Service</AppText>
         {services.map((service) => (
           <TouchableOpacity
             key={service.id}
@@ -217,35 +218,35 @@ const TransportationBookingScreen = ({ route, navigation }) => {
                 color={selectedService?.id === service.id ? '#0284c7' : '#64748b'}
               />
               <View style={styles.serviceInfo}>
-                <Text style={styles.serviceName}>{service.service_name}</Text>
-                <Text style={styles.serviceType}>{service.service_type.replace(/_/g, ' ')}</Text>
+                <AppText style={styles.serviceName}>{service.service_name}</AppText>
+                <AppText style={styles.serviceType}>{service.service_type.replace(/_/g, ' ')}</AppText>
               </View>
               {selectedService?.id === service.id && (
                 <Icon name="checkmark-circle" size={20} color="#16a34a" />
               )}
             </View>
-            <Text style={styles.serviceDesc}>{service.description}</Text>
+            <AppText style={styles.serviceDesc}>{service.description}</AppText>
             <View style={styles.serviceDetails}>
-              <Text style={styles.serviceDetailText}>
+              <AppText style={styles.serviceDetailText}>
                 Capacity: {service.capacity_kg} kg
-              </Text>
-              <Text style={styles.servicePrice}>
+              </AppText>
+              <AppText style={styles.servicePrice}>
                 ₦{service.base_price?.toLocaleString()}
-              </Text>
+              </AppText>
             </View>
-            <Text style={styles.perKmText}>
+            <AppText style={styles.perKmText}>
               + ₦{service.price_per_km?.toLocaleString()} per km
-            </Text>
+            </AppText>
           </TouchableOpacity>
         ))}
       </View>
 
       {/* Booking Form */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Booking Details</Text>
+        <AppText style={styles.sectionTitle}>Booking Details</AppText>
 
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>Pickup Address *</Text>
+          <AppText style={styles.label}>Pickup Address *</AppText>
           <TextInput
             style={styles.input}
             value={formData.pickup_address}
@@ -255,7 +256,7 @@ const TransportationBookingScreen = ({ route, navigation }) => {
         </View>
 
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>Destination Address *</Text>
+          <AppText style={styles.label}>Destination Address *</AppText>
           <TextInput
             style={styles.input}
             value={formData.destination_address}
@@ -266,7 +267,7 @@ const TransportationBookingScreen = ({ route, navigation }) => {
 
         <View style={styles.row}>
           <View style={[styles.inputGroup, { flex: 1, marginRight: 8 }]}>
-            <Text style={styles.label}>Distance (km) *</Text>
+            <AppText style={styles.label}>Distance (km) *</AppText>
             <TextInput
               style={styles.input}
               value={formData.estimated_distance_km}
@@ -276,7 +277,7 @@ const TransportationBookingScreen = ({ route, navigation }) => {
             />
           </View>
           <View style={[styles.inputGroup, { flex: 1, marginLeft: 8 }]}>
-            <Text style={styles.label}>Date *</Text>
+            <AppText style={styles.label}>Date *</AppText>
             <TextInput
               style={styles.input}
               value={formData.booking_date}
@@ -289,7 +290,7 @@ const TransportationBookingScreen = ({ route, navigation }) => {
 
         <View style={styles.row}>
           <View style={[styles.inputGroup, { flex: 1, marginRight: 8 }]}>
-            <Text style={styles.label}>Time *</Text>
+            <AppText style={styles.label}>Time *</AppText>
             <TextInput
               style={styles.input}
               value={formData.booking_time}
@@ -298,7 +299,7 @@ const TransportationBookingScreen = ({ route, navigation }) => {
             />
           </View>
           <View style={[styles.inputGroup, { flex: 1, marginLeft: 8 }]}>
-            <Text style={styles.label}>Items</Text>
+            <AppText style={styles.label}>Items</AppText>
             <TextInput
               style={styles.input}
               value={formData.items_description}
@@ -309,7 +310,7 @@ const TransportationBookingScreen = ({ route, navigation }) => {
         </View>
 
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>Special Requirements</Text>
+          <AppText style={styles.label}>Special Requirements</AppText>
           <TextInput
             style={[styles.input, styles.textArea]}
             value={formData.special_requirements}
@@ -323,18 +324,18 @@ const TransportationBookingScreen = ({ route, navigation }) => {
         {/* Price Summary */}
         {priceCalculation && (
           <View style={styles.priceCard}>
-            <Text style={styles.priceTitle}>Price Summary</Text>
+            <AppText style={styles.priceTitle}>Price Summary</AppText>
             <View style={styles.priceRow}>
-              <Text>Base Price:</Text>
-              <Text style={styles.priceValue}>₦{priceCalculation.base_price?.toLocaleString()}</Text>
+              <AppText>Base Price:</AppText>
+              <AppText style={styles.priceValue}>₦{priceCalculation.base_price?.toLocaleString()}</AppText>
             </View>
             <View style={styles.priceRow}>
-              <Text>Distance Charge ({formData.estimated_distance_km} km):</Text>
-              <Text style={styles.priceValue}>₦{priceCalculation.distance_price?.toLocaleString()}</Text>
+              <AppText>Distance Charge ({formData.estimated_distance_km} km):</AppText>
+              <AppText style={styles.priceValue}>₦{priceCalculation.distance_price?.toLocaleString()}</AppText>
             </View>
             <View style={[styles.priceRow, styles.totalRow]}>
-              <Text style={styles.totalLabel}>Total:</Text>
-              <Text style={styles.totalValue}>₦{priceCalculation.total_price?.toLocaleString()}</Text>
+              <AppText style={styles.totalLabel}>Total:</AppText>
+              <AppText style={styles.totalValue}>₦{priceCalculation.total_price?.toLocaleString()}</AppText>
             </View>
           </View>
         )}
@@ -342,7 +343,7 @@ const TransportationBookingScreen = ({ route, navigation }) => {
         {calculatingPrice && (
           <View style={styles.calculatingContainer}>
             <ActivityIndicator size="small" color="#0284c7" />
-            <Text style={styles.calculatingText}>Calculating price...</Text>
+            <AppText style={styles.calculatingText}>Calculating price...</AppText>
           </View>
         )}
 
@@ -354,7 +355,7 @@ const TransportationBookingScreen = ({ route, navigation }) => {
           {creatingBooking ? (
             <ActivityIndicator color="#ffffff" />
           ) : (
-            <Text style={styles.submitButtonText}>Proceed to Payment</Text>
+            <AppText style={styles.submitButtonText}>Proceed to Payment</AppText>
           )}
         </TouchableOpacity>
       </View>

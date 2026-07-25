@@ -16,6 +16,7 @@ import { legalService } from '../../services/legalService';
 import { colors, radius, shadows, typography } from '../../theme';
 import { buildUploadUrl, getErrorMessage, pickObject } from '../../utils/http';
 
+import AppText from '../../components/common/AppText';
 const DisputeDetailsScreen = ({ navigation, route }) => {
   const disputeId = route?.params?.disputeId;
   const [loading, setLoading] = useState(true);
@@ -61,7 +62,7 @@ const DisputeDetailsScreen = ({ navigation, route }) => {
   if (!payload?.dispute) {
     return (
       <View style={styles.center}>
-        <Text style={styles.emptyText}>Dispute details are unavailable.</Text>
+        <AppText style={styles.emptyText}>Dispute details are unavailable.</AppText>
       </View>
     );
   }
@@ -76,7 +77,7 @@ const DisputeDetailsScreen = ({ navigation, route }) => {
         <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
           <Icon name="arrow-back" size={21} color={colors.ink} />
         </TouchableOpacity>
-        <Text style={styles.topTitle}>Case file</Text>
+        <AppText style={styles.topTitle}>Case file</AppText>
         <TouchableOpacity style={styles.refreshButton} onPress={loadDispute}>
           <Icon name="refresh" size={20} color={colors.blue} />
         </TouchableOpacity>
@@ -84,15 +85,15 @@ const DisputeDetailsScreen = ({ navigation, route }) => {
       <View style={styles.headerCard}>
         <View style={styles.caseTop}>
           <View style={styles.caseIcon}><Icon name="shield-checkmark-outline" size={23} color={colors.gold} /></View>
-          <View style={styles.statusPill}><Text style={styles.statusText}>{dispute.status || 'open'}</Text></View>
+          <View style={styles.statusPill}><AppText style={styles.statusText}>{dispute.status || 'open'}</AppText></View>
         </View>
-        <Text style={styles.eyebrow}>DISPUTE #{dispute.id}</Text>
-        <Text style={styles.title}>{dispute.property_title || 'Property dispute'}</Text>
+        <AppText style={styles.eyebrow}>DISPUTE #{dispute.id}</AppText>
+        <AppText style={styles.title}>{dispute.property_title || 'Property dispute'}</AppText>
         <View style={styles.partyBlock}>
-          <View style={styles.partyRow}><Text style={styles.partyLabel}>Opened by</Text><Text style={styles.partyValue}>{dispute.opened_by_name || 'Unknown'}</Text></View>
-          <View style={styles.partyRow}><Text style={styles.partyLabel}>Against</Text><Text style={styles.partyValue}>{dispute.against_name || dispute.against_email || 'Unknown'}</Text></View>
+          <View style={styles.partyRow}><AppText style={styles.partyLabel}>Opened by</AppText><AppText style={styles.partyValue}>{dispute.opened_by_name || 'Unknown'}</AppText></View>
+          <View style={styles.partyRow}><AppText style={styles.partyLabel}>Against</AppText><AppText style={styles.partyValue}>{dispute.against_name || dispute.against_email || 'Unknown'}</AppText></View>
         </View>
-        {dispute.description ? <Text style={styles.description}>{dispute.description}</Text> : null}
+        {dispute.description ? <AppText style={styles.description}>{dispute.description}</AppText> : null}
         <Button
           title="Verify Evidence Integrity"
           variant="outline"
@@ -102,42 +103,42 @@ const DisputeDetailsScreen = ({ navigation, route }) => {
       </View>
 
       <View style={styles.card}>
-        <View style={styles.cardHeading}><Icon name="people-outline" size={20} color={colors.blue} /><Text style={styles.cardTitle}>Assigned lawyers</Text><Text style={styles.count}>{authorized_lawyers.length}</Text></View>
+        <View style={styles.cardHeading}><Icon name="people-outline" size={20} color={colors.blue} /><AppText style={styles.cardTitle}>Assigned lawyers</AppText><AppText style={styles.count}>{authorized_lawyers.length}</AppText></View>
         {authorized_lawyers.length === 0 ? (
-          <Text style={styles.emptyText}>No authorized lawyers linked to this dispute.</Text>
+          <AppText style={styles.emptyText}>No authorized lawyers linked to this dispute.</AppText>
         ) : (
           authorized_lawyers.map((lawyer) => (
             <View key={lawyer.id} style={styles.listRow}>
-              <Text style={styles.listTitle}>{lawyer.full_name}</Text>
-              <Text style={styles.listMeta}>{lawyer.email}</Text>
-              <Text style={styles.listMeta}>
+              <AppText style={styles.listTitle}>{lawyer.full_name}</AppText>
+              <AppText style={styles.listMeta}>{lawyer.email}</AppText>
+              <AppText style={styles.listMeta}>
                 Assigned by {lawyer.assigned_by_name || lawyer.client_name || 'Unknown'}
                 {lawyer.client_name ? ` for ${lawyer.client_name}` : ''}
-              </Text>
+              </AppText>
             </View>
           ))
         )}
       </View>
 
       <View style={styles.card}>
-        <View style={styles.cardHeading}><Icon name="git-branch-outline" size={20} color={colors.blue} /><Text style={styles.cardTitle}>Dispute timeline</Text><Text style={styles.count}>{timeline.length}</Text></View>
+        <View style={styles.cardHeading}><Icon name="git-branch-outline" size={20} color={colors.blue} /><AppText style={styles.cardTitle}>Dispute timeline</AppText><AppText style={styles.count}>{timeline.length}</AppText></View>
         {timeline.length === 0 ? (
-          <Text style={styles.emptyText}>No timeline entries available.</Text>
+          <AppText style={styles.emptyText}>No timeline entries available.</AppText>
         ) : (
           timeline.map((item, index) => (
             <View key={`${item.type}-${index}`} style={styles.timelineRow}>
               <View style={styles.timelineDot} />
-              <Text style={styles.timelineTitle}>{item.summary || item.type}</Text>
-              <Text style={styles.timelineMeta}>
+              <AppText style={styles.timelineTitle}>{item.summary || item.type}</AppText>
+              <AppText style={styles.timelineMeta}>
                 {item.actor_name || 'System'} {item.actor_role ? `(${item.actor_role})` : ''}
-              </Text>
-              <Text style={styles.timelineMeta}>
+              </AppText>
+              <AppText style={styles.timelineMeta}>
                 {item.happened_at ? new Date(item.happened_at).toLocaleString() : ''}
-              </Text>
+              </AppText>
               {item.details ? (
-                <Text style={styles.timelineDetails}>
+                <AppText style={styles.timelineDetails}>
                   {typeof item.details === 'string' ? item.details : JSON.stringify(item.details)}
-                </Text>
+                </AppText>
               ) : null}
             </View>
           ))
@@ -145,9 +146,9 @@ const DisputeDetailsScreen = ({ navigation, route }) => {
       </View>
 
       <View style={styles.card}>
-        <View style={styles.cardHeading}><Icon name="folder-open-outline" size={20} color={colors.blue} /><Text style={styles.cardTitle}>Evidence</Text><Text style={styles.count}>{evidence.length}</Text></View>
+        <View style={styles.cardHeading}><Icon name="folder-open-outline" size={20} color={colors.blue} /><AppText style={styles.cardTitle}>Evidence</AppText><AppText style={styles.count}>{evidence.length}</AppText></View>
         {evidence.length === 0 ? (
-          <Text style={styles.emptyText}>No evidence uploaded.</Text>
+          <AppText style={styles.emptyText}>No evidence uploaded.</AppText>
         ) : (
           evidence.map((item) => {
             const evidenceUrl = buildUploadUrl(item.file_path || item.file_url || item.file_name);
@@ -169,34 +170,34 @@ const DisputeDetailsScreen = ({ navigation, route }) => {
       </View>
 
       <View style={styles.card}>
-        <View style={styles.cardHeading}><Icon name="chatbubbles-outline" size={20} color={colors.blue} /><Text style={styles.cardTitle}>Case messages</Text><Text style={styles.count}>{messages.length}</Text></View>
+        <View style={styles.cardHeading}><Icon name="chatbubbles-outline" size={20} color={colors.blue} /><AppText style={styles.cardTitle}>Case messages</AppText><AppText style={styles.count}>{messages.length}</AppText></View>
         {messages.length === 0 ? (
-          <Text style={styles.emptyText}>No messages yet.</Text>
+          <AppText style={styles.emptyText}>No messages yet.</AppText>
         ) : (
           messages.map((item) => (
             <View key={item.id} style={styles.listRow}>
-              <Text style={styles.listTitle}>{item.sender_name || 'Unknown sender'}</Text>
-              <Text style={styles.listMeta}>
+              <AppText style={styles.listTitle}>{item.sender_name || 'Unknown sender'}</AppText>
+              <AppText style={styles.listMeta}>
                 {item.created_at ? new Date(item.created_at).toLocaleString() : ''}
-              </Text>
-              <Text style={styles.timelineDetails}>{item.message}</Text>
+              </AppText>
+              <AppText style={styles.timelineDetails}>{item.message}</AppText>
             </View>
           ))
         )}
       </View>
 
       <View style={styles.card}>
-        <View style={styles.cardHeading}><Icon name="finger-print-outline" size={20} color={colors.blue} /><Text style={styles.cardTitle}>Legal audit trail</Text><Text style={styles.count}>{audit_logs.length}</Text></View>
+        <View style={styles.cardHeading}><Icon name="finger-print-outline" size={20} color={colors.blue} /><AppText style={styles.cardTitle}>Legal audit trail</AppText><AppText style={styles.count}>{audit_logs.length}</AppText></View>
         {audit_logs.length === 0 ? (
-          <Text style={styles.emptyText}>No legal audit logs found.</Text>
+          <AppText style={styles.emptyText}>No legal audit logs found.</AppText>
         ) : (
           audit_logs.map((item) => (
             <View key={item.id} style={styles.listRow}>
-              <Text style={styles.listTitle}>{item.action || 'Audit log'}</Text>
-              <Text style={styles.listMeta}>{item.actor_name || 'System'}</Text>
-              <Text style={styles.listMeta}>
+              <AppText style={styles.listTitle}>{item.action || 'Audit log'}</AppText>
+              <AppText style={styles.listMeta}>{item.actor_name || 'System'}</AppText>
+              <AppText style={styles.listMeta}>
                 {item.created_at ? new Date(item.created_at).toLocaleString() : ''}
-              </Text>
+              </AppText>
             </View>
           ))
         )}

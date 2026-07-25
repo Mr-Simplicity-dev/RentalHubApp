@@ -28,6 +28,7 @@ import { messageService } from '../../services/messageService';
 import { colors, radius, typography } from '../../theme';
 import { getErrorMessage, pickList } from '../../utils/http';
 
+import AppText from '../../components/common/AppText';
 const initials = (name = 'User') =>
   String(name)
     .trim()
@@ -420,7 +421,7 @@ const MessagesScreen = ({ navigation, route }) => {
     return (
       <SafeAreaView style={styles.center}>
         <ActivityIndicator color={colors.blue} size="large" />
-        <Text style={styles.loadingText}>Loading conversations…</Text>
+        <AppText style={styles.loadingText}>Loading conversations…</AppText>
       </SafeAreaView>
     );
   }
@@ -439,19 +440,19 @@ const MessagesScreen = ({ navigation, route }) => {
               <Icon name="arrow-back" size={22} color={colors.navy} />
             </TouchableOpacity>
             <View style={styles.smallAvatar}>
-              <Text style={styles.smallAvatarText}>{initials(selected.other_user_name)}</Text>
+              <AppText style={styles.smallAvatarText}>{initials(selected.other_user_name)}</AppText>
             </View>
             <View style={styles.threadHeaderCopy}>
-              <Text style={styles.threadName} numberOfLines={1}>
+              <AppText style={styles.threadName} numberOfLines={1}>
                 {selected.other_user_name || 'RentalHub user'}
-              </Text>
-              <Text style={styles.threadRole}>
+              </AppText>
+              <AppText style={styles.threadRole}>
                 {typingUserId
                   ? 'Typing…'
                   : isUserOnline(selected.other_user_id)
                     ? 'Online'
                     : String(selected.other_user_type || 'member').replace(/_/g, ' ')}
-              </Text>
+              </AppText>
             </View>
             <TouchableOpacity
               accessibilityLabel="Refresh conversation"
@@ -470,9 +471,9 @@ const MessagesScreen = ({ navigation, route }) => {
               }
               style={styles.propertyContext}>
               <Icon name="home-outline" size={16} color={colors.blue} />
-              <Text style={styles.propertyContextText} numberOfLines={1}>
+              <AppText style={styles.propertyContextText} numberOfLines={1}>
                 {selected.property_title}
-              </Text>
+              </AppText>
               <Icon name="chevron-forward" size={15} color={colors.muted} />
             </TouchableOpacity>
           ) : null}
@@ -492,12 +493,12 @@ const MessagesScreen = ({ navigation, route }) => {
                   <View style={styles.emptyThreadIcon}>
                     <Icon name="chatbubbles-outline" size={28} color={colors.blue} />
                   </View>
-                  <Text style={styles.emptyThreadTitle}>Start of the conversation</Text>
-                  <Text style={styles.emptyThreadText}>
+                  <AppText style={styles.emptyThreadTitle}>Start of the conversation</AppText>
+                  <AppText style={styles.emptyThreadText}>
                     {canCompose
                       ? 'Send a clear message to begin.'
                       : 'Messages from RentalHub support will appear here.'}
-                  </Text>
+                  </AppText>
                 </View>
               )
             }
@@ -521,28 +522,28 @@ const MessagesScreen = ({ navigation, route }) => {
               return (
                 <>
                   {showDate ? (
-                    <Text style={styles.dateDivider}>
+                    <AppText style={styles.dateDivider}>
                       {item.created_at ? new Date(item.created_at).toLocaleDateString() : ''}
-                    </Text>
+                    </AppText>
                   ) : null}
                   <View style={[styles.messageBubble, mine ? styles.myBubble : styles.otherBubble]}>
                     {item.subject ? (
-                      <Text style={[styles.messageSubject, mine && styles.myMessageText]}>
+                      <AppText style={[styles.messageSubject, mine && styles.myMessageText]}>
                         {item.subject}
-                      </Text>
+                      </AppText>
                     ) : null}
-                    <Text style={[styles.messageText, mine && styles.myMessageText]}>
+                    <AppText style={[styles.messageText, mine && styles.myMessageText]}>
                       {item.message_text}
-                    </Text>
+                    </AppText>
                     <View style={styles.messageMeta}>
-                      <Text style={[styles.messageTime, mine && styles.myMessageMeta]}>
+                      <AppText style={[styles.messageTime, mine && styles.myMessageMeta]}>
                         {item.created_at
                           ? new Date(item.created_at).toLocaleTimeString([], {
                               hour: '2-digit',
                               minute: '2-digit',
                             })
                           : ''}
-                      </Text>
+                      </AppText>
                       {mine ? (
                         <Icon
                           name={
@@ -593,9 +594,9 @@ const MessagesScreen = ({ navigation, route }) => {
           ) : (
             <View style={styles.readOnlyBar}>
               <Icon name="lock-closed-outline" size={16} color={colors.muted} />
-              <Text style={styles.readOnlyText}>
+              <AppText style={styles.readOnlyText}>
                 This is a read-only channel for official RentalHub updates.
-              </Text>
+              </AppText>
             </View>
           )}
         </KeyboardAvoidingView>
@@ -607,8 +608,8 @@ const MessagesScreen = ({ navigation, route }) => {
     <SafeAreaView edges={['top']} style={styles.safeArea}>
       <View style={styles.header}>
         <View>
-          <Text style={styles.eyebrow}>INBOX</Text>
-          <Text style={styles.title}>Messages</Text>
+          <AppText style={styles.eyebrow}>INBOX</AppText>
+          <AppText style={styles.title}>Messages</AppText>
         </View>
         {canCompose ? (
           <TouchableOpacity
@@ -645,11 +646,11 @@ const MessagesScreen = ({ navigation, route }) => {
                 </TouchableOpacity>
               ) : null}
             </View>
-            <Text style={styles.summary}>
+            <AppText style={styles.summary}>
               {unreadTotal
                 ? `${unreadTotal} unread message${unreadTotal === 1 ? '' : 's'}`
                 : `${conversations.length} conversation${conversations.length === 1 ? '' : 's'}`}
-            </Text>
+            </AppText>
           </>
         }
         ListEmptyComponent={
@@ -657,19 +658,19 @@ const MessagesScreen = ({ navigation, route }) => {
             <View style={styles.emptyIcon}>
               <Icon name="chatbubbles-outline" size={31} color={colors.blue} />
             </View>
-            <Text style={styles.emptyTitle}>
+            <AppText style={styles.emptyTitle}>
               {query ? 'No conversations match' : 'No conversations yet'}
-            </Text>
-            <Text style={styles.emptyText}>
+            </AppText>
+            <AppText style={styles.emptyText}>
               {canCompose
                 ? 'Start a secure internal conversation with an eligible RentalHub user.'
                 : 'Official RentalHub messages and support updates will appear here.'}
-            </Text>
+            </AppText>
             {canCompose && !query ? (
               <TouchableOpacity
                 onPress={() => setShowRecipientPicker(true)}
                 style={styles.startButton}>
-                <Text style={styles.startButtonText}>New conversation</Text>
+                <AppText style={styles.startButtonText}>New conversation</AppText>
                 <Icon name="arrow-forward" size={17} color={colors.white} />
               </TouchableOpacity>
             ) : null}
@@ -689,41 +690,41 @@ const MessagesScreen = ({ navigation, route }) => {
             onPress={() => pickConversation(item)}
             style={styles.conversation}>
             <View style={styles.avatar}>
-              <Text style={styles.avatarText}>{initials(item.other_user_name)}</Text>
+              <AppText style={styles.avatarText}>{initials(item.other_user_name)}</AppText>
             </View>
             <View style={styles.conversationBody}>
               <View style={styles.conversationHeading}>
-                <Text style={styles.conversationName} numberOfLines={1}>
+                <AppText style={styles.conversationName} numberOfLines={1}>
                   {item.other_user_name || 'RentalHub user'}
-                </Text>
-                <Text style={styles.conversationTime}>
+                </AppText>
+                <AppText style={styles.conversationTime}>
                   {item.created_at
                     ? new Date(item.created_at).toLocaleDateString([], {
                         month: 'short',
                         day: 'numeric',
                       })
                     : ''}
-                </Text>
+                </AppText>
               </View>
               <View style={styles.conversationPreview}>
-                <Text
+                <AppText 
                   numberOfLines={1}
                   style={[
                     styles.conversationMessage,
                     Number(item.unread_count || 0) > 0 && styles.conversationMessageUnread,
                   ]}>
                   {item.message_text || item.subject || 'No messages yet'}
-                </Text>
+                </AppText>
                 {Number(item.unread_count || 0) > 0 ? (
                   <View style={styles.unreadBadge}>
-                    <Text style={styles.unreadText}>{item.unread_count}</Text>
+                    <AppText style={styles.unreadText}>{item.unread_count}</AppText>
                   </View>
                 ) : null}
               </View>
-              <Text style={styles.conversationRole}>
+              <AppText style={styles.conversationRole}>
                 {String(item.other_user_type || 'member').replace(/_/g, ' ')}
                 {item.property_title ? ` · ${item.property_title}` : ''}
-              </Text>
+              </AppText>
             </View>
           </TouchableOpacity>
         )}

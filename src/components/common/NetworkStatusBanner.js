@@ -11,7 +11,8 @@ import {
   subscribeAppSettings,
 } from '../../services/appSettingsService';
 import {
-  getOfflineQueueSnapshot,
+
+import AppText from '../../components/common/AppText';  getOfflineQueueSnapshot,
   subscribeOfflineQueue,
 } from '../../services/offlineActionQueueService';
 
@@ -36,7 +37,7 @@ const NetworkStatusBanner = () => {
         size={17}
         color="#92400E"
       />
-      <Text style={styles.text}>
+      <AppText style={styles.text}>
         {queue.flushing
           ? 'Connection restored. Replaying saved actions now.'
           : queue.pendingCount
@@ -44,7 +45,7 @@ const NetworkStatusBanner = () => {
             : status.weak
               ? 'Network is weak. Some updates may take longer.'
               : 'You appear offline. We will retry when connection returns.'}
-      </Text>
+      </AppText>
     </View>
   );
 };

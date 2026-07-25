@@ -14,6 +14,7 @@ import { evidenceService } from '../../services/evidenceService';
 import { getErrorMessage, pickObject } from '../../utils/http';
 import { colors, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const VerifyCaseScreen = ({ route }) => {
   const [disputeId, setDisputeId] = useState(String(route?.params?.disputeId || ''));
   const [loading, setLoading] = useState(false);
@@ -73,7 +74,7 @@ const VerifyCaseScreen = ({ route }) => {
 
       {result ? (
         <PremiumCard>
-          <Text style={styles.sectionTitle}>Verification result</Text>
+          <AppText style={styles.sectionTitle}>Verification result</AppText>
           <InfoRow icon="git-branch-outline" label="Merkle root" value={result.merkleRoot || 'N/A'} />
           <InfoRow
             icon="shield-outline"
@@ -83,7 +84,7 @@ const VerifyCaseScreen = ({ route }) => {
           />
           {(result.files || []).map((file, index) => (
             <View key={`${file.file}-${index}`} style={styles.fileRow}>
-              <Text style={styles.fileName}>{file.file}</Text>
+              <AppText style={styles.fileName}>{file.file}</AppText>
               <StatusPill
                 label={file.valid ? 'Verified' : 'Tampered'}
                 color={file.valid ? colors.success : colors.danger}

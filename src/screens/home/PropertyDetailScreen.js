@@ -36,6 +36,7 @@ import { hasPaystackCheckout } from '../../services/nativePaymentService';
 import { colors, radius, shadows, typography } from '../../theme';
 import { getErrorMessage } from '../../utils/http';
 
+import AppText from '../../components/common/AppText';
 const formatCurrency = (value) => `₦${Number(value || 0).toLocaleString()}`;
 
 const prettyLabel = (value = '') =>
@@ -338,7 +339,7 @@ const PropertyDetailScreen = ({ route, navigation }) => {
     return (
       <SafeAreaView style={styles.center}>
         <ActivityIndicator color={colors.blue} size="large" />
-        <Text style={styles.loadingText}>Preparing property details…</Text>
+        <AppText style={styles.loadingText}>Preparing property details…</AppText>
       </SafeAreaView>
     );
   }
@@ -349,8 +350,8 @@ const PropertyDetailScreen = ({ route, navigation }) => {
         <View style={styles.notFoundIcon}>
           <Icon name="home-outline" size={32} color={colors.blue} />
         </View>
-        <Text style={styles.notFoundTitle}>This property is unavailable</Text>
-        <Text style={styles.empty}>It may have been rented or removed.</Text>
+        <AppText style={styles.notFoundTitle}>This property is unavailable</AppText>
+        <AppText style={styles.empty}>It may have been rented or removed.</AppText>
         <Button title="Return to properties" onPress={() => navigation.goBack()} style={styles.returnButton} />
       </SafeAreaView>
     );
@@ -414,12 +415,12 @@ const PropertyDetailScreen = ({ route, navigation }) => {
           </View>
           <View style={styles.photoCount}>
             <Icon name="images-outline" size={14} color={colors.white} />
-            <Text style={styles.photoCountText}>{imageIndex + 1} / {galleryImages.length}</Text>
+            <AppText style={styles.photoCountText}>{imageIndex + 1} / {galleryImages.length}</AppText>
           </View>
           {property.featured ? (
             <View style={styles.featuredBadge}>
               <Icon name="sparkles" size={13} color={colors.navy} />
-              <Text style={styles.featuredText}>Featured</Text>
+              <AppText style={styles.featuredText}>Featured</AppText>
             </View>
           ) : null}
         </View>
@@ -427,10 +428,10 @@ const PropertyDetailScreen = ({ route, navigation }) => {
         <View style={styles.content}>
           <View style={styles.headingRow}>
             <View style={styles.headingCopy}>
-              <Text style={styles.title}>{property.title || 'Verified rental home'}</Text>
+              <AppText style={styles.title}>{property.title || 'Verified rental home'}</AppText>
               <View style={styles.locationRow}>
                 <Icon name="location-outline" size={16} color={colors.muted} />
-                <Text style={styles.location}>{location}</Text>
+                <AppText style={styles.location}>{location}</AppText>
               </View>
             </View>
             <TouchableOpacity
@@ -451,8 +452,8 @@ const PropertyDetailScreen = ({ route, navigation }) => {
           </View>
 
           <View style={styles.priceRow}>
-            <Text style={styles.price}>{formatCurrency(property.rent_amount)}</Text>
-            <Text style={styles.frequency}> / {frequency}</Text>
+            <AppText style={styles.price}>{formatCurrency(property.rent_amount)}</AppText>
+            <AppText style={styles.frequency}> / {frequency}</AppText>
           </View>
 
           <View style={styles.factGrid}>
@@ -460,46 +461,46 @@ const PropertyDetailScreen = ({ route, navigation }) => {
               <View style={styles.factIcon}>
                 <Icon name="bed-outline" size={20} color={colors.blue} />
               </View>
-              <Text style={styles.factValue}>{Number(property.bedrooms || 0)}</Text>
-              <Text style={styles.factLabel}>Bedrooms</Text>
+              <AppText style={styles.factValue}>{Number(property.bedrooms || 0)}</AppText>
+              <AppText style={styles.factLabel}>Bedrooms</AppText>
             </View>
             <View style={styles.factDivider} />
             <View style={styles.fact}>
               <View style={styles.factIcon}>
                 <Icon name="water-outline" size={20} color={colors.blue} />
               </View>
-              <Text style={styles.factValue}>{Number(property.bathrooms || 0)}</Text>
-              <Text style={styles.factLabel}>Bathrooms</Text>
+              <AppText style={styles.factValue}>{Number(property.bathrooms || 0)}</AppText>
+              <AppText style={styles.factLabel}>Bathrooms</AppText>
             </View>
             <View style={styles.factDivider} />
             <View style={styles.fact}>
               <View style={styles.factIcon}>
                 <Icon name="home-outline" size={20} color={colors.blue} />
               </View>
-              <Text style={styles.factValue} numberOfLines={1}>
+              <AppText style={styles.factValue} numberOfLines={1}>
                 {prettyLabel(property.property_type || 'Home')}
-              </Text>
-              <Text style={styles.factLabel}>Property</Text>
+              </AppText>
+              <AppText style={styles.factLabel}>Property</AppText>
             </View>
           </View>
 
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>About this home</Text>
-            <Text style={styles.description}>
+            <AppText style={styles.sectionTitle}>About this home</AppText>
+            <AppText style={styles.description}>
               {property.description || 'The property owner has not added a description yet.'}
-            </Text>
+            </AppText>
           </View>
 
           {amenities.length ? (
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Amenities</Text>
+              <AppText style={styles.sectionTitle}>Amenities</AppText>
               <View style={styles.amenities}>
                 {amenities.slice(0, 10).map((amenity, index) => (
                   <View key={`${amenity}-${index}`} style={styles.amenity}>
                     <Icon name="checkmark-circle" size={17} color={colors.success} />
-                    <Text style={styles.amenityText}>
+                    <AppText style={styles.amenityText}>
                       {prettyLabel(typeof amenity === 'string' ? amenity : amenity?.name)}
-                    </Text>
+                    </AppText>
                   </View>
                 ))}
               </View>
@@ -513,26 +514,26 @@ const PropertyDetailScreen = ({ route, navigation }) => {
                   <Icon name="document-text-outline" size={20} color="#A15C00" />
                 </View>
                 <View>
-                  <Text style={styles.cardEyebrow}>VERIFIED RECORD</Text>
-                  <Text style={styles.cardTitle}>Property condition report</Text>
+                  <AppText style={styles.cardEyebrow}>VERIFIED RECORD</AppText>
+                  <AppText style={styles.cardTitle}>Property condition report</AppText>
                 </View>
               </View>
-              <Text style={styles.conditionMeta}>
+              <AppText style={styles.conditionMeta}>
                 {prettyLabel(latestDamageReport.damage_type || 'Condition')} ·{' '}
                 {prettyLabel(latestDamageReport.severity || 'Severity unavailable')}
-              </Text>
+              </AppText>
               {latestDamageReport.room_location ? (
-                <Text style={styles.conditionMeta}>
+                <AppText style={styles.conditionMeta}>
                   Location: {latestDamageReport.room_location}
-                </Text>
+                </AppText>
               ) : null}
               {latestDamageReport.description ? (
-                <Text style={styles.conditionText}>{latestDamageReport.description}</Text>
+                <AppText style={styles.conditionText}>{latestDamageReport.description}</AppText>
               ) : null}
               {latestDamageReport.ai_analysis?.repair_recommendation ? (
-                <Text style={styles.recommendation}>
+                <AppText style={styles.recommendation}>
                   Recommendation: {latestDamageReport.ai_analysis.repair_recommendation}
-                </Text>
+                </AppText>
               ) : null}
             </View>
           ) : null}
@@ -544,8 +545,8 @@ const PropertyDetailScreen = ({ route, navigation }) => {
                   <Icon name="person" size={21} color={colors.white} />
                 </View>
                 <View style={styles.contactCopy}>
-                  <Text style={styles.cardEyebrow}>VERIFIED CONTACT</Text>
-                  <Text style={styles.cardTitle}>{property.landlord_name}</Text>
+                  <AppText style={styles.cardEyebrow}>VERIFIED CONTACT</AppText>
+                  <AppText style={styles.cardTitle}>{property.landlord_name}</AppText>
                 </View>
                 <Icon name="shield-checkmark" size={22} color={colors.success} />
               </View>
@@ -557,7 +558,7 @@ const PropertyDetailScreen = ({ route, navigation }) => {
                     onPress={() => Linking.openURL(`tel:${property.landlord_phone}`)}
                     style={styles.contactAction}>
                     <Icon name="call-outline" size={18} color={colors.blue} />
-                    <Text style={styles.contactActionText}>Call</Text>
+                    <AppText style={styles.contactActionText}>Call</AppText>
                   </TouchableOpacity>
                 ) : null}
                 {property.landlord_email ? (
@@ -567,7 +568,7 @@ const PropertyDetailScreen = ({ route, navigation }) => {
                     onPress={() => Linking.openURL(`mailto:${property.landlord_email}`)}
                     style={styles.contactAction}>
                     <Icon name="mail-outline" size={18} color={colors.blue} />
-                    <Text style={styles.contactActionText}>Email</Text>
+                    <AppText style={styles.contactActionText}>Email</AppText>
                   </TouchableOpacity>
                 ) : null}
                 <TouchableOpacity
@@ -581,7 +582,7 @@ const PropertyDetailScreen = ({ route, navigation }) => {
                   ) : (
                     <Icon name="videocam-outline" size={18} color={colors.blue} />
                   )}
-                  <Text style={styles.contactActionText}>Virtual tour</Text>
+                  <AppText style={styles.contactActionText}>Virtual tour</AppText>
                 </TouchableOpacity>
               </View>
             </View>
@@ -590,10 +591,10 @@ const PropertyDetailScreen = ({ route, navigation }) => {
               <View style={styles.lockIcon}>
                 <Icon name="lock-closed" size={20} color={colors.gold} />
               </View>
-              <Text style={styles.lockedTitle}>Unlock complete property details</Text>
-              <Text style={styles.lockedText}>
+              <AppText style={styles.lockedTitle}>Unlock complete property details</AppText>
+              <AppText style={styles.lockedText}>
                 Access the verified contact, precise location and complete property information.
-              </Text>
+              </AppText>
               <Button
                 loading={unlocking}
                 onPress={handleUnlock}
@@ -614,9 +615,9 @@ const PropertyDetailScreen = ({ route, navigation }) => {
 
           <View style={styles.safetyRow}>
             <Icon name="shield-checkmark-outline" size={18} color={colors.success} />
-            <Text style={styles.safetyText}>
+            <AppText style={styles.safetyText}>
               Never make payments outside RentalHub’s verified payment process.
-            </Text>
+            </AppText>
           </View>
         </View>
       </ScrollView>

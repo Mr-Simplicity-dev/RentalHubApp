@@ -18,6 +18,7 @@ import { rentSavingsService } from '../../services/rentSavingsService';
 import { getErrorMessage, pickList, pickObject } from '../../utils/http';
 import { colors, radius, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const ProgressBar = ({ value }) => (
   <View style={styles.progressBar}>
     <View style={[styles.progressFill, { width: `${value}%` }]} />
@@ -120,18 +121,18 @@ const SavingsGoalDetailScreen = ({ route }) => {
 
         <View style={styles.amountRow}>
           <PremiumCard style={styles.amountItem}>
-            <Text style={styles.amountLabel}>Target</Text>
-            <Text style={styles.amountValue}>{formatNaira(targetAmount)}</Text>
+            <AppText style={styles.amountLabel}>Target</AppText>
+            <AppText style={styles.amountValue}>{formatNaira(targetAmount)}</AppText>
           </PremiumCard>
           <PremiumCard style={styles.amountItem}>
-            <Text style={styles.amountLabel}>Saved</Text>
-            <Text style={[styles.amountValue, styles.savedValue]}>{formatNaira(savedAmount)}</Text>
+            <AppText style={styles.amountLabel}>Saved</AppText>
+            <AppText style={[styles.amountValue, styles.savedValue]}>{formatNaira(savedAmount)}</AppText>
           </PremiumCard>
         </View>
 
         <PremiumCard>
           <ProgressBar value={progress} />
-          <Text style={styles.progressText}>{Math.round(progress)}% complete</Text>
+          <AppText style={styles.progressText}>{Math.round(progress)}% complete</AppText>
           <InfoRow icon="cash-outline" label="Remaining" value={formatNaira(remainingAmount)} />
         </PremiumCard>
 
@@ -139,7 +140,7 @@ const SavingsGoalDetailScreen = ({ route }) => {
           <>
             <PremiumSectionTitle title="Property" />
             <PremiumCard>
-              <Text style={styles.description}>{goal.property_address}</Text>
+              <AppText style={styles.description}>{goal.property_address}</AppText>
             </PremiumCard>
           </>
         ) : null}
@@ -188,7 +189,7 @@ const SavingsGoalDetailScreen = ({ route }) => {
       <Modal visible={contributeModal} transparent animationType="fade">
         <View style={styles.modalOverlay}>
           <PremiumCard style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Add contribution</Text>
+            <AppText style={styles.modalTitle}>Add contribution</AppText>
             <Input
               label="Amount"
               value={contributionAmount}

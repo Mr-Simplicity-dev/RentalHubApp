@@ -13,6 +13,7 @@ import { superAdminService } from '../../services/superAdminService';
 import { colors, radius, typography } from '../../theme';
 import { getErrorMessage, pickList, pickObject } from '../../utils/http';
 
+import AppText from '../../components/common/AppText';
 const PAGE_SIZE = 50;
 
 const formatDateTime = (value) => {
@@ -91,9 +92,9 @@ const AdminMonitorScreen = () => {
         value={query}
         onChangeText={setQuery}
       />
-      <Text style={styles.summary}>
+      <AppText style={styles.summary}>
         Showing {filteredActivities.length} of {activities.length} loaded actions
-      </Text>
+      </AppText>
     </>
   );
 
@@ -121,8 +122,8 @@ const AdminMonitorScreen = () => {
         <PremiumCard>
           <View style={styles.cardHeader}>
             <View style={styles.cardCopy}>
-              <Text style={styles.actor}>{item.actor_name || 'Unknown administrator'}</Text>
-              <Text style={styles.email}>{item.actor_email || 'Email unavailable'}</Text>
+              <AppText style={styles.actor}>{item.actor_name || 'Unknown administrator'}</AppText>
+              <AppText style={styles.email}>{item.actor_email || 'Email unavailable'}</AppText>
             </View>
             <StatusPill label={item.actor_role || 'admin'} color={colors.blue} />
           </View>

@@ -6,7 +6,8 @@ import { serviceAdminService } from '../../services/serviceAdminService';
 import { getErrorMessage, pickList } from '../../utils/http';
 import { colors, radius, typography } from '../../theme';
 import {
-  DashboardHero,
+
+import AppText from '../../components/common/AppText';  DashboardHero,
   DashboardNotice,
   DashboardScreen,
   DashboardSection,
@@ -68,7 +69,7 @@ const SupportTicketsScreen = ({ navigation }) => {
           <ActivityIndicator color={colors.blue} />
         ) : null}
         {!loading && !tickets.length ? (
-          <Text style={styles.empty}>No support tickets in your current queue.</Text>
+          <AppText style={styles.empty}>No support tickets in your current queue.</AppText>
         ) : null}
         {tickets.map((ticket) => (
           <TouchableOpacity
@@ -83,31 +84,31 @@ const SupportTicketsScreen = ({ navigation }) => {
             }
           >
             <View style={styles.cardTop}>
-              <Text numberOfLines={1} style={styles.title}>
+              <AppText numberOfLines={1} style={styles.title}>
                 {ticket.subject || `Support ticket #${ticket.id}`}
-              </Text>
+              </AppText>
               <View style={[styles.badge, { backgroundColor: STATUS_COLORS[ticket.status] || colors.muted }]}>
-                <Text style={styles.badgeText}>{ticket.status || 'open'}</Text>
+                <AppText style={styles.badgeText}>{ticket.status || 'open'}</AppText>
               </View>
             </View>
-            <Text numberOfLines={2} style={styles.description}>
+            <AppText numberOfLines={2} style={styles.description}>
               {ticket.description || ticket.category || 'No description supplied.'}
-            </Text>
+            </AppText>
             <View style={styles.metaRow}>
               <Icon name="person-outline" size={14} color={colors.muted} />
-              <Text numberOfLines={1} style={styles.meta}>
+              <AppText numberOfLines={1} style={styles.meta}>
                 {ticket.user_name || ticket.user_email || 'Customer'}
-              </Text>
+              </AppText>
               {ticket.unread_user_replies ? (
-                <Text style={styles.unread}>{ticket.unread_user_replies} unread</Text>
+                <AppText style={styles.unread}>{ticket.unread_user_replies} unread</AppText>
               ) : null}
             </View>
             {ticket.escalation_department ? (
-              <Text style={styles.escalation}>
+              <AppText style={styles.escalation}>
                 Escalated to {String(ticket.escalation_department).replace(/_/g, ' ')}
-              </Text>
+              </AppText>
             ) : null}
-            <Text style={styles.openNative}>Open native conversation</Text>
+            <AppText style={styles.openNative}>Open native conversation</AppText>
           </TouchableOpacity>
         ))}
       </DashboardSection>

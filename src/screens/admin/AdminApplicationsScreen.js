@@ -14,6 +14,7 @@ import {
 } from '../../components/common/PremiumLayout';
 import { colors, typography } from '../../theme';
 
+import AppText from '../../components/common/AppText';
 const AdminApplicationsScreen = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -94,11 +95,11 @@ const AdminApplicationsScreen = () => {
           <PremiumCard>
             <View style={styles.cardHeader}>
               <View style={styles.applicationIcon}>
-                <Text style={styles.applicationIconText}>APP</Text>
+                <AppText style={styles.applicationIconText}>APP</AppText>
               </View>
               <View style={styles.cardCopy}>
-                <Text style={styles.cardTitle}>{item.property_title || 'Property application'}</Text>
-                <Text style={styles.cardMeta}>{item.status || 'pending'}</Text>
+                <AppText style={styles.cardTitle}>{item.property_title || 'Property application'}</AppText>
+                <AppText style={styles.cardMeta}>{item.status || 'pending'}</AppText>
               </View>
             </View>
             <InfoRow icon="person-outline" label="Tenant" value={item.tenant_name || '—'} />
