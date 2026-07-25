@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 17,
+    fontSize: 18,
     marginBottom: 8,
   },
   fileRow: {

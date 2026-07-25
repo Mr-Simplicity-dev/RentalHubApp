@@ -293,7 +293,7 @@ const styles = StyleSheet.create({
   heroTitle: {
     color: colors.white,
     fontFamily: typography.bold,
-    fontSize: 23,
+    fontSize: 24,
     letterSpacing: -0.5,
     marginTop: 5,
   },

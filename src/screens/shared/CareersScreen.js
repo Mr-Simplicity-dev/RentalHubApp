@@ -345,7 +345,7 @@ const styles = StyleSheet.create({
   content: { padding: 18, paddingBottom: 34 },
   centered: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.surface },
   centerText: { marginTop: 8, color: colors.muted, fontFamily: typography.medium },
-  title: { fontSize: 28, fontFamily: typography.bold, color: colors.ink },
+  title: { fontSize: 32, fontFamily: typography.bold, color: colors.ink },
   subtitle: { color: colors.muted, fontFamily: typography.regular, marginTop: 6, marginBottom: 12 },
   noticeCard: {
     backgroundColor: colors.surfaceBlue,

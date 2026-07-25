@@ -317,7 +317,7 @@ const styles = StyleSheet.create({
     padding: 19,
   },
   summaryLabel: { color: '#9BC3F4', fontFamily: typography.bold, fontSize: 13, letterSpacing: 1.1 },
-  summaryValue: { color: colors.white, fontFamily: typography.bold, fontSize: 22, marginTop: 4 },
+  summaryValue: { color: colors.white, fontFamily: typography.bold, fontSize: 24, marginTop: 4 },
   summaryIcon: {
     alignItems: 'center',
     backgroundColor: 'rgba(255,201,40,0.14)',

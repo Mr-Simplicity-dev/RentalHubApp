@@ -474,7 +474,7 @@ const styles = StyleSheet.create({
   avatarText: {
     color: colors.white,
     fontFamily: typography.bold,
-    fontSize: 31,
+    fontSize: 32,
   },
   verifiedDot: {
     alignItems: 'center',
@@ -492,7 +492,7 @@ const styles = StyleSheet.create({
   title: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 23,
+    fontSize: 24,
     letterSpacing: -0.5,
     marginTop: 14,
     textAlign: 'center',
@@ -593,7 +593,7 @@ const styles = StyleSheet.create({
   switchTitle: {
     color: colors.ink,
     fontFamily: typography.semibold,
-    fontSize: 15,
+    fontSize: 16,
   },
   switchDescription: {
     color: colors.muted,

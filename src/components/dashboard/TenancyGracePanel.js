@@ -325,9 +325,9 @@ const styles = StyleSheet.create({
     borderColor: '#e2e8f0',
     padding: 14,
   },
-  heading: { fontSize: 17, fontWeight: '700', color: '#0f172a' },
+  heading: { fontSize: 18, fontWeight: '700', color: '#0f172a' },
   subheading: { fontSize: 13, color: '#64748b', marginTop: 4, marginBottom: 10 },
-  sectionTitle: { fontSize: 15, fontWeight: '600', marginTop: 12, color: '#0f172a' },
+  sectionTitle: { fontSize: 16, fontWeight: '600', marginTop: 12, color: '#0f172a' },
   input: {
     borderWidth: 1,
     borderColor: '#e2e8f0',

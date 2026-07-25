@@ -1153,7 +1153,7 @@ const styles = StyleSheet.create({
   },
   primaryBtnText: {
     fontFamily: typography.semibold,
-    fontSize: 15,
+    fontSize: 16,
     color: colors.white,
   },
   secondaryBtn: {

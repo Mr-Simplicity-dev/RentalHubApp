@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   largeText: {
-    fontSize: 17,
+    fontSize: 18,
   },
 });
 

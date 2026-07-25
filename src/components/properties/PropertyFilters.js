@@ -275,7 +275,7 @@ const styles = StyleSheet.create({
   title: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 23,
+    fontSize: 24,
     letterSpacing: -0.5,
     marginTop: 3,
   },
@@ -296,7 +296,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 15,
+    fontSize: 16,
     marginBottom: 11,
     marginTop: 13,
   },

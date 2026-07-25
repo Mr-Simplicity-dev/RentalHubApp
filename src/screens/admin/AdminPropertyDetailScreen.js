@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
   price: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 28,
+    fontSize: 32,
   },
   frequency: {
     color: colors.muted,
@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
   actionTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 17,
+    fontSize: 18,
     marginBottom: 12,
   },
   actions: {

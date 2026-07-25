@@ -1185,7 +1185,7 @@ const styles = StyleSheet.create({
   subtitle: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 15,
+    fontSize: 16,
     lineHeight: 23,
     marginBottom: 24,
     marginTop: 9,
@@ -1239,7 +1239,7 @@ const styles = StyleSheet.create({
     fontFamily: typography.semibold,
   },
   priceAmount: {
-    fontSize: 28,
+    fontSize: 32,
     fontFamily: typography.bold,
     color: colors.ink,
     marginTop: 4,
@@ -1277,7 +1277,7 @@ const styles = StyleSheet.create({
   reviewTitle: {
     color: colors.white,
     fontFamily: typography.bold,
-    fontSize: 19,
+    fontSize: 20,
     marginTop: 3,
   },
   editButton: {

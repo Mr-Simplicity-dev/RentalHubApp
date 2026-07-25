@@ -249,7 +249,7 @@ const styles = StyleSheet.create({
   totalValue: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 21,
+    fontSize: 20,
   },
   bodyText: {
     color: colors.text,

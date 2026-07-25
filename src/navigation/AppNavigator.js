@@ -158,7 +158,7 @@ const screenOptions = {
   headerTintColor: colors.navy,
   headerTitleStyle: {
     fontFamily: typography.semibold,
-    fontSize: 17,
+    fontSize: 18,
   },
   contentStyle: {
     backgroundColor: colors.surface,

@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   cardActive: { borderColor: colors.blue, backgroundColor: colors.surfaceBlue },
-  cardTitle: { fontSize: 15, fontFamily: typography.bold, color: colors.ink },
+  cardTitle: { fontSize: 16, fontFamily: typography.bold, color: colors.ink },
   cardMeta: { marginTop: 4, color: colors.muted, fontFamily: typography.regular, fontSize: 13, paddingRight: 20 },
   cardText: { marginTop: 8, color: colors.text, fontFamily: typography.regular },
   cardArrow: { position: 'absolute', right: 12, top: 18 },

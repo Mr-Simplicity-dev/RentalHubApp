@@ -599,7 +599,7 @@ const styles = StyleSheet.create({
   oppTitle: {
     color: colors.ink,
     fontFamily: typography.semibold,
-    fontSize: 15,
+    fontSize: 16,
     marginTop: 3,
   },
   oppLocation: {
@@ -685,7 +685,7 @@ const styles = StyleSheet.create({
   emptyTitle: {
     color: colors.ink,
     fontFamily: typography.semibold,
-    fontSize: 17,
+    fontSize: 18,
     marginTop: 14,
   },
   emptySubtitle: {
@@ -717,7 +717,7 @@ const styles = StyleSheet.create({
   modalTitle: {
     color: colors.ink,
     fontFamily: typography.semibold,
-    fontSize: 17,
+    fontSize: 18,
   },
   modalCloseBtn: {
     padding: 4,

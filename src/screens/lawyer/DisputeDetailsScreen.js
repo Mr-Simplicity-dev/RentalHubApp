@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
   topBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 },
   backButton: { width: 42, height: 42, borderRadius: 21, backgroundColor: colors.white, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: colors.border },
   refreshButton: { width: 42, height: 42, borderRadius: 21, backgroundColor: colors.surfaceBlue, alignItems: 'center', justifyContent: 'center' },
-  topTitle: { fontFamily: typography.semibold, fontSize: 17, color: colors.ink },
+  topTitle: { fontFamily: typography.semibold, fontSize: 18, color: colors.ink },
   headerCard: {
     backgroundColor: colors.navy,
     borderRadius: radius.lg,

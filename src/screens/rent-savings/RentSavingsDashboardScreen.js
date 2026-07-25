@@ -153,11 +153,11 @@ const styles = StyleSheet.create({
   heroIcon: { width: 43, height: 43, borderRadius: 14, backgroundColor: colors.navySoft, alignItems: 'center', justifyContent: 'center' },
   refreshButton: { width: 38, height: 38, borderRadius: 19, backgroundColor: colors.navySoft, alignItems: 'center', justifyContent: 'center' },
   summaryLabel: { color: colors.gold, fontFamily: typography.semibold, fontSize: 13, letterSpacing: 1.1 },
-  summaryValue: { color: colors.white, fontFamily: typography.bold, fontSize: 34, marginTop: 5 },
+  summaryValue: { color: colors.white, fontFamily: typography.bold, fontSize: 36, marginTop: 5 },
   heroCaption: { marginTop: 7, color: '#B9C9E5', fontFamily: typography.regular, lineHeight: 20 },
   summaryRow: { flexDirection: 'row', marginTop: 16, gap: 16 },
   summaryItem: { flex: 1, backgroundColor: colors.navySoft, borderRadius: radius.md, padding: 12 },
-  summaryItemValue: { color: colors.white, fontFamily: typography.bold, fontSize: 21 },
+  summaryItemValue: { color: colors.white, fontFamily: typography.bold, fontSize: 20 },
   summaryItemLabel: { color: '#AFC3E6', fontFamily: typography.regular, fontSize: 13, marginTop: 2 },
   actionsGrid: { gap: 9, marginBottom: 22 },
   actionCard: {
@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
   goalIcon: { width: 34, height: 34, borderRadius: 11, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.surfaceBlue, marginRight: 9 },
   goalName: { flex: 1, fontFamily: typography.semibold, color: colors.ink },
   goalStatus: { fontFamily: typography.semibold, fontSize: 13, color: colors.blue },
-  goalTarget: { fontFamily: typography.bold, fontSize: 22, color: colors.ink, marginTop: 12 },
+  goalTarget: { fontFamily: typography.bold, fontSize: 24, color: colors.ink, marginTop: 12 },
   progressBar: {
     height: 8,
     backgroundColor: colors.border,

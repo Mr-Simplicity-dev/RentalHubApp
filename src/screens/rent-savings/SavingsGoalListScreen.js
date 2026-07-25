@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
   cardTarget: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 22,
+    fontSize: 24,
     marginTop: 5,
   },
   progressBar: {

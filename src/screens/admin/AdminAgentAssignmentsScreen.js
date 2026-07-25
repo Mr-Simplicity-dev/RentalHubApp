@@ -226,7 +226,7 @@ const styles = StyleSheet.create({
   formTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 17,
+    fontSize: 18,
     marginBottom: 12,
   },
   rowHeader: {

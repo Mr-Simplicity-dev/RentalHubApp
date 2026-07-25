@@ -226,7 +226,7 @@ const styles = StyleSheet.create({
   name: {
     color: colors.white,
     fontFamily: typography.bold,
-    fontSize: 34,
+    fontSize: 36,
     letterSpacing: -1,
     marginTop: 20,
   },

@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
   title: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 17,
+    fontSize: 18,
     letterSpacing: -0.25,
   },
   row: {

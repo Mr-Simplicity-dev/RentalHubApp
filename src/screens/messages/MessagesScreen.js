@@ -781,7 +781,7 @@ const styles = StyleSheet.create({
   title: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 25,
+    fontSize: 24,
     letterSpacing: -0.6,
     marginTop: 3,
   },

@@ -346,7 +346,7 @@ const styles = StyleSheet.create({
   backButton: { width: 40, height: 40, borderRadius: 20, backgroundColor: colors.navySoft, alignItems: 'center', justifyContent: 'center' },
   headerIcon: { width: 42, height: 42, borderRadius: 14, backgroundColor: colors.navySoft, alignItems: 'center', justifyContent: 'center' },
   headerEyebrow: { fontFamily: typography.semibold, fontSize: 13, letterSpacing: 1.2, color: colors.gold },
-  headerTitle: { marginTop: 7, color: colors.white, fontFamily: typography.bold, fontSize: 25 },
+  headerTitle: { marginTop: 7, color: colors.white, fontFamily: typography.bold, fontSize: 24 },
   headerSub: { color: '#B9C9E5', fontFamily: typography.regular, fontSize: 14, lineHeight: 20, marginTop: 6 },
   section: {
     marginBottom: 12,
@@ -410,7 +410,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.sm,
     paddingHorizontal: 12,
     paddingVertical: 10,
-    fontSize: 15,
+    fontSize: 16,
     color: '#0f172a',
     backgroundColor: '#f8fafc',
   },

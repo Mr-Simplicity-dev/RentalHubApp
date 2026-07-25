@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
   totalValue: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 22,
+    fontSize: 24,
   },
   methodRow: {
     alignItems: 'center',
@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
   methodTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 15,
+    fontSize: 16,
   },
   methodText: {
     color: colors.text,

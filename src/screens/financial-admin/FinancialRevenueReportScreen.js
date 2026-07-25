@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 17,
+    fontSize: 18,
     marginBottom: 10,
     marginTop: 4,
   },
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
   txAmount: {
     color: colors.navy,
     fontFamily: typography.bold,
-    fontSize: 22,
+    fontSize: 24,
     marginTop: 4,
   },
 });

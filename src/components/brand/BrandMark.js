@@ -30,11 +30,11 @@ const styles = StyleSheet.create({
   name: {
     color: colors.navy,
     fontFamily: typography.bold,
-    fontSize: 27,
+    fontSize: 24,
     letterSpacing: -0.8,
   },
   nameCompact: {
-    fontSize: 21,
+    fontSize: 20,
   },
   country: {
     color: colors.blue,

@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
   contactTitle: {
     color: colors.white,
     fontFamily: typography.bold,
-    fontSize: 15,
+    fontSize: 16,
   },
   contactText: {
     color: '#B9C9E5',

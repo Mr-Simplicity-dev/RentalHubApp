@@ -709,7 +709,7 @@ const styles = StyleSheet.create({
   historyAmount: {
     color: colors.navy,
     fontFamily: typography.bold,
-    fontSize: 23,
+    fontSize: 24,
     marginTop: 3,
   },
   modalOverlay: {
@@ -795,7 +795,7 @@ const styles = StyleSheet.create({
   balanceValue: {
     color: '#065F46',
     fontFamily: typography.bold,
-    fontSize: 27,
+    fontSize: 24,
     marginTop: 5,
   },
   balanceHint: {

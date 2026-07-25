@@ -237,7 +237,7 @@ const styles = StyleSheet.create({
   content: { padding: 18, paddingBottom: 30 },
   intro: { backgroundColor: colors.navy, borderRadius: radius.lg, marginBottom: 23, padding: 19 },
   introIcon: { alignItems: 'center', backgroundColor: 'rgba(255,201,40,0.14)', borderRadius: 20, height: 40, justifyContent: 'center', width: 40 },
-  title: { color: colors.white, fontFamily: typography.bold, fontSize: 22, marginTop: 14 },
+  title: { color: colors.white, fontFamily: typography.bold, fontSize: 24, marginTop: 14 },
   subtitle: { color: '#AFC2DF', fontFamily: typography.regular, fontSize: 13, lineHeight: 18, marginTop: 6 },
   sectionLabel: { color: colors.blue, fontFamily: typography.bold, fontSize: 13, letterSpacing: 1.2, marginBottom: 8, marginLeft: 2 },
   card: { backgroundColor: colors.white, borderColor: colors.border, borderRadius: radius.lg, borderWidth: 1, marginBottom: 20, padding: 17, ...shadows.soft },

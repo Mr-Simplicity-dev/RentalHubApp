@@ -272,7 +272,7 @@ const styles = StyleSheet.create({
   summaryAmount: {
     color: colors.white,
     fontFamily: typography.bold,
-    fontSize: 30,
+    fontSize: 32,
     letterSpacing: -0.8,
     marginTop: 3,
   },

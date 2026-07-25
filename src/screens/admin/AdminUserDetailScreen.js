@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
   dangerTitle: {
     color: colors.danger,
     fontFamily: typography.bold,
-    fontSize: 17,
+    fontSize: 18,
   },
   dangerCopy: {
     color: colors.text,

@@ -251,7 +251,7 @@ const styles = StyleSheet.create({
   welcomeTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 27,
+    fontSize: 24,
     lineHeight: 33,
     marginTop: 7,
   },
@@ -464,13 +464,13 @@ const styles = StyleSheet.create({
   walkthroughTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 23,
+    fontSize: 24,
     lineHeight: 30,
   },
   walkthroughText: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 15,
+    fontSize: 16,
     lineHeight: 24,
     marginTop: 8,
     maxWidth: 420,

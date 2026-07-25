@@ -30,9 +30,9 @@ export const typography = {
 
 export const typeScale = {
   xs: 13,
-  sm: 13,
-  base: 15,
-  md: 17,
+  sm: 14,
+  base: 16,
+  md: 18,
   lg: 20,
   xl: 24,
   xxl: 32,

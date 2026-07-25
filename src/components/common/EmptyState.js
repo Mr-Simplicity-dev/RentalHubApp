@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     padding: 40,
     gap: 8,
   },
-  title: { fontSize: 17, fontWeight: '700', color: '#64748b', textAlign: 'center' },
+  title: { fontSize: 18, fontWeight: '700', color: '#64748b', textAlign: 'center' },
   message: { fontSize: 14, color: '#94a3b8', textAlign: 'center', lineHeight: 20 },
 });
 

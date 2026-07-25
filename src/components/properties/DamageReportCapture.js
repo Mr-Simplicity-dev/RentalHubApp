@@ -459,7 +459,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#e2e8f0',
   },
-  title: { fontSize: 17, fontFamily: typography.bold, color: '#0f172a', flex: 1, paddingRight: 8 },
+  title: { fontSize: 18, fontFamily: typography.bold, color: '#0f172a', flex: 1, paddingRight: 8 },
   body: { padding: 16, paddingBottom: 28, gap: 12 },
   lead: { color: '#475569', lineHeight: 20 },
   preview: { width: '100%', height: 220, borderRadius: 12, backgroundColor: '#e2e8f0' },

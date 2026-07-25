@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
   name: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 15,
+    fontSize: 16,
   },
   meta: {
     color: colors.muted,

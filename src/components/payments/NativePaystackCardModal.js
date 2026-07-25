@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
     padding: 13,
   },
   amountLabel: { color: '#2563eb', fontSize: 13, fontWeight: '700' },
-  amountValue: { fontFamily: typography.bold, color: '#071A3D', fontSize: 21, marginTop: 3 },
+  amountValue: { fontFamily: typography.bold, color: '#071A3D', fontSize: 20, marginTop: 3 },
   nativeCard: {
     alignItems: 'center',
     backgroundColor: '#f8fafc',
@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
     marginTop: 14,
     paddingVertical: 14,
   },
-  primaryText: { fontFamily: typography.bold, color: '#ffffff', fontSize: 15 },
+  primaryText: { fontFamily: typography.bold, color: '#ffffff', fontSize: 16 },
   secondaryButton: {
     alignItems: 'center',
     borderColor: '#0A66C2',

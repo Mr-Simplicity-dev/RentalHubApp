@@ -103,12 +103,12 @@ const AdminPoolScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F8FAFC', padding: spacing.md },
-  title: { fontFamily: typography.bold, fontSize: 22, color: '#1E293B', marginBottom: spacing.sm },
+  title: { fontFamily: typography.bold, fontSize: 24, color: '#1E293B', marginBottom: spacing.sm },
   refresh: { alignSelf: 'flex-end', marginBottom: spacing.sm },
   refreshText: { color: colors.blue, fontFamily: typography.semibold, fontSize: 13 },
   row: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF', borderRadius: 12, padding: spacing.md, marginBottom: spacing.sm, borderWidth: 1, borderColor: '#E2E8F0' },
   info: { flex: 1 },
-  name: { fontFamily: typography.semibold, fontSize: 15, color: '#1E293B' },
+  name: { fontFamily: typography.semibold, fontSize: 16, color: '#1E293B' },
   meta: { fontFamily: typography.regular, fontSize: 13, color: '#64748B', marginTop: 2 },
   stats: { alignItems: 'center', marginHorizontal: spacing.md },
   count: { fontFamily: typography.bold, fontSize: 18, color: '#475569' },

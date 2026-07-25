@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
   heroTitle: {
     color: colors.white,
     fontFamily: typography.bold,
-    fontSize: 27,
+    fontSize: 24,
     lineHeight: 33,
     marginTop: 7,
   },
@@ -264,7 +264,7 @@ const styles = StyleSheet.create({
   metricValue: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 22,
+    fontSize: 24,
     marginTop: 5,
   },
   section: {

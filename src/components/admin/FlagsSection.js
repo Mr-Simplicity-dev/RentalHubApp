@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
   nestedCard: { marginLeft: 12, borderLeftWidth: 3, borderLeftColor: '#6366f1' },
   inactiveCard: { opacity: 0.75, backgroundColor: '#f8fafc' },
   cardBody: { flex: 1, paddingRight: 8 },
-  cardTitle: { fontSize: 15, fontWeight: '600', color: '#0f172a' },
+  cardTitle: { fontSize: 16, fontWeight: '600', color: '#0f172a' },
   meta: { fontSize: 13, color: '#64748b', marginTop: 4 },
   hint: { fontSize: 13, color: '#b45309', marginTop: 4 },
   keyText: { fontSize: 13, color: '#94a3b8', marginTop: 4 },

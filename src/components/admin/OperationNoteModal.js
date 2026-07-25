@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
   title: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 19,
+    fontSize: 20,
     lineHeight: 25,
   },
   message: {

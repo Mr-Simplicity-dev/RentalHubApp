@@ -1098,7 +1098,7 @@ const styles = StyleSheet.create({
   topTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 28,
+    fontSize: 32,
     letterSpacing: -0.8,
     marginTop: 3,
   },
@@ -1141,7 +1141,7 @@ const styles = StyleSheet.create({
     fontFamily: typography.bold,
     fontSize: 16,
   },
-  title: { fontSize: 26, fontFamily: typography.bold, color: colors.ink },
+  title: { fontSize: 24, fontFamily: typography.bold, color: colors.ink },
   subtitle: {
     color: colors.muted,
     fontFamily: typography.regular,
@@ -1241,7 +1241,7 @@ const styles = StyleSheet.create({
     ...shadows.soft,
   },
   statTitle: { color: colors.muted, fontFamily: typography.medium, fontSize: 13 },
-  statValue: { fontSize: 21, fontFamily: typography.bold, color: colors.ink, marginTop: 5 },
+  statValue: { fontSize: 20, fontFamily: typography.bold, color: colors.ink, marginTop: 5 },
   quickActions: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -1262,7 +1262,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     marginTop: 24,
     marginBottom: 10,
-    fontSize: 19,
+    fontSize: 20,
     fontFamily: typography.bold,
     color: colors.ink,
   },
@@ -1293,7 +1293,7 @@ const styles = StyleSheet.create({
     fontFamily: typography.bold,
     textTransform: 'uppercase',
   },
-  referralTitle: { fontFamily: typography.bold, color: '#0f172a', fontSize: 17, marginTop: 2 },
+  referralTitle: { fontFamily: typography.bold, color: '#0f172a', fontSize: 18, marginTop: 2 },
   referralCode: {
     marginTop: 6,
     alignSelf: 'flex-start',

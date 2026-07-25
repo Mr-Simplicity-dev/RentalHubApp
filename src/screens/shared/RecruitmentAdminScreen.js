@@ -513,7 +513,7 @@ const styles = StyleSheet.create({
   funnelValue: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 22,
+    fontSize: 24,
     marginTop: 4,
   },
   applicantCard: {
@@ -547,7 +547,7 @@ const styles = StyleSheet.create({
   applicantName: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 15,
+    fontSize: 16,
   },
   applicantMeta: {
     color: colors.muted,
@@ -654,7 +654,7 @@ const styles = StyleSheet.create({
   modalTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 19,
+    fontSize: 20,
     marginTop: 3,
   },
   modalLoading: {

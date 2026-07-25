@@ -284,7 +284,7 @@ const styles = StyleSheet.create({
   modalTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 19,
+    fontSize: 20,
     marginBottom: 14,
   },
   modalActions: {

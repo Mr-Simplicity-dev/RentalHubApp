@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
   amount: {
     color: colors.navy,
     fontFamily: typography.bold,
-    fontSize: 23,
+    fontSize: 24,
     marginTop: 4,
   },
 });

@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
   bannerTitle: {
     color: colors.white,
     fontFamily: typography.bold,
-    fontSize: 15,
+    fontSize: 16,
     marginTop: 3,
   },
   bannerText: {

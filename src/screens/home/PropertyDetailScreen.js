@@ -771,7 +771,7 @@ const styles = StyleSheet.create({
   title: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 26,
+    fontSize: 24,
     letterSpacing: -0.8,
     lineHeight: 32,
   },
@@ -809,7 +809,7 @@ const styles = StyleSheet.create({
   price: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 28,
+    fontSize: 32,
     letterSpacing: -0.6,
   },
   frequency: {
@@ -865,7 +865,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 19,
+    fontSize: 20,
     letterSpacing: -0.35,
     marginBottom: 10,
   },
@@ -926,7 +926,7 @@ const styles = StyleSheet.create({
   cardTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 15,
+    fontSize: 16,
     marginTop: 2,
   },
   conditionMeta: {

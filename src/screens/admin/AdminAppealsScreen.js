@@ -283,7 +283,7 @@ const styles = StyleSheet.create({
   title: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 15,
+    fontSize: 16,
     textTransform: 'capitalize',
   },
   appellant: {

@@ -488,7 +488,7 @@ const styles = StyleSheet.create({
   notFoundTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 19,
+    fontSize: 20,
     marginTop: 13,
   },
   backAction: { marginTop: 18, minWidth: 180 },
@@ -520,7 +520,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 19,
+    fontSize: 20,
     marginTop: 2,
   },
   content: { padding: 18, paddingBottom: 32 },
@@ -550,7 +550,7 @@ const styles = StyleSheet.create({
   heroTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 19,
+    fontSize: 20,
     marginTop: 2,
   },
   heroText: {
@@ -579,7 +579,7 @@ const styles = StyleSheet.create({
   propertyTitle: {
     color: colors.white,
     fontFamily: typography.bold,
-    fontSize: 17,
+    fontSize: 18,
   },
   propertyLocation: {
     color: '#AFC2DF',
@@ -684,7 +684,7 @@ const styles = StyleSheet.create({
   agreedValue: {
     color: '#08714A',
     fontFamily: typography.bold,
-    fontSize: 21,
+    fontSize: 20,
     marginTop: 3,
   },
   timelineCard: {
@@ -698,7 +698,7 @@ const styles = StyleSheet.create({
   timelineTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 15,
+    fontSize: 16,
     marginBottom: 14,
   },
   timelineItem: { flexDirection: 'row' },
@@ -748,7 +748,7 @@ const styles = StyleSheet.create({
   formTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 17,
+    fontSize: 18,
     marginBottom: 14,
   },
   formActions: { flexDirection: 'row', gap: 9 },

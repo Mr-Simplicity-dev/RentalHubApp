@@ -358,7 +358,7 @@ const styles = StyleSheet.create({
   title: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 25,
+    fontSize: 24,
     letterSpacing: -0.6,
     marginTop: 3,
   },
@@ -382,7 +382,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 13,
   },
-  summaryValue: { color: colors.ink, fontFamily: typography.bold, fontSize: 21 },
+  summaryValue: { color: colors.ink, fontFamily: typography.bold, fontSize: 20 },
   pendingValue: { color: '#B46B00' },
   approvedValue: { color: colors.success },
   summaryLabel: {
@@ -423,7 +423,7 @@ const styles = StyleSheet.create({
   cardTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 15,
+    fontSize: 16,
     lineHeight: 20,
   },
   cardMeta: {

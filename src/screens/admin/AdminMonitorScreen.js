@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
   actor: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 15,
+    fontSize: 16,
   },
   email: {
     color: colors.muted,

@@ -340,7 +340,7 @@ const styles = StyleSheet.create({
   subtitle: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 15,
+    fontSize: 16,
     lineHeight: 22,
     marginTop: 10,
   },
@@ -420,7 +420,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 22,
+    fontSize: 24,
     letterSpacing: -0.5,
     marginTop: 5,
   },
@@ -508,7 +508,7 @@ const styles = StyleSheet.create({
   locationName: {
     color: colors.white,
     fontFamily: typography.bold,
-    fontSize: 17,
+    fontSize: 18,
     marginTop: 15,
   },
   locationMeta: {
@@ -549,7 +549,7 @@ const styles = StyleSheet.create({
   requestTitle: {
     color: colors.white,
     fontFamily: typography.bold,
-    fontSize: 21,
+    fontSize: 20,
     letterSpacing: -0.4,
     marginTop: 18,
   },

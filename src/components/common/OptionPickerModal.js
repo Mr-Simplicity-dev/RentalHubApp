@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
     color: colors.ink,
     flex: 1,
     fontFamily: typography.medium,
-    fontSize: 15,
+    fontSize: 16,
     marginRight: 10,
   },
   optionTextActive: {

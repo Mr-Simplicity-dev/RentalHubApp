@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     color: colors.ink,
     flex: 1,
     fontFamily: typography.regular,
-    fontSize: 15,
+    fontSize: 16,
     marginRight: 10,
   },
   placeholder: {

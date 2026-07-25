@@ -75,7 +75,7 @@ const ActivityFeedScreen = ({ navigation, route }) => {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F8FAFC', padding: spacing.md },
-  title: { fontSize: 22, fontWeight: '700', color: '#1E293B', marginBottom: spacing.sm },
+  title: { fontSize: 24, fontWeight: '700', color: '#1E293B', marginBottom: spacing.sm },
   refresh: { alignSelf: 'flex-end', marginBottom: spacing.sm },
   log: { flexDirection: 'row', alignItems: 'flex-start', backgroundColor: '#FFF', borderRadius: 12, padding: spacing.md, marginBottom: spacing.sm, borderWidth: 1, borderColor: '#E2E8F0' },
   dot: { width: 10, height: 10, borderRadius: 5, marginTop: 6, marginRight: spacing.sm },

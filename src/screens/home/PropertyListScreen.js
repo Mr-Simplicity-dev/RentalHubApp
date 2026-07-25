@@ -716,7 +716,7 @@ const styles = StyleSheet.create({
   accessTitle: {
     color: colors.white,
     fontFamily: typography.bold,
-    fontSize: 21,
+    fontSize: 20,
     letterSpacing: -0.4,
     marginTop: 5,
   },

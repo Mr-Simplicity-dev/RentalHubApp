@@ -585,7 +585,7 @@ const styles = StyleSheet.create({
   title: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 29,
+    fontSize: 32,
     letterSpacing: -0.9,
     lineHeight: 35,
     marginTop: 16,
@@ -621,7 +621,7 @@ const styles = StyleSheet.create({
   priceAmount: {
     color: colors.white,
     fontFamily: typography.bold,
-    fontSize: 26,
+    fontSize: 24,
     marginTop: 4,
   },
   priceMeta: {

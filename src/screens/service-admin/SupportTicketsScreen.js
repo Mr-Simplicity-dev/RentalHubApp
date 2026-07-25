@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     color: colors.ink,
     flex: 1,
     fontFamily: typography.bold,
-    fontSize: 15,
+    fontSize: 16,
   },
   badge: {
     borderRadius: radius.pill,

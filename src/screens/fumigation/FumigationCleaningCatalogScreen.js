@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
   priceValue: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 15,
+    fontSize: 16,
     marginTop: 2,
   },
 });

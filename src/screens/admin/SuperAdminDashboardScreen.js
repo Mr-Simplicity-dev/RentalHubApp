@@ -2793,7 +2793,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: '#f8fafc' },
   content: { padding: 16, paddingBottom: 24 },
-  title: { fontFamily: typography.bold, fontSize: 28, color: colors.ink, marginBottom: 12 },
+  title: { fontFamily: typography.bold, fontSize: 32, color: colors.ink, marginBottom: 12 },
   tabRow: { marginBottom: 12 },
   tabBtn: {
     marginRight: 8,

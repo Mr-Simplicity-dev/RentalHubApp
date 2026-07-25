@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
   wrap: { gap: 8, marginTop: 12 },
   heading: { fontSize: 16, fontWeight: '700', color: '#0f172a' },
   subheading: { fontSize: 13, color: '#64748b' },
-  sectionTitle: { fontSize: 15, fontWeight: '700', color: '#0f172a', marginTop: 12 },
+  sectionTitle: { fontSize: 16, fontWeight: '700', color: '#0f172a', marginTop: 12 },
   card: {
     backgroundColor: '#fff',
     borderWidth: 1,

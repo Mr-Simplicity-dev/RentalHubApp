@@ -352,7 +352,7 @@ const styles = StyleSheet.create({
   statusTitle: {
     color: colors.white,
     fontFamily: typography.bold,
-    fontSize: 23,
+    fontSize: 24,
     letterSpacing: -0.5,
     marginTop: 5,
   },
@@ -400,7 +400,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 21,
+    fontSize: 20,
     marginTop: 4,
   },
   planCard: {
@@ -436,7 +436,7 @@ const styles = StyleSheet.create({
   planPrice: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 27,
+    fontSize: 24,
     letterSpacing: -0.5,
   },
   duration: { color: colors.muted, fontFamily: typography.regular, fontSize: 13 },
