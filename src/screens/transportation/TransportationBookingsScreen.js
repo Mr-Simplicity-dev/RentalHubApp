@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {ActivityIndicator, StyleSheet TouchableOpacity, View} from 'react-native';
+import {ActivityIndicator, StyleSheet, TouchableOpacity, View} from 'react-native';
 import Toast from 'react-native-toast-message';
 import {
   InfoRow,

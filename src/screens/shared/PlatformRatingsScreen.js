@@ -4,7 +4,7 @@ import {ActivityIndicator,
   Modal,
   Pressable,
   RefreshControl,
-  StyleSheet
+  StyleSheet,
   TextInput,
   TouchableOpacity,
   View,} from 'react-native';

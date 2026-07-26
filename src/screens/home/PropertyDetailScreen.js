@@ -11,7 +11,7 @@ import {ActivityIndicator,
   ScrollView,
   Share,
   StatusBar,
-  StyleSheet
+  StyleSheet,
   TouchableOpacity,
   useWindowDimensions,
   View,} from 'react-native';

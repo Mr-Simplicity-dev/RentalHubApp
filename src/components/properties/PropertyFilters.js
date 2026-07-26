@@ -3,7 +3,7 @@ import {KeyboardAvoidingView,
   Modal,
   Platform,
   ScrollView,
-  StyleSheet
+  StyleSheet,
   TextInput,
   TouchableOpacity,
   View,} from 'react-native';

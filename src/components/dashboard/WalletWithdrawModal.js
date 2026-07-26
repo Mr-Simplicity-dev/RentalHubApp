@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {Modal,
-  View
+  View,
   StyleSheet,
   TouchableOpacity,
   ScrollView,

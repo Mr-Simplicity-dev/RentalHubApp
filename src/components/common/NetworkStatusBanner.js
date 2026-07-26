@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {StyleSheet View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { colors, typography } from '../../theme';
 import {
@@ -10,9 +10,9 @@ import {
   DEFAULT_APP_SETTINGS,
   subscribeAppSettings,
 } from '../../services/appSettingsService';
+import AppText from './AppText';
 import {
-
-import AppText from '../../components/common/AppText';  getOfflineQueueSnapshot,
+  getOfflineQueueSnapshot,
   subscribeOfflineQueue,
 } from '../../services/offlineActionQueueService';
 

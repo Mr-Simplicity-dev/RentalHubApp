@@ -3,7 +3,7 @@ import {ActivityIndicator,
   FlatList,
   ScrollView,
   StatusBar,
-  StyleSheet
+  StyleSheet,
   TouchableOpacity,
   View,} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';

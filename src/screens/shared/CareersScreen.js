@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import {ActivityIndicator,
   ScrollView,
   StatusBar,
-  StyleSheet
+  StyleSheet,
   TextInput,
   TouchableOpacity,
   View,} from 'react-native';

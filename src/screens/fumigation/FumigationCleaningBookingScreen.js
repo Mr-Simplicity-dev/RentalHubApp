@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useLayoutEffect } from 'react';
-import {View
+import {View,
   StyleSheet,
   ScrollView,
   TextInput,

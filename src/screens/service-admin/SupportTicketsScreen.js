@@ -1,13 +1,13 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react';
-import {ActivityIndicator, StyleSheet TouchableOpacity, View} from 'react-native';
+import {ActivityIndicator, StyleSheet, TouchableOpacity, View} from 'react-native';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { serviceAdminService } from '../../services/serviceAdminService';
 import { getErrorMessage, pickList } from '../../utils/http';
 import { colors, radius, typography } from '../../theme';
+import AppText from '../../components/common/AppText';
 import {
-
-import AppText from '../../components/common/AppText';  DashboardHero,
+DashboardHero,
   DashboardNotice,
   DashboardScreen,
   DashboardSection,

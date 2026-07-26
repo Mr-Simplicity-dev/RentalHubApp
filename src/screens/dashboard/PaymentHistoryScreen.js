@@ -2,7 +2,7 @@ import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import {ActivityIndicator,
   FlatList,
   RefreshControl,
-  StyleSheet
+  StyleSheet,
   TouchableOpacity,
   View,} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';

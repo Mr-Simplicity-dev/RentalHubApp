@@ -5,7 +5,7 @@ import {ActivityIndicator,
   Pressable,
   ScrollView,
   Share,
-  StyleSheet
+  StyleSheet,
   TextInput,
   TouchableOpacity,
   View,} from 'react-native';
@@ -15,9 +15,9 @@ import { financialAdminService } from '../../services/financialAdminService';
 import { trackMobileEvent } from '../../services/mobileDiagnosticsService';
 import { colors, radius, shadows, typography } from '../../theme';
 import { getErrorMessage, pickList, pickObject } from '../../utils/http';
+import AppText from '../../components/common/AppText';
 import {
-
-import AppText from '../../components/common/AppText';  ActionRow,
+ActionRow,
   DashboardHero,
   DashboardNotice,
   DashboardScreen,

@@ -9,7 +9,7 @@ import React, {
 import {ActivityIndicator,
   FlatList,
   RefreshControl,
-  StyleSheet
+  StyleSheet,
   TextInput,
   TouchableOpacity,
   View,} from 'react-native';

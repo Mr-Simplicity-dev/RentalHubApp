@@ -1,12 +1,12 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react';
-import {ActivityIndicator, FlatList, StyleSheet TouchableOpacity, View} from 'react-native';
+import {ActivityIndicator, FlatList, StyleSheet, TouchableOpacity, View} from 'react-native';
 import Toast from 'react-native-toast-message';
 import api from '../../services/api';
 import { colors, typography, radius } from '../../theme';
 import { getErrorMessage } from '../../utils/http';
+import AppText from '../../components/common/AppText';
 import {
-
-import AppText from '../../components/common/AppText';  ActionRow,
+ActionRow,
   DashboardHero,
   DashboardScreen,
   DashboardSection,

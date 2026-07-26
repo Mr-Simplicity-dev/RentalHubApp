@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {Image,
   Linking,
-  StyleSheet
+  StyleSheet,
   TouchableOpacity,
   View,} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';

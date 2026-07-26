@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import {Alert, StyleSheet, Switch TouchableOpacity, View} from 'react-native';
+import {Alert, StyleSheet, Switch, TouchableOpacity, View} from 'react-native';
 import Toast from 'react-native-toast-message';
 import Button from '../common/Button';
 import SelectField from '../common/SelectField';

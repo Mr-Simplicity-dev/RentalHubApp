@@ -3,7 +3,7 @@ import {KeyboardAvoidingView,
   Linking,
   Platform,
   ScrollView,
-  StyleSheet
+  StyleSheet,
   TouchableOpacity,
   View,} from 'react-native';
 import Toast from 'react-native-toast-message';

@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import {StyleSheet View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {
   ActionRow,
   DashboardHero,

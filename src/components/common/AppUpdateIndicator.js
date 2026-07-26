@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import {ActivityIndicator,
-  StyleSheet
+  StyleSheet,
   TouchableOpacity,
-  View,} from 'react-native';
+  View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {

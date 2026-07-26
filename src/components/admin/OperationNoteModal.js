@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {KeyboardAvoidingView,
   Modal,
   Platform,
-  StyleSheet
+  StyleSheet,
   TouchableOpacity,
   View,} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Linking, StyleSheet View} from 'react-native';
+import {Linking, StyleSheet, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {
   ActionRow,

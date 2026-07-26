@@ -4,7 +4,7 @@ import {Alert,
   Linking,
   ScrollView,
   StyleSheet,
-  Switch
+  Switch,
   TextInput,
   TouchableOpacity,
   View,} from 'react-native';

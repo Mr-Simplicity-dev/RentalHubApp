@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import {FlatList,
   Modal,
   SafeAreaView,
-  StyleSheet
+  StyleSheet,
   TextInput,
   TouchableOpacity,
   View,} from 'react-native';

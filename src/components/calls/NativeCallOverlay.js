@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {ActivityIndicator,
   Modal,
-  StyleSheet
+  StyleSheet,
   TouchableOpacity,
-  View,} from 'react-native';
+  View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
 import { getWebRtcIceServers, isVideoEnabledCall } from '../../config/webrtcConfig';

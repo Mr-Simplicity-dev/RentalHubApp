@@ -4,7 +4,7 @@ import {ActivityIndicator,
   KeyboardAvoidingView,
   Linking,
   Platform,
-  StyleSheet
+  StyleSheet,
   TextInput,
   TouchableOpacity,
   View,} from 'react-native';
@@ -15,9 +15,9 @@ import { AuthContext } from '../../context/AuthContext';
 import { supportService } from '../../services/supportService';
 import { buildUploadUrl, getErrorMessage, pickList, pickObject } from '../../utils/http';
 import { colors, radius, typography } from '../../theme';
+import AppText from '../../components/common/AppText';
 import {
-
-import AppText from '../../components/common/AppText';  DashboardHero,
+DashboardHero,
   DashboardNotice,
   DashboardScreen,
   DashboardSection,

@@ -1,7 +1,7 @@
 import React from 'react';
 import {RefreshControl,
   ScrollView,
-  StyleSheet
+  StyleSheet,
   TouchableOpacity,
   View,} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';

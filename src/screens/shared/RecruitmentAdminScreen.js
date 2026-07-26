@@ -4,7 +4,7 @@ import {Alert,
   Modal,
   Pressable,
   ScrollView,
-  StyleSheet
+  StyleSheet,
   TextInput,
   TouchableOpacity,
   View,} from 'react-native';

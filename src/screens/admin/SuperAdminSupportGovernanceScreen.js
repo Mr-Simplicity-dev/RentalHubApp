@@ -1,12 +1,12 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react';
-import {FlatList, StyleSheet View} from 'react-native';
+import {FlatList, StyleSheet, View} from 'react-native';
 import Toast from 'react-native-toast-message';
 import api from '../../services/api';
 import { colors, typography, radius } from '../../theme';
 import { getErrorMessage } from '../../utils/http';
+import AppText from '../../components/common/AppText';
 import {
-
-import AppText from '../../components/common/AppText';  DashboardHero,
+DashboardHero,
   DashboardScreen,
   DashboardSection,
   MetricCard,

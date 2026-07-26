@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import {StyleSheet TouchableOpacity, View} from 'react-native';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import Toast from 'react-native-toast-message';
 import {
   InfoRow,

@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import {Modal,
-  View
+  View,
   StyleSheet,
   TouchableOpacity,
   ScrollView,} from 'react-native';

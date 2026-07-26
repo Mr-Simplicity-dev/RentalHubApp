@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useLayoutEffect } from 'react';
-import {View StyleSheet, TouchableOpacity, ScrollView, RefreshControl} from 'react-native';
+import {View, StyleSheet, TouchableOpacity, ScrollView, RefreshControl} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';

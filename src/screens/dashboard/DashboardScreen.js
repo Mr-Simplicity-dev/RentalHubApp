@@ -4,7 +4,7 @@ import {ActivityIndicator,
   RefreshControl,
   ScrollView,
   Share,
-  StyleSheet
+  StyleSheet,
   TextInput,
   TouchableOpacity,
   View,} from 'react-native';

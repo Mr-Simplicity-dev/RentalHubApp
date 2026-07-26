@@ -11,7 +11,7 @@ import {ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
   RefreshControl,
-  StyleSheet
+  StyleSheet,
   TextInput,
   TouchableOpacity,
   View,} from 'react-native';
