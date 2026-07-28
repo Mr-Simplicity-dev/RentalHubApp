@@ -88,7 +88,7 @@ const DATA_CATEGORIES = [
     icon: 'chatbubbles-outline',
     title: 'Messages, calls, support and legal records',
     data:
-      'In-app messages, typing/read/online signals, live call audio or video, call and WebRTC signalling metadata, support tickets and replies, notification history, dispute records, evidence, damage reports, photos, inspection notes, legal authorisations and lawyer activity.',
+      'In-app messages, typing/read/online signals, call and WebRTC signalling/session metadata, support tickets and replies, notification history, dispute records, evidence, damage reports, photos, inspection notes, legal authorisations and lawyer activity. Live WebRTC audio/video is processed between participants for delivery rather than stored as an ordinary call record.',
     purpose:
       'Deliver communications and support, facilitate calls, investigate complaints, preserve evidence, enforce platform rules, protect users and manage disputes or legal workflows.',
     basis:
@@ -145,7 +145,7 @@ const PROVIDERS = [
     icon: 'id-card-outline',
     name: 'Prembly',
     text:
-      'May process NIN, passport, identity-document and face/liveness information to perform identity and fraud-prevention checks.',
+      'Currently processes NIN, name and date of birth for NIN checks, or passport number, name, nationality and date of birth for passport checks. Face/liveness data would be sent only if that separate workflow is enabled and presented.',
   },
   {
     icon: 'cloud-upload-outline',
@@ -169,13 +169,19 @@ const PROVIDERS = [
     icon: 'map-outline',
     name: 'Google services',
     text:
-      'Google Maps may process location searches, map requests and geocoding data. Google Analytics may process website usage and device information when analytics is configured and permitted.',
+      'Google Maps may process location searches, map requests and geocoding data. Google Analytics processes website usage and device information when its identifier is configured.',
   },
   {
     icon: 'chatbox-ellipses-outline',
     name: 'HubSpot Conversations',
     text:
       'The RentalHub Home page may load HubSpot live chat, which can process browser, cookie and chat information needed to provide that conversation feature.',
+  },
+  {
+    icon: 'sparkles-outline',
+    name: 'Anthropic Claude',
+    text:
+      'When damage-image analysis is used, RentalHub sends the submitted damage photograph to Anthropic Claude for a non-binding assessment and stores the resulting analysis with the damage workflow.',
   },
   {
     icon: 'server-outline',
@@ -300,7 +306,7 @@ const PrivacyPolicyScreen = () => (
 
     <DashboardNotice
       title="The short version"
-      message="RentalHub uses personal data to provide property, payment, communication, verification, support and related services. We do not sell personal data. We share it only as described below, including with service providers and people involved in a transaction or case."
+      message="RentalHub uses personal data to provide property, payment, communication, verification, support and related services. We share it as described below, including with service providers and people involved in a transaction or case."
     />
 
     <DashboardSection
@@ -345,7 +351,6 @@ const PrivacyPolicyScreen = () => (
         <BulletRow>From other RentalHub users and authorised roles involved in a listing, application, service, dispute, payment or legal workflow.</BulletRow>
         <BulletRow>Automatically from your browser, device and app use, including security logs, diagnostics, cookies, analytics and notification tokens.</BulletRow>
         <BulletRow>From providers that verify identity, process payments, deliver communications, host media or provide mapping and infrastructure.</BulletRow>
-        <BulletRow>From public or lawfully available sources when needed to verify professional, property, fraud, safety or legal information.</BulletRow>
       </PolicyCard>
     </DashboardSection>
 
@@ -376,9 +381,16 @@ const PrivacyPolicyScreen = () => (
         </BulletRow>
         <BulletRow icon="scan">
           Device biometric login is different from identity verification. If you submit
-          a face/liveness image or identity photo for verification, Prembly may process
-          that image and the associated identity details.
+          an identity photo, RentalHub may store it. Current Prembly checks send NIN,
+          name and date of birth, or passport number, name, nationality and date of
+          birth. If a face/liveness workflow is enabled and shown to you, its collection
+          notice will explain any face image sent to the verification provider.
         </BulletRow>
+        <AppText style={styles.securityCaveat}>
+          Property-application disclosure: the relevant landlord currently receives the
+          applicant's full decrypted NIN or plaintext passport number, together with
+          name, phone, email and applicable nationality details.
+        </AppText>
       </PolicyCard>
     </DashboardSection>
 
@@ -446,8 +458,8 @@ const PrivacyPolicyScreen = () => (
         <ProviderCard key={item.name} item={item} />
       ))}
       <DashboardNotice
-        title="No sale of personal data"
-        message="RentalHub does not sell personal data. Sponsor content may record aggregate impression or click counts; opening a sponsor's destination may place you under that third party's own privacy policy."
+        title="Public and sponsor content"
+        message="Sponsor content may record aggregate impression or click counts. Approved ratings can show a selected name format, comment, role/location and, only where both the platform setting and user choice permit it, a profile/passport photograph as a testimonial image."
       />
     </DashboardSection>
 
@@ -476,11 +488,10 @@ const PrivacyPolicyScreen = () => (
     <DashboardSection title="9. International processing and transfers">
       <PolicyCard>
         <AppText style={styles.paragraph}>
-          Some providers or their infrastructure may process data outside Nigeria. When
-          personal data is transferred internationally, we rely on a lawful transfer
-          mechanism and appropriate safeguards required by applicable law, such as an
-          adequacy decision, contractual protection, consent in a permitted situation or
-          another recognised basis.
+          Some providers or their infrastructure may process data outside Nigeria. A
+          restricted international transfer must use a mechanism and safeguards permitted
+          by applicable law, such as an adequacy decision, contractual protection,
+          consent in a permitted situation or another recognised basis.
         </AppText>
         <AppText style={styles.paragraph}>
           You may contact us to ask about the safeguards relevant to a particular
@@ -533,9 +544,8 @@ const PrivacyPolicyScreen = () => (
           <BulletRow key={rule} icon="time-outline">{rule}</BulletRow>
         ))}
         <AppText style={styles.paragraph}>
-          At the end of the relevant period, data is deleted, securely disposed of,
-          redacted, aggregated or anonymised. Backup copies may persist temporarily until
-          they rotate out under operational schedules.
+          At the end of the relevant period, data should be deleted, securely disposed
+          of, redacted, aggregated or anonymised unless another lawful need applies.
         </AppText>
       </PolicyCard>
     </DashboardSection>
@@ -575,10 +585,11 @@ const PrivacyPolicyScreen = () => (
     <DashboardSection title="14. Children's privacy">
       <PolicyCard>
         <AppText style={styles.paragraph}>
-          RentalHub is intended for adults who can enter property, payment and service
-          arrangements. We do not knowingly offer accounts to children under 18. A parent
-          or guardian who believes a child has provided personal data should contact us
-          so we can investigate and take appropriate action.
+          RentalHub is designed for adults who can enter property, payment and service
+          arrangements. The current registration code does not provide a comprehensive
+          age-verification gate. A parent or guardian who believes a child under 18 has
+          provided personal data should contact us so we can investigate and take
+          appropriate action.
         </AppText>
       </PolicyCard>
     </DashboardSection>
@@ -602,10 +613,12 @@ const PrivacyPolicyScreen = () => (
     <DashboardSection title="16. Marketing and communication choices">
       <PolicyCard>
         <AppText style={styles.paragraph}>
-          Service, security, payment and legal notices may still be necessary while you
-          use RentalHub. You can opt out of direct marketing through an available
-          unsubscribe control, notification settings or by contacting us. Withdrawing
-          marketing consent does not stop essential account communications.
+          Some account and lead flows synchronise email and phone details to email/SMS
+          campaign lists. Email campaigns provide an unsubscribe route. Mobile
+          notification preferences control native push categories only; to stop SMS or
+          WhatsApp marketing, contact us. Promotional messages must only be sent where
+          consent or another applicable legal basis permits them. Essential service,
+          security, payment and legal notices may still be necessary.
         </AppText>
       </PolicyCard>
     </DashboardSection>
