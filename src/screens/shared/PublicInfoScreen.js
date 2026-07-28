@@ -8,6 +8,7 @@ import {
   DashboardSection,
 } from '../../components/dashboard/DashboardKit';
 import { colors, radius, typography } from '../../theme';
+import PrivacyPolicyScreen from './PrivacyPolicyScreen';
 
 import AppText from '../../components/common/AppText';
 const INFO_PAGES = {
@@ -90,23 +91,6 @@ const INFO_PAGES = {
       },
     ],
   },
-  privacy: {
-    eyebrow: 'LEGAL',
-    title: 'Privacy summary',
-    subtitle: 'How RentalHub thinks about user data in plain language.',
-    icon: 'lock-closed-outline',
-    notice: 'This is a mobile summary for quick reading. Use official RentalHub legal documents for final wording.',
-    sections: [
-      {
-        title: 'Data handling',
-        items: [
-          'We use account, listing, application and payment information to provide the platform.',
-          'Verification information helps reduce fraud and improve trust.',
-          'Sensitive details should only be shared inside approved RentalHub workflows.',
-        ],
-      },
-    ],
-  },
   terms: {
     eyebrow: 'LEGAL',
     title: 'Terms summary',
@@ -144,6 +128,10 @@ const INFO_PAGES = {
 const PublicInfoScreen = ({ navigation, route }) => {
   const pageKey = route?.params?.page || 'faq';
   const page = useMemo(() => INFO_PAGES[pageKey] || INFO_PAGES.faq, [pageKey]);
+
+  if (pageKey === 'privacy') {
+    return <PrivacyPolicyScreen />;
+  }
 
   return (
     <DashboardScreen>

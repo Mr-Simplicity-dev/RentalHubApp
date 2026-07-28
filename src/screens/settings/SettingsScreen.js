@@ -278,8 +278,8 @@ const SettingsScreen = ({ navigation }) => {
           onPress={() => navigation.navigate('Profile')}
         />
         <ActionRow
-          title="Privacy summary"
-          subtitle="Review the mobile privacy summary."
+          title="Privacy Policy"
+          subtitle="Review how RentalHub handles and protects personal data."
           icon="lock-closed-outline"
           onPress={() => navigation.navigate('PublicInfo', { page: 'privacy' })}
         />
