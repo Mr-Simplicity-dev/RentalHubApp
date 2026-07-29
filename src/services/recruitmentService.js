@@ -19,13 +19,20 @@ export const recruitmentService = {
   getStates: () => api.get('/recruitment/locations/states'),
   getLGAs: (stateName) => api.get(`/recruitment/locations/lgas/${encodeURIComponent(stateName)}`),
   createApplication: (payload) => api.post('/recruitment/apply', payload),
-  getMyApplication: ({ email, referenceNumber }) => api.get('/recruitment/my-application', { params: { email, referenceNumber } }),
-  getMyApplications: (email) => api.get('/recruitment/my-applications', { params: { email } }),
+  getMyApplication: ({ email, referenceNumber }) => api.get('/recruitment/my-application', {
+    params: { email, reference_number: referenceNumber },
+  }),
+  getMyApplications: ({ email, referenceNumber }) => api.get('/recruitment/my-applications', {
+    params: { email, reference_number: referenceNumber },
+  }),
   initiatePayment: (payload) => api.post('/recruitment/payments/initiate', {
     amount: payload?.amount ?? 5000,
     ...payload,
   }),
-  verifyPayment: (reference) => api.post(`/recruitment/payments/verify/${encodeURIComponent(reference)}`),
+  verifyPayment: (reference, applicantAccess = {}) => api.post(
+    `/recruitment/payments/verify/${encodeURIComponent(reference)}`,
+    applicantAccess
+  ),
   verifyAccessCode: (payload) => api.post('/recruitment/verify-access-code', {
     ...payload,
     access_code: payload?.access_code || payload?.code || '',

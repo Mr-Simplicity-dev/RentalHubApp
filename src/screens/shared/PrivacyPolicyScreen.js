@@ -10,7 +10,7 @@ import {
 } from '../../components/dashboard/DashboardKit';
 import { colors, radius, shadows, typography } from '../../theme';
 
-const EFFECTIVE_DATE = '28 July 2026';
+const EFFECTIVE_DATE = '29 July 2026';
 
 const PRIVACY_PRINCIPLES = [
   {
@@ -387,9 +387,10 @@ const PrivacyPolicyScreen = () => (
           notice will explain any face image sent to the verification provider.
         </BulletRow>
         <AppText style={styles.securityCaveat}>
-          Property-application disclosure: the relevant landlord currently receives the
-          applicant's full decrypted NIN or plaintext passport number, together with
-          name, phone, email and applicable nationality details.
+          Property-application access: the relevant landlord can review the applicant's
+          name, permitted contact and application details, nationality where relevant,
+          identity-document type and verification status. RentalHub does not include the
+          stored NIN or passport number in the landlord's application response.
         </AppText>
       </PolicyCard>
     </DashboardSection>
@@ -518,10 +519,12 @@ const PrivacyPolicyScreen = () => (
           and dispute workflows.
         </BulletRow>
         <BulletRow icon="phone-portrait">
-          The mobile app stores supported secrets in the device Keychain or secure
-          credential store where available and also uses local application storage for
-          resilient sessions and preferences. Device access and screen-lock security
-          therefore remain important.
+          The mobile app uses the device Keychain or secure credential store as the
+          authoritative location for supported session and guest-support secrets.
+          Local application storage holds preferences and is used for a marked,
+          temporary credential fallback only when secure storage is unavailable; the
+          fallback is migrated and removed when secure storage recovers. Device access
+          and screen-lock security therefore remain important.
         </BulletRow>
         <BulletRow icon="document-lock">
           Audit records, evidence controls, security logging and provider safeguards

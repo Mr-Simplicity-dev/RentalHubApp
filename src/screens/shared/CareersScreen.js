@@ -42,6 +42,7 @@ const CareersScreen = ({ navigation }) => {
   const [selectedRoleId, setSelectedRoleId] = useState(null);
   const [submittedApplication, setSubmittedApplication] = useState(null);
   const [lookupEmail, setLookupEmail] = useState('');
+  const [lookupReference, setLookupReference] = useState('');
   const [applications, setApplications] = useState([]);
   const [lookupLoading, setLookupLoading] = useState(false);
   const [error, setError] = useState('');
@@ -128,6 +129,8 @@ const CareersScreen = ({ navigation }) => {
       const response = await recruitmentService.createApplication(payload);
       const data = response?.data?.data;
       setSubmittedApplication(data);
+      setLookupEmail(data?.email_address || form.email_address);
+      setLookupReference(data?.reference_number || '');
       Toast.show({ type: 'success', text1: 'Application started', text2: 'Your application is ready for payment and document upload.' });
     } catch (err) {
       Toast.show({ type: 'error', text1: 'Submission failed', text2: getErrorMessage(err, 'Could not submit your application') });
@@ -137,11 +140,21 @@ const CareersScreen = ({ navigation }) => {
   };
 
   const lookupApplications = async () => {
-    if (!lookupEmail.trim()) return;
+    if (!lookupEmail.trim() || !lookupReference.trim()) {
+      Toast.show({
+        type: 'error',
+        text1: 'Email and reference needed',
+        text2: 'Enter the email and application reference shown when you applied.',
+      });
+      return;
+    }
 
     try {
       setLookupLoading(true);
-      const response = await recruitmentService.getMyApplications(lookupEmail.trim());
+      const response = await recruitmentService.getMyApplications({
+        email: lookupEmail.trim(),
+        referenceNumber: lookupReference.trim().toUpperCase(),
+      });
       setApplications(response?.data?.data || []);
     } catch (err) {
       Toast.show({ type: 'error', text1: 'Lookup failed', text2: getErrorMessage(err, 'Could not load applications') });
@@ -294,6 +307,14 @@ const CareersScreen = ({ navigation }) => {
       <AppText style={styles.sectionTitle}>Check your applications</AppText>
       <View style={styles.lookupCard}>
         <TextInput style={styles.input} placeholder="Enter your email" value={lookupEmail} onChangeText={setLookupEmail} keyboardType="email-address" autoCapitalize="none" />
+        <TextInput
+          style={styles.input}
+          placeholder="Application reference (RH-APP-...)"
+          value={lookupReference}
+          onChangeText={setLookupReference}
+          autoCapitalize="characters"
+          autoCorrect={false}
+        />
         <TouchableOpacity style={styles.secondaryButton} onPress={lookupApplications} disabled={lookupLoading}>
           {lookupLoading ? <ActivityIndicator color="#0284c7" /> : <AppText style={styles.secondaryButtonText}>Lookup applications</AppText>}
         </TouchableOpacity>

@@ -1,5 +1,26 @@
 import api from './api';
 
+const normalizeGuestProof = (proofOrEmail) => {
+  if (typeof proofOrEmail === 'string') {
+    return { email: proofOrEmail.trim() };
+  }
+
+  const proof = proofOrEmail && typeof proofOrEmail === 'object'
+    ? proofOrEmail
+    : {};
+  return proof.guestAccessToken
+    ? { guestAccessToken: String(proof.guestAccessToken).trim() }
+    : { email: String(proof.email || '').trim() };
+};
+
+const guestRequestConfig = (guestAccessToken) => ({
+  skipAuth: true,
+  skipAuthRefresh: true,
+  ...(guestAccessToken
+    ? { headers: { 'X-Guest-Access-Token': guestAccessToken } }
+    : {}),
+});
+
 export const supportService = {
   createTicket: async (ticketData) => {
     const response = await api.post('/support/tickets', ticketData);
@@ -142,24 +163,39 @@ export const supportService = {
   },
 
   contactSupport: async (data) => {
-    const response = await api.post('/support/contact', data);
+    const response = await api.post('/support/contact', data, guestRequestConfig());
     return response.data;
   },
 
-  contactLookup: async (email) => {
-    const response = await api.post('/support/tickets/contact-lookup', { email });
+  contactLookup: async (proofOrEmail) => {
+    const proof = normalizeGuestProof(proofOrEmail);
+    const response = await api.post(
+      '/support/tickets/contact-lookup',
+      proof,
+      guestRequestConfig()
+    );
     return response.data;
   },
 
-  getContactConversation: async (ticketId, email) => {
-    const response = await api.post('/support/tickets/contact-conversation', { ticketId, email });
+  getContactConversation: async (ticketId, proofOrEmail) => {
+    const proof = normalizeGuestProof(proofOrEmail);
+    const response = await api.post(
+      '/support/tickets/contact-conversation',
+      { ticketId, ...proof },
+      guestRequestConfig()
+    );
     return response.data;
   },
 
-  contactReply: async (ticketId, email, message, file) => {
+  contactReply: async (ticketId, proofOrEmail, message, file) => {
+    const proof = normalizeGuestProof(proofOrEmail);
     const fd = new FormData();
     fd.append('ticketId', ticketId);
-    fd.append('email', email);
+    if (proof.guestAccessToken) {
+      fd.append('guestAccessToken', proof.guestAccessToken);
+    } else if (proof.email) {
+      fd.append('email', proof.email);
+    }
     if (message) fd.append('message', message);
     if (file) {
       fd.append('attachment', {
@@ -169,14 +205,20 @@ export const supportService = {
       });
     }
     const response = await api.post('/support/tickets/contact-reply', fd, {
+      ...guestRequestConfig(),
       headers: { 'Content-Type': 'multipart/form-data' },
     });
     return response.data;
   },
 
-  getTypingStatus: async (ticketId, email) => {
-    const params = email ? { email } : {};
-    const response = await api.get(`/support/tickets/${ticketId}/typing-status`, { params });
+  getTypingStatus: async (ticketId, proofOrEmail) => {
+    const proof = normalizeGuestProof(proofOrEmail);
+    const response = await api.get(
+      `/support/tickets/${ticketId}/typing-status`,
+      proof.guestAccessToken
+        ? guestRequestConfig(proof.guestAccessToken)
+        : { ...guestRequestConfig(), params: { email: proof.email } }
+    );
     return response.data;
   },
 };

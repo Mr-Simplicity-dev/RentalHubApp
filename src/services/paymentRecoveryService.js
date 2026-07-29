@@ -112,7 +112,10 @@ export const verifyPaymentForFlow = async (payment = {}) => {
     case 'location_access':
       return paymentService.verifyLocationAccess(reference);
     case 'recruitment': {
-      const response = await recruitmentService.verifyPayment(reference);
+      const response = await recruitmentService.verifyPayment(reference, {
+        applicant_email: payment.email || '',
+        reference_number: payment.referenceNumber || '',
+      });
       return response?.data || response;
     }
     case 'subscription':

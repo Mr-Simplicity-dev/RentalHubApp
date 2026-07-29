@@ -53,6 +53,10 @@ const RecruitmentApplicationScreen = ({ route }) => {
   const { openNativeCheckout, NativePaystackCheckoutModal } = useNativePaystackCheckout();
 
   const applicationId = application?.id || route?.params?.applicationId;
+  const applicantAccess = {
+    applicant_email: application?.email_address || route?.params?.email || '',
+    reference_number: application?.reference_number || route?.params?.referenceNumber || '',
+  };
 
   const loadApplication = async () => {
     if (!applicationId) {
@@ -146,8 +150,8 @@ const RecruitmentApplicationScreen = ({ route }) => {
 
     try {
       setPaymentLoading(true);
-      const response = await recruitmentService.verifyPayment(reference);
-      const updatedApp = response?.data?.application || null;
+      const response = await recruitmentService.verifyPayment(reference, applicantAccess);
+      const updatedApp = response?.data?.data?.application || response?.data?.application || null;
       if (updatedApp) {
         setApplication((prev) => ({ ...(prev || {}), ...updatedApp }));
       }
@@ -237,6 +241,10 @@ const RecruitmentApplicationScreen = ({ route }) => {
           percent: 0,
         });
         await recruitmentService.uploadDocuments(Number(applicationId), formData, {
+          params: {
+            email: applicantAccess.applicant_email,
+            reference_number: applicantAccess.reference_number,
+          },
           onUploadProgress: (event) => {
             const total = event.total || asset.fileSize || 0;
             const percent = total ? Math.min(100, Math.round((event.loaded / total) * 100)) : 0;
@@ -269,7 +277,7 @@ const RecruitmentApplicationScreen = ({ route }) => {
 
     try {
       setPaymentLoading(true);
-      const response = await recruitmentService.verifyPayment(reference);
+      const response = await recruitmentService.verifyPayment(reference, applicantAccess);
       const updatedApp = response?.data?.application || response?.data?.data?.application || null;
       if (updatedApp) {
         setApplication((prev) => ({ ...(prev || {}), ...updatedApp }));

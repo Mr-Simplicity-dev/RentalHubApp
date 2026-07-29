@@ -153,10 +153,19 @@ const refreshNativeSession = async () => {
 
 api.interceptors.request.use(
   async (config) => {
-    const token = await storageService.getToken();
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-      config.__authToken = token;
+    if (config.skipAuth) {
+      if (typeof config.headers?.delete === 'function') {
+        config.headers.delete('Authorization');
+      } else {
+        delete config.headers.Authorization;
+        delete config.headers.authorization;
+      }
+    } else {
+      const token = await storageService.getToken();
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+        config.__authToken = token;
+      }
     }
     config.headers['X-RentalHub-Client'] = 'native';
     return config;
@@ -178,6 +187,7 @@ api.interceptors.response.use(
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
+      !originalRequest.skipAuthRefresh &&
       !isRefreshRequest(originalRequest) &&
       !isAuthEntryRequest(originalRequest)
     ) {

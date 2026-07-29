@@ -14,10 +14,17 @@ import Toast from 'react-native-toast-message';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { AuthContext } from '../../context/AuthContext';
 import { supportService } from '../../services/supportService';
+import { guestSupportCredentialService } from '../../services/guestSupportCredentialService';
 import { colors, radius, typography } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const MAX_FILE_SIZE = 15 * 1024 * 1024;
+
+const getResponseData = (response) =>
+  response?.data?.data ?? response?.data ?? null;
+
+const isRejectedGuestCredential = (error) =>
+  error?.response?.status === 401 || error?.response?.status === 404;
 
 const STATES_AND_LGAS = {
   'Abia': ['Aba North', 'Aba South', 'Arochukwu', 'Bende', 'Ikwuano', 'Isiala Ngwa North', 'Isiala Ngwa South', 'Isuikwuato', 'Obi Ngwa', 'Ohafia', 'Osisioma Ngwa', 'Ugwunagbo', 'Ukwa East', 'Ukwa West', 'Umuahia North', 'Umuahia South', 'Umu Nneochi'],
@@ -138,7 +145,7 @@ const ContactWidgetScreen = ({ navigation }) => {
     setLoadingTickets(true);
     try {
       const res = await supportService.getMyTickets();
-      setTickets(res.data?.data || []);
+      setTickets(getResponseData(res) || []);
     } catch {} finally { setLoadingTickets(false); }
   }, [isAuthenticated]);
 
@@ -156,7 +163,7 @@ const ContactWidgetScreen = ({ navigation }) => {
     setLoadingConv(true);
     try {
       const res = await supportService.getTicketConversation(ticketId, { limit: 200 });
-      setConversation(res.data?.data || []);
+      setConversation(getResponseData(res) || []);
     } catch { setConversation([]); } finally { setLoadingConv(false); }
   }, []);
 
@@ -185,10 +192,19 @@ const ContactWidgetScreen = ({ navigation }) => {
     }
     const poll = async () => {
       try {
-        const res = await supportService.getTypingStatus(viewingContactTicket.id, lookupEmail.trim());
-        setAdminTypingName(res.typing?.userName || null);
-        setAdminViewingName(res.viewing?.userName || null);
-      } catch {}
+        const credential = await guestSupportCredentialService.get(viewingContactTicket.id);
+        const proof = credential
+          ? { guestAccessToken: credential.guestAccessToken }
+          : { email: lookupEmail.trim() };
+        const res = await supportService.getTypingStatus(viewingContactTicket.id, proof);
+        setAdminTypingName(res?.typing?.userName || null);
+        setAdminViewingName(res?.viewing?.userName || null);
+      } catch (presenceError) {
+        if (isRejectedGuestCredential(presenceError)) {
+          await guestSupportCredentialService.remove(viewingContactTicket.id);
+          clearInterval(typingPollRef.current);
+        }
+      }
     };
     poll();
     typingPollRef.current = setInterval(poll, 3000);
@@ -202,7 +218,13 @@ const ContactWidgetScreen = ({ navigation }) => {
     }
     setSending(true);
     try {
-      await supportService.contactSupport(form);
+      const response = await supportService.contactSupport(form);
+      const ticket = getResponseData(response);
+      await guestSupportCredentialService.save({
+        ticketId: ticket?.ticketId,
+        guestAccessToken: ticket?.guestAccessToken,
+        email: form.email,
+      });
       Toast.show({ type: 'success', text1: 'Message sent!', text2: "We'll get back to you shortly." });
       setView('success');
     } catch (err) {
@@ -223,7 +245,7 @@ const ContactWidgetScreen = ({ navigation }) => {
         priority: form.priority,
       };
       const res = await supportService.createTicket(payload);
-      const newTicket = res.data?.data;
+      const newTicket = getResponseData(res);
       if (newTicket) {
         setActiveTicket(newTicket);
         setView('conversation');
@@ -250,7 +272,7 @@ const ContactWidgetScreen = ({ navigation }) => {
     setSendingReply(true);
     try {
       const res = await supportService.replyToTicket(activeTicket.id, msg, attachmentFile);
-      setConversation((prev) => prev.map((r) => r.id === tempId ? { ...res.data?.data, _temp: false } : r));
+      setConversation((prev) => prev.map((r) => r.id === tempId ? { ...getResponseData(res), _temp: false } : r));
     } catch {
       setConversation((prev) => prev.map((r) => r.id === tempId ? { ...r, _failed: true } : r));
       Toast.show({ type: 'error', text1: 'Failed to send reply' });
@@ -260,21 +282,78 @@ const ContactWidgetScreen = ({ navigation }) => {
   const handleLookup = async () => {
     if (!lookupEmail.trim()) return;
     setLookupLoading(true);
+    setViewingContactTicket(null);
+    setContactConv([]);
     try {
-      const res = await supportService.contactLookup(lookupEmail.trim());
-      setLookupTickets(res.data?.data || []);
+      const email = lookupEmail.trim();
+      const credentials = (await guestSupportCredentialService.listForEmail(email)).slice(0, 10);
+      let unexpectedError = null;
+
+      const tokenResults = await Promise.all(credentials.map(async (credential) => {
+        try {
+          const response = await supportService.contactLookup({
+            guestAccessToken: credential.guestAccessToken,
+          });
+          return getResponseData(response) || [];
+        } catch (lookupError) {
+          if (isRejectedGuestCredential(lookupError)) {
+            await guestSupportCredentialService.remove(credential.ticketId);
+            return [];
+          }
+          unexpectedError = lookupError;
+          return [];
+        }
+      }));
+
+      let legacyTickets = [];
+      let legacyAccessDenied = false;
+      try {
+        const legacyResponse = await supportService.contactLookup({ email });
+        legacyTickets = getResponseData(legacyResponse) || [];
+      } catch (legacyError) {
+        legacyAccessDenied = isRejectedGuestCredential(legacyError);
+        if (!legacyAccessDenied) unexpectedError = unexpectedError || legacyError;
+      }
+
+      const ticketMap = new Map();
+      [...tokenResults.flat(), ...legacyTickets].forEach((ticket) => {
+        if (ticket?.id) ticketMap.set(ticket.id, ticket);
+      });
+      const nextTickets = Array.from(ticketMap.values())
+        .sort((left, right) => new Date(right.created_at) - new Date(left.created_at));
+      setLookupTickets(nextTickets);
+
+      if (!nextTickets.length && unexpectedError) throw unexpectedError;
+      if (!nextTickets.length && legacyAccessDenied && credentials.length === 0) {
+        Toast.show({
+          type: 'info',
+          text1: 'Secure ticket access',
+          text2: 'Guest tickets can only be reopened on the device where they were created.',
+        });
+      }
     } catch {
-      Toast.show({ type: 'error', text1: 'Could not find tickets. Check your email.' });
+      Toast.show({ type: 'error', text1: 'Could not load saved tickets. Try again.' });
     } finally { setLookupLoading(false); }
   };
 
   const viewContactConversation = async (ticket) => {
-    setViewingContactTicket(ticket);
     try {
-      const res = await supportService.getContactConversation(ticket.id, lookupEmail.trim());
-      setContactConv(res.data?.data || []);
-    } catch {
-      Toast.show({ type: 'error', text1: 'Could not load conversation.' });
+      const credential = await guestSupportCredentialService.get(ticket.id);
+      const proof = credential
+        ? { guestAccessToken: credential.guestAccessToken }
+        : { email: lookupEmail.trim() };
+      const res = await supportService.getContactConversation(ticket.id, proof);
+      setViewingContactTicket(ticket);
+      setContactConv(getResponseData(res) || []);
+    } catch (conversationError) {
+      if (isRejectedGuestCredential(conversationError)) {
+        await guestSupportCredentialService.remove(ticket.id);
+      }
+      Toast.show({
+        type: 'error',
+        text1: 'Could not securely open this conversation.',
+        text2: 'Start a new request if access has expired.',
+      });
     }
   };
 
@@ -292,9 +371,21 @@ const ContactWidgetScreen = ({ navigation }) => {
     setContactReplyFile(null);
     setSendingContactReply(true);
     try {
-      const res = await supportService.contactReply(viewingContactTicket.id, lookupEmail.trim(), msg, contactReplyFile);
-      setContactConv((prev) => prev.map((r) => r.id === tempId ? { ...res.data?.data, _temp: false } : r));
-    } catch {
+      const credential = await guestSupportCredentialService.get(viewingContactTicket.id);
+      const proof = credential
+        ? { guestAccessToken: credential.guestAccessToken }
+        : { email: lookupEmail.trim() };
+      const res = await supportService.contactReply(
+        viewingContactTicket.id,
+        proof,
+        msg,
+        contactReplyFile
+      );
+      setContactConv((prev) => prev.map((r) => r.id === tempId ? { ...getResponseData(res), _temp: false } : r));
+    } catch (replyError) {
+      if (isRejectedGuestCredential(replyError)) {
+        await guestSupportCredentialService.remove(viewingContactTicket.id);
+      }
       setContactConv((prev) => prev.map((r) => r.id === tempId ? { ...r, _failed: true } : r));
       Toast.show({ type: 'error', text1: 'Failed to send reply' });
     } finally { setSendingContactReply(false); }
