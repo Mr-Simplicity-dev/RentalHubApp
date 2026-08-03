@@ -135,9 +135,20 @@ const ServiceOperationsDashboardScreen = ({ navigation }) => {
       />
       <AdminAccountActions navigation={navigation} />
 
-      <MetricGrid>
+      <MetricGrid
+        tourTarget={profile.family === 'support' ? undefined : 'service_dashboard'}
+        tourLabel="Service operations overview"
+      >
         {cards.map((card) => (
-          <MetricCard key={card.label} {...card} />
+          <MetricCard
+            key={card.label}
+            {...card}
+            tourTarget={
+              profile.family !== 'support' && card.label === 'Revenue'
+                ? 'service_payments'
+                : undefined
+            }
+          />
         ))}
       </MetricGrid>
 
@@ -147,6 +158,7 @@ const ServiceOperationsDashboardScreen = ({ navigation }) => {
             title="Support ticket queue"
             subtitle="Review open, escalated and unread customer tickets."
             icon="chatbox-ellipses-outline"
+            tourTarget="support_tickets"
             onPress={() => navigation.navigate('SupportTickets')}
           />
         ) : (
@@ -154,6 +166,7 @@ const ServiceOperationsDashboardScreen = ({ navigation }) => {
             title="Booking queue"
             subtitle="Review recent bookings in a native mobile list."
             icon={profile.icon}
+            tourTarget="service_bookings"
             onPress={() => navigation.navigate('ServiceBookings', { type: profile.bookingsType })}
           />
         )}
@@ -174,6 +187,7 @@ const ServiceOperationsDashboardScreen = ({ navigation }) => {
       <DashboardSection
         title="Native operations"
         subtitle="The daily service-admin controls now stay inside the mobile app."
+        tourTarget={profile.family === 'support' ? 'support_operations' : undefined}
       >
         {profile.family === 'support' ? (
           <>
@@ -189,6 +203,7 @@ const ServiceOperationsDashboardScreen = ({ navigation }) => {
               subtitle="Track recent ticket escalations and support actions."
               icon="reader-outline"
               badge="Native"
+              tourTarget="support_audit"
               onPress={() => navigation.navigate('ActivityFeed')}
             />
             <ActionRow

@@ -553,7 +553,7 @@ const LgaFinancialAdminDashboardScreen = ({ navigation }) => {
       ) : null}
 
       <View style={styles.metricsSpacing}>
-        <MetricGrid>
+        <MetricGrid tourTarget="lga_financial_overview" tourLabel="LGA finance overview">
           <MetricCard
             color={colors.success}
             icon="wallet-outline"
@@ -591,12 +591,14 @@ const LgaFinancialAdminDashboardScreen = ({ navigation }) => {
           onPress={() => setWithdrawalModalVisible(true)}
           subtitle={`Current withdrawable balance: ${formatCurrency(withdrawable)}`}
           title="Request personal withdrawal"
+          tourTarget="lga_financial_withdrawal"
         />
       </DashboardSection>
 
       <DashboardSection
         subtitle={`Total requested: ${formatCurrency(totalRequested)}`}
         title="Withdrawal history"
+        tourTarget="lga_financial_history"
       >
         {withdrawals.length === 0 ? (
           <PremiumCard style={styles.emptyCard}>

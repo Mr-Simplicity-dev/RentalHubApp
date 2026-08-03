@@ -395,6 +395,7 @@ const ServiceAdminRoot = () => (
     <Stack.Screen name="Messages" component={MessagesScreen} />
     <Stack.Screen name="Notifications" component={NotificationsScreen} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
+    <Stack.Screen name="RecruitmentAdmin" component={RecruitmentAdminScreen} options={{ title: 'Recruitment Admin' }} />
     <Stack.Screen name="NativeTools" component={NativeToolsScreen} options={{ title: 'More Tools' }} />
     {commonInfoScreens()}
   </Stack.Navigator>

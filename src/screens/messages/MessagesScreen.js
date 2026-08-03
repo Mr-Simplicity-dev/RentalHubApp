@@ -26,6 +26,7 @@ import { colors, radius, typography } from '../../theme';
 import { getErrorMessage, pickList } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
+import { useTourTarget } from '../../components/tour/TourTarget';
 const initials = (name = 'User') =>
   String(name)
     .trim()
@@ -36,6 +37,12 @@ const initials = (name = 'User') =>
 
 const MessagesScreen = ({ navigation, route }) => {
   const { user } = useContext(AuthContext);
+  const messageTourId = ['lawyer', 'state_lawyer', 'super_lawyer'].includes(user?.user_type)
+    ? 'lawyer_clients'
+    : user?.user_type === 'landlord'
+      ? 'landlord_messages'
+      : 'tenant_messages';
+  const messageTourTarget = useTourTarget(messageTourId, { padding: 6, radius: 18 });
   const { checkPresence, connected, emitTyping, isUserOnline, subscribe } = useRealtime();
   const threadRef = useRef(null);
   const selectedRef = useRef(null);
@@ -429,7 +436,7 @@ const MessagesScreen = ({ navigation, route }) => {
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}
           style={styles.keyboardView}>
-          <View style={styles.threadHeader}>
+          <View {...messageTourTarget} style={styles.threadHeader}>
             <TouchableOpacity
               accessibilityLabel="Back to conversations"
               onPress={closeThread}
@@ -603,7 +610,7 @@ const MessagesScreen = ({ navigation, route }) => {
 
   return (
     <SafeAreaView edges={['top']} style={styles.safeArea}>
-      <View style={styles.header}>
+      <View {...messageTourTarget} style={styles.header}>
         <View>
           <AppText style={styles.eyebrow}>INBOX</AppText>
           <AppText style={styles.title}>Messages</AppText>

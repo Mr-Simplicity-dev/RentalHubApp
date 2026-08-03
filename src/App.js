@@ -5,10 +5,12 @@ import { AuthProvider } from './context/AuthContext';
 import { RealtimeProvider } from './context/RealtimeContext';
 import { NotificationProvider } from './context/NotificationContext';
 import { TourProvider } from './context/TourContext';
+import { LanguageProvider } from './context/LanguageContext';
 import AppNavigator from './navigation/AppNavigator';
 import Toast from 'react-native-toast-message';
 import BrandSplash from './components/brand/BrandSplash';
 import NativeTourManager from './components/tour/NativeTourManager';
+import TourNavigationBridge from './components/tour/TourNavigationBridge';
 import NetworkStatusBanner from './components/common/NetworkStatusBanner';
 import NativeCallOverlay from './components/calls/NativeCallOverlay';
 import AppUpdateIndicator from './components/common/AppUpdateIndicator';
@@ -79,6 +81,7 @@ const AppContent = () => {
       <AppNavigator />
       <NativeCallOverlay />
       <AppUpdateIndicator />
+      <TourNavigationBridge />
       <NativeTourManager />
       <Toast />
     </>
@@ -90,13 +93,15 @@ const App = () => {
     <AppErrorBoundary>
       <SafeAreaProvider>
         <AuthProvider>
-          <RealtimeProvider>
-            <NotificationProvider>
-              <TourProvider>
-                <AppContent />
-              </TourProvider>
-            </NotificationProvider>
-          </RealtimeProvider>
+          <LanguageProvider>
+            <RealtimeProvider>
+              <NotificationProvider>
+                <TourProvider>
+                  <AppContent />
+                </TourProvider>
+              </NotificationProvider>
+            </RealtimeProvider>
+          </LanguageProvider>
         </AuthProvider>
       </SafeAreaProvider>
     </AppErrorBoundary>

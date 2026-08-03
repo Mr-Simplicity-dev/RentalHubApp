@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import {ActivityIndicator,
   FlatList,
   RefreshControl,
@@ -13,6 +13,8 @@ import { colors, radius, typography } from '../../theme';
 import { getErrorMessage, pickList } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
+import { AuthContext } from '../../context/AuthContext';
+import { useTourTarget } from '../../components/tour/TourTarget';
 const PAYMENT_TYPE_LABELS = {
   tenant_subscription: 'Subscription',
   property_unlock: 'Property details',
@@ -45,6 +47,11 @@ const statusVisual = (status) => {
 };
 
 const PaymentHistoryScreen = ({ navigation }) => {
+  const { user } = useContext(AuthContext);
+  const paymentTourTarget = useTourTarget(
+    user?.user_type === 'landlord' ? 'landlord_wallet' : 'tenant_payments',
+    { padding: 6, radius: 18 }
+  );
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [payments, setPayments] = useState([]);
@@ -100,7 +107,7 @@ const PaymentHistoryScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView edges={['top']} style={styles.safeArea}>
-      <View style={styles.header}>
+      <View {...paymentTourTarget} style={styles.header}>
         <TouchableOpacity
           accessibilityLabel="Go back"
           onPress={() => navigation.goBack()}

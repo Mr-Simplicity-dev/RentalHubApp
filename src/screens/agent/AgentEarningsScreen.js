@@ -9,8 +9,10 @@ import { colors, radius, shadows, typography } from '../../theme';
 import { getErrorMessage, pickList } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
+import { useTourTarget } from '../../components/tour/TourTarget';
 const AgentEarningsScreen = ({ navigation }) => {
   const { user } = useContext(AuthContext);
+  const earningsTourTarget = useTourTarget('agent_commissions', { padding: 6, radius: 18 });
   const [loading, setLoading] = useState(true);
   const [earnings, setEarnings] = useState(null);
   const [history, setHistory] = useState([]);
@@ -72,7 +74,7 @@ const AgentEarningsScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.hero}>
+      <View {...earningsTourTarget} style={styles.hero}>
         <View style={styles.heroIcon}><Icon name="wallet-outline" size={22} color={colors.gold} /></View>
         <AppText style={styles.heroLabel}>TOTAL COMMISSION EARNED</AppText>
         <AppText style={styles.heroAmount}>{amount(earnings?.total_earned)}</AppText>

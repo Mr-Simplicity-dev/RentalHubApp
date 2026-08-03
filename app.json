@@ -24,7 +24,8 @@
     "extra": {
       "eas": {
         "projectId": "a7a3b4d3-a3b3-418b-9d5f-c441627b264c"
-      }
+      },
+      "TURNSTILE_SITE_KEY": "0x4AAAAAAD_H5Bdn90ZrC2LL"
     },
     "plugins": [
       "expo-asset",

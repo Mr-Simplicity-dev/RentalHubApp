@@ -14,6 +14,7 @@ import { getErrorMessage, pickList } from '../../utils/http';
 import { colors, radius, typography } from '../../theme';
 
 import AppText from '../../components/common/AppText';
+import TourTarget from '../../components/tour/TourTarget';
 const filters = ['all', 'pending', 'completed', 'failed'];
 
 const getStatusColor = (status) => {
@@ -51,12 +52,14 @@ const FinancialTransactionsScreen = () => {
 
   const header = (
     <>
-      <PremiumHero
-        eyebrow="Financial admin"
-        title="Transaction ledger"
-        subtitle="Search the pulse of RentalHub payments by status with clean native ledger cards."
-        icon="receipt-outline"
-      />
+      <TourTarget id="financial_transactions" padding={6} radius={18}>
+        <PremiumHero
+          eyebrow="Financial admin"
+          title="Transaction ledger"
+          subtitle="Search the pulse of RentalHub payments by status with clean native ledger cards."
+          icon="receipt-outline"
+        />
+      </TourTarget>
       <View style={styles.filterRow}>
         {filters.map((item) => (
           <TouchableOpacity

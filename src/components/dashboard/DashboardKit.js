@@ -8,6 +8,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { colors, radius, shadows, typography } from '../../theme';
 import { useAccessibilityPreferences } from '../../hooks/useAccessibilityPreferences';
+import { useTourTarget } from '../tour/TourTarget';
+import {
+  TourScrollProvider,
+  useTourScrollController,
+} from '../tour/TourScrollContext';
 
 import AppText from '../../components/common/AppText';
 export const DashboardScreen = ({
@@ -15,27 +20,37 @@ export const DashboardScreen = ({
   refreshing = false,
   onRefresh,
   contentContainerStyle,
-}) => (
-  <SafeAreaView edges={['top']} style={styles.safeArea}>
-    <ScrollView
-      style={styles.screen}
-      contentContainerStyle={[styles.content, contentContainerStyle]}
-      refreshControl={
-        onRefresh ? (
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            tintColor={colors.blue}
-            colors={[colors.blue]}
-          />
-        ) : undefined
-      }
-      showsVerticalScrollIndicator={false}
-    >
-      {children}
-    </ScrollView>
-  </SafeAreaView>
-);
+}) => {
+  const { reduceMotion } = useAccessibilityPreferences();
+  const tourScroll = useTourScrollController({ animated: !reduceMotion });
+
+  return (
+    <SafeAreaView edges={['top']} style={styles.safeArea}>
+      <TourScrollProvider controller={tourScroll}>
+        <ScrollView
+          ref={tourScroll.scrollRef}
+          style={styles.screen}
+          contentContainerStyle={[styles.content, contentContainerStyle]}
+          onScroll={tourScroll.onScroll}
+          scrollEventThrottle={16}
+          refreshControl={
+            onRefresh ? (
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                tintColor={colors.blue}
+                colors={[colors.blue]}
+              />
+            ) : undefined
+          }
+          showsVerticalScrollIndicator={false}
+        >
+          {children}
+        </ScrollView>
+      </TourScrollProvider>
+    </SafeAreaView>
+  );
+};
 
 export const DashboardHero = ({
   eyebrow,
@@ -43,11 +58,17 @@ export const DashboardHero = ({
   subtitle,
   icon = 'grid-outline',
   onRefresh,
+  tourTarget,
 }) => {
   const { scaleFont, hitSlop } = useAccessibilityPreferences();
+  const tourTargetProps = useTourTarget(tourTarget, {
+    label: title,
+    padding: 8,
+    radius: radius.lg,
+  });
 
   return (
-    <View style={styles.hero}>
+    <View {...tourTargetProps} style={styles.hero}>
       <View style={styles.heroTop}>
         <View style={styles.heroIcon}>
           <Icon name={icon} size={23} color={colors.gold} />
@@ -71,9 +92,15 @@ export const DashboardHero = ({
   );
 };
 
-export const MetricGrid = ({ children }) => (
-  <View style={styles.metricGrid}>{children}</View>
-);
+export const MetricGrid = ({ children, tourTarget, tourLabel = 'Dashboard metrics' }) => {
+  const tourTargetProps = useTourTarget(tourTarget, {
+    label: tourLabel,
+    padding: 8,
+    radius: radius.md,
+  });
+
+  return <View {...tourTargetProps} style={styles.metricGrid}>{children}</View>;
+};
 
 export const MetricCard = ({
   label,
@@ -81,12 +108,20 @@ export const MetricCard = ({
   icon = 'analytics-outline',
   color = colors.blue,
   onPress,
+  tourTarget,
 }) => {
   const Container = onPress ? TouchableOpacity : View;
   const { scaleFont, hitSlop } = useAccessibilityPreferences();
+  const tourTargetProps = useTourTarget(tourTarget, {
+    label,
+    onAction: onPress,
+    padding: 6,
+    radius: radius.md,
+  });
 
   return (
     <Container
+      {...tourTargetProps}
       accessibilityRole={onPress ? 'button' : undefined}
       hitSlop={onPress ? hitSlop : undefined}
       style={styles.metricCard}
@@ -101,13 +136,20 @@ export const MetricCard = ({
   );
 };
 
-export const DashboardSection = ({ title, subtitle, children }) => {
+export const DashboardSection = ({ title, subtitle, children, tourTarget }) => {
   const { scaleFont } = useAccessibilityPreferences();
+  const tourTargetProps = useTourTarget(tourTarget, {
+    label: title,
+    padding: 8,
+    radius: radius.md,
+  });
 
   return (
     <View style={styles.section}>
-      <AppText style={[styles.sectionTitle, { fontSize: scaleFont(18) }]}>{title}</AppText>
-      {subtitle ? <AppText style={[styles.sectionSubtitle, { fontSize: scaleFont(12), lineHeight: scaleFont(18) }]}>{subtitle}</AppText> : null}
+      <View {...tourTargetProps}>
+        <AppText style={[styles.sectionTitle, { fontSize: scaleFont(18) }]}>{title}</AppText>
+        {subtitle ? <AppText style={[styles.sectionSubtitle, { fontSize: scaleFont(12), lineHeight: scaleFont(18) }]}>{subtitle}</AppText> : null}
+      </View>
       <View style={styles.sectionBody}>{children}</View>
     </View>
   );
@@ -119,15 +161,30 @@ export const ActionRow = ({
   icon = 'arrow-forward-circle-outline',
   onPress,
   badge,
+  tourTarget,
 }) => (
-  <ActionRowInner title={title} subtitle={subtitle} icon={icon} onPress={onPress} badge={badge} />
+  <ActionRowInner
+    title={title}
+    subtitle={subtitle}
+    icon={icon}
+    onPress={onPress}
+    badge={badge}
+    tourTarget={tourTarget}
+  />
 );
 
-const ActionRowInner = ({ title, subtitle, icon, onPress, badge }) => {
+const ActionRowInner = ({ title, subtitle, icon, onPress, badge, tourTarget }) => {
   const { scaleFont, hitSlop } = useAccessibilityPreferences();
+  const tourTargetProps = useTourTarget(tourTarget, {
+    label: title,
+    onAction: onPress,
+    padding: 6,
+    radius: radius.md,
+  });
 
   return (
     <TouchableOpacity
+      {...tourTargetProps}
       accessibilityLabel={`${title}${subtitle ? `. ${subtitle}` : ''}`}
       accessibilityRole="button"
       hitSlop={hitSlop}
@@ -149,12 +206,17 @@ const ActionRowInner = ({ title, subtitle, icon, onPress, badge }) => {
   );
 };
 
-export const DashboardNotice = ({ title, message, variant = 'info' }) => {
+export const DashboardNotice = ({ title, message, variant = 'info', tourTarget }) => {
   const warning = variant === 'warning';
   const { scaleFont } = useAccessibilityPreferences();
+  const tourTargetProps = useTourTarget(tourTarget, {
+    label: title,
+    padding: 6,
+    radius: radius.md,
+  });
 
   return (
-    <View style={[styles.notice, warning && styles.noticeWarning]}>
+    <View {...tourTargetProps} style={[styles.notice, warning && styles.noticeWarning]}>
       <Icon
         name={warning ? 'alert-circle-outline' : 'information-circle-outline'}
         size={21}

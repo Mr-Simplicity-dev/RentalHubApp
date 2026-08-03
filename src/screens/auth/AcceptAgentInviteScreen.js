@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import Toast from 'react-native-toast-message';
 import Input from '../../components/common/Input';
 import {
@@ -7,11 +7,14 @@ import {
   PremiumHero,
   PremiumScreen,
 } from '../../components/common/PremiumLayout';
+import TurnstileWidget from '../../components/common/TurnstileWidget';
 import { authService } from '../../services/authService';
 import { getErrorMessage } from '../../utils/http';
 
 const AcceptAgentInviteScreen = ({ navigation, route }) => {
   const [loading, setLoading] = useState(false);
+  const turnstileTokenRef = useRef(null);
+  const turnstileRef = useRef(null);
   const [form, setForm] = useState({
     token: route?.params?.token || '',
     full_name: '',
@@ -27,14 +30,22 @@ const AcceptAgentInviteScreen = ({ navigation, route }) => {
       return;
     }
 
+    const turnstileToken = turnstileTokenRef.current;
+    if (!turnstileToken) {
+      Toast.show({ type: 'error', text1: 'Security Check', text2: 'Please complete the security check below.' });
+      return;
+    }
+
     setLoading(true);
     try {
-      const response = await authService.acceptAgentInvite(form);
+      const response = await authService.acceptAgentInvite(form, turnstileToken);
       if (response?.success) {
         Toast.show({ type: 'success', text1: 'Invite accepted', text2: 'You can now sign in as an agent.' });
         navigation.navigate('Login');
       } else {
         Toast.show({ type: 'error', text1: 'Failed', text2: response?.message || 'Invite acceptance failed' });
+        turnstileRef.current?.reset();
+        turnstileTokenRef.current = null;
       }
     } catch (error) {
       Toast.show({
@@ -42,6 +53,8 @@ const AcceptAgentInviteScreen = ({ navigation, route }) => {
         text1: 'Failed',
         text2: getErrorMessage(error, 'Could not accept agent invite'),
       });
+      turnstileRef.current?.reset();
+      turnstileTokenRef.current = null;
     } finally {
       setLoading(false);
     }
@@ -89,6 +102,13 @@ const AcceptAgentInviteScreen = ({ navigation, route }) => {
           onPress={onSubmit}
           loading={loading}
           icon="checkmark-circle-outline"
+        />
+
+        <TurnstileWidget
+          ref={turnstileRef}
+          onToken={(token) => { turnstileTokenRef.current = token; }}
+          onExpire={() => { turnstileTokenRef.current = null; }}
+          onError={() => { turnstileTokenRef.current = null; }}
         />
       </PremiumCard>
     </PremiumScreen>

@@ -12,6 +12,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
 import { AuthContext } from '../../context/AuthContext';
 import { useTour } from '../../context/TourContext';
+import { useLanguage } from '../../context/LanguageContext';
 import { userService } from '../../services/userService';
 import { getErrorMessage } from '../../utils/http';
 import {
@@ -53,6 +54,7 @@ const labels = {
 const SettingsScreen = ({ navigation }) => {
   const { user, logout } = useContext(AuthContext);
   const { replayTour } = useTour();
+  const { language, languages, setLanguage, t } = useLanguage();
   const [settings, setSettings] = useState(DEFAULT_APP_SETTINGS);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [deletePassword, setDeletePassword] = useState('');
@@ -179,6 +181,22 @@ const SettingsScreen = ({ navigation }) => {
     ]);
   };
 
+  const selectLanguage = async (nextLanguage) => {
+    if (nextLanguage === language) return;
+    const result = await setLanguage(nextLanguage);
+    const nextSettings = { ...settings, language: result.language };
+    setSettings(nextSettings);
+    await saveAppSettings(nextSettings);
+    Toast.show({ type: 'success', text1: t('settings.languageSaved') });
+    if (result.restartRequired) {
+      Alert.alert(
+        t('settings.languageRestartTitle'),
+        t('settings.languageRestart'),
+        [{ text: t('settings.ok') }]
+      );
+    }
+  };
+
   const closeDeleteModal = () => {
     if (deletingAccount) return;
     setDeleteModalVisible(false);
@@ -246,12 +264,49 @@ const SettingsScreen = ({ navigation }) => {
         title="Control your RentalHub app"
         subtitle="Manage notifications, privacy shortcuts, security actions and the mobile tour from one native screen."
         icon="settings-outline"
+        tourTarget="tour_settings"
       />
 
       <DashboardNotice
         title="Synced preferences"
         message="Notification switches are saved on this device and synced to your account when the server is reachable."
       />
+
+      <DashboardSection
+        title={t('settings.languageSection')}
+        subtitle={t('settings.languageHelp')}
+      >
+        <View accessibilityRole="radiogroup" style={styles.languageGrid}>
+          {languages.map((option) => {
+            const selected = language === option.code;
+            return (
+              <TouchableOpacity
+                accessibilityLabel={`${option.label}: ${option.nativeLabel}`}
+                accessibilityRole="radio"
+                accessibilityState={{ checked: selected }}
+                key={option.code}
+                onPress={() => selectLanguage(option.code)}
+                style={[
+                  styles.languageOption,
+                  selected && styles.languageOptionSelected,
+                ]}
+              >
+                <AppText
+                  style={[
+                    styles.languageOptionText,
+                    selected && styles.languageOptionTextSelected,
+                  ]}
+                >
+                  {option.nativeLabel}
+                </AppText>
+                {selected ? (
+                  <Icon name="checkmark-circle" size={18} color={colors.blue} />
+                ) : null}
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+      </DashboardSection>
 
       <DashboardSection title="Notification preferences">
         {notificationKeys.map((key) => (
@@ -492,6 +547,35 @@ const SettingsScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  languageGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 9,
+  },
+  languageOption: {
+    alignItems: 'center',
+    backgroundColor: colors.white,
+    borderColor: colors.border,
+    borderRadius: 999,
+    borderWidth: 1,
+    flexDirection: 'row',
+    gap: 7,
+    minHeight: 44,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+  },
+  languageOptionSelected: {
+    backgroundColor: colors.surfaceBlue,
+    borderColor: colors.blue,
+  },
+  languageOptionText: {
+    color: colors.text,
+    fontFamily: typography.semibold,
+    fontSize: 13,
+  },
+  languageOptionTextSelected: {
+    color: colors.blue,
+  },
   switchRow: {
     alignItems: 'center',
     backgroundColor: colors.white,

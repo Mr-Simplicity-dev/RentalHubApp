@@ -13,6 +13,7 @@ import {
 import { colors, typography } from '../../theme';
 
 import AppText from '../../components/common/AppText';
+import TourTarget from '../../components/tour/TourTarget';
 const AdminEvidenceVerificationsScreen = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -47,13 +48,15 @@ const AdminEvidenceVerificationsScreen = () => {
       emptyMessage="Completed evidence-verification payments will appear here."
       emptyIcon="folder-open-outline"
       header={
-        <PremiumHero
-          eyebrow="Compliance"
-          title="Evidence verifications"
-          subtitle="Audit paid evidence checks and their linked disputes from the verified server record."
-          icon="folder-open-outline"
-          right={<StatusPill label={`${items.length} records`} color={colors.blue} />}
-        />
+        <TourTarget id="admin_compliance" padding={6} radius={18}>
+          <PremiumHero
+            eyebrow="Compliance"
+            title="Evidence verifications"
+            subtitle="Audit paid evidence checks and their linked disputes from the verified server record."
+            icon="folder-open-outline"
+            right={<StatusPill label={`${items.length} records`} color={colors.blue} />}
+          />
+        </TourTarget>
       }
       renderItem={({ item }) => (
         <PremiumCard>

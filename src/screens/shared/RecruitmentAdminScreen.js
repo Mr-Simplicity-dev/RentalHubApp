@@ -267,7 +267,7 @@ const RecruitmentAdminScreen = ({ navigation }) => {
 
       <AdminAccountActions navigation={navigation} />
 
-      <MetricGrid>
+      <MetricGrid tourTarget="recruitment_overview" tourLabel="Recruitment overview">
         <MetricCard label="Applicants" value={String(analytics?.total_applicants || pagination?.total || applicants.length)} icon="people-outline" color={colors.blue} />
         <MetricCard label="Fees" value={formatCurrency(paidFees)} icon="card-outline" color={colors.success} />
         <MetricCard label="Interviews" value={String(completedInterviews)} icon="videocam-outline" color="#A66B00" />
@@ -285,6 +285,7 @@ const RecruitmentAdminScreen = ({ navigation }) => {
       <DashboardSection
         title="Filters"
         subtitle="Narrow candidates by status, payment, cycle, role, and search text."
+        tourTarget="recruitment_filters"
       >
         <TextInput
           value={filters.search}
@@ -357,6 +358,7 @@ const RecruitmentAdminScreen = ({ navigation }) => {
       <DashboardSection
         title="Candidates"
         subtitle={`${pagination?.total || applicants.length} matching applicants`}
+        tourTarget="recruitment_candidates"
       >
         {applicants.map((applicant) => (
           <ApplicantCard
@@ -377,6 +379,7 @@ const RecruitmentAdminScreen = ({ navigation }) => {
       <DashboardSection
         title="Reports and exports"
         subtitle="Candidate reports, filtered CSV email exports and hiring decisions stay inside the mobile workflow."
+        tourTarget="recruitment_reports"
       >
         <ActionRow
           title="Email filtered CSV export"

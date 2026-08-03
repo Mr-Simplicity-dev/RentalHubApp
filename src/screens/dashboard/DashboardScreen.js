@@ -30,17 +30,32 @@ import { hasPaystackCheckout } from '../../services/nativePaymentService';
 import { getErrorMessage, getReviewStatus, pickList, pickObject } from '../../utils/http';
 import TenancyGracePanel from '../../components/dashboard/TenancyGracePanel';
 import { colors, radius, shadows, typography } from '../../theme';
+import { useTourTarget } from '../../components/tour/TourTarget';
+import {
+  TourScrollProvider,
+  useTourScrollController,
+} from '../../components/tour/TourScrollContext';
+import { useAccessibilityPreferences } from '../../hooks/useAccessibilityPreferences';
 
 import AppText from '../../components/common/AppText';
-const StatCard = ({ title, value, icon, onPress }) => (
-  <TouchableOpacity style={styles.statCard} onPress={onPress}>
-    <View>
-      <AppText style={styles.statTitle}>{title}</AppText>
-      <AppText style={styles.statValue}>{value ?? 0}</AppText>
-    </View>
-    <Icon name={icon} size={26} color="#0284c7" />
-  </TouchableOpacity>
-);
+const StatCard = ({ title, value, icon, onPress, tourTarget }) => {
+  const tourTargetProps = useTourTarget(tourTarget, {
+    label: title,
+    onAction: onPress,
+    padding: 6,
+    radius: radius.md,
+  });
+
+  return (
+    <TouchableOpacity {...tourTargetProps} style={styles.statCard} onPress={onPress}>
+      <View>
+        <AppText style={styles.statTitle}>{title}</AppText>
+        <AppText style={styles.statValue}>{value ?? 0}</AppText>
+      </View>
+      <Icon name={icon} size={26} color="#0284c7" />
+    </TouchableOpacity>
+  );
+};
 
 const StatusBanner = ({ icon, title, description, colors, onPress, actionLabel }) => (
   <TouchableOpacity
@@ -199,6 +214,8 @@ const getTenantSubscriptionValue = (stats = {}) => {
 
 const DashboardScreen = ({ navigation }) => {
   const { user } = useContext(AuthContext);
+  const { reduceMotion } = useAccessibilityPreferences();
+  const tourScroll = useTourScrollController({ animated: !reduceMotion });
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [stats, setStats] = useState({});
@@ -223,9 +240,18 @@ const DashboardScreen = ({ navigation }) => {
     account_name: '',
   });
   const { openNativeCheckout, NativePaystackCheckoutModal } = useNativePaystackCheckout();
-
-  const isTenant = user?.user_type === 'tenant';
+  const isTenant = ['tenant', 'user'].includes(user?.user_type);
   const isLandlord = user?.user_type === 'landlord';
+  const locationTourTargetProps = useTourTarget(
+    isTenant ? 'tenant_location' : undefined,
+    {
+      label: 'Property location',
+      onReveal: tourScroll.reveal,
+      padding: 8,
+      radius: radius.md,
+    }
+  );
+
   const reviewStatus = getReviewStatus(user);
   const lawyerInviteSummary = useMemo(() => getLawyerInviteSummary(stats), [stats]);
   const propertyLocationCards = paidPropertyLocations.length
@@ -624,9 +650,13 @@ const DashboardScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView edges={['top']} style={styles.safeArea}>
+    <TourScrollProvider controller={tourScroll}>
     <ScrollView
+      ref={tourScroll.scrollRef}
       style={styles.screen}
       contentContainerStyle={styles.content}
+      onScroll={tourScroll.onScroll}
+      scrollEventThrottle={16}
       showsVerticalScrollIndicator={false}
       refreshControl={
         <RefreshControl
@@ -694,6 +724,7 @@ const DashboardScreen = ({ navigation }) => {
 
       {isTenant ? (
         <View
+          {...locationTourTargetProps}
           style={[
             styles.locationSection,
             !hasActivePropertyLocation && styles.locationSectionLocked,
@@ -765,6 +796,7 @@ const DashboardScreen = ({ navigation }) => {
               title="Saved Properties"
               value={stats.saved_properties_count}
               icon="heart-outline"
+              tourTarget="tenant_properties"
               onPress={() => navigation.navigate('SavedProperties')}
             />
             <StatCard
@@ -777,6 +809,7 @@ const DashboardScreen = ({ navigation }) => {
               title="Unread Messages"
               value={stats.unread_messages}
               icon="mail-unread-outline"
+              tourTarget="tenant_messages"
               onPress={() => navigation.navigate('Messages')}
             />
             <StatCard
@@ -805,6 +838,7 @@ const DashboardScreen = ({ navigation }) => {
                   : '—'
               }
               icon="wallet-outline"
+              tourTarget="tenant_wallet"
               onPress={openWithdrawModal}
             />
           </>
@@ -814,6 +848,7 @@ const DashboardScreen = ({ navigation }) => {
               title="Total Properties"
               value={stats.total_properties}
               icon="home-outline"
+              tourTarget="landlord_listings"
               onPress={() => navigation.navigate('MyProperties')}
             />
             <StatCard
@@ -826,12 +861,14 @@ const DashboardScreen = ({ navigation }) => {
               title="Pending Applications"
               value={stats.pending_applications}
               icon="documents-outline"
+              tourTarget="landlord_applications"
               onPress={() => navigation.navigate('Applications')}
             />
             <StatCard
               title="Unread Messages"
               value={stats.unread_messages}
               icon="mail-unread-outline"
+              tourTarget="landlord_messages"
               onPress={() => navigation.navigate('Messages')}
             />
             <StatCard
@@ -842,6 +879,7 @@ const DashboardScreen = ({ navigation }) => {
                   : '—'
               }
               icon="wallet-outline"
+              tourTarget="landlord_wallet"
               onPress={openWithdrawModal}
             />
             <StatCard
@@ -954,7 +992,7 @@ const DashboardScreen = ({ navigation }) => {
       </DashboardSection>
 
       {isTenant ? (
-        <DashboardSection title="Home services">
+        <DashboardSection title="Home services" tourTarget="tenant_services">
           <ActionRow
             title="Rent Savings"
             subtitle="Create goals and track your rent plan."
@@ -1073,6 +1111,7 @@ const DashboardScreen = ({ navigation }) => {
       />
       {NativePaystackCheckoutModal}
     </ScrollView>
+    </TourScrollProvider>
     </SafeAreaView>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import Toast from 'react-native-toast-message';
 import Input from '../../components/common/Input';
 import {
@@ -7,11 +7,14 @@ import {
   PremiumHero,
   PremiumScreen,
 } from '../../components/common/PremiumLayout';
+import TurnstileWidget from '../../components/common/TurnstileWidget';
 import { authService } from '../../services/authService';
 import { getErrorMessage } from '../../utils/http';
 
 const AcceptLawyerInviteScreen = ({ navigation, route }) => {
   const [loading, setLoading] = useState(false);
+  const turnstileTokenRef = useRef(null);
+  const turnstileRef = useRef(null);
   const [form, setForm] = useState({
     token: route?.params?.token || '',
     full_name: '',
@@ -49,6 +52,12 @@ const AcceptLawyerInviteScreen = ({ navigation, route }) => {
       return;
     }
 
+    const turnstileToken = turnstileTokenRef.current;
+    if (!turnstileToken) {
+      Toast.show({ type: 'error', text1: 'Security Check', text2: 'Please complete the security check below.' });
+      return;
+    }
+
     setLoading(true);
     try {
       const response = await authService.acceptLawyerInvite({
@@ -58,7 +67,7 @@ const AcceptLawyerInviteScreen = ({ navigation, route }) => {
         chamber_phone: form.chamber_phone.trim(),
         phone: form.phone.trim(),
         password: form.password,
-      });
+      }, turnstileToken);
 
       if (response.success) {
         Toast.show({
@@ -73,6 +82,8 @@ const AcceptLawyerInviteScreen = ({ navigation, route }) => {
           text1: 'Failed',
           text2: response.message || 'Could not accept invite',
         });
+        turnstileRef.current?.reset();
+        turnstileTokenRef.current = null;
       }
     } catch (error) {
       Toast.show({
@@ -80,6 +91,8 @@ const AcceptLawyerInviteScreen = ({ navigation, route }) => {
         text1: 'Failed',
         text2: getErrorMessage(error, 'Could not accept invite'),
       });
+      turnstileRef.current?.reset();
+      turnstileTokenRef.current = null;
     } finally {
       setLoading(false);
     }
@@ -154,6 +167,13 @@ const AcceptLawyerInviteScreen = ({ navigation, route }) => {
           onPress={handleAcceptInvite}
           loading={loading}
           icon="checkmark-circle-outline"
+        />
+
+        <TurnstileWidget
+          ref={turnstileRef}
+          onToken={(token) => { turnstileTokenRef.current = token; }}
+          onExpire={() => { turnstileTokenRef.current = null; }}
+          onError={() => { turnstileTokenRef.current = null; }}
         />
       </PremiumCard>
     </PremiumScreen>

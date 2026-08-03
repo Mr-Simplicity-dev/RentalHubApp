@@ -14,6 +14,7 @@ import { getErrorMessage, pickList, pickObject } from '../../utils/http';
 import { colors, radius, typography } from '../../theme';
 
 import AppText from '../../components/common/AppText';
+import TourTarget from '../../components/tour/TourTarget';
 const periods = ['daily', 'weekly', 'monthly', 'yearly'];
 
 const getStatusColor = (status) => {
@@ -53,12 +54,14 @@ const FinancialRevenueReportScreen = () => {
   const growth = revenueData?.growth_percentage;
   const header = (
     <>
-      <PremiumHero
-        eyebrow="Financial admin"
-        title="Revenue command centre"
-        subtitle="Monitor RentalHub revenue trends and the latest payment flow with a native executive summary."
-        icon="analytics-outline"
-      />
+      <TourTarget id="financial_reports" padding={6} radius={18}>
+        <PremiumHero
+          eyebrow="Financial admin"
+          title="Revenue command centre"
+          subtitle="Monitor RentalHub revenue trends and the latest payment flow with a native executive summary."
+          icon="analytics-outline"
+        />
+      </TourTarget>
 
       <View style={styles.filterRow}>
         {periods.map((item) => (

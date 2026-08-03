@@ -18,8 +18,14 @@ import { colors, radius, typography } from '../../theme';
 import { getErrorMessage, pickList } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
+import { useTourTarget } from '../../components/tour/TourTarget';
 const MyPropertiesScreen = ({ navigation }) => {
   const { user } = useContext(AuthContext);
+  const agentPropertiesTarget = useTourTarget('agent_properties', {
+    disabled: user?.user_type !== 'agent',
+    padding: 6,
+    radius: 18,
+  });
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [busyId, setBusyId] = useState(null);
@@ -126,7 +132,7 @@ const MyPropertiesScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView edges={['top']} style={styles.safeArea}>
-      <View style={styles.header}>
+      <View {...agentPropertiesTarget} style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Icon name="arrow-back" size={22} color={colors.navy} />
         </TouchableOpacity>

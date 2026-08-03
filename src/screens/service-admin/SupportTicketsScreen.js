@@ -6,6 +6,7 @@ import { serviceAdminService } from '../../services/serviceAdminService';
 import { getErrorMessage, pickList } from '../../utils/http';
 import { colors, radius, typography } from '../../theme';
 import AppText from '../../components/common/AppText';
+import TourTarget from '../../components/tour/TourTarget';
 import {
 DashboardHero,
   DashboardNotice,
@@ -51,13 +52,15 @@ const SupportTicketsScreen = ({ navigation }) => {
 
   return (
     <DashboardScreen refreshing={loading} onRefresh={loadTickets}>
-      <DashboardHero
-        eyebrow="SUPPORT DESK"
-        title="Ticket queue"
-        subtitle="Review open conversations, unread customer replies and escalation status from a mobile-first queue."
-        icon="headset-outline"
-        onRefresh={loadTickets}
-      />
+      <TourTarget id="support_tickets" padding={6} radius={18}>
+        <DashboardHero
+          eyebrow="SUPPORT DESK"
+          title="Ticket queue"
+          subtitle="Review open conversations, unread customer replies and escalation status from a mobile-first queue."
+          icon="headset-outline"
+          onRefresh={loadTickets}
+        />
+      </TourTarget>
 
       <DashboardNotice
         title="Conversation tools"

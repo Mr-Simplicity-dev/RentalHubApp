@@ -31,6 +31,12 @@ import {
 } from '../../components/dashboard/DashboardKit';
 import { AuthContext } from '../../context/AuthContext';
 import { colors, typography } from '../../theme';
+import TourTarget from '../../components/tour/TourTarget';
+import {
+  TourScrollProvider,
+  useTourScrollController,
+} from '../../components/tour/TourScrollContext';
+import { useAccessibilityPreferences } from '../../hooks/useAccessibilityPreferences';
 
 import AppText from '../../components/common/AppText';
 const sections = [
@@ -126,6 +132,8 @@ const FilterChip = ({ label, active, onPress }) => (
 
 const SuperAdminDashboardScreen = ({ navigation, route }) => {
   const { beginImpersonation } = useContext(AuthContext);
+  const { reduceMotion } = useAccessibilityPreferences();
+  const tourScroll = useTourScrollController({ animated: !reduceMotion });
   const [section, setSection] = useState(
     () => normalizeRequestedSection(route?.params?.initialPanel) || 'overview'
   );
@@ -2665,13 +2673,21 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
   const selectedSection = sectionOptions.find((item) => item.value === section);
 
   return (
-    <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
+    <TourScrollProvider controller={tourScroll}>
+    <ScrollView
+      ref={tourScroll.scrollRef}
+      style={styles.screen}
+      contentContainerStyle={styles.content}
+      onScroll={tourScroll.onScroll}
+      scrollEventThrottle={16}
+    >
       <DashboardHero
         eyebrow="PLATFORM OPERATIONS"
         title="Super Admin"
         subtitle="Choose one focused workspace at a time. Data is loaded only when that workspace is opened."
         icon="shield-checkmark-outline"
         onRefresh={() => loadSection(section, true)}
+        tourTarget="super_overview"
       />
       <AdminAccountActions navigation={navigation} />
       <ActionRow
@@ -2679,10 +2695,33 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
         subtitle="Tap to switch administrative workspace"
         icon="apps-outline"
         badge="Workspace"
+        tourTarget="super_workspace"
         onPress={() => setShowSectionPicker(true)}
       />
 
-      {loading ? <AppText style={styles.meta}>Loading...</AppText> : renderedSection}
+      <TourTarget
+        id={
+          ['verifications', 'fraud'].includes(section)
+            ? 'super_trust'
+            : section === 'analytics'
+              ? 'super_analytics'
+              : undefined
+        }
+        label={selectedSection?.label}
+        disabled={
+          loading || !['verifications', 'fraud', 'analytics'].includes(section)
+        }
+      >
+        <View style={styles.tourSectionAnchor}>
+          <Icon name="sparkles-outline" size={18} color={colors.gold} />
+          <AppText style={styles.tourSectionAnchorText}>
+            {selectedSection?.label || 'Selected workspace'}
+          </AppText>
+        </View>
+      </TourTarget>
+      <View>
+        {loading ? <AppText style={styles.meta}>Loading...</AppText> : renderedSection}
+      </View>
 
       <OperationNoteModal
         visible={Boolean(operationPrompt)}
@@ -2785,6 +2824,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
         }
       />
     </ScrollView>
+    </TourScrollProvider>
   );
 };
 
@@ -2816,6 +2856,23 @@ const styles = StyleSheet.create({
   cardTitle: { fontSize: 16, fontWeight: '700', color: '#0f172a', marginBottom: 4 },
   sectionTitle: { fontFamily: typography.bold, fontSize: 18, color: colors.ink, marginBottom: 8 },
   meta: { marginTop: 4, color: '#475569' },
+  tourSectionAnchor: {
+    alignItems: 'center',
+    backgroundColor: colors.navy,
+    borderColor: colors.gold,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    flexDirection: 'row',
+    marginTop: 4,
+    paddingHorizontal: 14,
+    paddingVertical: 11,
+  },
+  tourSectionAnchorText: {
+    color: colors.white,
+    fontFamily: typography.semibold,
+    fontSize: 14,
+    marginLeft: 9,
+  },
   row: { flexDirection: 'row', gap: 16, marginTop: 10, flexWrap: 'wrap' },
   linkText: { color: '#0284c7', fontWeight: '700', marginTop: 8 },
   warnText: { color: '#dc2626', fontWeight: '700', marginTop: 8 },

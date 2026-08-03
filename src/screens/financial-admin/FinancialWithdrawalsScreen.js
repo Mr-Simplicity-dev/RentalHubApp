@@ -15,6 +15,7 @@ import { getErrorMessage, pickList } from '../../utils/http';
 import { colors, typography } from '../../theme';
 
 import AppText from '../../components/common/AppText';
+import TourTarget from '../../components/tour/TourTarget';
 const getStatusColor = (status) => {
   if (status === 'approved' || status === 'paid' || status === 'completed') return colors.success;
   if (status === 'rejected' || status === 'failed') return colors.danger;
@@ -63,12 +64,14 @@ const FinancialWithdrawalsScreen = () => {
   };
 
   const header = (
-    <PremiumHero
-      eyebrow="Financial admin"
-      title="Withdrawal controls"
-      subtitle="Review requested payouts with beneficiary details and quick approval actions."
-      icon="cash-outline"
-    />
+    <TourTarget id="financial_settlements" padding={6} radius={18}>
+      <PremiumHero
+        eyebrow="Financial admin"
+        title="Withdrawal controls"
+        subtitle="Review requested payouts with beneficiary details and quick approval actions."
+        icon="cash-outline"
+      />
+    </TourTarget>
   );
 
   return (

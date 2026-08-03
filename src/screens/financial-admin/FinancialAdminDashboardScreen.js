@@ -74,7 +74,7 @@ const FinancialAdminDashboardScreen = ({ navigation }) => {
       />
       <AdminAccountActions navigation={navigation} />
 
-      <MetricGrid>
+      <MetricGrid tourTarget="financial_overview" tourLabel="Financial overview">
         {summaryCards.map((card) => (
           <MetricCard key={card.label} {...card} />
         ))}
@@ -90,6 +90,15 @@ const FinancialAdminDashboardScreen = ({ navigation }) => {
             title={action.label}
             subtitle={action.subtitle}
             icon={action.icon}
+            tourTarget={
+              action.route === 'FinancialTransactions'
+                ? 'financial_transactions'
+                : action.route === 'FinancialControls'
+                  ? 'financial_settlements'
+                  : action.route === 'FinancialRevenueReport'
+                    ? 'financial_reports'
+                    : undefined
+            }
             onPress={() => navigation.navigate(action.route)}
           />
         ))}

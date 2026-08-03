@@ -33,8 +33,8 @@ const createMissingSessionError = () => {
 };
 
 export const authService = {
-  register: async (userData) => {
-    const response = await api.post('/auth/register', userData);
+  register: async (userData, turnstileToken) => {
+    const response = await api.post('/auth/register', { ...userData, turnstile_token: turnstileToken });
     if (response.data.success) {
       const { token, session_token: sessionToken, user } = response.data.data;
       await storageService.saveToken(token);
@@ -44,8 +44,8 @@ export const authService = {
     return response.data;
   },
 
-  login: async (email, password) => {
-    const response = await api.post('/auth/login', { email, password });
+  login: async (email, password, turnstileToken) => {
+    const response = await api.post('/auth/login', { email, password, turnstile_token: turnstileToken });
     if (response.data.success) {
       const { token, session_token: sessionToken, user } = response.data.data;
       await storageService.saveToken(token);
@@ -146,13 +146,13 @@ export const authService = {
     return response.data;
   },
 
-  forgotPassword: async (email) => {
-    const response = await api.post('/auth/forgot-password', { email });
+  forgotPassword: async (email, turnstileToken) => {
+    const response = await api.post('/auth/forgot-password', { email, turnstile_token: turnstileToken });
     return response.data;
   },
 
-  resetPassword: async (token, password) => {
-    const response = await api.post(`/auth/reset-password/${token}`, { password });
+  resetPassword: async (token, password, turnstileToken) => {
+    const response = await api.post(`/auth/reset-password/${token}`, { password, turnstile_token: turnstileToken });
     return response.data;
   },
 
@@ -161,8 +161,8 @@ export const authService = {
     return response.data;
   },
 
-  initializeRegistrationPayment: async (payload) => {
-    const response = await api.post('/auth/register/payment', payload);
+  initializeRegistrationPayment: async (payload, turnstileToken) => {
+    const response = await api.post('/auth/register/payment', { ...payload, turnstile_token: turnstileToken });
     return response.data;
   },
 
@@ -176,13 +176,13 @@ export const authService = {
     return response.data;
   },
 
-  acceptLawyerInvite: async (payload) => {
-    const response = await api.post('/auth/lawyer/accept-invite', payload);
+  acceptLawyerInvite: async (payload, turnstileToken) => {
+    const response = await api.post('/auth/lawyer/accept-invite', { ...payload, turnstile_token: turnstileToken });
     return response.data;
   },
 
-  acceptAgentInvite: async (payload) => {
-    const response = await api.post('/auth/agent/accept-invite', payload);
+  acceptAgentInvite: async (payload, turnstileToken) => {
+    const response = await api.post('/auth/agent/accept-invite', { ...payload, turnstile_token: turnstileToken });
     return response.data;
   },
 

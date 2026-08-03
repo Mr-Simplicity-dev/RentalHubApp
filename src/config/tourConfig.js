@@ -1,335 +1,310 @@
-export const TOUR_VERSION = '2';
+const { TOUR_STEP_COPY } = require('../i18n/tourStepCatalog.cjs');
+
+export const TOUR_VERSION = '4';
 export const TOUR_PROMPT_INTERVAL_DAYS = 7;
 
+const destination = (name, params) => ({ name, ...(params ? { params } : {}) });
+const workflow = (name, params) => ({
+  destination: destination(name, params),
+  action: true,
+});
+const step = (id, icon, options = {}) => ({ id, icon, ...options });
+const settingsStep = step(
+  'tour_settings',
+  'settings-outline',
+  workflow('Settings')
+);
+
 const tenantSteps = [
-  {
-    id: 'tenant_properties',
-    icon: 'heart-outline',
-    title: 'Save and unlock properties',
-    description: 'Build a shortlist, unlock full property details, and return to saved homes from My Hub.',
-  },
-  {
-    id: 'tenant_location',
-    icon: 'map-outline',
-    title: 'Open verified locations',
-    description: 'After rent payment is confirmed, eligible property locations can open directly in Google Maps.',
-  },
-  {
-    id: 'tenant_wallet',
-    icon: 'wallet-outline',
-    title: 'Wallet and rent savings',
-    description: 'Fund your wallet, withdraw available money, and create a structured rent savings plan.',
-  },
-  {
-    id: 'tenant_services',
-    icon: 'sparkles-outline',
-    title: 'Book home services',
-    description: 'Arrange transportation, cleaning, and fumigation without leaving the app.',
-  },
-  {
-    id: 'tenant_messages',
-    icon: 'chatbubbles-outline',
-    title: 'Stay connected',
-    description: 'Track applications, messages, notifications, and important rental activity in one place.',
-  },
+  step('tenant_properties', 'heart-outline'),
+  step('tenant_location', 'map-outline'),
+  step('tenant_wallet', 'wallet-outline'),
+  step('tenant_applications', 'documents-outline', workflow('MainTabs', { screen: 'Applications' })),
+  step('tenant_services', 'sparkles-outline', workflow('TransportationBookings')),
+  step('tenant_messages', 'chatbubbles-outline', workflow('MainTabs', { screen: 'Messages' })),
+  step('tenant_payments', 'receipt-outline', workflow('PaymentHistory')),
+  step('tenant_support', 'headset-outline', workflow('Support')),
 ];
 
 const landlordSteps = [
-  {
-    id: 'landlord_listings',
-    icon: 'business-outline',
-    title: 'Manage your listings',
-    description: 'Create properties, update availability, and review each listing from My Hub.',
-  },
-  {
-    id: 'landlord_applications',
-    icon: 'documents-outline',
-    title: 'Review applications',
-    description: 'Follow tenant applications and continue each approval workflow from a focused screen.',
-  },
-  {
-    id: 'landlord_messages',
-    icon: 'chatbubbles-outline',
-    title: 'Coordinate securely',
-    description: 'Continue conversations with applicants and tenants through the in-app message centre.',
-  },
-  {
-    id: 'landlord_wallet',
-    icon: 'wallet-outline',
-    title: 'Payments and withdrawals',
-    description: 'Monitor balances, payment history, property reserves, and withdrawal activity.',
-  },
+  step('landlord_listings', 'business-outline'),
+  step('landlord_applications', 'documents-outline', workflow('MainTabs', { screen: 'Applications' })),
+  step('landlord_messages', 'chatbubbles-outline', workflow('MainTabs', { screen: 'Messages' })),
+  step('landlord_wallet', 'wallet-outline', workflow('PaymentHistory')),
+  step('landlord_support', 'headset-outline', workflow('Support')),
 ];
 
 const agentSteps = [
-  {
-    id: 'agent_assignment',
-    icon: 'person-circle-outline',
-    title: 'Confirm your assignment',
-    description: 'Your workspace shows the landlord account and portfolio currently delegated to you.',
-  },
-  {
-    id: 'agent_properties',
-    icon: 'business-outline',
-    title: 'Operate the portfolio',
-    description: 'Create, update, and manage assigned property listings from focused native screens.',
-  },
-  {
-    id: 'agent_commissions',
-    icon: 'trending-up-outline',
-    title: 'Track commissions',
-    description: 'Review earnings and transaction history from your commission ledger.',
-  },
-  {
-    id: 'agent_withdrawals',
-    icon: 'wallet-outline',
-    title: 'Request payouts',
-    description: 'Submit withdrawal requests and follow their status from the agent workspace.',
-  },
+  step('agent_assignment', 'person-circle-outline'),
+  step('agent_properties', 'business-outline', workflow('MyProperties')),
+  step('agent_commissions', 'trending-up-outline', workflow('AgentEarnings')),
+  step('agent_withdrawals', 'wallet-outline', workflow('AgentWithdrawals')),
 ];
 
 const lawyerSteps = [
-  {
-    id: 'lawyer_cases',
-    icon: 'briefcase-outline',
-    title: 'Manage active cases',
-    description: 'Open assigned disputes, review their status, and continue the legal workflow.',
-  },
-  {
-    id: 'lawyer_evidence',
-    icon: 'document-attach-outline',
-    title: 'Review evidence',
-    description: 'Inspect submitted evidence, verify case details, and add professional findings.',
-  },
-  {
-    id: 'lawyer_clients',
-    icon: 'people-outline',
-    title: 'Support your clients',
-    description: 'Keep case information and client communication together inside the app.',
-  },
-  {
-    id: 'lawyer_verification',
-    icon: 'shield-checkmark-outline',
-    title: 'Verify case references',
-    description: 'Use the case verification tool to confirm that a RentalHub matter is authentic.',
-  },
+  step('lawyer_cases', 'briefcase-outline'),
+  step('lawyer_evidence', 'document-attach-outline'),
+  step('lawyer_clients', 'people-outline', workflow('Messages')),
+  step('lawyer_verification', 'shield-checkmark-outline', workflow('VerifyCase')),
 ];
 
 const adminSteps = [
-  {
-    id: 'admin_metrics',
-    icon: 'stats-chart-outline',
-    title: 'See what needs attention',
-    description: 'Dashboard metrics surface users, properties, applications, and pending verifications.',
-  },
-  {
-    id: 'admin_workspaces',
-    icon: 'apps-outline',
-    title: 'Use focused workspaces',
-    description: 'Open one administrative task at a time instead of working through a desktop-sized control panel.',
-  },
-  {
-    id: 'admin_compliance',
-    icon: 'shield-outline',
-    title: 'Monitor compliance',
-    description: 'Review risk, verification, and property issues from dedicated native screens.',
-  },
-  {
-    id: 'admin_workflows',
-    icon: 'git-branch-outline',
-    title: 'Complete local workflows',
-    description: 'Handle property requests, agent assignments, tenancy controls, and recruitment.',
-  },
+  step('admin_metrics', 'stats-chart-outline'),
+  step('admin_workspaces', 'apps-outline'),
+  step('admin_compliance', 'shield-outline', workflow('AdminEvidenceVerifications')),
+  step('admin_workflows', 'git-branch-outline'),
+];
+
+const lgaAdminSteps = [
+  step('lga_admin_overview', 'stats-chart-outline'),
+  step('lga_admin_services', 'apps-outline'),
+  step('lga_admin_requests', 'business-outline'),
+  step('lga_admin_tenancy', 'key-outline'),
+];
+
+const stateAdminSteps = [
+  step('state_overview', 'stats-chart-outline'),
+  step('state_management', 'map-outline'),
+  step('state_requests', 'business-outline'),
+  step('state_tenancy', 'key-outline'),
 ];
 
 const financialSteps = [
-  {
-    id: 'financial_overview',
-    icon: 'analytics-outline',
-    title: 'Review financial health',
-    description: 'See revenue, pending money, and completed transaction counts at a glance.',
-  },
-  {
-    id: 'financial_transactions',
-    icon: 'swap-horizontal-outline',
-    title: 'Inspect transactions',
-    description: 'Move into the transaction workspace for detailed payment review.',
-  },
-  {
-    id: 'financial_settlements',
-    icon: 'cash-outline',
-    title: 'Manage payouts',
-    description: 'Review withdrawals, commissions, settlements, and reconciliation tasks.',
-  },
-  {
-    id: 'financial_reports',
-    icon: 'document-text-outline',
-    title: 'Follow revenue trends',
-    description: 'Use focused reports to understand platform income and settlement performance.',
-  },
+  step('financial_overview', 'analytics-outline'),
+  step('financial_transactions', 'swap-horizontal-outline', workflow('FinancialTransactions')),
+  step('financial_settlements', 'cash-outline', workflow('FinancialWithdrawals')),
+  step('financial_reports', 'document-text-outline', workflow('FinancialRevenueReport')),
+];
+
+const lgaFinancialSteps = [
+  step('lga_financial_overview', 'analytics-outline'),
+  step('lga_financial_withdrawal', 'cash-outline'),
+  step('lga_financial_history', 'receipt-outline'),
 ];
 
 const superAdminSteps = [
-  {
-    id: 'super_overview',
-    icon: 'shield-checkmark-outline',
-    title: 'Platform control, simplified',
-    description: 'The mobile dashboard loads only the workspace you choose, reducing clutter and startup time.',
-  },
-  {
-    id: 'super_workspace',
-    icon: 'apps-outline',
-    title: 'Choose a workspace',
-    description: 'Use the searchable workspace picker to move between users, trust, finance, content, and system tools.',
-  },
-  {
-    id: 'super_trust',
-    icon: 'finger-print-outline',
-    title: 'Protect platform trust',
-    description: 'Manage verification, fraud, reports, flags, lawyers, and administrative approvals.',
-  },
-  {
-    id: 'super_analytics',
-    icon: 'bar-chart-outline',
-    title: 'Track platform performance',
-    description: 'Open analytics and audit workspaces only when you need detailed operational data.',
-  },
+  step('super_overview', 'shield-checkmark-outline'),
+  step('super_workspace', 'apps-outline'),
+  step('super_trust', 'finger-print-outline'),
+  step('super_analytics', 'bar-chart-outline'),
 ];
 
 const serviceAdminSteps = [
-  {
-    id: 'service_dashboard',
-    icon: 'speedometer-outline',
-    title: 'Your service workspace',
-    description: 'Open the operational dashboard assigned to your role and jurisdiction.',
-  },
-  {
-    id: 'service_bookings',
-    icon: 'calendar-outline',
-    title: 'Manage bookings',
-    description: 'Review incoming bookings, assignments, status changes, and customer details.',
-  },
-  {
-    id: 'service_payments',
-    icon: 'card-outline',
-    title: 'Track payments',
-    description: 'Follow service payments, commissions, and revenue from the appropriate workspace.',
-  },
+  step('service_dashboard', 'speedometer-outline'),
+  step('service_bookings', 'calendar-outline', workflow('ServiceBookings')),
+  step('service_payments', 'card-outline'),
 ];
 
 const supportSteps = [
-  {
-    id: 'support_tickets',
-    icon: 'chatbox-ellipses-outline',
-    title: 'Resolve support requests',
-    description: 'Review user tickets, take ownership, and follow each issue through resolution.',
-  },
-  {
-    id: 'support_operations',
-    icon: 'git-network-outline',
-    title: 'Coordinate operations',
-    description: 'Handle migration, property, and tenancy requests for your assigned jurisdiction.',
-  },
-  {
-    id: 'support_audit',
-    icon: 'reader-outline',
-    title: 'Keep an audit trail',
-    description: 'Review operational history and escalations before taking sensitive actions.',
-  },
+  step('support_tickets', 'chatbox-ellipses-outline', workflow('SupportTickets')),
+  step('support_operations', 'git-network-outline'),
+  step('support_audit', 'reader-outline'),
 ];
 
-const coachMarks = {
-  tenant_properties: ['Saved homes / Browse', 'Use this control to return to properties you are comparing.', 'top'],
-  tenant_location: ['Location tools', 'Open verified location actions only after the right payment or access step is complete.', 'middle'],
-  tenant_wallet: ['Wallet / Savings', 'This is where rent savings, wallet movement and payment history connect.', 'bottomLeft'],
-  tenant_services: ['Services', 'Book transport, cleaning and fumigation from the service shortcuts.', 'bottomRight'],
-  tenant_messages: ['Messages', 'Use messages and notifications to continue rental conversations.', 'bottom'],
-  landlord_listings: ['My properties', 'Create and manage listings from this dashboard action.', 'top'],
-  landlord_applications: ['Applications', 'Open tenant applications and continue review workflows.', 'middle'],
-  landlord_messages: ['Messages', 'Coordinate securely with applicants and tenants.', 'bottomRight'],
-  landlord_wallet: ['Payments', 'Follow landlord payments, balances and withdrawals.', 'bottomLeft'],
-  agent_assignment: ['Assignment card', 'Start here to confirm which landlord portfolio you are managing.', 'top'],
-  agent_properties: ['Portfolio tools', 'Use these actions to create and maintain assigned listings.', 'middle'],
-  agent_commissions: ['Earnings', 'Your commission ledger and trends live behind this control.', 'bottomLeft'],
-  agent_withdrawals: ['Withdrawals', 'Request and track commission payouts here.', 'bottomRight'],
-  lawyer_cases: ['Case list', 'Open active disputes and assigned legal matters from this area.', 'top'],
-  lawyer_evidence: ['Evidence tools', 'Review documents, verification data and case evidence here.', 'middle'],
-  lawyer_clients: ['Client support', 'Keep case communication and client support together.', 'bottomLeft'],
-  lawyer_verification: ['Verify case', 'Use this control to confirm case references are authentic.', 'bottomRight'],
-  admin_metrics: ['Metrics cards', 'These cards show the first operational problems to check.', 'top'],
-  admin_workspaces: ['Workspace list', 'Pick one focused admin workspace instead of scrolling through a web-sized dashboard.', 'middle'],
-  admin_compliance: ['Compliance', 'Verification, risk and trust checks are grouped here.', 'bottomLeft'],
-  admin_workflows: ['Workflow actions', 'Continue local operations like property requests, agents and recruitment.', 'bottomRight'],
-  financial_overview: ['Finance metrics', 'Start with revenue, pending money and completed transaction health.', 'top'],
-  financial_transactions: ['Transactions', 'Open this control for reconciliation-level payment review.', 'middle'],
-  financial_settlements: ['Settlements', 'Withdrawals, commissions and frozen-fund controls are grouped here.', 'bottomLeft'],
-  financial_reports: ['Reports', 'Use revenue reports and export handoff for finance reporting.', 'bottomRight'],
-  super_overview: ['Platform overview', 'This is the high-level control point before opening heavy modules.', 'top'],
-  super_workspace: ['Workspace picker', 'Search and jump into the exact super-admin tool you need.', 'middle'],
-  super_trust: ['Trust controls', 'Verification, fraud, reports and lawyer tools sit in this area.', 'bottomLeft'],
-  super_analytics: ['Analytics', 'Open detailed analytics and audit views from here.', 'bottomRight'],
-  service_dashboard: ['Operations metrics', 'Start with bookings, queue health and service status.', 'top'],
-  service_bookings: ['Bookings queue', 'Open customer bookings and update operational progress.', 'middle'],
-  service_payments: ['Service payments', 'Track revenue, commissions and payment status here.', 'bottom'],
-  support_tickets: ['Ticket queue', 'Open and resolve user support tickets from this control.', 'top'],
-  support_operations: ['Operations', 'Coordinate migrations, property and tenancy support actions.', 'middle'],
-  support_audit: ['Audit trail', 'Review escalation history before sensitive support actions.', 'bottom'],
-};
+const recruitmentSteps = [
+  step('recruitment_overview', 'analytics-outline'),
+  step('recruitment_filters', 'funnel-outline'),
+  step('recruitment_candidates', 'people-outline'),
+  step('recruitment_reports', 'document-text-outline'),
+];
 
-const withCoachMarks = (steps) =>
-  steps.map((step, index) => {
-    const [targetLabel, targetHint, targetZone] = coachMarks[step.id] || [
-      step.title,
-      'This highlighted area represents the dashboard control related to this step.',
-      ['top', 'middle', 'bottom', 'bottomLeft', 'bottomRight'][index % 5],
-    ];
-
+const localizeSteps = (steps, language = 'en') => {
+  const locale = TOUR_STEP_COPY[language] ? language : 'en';
+  return [...steps, settingsStep].map((definition, index) => {
+    const copy = TOUR_STEP_COPY[locale]?.[definition.id] || TOUR_STEP_COPY.en[definition.id];
+    const [title, description] = copy || [definition.id, definition.id];
     return {
-      ...step,
-      targetLabel,
-      targetHint,
-      targetZone,
+      ...definition,
+      targetId: definition.id,
+      targetLabel: title,
+      targetHint: description,
+      targetZone: ['top', 'middle', 'bottom', 'bottomLeft', 'bottomRight'][index % 5],
+      title,
+      description,
     };
   });
+};
 
-export const getTourStepsForRole = (role) => {
-  if (role === 'tenant' || role === 'user') return withCoachMarks(tenantSteps);
-  if (role === 'landlord') return withCoachMarks(landlordSteps);
-  if (role === 'agent') return withCoachMarks(agentSteps);
-  if (['lawyer', 'state_lawyer', 'super_lawyer'].includes(role)) return withCoachMarks(lawyerSteps);
-  if (['financial_admin', 'lga_financial_admin', 'state_financial_admin', 'super_financial_admin'].includes(role)) {
-    return withCoachMarks(financialSteps);
+export const getEffectiveTourRole = (user) => (
+  user?.is_recruitment_admin === true && user?.user_type !== 'super_admin'
+    ? 'recruitment_admin'
+    : user?.user_type || 'tenant'
+);
+
+const getWorkflowGroupsForRole = (role) => {
+  const normalizedRole = String(role || '').trim().toLowerCase();
+
+  if (['tenant', 'user'].includes(normalizedRole)) {
+    return [
+      ['property_access', ['tenant_properties', 'tenant_location']],
+      ['applications_messages', ['tenant_applications', 'tenant_messages']],
+      ['wallet_payments', ['tenant_wallet', 'tenant_payments']],
+      ['bookings_support', ['tenant_services', 'tenant_support']],
+      ['tour_preferences', ['tour_settings']],
+    ];
   }
-  if (role === 'super_admin') return withCoachMarks(superAdminSteps);
-  if (['lga_support_admin', 'state_support_admin', 'super_support_admin'].includes(role)) return withCoachMarks(supportSteps);
-  if (
-    [
-      'transportation_admin',
-      'lga_transportation_admin',
-      'state_transportation_admin',
-      'super_transportation_admin',
-      'fumigation_admin',
-      'lga_fumigation_admin',
-      'state_fumigation_admin',
-      'super_fumigation_admin',
-      'recruitment_admin',
-    ].includes(role)
-  ) {
-    return withCoachMarks(serviceAdminSteps);
+  if (normalizedRole === 'landlord') {
+    return [
+      ['listing_management', ['landlord_listings']],
+      ['applications_messages', ['landlord_applications', 'landlord_messages']],
+      ['payments_support', ['landlord_wallet', 'landlord_support']],
+      ['tour_preferences', ['tour_settings']],
+    ];
   }
-  return withCoachMarks(adminSteps);
+  if (normalizedRole === 'agent') {
+    return [
+      ['portfolio_operations', ['agent_assignment', 'agent_properties']],
+      ['commissions_payouts', ['agent_commissions', 'agent_withdrawals']],
+      ['tour_preferences', ['tour_settings']],
+    ];
+  }
+  if (['lawyer', 'state_lawyer', 'super_lawyer'].includes(normalizedRole)) {
+    return [
+      ['legal_casework', ['lawyer_cases', 'lawyer_evidence', 'lawyer_clients', 'lawyer_verification']],
+      ['tour_preferences', ['tour_settings']],
+    ];
+  }
+
+  const category = normalizedRole.includes('financial')
+    ? 'finance_operations'
+    : normalizedRole === 'recruitment_admin'
+      ? 'recruitment_operations'
+      : normalizedRole.includes('support') ||
+          normalizedRole.includes('transportation') ||
+          normalizedRole.includes('fumigation')
+        ? 'support_service_operations'
+        : 'platform_operations';
+
+  return [
+    [category, null],
+    ['tour_preferences', ['tour_settings']],
+  ];
+};
+
+export const getTourStepsForRole = (role, language = 'en') => {
+  if (role === 'tenant' || role === 'user') return localizeSteps(tenantSteps, language);
+  if (role === 'landlord') return localizeSteps(landlordSteps, language);
+  if (role === 'agent') return localizeSteps(agentSteps, language);
+  if (['lawyer', 'state_lawyer', 'super_lawyer'].includes(role)) return localizeSteps(lawyerSteps, language);
+  if (role === 'lga_financial_admin') return localizeSteps(lgaFinancialSteps, language);
+  if (role === 'state_financial_admin' || role === 'state_admin') return localizeSteps(stateAdminSteps, language);
+  if (['financial_admin', 'super_financial_admin'].includes(role)) return localizeSteps(financialSteps, language);
+  if (role === 'super_admin') return localizeSteps(superAdminSteps, language);
+  if (['lga_support_admin', 'state_support_admin', 'super_support_admin'].includes(role)) return localizeSteps(supportSteps, language);
+  if (role === 'recruitment_admin') return localizeSteps(recruitmentSteps, language);
+  if (role === 'lga_admin') return localizeSteps(lgaAdminSteps, language);
+  if ([
+    'transportation_admin',
+    'lga_transportation_admin',
+    'state_transportation_admin',
+    'super_transportation_admin',
+    'fumigation_admin',
+    'lga_fumigation_admin',
+    'state_fumigation_admin',
+    'super_fumigation_admin',
+  ].includes(role)) return localizeSteps(serviceAdminSteps, language);
+  return localizeSteps(adminSteps, language);
+};
+
+export const getTourWorkflowCatalog = (role, language = 'en') => {
+  const allSteps = getTourStepsForRole(role, language);
+  const allOperationalIds = allSteps
+    .filter(({ id }) => id !== 'tour_settings')
+    .map(({ id }) => id);
+
+  return getWorkflowGroupsForRole(role).map(([id, configuredIds]) => {
+    const stepIds = configuredIds || allOperationalIds;
+    const workflowSteps = stepIds
+      .map((stepId) => allSteps.find(({ id: candidateId }) => candidateId === stepId))
+      .filter(Boolean);
+    const lead = workflowSteps[0];
+
+    return {
+      id,
+      title: lead?.title || id,
+      description: lead?.description || '',
+      stepIds: workflowSteps.map(({ id: stepId }) => stepId),
+    };
+  }).filter(({ stepIds }) => stepIds.length > 0);
+};
+
+export const getTourStepsForWorkflow = (role, workflowId, language = 'en') => {
+  const allSteps = getTourStepsForRole(role, language);
+  const workflowDefinition = getTourWorkflowCatalog(role, language)
+    .find(({ id }) => id === workflowId);
+  if (!workflowDefinition) return allSteps;
+  const selected = new Set(workflowDefinition.stepIds);
+  return allSteps.filter(({ id }) => selected.has(id));
 };
 
 export const getTourDashboardType = (role) => {
-  if (role === 'tenant' || role === 'user') return 'tenant_dashboard';
-  if (role === 'landlord') return 'landlord_dashboard';
-  if (role === 'agent') return 'agent_dashboard';
-  if (['lawyer', 'state_lawyer', 'super_lawyer'].includes(role)) return 'lawyer_dashboard';
-  if (role === 'super_admin') return 'super_admin_dashboard';
-  if (String(role || '').includes('financial')) return 'financial_admin_dashboard';
-  if (String(role || '').includes('support')) return 'support_dashboard';
-  if (String(role || '').includes('transportation')) return 'transportation_admin_dashboard';
-  if (String(role || '').includes('fumigation')) return 'fumigation_admin_dashboard';
-  if (role === 'recruitment_admin') return 'recruitment_admin_dashboard';
-  return 'admin_dashboard';
+  const dashboardByRole = {
+    user: 'tenant_dashboard',
+    tenant: 'tenant_dashboard',
+    landlord: 'landlord_dashboard',
+    agent: 'agent_dashboard',
+    lawyer: 'lawyer_dashboard',
+    state_lawyer: 'state_lawyer_dashboard',
+    super_lawyer: 'super_lawyer_dashboard',
+    admin: 'admin_dashboard',
+    lga_admin: 'lga_admin_dashboard',
+    state_admin: 'state_admin_dashboard',
+    financial_admin: 'financial_admin_dashboard',
+    lga_financial_admin: 'lga_financial_admin_dashboard',
+    state_financial_admin: 'state_financial_admin_dashboard',
+    super_financial_admin: 'super_financial_admin_dashboard',
+    lga_support_admin: 'lga_support_admin_dashboard',
+    state_support_admin: 'state_support_admin_dashboard',
+    super_support_admin: 'super_support_admin_dashboard',
+    transportation_admin: 'transportation_admin_dashboard',
+    lga_transportation_admin: 'lga_transportation_admin_dashboard',
+    state_transportation_admin: 'state_transportation_admin_dashboard',
+    super_transportation_admin: 'super_transportation_admin_dashboard',
+    fumigation_admin: 'fumigation_admin_dashboard',
+    lga_fumigation_admin: 'lga_fumigation_admin_dashboard',
+    state_fumigation_admin: 'state_fumigation_admin_dashboard',
+    super_fumigation_admin: 'super_fumigation_admin_dashboard',
+    recruitment_admin: 'recruitment_admin_dashboard',
+    super_admin: 'super_admin_dashboard',
+  };
+  return dashboardByRole[role] || 'admin_dashboard';
+};
+
+export const getTourDestinationForRole = (role, stepDefinition = {}) => {
+  if (stepDefinition.destination?.name) {
+    if (
+      stepDefinition.destination.name === 'ServiceBookings' &&
+      !stepDefinition.destination.params
+    ) {
+      return destination('ServiceBookings', {
+        type: String(role || '').includes('fumigation') ? 'fumigation' : 'transportation',
+      });
+    }
+    return stepDefinition.destination;
+  }
+
+  const normalizedRole = String(role || '').trim().toLowerCase();
+  if (['tenant', 'user', 'landlord'].includes(normalizedRole)) {
+    return destination('MainTabs', { screen: 'DashboardTab' });
+  }
+  if (normalizedRole === 'agent') return destination('AgentDashboard');
+  if (['lawyer', 'state_lawyer', 'super_lawyer'].includes(normalizedRole)) return destination('LawyerDashboard');
+  if (normalizedRole === 'super_admin') return destination('SuperAdminDashboard', {
+    initialPanel: stepDefinition.id === 'super_trust'
+      ? 'verifications'
+      : stepDefinition.id === 'super_analytics'
+        ? 'analytics'
+        : 'overview',
+  });
+  if (normalizedRole === 'lga_financial_admin') return destination('LgaFinancialAdminDashboard');
+  if (normalizedRole === 'super_financial_admin') return destination('SuperFinancialAdminDashboard');
+  if (normalizedRole === 'financial_admin') return destination('FinancialAdminDashboard');
+  if (['state_admin', 'state_financial_admin'].includes(normalizedRole)) return destination('StateAdminDashboard');
+  if (normalizedRole === 'recruitment_admin') return destination('RecruitmentAdmin');
+  if (
+    normalizedRole.includes('support') ||
+    normalizedRole.includes('transportation') ||
+    normalizedRole.includes('fumigation')
+  ) return destination('ServiceOperationsDashboard');
+  return destination('AdminDashboard');
 };

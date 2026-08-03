@@ -14,6 +14,7 @@ import { getErrorMessage } from '../../utils/http';
 import { colors, typography } from '../../theme';
 
 import AppText from '../../components/common/AppText';
+import TourTarget from '../../components/tour/TourTarget';
 const STATUS_COLORS = {
   pending: colors.warning,
   confirmed: colors.blue,
@@ -93,12 +94,14 @@ const TransportationBookingsScreen = ({ navigation }) => {
 
   const header = (
     <>
-      <PremiumHero
-        eyebrow="Transportation"
-        title="My moving bookings"
-        subtitle="Track upcoming transport jobs, route details, schedules and payment totals in a native booking timeline."
-        icon="car-outline"
-      />
+      <TourTarget id="tenant_services" padding={6} radius={18}>
+        <PremiumHero
+          eyebrow="Transportation"
+          title="My moving bookings"
+          subtitle="Track upcoming transport jobs, route details, schedules and payment totals in a native booking timeline."
+          icon="car-outline"
+        />
+      </TourTarget>
       {stats ? (
         <View style={styles.statsContainer}>
           <StatCard value={stats.total_bookings} label="Total" />

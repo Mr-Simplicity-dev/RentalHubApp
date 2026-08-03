@@ -65,7 +65,10 @@ const AdminDashboardScreen = ({ navigation }) => {
       />
       <AdminAccountActions navigation={navigation} />
 
-      <MetricGrid>
+      <MetricGrid
+        tourTarget={role === 'lga_admin' ? 'lga_admin_overview' : 'admin_metrics'}
+        tourLabel="Administration metrics"
+      >
         {cards.map((card) => (
           <MetricCard
             key={card.label}
@@ -78,6 +81,7 @@ const AdminDashboardScreen = ({ navigation }) => {
       <DashboardSection
         title="Priority workspaces"
         subtitle="Choose a task area instead of navigating a desktop-style control panel."
+        tourTarget={role === 'lga_admin' ? 'lga_admin_services' : 'admin_workspaces'}
       >
         {isCoreAdmin ? (
           <>
@@ -85,6 +89,7 @@ const AdminDashboardScreen = ({ navigation }) => {
               title="Compliance & Risk"
               subtitle="Review platform risk and compliance activity."
               icon="shield-outline"
+              tourTarget="admin_compliance"
               onPress={() => navigation.navigate('AdminCompliance')}
             />
             <ActionRow
@@ -120,11 +125,17 @@ const AdminDashboardScreen = ({ navigation }) => {
         )}
       </DashboardSection>
 
-      <DashboardSection title="Property request workflow">
+      <DashboardSection
+        title="Property request workflow"
+        tourTarget={role === 'lga_admin' ? 'lga_admin_requests' : 'admin_workflows'}
+      >
         <PropertyRequestWorkflowSection mode="state" title="Tenant Property Requests" />
       </DashboardSection>
 
-      <DashboardSection title="Tenancy controls">
+      <DashboardSection
+        title="Tenancy controls"
+        tourTarget={role === 'lga_admin' ? 'lga_admin_tenancy' : undefined}
+      >
         <TenancyWorkflowSection title="LGA Tenancy Grace and Refund Enablement" />
       </DashboardSection>
     </DashboardScreen>

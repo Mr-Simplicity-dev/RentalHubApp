@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {StyleSheet} from 'react-native';
 import Toast from 'react-native-toast-message';
 import Input from '../../components/common/Input';
@@ -8,6 +8,7 @@ import {
   PremiumHero,
   PremiumScreen,
 } from '../../components/common/PremiumLayout';
+import TurnstileWidget from '../../components/common/TurnstileWidget';
 import { authService } from '../../services/authService';
 import { getErrorMessage } from '../../utils/http';
 import { colors, typography } from '../../theme';
@@ -16,6 +17,8 @@ import AppText from '../../components/common/AppText';
 const ForgotPasswordScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
+  const turnstileTokenRef = useRef(null);
+  const turnstileRef = useRef(null);
 
   const handleSubmit = async () => {
     if (!email.trim()) {
@@ -26,9 +29,15 @@ const ForgotPasswordScreen = ({ navigation }) => {
       return;
     }
 
+    const turnstileToken = turnstileTokenRef.current;
+    if (!turnstileToken) {
+      Toast.show({ type: 'error', text1: 'Security Check', text2: 'Please complete the security check below.' });
+      return;
+    }
+
     setLoading(true);
     try {
-      await authService.forgotPassword(email.trim());
+      await authService.forgotPassword(email.trim(), turnstileToken);
       Toast.show({
         type: 'success',
         text1: 'Request sent',
@@ -41,6 +50,8 @@ const ForgotPasswordScreen = ({ navigation }) => {
         text1: 'Failed',
         text2: getErrorMessage(error, 'Could not request password reset'),
       });
+      turnstileRef.current?.reset();
+      turnstileTokenRef.current = null;
     } finally {
       setLoading(false);
     }
@@ -71,6 +82,13 @@ const ForgotPasswordScreen = ({ navigation }) => {
           onPress={handleSubmit}
           loading={loading}
           icon="send-outline"
+        />
+
+        <TurnstileWidget
+          ref={turnstileRef}
+          onToken={(token) => { turnstileTokenRef.current = token; }}
+          onExpire={() => { turnstileTokenRef.current = null; }}
+          onError={() => { turnstileTokenRef.current = null; }}
         />
 
         <AppText style={styles.helper}>

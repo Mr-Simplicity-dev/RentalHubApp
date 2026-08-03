@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {Linking, StyleSheet, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {
@@ -10,15 +10,21 @@ import {
 import { colors, radius, typography } from '../../theme';
 
 import AppText from '../../components/common/AppText';
+import { AuthContext } from '../../context/AuthContext';
+import TourTarget from '../../components/tour/TourTarget';
 const SupportScreen = ({ navigation }) => {
+  const { user } = useContext(AuthContext);
+  const tourId = user?.user_type === 'landlord' ? 'landlord_support' : 'tenant_support';
   return (
     <DashboardScreen>
-      <DashboardHero
-        eyebrow="SUPPORT"
-        title="Contact support"
-        subtitle="Reach the RentalHub support team for help with your account, properties, payments or anything else."
-        icon="headset-outline"
-      />
+      <TourTarget id={tourId} padding={6} radius={18}>
+        <DashboardHero
+          eyebrow="SUPPORT"
+          title="Contact support"
+          subtitle="Reach the RentalHub support team for help with your account, properties, payments or anything else."
+          icon="headset-outline"
+        />
+      </TourTarget>
 
       <DashboardSection title="Get in touch">
         <View style={styles.contactCard}>

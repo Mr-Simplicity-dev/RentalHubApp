@@ -50,10 +50,12 @@ const AgentDashboardScreen = ({ navigation }) => {
           variant="warning"
           title="No active assignment yet"
           message="Your account is active but not yet linked to a landlord profile."
+          tourTarget="agent_assignment"
         />
       ) : (
         <DashboardNotice
           title={`Assigned to ${assignment.landlord_name || 'your landlord'}`}
+          tourTarget="agent_assignment"
           message={[assignment.landlord_email, assignment.landlord_phone].filter(Boolean).join(' • ') || 'Contact details are not available.'}
         />
       )}
@@ -61,6 +63,7 @@ const AgentDashboardScreen = ({ navigation }) => {
       <DashboardSection
         title="Daily operations"
         subtitle="The tools you are most likely to need while managing listings."
+        tourTarget="agent_properties"
       >
         <ActionRow
           title="Manage Properties"
@@ -90,12 +93,14 @@ const AgentDashboardScreen = ({ navigation }) => {
           title="Commission Ledger"
           subtitle="View earnings and transaction history"
           icon="trending-up-outline"
+          tourTarget="agent_commissions"
           onPress={() => navigation.navigate('AgentEarnings')}
         />
         <ActionRow
           title="Withdrawal Requests"
           subtitle="Request payout from earned commissions"
           icon="wallet-outline"
+          tourTarget="agent_withdrawals"
           onPress={() => navigation.navigate('AgentWithdrawals')}
         />
       </DashboardSection>

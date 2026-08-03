@@ -15,6 +15,7 @@ import { colors, radius, typography } from '../../theme';
 import { getErrorMessage, pickList } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
+import { useTourTarget } from '../../components/tour/TourTarget';
 const statusVisual = (status = 'pending') => {
   const value = String(status).toLowerCase();
   if (['approved', 'accepted'].includes(value)) {
@@ -38,6 +39,10 @@ const ApplicationsScreen = ({ navigation }) => {
   const [filter, setFilter] = useState('all');
 
   const isTenant = user?.user_type === 'tenant';
+  const tourTarget = useTourTarget(
+    isTenant ? 'tenant_applications' : 'landlord_applications',
+    { padding: 6, radius: 18 }
+  );
 
   const loadApplications = async ({ refresh = false } = {}) => {
     refresh ? setRefreshing(true) : setLoading(true);
@@ -162,7 +167,7 @@ const ApplicationsScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView edges={['top']} style={styles.safeArea}>
-      <View style={styles.header}>
+      <View {...tourTarget} style={styles.header}>
         <View>
           <AppText style={styles.eyebrow}>RENTAL WORKFLOW</AppText>
           <AppText style={styles.title}>{isTenant ? 'My applications' : 'Applications'}</AppText>

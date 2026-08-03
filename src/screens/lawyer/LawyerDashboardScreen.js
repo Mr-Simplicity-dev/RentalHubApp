@@ -6,6 +6,12 @@ import Toast from 'react-native-toast-message';
 import { legalService } from '../../services/legalService';
 import { getErrorMessage, pickList } from '../../utils/http';
 import { colors, radius, typography } from '../../theme';
+import TourTarget, { useTourTarget } from '../../components/tour/TourTarget';
+import {
+  TourScrollProvider,
+  useTourScrollController,
+} from '../../components/tour/TourScrollContext';
+import { useAccessibilityPreferences } from '../../hooks/useAccessibilityPreferences';
 
 import AppText from '../../components/common/AppText';
 const LawyerDashboardScreen = ({ navigation }) => {
@@ -13,6 +19,13 @@ const LawyerDashboardScreen = ({ navigation }) => {
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [disputes, setDisputes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { reduceMotion } = useAccessibilityPreferences();
+  const tourScroll = useTourScrollController({ animated: !reduceMotion });
+  const evidenceTargetProps = useTourTarget('lawyer_evidence', {
+    label: 'Verify evidence',
+    padding: 6,
+    radius: radius.pill,
+  });
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
@@ -70,11 +83,22 @@ const LawyerDashboardScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView edges={['top']} style={styles.safeArea}>
-    <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
+    <TourScrollProvider controller={tourScroll}>
+    <ScrollView
+      ref={tourScroll.scrollRef}
+      style={styles.screen}
+      contentContainerStyle={styles.content}
+      onScroll={tourScroll.onScroll}
+      scrollEventThrottle={16}
+    >
       <View style={styles.hero}>
         <View style={styles.heroTop}>
           <View style={styles.heroIcon}><Icon name="scale-outline" size={24} color={colors.gold} /></View>
-          <TouchableOpacity onPress={() => navigation.navigate('VerifyCase')} style={styles.verifyButton}>
+          <TouchableOpacity
+            {...evidenceTargetProps}
+            onPress={() => navigation.navigate('VerifyCase')}
+            style={styles.verifyButton}
+          >
             <Icon name="shield-checkmark-outline" size={17} color={colors.navy} />
             <AppText style={styles.verifyText}>Verify evidence</AppText>
           </TouchableOpacity>
@@ -84,7 +108,12 @@ const LawyerDashboardScreen = ({ navigation }) => {
         <AppText style={styles.heroText}>Review authorised properties, trace evidence and resolve disputes.</AppText>
       </View>
 
-      <AppText style={styles.sectionTitle}>Authorised properties</AppText>
+      <TourTarget id="lawyer_cases" label="Authorised cases" padding={8} radius={radius.md}>
+        <View>
+          <AppText style={styles.sectionTitle}>Authorised properties</AppText>
+        </View>
+      </TourTarget>
+
       {loading ? (
         <AppText style={styles.empty}>Loading...</AppText>
       ) : (
@@ -92,23 +121,45 @@ const LawyerDashboardScreen = ({ navigation }) => {
           data={properties}
           scrollEnabled={false}
           keyExtractor={(item) => String(item.id)}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              style={[styles.card, selectedProperty?.id === item.id && styles.cardActive]}
-              onPress={() => loadDisputes(item)}
+          renderItem={({ item, index }) => {
+            const propertyCard = (
+              <TouchableOpacity
+                style={[styles.card, selectedProperty?.id === item.id && styles.cardActive]}
+                onPress={() => loadDisputes(item)}
+              >
+                <AppText style={styles.cardTitle}>{item.title}</AppText>
+                <AppText style={styles.cardMeta}>
+                  {[item.city, item.state_name || item.state].filter(Boolean).join(', ')}
+                </AppText>
+                <View style={styles.cardArrow}><Icon name="chevron-forward" size={18} color={colors.blue} /></View>
+                <AppText style={styles.cardMeta}>
+                  Assigned by {item.assigned_by_name || item.client_name || 'Unknown'}
+                  {item.client_name ? ` for ${item.client_name}` : ''}
+                </AppText>
+              </TouchableOpacity>
+            );
+
+            return index === 0 ? (
+              <TourTarget
+                id="lawyer_clients"
+                label="Client property assignments"
+                padding={6}
+                radius={radius.md}
+              >
+                {propertyCard}
+              </TourTarget>
+            ) : propertyCard;
+          }}
+          ListEmptyComponent={(
+            <TourTarget
+              id="lawyer_clients"
+              label="Client property assignments"
+              padding={6}
+              radius={radius.md}
             >
-              <AppText style={styles.cardTitle}>{item.title}</AppText>
-              <AppText style={styles.cardMeta}>
-                {[item.city, item.state_name || item.state].filter(Boolean).join(', ')}
-              </AppText>
-              <View style={styles.cardArrow}><Icon name="chevron-forward" size={18} color={colors.blue} /></View>
-              <AppText style={styles.cardMeta}>
-                Assigned by {item.assigned_by_name || item.client_name || 'Unknown'}
-                {item.client_name ? ` for ${item.client_name}` : ''}
-              </AppText>
-            </TouchableOpacity>
+              <AppText style={styles.empty}>No authorized properties.</AppText>
+            </TourTarget>
           )}
-          ListEmptyComponent={<AppText style={styles.empty}>No authorized properties.</AppText>}
         />
       )}
 
@@ -151,6 +202,7 @@ const LawyerDashboardScreen = ({ navigation }) => {
         </>
       ) : null}
     </ScrollView>
+    </TourScrollProvider>
     </SafeAreaView>
   );
 };

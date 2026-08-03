@@ -4,6 +4,7 @@ import api from './api';
 export const APP_SETTINGS_KEY = 'rentalhub.mobileSettings';
 
 export const DEFAULT_APP_SETTINGS = {
+  language: 'en',
   pushMessages: true,
   pushPayments: true,
   pushApplications: true,

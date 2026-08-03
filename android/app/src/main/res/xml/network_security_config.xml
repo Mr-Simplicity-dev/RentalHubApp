@@ -3,5 +3,6 @@
     <domain-config cleartextTrafficPermitted="false">
         <domain includeSubdomains="true">rentalhub.com.ng</domain>
         <domain includeSubdomains="true">www.rentalhub.com.ng</domain>
+        <domain includeSubdomains="true">challenges.cloudflare.com</domain>
     </domain-config>
 </network-security-config>

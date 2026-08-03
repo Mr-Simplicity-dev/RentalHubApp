@@ -11,8 +11,10 @@ import { colors, radius, shadows, typography } from '../../theme';
 import { getErrorMessage, pickList, pickObject } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
+import { useTourTarget } from '../../components/tour/TourTarget';
 const AgentWithdrawalsScreen = ({ navigation }) => {
   const { user } = useContext(AuthContext);
+  const withdrawalsTourTarget = useTourTarget('agent_withdrawals', { padding: 6, radius: 18 });
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [profile, setProfile] = useState(null);
@@ -127,7 +129,7 @@ const AgentWithdrawalsScreen = ({ navigation }) => {
         </View>
       ) : (
         <>
-          <View style={styles.hero}>
+          <View {...withdrawalsTourTarget} style={styles.hero}>
             <AppText style={styles.heroEyebrow}>PAYOUT CENTRE</AppText>
             <AppText style={styles.title}>Move your earnings</AppText>
             <AppText style={styles.subtitle}>Request a secure bank transfer from your commission balance.</AppText>

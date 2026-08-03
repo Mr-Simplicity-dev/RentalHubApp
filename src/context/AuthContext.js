@@ -106,8 +106,8 @@ export const AuthProvider = ({ children }) => {
     });
   };
 
-  const login = async (email, password) => {
-    const response = await authService.login(email, password);
+  const login = async (email, password, turnstileToken) => {
+    const response = await authService.login(email, password, turnstileToken);
     if (response.success) {
       if (!response.data?.token || !response.data?.user) {
         throw new Error('Login succeeded but the server did not return a complete mobile session.');
@@ -121,8 +121,8 @@ export const AuthProvider = ({ children }) => {
     return response;
   };
 
-  const register = async (userData) => {
-    const response = await authService.register(userData);
+  const register = async (userData, turnstileToken) => {
+    const response = await authService.register(userData, turnstileToken);
     if (response.success) {
       await storageService.clearImpersonationSession();
       setUser(response.data.user);

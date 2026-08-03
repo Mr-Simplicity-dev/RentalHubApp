@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 import {View,
   StyleSheet,
   ScrollView,
@@ -14,6 +14,7 @@ import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
 import BrandMark from '../../components/brand/BrandMark';
 import Toast from 'react-native-toast-message';
+import TurnstileWidget from '../../components/common/TurnstileWidget';
 import { biometricService } from '../../services/biometricService';
 import { colors, radius, shadows, typography } from '../../theme';
 
@@ -29,6 +30,8 @@ const LoginScreen = ({ navigation }) => {
     label: 'Biometrics',
   });
   const { login, loginWithBiometrics } = useContext(AuthContext);
+  const turnstileTokenRef = useRef(null);
+  const turnstileRef = useRef(null);
 
   useEffect(() => {
     const loadBiometricStatus = async () => {
@@ -84,9 +87,19 @@ const LoginScreen = ({ navigation }) => {
       return;
     }
 
+    const turnstileToken = turnstileTokenRef.current;
+    if (!turnstileToken) {
+      Toast.show({
+        type: 'error',
+        text1: 'Security Check',
+        text2: 'Please complete the security check below.',
+      });
+      return;
+    }
+
     setLoading(true);
     try {
-      const response = await login(email, password);
+      const response = await login(email, password, turnstileToken);
       if (response.success) {
         const sessionData = response.data;
         const currentBiometricStatus = await biometricService.getStatus();
@@ -127,6 +140,8 @@ const LoginScreen = ({ navigation }) => {
           text1: 'Error',
           text2: response.message || 'Login failed',
         });
+        turnstileRef.current?.reset();
+        turnstileTokenRef.current = null;
       }
     } catch (error) {
       Toast.show({
@@ -134,6 +149,8 @@ const LoginScreen = ({ navigation }) => {
         text1: 'Error',
         text2: error.response?.data?.message || 'Login failed',
       });
+      turnstileRef.current?.reset();
+      turnstileTokenRef.current = null;
     } finally {
       setLoading(false);
     }
@@ -234,6 +251,13 @@ const LoginScreen = ({ navigation }) => {
               loading={loading}
               size="lg"
               style={styles.loginButton}
+            />
+
+            <TurnstileWidget
+              ref={turnstileRef}
+              onToken={(token) => { turnstileTokenRef.current = token; }}
+              onExpire={() => { turnstileTokenRef.current = null; }}
+              onError={() => { turnstileTokenRef.current = null; }}
             />
 
             {biometricStatus.enabled ? (

@@ -6,6 +6,7 @@ import { serviceAdminService } from '../../services/serviceAdminService';
 import { getErrorMessage, pickList } from '../../utils/http';
 import { colors, radius, typography } from '../../theme';
 import AppText from '../../components/common/AppText';
+import TourTarget from '../../components/tour/TourTarget';
 import {
 DashboardHero,
   DashboardNotice,
@@ -509,13 +510,15 @@ const ServiceBookingsScreen = ({ navigation, route }) => {
 
   return (
     <DashboardScreen refreshing={loading} onRefresh={loadBookings}>
-      <DashboardHero
-        eyebrow={config.eyebrow}
-        title={config.title}
-        subtitle="A native mobile queue for reviewing bookings, updating core statuses and managing service operations inside the app."
-        icon={config.icon}
-        onRefresh={loadBookings}
-      />
+      <TourTarget id="service_bookings" padding={6} radius={18}>
+        <DashboardHero
+          eyebrow={config.eyebrow}
+          title={config.title}
+          subtitle="A native mobile queue for reviewing bookings, updating core statuses and managing service operations inside the app."
+          icon={config.icon}
+          onRefresh={loadBookings}
+        />
+      </TourTarget>
 
       <DashboardNotice
         title="Native actions enabled"

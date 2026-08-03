@@ -88,7 +88,7 @@ const StateAdminDashboardScreen = ({ navigation }) => {
         />
       ) : null}
 
-      <MetricGrid>
+      <MetricGrid tourTarget="state_overview" tourLabel="State operations overview">
         {overviewCards.map((card) => (
           <MetricCard key={card.label} {...card} />
         ))}
@@ -97,6 +97,7 @@ const StateAdminDashboardScreen = ({ navigation }) => {
       <DashboardSection
         title="Management tools"
         subtitle="Move into a focused workflow for each administrative task."
+        tourTarget="state_management"
       >
         <ActionRow
           title="Property approvals"
@@ -114,11 +115,11 @@ const StateAdminDashboardScreen = ({ navigation }) => {
         ) : null}
       </DashboardSection>
 
-      <DashboardSection title="Property request workflow">
+      <DashboardSection title="Property request workflow" tourTarget="state_requests">
         <PropertyRequestWorkflowSection mode="state" title="State Tenant Property Requests" />
       </DashboardSection>
 
-      <DashboardSection title="Tenancy controls">
+      <DashboardSection title="Tenancy controls" tourTarget="state_tenancy">
         <TenancyWorkflowSection title="State Tenancy Grace and Refund Enablement" />
       </DashboardSection>
     </DashboardScreen>

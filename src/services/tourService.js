@@ -1,8 +1,14 @@
 import api from './api';
 
 export const tourService = {
-  getState: async () => {
-    const response = await api.get('/users/tour');
+  getState: async ({ dashboardType, tourKey } = {}) => {
+    const response = await api.get('/users/tour', {
+      params: {
+        dashboard_type: dashboardType,
+        platform: 'mobile',
+        tour_key: tourKey || dashboardType,
+      },
+    });
     return response.data;
   },
 

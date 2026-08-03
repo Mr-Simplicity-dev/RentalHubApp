@@ -12,7 +12,8 @@
     "build:android": "cd android && ./gradlew assembleRelease",
     "build:android:bundle": "cd android && ./gradlew bundleRelease",
     "build:ios": "cd ios && xcodebuild -workspace RentalHubMobile.xcworkspace -scheme RentalHubMobile -configuration Release",
-    "build:app": "node scripts/build-all.js"
+    "build:app": "node scripts/build-all.js",
+    "test:tour": "node scripts/verify-tour-system.cjs"
   },
   "dependencies": {
     "@expo-google-fonts/inter": "^0.4.2",
@@ -40,6 +41,7 @@
     "react-native-vector-icons": "^10.1.0",
     "react-native-web": "^0.21.0",
     "react-native-webrtc": "^124.0.7",
+    "react-native-webview": "^14.0.1",
     "socket.io-client": "^4.8.3"
   },
   "devDependencies": {

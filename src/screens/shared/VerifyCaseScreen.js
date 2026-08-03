@@ -13,6 +13,7 @@ import {
 import { evidenceService } from '../../services/evidenceService';
 import { getErrorMessage, pickObject } from '../../utils/http';
 import { colors, typography } from '../../theme';
+import TourTarget from '../../components/tour/TourTarget';
 
 import AppText from '../../components/common/AppText';
 const VerifyCaseScreen = ({ route }) => {
@@ -54,23 +55,27 @@ const VerifyCaseScreen = ({ route }) => {
         icon="finger-print-outline"
       />
 
-      <PremiumCard>
-        <Input
-          label="Dispute ID"
-          value={disputeId}
-          onChangeText={setDisputeId}
-          placeholder="Enter dispute id"
-          keyboardType="number-pad"
-          icon="folder-open-outline"
-        />
+      <TourTarget id="lawyer_verification" label="Case verification form" padding={8}>
+        <View>
+          <PremiumCard>
+            <Input
+              label="Dispute ID"
+              value={disputeId}
+              onChangeText={setDisputeId}
+              placeholder="Enter dispute id"
+              keyboardType="number-pad"
+              icon="folder-open-outline"
+            />
 
-        <PremiumButton
-          title="Verify evidence"
-          onPress={() => verifyCase()}
-          loading={loading}
-          icon="shield-checkmark-outline"
-        />
-      </PremiumCard>
+            <PremiumButton
+              title="Verify evidence"
+              onPress={() => verifyCase()}
+              loading={loading}
+              icon="shield-checkmark-outline"
+            />
+          </PremiumCard>
+        </View>
+      </TourTarget>
 
       {result ? (
         <PremiumCard>

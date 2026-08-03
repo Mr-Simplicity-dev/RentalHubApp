@@ -16,6 +16,7 @@ import OptionPickerModal from '../../components/common/OptionPickerModal';
 import { AuthContext } from '../../context/AuthContext';
 import { authService } from '../../services/authService';
 import { propertyService } from '../../services/propertyService';
+import TurnstileWidget from '../../components/common/TurnstileWidget';
 import { getErrorMessage, pickList, pickObject } from '../../utils/http';
 import { colors, radius, shadows, typography } from '../../theme';
 
@@ -95,6 +96,9 @@ const RegisterScreen = ({ navigation, route }) => {
     state_id: '',
     lga_name: '',
   });
+
+  const turnstileTokenRef = useRef(null);
+  const turnstileRef = useRef(null);
 
   const selectedState = useMemo(
     () => locationOptions.find((item) => String(item.id) === String(form.state_id)),
@@ -498,10 +502,20 @@ const RegisterScreen = ({ navigation, route }) => {
 
     const payload = buildRegistrationData();
 
+    const turnstileToken = turnstileTokenRef.current;
+    if (!turnstileToken) {
+      Toast.show({
+        type: 'error',
+        text1: 'Security Check',
+        text2: 'Please complete the security check below.',
+      });
+      return;
+    }
+
     if (requiresPayment) {
       setPaymentLoading(true);
       try {
-        const response = await authService.initializeRegistrationPayment(payload);
+        const response = await authService.initializeRegistrationPayment(payload, turnstileToken);
         const responseData = pickObject(response, ['data']) || {};
         const paymentUrl = responseData.authorization_url;
         const reference = responseData.reference;
@@ -528,6 +542,8 @@ const RegisterScreen = ({ navigation, route }) => {
           text1: 'Payment failed',
           text2: getErrorMessage(error, 'Could not initialize registration payment'),
         });
+        turnstileRef.current?.reset();
+        turnstileTokenRef.current = null;
       } finally {
         setPaymentLoading(false);
       }
@@ -536,7 +552,7 @@ const RegisterScreen = ({ navigation, route }) => {
 
     setLoading(true);
     try {
-      const response = await register(payload);
+      const response = await register(payload, turnstileToken);
       if (response.success) {
         Toast.show({
           type: 'success',
@@ -549,6 +565,8 @@ const RegisterScreen = ({ navigation, route }) => {
           text1: 'Registration failed',
           text2: response.message || 'Please try again.',
         });
+        turnstileRef.current?.reset();
+        turnstileTokenRef.current = null;
       }
     } catch (error) {
       Toast.show({
@@ -556,6 +574,8 @@ const RegisterScreen = ({ navigation, route }) => {
         text1: 'Registration failed',
         text2: getErrorMessage(error, 'Please try again.'),
       });
+      turnstileRef.current?.reset();
+      turnstileTokenRef.current = null;
     } finally {
       setLoading(false);
     }
@@ -1032,6 +1052,13 @@ const RegisterScreen = ({ navigation, route }) => {
           loading={loading || paymentLoading}
           style={styles.cta}
           disabled={!isFormComplete}
+        />
+
+        <TurnstileWidget
+          ref={turnstileRef}
+          onToken={(token) => { turnstileTokenRef.current = token; }}
+          onExpire={() => { turnstileTokenRef.current = null; }}
+          onError={() => { turnstileTokenRef.current = null; }}
         />
 
         {paymentState.reference ? (
