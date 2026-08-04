@@ -1,8 +1,9 @@
-import React, { useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import {ActivityIndicator,
   RefreshControl,
   ScrollView,
   StyleSheet,
+  TextInput,
   TouchableOpacity,
   View,} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -18,6 +19,16 @@ const VerificationStatusScreen = ({ navigation }) => {
   const [status, setStatus] = useState(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [revalidationRequests, setRevalidationRequests] = useState([]);
+  const [submittingRevalidation, setSubmittingRevalidation] = useState(false);
+  const [revalidationError, setRevalidationError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState({});
+  const [revalidationForm, setRevalidationForm] = useState({
+    nin: '',
+    date_of_birth: '',
+    international_passport_number: '',
+    nationality: '',
+  });
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
@@ -26,8 +37,19 @@ const VerificationStatusScreen = ({ navigation }) => {
   const loadStatus = useCallback(async ({ refresh = false } = {}) => {
     refresh ? setRefreshing(true) : setLoading(true);
     try {
-      const response = await userService.getVerificationStatus();
-      setStatus(pickObject(response, ['data']) || response?.data || {});
+      const results = await Promise.allSettled([
+        userService.getVerificationStatus(),
+        userService.getRevalidationRequests(),
+      ]);
+      if (results[0].status === 'fulfilled') {
+        setStatus(pickObject(results[0].value, ['data']) || results[0].value?.data || {});
+      }
+      if (results[1].status === 'fulfilled') {
+        const list = Array.isArray(results[1].value?.data)
+          ? results[1].value.data
+          : (results[1].value?.data?.data || []);
+        setRevalidationRequests(list);
+      }
     } catch (error) {
       Toast.show({
         type: 'error',
@@ -44,13 +66,19 @@ const VerificationStatusScreen = ({ navigation }) => {
     loadStatus();
   }, [loadStatus]);
 
+  const activeRevalidation = useMemo(
+    () => revalidationRequests.find((r) => ['requested', 'rejected', 'submitted'].includes(r.status)) || null,
+    [revalidationRequests]
+  );
+
   const emailVerified = Boolean(status?.email || status?.email_verified);
   const phoneVerified = Boolean(status?.phone || status?.phone_verified);
   const identityVerified = Boolean(status?.identity || status?.identity_verified);
   const reviewStatus =
     status?.review_status || status?.identity_verification_status || 'not_submitted';
-  const identityPending = !identityVerified && reviewStatus === 'pending';
-  const identityRejected = !identityVerified && reviewStatus === 'rejected';
+  const identityPending = reviewStatus === 'pending' || reviewStatus === 'provider_pending';
+  const identityRejected = reviewStatus === 'rejected';
+  const identityInProgress = reviewStatus === 'provider_pending';
   const completedCount = [emailVerified, phoneVerified, identityVerified].filter(Boolean).length;
   const progress = useMemo(() => `${Math.round((completedCount / 3) * 100)}%`, [completedCount]);
 
@@ -77,17 +105,73 @@ const VerificationStatusScreen = ({ navigation }) => {
       title: 'Identity document',
       description: identityVerified
         ? 'Your identity has been verified.'
-        : identityPending
-          ? 'Your passport photo is waiting for review.'
-          : identityRejected
-            ? 'Your submission needs to be replaced.'
-            : 'Submit a live passport photo for review.',
+        : identityInProgress
+          ? 'Your credential is being verified by our identity partner.'
+          : identityPending
+            ? 'Your passport photo is waiting for review.'
+            : identityRejected
+              ? 'Your submission needs to be replaced.'
+              : 'Submit a live passport photo for review.',
       complete: identityVerified,
-      pending: identityPending,
+      pending: identityPending || identityInProgress,
       rejected: identityRejected,
       action: !identityVerified ? () => navigation.navigate('Profile') : null,
       actionLabel: identityRejected ? 'Replace photo' : identityPending ? 'View profile' : 'Start verification',
     },
+  ];
+
+  const requestedFields = activeRevalidation?.requested_fields || [];
+  const hasIdentityFields = requestedFields.some((f) => ['nin', 'international_passport'].includes(f));
+
+  const clearFieldErrors = () => setFieldErrors({});
+
+  const validateRevalidationForm = () => {
+    const errors = {};
+    if (requestedFields.includes('nin')) {
+      if (!/^\d{11}$/.test(revalidationForm.nin)) {
+        errors.nin = 'Enter a valid 11-digit NIN';
+      }
+      if (!revalidationForm.date_of_birth) {
+        errors.date_of_birth = 'Date of birth is required';
+      }
+    }
+    if (requestedFields.includes('international_passport')) {
+      if (!/^[A-Z0-9]{6,20}$/.test(revalidationForm.international_passport_number.trim())) {
+        errors.international_passport_number = 'Enter a valid 6-20 character passport number';
+      }
+      if (revalidationForm.nationality.trim().length < 2) {
+        errors.nationality = 'Nationality is required';
+      }
+      if (!revalidationForm.date_of_birth) {
+        errors.date_of_birth = 'Date of birth is required';
+      }
+    }
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleSubmitRevalidation = async () => {
+    if (!activeRevalidation) return;
+    if (!validateRevalidationForm()) return;
+
+    setSubmittingRevalidation(true);
+    setRevalidationError('');
+    try {
+      await userService.submitRevalidation(activeRevalidation.id, revalidationForm);
+      setRevalidationForm({ nin: '', date_of_birth: '', international_passport_number: '', nationality: '' });
+      setFieldErrors({});
+      await loadStatus({ refresh: true });
+      Toast.show({ type: 'success', text1: 'Credentials submitted', text2: 'Awaiting super-admin review.' });
+    } catch (error) {
+      setRevalidationError(getErrorMessage(error, 'Could not submit credentials'));
+    } finally {
+      setSubmittingRevalidation(false);
+    }
+  };
+
+  const inputStyle = (field) => [
+    styles.input,
+    fieldErrors[field] ? styles.inputError : null,
   ];
 
   return (
@@ -181,7 +265,7 @@ const VerificationStatusScreen = ({ navigation }) => {
                             step.pending && styles.stepStatusPending,
                             step.rejected && styles.stepStatusRejected,
                           ]}>
-                          {step.complete ? 'Verified' : step.pending ? 'In review' : step.rejected ? 'Action needed' : 'Incomplete'}
+                          {step.complete ? 'Verified' : identityInProgress ? 'Processing' : step.pending ? 'In review' : step.rejected ? 'Action needed' : 'Incomplete'}
                         </AppText>
                       </View>
                       <AppText style={styles.stepText}>{step.description}</AppText>
@@ -202,6 +286,135 @@ const VerificationStatusScreen = ({ navigation }) => {
                 </View>
               ))}
             </View>
+
+            {activeRevalidation && (
+              <View style={styles.revalidationCard}>
+                <View style={styles.revalidationHeader}>
+                  <Icon name="alert-circle-outline" size={20} color={colors.warning} />
+                  <AppText style={styles.revalidationTitle}>Credential Revalidation Required</AppText>
+                </View>
+                <AppText style={styles.revalidationReason}>{activeRevalidation.reason}</AppText>
+                {activeRevalidation.instructions ? (
+                  <AppText style={styles.revalidationInstructions}>{activeRevalidation.instructions}</AppText>
+                ) : null}
+                {activeRevalidation.due_at ? (
+                  <AppText style={styles.revalidationDue}>
+                    Due: {new Date(activeRevalidation.due_at).toLocaleDateString()}
+                  </AppText>
+                ) : null}
+                {activeRevalidation.review_note ? (
+                  <View style={styles.reviewNoteCard}>
+                    <AppText style={styles.reviewNoteTitle}>Admin feedback:</AppText>
+                    <AppText style={styles.reviewNoteText}>{activeRevalidation.review_note}</AppText>
+                  </View>
+                ) : null}
+
+                {activeRevalidation.status === 'submitted' ? (
+                  <View style={styles.submittedBanner}>
+                    <Icon name="time-outline" size={18} color={colors.blue} />
+                    <AppText style={styles.submittedText}>Credentials submitted. Awaiting super-admin review.</AppText>
+                  </View>
+                ) : (
+                  <View style={styles.revalidationForm}>
+                    {requestedFields.includes('nin') && (
+                      <>
+                        <AppText style={styles.fieldLabel}>11-digit NIN</AppText>
+                        <TextInput
+                          style={inputStyle('nin')}
+                          value={revalidationForm.nin}
+                          onChangeText={(text) => {
+                            clearFieldErrors();
+                            setRevalidationForm((prev) => ({ ...prev, nin: text.replace(/[^0-9]/g, '') }));
+                          }}
+                          maxLength={11}
+                          keyboardType="numeric"
+                          placeholder="Enter your NIN"
+                          placeholderTextColor={colors.muted}
+                        />
+                        {fieldErrors.nin ? <AppText style={styles.fieldError}>{fieldErrors.nin}</AppText> : null}
+                      </>
+                    )}
+
+                    {requestedFields.includes('international_passport') && (
+                      <>
+                        <AppText style={styles.fieldLabel}>International Passport Number</AppText>
+                        <TextInput
+                          style={inputStyle('international_passport_number')}
+                          value={revalidationForm.international_passport_number}
+                          onChangeText={(text) => {
+                            clearFieldErrors();
+                            setRevalidationForm((prev) => ({ ...prev, international_passport_number: text.toUpperCase() }));
+                          }}
+                          maxLength={20}
+                          autoCapitalize="characters"
+                          placeholder="e.g. A12345678"
+                          placeholderTextColor={colors.muted}
+                        />
+                        {fieldErrors.international_passport_number ? <AppText style={styles.fieldError}>{fieldErrors.international_passport_number}</AppText> : null}
+
+                        <AppText style={[styles.fieldLabel, { marginTop: 10 }]}>Nationality</AppText>
+                        <TextInput
+                          style={inputStyle('nationality')}
+                          value={revalidationForm.nationality}
+                          onChangeText={(text) => {
+                            clearFieldErrors();
+                            setRevalidationForm((prev) => ({ ...prev, nationality: text }));
+                          }}
+                          maxLength={80}
+                          placeholder="e.g. Nigeria"
+                          placeholderTextColor={colors.muted}
+                        />
+                        {fieldErrors.nationality ? <AppText style={styles.fieldError}>{fieldErrors.nationality}</AppText> : null}
+                      </>
+                    )}
+
+                    {hasIdentityFields && (
+                      <>
+                        <AppText style={[styles.fieldLabel, { marginTop: 10 }]}>Date of Birth</AppText>
+                        <TextInput
+                          style={inputStyle('date_of_birth')}
+                          value={revalidationForm.date_of_birth}
+                          onChangeText={(text) => {
+                            clearFieldErrors();
+                            setRevalidationForm((prev) => ({ ...prev, date_of_birth: text }));
+                          }}
+                          placeholder="YYYY-MM-DD"
+                          placeholderTextColor={colors.muted}
+                        />
+                        {fieldErrors.date_of_birth ? <AppText style={styles.fieldError}>{fieldErrors.date_of_birth}</AppText> : null}
+                      </>
+                    )}
+
+                    {requestedFields.includes('live_photo') && (
+                      <View style={styles.livePhotoBlock}>
+                        <Icon name="camera-outline" size={20} color={colors.blue} />
+                        <AppText style={styles.livePhotoText}>
+                          Capture a new live passport photo from your Profile page before submitting.
+                        </AppText>
+                        <Button
+                          title="Open Profile for Photo"
+                          variant="outline"
+                          onPress={() => navigation.navigate('Profile')}
+                          icon="person-outline"
+                          style={{ marginTop: 8 }}
+                        />
+                      </View>
+                    )}
+
+                    {revalidationError ? (
+                      <AppText style={styles.errorText}>{revalidationError}</AppText>
+                    ) : null}
+
+                    <Button
+                      title={submittingRevalidation ? 'Submitting...' : 'Submit Credentials'}
+                      onPress={handleSubmitRevalidation}
+                      loading={submittingRevalidation}
+                      style={{ marginTop: 16 }}
+                    />
+                  </View>
+                )}
+              </View>
+            )}
 
             <View style={styles.privacyCard}>
               <Icon name="lock-closed-outline" size={20} color={colors.success} />
@@ -375,6 +588,124 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   divider: { backgroundColor: colors.border, height: 1, marginLeft: 54 },
+  revalidationCard: {
+    backgroundColor: '#FFF8EC',
+    borderColor: '#F5D895',
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    marginTop: 18,
+    padding: 16,
+  },
+  revalidationHeader: { alignItems: 'center', flexDirection: 'row', gap: 8, marginBottom: 8 },
+  revalidationTitle: {
+    color: '#8A6700',
+    fontFamily: typography.bold,
+    fontSize: 15,
+    flex: 1,
+  },
+  revalidationReason: {
+    color: '#8A6700',
+    fontFamily: typography.regular,
+    fontSize: 13,
+    lineHeight: 18,
+  },
+  revalidationInstructions: {
+    color: '#A67C00',
+    fontFamily: typography.regular,
+    fontSize: 12,
+    marginTop: 6,
+    lineHeight: 17,
+  },
+  revalidationDue: {
+    color: '#CC5500',
+    fontFamily: typography.bold,
+    fontSize: 12,
+    marginTop: 8,
+  },
+  reviewNoteCard: {
+    backgroundColor: '#FFF0EF',
+    borderColor: '#F5C6C2',
+    borderRadius: radius.md,
+    borderWidth: 1,
+    marginTop: 12,
+    padding: 10,
+  },
+  reviewNoteTitle: {
+    color: colors.danger,
+    fontFamily: typography.bold,
+    fontSize: 12,
+  },
+  reviewNoteText: {
+    color: colors.danger,
+    fontFamily: typography.regular,
+    fontSize: 13,
+    marginTop: 4,
+    lineHeight: 17,
+  },
+  submittedBanner: {
+    alignItems: 'center',
+    backgroundColor: colors.surfaceBlue,
+    borderRadius: radius.md,
+    flexDirection: 'row',
+    gap: 8,
+    marginTop: 14,
+    padding: 12,
+  },
+  submittedText: {
+    color: colors.blue,
+    flex: 1,
+    fontFamily: typography.medium,
+    fontSize: 13,
+  },
+  revalidationForm: { marginTop: 14 },
+  fieldLabel: {
+    color: colors.ink,
+    fontFamily: typography.semibold,
+    fontSize: 13,
+    marginBottom: 5,
+  },
+  input: {
+    backgroundColor: colors.white,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    color: colors.ink,
+    fontFamily: typography.regular,
+    fontSize: 14,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+  },
+  inputError: {
+    borderColor: colors.danger,
+    borderWidth: 1.5,
+  },
+  fieldError: {
+    color: colors.danger,
+    fontFamily: typography.medium,
+    fontSize: 12,
+    marginTop: 4,
+  },
+  errorText: {
+    color: colors.danger,
+    fontFamily: typography.medium,
+    fontSize: 13,
+    marginTop: 12,
+    textAlign: 'center',
+  },
+  livePhotoBlock: {
+    alignItems: 'flex-start',
+    backgroundColor: colors.surfaceBlue,
+    borderRadius: radius.md,
+    marginTop: 12,
+    padding: 12,
+  },
+  livePhotoText: {
+    color: colors.blue,
+    fontFamily: typography.regular,
+    fontSize: 13,
+    lineHeight: 18,
+    marginTop: 6,
+  },
   privacyCard: {
     alignItems: 'flex-start',
     backgroundColor: '#F0FBF6',

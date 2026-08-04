@@ -24,6 +24,16 @@ export const userService = {
     return response.data;
   },
 
+  getRevalidationRequests: async () => {
+    const response = await api.get('/users/credential-revalidations');
+    return response.data;
+  },
+
+  submitRevalidation: async (requestId, payload) => {
+    const response = await api.post(`/users/credential-revalidations/${requestId}/submit`, payload);
+    return response.data;
+  },
+
   createLiveCaptureSession: async () => {
     const response = await api.post('/users/verification/live-capture/session');
     return response.data;
