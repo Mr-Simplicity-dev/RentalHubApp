@@ -331,18 +331,21 @@ const SettingsScreen = ({ navigation }) => {
           subtitle="Update profile, verification photo and biometric unlock."
           icon="finger-print-outline"
           onPress={() => navigation.navigate('Profile')}
+          tourTarget="settings_profile_biometric"
         />
         <ActionRow
           title="Privacy Policy"
           subtitle="Review how RentalHub handles and protects personal data."
           icon="lock-closed-outline"
           onPress={() => navigation.navigate('PublicInfo', { page: 'privacy' })}
+          tourTarget="settings_privacy"
         />
         <ActionRow
           title="Terms summary"
           subtitle="Review the mobile terms summary."
           icon="document-text-outline"
           onPress={() => navigation.navigate('PublicInfo', { page: 'terms' })}
+          tourTarget="settings_terms"
         />
       </DashboardSection>
 
@@ -412,12 +415,14 @@ const SettingsScreen = ({ navigation }) => {
           subtitle="Open the guided mobile walkthrough again."
           icon="map-outline"
           onPress={replayTour}
+          tourTarget="settings_replay"
         />
         <ActionRow
           title="Reset local settings"
           subtitle="Restore this device’s app settings to default."
           icon="refresh-outline"
           onPress={resetLocalSettings}
+          tourTarget="settings_reset"
         />
       </DashboardSection>
 
@@ -485,6 +490,7 @@ const SettingsScreen = ({ navigation }) => {
           icon="trash-outline"
           badge="Secure"
           onPress={() => setDeleteModalVisible(true)}
+          tourTarget="settings_account"
         />
         <ActionRow
           title="Logout"

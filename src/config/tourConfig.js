@@ -15,7 +15,26 @@ const settingsStep = step(
   workflow('Settings')
 );
 
+const tabExploreStep = step('tab_explore', 'compass-outline');
+const tabDashboardStep = step('tab_dashboard', 'person-circle-outline');
+const tabApplicationsStep = step('tab_applications', 'document-text-outline');
+const tabMessagesStep = step('tab_messages', 'chatbubbles-outline');
+const headerNotifStep = step('header_notifications', 'notifications-outline');
+
+const tabBarSteps = [tabExploreStep, tabDashboardStep, tabApplicationsStep, tabMessagesStep];
+const commonPreSteps = [headerNotifStep, ...tabBarSteps];
+
+const settingsIconSteps = [
+  step('settings_profile_biometric', 'finger-print-outline', workflow('Settings')),
+  step('settings_privacy', 'lock-closed-outline', workflow('Settings')),
+  step('settings_terms', 'document-text-outline', workflow('Settings')),
+  step('settings_replay', 'map-outline', workflow('Settings')),
+  step('settings_reset', 'refresh-outline', workflow('Settings')),
+  step('settings_account', 'trash-outline', workflow('Settings')),
+];
+
 const tenantSteps = [
+  ...commonPreSteps,
   step('tenant_properties', 'heart-outline'),
   step('tenant_location', 'map-outline'),
   step('tenant_wallet', 'wallet-outline'),
@@ -24,17 +43,21 @@ const tenantSteps = [
   step('tenant_messages', 'chatbubbles-outline', workflow('MainTabs', { screen: 'Messages' })),
   step('tenant_payments', 'receipt-outline', workflow('PaymentHistory')),
   step('tenant_support', 'headset-outline', workflow('Support')),
+  ...settingsIconSteps,
 ];
 
 const landlordSteps = [
+  ...commonPreSteps,
   step('landlord_listings', 'business-outline'),
   step('landlord_applications', 'documents-outline', workflow('MainTabs', { screen: 'Applications' })),
   step('landlord_messages', 'chatbubbles-outline', workflow('MainTabs', { screen: 'Messages' })),
   step('landlord_wallet', 'wallet-outline', workflow('PaymentHistory')),
   step('landlord_support', 'headset-outline', workflow('Support')),
+  ...settingsIconSteps,
 ];
 
 const agentSteps = [
+  ...commonPreSteps,
   step('agent_assignment', 'person-circle-outline'),
   step('agent_properties', 'business-outline', workflow('MyProperties')),
   step('agent_commissions', 'trending-up-outline', workflow('AgentEarnings')),
@@ -42,6 +65,7 @@ const agentSteps = [
 ];
 
 const lawyerSteps = [
+  ...commonPreSteps,
   step('lawyer_cases', 'briefcase-outline'),
   step('lawyer_evidence', 'document-attach-outline'),
   step('lawyer_clients', 'people-outline', workflow('Messages')),

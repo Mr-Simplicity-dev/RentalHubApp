@@ -118,6 +118,7 @@ import RecruitmentApplicationScreen from '../screens/shared/RecruitmentApplicati
 import RecruitmentAdminScreen from '../screens/shared/RecruitmentAdminScreen';
 import PublicInfoScreen from '../screens/shared/PublicInfoScreen';
 import SettingsScreen from '../screens/settings/SettingsScreen';
+import TourTarget from '../components/tour/TourTarget';
 
 import PlatformRatingsScreen from '../screens/shared/PlatformRatingsScreen';
 import ContactWidgetScreen from '../screens/shared/ContactWidgetScreen';
@@ -423,10 +424,18 @@ const MainTabs = () => (
       headerShown: false,
     })}
   >
-    <Tab.Screen name="HomeTab" component={HomeScreen} options={{ title: 'Explore' }} />
-    <Tab.Screen name="DashboardTab" component={DashboardScreen} options={{ title: 'My Hub' }} />
-    <Tab.Screen name="Applications" component={ApplicationsScreen} options={{ title: 'Applications' }} />
-    <Tab.Screen name="Messages" component={MessagesScreen} options={{ title: 'Messages' }} />
+    <Tab.Screen name="HomeTab" options={{ title: 'Explore' }}>
+      {(props) => <TourTarget id="tab_explore"><HomeScreen {...props} /></TourTarget>}
+    </Tab.Screen>
+    <Tab.Screen name="DashboardTab" options={{ title: 'My Hub' }}>
+      {(props) => <TourTarget id="tab_dashboard"><DashboardScreen {...props} /></TourTarget>}
+    </Tab.Screen>
+    <Tab.Screen name="Applications" options={{ title: 'Applications' }}>
+      {(props) => <TourTarget id="tab_applications"><ApplicationsScreen {...props} /></TourTarget>}
+    </Tab.Screen>
+    <Tab.Screen name="Messages" options={{ title: 'Messages' }}>
+      {(props) => <TourTarget id="tab_messages"><MessagesScreen {...props} /></TourTarget>}
+    </Tab.Screen>
   </Tab.Navigator>
 );
 
