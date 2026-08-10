@@ -30,7 +30,7 @@ import {
   DashboardHero,
 } from '../../components/dashboard/DashboardKit';
 import { AuthContext } from '../../context/AuthContext';
-import { colors, typography } from '../../theme';
+import { colors, typography, radius } from '../../theme';
 import TourTarget from '../../components/tour/TourTarget';
 import {
   TourScrollProvider,
