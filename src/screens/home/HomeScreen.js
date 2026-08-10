@@ -13,6 +13,7 @@ import Toast from 'react-native-toast-message';
 import AdSpace from '../../components/common/AdSpace';
 import BrandMark from '../../components/brand/BrandMark';
 import PropertyCard from '../../components/properties/PropertyCard';
+import { useTourTarget } from '../../components/tour/TourTarget';
 import { AuthContext } from '../../context/AuthContext';
 import { propertyService } from '../../services/propertyService';
 import { colors, radius, shadows, typography } from '../../theme';
@@ -36,6 +37,10 @@ const HomeScreen = ({ navigation }) => {
 
   const featuredCards = useMemo(() => featured.slice(0, 6), [featured]);
   const firstName = String(user?.full_name || user?.name || '').trim().split(/\s+/)[0];
+  const notificationsTourTarget = useTourTarget('header_notifications', {
+    padding: 6,
+    radius: 18,
+  });
 
   const loadHome = async ({ refresh = false } = {}) => {
     if (refresh) {
@@ -94,6 +99,7 @@ const HomeScreen = ({ navigation }) => {
         <View style={styles.topBar}>
           <BrandMark compact />
           <TouchableOpacity
+            {...notificationsTourTarget}
             accessibilityLabel={isAuthenticated ? 'Open notifications' : 'Sign in'}
             accessibilityRole="button"
             onPress={() =>

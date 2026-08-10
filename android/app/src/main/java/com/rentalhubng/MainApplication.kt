@@ -3,7 +3,6 @@ import android.content.res.Configuration
 import expo.modules.ApplicationLifecycleDispatcher
 import expo.modules.ExpoModulesPackage
 import expo.modules.ExpoReactHostFactory
-import expo.modules.ReactNativeHostWrapper
 
 import android.app.Application
 import com.facebook.react.PackageList
@@ -18,14 +17,16 @@ import com.facebook.soloader.SoLoader
 
 class MainApplication : Application(), ReactApplication {
 
+  private val allPackages: List<ReactPackage> =
+      PackageList(this).packages.apply {
+          add(ExpoModulesPackage())
+          add(RentalHubPaystackPackage())
+          add(RentalHubUpdatePackage())
+      }
+
   override val reactNativeHost: ReactNativeHost =
-      ReactNativeHostWrapper(this, object : DefaultReactNativeHost(this) {
-        override fun getPackages(): List<ReactPackage> =
-            PackageList(this).packages.apply {
-                add(ExpoModulesPackage())
-                add(RentalHubPaystackPackage())
-                add(RentalHubUpdatePackage())
-            }
+      object : DefaultReactNativeHost(this) {
+        override fun getPackages(): List<ReactPackage> = allPackages
 
         override fun getJSMainModuleName(): String = "index"
 
@@ -33,10 +34,10 @@ class MainApplication : Application(), ReactApplication {
 
         override val isNewArchEnabled: Boolean = BuildConfig.IS_NEW_ARCHITECTURE_ENABLED
         override val isHermesEnabled: Boolean = BuildConfig.IS_HERMES_ENABLED
-      })
+      }
 
   override val reactHost: ReactHost
-    get() = ExpoReactHostFactory.getDefaultReactHost(applicationContext, (reactNativeHost as ReactNativeHostWrapper).packages, "index")
+    get() = ExpoReactHostFactory.getDefaultReactHost(applicationContext, allPackages, "index")
 
   override fun onCreate() {
     super.onCreate()
