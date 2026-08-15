@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {ActivityIndicator,
   ScrollView,
   StatusBar,
@@ -14,6 +14,7 @@ import { PremiumHero } from '../../components/common/PremiumLayout';
 import { colors, radius, shadows, typography } from '../../theme';
 
 import AppText from '../../components/common/AppText';
+import TurnstileWidget from '../../components/common/TurnstileWidget';
 const emptyForm = {
   full_name: '',
   phone_number: '',
@@ -46,6 +47,8 @@ const CareersScreen = ({ navigation }) => {
   const [applications, setApplications] = useState([]);
   const [lookupLoading, setLookupLoading] = useState(false);
   const [error, setError] = useState('');
+  const [turnstileToken, setTurnstileToken] = useState('');
+  const turnstileRef = useRef(null);
 
   const loadData = async () => {
     try {
@@ -106,6 +109,11 @@ const CareersScreen = ({ navigation }) => {
       return;
     }
 
+    if (!turnstileToken) {
+      Toast.show({ type: 'error', text1: 'Security check required', text2: 'Please complete the security check before submitting.' });
+      return;
+    }
+
     try {
       setSubmitting(true);
       setError('');
@@ -124,6 +132,7 @@ const CareersScreen = ({ navigation }) => {
         skills_qualifications: form.skills_qualifications,
         suitability_reason: form.suitability_reason,
         application_track: form.application_track,
+        turnstile_token: turnstileToken,
       };
 
       const response = await recruitmentService.createApplication(payload);
@@ -135,6 +144,8 @@ const CareersScreen = ({ navigation }) => {
     } catch (err) {
       Toast.show({ type: 'error', text1: 'Submission failed', text2: getErrorMessage(err, 'Could not submit your application') });
     } finally {
+      turnstileRef.current?.reset();
+      setTurnstileToken('');
       setSubmitting(false);
     }
   };
@@ -289,6 +300,13 @@ const CareersScreen = ({ navigation }) => {
             </View>
           </>
         ) : null}
+
+        <TurnstileWidget
+          ref={turnstileRef}
+          onToken={setTurnstileToken}
+          onExpire={() => setTurnstileToken('')}
+          onError={() => setTurnstileToken('')}
+        />
 
         <TouchableOpacity style={styles.submitButton} onPress={handleSubmit} disabled={submitting}>
           {submitting ? <ActivityIndicator color="#ffffff" /> : <AppText style={styles.submitButtonText}>Submit application</AppText>}

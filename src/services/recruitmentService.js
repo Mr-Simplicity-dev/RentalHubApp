@@ -47,6 +47,14 @@ export const recruitmentService = {
   completeInterview: (payload) => api.post('/recruitment/interview/complete', payload),
   pingInterview: (payload) => api.post('/recruitment/interview/ping', payload),
   reportViolation: (payload) => api.post('/recruitment/interview/violation', payload),
+  uploadInterviewRecording: (queryString, formData, config = {}) => api.post(
+    `/recruitment/interview/recording?${queryString}`,
+    formData,
+    {
+      headers: { 'Content-Type': 'multipart/form-data' },
+      ...config,
+    }
+  ),
 };
 
 export default recruitmentService;
