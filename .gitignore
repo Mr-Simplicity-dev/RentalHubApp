@@ -74,12 +74,13 @@ build/Release
 ehthumbs.db
 Thumbs.db
 
-# WhatsApp Web.js session data
+# WhatsApp Web.js session data (root-level only — `auth/` was hiding ALL of
+# src/screens/auth/, which AppNavigator imports; a fresh clone could not build)
 .wwebjs_auth/
 .wwebjs_cache/
-sessions/
-auth/
-media/
+/sessions/
+/auth/
+/media/
 
 # Android release keystore and signing config
 key.properties
