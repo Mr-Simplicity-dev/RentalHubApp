@@ -1,3 +1,12 @@
+# Copy to key.properties (gitignored) OR — recommended — use environment
+# variables / CI secrets instead. The build script reads (in order):
+#   key.properties -> gradle.properties -> environment variables:
+#     RELEASE_STORE_FILE, RELEASE_STORE_PASSWORD, RELEASE_KEY_ALIAS, RELEASE_KEY_PASSWORD
+#
+# SECURITY: key.properties holds your signing credentials in PLAINTEXT on this
+# machine. Prefer exporting RELEASE_STORE_PASSWORD/RELEASE_KEY_PASSWORD as env
+# vars (or CI secrets) and keep only RELEASE_STORE_FILE + RELEASE_KEY_ALIAS here.
+# Never commit key.properties or the .keystore/.jks files to git.
 RELEASE_STORE_FILE=upload-keystore.jks
 RELEASE_STORE_PASSWORD=change-me
 RELEASE_KEY_ALIAS=upload

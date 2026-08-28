@@ -5,6 +5,8 @@ import Constants from 'expo-constants';
 
 const TURNSTILE_SITE_KEY = Constants.expoConfig?.extra?.TURNSTILE_SITE_KEY;
 
+const TURNSTILE_ORIGIN = 'https://rentalhub.com.ng/';
+
 const TURNSTILE_HTML = (siteKey) => `<!DOCTYPE html>
 <html>
 <head>
@@ -92,15 +94,24 @@ const TurnstileWidget = forwardRef(({ onToken, onExpire, onError }, ref) => {
       <View style={styles.webviewWrapper}>
         <WebView
           ref={webViewRef}
-          source={{ html: TURNSTILE_HTML(TURNSTILE_SITE_KEY) }}
+          source={{ html: TURNSTILE_HTML(TURNSTILE_SITE_KEY), baseUrl: TURNSTILE_ORIGIN }}
           onMessage={handleMessage}
+          onHttpError={(syntheticEvent) => {
+            const { nativeEvent } = syntheticEvent;
+            console.warn('[turnstile] http error', nativeEvent?.statusCode, nativeEvent?.url);
+            callbacksRef.current.onError?.();
+          }}
+          onError={(syntheticEvent) => {
+            console.warn('[turnstile] load error', syntheticEvent?.nativeEvent?.description);
+            callbacksRef.current.onError?.();
+          }}
           style={styles.webview}
           scrollEnabled={false}
           bounces={false}
           javaScriptEnabled={true}
           domStorageEnabled={true}
-          originWhitelist={['*']}
-          mixedContentMode="always"
+          originWhitelist={['https://challenges.cloudflare.com', 'https://rentalhub.com.ng']}
+          mixedContentMode="never"
           allowsInlineMediaPlayback={true}
           cacheEnabled={true}
           overScrollMode="never"

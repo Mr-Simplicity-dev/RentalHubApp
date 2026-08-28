@@ -88,6 +88,8 @@ key.properties
 # Temporary files
 tmp/
 temp/
+.tmp-release-assets/
+.tmp-release-index.android.bundle
 
 # Generated JS bundle
 android/app/src/main/assets/index.android.bundle

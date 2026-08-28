@@ -246,12 +246,20 @@ const migrateLegacyUserCredential = async () => {
   }
 };
 
+// Only auth tokens may use the plaintext fallback (required to stay logged in
+// on devices with a broken Keychain). User identity data (NIN, passports, etc.)
+// and impersonation sessions must NEVER be written outside secure storage —
+// they are derived data that can be refetched from the API.
+const mayUseFallback = (record) =>
+  record === SECURE_RECORDS.token || record === SECURE_RECORDS.sessionToken;
+
 const saveSecureValue = async (record, value) => {
   if (!isNonEmptyString(value)) {
     return false;
   }
 
   if (!hasKeychain()) {
+    if (!mayUseFallback(record)) return false;
     return writeFallback(record, value);
   }
 
@@ -264,6 +272,7 @@ const saveSecureValue = async (record, value) => {
     await finishSecureWrite(record, value);
     return true;
   } catch (error) {
+    if (!mayUseFallback(record)) return false;
     const fallbackSaved = await writeFallback(record, value);
 
     if (fallbackSaved) {
@@ -281,7 +290,14 @@ const readSecureValue = async (
   isValid = isNonEmptyString
 ) => {
   if (!hasKeychain()) {
-    const fallbackValue = await readFallback(record);
+    if (!mayUseFallback(record)) return null;
+  if (!mayUseFallback(record)) {
+    // Derived identity data has no fallback: if Keychain read failed it simply
+    // must be refetched from the API.
+    return null;
+  }
+
+  const fallbackValue = await readFallback(record);
     return isValid(fallbackValue) ? fallbackValue : null;
   }
 
@@ -289,7 +305,7 @@ const readSecureValue = async (
     await migrateLegacyUserCredential();
   }
 
-  if (await hasPendingFallback(record)) {
+  if (mayUseFallback(record) && await hasPendingFallback(record)) {
     const pendingValue = await readFallback(record);
 
     if (isValid(pendingValue)) {

@@ -1,9 +1,26 @@
 import { Alert, Linking, NativeModules, Platform } from 'react-native';
 import { checkMobileAppVersion, trackMobileEvent } from './mobileDiagnosticsService';
+import { API_ORIGIN } from './api';
 
 const { RentalHubUpdate } = NativeModules;
 
 const APK_EXTENSION_PATTERN = /\.apk(?:$|[?#])/i;
+
+// Only install APKs served from RentalHub's own origins. This blocks a
+// compromised/tampered version endpoint from pointing the installer at an
+// arbitrary host.
+const isTrustedApkOrigin = (url = '') => {
+  try {
+    const parsed = new URL(url);
+    if (parsed.protocol !== 'https:') return false;
+    const host = parsed.hostname.toLowerCase();
+    if (host === 'rentalhub.com.ng' || host === 'www.rentalhub.com.ng') return true;
+    const apiHost = API_ORIGIN ? new URL(API_ORIGIN).hostname.toLowerCase() : '';
+    return Boolean(apiHost && host === apiHost);
+  } catch {
+    return false;
+  }
+};
 
 export const getDirectApkUrl = (versionState = {}) => {
   const candidates = [
@@ -13,7 +30,13 @@ export const getDirectApkUrl = (versionState = {}) => {
     versionState.store_url,
   ];
 
-  return candidates.find((candidate) => APK_EXTENSION_PATTERN.test(String(candidate || ''))) || '';
+  return (
+    candidates.find(
+      (candidate) =>
+        APK_EXTENSION_PATTERN.test(String(candidate || '')) &&
+        isTrustedApkOrigin(candidate)
+    ) || ''
+  );
 };
 
 export const getUpdateUrl = (versionState = {}) =>
