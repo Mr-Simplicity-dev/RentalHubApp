@@ -453,6 +453,23 @@ const PropertyDetailScreen = ({ route, navigation }) => {
             <AppText style={styles.frequency}> / {frequency}</AppText>
           </View>
 
+          {(!isAuthenticated || user?.user_type === 'tenant') ? (
+            <TouchableOpacity
+              activeOpacity={0.85}
+              style={styles.calcCta}
+              onPress={() =>
+                navigation.navigate('RentCalculator', {
+                  rent_amount: String(property.rent_amount || ''),
+                  payment_frequency: property.payment_frequency === 'yearly' ? 'yearly' : 'monthly',
+                  upfront_months: property.payment_frequency === 'quarterly' ? '3' : '',
+                })
+              }
+            >
+              <Icon name="calculator-outline" size={16} color={colors.blue} />
+              <AppText style={styles.calcCtaText}>What's this per month & move-in?</AppText>
+            </TouchableOpacity>
+          ) : null}
+
           <View style={styles.factGrid}>
             <View style={styles.fact}>
               <View style={styles.factIcon}>
@@ -1068,6 +1085,23 @@ const styles = StyleSheet.create({
   },
   primaryAction: {
     flex: 1,
+  },
+  calcCta: {
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    borderColor: colors.blue,
+    borderRadius: radius.pill,
+    borderWidth: 1,
+    flexDirection: 'row',
+    gap: 6,
+    marginTop: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+  },
+  calcCtaText: {
+    color: colors.blue,
+    fontFamily: typography.semibold,
+    fontSize: 13,
   },
 });
 

@@ -831,6 +831,12 @@ const DashboardScreen = ({ navigation }) => {
               onPress={() => navigation.navigate('RentSavingsDashboard')}
             />
             <StatCard
+              title="Rent Calculator"
+              value="Plan your rent"
+              icon="calculator-outline"
+              onPress={() => navigation.navigate('RentCalculator')}
+            />
+            <StatCard
               title="Wallet Balance"
               value={
                 walletBalance !== null && walletBalance !== undefined
@@ -998,6 +1004,12 @@ const DashboardScreen = ({ navigation }) => {
             subtitle="Create goals and track your rent plan."
             icon="cash-outline"
             onPress={() => navigation.navigate('RentSavingsDashboard')}
+          />
+          <ActionRow
+            title="Rent Calculator"
+            subtitle="See your real monthly rent and move-in cost."
+            icon="calculator-outline"
+            onPress={() => navigation.navigate('RentCalculator')}
           />
           <ActionRow
             title="Book Transportation"

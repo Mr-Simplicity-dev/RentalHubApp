@@ -72,6 +72,7 @@ import RentSavingsDashboardScreen from '../screens/rent-savings/RentSavingsDashb
 import SavingsGoalCreateScreen from '../screens/rent-savings/SavingsGoalCreateScreen';
 import SavingsGoalListScreen from '../screens/rent-savings/SavingsGoalListScreen';
 import SavingsGoalDetailScreen from '../screens/rent-savings/SavingsGoalDetailScreen';
+import RentCalculatorScreen from '../screens/rent-savings/RentCalculatorScreen';
 
 // ========== Financial Admin ==========
 import FinancialAdminDashboardScreen from '../screens/financial-admin/FinancialAdminDashboardScreen';
@@ -227,6 +228,7 @@ const linkingConfig = {
       SavingsGoalCreate: 'rent-savings/goals/create',
       SavingsGoalList: 'rent-savings/goals',
       SavingsGoalDetail: 'rent-savings/goals/:goalId',
+      RentCalculator: 'rent-calculator',
       FinancialAdminDashboard: 'admin/financial-dashboard',
       SuperFinancialAdminDashboard: 'admin/super-financial-dashboard',
       FinancialRevenueReport: 'admin/financial/revenue',
@@ -340,6 +342,7 @@ const GuestStack = () => (
     <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
     <Stack.Screen name="PropertyList" component={PropertyListScreen} options={{ title: 'Browse Properties' }} />
     <Stack.Screen name="PropertyDetail" component={PropertyDetailScreen} options={{ title: 'Property Details' }} />
+    <Stack.Screen name="RentCalculator" component={RentCalculatorScreen} options={{ title: 'Rent Calculator' }} />
     <Stack.Screen name="PropertyAlertRequest" component={PropertyAlertRequestScreen} options={{ title: 'Submit Request' }} />
     <Stack.Screen name="LocationInfo" component={LocationInfoScreen} options={{ title: 'Location' }} />
     <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
@@ -457,6 +460,7 @@ const TenantRoot = () => (
     <Stack.Screen name="SavingsGoalCreate" component={SavingsGoalCreateScreen} options={{ title: 'Create Plan' }} />
     <Stack.Screen name="SavingsGoalList" component={SavingsGoalListScreen} options={{ title: 'My Plans' }} />
     <Stack.Screen name="SavingsGoalDetail" component={SavingsGoalDetailScreen} options={{ title: 'Plan Details' }} />
+    <Stack.Screen name="RentCalculator" component={RentCalculatorScreen} options={{ title: 'Rent Calculator' }} />
     <Stack.Screen name="TransportationBooking" component={TransportationBookingScreen} options={{ title: 'Transportation' }} />
     <Stack.Screen name="TransportationBookings" component={TransportationBookingsScreen} options={{ title: 'My Transport Bookings' }} />
     <Stack.Screen name="TransportationBookingDetail" component={TransportationBookingDetailScreen} options={{ title: 'Booking Details' }} />
