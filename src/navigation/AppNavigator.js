@@ -143,6 +143,9 @@ import MarketingScreen from '../screens/shared/MarketingScreen';
 import DiasporaDeskScreen from '../screens/shared/DiasporaDeskScreen';
 import SeoToolsScreen from '../screens/shared/SeoToolsScreen';
 import PrivacyDataScreen from '../screens/shared/PrivacyDataScreen';
+import MarketingAgentScreen from '../screens/shared/MarketingAgentScreen';
+import ZonalAdminScreen from '../screens/shared/ZonalAdminScreen';
+import PublicSurveyScreen from '../screens/shared/PublicSurveyScreen';
 import MyDamageReportsScreen from '../screens/shared/MyDamageReportsScreen';
 import SubscribedPropertiesScreen from '../screens/shared/SubscribedPropertiesScreen';
 import SupportScreen from '../screens/shared/SupportScreen';
@@ -247,6 +250,7 @@ const linkingConfig = {
       SavingsGoalList: 'rent-savings/goals',
       SavingsGoalDetail: 'rent-savings/goals/:goalId',
       RentCalculator: 'rent-calculator',
+      PublicSurvey: 'survey',
       FinancialAdminDashboard: 'admin/financial-dashboard',
       SuperFinancialAdminDashboard: 'admin/super-financial-dashboard',
       FinancialRevenueReport: 'admin/financial/revenue',
@@ -383,6 +387,7 @@ const GuestStack = () => (
     <Stack.Screen name="PropertyList" component={PropertyListScreen} options={{ title: 'Browse Properties' }} />
     <Stack.Screen name="PropertyDetail" component={PropertyDetailScreen} options={{ title: 'Property Details' }} />
     <Stack.Screen name="RentCalculator" component={RentCalculatorScreen} options={{ title: 'Rent Calculator' }} />
+    <Stack.Screen name="PublicSurvey" component={PublicSurveyScreen} options={{ title: 'Take the Survey' }} />
     <Stack.Screen name="PropertyAlertRequest" component={PropertyAlertRequestScreen} options={{ title: 'Submit Request' }} />
     <Stack.Screen name="LocationInfo" component={LocationInfoScreen} options={{ title: 'Location' }} />
     <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
@@ -933,6 +938,26 @@ const RecruitmentAdminRoot = () => (
   </Stack.Navigator>
 );
 
+const MarketingAgentRoot = () => (
+  <Stack.Navigator screenOptions={screenOptions}>
+    <Stack.Screen name="MarketingAgentDashboard" component={MarketingAgentScreen} options={{ title: 'Survey Respondents' }} />
+    <Stack.Screen name="Profile" component={ProfileScreen} />
+    {commonVerificationScreens()}
+    {commonAppealScreens()}
+    {commonInfoScreens()}
+  </Stack.Navigator>
+);
+
+const ZonalAdminRoot = () => (
+  <Stack.Navigator screenOptions={screenOptions}>
+    <Stack.Screen name="ZonalDashboard" component={ZonalAdminScreen} options={{ title: 'Zone Overview' }} />
+    <Stack.Screen name="Profile" component={ProfileScreen} />
+    {commonVerificationScreens()}
+    {commonAppealScreens()}
+    {commonInfoScreens()}
+  </Stack.Navigator>
+);
+
 const RoleRouter = ({ userType }) => {
   const normalizedUserType = String(userType || '').trim().toLowerCase();
 
@@ -980,9 +1005,9 @@ const RoleRouter = ({ userType }) => {
     case 'recruitment_admin':
       return <RecruitmentAdminRoot />;
     case 'marketing_agent':
-      return <DesktopOnlyRoot roleLabel="Marketing agent" />;
+      return <MarketingAgentRoot />;
     case 'zonal_admin':
-      return <DesktopOnlyRoot roleLabel="Zonal admin" />;
+      return <ZonalAdminRoot />;
     default:
       return <TenantRoot />;
   }

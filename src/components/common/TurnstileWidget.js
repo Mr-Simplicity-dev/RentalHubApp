@@ -7,7 +7,7 @@ const TURNSTILE_SITE_KEY = Constants.expoConfig?.extra?.TURNSTILE_SITE_KEY;
 
 const TURNSTILE_ORIGIN = 'https://rentalhub.com.ng/';
 
-const TURNSTILE_HTML = (siteKey) => `<!DOCTYPE html>
+const TURNSTILE_HTML = (siteKey, action) => `<!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
@@ -24,7 +24,7 @@ const TURNSTILE_HTML = (siteKey) => `<!DOCTYPE html>
   <script>
     function onTurnstileLoaded() {
       if (window.turnstile) {
-        window.turnstile.render('#turnstile-container', {
+        var options = {
           sitekey: '${siteKey}',
           callback: function(token) {
             window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'token', token: token }));
@@ -35,7 +35,9 @@ const TURNSTILE_HTML = (siteKey) => `<!DOCTYPE html>
           'error-callback': function() {
             window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'error' }));
           }
-        });
+        };
+        ${action ? `options.action = '${action}';` : ''}
+        window.turnstile.render('#turnstile-container', options);
       }
     }
 
@@ -53,7 +55,7 @@ const TURNSTILE_HTML = (siteKey) => `<!DOCTYPE html>
 </body>
 </html>`;
 
-const TurnstileWidget = forwardRef(({ onToken, onExpire, onError }, ref) => {
+const TurnstileWidget = forwardRef(({ onToken, onExpire, onError, action }, ref) => {
   const webViewRef = useRef(null);
   const callbacksRef = useRef({ onToken, onExpire, onError });
   callbacksRef.current = { onToken, onExpire, onError };
@@ -94,7 +96,7 @@ const TurnstileWidget = forwardRef(({ onToken, onExpire, onError }, ref) => {
       <View style={styles.webviewWrapper}>
         <WebView
           ref={webViewRef}
-          source={{ html: TURNSTILE_HTML(TURNSTILE_SITE_KEY), baseUrl: TURNSTILE_ORIGIN }}
+          source={{ html: TURNSTILE_HTML(TURNSTILE_SITE_KEY, action || ''), baseUrl: TURNSTILE_ORIGIN }}
           onMessage={handleMessage}
           onHttpError={(syntheticEvent) => {
             const { nativeEvent } = syntheticEvent;

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import {ActivityIndicator,
   Linking,
   RefreshControl,
@@ -248,16 +248,32 @@ const DashboardScreen = ({ navigation }) => {
   const isLandlord = user?.user_type === 'landlord';
 
   const [surveyStatus, setSurveyStatus] = useState(null);
+  const surveyAutoOpenedRef = useRef(false);
   const loadSurveyStatus = useCallback(() => {
     if (!isTenant && !isLandlord) return;
     surveyService
       .myStatus()
-      .then((res) => setSurveyStatus(res?.data || null))
+      .then((res) => {
+        const status = res?.data || null;
+        setSurveyStatus(status);
+        if (
+          status &&
+          status.required &&
+          !status.exempt &&
+          !status.part_a_done &&
+          !status.completed &&
+          !surveyAutoOpenedRef.current
+        ) {
+          surveyAutoOpenedRef.current = true;
+          navigation.navigate('Survey');
+        }
+      })
       .catch(() => {});
-  }, [isTenant, isLandlord]);
+  }, [isTenant, isLandlord, navigation]);
 
   useFocusEffect(
     useCallback(() => {
+      surveyAutoOpenedRef.current = false;
       loadSurveyStatus();
     }, [loadSurveyStatus])
   );

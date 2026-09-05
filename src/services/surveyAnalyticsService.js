@@ -5,4 +5,9 @@ export const surveyAnalyticsService = {
     const response = await api.get('/admin/survey/analysis', { params: { type } });
     return response.data;
   },
+
+  enableAllNigerianLgas: async () => {
+    const response = await api.post('/admin/survey/location-config/enable-all');
+    return response.data;
+  },
 };

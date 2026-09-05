@@ -4,6 +4,7 @@ import Toast from 'react-native-toast-message';
 import { useFocusEffect } from '@react-navigation/native';
 import {
   InfoRow,
+  PremiumButton,
   PremiumCard,
   PremiumCenter,
   PremiumHero,
@@ -25,6 +26,20 @@ const SurveyAnalyticsScreen = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [enablingAll, setEnablingAll] = useState(false);
+
+  const enableAllNigerianLgas = async () => {
+    setEnablingAll(true);
+    setError('');
+    try {
+      const res = await surveyAnalyticsService.enableAllNigerianLgas();
+      Toast.show({ type: 'success', text1: 'Survey enabled', text2: res?.message || 'All Nigerian LGAs enabled.' });
+    } catch (err) {
+      setError(getErrorMessage(err, 'Could not enable all locations'));
+    } finally {
+      setEnablingAll(false);
+    }
+  };
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -93,6 +108,16 @@ const SurveyAnalyticsScreen = () => {
           );
         })}
       </View>
+
+      <PremiumCard>
+        <PremiumButton
+          title={enablingAll ? 'Enabling…' : 'Enable survey in all Nigerian LGAs'}
+          onPress={enableAllNigerianLgas}
+          loading={enablingAll}
+          variant="secondary"
+          icon="globe-outline"
+        />
+      </PremiumCard>
 
       {error ? (
         <PremiumCard>

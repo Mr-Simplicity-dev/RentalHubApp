@@ -41,4 +41,24 @@ export const surveyService = {
     });
     return response.data;
   },
+
+  marketingAgentOverview: async () => {
+    const response = await api.get('/survey/marketing-agent/overview');
+    return response.data;
+  },
+
+  publicFlags: async () => {
+    const response = await api.get('/survey/public-flags');
+    return response.data;
+  },
+
+  publicGate: async (turnstileToken) => {
+    const response = await api.post('/survey/public/gate', { turnstile_token: turnstileToken });
+    return response.data;
+  },
+
+  publicSubmit: async (payload) => {
+    const response = await api.post('/survey/public/submit', payload);
+    return response.data;
+  },
 };
