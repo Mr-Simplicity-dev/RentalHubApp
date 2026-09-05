@@ -630,6 +630,68 @@ const ProfileScreen = ({ navigation }) => {
             onPress={() => navigation.navigate('FinanceStateAdmins')}
           />
         ) : null}
+        {user?.user_type === 'super_admin' ? (
+          <Button
+            title="Rent Savings Withdrawals"
+            variant="outline"
+            style={styles.marginTop}
+            onPress={() => navigation.navigate('RentSavingsAdmin')}
+          />
+        ) : null}
+        {['super_admin', 'admin'].includes(user?.user_type) ? (
+          <Button
+            title="Agent Commissions"
+            variant="outline"
+            style={styles.marginTop}
+            onPress={() => navigation.navigate('AgentCommissionAdmin')}
+          />
+        ) : null}
+        {user?.user_type === 'super_admin' ? (
+          <Button
+            title="Admin Accounts & Reminders"
+            variant="outline"
+            style={styles.marginTop}
+            onPress={() => navigation.navigate('AdminAccounts')}
+          />
+        ) : null}
+        {user?.user_type === 'super_admin' ? (
+          <Button
+            title="Survey Analytics"
+            variant="outline"
+            style={styles.marginTop}
+            onPress={() => navigation.navigate('SurveyAnalytics')}
+          />
+        ) : null}
+        {user?.user_type === 'super_admin' ? (
+          <Button
+            title="Email & SMS Marketing"
+            variant="outline"
+            style={styles.marginTop}
+            onPress={() => navigation.navigate('MarketingOps')}
+          />
+        ) : null}
+        {user?.user_type === 'super_admin' ? (
+          <Button
+            title="Diaspora Desk"
+            variant="outline"
+            style={styles.marginTop}
+            onPress={() => navigation.navigate('DiasporaDesk')}
+          />
+        ) : null}
+        {user?.user_type === 'super_admin' ? (
+          <Button
+            title="SEO Tools"
+            variant="outline"
+            style={styles.marginTop}
+            onPress={() => navigation.navigate('SeoTools')}
+          />
+        ) : null}
+        <Button
+          title="My Personal Data (NDPR)"
+          variant="outline"
+          style={styles.marginTop}
+          onPress={() => navigation.navigate('PrivacyData')}
+        />
         {['state_admin', 'state_financial_admin'].includes(user?.user_type) ? (
           <Button
             title="Commissions & Withdrawals"

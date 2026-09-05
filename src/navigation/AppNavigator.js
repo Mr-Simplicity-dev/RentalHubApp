@@ -135,6 +135,14 @@ import SurveyScreen from '../screens/shared/SurveyScreen';
 import ModerationHubScreen from '../screens/shared/ModerationHubScreen';
 import StateAdminFinanceScreen from '../screens/shared/StateAdminFinanceScreen';
 import FinanceStateAdminScreen from '../screens/shared/FinanceStateAdminScreen';
+import RentSavingsAdminScreen from '../screens/shared/RentSavingsAdminScreen';
+import AgentCommissionAdminScreen from '../screens/shared/AgentCommissionAdminScreen';
+import AdminAccountsScreen from '../screens/shared/AdminAccountsScreen';
+import SurveyAnalyticsScreen from '../screens/shared/SurveyAnalyticsScreen';
+import MarketingScreen from '../screens/shared/MarketingScreen';
+import DiasporaDeskScreen from '../screens/shared/DiasporaDeskScreen';
+import SeoToolsScreen from '../screens/shared/SeoToolsScreen';
+import PrivacyDataScreen from '../screens/shared/PrivacyDataScreen';
 import MyDamageReportsScreen from '../screens/shared/MyDamageReportsScreen';
 import SubscribedPropertiesScreen from '../screens/shared/SubscribedPropertiesScreen';
 import SupportScreen from '../screens/shared/SupportScreen';
@@ -433,6 +441,7 @@ const ServiceAdminRoot = () => (
     <Stack.Screen name="Messages" component={MessagesScreen} />
     <Stack.Screen name="Notifications" component={NotificationsScreen} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
+    <Stack.Screen name="PrivacyData" component={PrivacyDataScreen} options={{ title: 'My Personal Data' }} />
     <Stack.Screen name="RecruitmentAdmin" component={RecruitmentAdminScreen} options={{ title: 'Recruitment Admin' }} />
     <Stack.Screen name="NativeTools" component={NativeToolsScreen} options={{ title: 'More Tools' }} />
     {commonInfoScreens()}
@@ -486,6 +495,7 @@ const TenantRoot = () => (
     <Stack.Screen name="LocationInfo" component={LocationInfoScreen} options={{ title: 'Location' }} />
     <Stack.Screen name="ApplicationDetail" component={ApplicationDetailScreen} options={{ headerShown: false }} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
+    <Stack.Screen name="PrivacyData" component={PrivacyDataScreen} options={{ title: 'My Personal Data' }} />
     <Stack.Screen name="SavedProperties" component={SavedPropertiesScreen} options={{ title: 'Saved Properties' }} />
     <Stack.Screen name="Subscribe" component={SubscribeScreen} />
     <Stack.Screen name="PaymentHistory" component={PaymentHistoryScreen} options={{ title: 'Payment History' }} />
@@ -539,6 +549,7 @@ const LandlordRoot = () => (
     <Stack.Screen name="LocationInfo" component={LocationInfoScreen} options={{ title: 'Location' }} />
     <Stack.Screen name="ApplicationDetail" component={ApplicationDetailScreen} options={{ headerShown: false }} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
+    <Stack.Screen name="PrivacyData" component={PrivacyDataScreen} options={{ title: 'My Personal Data' }} />
     <Stack.Screen name="MyProperties" component={MyPropertiesScreen} options={{ title: 'My Properties' }} />
     <Stack.Screen name="AddProperty" component={AddPropertyScreen} options={{ title: 'Add Property' }} />
     <Stack.Screen name="PaymentHistory" component={PaymentHistoryScreen} options={{ title: 'Payment History' }} />
@@ -591,6 +602,7 @@ const AgentRoot = () => (
     <Stack.Screen name="Messages" component={MessagesScreen} />
     <Stack.Screen name="PaymentHistory" component={PaymentHistoryScreen} options={{ title: 'Payment History' }} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
+    <Stack.Screen name="PrivacyData" component={PrivacyDataScreen} options={{ title: 'My Personal Data' }} />
     <Stack.Screen name="Notifications" component={NotificationsScreen} />
     {commonVerificationScreens()}
     {commonAppealScreens()}
@@ -640,6 +652,7 @@ const LawyerRoot = ({ initialRouteName = 'LawyerDashboard' }) => (
     <Stack.Screen name="SuperLawyerDashboard" component={SuperLawyerDashboardScreen} options={{ title: 'Super Lawyer' }} />
     <Stack.Screen name="Messages" component={MessagesScreen} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
+    <Stack.Screen name="PrivacyData" component={PrivacyDataScreen} options={{ title: 'My Personal Data' }} />
     <Stack.Screen name="Notifications" component={NotificationsScreen} />
     {commonVerificationScreens()}
     {commonAppealScreens()}
@@ -679,6 +692,7 @@ const AdminRoot = () => (
   <Stack.Navigator screenOptions={screenOptions}>
     <Stack.Screen name="AdminDashboard" component={AdminDashboardScreen} options={{ title: 'Admin Dashboard' }} />
     <Stack.Screen name="AdminUsers" component={AdminUsersScreen} options={{ title: 'Users' }} />
+    <Stack.Screen name="AgentCommissionAdmin" component={AgentCommissionAdminScreen} options={{ title: 'Agent Commissions' }} />
     <Stack.Screen name="AdminProperties" component={AdminPropertiesScreen} options={{ title: 'Properties' }} />
     <Stack.Screen name="AdminApplications" component={AdminApplicationsScreen} options={{ title: 'Applications' }} />
     <Stack.Screen name="AdminVerifications" component={AdminVerificationsScreen} options={{ title: 'Verifications' }} />
@@ -701,6 +715,7 @@ const AdminRoot = () => (
     <Stack.Screen name="Messages" component={MessagesScreen} />
     <Stack.Screen name="PaymentHistory" component={PaymentHistoryScreen} options={{ title: 'Payment History' }} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
+    <Stack.Screen name="PrivacyData" component={PrivacyDataScreen} options={{ title: 'My Personal Data' }} />
     <Stack.Screen name="Notifications" component={NotificationsScreen} />
     {commonVerificationScreens()}
     {commonAppealScreens()}
@@ -722,6 +737,13 @@ const SuperAdminRoot = () => (
     <Stack.Screen name="SuperAdminDashboard" component={SuperAdminDashboardScreen} options={{ title: 'Super Admin' }} />
     <Stack.Screen name="ModerationHub" component={ModerationHubScreen} options={{ title: 'Moderation' }} />
     <Stack.Screen name="FinanceStateAdmins" component={FinanceStateAdminScreen} options={{ title: 'State Admin Management' }} />
+    <Stack.Screen name="RentSavingsAdmin" component={RentSavingsAdminScreen} options={{ title: 'Rent Savings Withdrawals' }} />
+    <Stack.Screen name="AgentCommissionAdmin" component={AgentCommissionAdminScreen} options={{ title: 'Agent Commissions' }} />
+    <Stack.Screen name="AdminAccounts" component={AdminAccountsScreen} options={{ title: 'Admin Accounts' }} />
+    <Stack.Screen name="SeoTools" component={SeoToolsScreen} options={{ title: 'SEO Tools' }} />
+    <Stack.Screen name="SurveyAnalytics" component={SurveyAnalyticsScreen} options={{ title: 'Survey Analytics' }} />
+    <Stack.Screen name="MarketingOps" component={MarketingScreen} options={{ title: 'Email & SMS Marketing' }} />
+    <Stack.Screen name="DiasporaDesk" component={DiasporaDeskScreen} options={{ title: 'Diaspora Desk' }} />
     <Stack.Screen name="AdminDashboard" component={AdminDashboardScreen} options={{ title: 'Admin Dashboard' }} />
     <Stack.Screen name="AdminUsers" component={AdminUsersScreen} options={{ title: 'Users' }} />
     <Stack.Screen name="AdminProperties" component={AdminPropertiesScreen} options={{ title: 'Properties' }} />
@@ -758,6 +780,7 @@ const SuperAdminRoot = () => (
     <Stack.Screen name="Messages" component={MessagesScreen} />
     <Stack.Screen name="PaymentHistory" component={PaymentHistoryScreen} options={{ title: 'Payment History' }} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
+    <Stack.Screen name="PrivacyData" component={PrivacyDataScreen} options={{ title: 'My Personal Data' }} />
     <Stack.Screen name="Notifications" component={NotificationsScreen} />
     {commonVerificationScreens()}
     {commonAppealScreens()}
@@ -810,6 +833,7 @@ const FinancialAdminRoot = ({ initialRouteName = 'FinancialAdminDashboard' }) =>
     <Stack.Screen name="Messages" component={MessagesScreen} />
     <Stack.Screen name="PaymentHistory" component={PaymentHistoryScreen} options={{ title: 'Payment History' }} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
+    <Stack.Screen name="PrivacyData" component={PrivacyDataScreen} options={{ title: 'My Personal Data' }} />
     <Stack.Screen name="Notifications" component={NotificationsScreen} />
     {commonVerificationScreens()}
     {commonAppealScreens()}
@@ -863,6 +887,7 @@ const StateAdminRoot = () => (
     <Stack.Screen name="Messages" component={MessagesScreen} />
     <Stack.Screen name="PaymentHistory" component={PaymentHistoryScreen} options={{ title: 'Payment History' }} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
+    <Stack.Screen name="PrivacyData" component={PrivacyDataScreen} options={{ title: 'My Personal Data' }} />
     <Stack.Screen name="Notifications" component={NotificationsScreen} />
     {commonVerificationScreens()}
     {commonAppealScreens()}
@@ -895,6 +920,7 @@ const RecruitmentAdminRoot = () => (
   <Stack.Navigator screenOptions={screenOptions}>
     <Stack.Screen name="RecruitmentAdmin" component={RecruitmentAdminScreen} options={{ title: 'Recruitment Admin' }} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
+    <Stack.Screen name="PrivacyData" component={PrivacyDataScreen} options={{ title: 'My Personal Data' }} />
     <Stack.Screen name="Messages" component={MessagesScreen} />
     <Stack.Screen name="Notifications" component={NotificationsScreen} />
     <Stack.Screen name="Careers" component={CareersScreen} options={{ title: 'Careers' }} />
