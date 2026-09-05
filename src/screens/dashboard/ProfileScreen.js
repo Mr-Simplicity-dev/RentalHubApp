@@ -672,6 +672,14 @@ const ProfileScreen = ({ navigation }) => {
         ) : null}
         {user?.user_type === 'super_admin' ? (
           <Button
+            title="Campaign Builder"
+            variant="outline"
+            style={styles.marginTop}
+            onPress={() => navigation.navigate('MarketingBuilder')}
+          />
+        ) : null}
+        {user?.user_type === 'super_admin' ? (
+          <Button
             title="Diaspora Desk"
             variant="outline"
             style={styles.marginTop}

@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { useFocusEffect } from '@react-navigation/native';
 import {
@@ -13,7 +13,7 @@ import { getErrorMessage } from '../../utils/http';
 import { colors, radius, typography } from '../../theme';
 import AppText from '../../components/common/AppText';
 
-const ZonalAdminScreen = () => {
+const ZonalAdminScreen = ({ navigation }) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -76,6 +76,27 @@ const ZonalAdminScreen = () => {
       <View style={styles.metricRow}>
         {metric('Pending verif.', data?.pendingVerifications ?? 0)}
         {metric('Open escalations', data?.openEscalations ?? 0)}
+      </View>
+
+      <View style={styles.quickRow}>
+        {[
+          { key: 'admins', label: 'Admins' },
+          { key: 'users', label: 'Users' },
+          { key: 'properties', label: 'Properties' },
+          { key: 'applications', label: 'Applications' },
+          { key: 'verifications', label: 'Verifications' },
+          { key: 'escalations', label: 'Escalations' },
+          { key: 'service-operations', label: 'Service ops' },
+        ].map((item) => (
+          <TouchableOpacity
+            key={item.key}
+            activeOpacity={0.85}
+            style={styles.quick}
+            onPress={() => navigation.navigate('ZonalList', { resource: item.key })}
+          >
+            <AppText style={styles.quickText}>{item.label}</AppText>
+          </TouchableOpacity>
+        ))}
       </View>
 
       <PremiumCard>
@@ -165,6 +186,25 @@ const styles = StyleSheet.create({
   empty: {
     color: colors.muted,
     fontFamily: typography.regular,
+    fontSize: 13,
+  },
+  quickRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 14,
+  },
+  quick: {
+    backgroundColor: colors.white,
+    borderColor: colors.border,
+    borderRadius: radius.pill,
+    borderWidth: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  quickText: {
+    color: colors.blue,
+    fontFamily: typography.semibold,
     fontSize: 13,
   },
 });

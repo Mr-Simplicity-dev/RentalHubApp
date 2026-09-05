@@ -5,4 +5,9 @@ export const zonalAdminService = {
     const response = await api.get('/zonal-admin/dashboard');
     return response.data;
   },
+
+  listResource: async (resource) => {
+    const response = await api.get(`/zonal-admin/${resource}`, { params: { limit: 100 } });
+    return response.data;
+  },
 };
