@@ -26,4 +26,24 @@ export const stateAdminService = {
     );
     return response.data;
   },
+
+  getTransactions: async (params = {}) => {
+    const response = await api.get('/state-admin/transactions', { params });
+    return response.data;
+  },
+
+  getCommissionsSummary: async () => {
+    const response = await api.get('/state-admin/commissions/summary');
+    return response.data;
+  },
+
+  requestWithdrawal: async (payload) => {
+    const response = await api.post('/state-admin/withdraw', payload);
+    return response.data;
+  },
+
+  getWithdrawals: async () => {
+    const response = await api.get('/state-admin/withdrawals');
+    return response.data;
+  },
 };

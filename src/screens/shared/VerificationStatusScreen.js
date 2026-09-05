@@ -426,6 +426,16 @@ const VerificationStatusScreen = ({ navigation }) => {
               </View>
             </View>
 
+            {identityRejected ? (
+              <Button
+                onPress={() => navigation.navigate('AppealCreate', { appealType: 'verification' })}
+                title="Appeal this decision"
+                variant="outline"
+                icon="megaphone-outline"
+                style={{ marginBottom: 16 }}
+              />
+            ) : null}
+
             <Button
               onPress={() => navigation.navigate('Profile')}
               title="Manage verification in profile"

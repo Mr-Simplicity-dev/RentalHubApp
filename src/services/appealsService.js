@@ -1,6 +1,16 @@
 import api from './api';
 
 export const appealsService = {
+  myAppeals: async (params = {}) => {
+    const response = await api.get('/appeals/my', { params });
+    return response.data;
+  },
+
+  submitAppeal: async (payload) => {
+    const response = await api.post('/appeals', payload);
+    return response.data;
+  },
+
   getAdminAppeals: async (params = {}) => {
     const response = await api.get('/admin/appeals', { params });
     return response.data;

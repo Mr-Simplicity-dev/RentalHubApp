@@ -39,6 +39,95 @@ const ProfileScreen = ({ navigation }) => {
     navigation.setOptions({ headerShown: false });
   }, [navigation]);
 
+  const [twoFa, setTwoFa] = useState({ enabled: false, checked: false });
+  const [twoFaPhase, setTwoFaPhase] = useState('idle');
+  const [twoFaSecret, setTwoFaSecret] = useState('');
+  const [twoFaCode, setTwoFaCode] = useState('');
+  const [twoFaRecovery, setTwoFaRecovery] = useState([]);
+  const [twoFaBusy, setTwoFaBusy] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    authService
+      .getTwoFactorStatus()
+      .then((res) => {
+        if (active) setTwoFa((prev) => ({ ...prev, enabled: Boolean(res?.data?.enabled), checked: true }));
+      })
+      .catch(() => {
+        if (active) setTwoFa((prev) => ({ ...prev, checked: true }));
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const handleEnable2fa = async () => {
+    setTwoFaBusy(true);
+    try {
+      const res = await authService.setupTotp();
+      setTwoFaSecret(res?.data?.secret || '');
+      setTwoFaCode('');
+      setTwoFaPhase('confirm');
+      Toast.show({ type: 'success', text1: 'Add the secret to your authenticator app' });
+    } catch (err) {
+      Toast.show({
+        type: 'error',
+        text1: 'Setup failed',
+        text2: getErrorMessage(err, 'Could not start two-factor setup'),
+      });
+    } finally {
+      setTwoFaBusy(false);
+    }
+  };
+
+  const handleConfirm2fa = async () => {
+    if (!twoFaCode.trim()) {
+      Toast.show({ type: 'info', text1: 'Enter the 6-digit code from your authenticator app' });
+      return;
+    }
+    setTwoFaBusy(true);
+    try {
+      const res = await authService.confirmTotp({ code: twoFaCode.trim() });
+      setTwoFaRecovery(res?.data?.recovery_codes || []);
+      setTwoFa((prev) => ({ ...prev, enabled: true }));
+      setTwoFaPhase('recovery');
+      Toast.show({ type: 'success', text1: 'Two-factor enabled' });
+    } catch (err) {
+      Toast.show({
+        type: 'error',
+        text1: 'Verification failed',
+        text2: getErrorMessage(err, 'Could not confirm your code'),
+      });
+    } finally {
+      setTwoFaBusy(false);
+    }
+  };
+
+  const handleDisable2fa = async () => {
+    if (!twoFaCode.trim()) {
+      Toast.show({ type: 'info', text1: 'Enter your current 6-digit code' });
+      return;
+    }
+    setTwoFaBusy(true);
+    try {
+      await authService.disableTotp({ code: twoFaCode.trim() });
+      setTwoFa((prev) => ({ ...prev, enabled: false }));
+      setTwoFaPhase('idle');
+      setTwoFaSecret('');
+      setTwoFaCode('');
+      setTwoFaRecovery([]);
+      Toast.show({ type: 'success', text1: 'Two-factor disabled' });
+    } catch (err) {
+      Toast.show({
+        type: 'error',
+        text1: 'Failed',
+        text2: getErrorMessage(err, 'Could not disable two-factor'),
+      });
+    } finally {
+      setTwoFaBusy(false);
+    }
+  };
+
   useEffect(() => {
     setForm({
       full_name: user?.full_name || '',
@@ -391,6 +480,114 @@ const ProfileScreen = ({ navigation }) => {
             Biometric login is not available on this device.
           </AppText>
         )}
+
+        <View style={{ borderTopWidth: 1, borderTopColor: colors.border, marginTop: 16, paddingTop: 14 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+            <AppText style={{ color: colors.ink, fontFamily: typography.semibold, fontSize: 14 }}>
+              Two-factor authentication
+            </AppText>
+            <AppText style={{ color: twoFa.enabled ? colors.success : colors.muted, fontFamily: typography.semibold, fontSize: 12 }}>
+              {twoFa.enabled ? 'Enabled' : twoFa.checked ? 'Off' : 'Checking…'}
+            </AppText>
+          </View>
+
+          {!twoFa.enabled && twoFa.checked && twoFaPhase === 'idle' ? (
+            <Button
+              title="Enable two-factor auth"
+              variant="outline"
+              style={{ marginTop: 10 }}
+              onPress={handleEnable2fa}
+              loading={twoFaBusy}
+            />
+          ) : null}
+
+          {twoFaPhase === 'confirm' ? (
+            <>
+              <AppText style={styles.helperText}>
+                Add this secret to your authenticator app (Google Authenticator, Authy, etc.):
+              </AppText>
+              <AppText selectable style={{ color: colors.ink, fontFamily: typography.medium, fontSize: 13, marginVertical: 6 }}>
+                {twoFaSecret}
+              </AppText>
+              <Input
+                label="6-digit code"
+                value={twoFaCode}
+                onChangeText={setTwoFaCode}
+                placeholder="123456"
+                keyboardType="number-pad"
+                maxLength={6}
+              />
+              <Button title="Confirm and enable" onPress={handleConfirm2fa} loading={twoFaBusy} style={{ marginTop: 8 }} />
+              <Button
+                title="Cancel setup"
+                variant="outline"
+                style={{ marginTop: 8 }}
+                onPress={() => {
+                  setTwoFaPhase('idle');
+                  setTwoFaSecret('');
+                  setTwoFaCode('');
+                }}
+              />
+            </>
+          ) : null}
+
+          {twoFaPhase === 'recovery' ? (
+            <>
+              <AppText style={styles.helperText}>
+                Save these recovery codes somewhere safe — you can use one if you lose your authenticator app.
+              </AppText>
+              <View style={{ backgroundColor: colors.surface, borderRadius: radius.md, padding: 10, marginVertical: 8 }}>
+                {twoFaRecovery.map((code) => (
+                  <AppText key={code} style={{ color: colors.ink, fontFamily: typography.medium, fontSize: 13, marginVertical: 2 }}>
+                    {code}
+                  </AppText>
+                ))}
+              </View>
+              <Button
+                title="Done"
+                onPress={() => {
+                  setTwoFaPhase('idle');
+                  setTwoFaSecret('');
+                  setTwoFaCode('');
+                  setTwoFaRecovery([]);
+                }}
+              />
+            </>
+          ) : null}
+
+          {twoFa.enabled && twoFaPhase !== 'disable' ? (
+            <Button
+              title="Disable two-factor auth"
+              variant="outline"
+              style={{ marginTop: 10 }}
+              onPress={() => {
+                setTwoFaPhase('disable');
+                setTwoFaCode('');
+              }}
+            />
+          ) : null}
+
+          {twoFaPhase === 'disable' ? (
+            <>
+              <Input
+                label="Current 6-digit code"
+                value={twoFaCode}
+                onChangeText={setTwoFaCode}
+                placeholder="123456"
+                keyboardType="number-pad"
+                maxLength={6}
+                containerStyle={{ marginTop: 10 }}
+              />
+              <Button title="Confirm disable" onPress={handleDisable2fa} loading={twoFaBusy} style={{ marginTop: 8 }} />
+              <Button
+                title="Cancel"
+                variant="outline"
+                style={{ marginTop: 8 }}
+                onPress={() => setTwoFaPhase('idle')}
+              />
+            </>
+          ) : null}
+        </View>
       </View>
 
       <View style={styles.card}>
@@ -411,6 +608,36 @@ const ProfileScreen = ({ navigation }) => {
           style={styles.marginTop}
           onPress={() => navigation.navigate('Notifications')}
         />
+        <Button
+          title="My Appeals"
+          variant="outline"
+          style={styles.marginTop}
+          onPress={() => navigation.navigate('MyAppeals')}
+        />
+        {user?.user_type === 'super_admin' ? (
+          <Button
+            title="Ratings & Credentials Moderation"
+            variant="outline"
+            style={styles.marginTop}
+            onPress={() => navigation.navigate('ModerationHub')}
+          />
+        ) : null}
+        {['super_admin', 'super_financial_admin'].includes(user?.user_type) ? (
+          <Button
+            title="State Admin Management"
+            variant="outline"
+            style={styles.marginTop}
+            onPress={() => navigation.navigate('FinanceStateAdmins')}
+          />
+        ) : null}
+        {['state_admin', 'state_financial_admin'].includes(user?.user_type) ? (
+          <Button
+            title="Commissions & Withdrawals"
+            variant="outline"
+            style={styles.marginTop}
+            onPress={() => navigation.navigate('StateAdminFinance')}
+          />
+        ) : null}
         <Button
           title="Logout"
           variant="danger"

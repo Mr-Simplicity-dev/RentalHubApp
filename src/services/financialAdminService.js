@@ -2,6 +2,33 @@ import api from './api';
 import { requestWithOfflineQueue } from './offlineActionQueueService';
 
 export const financialAdminService = {
+  getStateAdmins: async (params = {}) => {
+    const response = await api.get('/financial-admin/state-admins', { params });
+    return response.data;
+  },
+
+  createStateAdmin: async (payload) => {
+    const response = await api.post('/financial-admin/state-admins/create', payload);
+    return response.data;
+  },
+
+  manageStateAdminFunds: async ({ admin_id, action, reason }) => {
+    const response = await api.post('/financial-admin/state-admins/funds/manage', {
+      admin_id,
+      action,
+      reason,
+    });
+    return response.data;
+  },
+
+  updateStateAdminCommissionRate: async ({ admin_id, commission_rate }) => {
+    const response = await api.put('/financial-admin/state-admins/commission-rate', {
+      admin_id,
+      commission_rate,
+    });
+    return response.data;
+  },
+
   getFinancialOverview: async () => {
     const response = await api.get('/financial-admin/stats/realtime');
     const stats = response.data?.data || {};

@@ -104,6 +104,18 @@ const AgentDashboardScreen = ({ navigation }) => {
           onPress={() => navigation.navigate('AgentWithdrawals')}
         />
       </DashboardSection>
+
+      <DashboardSection
+        title="Account"
+        subtitle="Manage your agent profile and assigned location."
+      >
+        <ActionRow
+          title="State Migration"
+          subtitle="Request a move to a new assigned state"
+          icon="swap-horizontal-outline"
+          onPress={() => navigation.navigate('StateMigration')}
+        />
+      </DashboardSection>
     </DashboardScreen>
   );
 };

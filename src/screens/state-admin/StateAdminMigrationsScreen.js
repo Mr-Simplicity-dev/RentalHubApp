@@ -41,13 +41,21 @@ const StateAdminMigrationsScreen = () => {
     try {
       const response = await stateAdminService.getStatePropertyApprovals({
         status: activeTab,
+        limit: 200,
       });
-      setMigrations(pickList(response, ['data', 'approvals', 'properties']));
+      const rows = pickList(response, ['data']);
+      setMigrations(
+        activeTab === 'pending'
+          ? rows
+          : rows.filter(
+              (row) => String(row.approval_status || '').toLowerCase() === activeTab
+            )
+      );
     } catch (error) {
       Toast.show({
         type: 'error',
         text1: 'Failed',
-        text2: getErrorMessage(error, 'Could not load migrations'),
+        text2: getErrorMessage(error, 'Could not load approvals'),
       });
     } finally {
       setRefreshing(false);
@@ -83,8 +91,8 @@ const StateAdminMigrationsScreen = () => {
     <>
       <PremiumHero
         eyebrow="State admin"
-        title="Property migrations"
-        subtitle="Approve, reject and monitor state-level property migration requests from mobile."
+        title="Property approvals"
+        subtitle="Approve, reject and monitor state-level property approval requests from mobile."
         icon="business-outline"
       />
       <View style={styles.tabRow}>
@@ -114,8 +122,8 @@ const StateAdminMigrationsScreen = () => {
         loadMigrations();
       }}
       header={header}
-      emptyTitle={`No ${activeTab} migrations`}
-      emptyMessage="Property migration requests for this state will appear here."
+      emptyTitle={`No ${activeTab} approvals`}
+      emptyMessage="Property approval requests for this state will appear here."
       emptyIcon="business-outline"
       renderItem={({ item }) => {
         const status = item.approval_status || activeTab;

@@ -64,6 +64,34 @@ export const authService = {
     await storageService.clearAll();
   },
 
+  getTwoFactorStatus: async () => {
+    const response = await api.get('/auth/2fa/status');
+    return response.data;
+  },
+
+  setupTotp: async () => {
+    const response = await api.post('/auth/2fa/totp/setup');
+    return response.data;
+  },
+
+  confirmTotp: async ({ code }) => {
+    const response = await api.post('/auth/2fa/totp/confirm', { code });
+    return response.data;
+  },
+
+  disableTotp: async ({ code, recovery_code } = {}) => {
+    const response = await api.post('/auth/2fa/totp/disable', {
+      code,
+      recovery_code,
+    });
+    return response.data;
+  },
+
+  sendWithdrawalOtp: async () => {
+    const response = await api.post('/auth/2fa/send-withdrawal-otp');
+    return response.data;
+  },
+
   getCurrentUser: async () => {
     const response = await api.get('/auth/me', {
       authCritical: true,
@@ -173,6 +201,11 @@ export const authService = {
       await authService.hydrateSession(response.data.data);
     }
 
+    return response.data;
+  },
+
+  payForeignCardAdjustment: async (reference) => {
+    const response = await api.post(`/auth/register/payment/foreign-card/${reference}`);
     return response.data;
   },
 

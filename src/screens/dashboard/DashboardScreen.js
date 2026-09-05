@@ -15,6 +15,7 @@ import AdSpace from '../../components/common/AdSpace';
 import { AuthContext } from '../../context/AuthContext';
 import WalletFundModal from '../../components/dashboard/WalletFundModal';
 import WalletWithdrawModal from '../../components/dashboard/WalletWithdrawModal';
+import WithdrawalFactorModal from '../../components/dashboard/WithdrawalFactorModal';
 import {
   ActionRow,
   DashboardSection,
@@ -24,6 +25,8 @@ import { paymentService } from '../../services/paymentService';
 import { referralService } from '../../services/referralService';
 import { rentSavingsService } from '../../services/rentSavingsService';
 import { transportationService } from '../../services/transportationService';
+import { surveyService } from '../../services/surveyService';
+import { useFocusEffect } from '@react-navigation/native';
 import { recoverPayment, savePendingPayment } from '../../services/paymentRecoveryService';
 import useNativePaystackCheckout from '../../hooks/useNativePaystackCheckout';
 import { hasPaystackCheckout } from '../../services/nativePaymentService';
@@ -233,6 +236,7 @@ const DashboardScreen = ({ navigation }) => {
   const [showWithdrawModal, setShowWithdrawModal] = useState(false);
   const [fundLoading, setFundLoading] = useState(false);
   const [withdrawLoading, setWithdrawLoading] = useState(false);
+  const [withdrawTwoFactor, setWithdrawTwoFactor] = useState(null);
   const [withdrawForm, setWithdrawForm] = useState({
     amount: '',
     bank_name: '',
@@ -242,6 +246,21 @@ const DashboardScreen = ({ navigation }) => {
   const { openNativeCheckout, NativePaystackCheckoutModal } = useNativePaystackCheckout();
   const isTenant = ['tenant', 'user'].includes(user?.user_type);
   const isLandlord = user?.user_type === 'landlord';
+
+  const [surveyStatus, setSurveyStatus] = useState(null);
+  const loadSurveyStatus = useCallback(() => {
+    if (!isTenant && !isLandlord) return;
+    surveyService
+      .myStatus()
+      .then((res) => setSurveyStatus(res?.data || null))
+      .catch(() => {});
+  }, [isTenant, isLandlord]);
+
+  useFocusEffect(
+    useCallback(() => {
+      loadSurveyStatus();
+    }, [loadSurveyStatus])
+  );
   const locationTourTargetProps = useTourTarget(
     isTenant ? 'tenant_location' : undefined,
     {
@@ -522,14 +541,44 @@ const DashboardScreen = ({ navigation }) => {
         });
       }
     } catch (error) {
-      Toast.show({
-        type: 'error',
-        text1: 'Withdrawal failed',
-        text2: getErrorMessage(error, 'Could not submit withdrawal'),
-      });
+      const status = error?.response?.status;
+      const code = error?.response?.data?.code;
+      if (status === 428 && code === 'OTP_REQUIRED') {
+        setWithdrawTwoFactor({
+          method: error.response.data.method === 'totp' ? 'totp' : 'sms',
+        });
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: 'Withdrawal failed',
+          text2: getErrorMessage(error, 'Could not submit withdrawal'),
+        });
+      }
     } finally {
       setWithdrawLoading(false);
     }
+  };
+
+  const verifyWithdrawFactor = async (code) => {
+    const payload = { ...withdrawForm };
+    if (withdrawTwoFactor?.method === 'totp') {
+      payload.totp_code = code;
+    } else {
+      payload.otp = code;
+    }
+    const response = await paymentService.withdrawFromWallet(payload);
+    if (response?.success) {
+      setWithdrawTwoFactor(null);
+      setShowWithdrawModal(false);
+      Toast.show({
+        type: 'success',
+        text1: 'Withdrawal submitted',
+        text2: 'Your withdrawal request was submitted successfully.',
+      });
+      await loadDashboard();
+      return;
+    }
+    throw new Error(response?.message || 'Could not submit withdrawal');
   };
 
   const shareReferralInvite = async () => {
@@ -1034,6 +1083,14 @@ const DashboardScreen = ({ navigation }) => {
           onPress={() => navigation.navigate('PaymentHistory')}
         />
         {(isTenant || isLandlord) ? (
+          <ActionRow
+            title="Refund Requests"
+            subtitle="Tenant refunds and relocation requests"
+            icon="cash-outline"
+            onPress={() => navigation.navigate('RefundRequests')}
+          />
+        ) : null}
+        {(isTenant || isLandlord) ? (
           <>
             <ActionRow
               title="Fund Wallet"
@@ -1066,6 +1123,58 @@ const DashboardScreen = ({ navigation }) => {
           onPress={() => navigation.navigate('NativeTools')}
         />
       </DashboardSection>
+
+      {surveyStatus &&
+      (isTenant || isLandlord) &&
+      surveyStatus.required &&
+      !surveyStatus.exempt &&
+      !surveyStatus.completed ? (
+        <TouchableOpacity
+          activeOpacity={0.9}
+          onPress={() => navigation.navigate('Survey')}
+          style={{
+            backgroundColor: surveyStatus.part_a_done ? colors.navy : colors.blue,
+            borderRadius: radius.lg,
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 12,
+            marginBottom: 16,
+            padding: 14,
+            ...shadows.soft,
+          }}
+        >
+          <View
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: 20,
+              backgroundColor: 'rgba(255,255,255,0.18)',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Icon name="chatbubbles-outline" size={20} color="#fff" />
+          </View>
+          <View style={{ flex: 1 }}>
+            <AppText style={{ color: '#fff', fontFamily: typography.bold, fontSize: 15 }}>
+              {surveyStatus.part_a_done ? 'Continue survey' : 'Market research survey'}
+            </AppText>
+            <AppText
+              style={{
+                color: 'rgba(255,255,255,0.88)',
+                fontFamily: typography.regular,
+                fontSize: 12,
+                marginTop: 2,
+              }}
+            >
+              {surveyStatus.part_a_done
+                ? 'You have one more step to finish the survey.'
+                : 'Please complete Part A — this survey is required.'}
+            </AppText>
+          </View>
+          <Icon name="chevron-forward" size={20} color="#fff" />
+        </TouchableOpacity>
+      ) : null}
 
       {(isTenant || isLandlord) ? (
         <TenancyGracePanel userType={user?.user_type} />
@@ -1122,6 +1231,14 @@ const DashboardScreen = ({ navigation }) => {
         }}
       />
       {NativePaystackCheckoutModal}
+
+      {withdrawTwoFactor ? (
+        <WithdrawalFactorModal
+          method={withdrawTwoFactor.method}
+          onVerified={verifyWithdrawFactor}
+          onCancel={() => setWithdrawTwoFactor(null)}
+        />
+      ) : null}
     </ScrollView>
     </TourScrollProvider>
     </SafeAreaView>

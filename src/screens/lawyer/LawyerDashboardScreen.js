@@ -108,6 +108,15 @@ const LawyerDashboardScreen = ({ navigation }) => {
         <AppText style={styles.heroText}>Review authorised properties, trace evidence and resolve disputes.</AppText>
       </View>
 
+      <TouchableOpacity
+        activeOpacity={0.85}
+        onPress={() => navigation.navigate('StateMigration')}
+        style={styles.migrationLink}
+      >
+        <Icon name="swap-horizontal-outline" size={16} color={colors.blue} />
+        <AppText style={styles.migrationLinkText}>Request state migration</AppText>
+      </TouchableOpacity>
+
       <TourTarget id="lawyer_cases" label="Authorised cases" padding={8} radius={radius.md}>
         <View>
           <AppText style={styles.sectionTitle}>Authorised properties</AppText>
@@ -238,6 +247,19 @@ const styles = StyleSheet.create({
   linkText: { color: colors.blue, fontFamily: typography.semibold, fontSize: 13 },
   linkWarn: { color: colors.danger, fontFamily: typography.semibold, fontSize: 13 },
   empty: { color: colors.muted, fontFamily: typography.regular },
+  migrationLink: {
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    borderColor: colors.blue,
+    borderRadius: radius.pill,
+    borderWidth: 1,
+    flexDirection: 'row',
+    gap: 6,
+    marginTop: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+  },
+  migrationLinkText: { color: colors.blue, fontFamily: typography.semibold, fontSize: 13 },
 });
 
 export default LawyerDashboardScreen;

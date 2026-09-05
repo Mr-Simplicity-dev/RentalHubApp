@@ -55,7 +55,7 @@ const MyDisputesScreen = ({ navigation }) => {
   const loadDisputes = async ({ refresh = false } = {}) => {
     refresh ? setRefreshing(true) : setLoading(true);
     try {
-      const response = await api.get('/disputes/my');
+      const response = await api.get('/disputes/me');
       setItems(pickList(response, ['data', 'disputes']));
     } catch (error) {
       Toast.show({

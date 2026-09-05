@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import {KeyboardAvoidingView,
+  Modal,
   Linking,
   Platform,
   ScrollView,
@@ -38,6 +39,10 @@ const defaultFlags = {
   passport_number: true,
   tenant_registration_payment: false,
   landlord_registration_payment: false,
+  diaspora_registration: false,
+  diaspora_registration_payment: false,
+  diaspora_base_fee_usd: null,
+  diaspora_base_fee_ngn_estimate: null,
 };
 
 const referralCodePattern = /^[A-Za-z0-9_-]+$/;
@@ -64,6 +69,8 @@ const RegisterScreen = ({ navigation, route }) => {
   const [isForeigner, setIsForeigner] = useState(false);
   const [showStatePicker, setShowStatePicker] = useState(false);
   const [showLgaPicker, setShowLgaPicker] = useState(false);
+  const [foreignCardAdjustment, setForeignCardAdjustment] = useState(null);
+  const [adjustmentBusy, setAdjustmentBusy] = useState(false);
   const [paymentState, setPaymentState] = useState({
     reference: '',
     authorizationUrl: '',
@@ -116,15 +123,21 @@ const RegisterScreen = ({ navigation, route }) => {
   ];
   const requiresRegistrationPayment =
     (userType === 'tenant' && registrationFlags.tenant_registration_payment) ||
-    (userType === 'landlord' && registrationFlags.landlord_registration_payment);
+    (userType === 'landlord' && registrationFlags.landlord_registration_payment) ||
+    (isForeigner && registrationFlags.diaspora_registration_payment);
   const requiresLawyerPayment = form.use_rentalhub_lawyers === true;
   const requiresAgentPayment = userType === 'landlord' && form.use_rentalhub_agents === true;
   const requiresPayment =
     requiresRegistrationPayment || requiresLawyerPayment || requiresAgentPayment;
   const baseRegistrationAmount =
     registrationPricing.amount || (userType === 'tenant' ? TENANT_REGISTRATION_FEE : LANDLORD_REGISTRATION_FEE);
+  const diasporaNgnEstimate = Number(registrationFlags.diaspora_base_fee_ngn_estimate || 0);
   const displayedRegistrationAmount =
-    (requiresRegistrationPayment ? baseRegistrationAmount : 0) +
+    (requiresRegistrationPayment
+      ? isForeigner && registrationFlags.diaspora_registration_payment && diasporaNgnEstimate > 0
+        ? diasporaNgnEstimate
+        : baseRegistrationAmount
+      : 0) +
     (requiresLawyerPayment ? LAWYER_ACCESS_FEE : 0) +
     (requiresAgentPayment ? AGENT_ACCESS_FEE : 0);
   const isFormComplete = Boolean(
@@ -146,6 +159,7 @@ const RegisterScreen = ({ navigation, route }) => {
       (!registrationFlags.registration_location_restricted ||
         (form.state_id && form.lga_name.trim())) &&
       (!requiresRegistrationPayment ||
+        isForeigner ||
         (form.state_id && form.lga_name.trim() && registrationPricing.location_complete)) &&
       (isForeigner
         ? (!registrationFlags.passport_number ||
@@ -201,6 +215,14 @@ const RegisterScreen = ({ navigation, route }) => {
           passport_number: data.passport_number !== false,
           tenant_registration_payment: data.tenant_registration_payment === true,
           landlord_registration_payment: data.landlord_registration_payment === true,
+          diaspora_registration: data.diaspora_registration === true,
+          diaspora_registration_payment: data.diaspora_registration_payment === true,
+          diaspora_base_fee_usd:
+            Number(data.diaspora_base_fee_usd) > 0 ? Number(data.diaspora_base_fee_usd) : null,
+          diaspora_base_fee_ngn_estimate:
+            Number(data.diaspora_base_fee_ngn_estimate) > 0
+              ? Number(data.diaspora_base_fee_ngn_estimate)
+              : null,
         });
         setRegistrationPricing(
           data.pricing || {
@@ -457,6 +479,18 @@ const RegisterScreen = ({ navigation, route }) => {
     }
   };
 
+  const handleApplicantTypeChange = (value) => {
+    if (value && registrationFlags.loaded && registrationFlags.diaspora_registration === false) {
+      Toast.show({
+        type: 'error',
+        text1: 'Unavailable',
+        text2: 'Diaspora registration is currently disabled on RentalHub NG.',
+      });
+      return;
+    }
+    setIsForeigner(value);
+  };
+
   const handleRegister = async () => {
     if (!registrationFlags.registration_master_enabled) {
       Toast.show({
@@ -594,6 +628,7 @@ const RegisterScreen = ({ navigation, route }) => {
         throw new Error(response.message || 'Payment completion failed');
       }
 
+      setForeignCardAdjustment(null);
       await establishSession(response.data);
       setPaymentState({
         reference: '',
@@ -606,6 +641,20 @@ const RegisterScreen = ({ navigation, route }) => {
         text2: 'Your paid registration has been completed.',
       });
     } catch (error) {
+      const serverError = error?.response?.data;
+      if (
+        error?.response?.status === 402 &&
+        serverError?.code === 'FOREIGN_CARD_ADJUSTMENT' &&
+        reference
+      ) {
+        setForeignCardAdjustment({ reference, ...(serverError.data || {}) });
+        Toast.show({
+          type: 'info',
+          text1: 'Additional payment required',
+          text2: 'Your card was issued outside Nigeria. Pay the FX adjustment to finish registration.',
+        });
+        return;
+      }
       Toast.show({
         type: 'error',
         text1: 'Completion failed',
@@ -614,6 +663,50 @@ const RegisterScreen = ({ navigation, route }) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const startForeignCardAdjustment = async () => {
+    if (!foreignCardAdjustment) {
+      return;
+    }
+    setAdjustmentBusy(true);
+    try {
+      const response = await authService.payForeignCardAdjustment(foreignCardAdjustment.reference);
+      const data = response?.data || {};
+      if (data.authorization_url) {
+        await Linking.openURL(data.authorization_url);
+        setForeignCardAdjustment((prev) => ({
+          ...prev,
+          amount: data.amount || prev.amount,
+        }));
+        Toast.show({
+          type: 'info',
+          text1: 'Payment started',
+          text2: 'After paying, return to the app and tap "Finish registration".',
+        });
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: 'Could not start payment',
+          text2: data.message || 'Please try again.',
+        });
+      }
+    } catch (adjustError) {
+      Toast.show({
+        type: 'error',
+        text1: 'Payment failed',
+        text2: getErrorMessage(adjustError, 'Could not start the foreign-card payment'),
+      });
+    } finally {
+      setAdjustmentBusy(false);
+    }
+  };
+
+  const finishAfterForeignCardAdjustment = () => {
+    if (!foreignCardAdjustment) {
+      return;
+    }
+    completePaidRegistration(foreignCardAdjustment.reference);
   };
 
   return (
@@ -719,7 +812,7 @@ const RegisterScreen = ({ navigation, route }) => {
           {[false, true].map((value) => (
             <TouchableOpacity
               key={String(value)}
-              onPress={() => setIsForeigner(value)}
+              onPress={() => handleApplicantTypeChange(value)}
               style={[styles.toggleBtn, isForeigner === value && styles.toggleBtnActive]}
             >
               <AppText style={[styles.toggleText, isForeigner === value && styles.toggleTextActive]}>
@@ -749,6 +842,12 @@ const RegisterScreen = ({ navigation, route }) => {
           <AppText style={styles.priceMeta}>
             Pricing scope: {String(registrationPricing.rule_scope || 'base').replace(/_/g, ' ')}
           </AppText>
+          {isForeigner && registrationFlags.diaspora_registration_payment ? (
+            <AppText style={styles.priceMeta}>
+              Diaspora rate: USD {Number(registrationFlags.diaspora_base_fee_usd || 0).toFixed(2)}
+              {diasporaNgnEstimate > 0 ? ` (about ₦${diasporaNgnEstimate.toLocaleString()})` : ''}
+            </AppText>
+          ) : null}
           {requiresRegistrationPayment && form.state_id && form.lga_name && !registrationPricing.location_complete ? (
             <AppText style={styles.pendingMeta}>
               Confirming your exact state and LGA pricing. Please wait a moment before continuing.
@@ -1138,6 +1237,56 @@ const RegisterScreen = ({ navigation, route }) => {
         onClose={() => setShowLgaPicker(false)}
         onSelect={(item) => onChange('lga_name', String(item))}
       />
+
+      {foreignCardAdjustment ? (
+        <Modal transparent visible animationType="fade" onRequestClose={() => setForeignCardAdjustment(null)}>
+          <View style={styles.adjustOverlay}>
+            <View style={styles.adjustCard}>
+              <AppText style={styles.adjustTitle}>Foreign-card adjustment</AppText>
+              <AppText style={styles.adjustText}>
+                Your registration was paid at the Nigerian local rate, but your card was issued
+                outside Nigeria. A second payment covering the black-market FX difference plus the
+                foreign-card fee is required before your account is activated.
+              </AppText>
+              {Number(foreignCardAdjustment.amount || 0) > 0 ? (
+                <AppText style={styles.adjustAmount}>
+                  Additional amount: ₦{Number(foreignCardAdjustment.amount).toLocaleString()}
+                </AppText>
+              ) : null}
+
+              <TouchableOpacity
+                activeOpacity={0.86}
+                disabled={adjustmentBusy}
+                onPress={startForeignCardAdjustment}
+                style={[styles.adjustPrimary, adjustmentBusy && styles.adjustDisabled]}
+              >
+                <AppText style={styles.adjustPrimaryText}>
+                  {adjustmentBusy ? 'Starting payment…' : 'Pay foreign-card adjustment'}
+                </AppText>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                activeOpacity={0.86}
+                disabled={adjustmentBusy}
+                onPress={finishAfterForeignCardAdjustment}
+                style={[styles.adjustGhost, adjustmentBusy && styles.adjustDisabled]}
+              >
+                <AppText style={styles.adjustGhostText}>
+                  I have finished paying — finish registration
+                </AppText>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                activeOpacity={0.86}
+                onPress={() => setForeignCardAdjustment(null)}
+                style={styles.adjustGhost}
+              >
+                <AppText style={styles.adjustCancel}>Not now</AppText>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+      ) : null}
     </KeyboardAvoidingView>
   );
 };
@@ -1470,6 +1619,66 @@ const styles = StyleSheet.create({
   },
   footerText: { color: colors.muted, fontFamily: typography.regular },
   footerLink: { color: colors.blue, fontFamily: typography.bold },
+  adjustOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(7, 26, 61, 0.5)',
+    justifyContent: 'center',
+    padding: 20,
+  },
+  adjustCard: {
+    backgroundColor: colors.white,
+    borderRadius: 18,
+    padding: 20,
+  },
+  adjustTitle: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 18,
+  },
+  adjustText: {
+    color: colors.text,
+    fontFamily: typography.regular,
+    fontSize: 13,
+    lineHeight: 20,
+    marginTop: 8,
+  },
+  adjustAmount: {
+    color: colors.blue,
+    fontFamily: typography.bold,
+    fontSize: 15,
+    marginTop: 12,
+  },
+  adjustPrimary: {
+    backgroundColor: colors.blue,
+    borderRadius: 12,
+    marginTop: 16,
+    paddingVertical: 13,
+    alignItems: 'center',
+  },
+  adjustPrimaryText: {
+    color: colors.white,
+    fontFamily: typography.bold,
+    fontSize: 15,
+  },
+  adjustGhost: {
+    borderRadius: 12,
+    marginTop: 10,
+    paddingVertical: 12,
+    alignItems: 'center',
+  },
+  adjustGhostText: {
+    color: colors.blue,
+    fontFamily: typography.semibold,
+    fontSize: 14,
+  },
+  adjustCancel: {
+    color: colors.muted,
+    fontFamily: typography.medium,
+    fontSize: 14,
+  },
+  adjustDisabled: {
+    opacity: 0.6,
+  },
 });
 
 export default RegisterScreen;

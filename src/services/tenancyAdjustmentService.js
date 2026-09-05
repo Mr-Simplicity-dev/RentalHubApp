@@ -53,4 +53,41 @@ export const tenancyAdjustmentService = {
     const response = await api.put(`/payments/refund/admin/${refundId}/review`, payload);
     return response.data;
   },
+
+  getEligibleRefundPayments: async () => {
+    const response = await api.get('/payments/refund/eligible');
+    return response.data;
+  },
+
+  getMyRefundRequests: async () => {
+    const response = await api.get('/payments/refund/my-requests');
+    return response.data;
+  },
+
+  submitRefundRequest: async (payload) => {
+    const response = await api.post('/payments/refund/request', payload);
+    return response.data;
+  },
+
+  getLandlordRefundRequests: async (status = 'pending') => {
+    const response = await api.get('/payments/refund/landlord', {
+      params: { status },
+    });
+    return response.data;
+  },
+
+  approveRefundRequest: async (refundId, payload = {}) => {
+    const response = await api.put(`/payments/refund/${refundId}/approve`, {
+      refund_type: 'full',
+      ...payload,
+    });
+    return response.data;
+  },
+
+  rejectRefundRequest: async (refundId, landlordNote) => {
+    const response = await api.put(`/payments/refund/${refundId}/reject`, {
+      landlord_note: landlordNote,
+    });
+    return response.data;
+  },
 };
