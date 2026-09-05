@@ -11,6 +11,11 @@ export const contentModerationService = {
     return response.data;
   },
 
+  getAdminDamageReports: async () => {
+    const response = await api.get('/damage-reports/admin');
+    return response.data;
+  },
+
   getPropertyDamageReports: async (propertyId) => {
     const response = await api.get(
       `/damage-reports/properties/${propertyId}/damage-reports`

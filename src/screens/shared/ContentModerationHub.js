@@ -2,7 +2,6 @@ import React, { useCallback, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { useFocusEffect } from '@react-navigation/native';
-import Input from '../../components/common/Input';
 import {
   InfoRow,
   PremiumButton,
@@ -21,8 +20,7 @@ const ContentModerationHub = () => {
   const [tab, setTab] = useState('flagged');
   const [flagged, setFlagged] = useState([]);
   const [damage, setDamage] = useState([]);
-  const [propertyId, setPropertyId] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [busyKey, setBusyKey] = useState(null);
 
   const loadFlagged = useCallback(async () => {
@@ -38,17 +36,16 @@ const ContentModerationHub = () => {
     }
   }, []);
 
-  const loadDamage = useCallback(async (pid) => {
-    if (!pid) return;
+  const loadDamage = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await contentModerationService.getPropertyDamageReports(pid);
+      const res = await contentModerationService.getAdminDamageReports();
       setDamage(pickList(res?.data || res, ['data', 'reports', 'rows']));
     } catch (err) {
       Toast.show({
         type: 'error',
         text1: 'Failed',
-        text2: getErrorMessage(err, 'Could not load damage reports for this property'),
+        text2: getErrorMessage(err, 'Could not load damage reports'),
       });
       setDamage([]);
     } finally {
@@ -58,10 +55,9 @@ const ContentModerationHub = () => {
 
   useFocusEffect(
     useCallback(() => {
-      if (tab === 'flagged') {
-        loadFlagged();
-      }
-    }, [tab, loadFlagged])
+      if (tab === 'flagged') loadFlagged();
+      else loadDamage();
+    }, [tab, loadFlagged, loadDamage])
   );
 
   const clearFlag = async (id) => {
@@ -92,7 +88,7 @@ const ContentModerationHub = () => {
           : await contentModerationService.unpublishDamageReport(report.id);
       if (res?.success) {
         Toast.show({ type: 'success', text1: `Report ${action}d` });
-        await loadDamage(propertyId);
+        await loadDamage();
       }
     } catch (err) {
       Toast.show({
@@ -105,34 +101,6 @@ const ContentModerationHub = () => {
     }
   };
 
-  const header = (
-    <>
-      <PremiumHero
-        eyebrow="Moderation"
-        title="Content moderation"
-        subtitle="Clear flagged messages and publish or unpublish damage reports."
-        icon="shield-checkmark-outline"
-      />
-      <View style={styles.tabRow}>
-        {['flagged', 'damage'].map((key) => {
-          const active = tab === key;
-          return (
-            <TouchableOpacity
-              key={key}
-              activeOpacity={0.85}
-              onPress={() => setTab(key)}
-              style={[styles.tab, active && styles.tabActive]}
-            >
-              <AppText style={[styles.tabText, active && styles.tabTextActive]}>
-                {key === 'flagged' ? 'Flagged messages' : 'Damage reports'}
-              </AppText>
-            </TouchableOpacity>
-          );
-        })}
-      </View>
-    </>
-  );
-
   if (tab === 'flagged') {
     return (
       <PremiumListScreen
@@ -140,7 +108,7 @@ const ContentModerationHub = () => {
         keyExtractor={(item) => String(item.id)}
         refreshing={false}
         onRefresh={loadFlagged}
-        header={header}
+        header={moderationHeader(tab, setTab)}
         emptyTitle="No flagged messages"
         emptyMessage="Messages flagged for review will appear here."
         emptyIcon="flag-outline"
@@ -166,45 +134,33 @@ const ContentModerationHub = () => {
     );
   }
 
+  if (loading && damage.length === 0) {
+    return <PremiumCenter loading title="Loading damage reports" />;
+  }
+
   return (
     <PremiumListScreen
       data={damage}
       keyExtractor={(item) => String(item.id)}
       refreshing={loading}
-      onRefresh={() => loadDamage(propertyId)}
-      header={
-        <>
-          {header}
-          <PremiumCard>
-            <Input
-              label="Property ID"
-              value={propertyId}
-              onChangeText={(v) => setPropertyId(v.replace(/\D/g, ''))}
-              placeholder="Enter a property id"
-              keyboardType="number-pad"
-            />
-            <PremiumButton
-              title="Load damage reports"
-              onPress={() => loadDamage(propertyId)}
-              loading={loading}
-              icon="search-outline"
-              style={styles.action}
-            />
-          </PremiumCard>
-        </>
-      }
+      onRefresh={loadDamage}
+      header={moderationHeader(tab, setTab)}
       emptyTitle="No damage reports"
-      emptyMessage="Enter a property id to load its damage reports."
+      emptyMessage="Damage reports across the platform will appear here."
       emptyIcon="warning-outline"
       renderItem={({ item }) => (
         <PremiumCard>
           <View style={styles.rowBetween}>
-            <AppText style={styles.cardTitle}>
-              {item.report_title || item.damage_type || `Report #${item.id}`}
-            </AppText>
+            <View style={{ flex: 1 }}>
+              <AppText style={styles.cardTitle}>{item.property_title || `Property #${item.property_id}`}</AppText>
+              {item.reporter_name ? <AppText style={styles.cardMeta}>Reported by {item.reporter_name}</AppText> : null}
+            </View>
             <StatusPill label={item.status || 'draft'} color={item.status === 'published' ? colors.success : colors.blue} />
           </View>
-          {item.description ? <AppText style={styles.cardText}>{item.description}</AppText> : null}
+          <AppText style={styles.cardText}>
+            {[item.report_title, item.damage_type].filter(Boolean).join(' · ') || `Report #${item.id}`}
+          </AppText>
+          {item.description ? <AppText style={styles.cardMeta}>{item.description}</AppText> : null}
           {item.severity ? <InfoRow icon="warning-outline" label="Severity" value={item.severity} /> : null}
           <View style={styles.actions}>
             {item.status !== 'published' ? (
@@ -232,12 +188,36 @@ const ContentModerationHub = () => {
   );
 };
 
+const moderationHeader = (tab, setTab) => (
+  <>
+    <PremiumHero
+      eyebrow="Moderation"
+      title="Content moderation"
+      subtitle="Clear flagged messages and publish or unpublish damage reports."
+      icon="shield-checkmark-outline"
+    />
+    <View style={styles.tabRow}>
+      {['flagged', 'damage'].map((key) => {
+        const active = tab === key;
+        return (
+          <TouchableOpacity
+            key={key}
+            activeOpacity={0.85}
+            onPress={() => setTab(key)}
+            style={[styles.tab, active && styles.tabActive]}
+          >
+            <AppText style={[styles.tabText, active && styles.tabTextActive]}>
+              {key === 'flagged' ? 'Flagged messages' : 'Damage reports'}
+            </AppText>
+          </TouchableOpacity>
+        );
+      })}
+    </View>
+  </>
+);
+
 const styles = StyleSheet.create({
-  tabRow: {
-    flexDirection: 'row',
-    gap: 8,
-    marginBottom: 12,
-  },
+  tabRow: { flexDirection: 'row', gap: 8, marginBottom: 12 },
   tab: {
     flex: 1,
     borderColor: colors.border,
@@ -247,48 +227,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.white,
   },
-  tabActive: {
-    backgroundColor: colors.blue,
-    borderColor: colors.blue,
-  },
-  tabText: {
-    color: colors.text,
-    fontFamily: typography.semibold,
-    fontSize: 13,
-  },
-  tabTextActive: {
-    color: colors.white,
-  },
-  cardTitle: {
-    color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 16,
-  },
-  cardText: {
-    color: colors.text,
-    fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 19,
-    marginTop: 4,
-  },
+  tabActive: { backgroundColor: colors.blue, borderColor: colors.blue },
+  tabText: { color: colors.text, fontFamily: typography.semibold, fontSize: 13 },
+  tabTextActive: { color: colors.white },
+  cardTitle: { color: colors.ink, fontFamily: typography.bold, fontSize: 16 },
+  cardMeta: { color: colors.muted, fontFamily: typography.regular, fontSize: 12, marginTop: 2 },
+  cardText: { color: colors.text, fontFamily: typography.regular, fontSize: 13, lineHeight: 19, marginTop: 4 },
   rowBetween: {
     alignItems: 'flex-start',
     flexDirection: 'row',
     justifyContent: 'space-between',
     gap: 8,
+    marginBottom: 6,
   },
-  actions: {
-    flexDirection: 'row',
-    gap: 8,
-    marginTop: 12,
-  },
-  actionButton: {
-    flex: 1,
-    minWidth: 120,
-  },
-  action: {
-    marginTop: 12,
-  },
+  actions: { flexDirection: 'row', gap: 8, marginTop: 12 },
+  actionButton: { flex: 1, minWidth: 120 },
+  action: { marginTop: 12 },
 });
 
 export default ContentModerationHub;

@@ -702,6 +702,22 @@ const ProfileScreen = ({ navigation }) => {
             onPress={() => navigation.navigate('VoiceMonitor')}
           />
         ) : null}
+        {user?.user_type === 'super_admin' ? (
+          <Button
+            title="Court Bundle"
+            variant="outline"
+            style={styles.marginTop}
+            onPress={() => navigation.navigate('CourtBundle')}
+          />
+        ) : null}
+        {['lawyer', 'state_lawyer', 'super_lawyer'].includes(user?.user_type) ? (
+          <Button
+            title="Court Bundle"
+            variant="outline"
+            style={styles.marginTop}
+            onPress={() => navigation.navigate('CourtBundle')}
+          />
+        ) : null}
         <Button
           title="My Personal Data (NDPR)"
           variant="outline"
