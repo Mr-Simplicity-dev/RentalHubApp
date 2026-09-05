@@ -686,6 +686,22 @@ const ProfileScreen = ({ navigation }) => {
             onPress={() => navigation.navigate('SeoTools')}
           />
         ) : null}
+        {user?.user_type === 'super_admin' ? (
+          <Button
+            title="Content Moderation"
+            variant="outline"
+            style={styles.marginTop}
+            onPress={() => navigation.navigate('ContentModeration')}
+          />
+        ) : null}
+        {user?.user_type === 'super_admin' ? (
+          <Button
+            title="Voice Monitor"
+            variant="outline"
+            style={styles.marginTop}
+            onPress={() => navigation.navigate('VoiceMonitor')}
+          />
+        ) : null}
         <Button
           title="My Personal Data (NDPR)"
           variant="outline"

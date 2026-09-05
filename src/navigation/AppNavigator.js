@@ -146,6 +146,8 @@ import PrivacyDataScreen from '../screens/shared/PrivacyDataScreen';
 import MarketingAgentScreen from '../screens/shared/MarketingAgentScreen';
 import ZonalAdminScreen from '../screens/shared/ZonalAdminScreen';
 import PublicSurveyScreen from '../screens/shared/PublicSurveyScreen';
+import ContentModerationHub from '../screens/shared/ContentModerationHub';
+import VoiceMonitorScreen from '../screens/shared/VoiceMonitorScreen';
 import MyDamageReportsScreen from '../screens/shared/MyDamageReportsScreen';
 import SubscribedPropertiesScreen from '../screens/shared/SubscribedPropertiesScreen';
 import SupportScreen from '../screens/shared/SupportScreen';
@@ -746,6 +748,8 @@ const SuperAdminRoot = () => (
     <Stack.Screen name="AgentCommissionAdmin" component={AgentCommissionAdminScreen} options={{ title: 'Agent Commissions' }} />
     <Stack.Screen name="AdminAccounts" component={AdminAccountsScreen} options={{ title: 'Admin Accounts' }} />
     <Stack.Screen name="SeoTools" component={SeoToolsScreen} options={{ title: 'SEO Tools' }} />
+    <Stack.Screen name="ContentModeration" component={ContentModerationHub} options={{ title: 'Content Moderation' }} />
+    <Stack.Screen name="VoiceMonitor" component={VoiceMonitorScreen} options={{ title: 'Voice Monitor' }} />
     <Stack.Screen name="SurveyAnalytics" component={SurveyAnalyticsScreen} options={{ title: 'Survey Analytics' }} />
     <Stack.Screen name="MarketingOps" component={MarketingScreen} options={{ title: 'Email & SMS Marketing' }} />
     <Stack.Screen name="DiasporaDesk" component={DiasporaDeskScreen} options={{ title: 'Diaspora Desk' }} />
