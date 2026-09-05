@@ -680,6 +680,14 @@ const ProfileScreen = ({ navigation }) => {
         ) : null}
         {user?.user_type === 'super_admin' ? (
           <Button
+            title="Email HTML Editor"
+            variant="outline"
+            style={styles.marginTop}
+            onPress={() => navigation.navigate('EmailTemplateEditor')}
+          />
+        ) : null}
+        {user?.user_type === 'super_admin' ? (
+          <Button
             title="Diaspora Desk"
             variant="outline"
             style={styles.marginTop}

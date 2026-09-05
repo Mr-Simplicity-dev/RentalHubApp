@@ -151,6 +151,7 @@ import ContentModerationHub from '../screens/shared/ContentModerationHub';
 import VoiceMonitorScreen from '../screens/shared/VoiceMonitorScreen';
 import CourtBundleScreen from '../screens/shared/CourtBundleScreen';
 import MarketingBuilderScreen from '../screens/shared/MarketingBuilderScreen';
+import EmailTemplateEditorScreen from '../screens/shared/EmailTemplateEditorScreen';
 import MyDamageReportsScreen from '../screens/shared/MyDamageReportsScreen';
 import SubscribedPropertiesScreen from '../screens/shared/SubscribedPropertiesScreen';
 import SupportScreen from '../screens/shared/SupportScreen';
@@ -758,6 +759,7 @@ const SuperAdminRoot = () => (
     <Stack.Screen name="SurveyAnalytics" component={SurveyAnalyticsScreen} options={{ title: 'Survey Analytics' }} />
     <Stack.Screen name="MarketingOps" component={MarketingScreen} options={{ title: 'Email & SMS Marketing' }} />
     <Stack.Screen name="MarketingBuilder" component={MarketingBuilderScreen} options={{ title: 'Campaign Builder' }} />
+    <Stack.Screen name="EmailTemplateEditor" component={EmailTemplateEditorScreen} options={{ title: 'Email HTML Editor' }} />
     <Stack.Screen name="DiasporaDesk" component={DiasporaDeskScreen} options={{ title: 'Diaspora Desk' }} />
     <Stack.Screen name="AdminDashboard" component={AdminDashboardScreen} options={{ title: 'Admin Dashboard' }} />
     <Stack.Screen name="AdminUsers" component={AdminUsersScreen} options={{ title: 'Users' }} />

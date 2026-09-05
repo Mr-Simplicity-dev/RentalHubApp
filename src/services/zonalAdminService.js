@@ -6,8 +6,10 @@ export const zonalAdminService = {
     return response.data;
   },
 
-  listResource: async (resource) => {
-    const response = await api.get(`/zonal-admin/${resource}`, { params: { limit: 100 } });
+  listResource: async (resource, params = {}) => {
+    const response = await api.get(`/zonal-admin/${resource}`, {
+      params: { limit: 100, ...params },
+    });
     return response.data;
   },
 };
