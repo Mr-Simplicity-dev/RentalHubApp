@@ -1,7 +1,8 @@
-import React, { useCallback, useState } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import React, { useCallback, useMemo, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { useFocusEffect } from '@react-navigation/native';
+import Input from '../../components/common/Input';
 import {
   InfoRow,
   PremiumCard,
@@ -49,6 +50,7 @@ const ZonalListScreen = ({ route }) => {
   const title = RESOURCE_TITLES[resource] || 'Records';
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -73,25 +75,46 @@ const ZonalListScreen = ({ route }) => {
     }, [load])
   );
 
+  const filtered = (() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return rows;
+    return rows.filter((row) => {
+      const hay = Object.values(row || {})
+        .map((v) => (v && typeof v === 'object' ? '' : String(v)))
+        .join(' ')
+        .toLowerCase();
+      return hay.includes(q);
+    });
+  })();
+
   if (loading && rows.length === 0) {
     return <PremiumCenter loading title={`Loading ${title.toLowerCase()}`} />;
   }
 
   return (
     <PremiumListScreen
-      data={rows}
+      data={filtered}
       keyExtractor={(item, index) => String(item.id || index)}
       refreshing={loading}
       onRefresh={load}
       header={
-        <PremiumHero
-          eyebrow="Zonal admin"
-          title={title}
-          subtitle="Records within your assigned zone."
-          icon="business-outline"
-        />
+        <>
+          <PremiumHero
+            eyebrow="Zonal admin"
+            title={title}
+            subtitle="Records within your assigned zone."
+            icon="business-outline"
+          />
+          <Input
+            value={search}
+            onChangeText={setSearch}
+            placeholder="Filter records…"
+            icon="search-outline"
+            containerStyle={styles.searchBox}
+          />
+        </>
       }
-      emptyTitle={`No ${title.toLowerCase()}`}
+      emptyTitle={`No ${title.toLowerCase()} match`}
       emptyMessage={`${title} within your zone will appear here.`}
       emptyIcon="list-outline"
       renderItem={({ item }) => (
@@ -111,6 +134,7 @@ const ZonalListScreen = ({ route }) => {
 };
 
 const styles = StyleSheet.create({
+  searchBox: { marginTop: 12 },
   cardTop: {
     flexDirection: 'row',
     justifyContent: 'space-between',

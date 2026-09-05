@@ -18,6 +18,8 @@ const MarketingBuilderScreen = () => {
   const [sub, setSub] = useState({ email: '', phone: '', full_name: '' });
   const [template, setTemplate] = useState({ name: '', subject: '', htmlContent: '', content: '' });
   const [campaign, setCampaign] = useState({ name: '', subject: '', content: '' });
+  const [bulkText, setBulkText] = useState('');
+  const [bulkBusy, setBulkBusy] = useState(false);
   const [busy, setBusy] = useState('');
 
   const isEmail = channel === 'email';
@@ -69,6 +71,35 @@ const MarketingBuilderScreen = () => {
     } else {
       run('camp', () => marketingOpsService.smsCreateCampaign({ name: campaign.name.trim() }), 'Campaign created');
     }
+  };
+
+  const addBulk = async () => {
+    const lines = bulkText
+      .split(/\r?\n/)
+      .map((l) => l.trim())
+      .filter(Boolean);
+    if (lines.length === 0) return Toast.show({ type: 'info', text1: 'Paste one email/phone per line' });
+    setBulkBusy(true);
+    let ok = 0;
+    let failed = 0;
+    for (const value of lines) {
+      try {
+        const res = isEmail
+          ? await marketingOpsService.emailAddSubscriber({ email: value, full_name: '' })
+          : await marketingOpsService.smsAddSubscriber({ phone: value, full_name: '' });
+        if (res?.success) ok += 1;
+        else failed += 1;
+      } catch {
+        failed += 1;
+      }
+    }
+    setBulkBusy(false);
+    Toast.show({
+      type: ok > 0 ? 'success' : 'error',
+      text1: ok > 0 ? 'Import complete' : 'Import failed',
+      text2: `${ok} added, ${failed} skipped.`,
+    });
+    setBulkText('');
   };
 
   return (
@@ -142,6 +173,26 @@ const MarketingBuilderScreen = () => {
           <AppText style={styles.note}>SMS campaigns reference a saved template. After creating one, launch it from the Marketing screen (draft campaigns show a Send button).</AppText>
         ) : null}
         <PremiumButton title="Create campaign" onPress={addCampaign} loading={busy === 'camp'} style={styles.action} />
+      </PremiumCard>
+
+      <PremiumSectionTitle title="Bulk import subscribers" />
+      <PremiumCard>
+        <Input
+          label={isEmail ? 'Emails (one per line)' : 'Phone numbers (one per line)'}
+          value={bulkText}
+          onChangeText={setBulkText}
+          placeholder={isEmail ? 'a@x.com\nb@y.com' : '08031234567\n08039876543'}
+          multiline
+          numberOfLines={5}
+        />
+        <PremiumButton
+          title={bulkBusy ? 'Importing…' : 'Import list'}
+          onPress={addBulk}
+          loading={bulkBusy}
+          icon="download-outline"
+          style={styles.action}
+        />
+        <AppText style={styles.note}>Each valid entry is added as a subscriber via the API.</AppText>
       </PremiumCard>
     </ScrollView>
   );
