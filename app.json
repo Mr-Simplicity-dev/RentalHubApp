@@ -9,7 +9,7 @@
     "userInterfaceStyle": "light",
     "android": {
       "package": "com.rentalhubng",
-      "versionCode": 3,
+      "versionCode": 4,
       "adaptiveIcon": {
         "foregroundImage": "./assets/rentalhub-app-icon.png",
         "backgroundColor": "#071A3D"
@@ -17,7 +17,7 @@
     },
     "ios": {
       "bundleIdentifier": "com.rentalhubng",
-      "buildNumber": "3",
+      "buildNumber": "4",
       "supportsTablet": false
     },
     "owner": "mdozaa",
@@ -35,7 +35,8 @@
           "color": "#0A66C2",
           "defaultChannel": "messages"
         }
-      ]
+      ],
+      "expo-sharing"
     ]
   }
 }
