@@ -85,6 +85,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
         />
 
         <TurnstileWidget
+        action="rentalhub_forgot_password"
           ref={turnstileRef}
           onToken={(token) => { turnstileTokenRef.current = token; }}
           onExpire={() => { turnstileTokenRef.current = null; }}

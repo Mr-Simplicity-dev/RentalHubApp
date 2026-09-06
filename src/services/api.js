@@ -148,6 +148,9 @@ const refreshNativeSession = async () => {
 
   await storageService.saveToken(payload.token);
   await storageService.saveSessionToken(payload.session_token);
+  if (payload.csrf_token) {
+    await storageService.setCsrfToken(payload.csrf_token);
+  }
   return payload.token;
 };
 
@@ -167,6 +170,17 @@ api.interceptors.request.use(
         config.__authToken = token;
       }
     }
+
+    // CSRF double-submit: state-changing requests must carry the X-CSRF-Token
+    // header once the app holds the cookie-based session from login/refresh.
+    const method = String(config.method || '').toUpperCase();
+    if (!['GET', 'HEAD', 'OPTIONS'].includes(method)) {
+      const csrfToken = await storageService.getCsrfToken();
+      if (csrfToken) {
+        config.headers['X-CSRF-Token'] = csrfToken;
+      }
+    }
+
     config.headers['X-RentalHub-Client'] = 'native';
     return config;
   },

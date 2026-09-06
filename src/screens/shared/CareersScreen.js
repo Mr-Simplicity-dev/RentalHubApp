@@ -219,7 +219,7 @@ const CareersScreen = ({ navigation }) => {
               >
                 <AppText style={[styles.roleTitle, active && styles.roleTitleActive]}>{role.title}</AppText>
                 <AppText style={styles.roleMeta}>{role.type || 'Role'}</AppText>
-                <AppText style={styles.roleMeta}>₦{Number(role.application_fee || 0).toLocaleString()} standard</AppText>
+                <AppText style={styles.roleMeta}>â‚¦{Number(role.application_fee || 0).toLocaleString()} standard</AppText>
               </TouchableOpacity>
             );
           })}
@@ -302,6 +302,7 @@ const CareersScreen = ({ navigation }) => {
         ) : null}
 
         <TurnstileWidget
+        action="rentalhub_careers"
           ref={turnstileRef}
           onToken={setTurnstileToken}
           onExpire={() => setTurnstileToken('')}

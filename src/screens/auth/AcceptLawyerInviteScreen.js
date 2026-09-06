@@ -170,6 +170,7 @@ const AcceptLawyerInviteScreen = ({ navigation, route }) => {
         />
 
         <TurnstileWidget
+        action="rentalhub_lawyer_invite"
           ref={turnstileRef}
           onToken={(token) => { turnstileTokenRef.current = token; }}
           onExpire={() => { turnstileTokenRef.current = null; }}

@@ -105,6 +105,7 @@ const AcceptAgentInviteScreen = ({ navigation, route }) => {
         />
 
         <TurnstileWidget
+        action="rentalhub_agent_invite"
           ref={turnstileRef}
           onToken={(token) => { turnstileTokenRef.current = token; }}
           onExpire={() => { turnstileTokenRef.current = null; }}

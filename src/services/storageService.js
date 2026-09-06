@@ -30,6 +30,7 @@ const SECURE_RECORDS = Object.freeze({
 });
 
 const FALLBACK_MARKER_PREFIX = 'rentalhub_secure_fallback:';
+const CSRF_STORAGE_KEY = 'rentalhub_csrf_token';
 
 let Keychain = null;
 if (Platform.OS !== 'web') {
@@ -450,6 +451,7 @@ export const storageService = {
     await Promise.allSettled(
       Object.values(SECURE_RECORDS).map(clearSecureRecord)
     );
+    await storageService.clearCsrfToken();
     legacyUserMigrationComplete = false;
   },
 
@@ -466,6 +468,35 @@ export const storageService = {
       return await AsyncStorage.getItem(key);
     } catch (error) {
       return null;
+    }
+  },
+
+  // CSRF double-submit token (safe in AsyncStorage — worthless without the
+  // session cookie). Must be attached to state-changing requests once the app
+  // holds the cookie-based session set by login/refresh. Never throws.
+  setCsrfToken: async (token) => {
+    if (!token) return false;
+    try {
+      await AsyncStorage.setItem(CSRF_STORAGE_KEY, String(token));
+      return true;
+    } catch (error) {
+      return false;
+    }
+  },
+
+  getCsrfToken: async () => {
+    try {
+      return await AsyncStorage.getItem(CSRF_STORAGE_KEY);
+    } catch (error) {
+      return null;
+    }
+  },
+
+  clearCsrfToken: async () => {
+    try {
+      await AsyncStorage.removeItem(CSRF_STORAGE_KEY);
+    } catch (error) {
+      // Best-effort cleanup.
     }
   },
 };

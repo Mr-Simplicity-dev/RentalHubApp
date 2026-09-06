@@ -97,6 +97,7 @@ const ResetPasswordScreen = ({ navigation, route }) => {
         />
 
         <TurnstileWidget
+        action="rentalhub_reset_password"
           ref={turnstileRef}
           onToken={(token) => { turnstileTokenRef.current = token; }}
           onExpire={() => { turnstileTokenRef.current = null; }}

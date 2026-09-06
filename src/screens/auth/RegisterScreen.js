@@ -414,9 +414,9 @@ const RegisterScreen = ({ navigation, route }) => {
         return 'Enter a valid lawyer email or choose RentalHub NG lawyers.';
       }
       if (userType === 'landlord' && form.add_agent && !form.use_rentalhub_agents) {
-        if (!form.agent_full_name.trim()) return 'Enter the agent’s full name.';
+        if (!form.agent_full_name.trim()) return 'Enter the agentâ€™s full name.';
         if (!emailPattern.test(form.agent_email.trim())) return 'Enter a valid agent email.';
-        if (!form.agent_phone.trim()) return 'Enter the agent’s phone number.';
+        if (!form.agent_phone.trim()) return 'Enter the agentâ€™s phone number.';
       }
     }
 
@@ -746,7 +746,7 @@ const RegisterScreen = ({ navigation, route }) => {
         <AppText style={styles.title}>{steps[currentStep].title}</AppText>
         <AppText style={styles.subtitle}>
           {currentStep === 0
-            ? 'Choose how you’ll use RentalHub and tell us how to reach you.'
+            ? 'Choose how youâ€™ll use RentalHub and tell us how to reach you.'
             : currentStep === 1
               ? 'Choose the legal and agent support that fits your rental journey.'
               : currentStep === 2
@@ -792,7 +792,7 @@ const RegisterScreen = ({ navigation, route }) => {
 
         {currentStep === 0 ? (
           <>
-        <AppText style={styles.choiceLabel}>I’m registering as</AppText>
+        <AppText style={styles.choiceLabel}>Iâ€™m registering as</AppText>
         <View style={styles.toggleRow}>
           {['tenant', 'landlord'].map((role) => (
             <TouchableOpacity
@@ -831,7 +831,7 @@ const RegisterScreen = ({ navigation, route }) => {
           </AppText>
           <AppText style={styles.priceAmount}>
             {requiresPayment
-              ? `₦${Number(displayedRegistrationAmount || 0).toLocaleString()}`
+              ? `â‚¦${Number(displayedRegistrationAmount || 0).toLocaleString()}`
               : 'No payment required'}
           </AppText>
           <AppText style={styles.priceMeta}>
@@ -845,7 +845,7 @@ const RegisterScreen = ({ navigation, route }) => {
           {isForeigner && registrationFlags.diaspora_registration_payment ? (
             <AppText style={styles.priceMeta}>
               Diaspora rate: USD {Number(registrationFlags.diaspora_base_fee_usd || 0).toFixed(2)}
-              {diasporaNgnEstimate > 0 ? ` (about ₦${diasporaNgnEstimate.toLocaleString()})` : ''}
+              {diasporaNgnEstimate > 0 ? ` (about â‚¦${diasporaNgnEstimate.toLocaleString()})` : ''}
             </AppText>
           ) : null}
           {requiresRegistrationPayment && form.state_id && form.lga_name && !registrationPricing.location_complete ? (
@@ -899,8 +899,8 @@ const RegisterScreen = ({ navigation, route }) => {
         >
           <AppText style={styles.agentToggleLabel}>
             {form.use_rentalhub_lawyers
-              ? 'Using RentalHub NG lawyers (₦2,000)'
-              : 'Use RentalHub NG lawyers instead (₦2,000)'}
+              ? 'Using RentalHub NG lawyers (â‚¦2,000)'
+              : 'Use RentalHub NG lawyers instead (â‚¦2,000)'}
           </AppText>
         </TouchableOpacity>
 
@@ -929,8 +929,8 @@ const RegisterScreen = ({ navigation, route }) => {
           >
             <AppText style={styles.agentToggleLabel}>
               {form.use_rentalhub_agents
-                ? 'Using RentalHub NG agents (₦5,000)'
-                : 'Use RentalHub NG agents instead (₦5,000)'}
+                ? 'Using RentalHub NG agents (â‚¦5,000)'
+                : 'Use RentalHub NG agents instead (â‚¦5,000)'}
             </AppText>
           </TouchableOpacity>
         ) : null}
@@ -1072,7 +1072,7 @@ const RegisterScreen = ({ navigation, route }) => {
             <View style={styles.reviewRow}>
               <Icon name="person-outline" size={17} color={colors.muted} />
               <AppText style={styles.reviewText}>
-                {userType === 'landlord' ? 'Landlord' : 'Tenant'} · {isForeigner ? 'International' : 'Nigerian'}
+                {userType === 'landlord' ? 'Landlord' : 'Tenant'} Â· {isForeigner ? 'International' : 'Nigerian'}
               </AppText>
             </View>
             <View style={styles.reviewRow}>
@@ -1122,7 +1122,7 @@ const RegisterScreen = ({ navigation, route }) => {
               {acceptedTerms ? <Icon name="checkmark" size={15} color={colors.white} /> : null}
             </View>
             <AppText style={styles.termsText}>
-              I agree to RentalHub’s{' '}
+              I agree to RentalHubâ€™s{' '}
               <AppText 
                 onPress={(event) => {
                   event.stopPropagation();
@@ -1154,6 +1154,7 @@ const RegisterScreen = ({ navigation, route }) => {
         />
 
         <TurnstileWidget
+        action="rentalhub_register"
           ref={turnstileRef}
           onToken={(token) => { turnstileTokenRef.current = token; }}
           onExpire={() => { turnstileTokenRef.current = null; }}
@@ -1250,7 +1251,7 @@ const RegisterScreen = ({ navigation, route }) => {
               </AppText>
               {Number(foreignCardAdjustment.amount || 0) > 0 ? (
                 <AppText style={styles.adjustAmount}>
-                  Additional amount: ₦{Number(foreignCardAdjustment.amount).toLocaleString()}
+                  Additional amount: â‚¦{Number(foreignCardAdjustment.amount).toLocaleString()}
                 </AppText>
               ) : null}
 
@@ -1261,7 +1262,7 @@ const RegisterScreen = ({ navigation, route }) => {
                 style={[styles.adjustPrimary, adjustmentBusy && styles.adjustDisabled]}
               >
                 <AppText style={styles.adjustPrimaryText}>
-                  {adjustmentBusy ? 'Starting payment…' : 'Pay foreign-card adjustment'}
+                  {adjustmentBusy ? 'Starting paymentâ€¦' : 'Pay foreign-card adjustment'}
                 </AppText>
               </TouchableOpacity>
 
@@ -1272,7 +1273,7 @@ const RegisterScreen = ({ navigation, route }) => {
                 style={[styles.adjustGhost, adjustmentBusy && styles.adjustDisabled]}
               >
                 <AppText style={styles.adjustGhostText}>
-                  I have finished paying — finish registration
+                  I have finished paying â€” finish registration
                 </AppText>
               </TouchableOpacity>
 

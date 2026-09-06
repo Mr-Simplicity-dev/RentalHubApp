@@ -40,6 +40,9 @@ export const authService = {
       await storageService.saveToken(token);
       await storageService.saveSessionToken(sessionToken);
       await storageService.saveUser(user);
+      if (csrfToken) {
+        await storageService.setCsrfToken(csrfToken);
+      }
     }
     return response.data;
   },
@@ -51,6 +54,9 @@ export const authService = {
       await storageService.saveToken(token);
       await storageService.saveSessionToken(sessionToken);
       await storageService.saveUser(user);
+      if (csrfToken) {
+        await storageService.setCsrfToken(csrfToken);
+      }
     }
     return response.data;
   },
@@ -107,6 +113,7 @@ export const authService = {
     const token = sessionData?.token;
     const sessionToken = sessionData?.session_token || sessionData?.sessionToken;
     const user = sessionData?.user;
+    const csrfToken = sessionData?.csrf_token;
 
     if (!token && !sessionToken && !user) {
       return;
@@ -115,6 +122,9 @@ export const authService = {
     await storageService.saveToken(token);
     await storageService.saveSessionToken(sessionToken);
     await storageService.saveUser(user);
+    if (csrfToken) {
+      await storageService.setCsrfToken(csrfToken);
+    }
   },
 
   refreshSession: async () => {

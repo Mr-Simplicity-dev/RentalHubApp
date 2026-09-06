@@ -147,7 +147,7 @@ const LoginScreen = ({ navigation }) => {
       Toast.show({
         type: 'error',
         text1: 'Error',
-        text2: error.response?.data?.message || 'Login failed',
+        text2: error?.response?.data?.message || error?.message || 'Login failed',
       });
       turnstileRef.current?.reset();
       turnstileTokenRef.current = null;
@@ -253,7 +253,8 @@ const LoginScreen = ({ navigation }) => {
               style={styles.loginButton}
             />
 
-            <TurnstileWidget
+        <TurnstileWidget
+        action="rentalhub_login"
               ref={turnstileRef}
               onToken={(token) => { turnstileTokenRef.current = token; }}
               onExpire={() => { turnstileTokenRef.current = null; }}
