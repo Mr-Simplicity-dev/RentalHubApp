@@ -16,6 +16,7 @@ import BrandMark from '../../components/brand/BrandMark';
 import Toast from 'react-native-toast-message';
 import TurnstileWidget from '../../components/common/TurnstileWidget';
 import { biometricService } from '../../services/biometricService';
+import { reportMobileCrash } from '../../services/mobileDiagnosticsService';
 import { colors, radius, shadows, typography } from '../../theme';
 
 import AppText from '../../components/common/AppText';
@@ -149,6 +150,7 @@ const LoginScreen = ({ navigation }) => {
         text1: 'Error',
         text2: error?.response?.data?.message || error?.message || 'Login failed',
       });
+      reportMobileCrash(error, {}, { fatal: false, source: 'login_handler' });
       turnstileRef.current?.reset();
       turnstileTokenRef.current = null;
     } finally {

@@ -15,22 +15,42 @@ const TURNSTILE_HTML = (siteKey, action) => `<!DOCTYPE html>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { height: 100%; width: 100%; background: transparent; }
-    body { display: flex; align-items: flex-start; justify-content: center; }
-    #turnstile-container { width: 100%; min-height: 65px; }
+    body { display: flex; align-items: center; justify-content: center; }
+    #turnstile-scale {
+      transform-origin: top center;
+      will-change: transform;
+    }
+    #turnstile-container { width: 300px; min-height: 65px; }
   </style>
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 </head>
 <body>
-  <div id="turnstile-container"></div>
+  <div id="turnstile-scale">
+    <div id="turnstile-container"></div>
+  </div>
   <script>
-    function postHeight() {
-      var el = document.getElementById('turnstile-container');
-      var h = el ? Math.ceil(el.getBoundingClientRect().height) : 65;
-      window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'height', height: h }));
+    var scaleBox = document.getElementById('turnstile-scale');
+    var container = document.getElementById('turnstile-container');
+
+    function fitToScreen() {
+      var avail = Math.max(document.documentElement.clientWidth || 300, 1);
+      var scale = Math.min(1, avail / 300);
+      scaleBox.style.transform = 'scale(' + scale + ')';
+      var box = scaleBox.getBoundingClientRect();
+      document.body.style.minHeight = Math.ceil(box.height) + 'px';
     }
 
-    function onTurnstileLoaded() {
-      if (!window.turnstile) return;
+    function postHeight() {
+      fitToScreen();
+      var h = scaleBox.getBoundingClientRect().height;
+      window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'height', height: Math.max(65, Math.ceil(h)) }));
+    }
+
+    var rendered = false;
+
+    function renderWidget() {
+      if (rendered) return;
+      rendered = true;
       var options = {
         sitekey: '${siteKey}',
         callback: function(token) {
@@ -40,36 +60,38 @@ const TURNSTILE_HTML = (siteKey, action) => `<!DOCTYPE html>
           window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'expired' }));
         },
         'error-callback': function() {
-          window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'error' }));
+          // Retry once with a clean widget before surfacing the error.
+          if (window.__turnstileRetried) {
+            window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'error' }));
+            return;
+          }
+          window.__turnstileRetried = true;
+          try {
+            window.turnstile.reset();
+            window.turnstile.render(container, options);
+          } catch (e) {
+            window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'error' }));
+          }
         }
       };
       ${action ? `options.action = '${action}';` : ''}
+      window.turnstile.render(container, options);
+    }
 
-      // Flexible size makes the widget match the container width, so it never
-      // overflows the login modal on narrow screens. Falls back to the normal
-      // 300px widget if flexible rendering is not supported.
-      var renderFlexible = function() {
-        options.size = 'flexible';
-        try {
-          window.turnstile.render('#turnstile-container', options);
-        } catch (e) {
-          delete options.size;
-          window.turnstile.render('#turnstile-container', options);
-        }
-      };
-
-      renderFlexible();
+    function onTurnstileLoaded() {
+      if (!window.turnstile) return;
+      renderWidget();
       postHeight();
-
-      // Keep the native container in sync when the challenge expands/shrinks.
       if (window.ResizeObserver) {
         try {
-          new ResizeObserver(function() { postHeight(); })
-            .observe(document.getElementById('turnstile-container'));
+          new ResizeObserver(function() { postHeight(); }).observe(container);
         } catch (e) {}
       }
-      setInterval(postHeight, 500);
+      window.addEventListener('resize', function() { postHeight(); });
+      setInterval(postHeight, 700);
     }
+
+    window.addEventListener('load', function() { fitToScreen(); postHeight(); });
 
     if (window.turnstile) {
       onTurnstileLoaded();
@@ -126,9 +148,7 @@ const TurnstileWidget = forwardRef(({ onToken, onExpire, onError, action }, ref)
   }, []);
 
   useEffect(() => {
-    // If the widget never reported a height (e.g. blank render), fall back to a
-    // generous default so the form does not collapse.
-    const t = setTimeout(() => setWebviewHeight((prev) => (prev === 72 ? 90 : prev)), 2500);
+    const t = setTimeout(() => setWebviewHeight((prev) => (prev === 72 ? 90 : prev)), 3000);
     return () => clearTimeout(t);
   }, []);
 
@@ -172,7 +192,7 @@ TurnstileWidget.displayName = 'TurnstileWidget';
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'stretch',
+    alignItems: 'center',
     width: '100%',
     marginVertical: 8,
   },
