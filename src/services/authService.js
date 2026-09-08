@@ -37,6 +37,7 @@ export const authService = {
     const response = await api.post('/auth/register', { ...userData, turnstile_token: turnstileToken });
     if (response.data.success) {
       const { token, session_token: sessionToken, user } = response.data.data;
+      const csrfToken = response.data.data?.csrf_token;
       await storageService.saveToken(token);
       await storageService.saveSessionToken(sessionToken);
       await storageService.saveUser(user);
@@ -51,6 +52,7 @@ export const authService = {
     const response = await api.post('/auth/login', { email, password, turnstile_token: turnstileToken });
     if (response.data.success) {
       const { token, session_token: sessionToken, user } = response.data.data;
+      const csrfToken = response.data.data?.csrf_token;
       await storageService.saveToken(token);
       await storageService.saveSessionToken(sessionToken);
       await storageService.saveUser(user);
