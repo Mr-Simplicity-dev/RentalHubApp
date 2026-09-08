@@ -644,7 +644,7 @@ const PrivacyPolicyScreen = () => (
           icon="call-outline"
           label="Telephone"
           value="+234 803 060 1238"
-          url="tel:+2348030601238"
+          url="tel:+234+1 447 747 4743"
         />
         <ContactLink
           icon="globe-outline"
