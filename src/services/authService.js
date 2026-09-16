@@ -35,12 +35,13 @@ const createMissingSessionError = () => {
 export const authService = {
   register: async (userData, turnstileToken) => {
     const response = await api.post('/auth/register', { ...userData, turnstile_token: turnstileToken });
-    if (response.data.success) {
-      const { token, session_token: sessionToken, user } = response.data.data;
-      const csrfToken = response.data.data?.csrf_token;
-      await storageService.saveToken(token);
-      await storageService.saveSessionToken(sessionToken);
-      await storageService.saveUser(user);
+    if (response?.data?.success) {
+      const payload = response.data.data || {};
+      const { token, session_token: sessionToken, user } = payload;
+      const csrfToken = payload.csrf_token || payload.csrfToken || response.data.csrf_token || response.data.csrfToken;
+      if (token) await storageService.saveToken(token);
+      if (sessionToken) await storageService.saveSessionToken(sessionToken);
+      if (user) await storageService.saveUser(user);
       if (csrfToken) {
         await storageService.setCsrfToken(csrfToken);
       }
@@ -50,12 +51,13 @@ export const authService = {
 
   login: async (email, password, turnstileToken) => {
     const response = await api.post('/auth/login', { email, password, turnstile_token: turnstileToken });
-    if (response.data.success) {
-      const { token, session_token: sessionToken, user } = response.data.data;
-      const csrfToken = response.data.data?.csrf_token;
-      await storageService.saveToken(token);
-      await storageService.saveSessionToken(sessionToken);
-      await storageService.saveUser(user);
+    if (response?.data?.success) {
+      const payload = response.data.data || {};
+      const { token, session_token: sessionToken, user } = payload;
+      const csrfToken = payload.csrf_token || payload.csrfToken || response.data.csrf_token || response.data.csrfToken;
+      if (token) await storageService.saveToken(token);
+      if (sessionToken) await storageService.saveSessionToken(sessionToken);
+      if (user) await storageService.saveUser(user);
       if (csrfToken) {
         await storageService.setCsrfToken(csrfToken);
       }
@@ -115,7 +117,7 @@ export const authService = {
     const token = sessionData?.token;
     const sessionToken = sessionData?.session_token || sessionData?.sessionToken;
     const user = sessionData?.user;
-    const csrfToken = sessionData?.csrf_token;
+    const csrfToken = sessionData?.csrf_token || sessionData?.csrfToken;
 
     if (!token && !sessionToken && !user) {
       return;

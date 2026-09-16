@@ -148,8 +148,9 @@ const refreshNativeSession = async () => {
 
   await storageService.saveToken(payload.token);
   await storageService.saveSessionToken(payload.session_token);
-  if (payload.csrf_token) {
-    await storageService.setCsrfToken(payload.csrf_token);
+  const csrfToken = payload.csrf_token || payload.csrfToken;
+  if (csrfToken) {
+    await storageService.setCsrfToken(csrfToken);
   }
   return payload.token;
 };
