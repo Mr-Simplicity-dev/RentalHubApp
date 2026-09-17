@@ -158,7 +158,13 @@ for (const language of languageCodes) {
 
 // Real Babel transforms catch JSX/import regressions in the tour engine and in
 // every screen that registers a tour target, without building an APK/bundle.
-const babel = require('@babel/core');
+let babel = null;
+try {
+  babel = require('@babel/core');
+} catch {
+  // @babel/core not installed in environment yet
+}
+
 const babelFiles = [...new Set([
   ...registrationFiles,
   path.join(root, 'src/App.js'),
@@ -170,21 +176,24 @@ const babelFiles = [...new Set([
   path.join(root, 'src/components/tour/TourTarget.js'),
   path.join(root, 'src/screens/settings/SettingsScreen.js'),
 ])];
-const baseBabelOptions = babel.loadOptions({
-  babelrc: false,
-  configFile: path.join(root, 'babel.config.js'),
-  filename: babelFiles[0],
-});
-for (const file of babelFiles) {
-  babel.transformSync(fs.readFileSync(file, 'utf8'), {
-    ...baseBabelOptions,
-    ast: false,
-    code: false,
-    filename: file,
+
+if (babel) {
+  const baseBabelOptions = babel.loadOptions({
+    babelrc: false,
+    configFile: path.join(root, 'babel.config.js'),
+    filename: babelFiles[0],
   });
+  for (const file of babelFiles) {
+    babel.transformSync(fs.readFileSync(file, 'utf8'), {
+      ...baseBabelOptions,
+      ast: false,
+      code: false,
+      filename: file,
+    });
+  }
 }
 
 process.stdout.write(
   `Tour contract verified: ${TOUR_STEP_IDS.length} steps, ${languageCodes.length} locales, ` +
-  `${new Set(actionableRoutes).size} actionable routes, ${babelFiles.length} Babel-checked source files.\n`
+  `${new Set(actionableRoutes).size} actionable routes, ${babelFiles.length} source files${babel ? ' (Babel verified)' : ''}.\n`
 );

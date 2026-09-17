@@ -39,11 +39,14 @@ export const getDirectApkUrl = (versionState = {}) => {
   );
 };
 
+const PLAY_STORE_URL = 'market://details?id=com.rentalhubng';
+const PLAY_STORE_WEB_URL = 'https://play.google.com/store/apps/details?id=com.rentalhubng';
+
 export const getUpdateUrl = (versionState = {}) =>
   getDirectApkUrl(versionState) ||
   versionState.download_url ||
   versionState.store_url ||
-  '';
+  (Platform.OS === 'android' ? PLAY_STORE_WEB_URL : '');
 
 export const checkForAppUpdate = async () => {
   const response = await checkMobileAppVersion();

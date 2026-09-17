@@ -291,6 +291,11 @@ const WalletWithdrawModal = ({
                     <AppText style={styles.historyMeta}>
                       {item.status || 'pending'} · {item.bank_name || 'Bank'}
                     </AppText>
+                    {item.rejection_reason || item.payout_failed_reason ? (
+                      <AppText style={{ color: '#dc2626', fontSize: 12, marginTop: 4 }}>
+                        Reason: {item.rejection_reason || item.payout_failed_reason}
+                      </AppText>
+                    ) : null}
                   </View>
                 ))}
               </View>

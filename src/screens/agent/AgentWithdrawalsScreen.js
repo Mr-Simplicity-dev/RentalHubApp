@@ -190,8 +190,8 @@ const AgentWithdrawalsScreen = ({ navigation }) => {
                 </View>
                 <View style={styles.statusPill}><AppText style={styles.statusText}>{item.status || 'pending'}</AppText></View>
               </View>
-              {item.reason_for_rejection ? (
-                <AppText style={styles.reject}>Reason: {item.reason_for_rejection}</AppText>
+              {item.reason_for_rejection || item.payout_failed_reason ? (
+                <AppText style={styles.reject}>Reason: {item.reason_for_rejection || item.payout_failed_reason}</AppText>
               ) : null}
             </View>
           ))}

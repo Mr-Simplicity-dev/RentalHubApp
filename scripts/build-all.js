@@ -45,7 +45,13 @@ const main = () => {
 
   if (platform === 'android' || platform === 'all') {
     console.log('>>> Building Android APK...');
-    run(`.\\gradlew assembleRelease --no-daemon --build-cache`, { cwd: ANDROID_DIR });
+    const gradlewCmd = process.platform === 'win32' ? '.\\gradlew' : './gradlew';
+    if (process.platform !== 'win32') {
+      try {
+        fs.chmodSync(path.join(ANDROID_DIR, 'gradlew'), 0o755);
+      } catch {}
+    }
+    run(`${gradlewCmd} assembleRelease --no-daemon --build-cache`, { cwd: ANDROID_DIR });
 
     const apkPath = path.join(ANDROID_DIR, 'app', 'build', 'outputs', 'apk', 'release', 'app-release.apk');
     if (fs.existsSync(apkPath)) {

@@ -1,7 +1,7 @@
 {
   "name": "rentalhubmobile",
   "private": true,
-  "version": "1.0.1",
+  "version": "1.0.2",
   "main": "index.js",
   "scripts": {
     "android": "react-native run-android",
@@ -49,10 +49,18 @@
     "socket.io-client": "^4.8.3"
   },
   "devDependencies": {
+    "@babel/core": "^7.26.0",
     "@react-native-community/cli": "^20.1.3",
     "@react-native/metro-config": "^0.83.10",
     "@react-navigation/stack": "^6.4.1",
     "babel-preset-expo": "^55.0.12",
     "patch-package": "^8.0.1"
+  },
+  "overrides": {
+    "@xmldom/xmldom": "^0.9.8",
+    "browserslist": "^4.24.4",
+    "image-size": "^1.2.1",
+    "js-yaml": "^4.1.1",
+    "qs": "^6.14.0"
   }
 }
