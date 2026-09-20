@@ -37,6 +37,7 @@ import {
   useTourScrollController,
 } from '../../components/tour/TourScrollContext';
 import { useAccessibilityPreferences } from '../../hooks/useAccessibilityPreferences';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 import AppText from '../../components/common/AppText';
 const sections = [
@@ -2646,30 +2647,34 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
     </>
   );
 
-  const renderedSection = {
-    overview: renderOverview(),
-    users: renderUsers(),
-    verifications: renderVerifications(),
-    moderation: renderModeration(),
-    lawyer_invites: renderLawyerInvites(),
-    analytics: renderStructuredAnalytics(),
-    platform_lawyers: renderPlatformLawyers(),
-    platform_agents: renderPlatformAgents(),
-    lawyer_activity: renderLawyerActivity(),
-    admin_management: renderAdminManagement(),
-    pending_approvals: renderPendingApprovals(),
-    property_requests: renderPropertyRequests(),
-    pricing: renderPricing(),
-    registration_access: renderRegistrationAccess(),
-    properties: renderProperties(),
-    reports: renderReports(),
-    broadcasts: renderBroadcasts(),
-    ad_spaces: renderAdSpaces(),
-    flags: renderFlags(),
-    sfa_permissions: renderSfaPermissions(),
-    fraud: renderFraud(),
-    logs: renderLogs(),
-  }[section];
+  const renderCurrentSection = () => {
+    switch (section) {
+      case 'overview': return renderOverview();
+      case 'users': return renderUsers();
+      case 'verifications': return renderVerifications();
+      case 'moderation': return renderModeration();
+      case 'lawyer_invites': return renderLawyerInvites();
+      case 'analytics': return renderStructuredAnalytics();
+      case 'platform_lawyers': return renderPlatformLawyers();
+      case 'platform_agents': return renderPlatformAgents();
+      case 'lawyer_activity': return renderLawyerActivity();
+      case 'admin_management': return renderAdminManagement();
+      case 'pending_approvals': return renderPendingApprovals();
+      case 'property_requests': return renderPropertyRequests();
+      case 'pricing': return renderPricing();
+      case 'registration_access': return renderRegistrationAccess();
+      case 'properties': return renderProperties();
+      case 'reports': return renderReports();
+      case 'broadcasts': return renderBroadcasts();
+      case 'ad_spaces': return renderAdSpaces();
+      case 'flags': return renderFlags();
+      case 'sfa_permissions': return renderSfaPermissions();
+      case 'fraud': return renderFraud();
+      case 'logs': return renderLogs();
+      default: return renderOverview();
+    }
+  };
+  const renderedSection = renderCurrentSection();
   const selectedSection = sectionOptions.find((item) => item.value === section);
 
   return (
