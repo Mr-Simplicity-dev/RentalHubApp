@@ -50,7 +50,11 @@ export const authService = {
   },
 
   login: async (email, password, turnstileToken) => {
-    const response = await api.post('/auth/login', { email, password, turnstile_token: turnstileToken });
+    // Mobile keyboards often add trailing spaces or auto-capitalise the first
+    // letter; normalise the email so an exact backend match cannot fail on that.
+    const cleanEmail = String(email || '').trim().toLowerCase();
+    const cleanPassword = String(password || '');
+    const response = await api.post('/auth/login', { email: cleanEmail, password: cleanPassword, turnstile_token: turnstileToken });
     if (response?.data?.success) {
       const payload = response.data.data || {};
       const { token, session_token: sessionToken, user } = payload;

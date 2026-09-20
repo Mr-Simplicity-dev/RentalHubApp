@@ -228,6 +228,7 @@ const LoginScreen = ({ navigation }) => {
               keyboardType="email-address"
               icon="mail-outline"
               autoCapitalize="none"
+              autoCorrect={false}
               autoComplete="email"
             />
 
@@ -238,6 +239,8 @@ const LoginScreen = ({ navigation }) => {
               placeholder="Enter your password"
               secureTextEntry
               icon="lock-closed-outline"
+              autoCapitalize="none"
+              autoCorrect={false}
               autoComplete="current-password"
             />
 
