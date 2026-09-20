@@ -60,22 +60,39 @@ const StatCard = ({ title, value, icon, onPress, tourTarget }) => {
   );
 };
 
-const StatusBanner = ({ icon, title, description, colors, onPress, actionLabel }) => (
-  <TouchableOpacity
-    style={[styles.banner, { backgroundColor: colors.background, borderColor: colors.border }]}
-    onPress={onPress}
-    activeOpacity={0.85}
-  >
-    <Icon name={icon} size={22} color={colors.icon} />
-    <View style={styles.bannerBody}>
-      <AppText style={[styles.bannerTitle, { color: colors.title }]}>{title}</AppText>
-      <AppText style={[styles.bannerText, { color: colors.text }]}>{description}</AppText>
-      {actionLabel ? (
-        <AppText style={[styles.bannerAction, { color: colors.title }]}>{actionLabel}</AppText>
-      ) : null}
-    </View>
-  </TouchableOpacity>
-);
+const defaultBannerColors = {
+  background: '#eff6ff',
+  border: '#bfdbfe',
+  icon: '#2563eb',
+  title: '#1d4ed8',
+  text: '#1d4ed8',
+};
+
+const StatusBanner = ({ icon, title, description, colors: bannerColors, onPress, actionLabel }) => {
+  const palette = bannerColors || defaultBannerColors;
+  return (
+    <TouchableOpacity
+      style={[
+        styles.banner,
+        {
+          backgroundColor: palette.background || defaultBannerColors.background,
+          borderColor: palette.border || defaultBannerColors.border,
+        },
+      ]}
+      onPress={onPress}
+      activeOpacity={0.85}
+    >
+      <Icon name={icon || 'information-circle-outline'} size={22} color={palette.icon || defaultBannerColors.icon} />
+      <View style={styles.bannerBody}>
+        <AppText style={[styles.bannerTitle, { color: palette.title || defaultBannerColors.title }]}>{title}</AppText>
+        <AppText style={[styles.bannerText, { color: palette.text || defaultBannerColors.text }]}>{description}</AppText>
+        {actionLabel ? (
+          <AppText style={[styles.bannerAction, { color: palette.title || defaultBannerColors.title }]}>{actionLabel}</AppText>
+        ) : null}
+      </View>
+    </TouchableOpacity>
+  );
+};
 
 const getPropertyMapAddress = (property = {}) =>
   property.full_address ||

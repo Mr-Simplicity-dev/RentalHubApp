@@ -482,16 +482,16 @@ const MainTabs = () => (
     })}
   >
     <Tab.Screen name="HomeTab" options={{ title: 'Explore' }}>
-      {(props) => <TourTarget id="tab_explore"><HomeScreen {...props} /></TourTarget>}
+      {(props) => <TourTarget id="tab_explore" style={{ flex: 1 }}><HomeScreen {...props} /></TourTarget>}
     </Tab.Screen>
     <Tab.Screen name="DashboardTab" options={{ title: 'My Hub' }}>
-      {(props) => <TourTarget id="tab_dashboard"><DashboardScreen {...props} /></TourTarget>}
+      {(props) => <TourTarget id="tab_dashboard" style={{ flex: 1 }}><DashboardScreen {...props} /></TourTarget>}
     </Tab.Screen>
     <Tab.Screen name="Applications" options={{ title: 'Applications' }}>
-      {(props) => <TourTarget id="tab_applications"><ApplicationsScreen {...props} /></TourTarget>}
+      {(props) => <TourTarget id="tab_applications" style={{ flex: 1 }}><ApplicationsScreen {...props} /></TourTarget>}
     </Tab.Screen>
     <Tab.Screen name="Messages" options={{ title: 'Messages' }}>
-      {(props) => <TourTarget id="tab_messages"><MessagesScreen {...props} /></TourTarget>}
+      {(props) => <TourTarget id="tab_messages" style={{ flex: 1 }}><MessagesScreen {...props} /></TourTarget>}
     </Tab.Screen>
   </Tab.Navigator>
 );
