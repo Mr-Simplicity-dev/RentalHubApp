@@ -172,8 +172,20 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = async () => {
-    await unregisterPushDevice().catch(() => {});
-    await authService.logout().catch(() => {});
+    // Local sign-out must ALWAYS complete, even with no connection. Capture the
+    // token first so the best-effort server logout can still authenticate, fire
+    // the network calls WITHOUT awaiting them (never queued, never retried, no
+    // offline toast), then clear the local session immediately.
+    let token = null;
+    try {
+      token = await storageService.getToken();
+    } catch (e) {
+      token = null;
+    }
+
+    unregisterPushDevice().catch(() => {});
+    authService.logout({ token }).catch(() => {});
+
     await clearLocalSession({ restoreImpersonation: false });
   };
   logoutRef.current = logout;

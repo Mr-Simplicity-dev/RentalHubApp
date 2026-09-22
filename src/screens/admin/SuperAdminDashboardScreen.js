@@ -716,6 +716,32 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
   const renderOverview = () => {
     const analyticEntries = Object.entries(analytics);
 
+    // Responsive summary cards. Values come from the existing super-admin
+    // analytics API; each card opens its existing section.
+    const summaryCards = [
+      {
+        key: 'properties',
+        label: 'Total Properties',
+        icon: 'home-outline',
+        section: 'properties',
+        value: Number(analytics.totalProperties ?? properties.length) || 0,
+      },
+      {
+        key: 'applications',
+        label: 'Applications',
+        icon: 'documents-outline',
+        section: 'property_requests',
+        value: Number(analytics.totalApplications ?? 0) || 0,
+      },
+      {
+        key: 'verified',
+        label: 'Verified Users',
+        icon: 'shield-checkmark-outline',
+        section: 'verifications',
+        value: Number(analytics.verifiedUsers ?? 0) || 0,
+      },
+    ];
+
     return (
       <View>
         <View style={styles.card}>
@@ -723,6 +749,26 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
           <AppText style={styles.meta}>
             Quick platform statistics at a glance. Use the Analytics tab for detailed metrics.
           </AppText>
+        </View>
+
+        <View style={styles.summaryGrid}>
+          {summaryCards.map((card) => (
+            <TouchableOpacity
+              key={card.key}
+              accessibilityRole="button"
+              accessibilityLabel={`${card.label}: ${card.value.toLocaleString()}`}
+              activeOpacity={0.85}
+              onPress={() => setSection(card.section)}
+              style={styles.summaryCard}
+            >
+              <View style={styles.summaryCardTop}>
+                <AppText style={styles.summaryCardLabel}>{card.label}</AppText>
+                <Icon name={card.icon} size={20} color={colors.blue} />
+              </View>
+              <AppText style={styles.summaryCardValue}>{card.value.toLocaleString()}</AppText>
+              <AppText style={styles.summaryCardHint}>Tap to view →</AppText>
+            </TouchableOpacity>
+          ))}
         </View>
 
         {analyticEntries.length === 0 ? (
@@ -2943,6 +2989,45 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   // ===================== NEW STYLES =====================
+  summaryGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+    marginBottom: 10,
+  },
+  summaryCard: {
+    backgroundColor: '#ffffff',
+    borderWidth: 1,
+    borderColor: '#e2e8f0',
+    borderRadius: 12,
+    flex: 1,
+    minWidth: '47%',
+    padding: 14,
+  },
+  summaryCardTop: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  summaryCardLabel: {
+    color: '#64748b',
+    flex: 1,
+    fontFamily: typography.medium,
+    fontSize: 13,
+    marginRight: 6,
+  },
+  summaryCardValue: {
+    color: '#0f172a',
+    fontFamily: typography.bold,
+    fontSize: 24,
+    marginTop: 8,
+  },
+  summaryCardHint: {
+    color: colors.blue,
+    fontFamily: typography.semibold,
+    fontSize: 11,
+    marginTop: 4,
+  },
   analyticsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',

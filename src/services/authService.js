@@ -69,9 +69,19 @@ export const authService = {
     return response.data;
   },
 
-  logout: async () => {
+  logout: async ({ token = null, timeout = 5000 } = {}) => {
     try {
-      await api.post('/auth/logout');
+      // Best-effort only. A dead connection must never block local sign-out, so
+      // this carries a short timeout and never triggers a session refresh.
+      await api.post(
+        '/auth/logout',
+        {},
+        {
+          ...(token ? { headers: { Authorization: `Bearer ${token}` } } : {}),
+          skipAuthRefresh: true,
+          timeout,
+        }
+      );
     } catch (error) {
       // token might already be invalid; still clear local state
     }
