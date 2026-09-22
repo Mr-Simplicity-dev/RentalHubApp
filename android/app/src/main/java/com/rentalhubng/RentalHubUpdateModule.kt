@@ -8,12 +8,16 @@ import android.content.IntentFilter
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
+import android.os.Handler
+import android.os.Looper
 import android.provider.Settings
 import androidx.core.content.FileProvider
+import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
+import com.facebook.react.modules.core.DeviceEventManagerModule
 import java.io.File
 import java.util.Locale
 
@@ -87,7 +91,7 @@ class RentalHubUpdateModule(private val reactContext: ReactApplicationContext) :
         .setTitle("RentalHub update")
         .setDescription("Downloading the latest RentalHub app.")
         .setMimeType(APK_MIME_TYPE)
-        .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+        .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
         .setAllowedOverMetered(true)
         .setAllowedOverRoaming(false)
         .setDestinationInExternalFilesDir(
@@ -99,6 +103,8 @@ class RentalHubUpdateModule(private val reactContext: ReactApplicationContext) :
       val downloadManager =
         reactContext.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
       val downloadId = downloadManager.enqueue(request)
+
+      startProgressPolling(downloadId, downloadManager)
 
       val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -123,6 +129,7 @@ class RentalHubUpdateModule(private val reactContext: ReactApplicationContext) :
             val status = cursor.getInt(statusIndex)
             if (status != DownloadManager.STATUS_SUCCESSFUL) {
               val reason = if (reasonIndex >= 0) cursor.getInt(reasonIndex) else 0
+              stopProgressPolling()
               promise.reject(
                 "APK_DOWNLOAD_FAILED",
                 "RentalHub update download failed. Android reason code: $reason."
@@ -130,6 +137,8 @@ class RentalHubUpdateModule(private val reactContext: ReactApplicationContext) :
               return
             }
           }
+
+          stopProgressPolling()
 
           try {
             openInstaller(destinationFile)
@@ -149,6 +158,75 @@ class RentalHubUpdateModule(private val reactContext: ReactApplicationContext) :
     } catch (error: Exception) {
       promise.reject("APK_UPDATE_FAILED", error.message, error)
     }
+  }
+
+  private val progressHandler = Handler(Looper.getMainLooper())
+  private var progressRunnable: Runnable? = null
+
+  private fun emitProgress(downloaded: Long, total: Long, status: Int) {
+    try {
+      val map = Arguments.createMap()
+      val progress = if (total > 0) ((downloaded * 100) / total).toInt() else 0
+      map.putInt("progress", progress.coerceIn(0, 100))
+      map.putDouble("downloaded", downloaded.toDouble())
+      map.putDouble("total", total.toDouble())
+      map.putBoolean("indeterminate", total <= 0)
+      map.putString("status", statusName(status))
+      reactContext
+        .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+        .emit(UPDATE_PROGRESS_EVENT, map)
+    } catch (_: Exception) {
+      // The JS context may be gone (app backgrounded/killed) — progress is best-effort.
+    }
+  }
+
+  private fun statusName(status: Int): String = when (status) {
+    DownloadManager.STATUS_PENDING -> "pending"
+    DownloadManager.STATUS_RUNNING -> "running"
+    DownloadManager.STATUS_PAUSED -> "paused"
+    DownloadManager.STATUS_SUCCESSFUL -> "successful"
+    DownloadManager.STATUS_FAILED -> "failed"
+    else -> "unknown"
+  }
+
+  private fun startProgressPolling(downloadId: Long, downloadManager: DownloadManager) {
+    stopProgressPolling()
+    val runnable = object : Runnable {
+      override fun run() {
+        var finished = false
+        try {
+          val query = DownloadManager.Query().setFilterById(downloadId)
+          downloadManager.query(query).use { cursor ->
+            if (cursor != null && cursor.moveToFirst()) {
+              val statusIdx = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)
+              val downloadedIdx = cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR)
+              val totalIdx = cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES)
+              val status = if (statusIdx >= 0) cursor.getInt(statusIdx) else DownloadManager.STATUS_PENDING
+              val downloaded = if (downloadedIdx >= 0) cursor.getLong(downloadedIdx) else 0L
+              val total = if (totalIdx >= 0) cursor.getLong(totalIdx) else -1L
+              emitProgress(downloaded, total, status)
+              finished = status == DownloadManager.STATUS_SUCCESSFUL || status == DownloadManager.STATUS_FAILED
+            } else {
+              finished = true
+            }
+          }
+        } catch (_: Exception) {
+          finished = true
+        }
+        if (finished) {
+          progressRunnable = null
+        } else {
+          progressHandler.postDelayed(this, PROGRESS_INTERVAL_MS)
+        }
+      }
+    }
+    progressRunnable = runnable
+    progressHandler.post(runnable)
+  }
+
+  private fun stopProgressPolling() {
+    progressRunnable?.let { progressHandler.removeCallbacks(it) }
+    progressRunnable = null
   }
 
   private fun openInstaller(apkFile: File) {
@@ -175,5 +253,7 @@ class RentalHubUpdateModule(private val reactContext: ReactApplicationContext) :
 
   companion object {
     private const val APK_MIME_TYPE = "application/vnd.android.package-archive"
+    private const val UPDATE_PROGRESS_EVENT = "rentalHubUpdateProgress"
+    private const val PROGRESS_INTERVAL_MS = 500L
   }
 }

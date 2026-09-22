@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {ActivityIndicator,
+  DeviceEventEmitter,
   StyleSheet,
   TouchableOpacity,
   View} from 'react-native';
@@ -17,6 +18,7 @@ import { colors, shadows, typography } from '../../theme';
 import AppText from '../../components/common/AppText';
 const CHECK_DELAY_MS = 4200;
 const CHECK_INTERVAL_MS = 4 * 60 * 60 * 1000;
+const UPDATE_PROGRESS_EVENT = 'rentalHubUpdateProgress';
 
 const AppUpdateIndicator = ({ variant = 'floating' }) => {
   const insets = useSafeAreaInsets();
@@ -24,7 +26,16 @@ const AppUpdateIndicator = ({ variant = 'floating' }) => {
   const [versionState, setVersionState] = useState(null);
   const [dismissed, setDismissed] = useState(false);
   const [updating, setUpdating] = useState(false);
+  const [downloadProgress, setDownloadProgress] = useState(null);
   const [updateAlertsEnabled, setUpdateAlertsEnabled] = useState(true);
+
+  // Native Android DownloadManager reports download progress through this event.
+  useEffect(() => {
+    const subscription = DeviceEventEmitter.addListener(UPDATE_PROGRESS_EVENT, (payload) => {
+      setDownloadProgress(payload || null);
+    });
+    return () => subscription.remove();
+  }, []);
 
   useEffect(() => {
     const unsubscribe = subscribeAppSettings((settings) => {
@@ -69,6 +80,7 @@ const AppUpdateIndicator = ({ variant = 'floating' }) => {
   const startUpdate = async (source) => {
     if (!versionState?.update_available || updating) return;
     setUpdating(true);
+    setDownloadProgress(null);
     try {
       await startAppUpdate(versionState);
     } catch (error) {
@@ -127,6 +139,18 @@ const AppUpdateIndicator = ({ variant = 'floating' }) => {
           {message}
           {versionState.latest_version ? ` Latest: ${versionState.latest_version}.` : ''}
         </AppText>
+        {updating && downloadProgress ? (
+          <View style={styles.progressWrap}>
+            <View style={styles.progressTrack}>
+              <View style={[styles.progressFill, { width: `${Math.max(0, Math.min(100, downloadProgress.progress || 0))}%` }]} />
+            </View>
+            <AppText style={styles.progressText}>
+              {downloadProgress.indeterminate
+                ? 'Downloading update…'
+                : `Downloading update… ${downloadProgress.progress || 0}%`}
+            </AppText>
+          </View>
+        ) : null}
         <View style={styles.bannerActions}>
           <TouchableOpacity
             accessibilityRole="button"
@@ -218,6 +242,26 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     gap: 8,
     marginTop: 11,
+  },
+  progressWrap: {
+    marginTop: 10,
+  },
+  progressTrack: {
+    backgroundColor: 'rgba(255, 255, 255, 0.18)',
+    borderRadius: 999,
+    height: 6,
+    overflow: 'hidden',
+  },
+  progressFill: {
+    backgroundColor: colors.gold,
+    borderRadius: 999,
+    height: 6,
+  },
+  progressText: {
+    color: 'rgba(255, 255, 255, 0.85)',
+    fontFamily: typography.semibold,
+    fontSize: 12,
+    marginTop: 6,
   },
   primaryButton: {
     alignItems: 'center',
