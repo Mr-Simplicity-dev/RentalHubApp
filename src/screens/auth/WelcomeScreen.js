@@ -10,6 +10,7 @@ import {Animated,
 import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BrandMark from '../../components/brand/BrandMark';
+import AppUpdateIndicator from '../../components/common/AppUpdateIndicator';
 import { colors, radius, shadows, typography } from '../../theme';
 import AppText from '../../components/common/AppText';
 
@@ -96,6 +97,9 @@ const WelcomeScreen = ({ navigation }) => {
           <Icon name="shield-checkmark" size={17} color="#8DB9F2" />
           <AppText style={styles.trustText}>Secure identity and property verification</AppText>
         </View>
+
+        {/* App update prompt — available before sign-in so anyone can update. */}
+        <AppUpdateIndicator variant="inline" />
       </Animated.View>
       </ScrollView>
     </SafeAreaView>

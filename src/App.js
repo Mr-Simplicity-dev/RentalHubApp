@@ -80,7 +80,7 @@ const AppContent = () => {
       <NetworkStatusBanner />
       <AppNavigator />
       <NativeCallOverlay />
-      <AppUpdateIndicator />
+      {isAuthenticated ? <AppUpdateIndicator /> : null}
       <TourNavigationBridge />
       <NativeTourManager />
       <Toast />

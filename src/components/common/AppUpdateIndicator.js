@@ -18,8 +18,9 @@ import AppText from '../../components/common/AppText';
 const CHECK_DELAY_MS = 4200;
 const CHECK_INTERVAL_MS = 4 * 60 * 60 * 1000;
 
-const AppUpdateIndicator = () => {
+const AppUpdateIndicator = ({ variant = 'floating' }) => {
   const insets = useSafeAreaInsets();
+  const isInline = variant === 'inline';
   const [versionState, setVersionState] = useState(null);
   const [dismissed, setDismissed] = useState(false);
   const [updating, setUpdating] = useState(false);
@@ -100,7 +101,7 @@ const AppUpdateIndicator = () => {
         accessibilityRole="button"
         activeOpacity={0.86}
         onPress={() => startUpdate('compact_update_dot')}
-        style={[styles.dotContainer, { top: Math.max(insets.top + 12, 18) }]}
+        style={[styles.dotContainer, isInline ? styles.dotContainerInline : { top: Math.max(insets.top + 12, 18) }]}
       >
         <View style={styles.dotWrap}>
           <View style={styles.dotHalo} />
@@ -113,7 +114,7 @@ const AppUpdateIndicator = () => {
   }
 
   return (
-    <View style={[styles.banner, { top: Math.max(insets.top + 12, 18) }]}>
+    <View style={[styles.banner, isInline ? styles.bannerInline : { top: Math.max(insets.top + 12, 18) }]}>
       <View style={styles.bannerIcon}>
         <Icon name="cloud-download-outline" size={21} color={colors.navy} />
       </View>
@@ -293,6 +294,22 @@ const styles = StyleSheet.create({
   },
   disabled: {
     opacity: 0.68,
+  },
+  bannerInline: {
+    left: 0,
+    marginTop: 16,
+    position: 'relative',
+    right: 0,
+    top: 0,
+    zIndex: 1,
+  },
+  dotContainerInline: {
+    alignSelf: 'flex-start',
+    marginTop: 16,
+    position: 'relative',
+    right: 0,
+    top: 0,
+    zIndex: 1,
   },
 });
 
