@@ -43,6 +43,8 @@ import PaymentHistoryScreen from '../screens/dashboard/PaymentHistoryScreen';
 
 import ApplicationsScreen from '../screens/applications/ApplicationsScreen';
 import ApplicationDetailScreen from '../screens/applications/ApplicationDetailScreen';
+import TenancyAgreementsScreen from '../screens/tenancy/TenancyAgreementsScreen';
+import TenancyAgreementDetailScreen from '../screens/tenancy/TenancyAgreementDetailScreen';
 import MessagesScreen from '../screens/messages/MessagesScreen';
 
 import LawyerDashboardScreen from '../screens/lawyer/LawyerDashboardScreen';
@@ -505,6 +507,8 @@ const TenantRoot = () => (
     <Stack.Screen name="PropertyAlertRequest" component={PropertyAlertRequestScreen} options={{ title: 'Submit Request' }} />
     <Stack.Screen name="LocationInfo" component={LocationInfoScreen} options={{ title: 'Location' }} />
     <Stack.Screen name="ApplicationDetail" component={ApplicationDetailScreen} options={{ headerShown: false }} />
+    <Stack.Screen name="TenancyAgreements" component={TenancyAgreementsScreen} options={{ title: 'Tenancy Agreements' }} />
+    <Stack.Screen name="TenancyAgreementDetail" component={TenancyAgreementDetailScreen} options={{ headerShown: false }} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
     <Stack.Screen name="PrivacyData" component={PrivacyDataScreen} options={{ title: 'My Personal Data' }} />
     <Stack.Screen name="SavedProperties" component={SavedPropertiesScreen} options={{ title: 'Saved Properties' }} />
@@ -559,6 +563,8 @@ const LandlordRoot = () => (
     <Stack.Screen name="PropertyAlertRequest" component={PropertyAlertRequestScreen} options={{ title: 'Submit Request' }} />
     <Stack.Screen name="LocationInfo" component={LocationInfoScreen} options={{ title: 'Location' }} />
     <Stack.Screen name="ApplicationDetail" component={ApplicationDetailScreen} options={{ headerShown: false }} />
+    <Stack.Screen name="TenancyAgreements" component={TenancyAgreementsScreen} options={{ title: 'Tenancy Agreements' }} />
+    <Stack.Screen name="TenancyAgreementDetail" component={TenancyAgreementDetailScreen} options={{ headerShown: false }} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
     <Stack.Screen name="PrivacyData" component={PrivacyDataScreen} options={{ title: 'My Personal Data' }} />
     <Stack.Screen name="MyProperties" component={MyPropertiesScreen} options={{ title: 'My Properties' }} />

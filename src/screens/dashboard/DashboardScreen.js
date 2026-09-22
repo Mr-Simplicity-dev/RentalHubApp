@@ -1077,6 +1077,14 @@ const DashboardScreen = ({ navigation }) => {
             onPress={() => navigation.navigate('AddProperty')}
           />
         )}
+        {(isTenant || isLandlord) ? (
+          <ActionRow
+            title="Tenancy Agreements"
+            subtitle="Review and electronically sign your tenancy agreements."
+            icon="document-text-outline"
+            onPress={() => navigation.navigate('TenancyAgreements')}
+          />
+        ) : null}
       </DashboardSection>
 
       {isTenant ? (
