@@ -45,6 +45,8 @@ import ApplicationsScreen from '../screens/applications/ApplicationsScreen';
 import ApplicationDetailScreen from '../screens/applications/ApplicationDetailScreen';
 import TenancyAgreementsScreen from '../screens/tenancy/TenancyAgreementsScreen';
 import TenancyAgreementDetailScreen from '../screens/tenancy/TenancyAgreementDetailScreen';
+import RequestRentHelpScreen from '../screens/shared/RequestRentHelpScreen';
+import PayRentOnBehalfScreen from '../screens/shared/PayRentOnBehalfScreen';
 import MessagesScreen from '../screens/messages/MessagesScreen';
 
 import LawyerDashboardScreen from '../screens/lawyer/LawyerDashboardScreen';
@@ -217,6 +219,8 @@ const linkingConfig = {
       PropertyAlertRequest: 'property-request',
       AcceptLawyerInvite: 'lawyer/accept-invite',
       AcceptAgentInvite: 'agent/accept-invite',
+      RequestRentHelp: 'rent-help',
+      PayRentOnBehalf: 'pay-for-rent/:token',
       NativeTools: 'tools',
       Applications: 'applications',
       SavedProperties: 'saved-properties',
@@ -362,6 +366,8 @@ const commonTenancyScreens = () => (
   <>
     <Stack.Screen name="RefundRequests" component={RefundRequestsScreen} options={{ title: 'Refund Requests' }} />
     <Stack.Screen name="RefundRequest" component={RefundRequestScreen} options={{ title: 'Request Refund' }} />
+    <Stack.Screen name="RequestRentHelp" component={RequestRentHelpScreen} options={{ title: 'Ask for rent help' }} />
+    <Stack.Screen name="PayRentOnBehalf" component={PayRentOnBehalfScreen} options={{ title: "Pay someone's rent" }} />
   </>
 );
 

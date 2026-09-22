@@ -1131,6 +1131,14 @@ const DashboardScreen = ({ navigation }) => {
             onPress={() => navigation.navigate('RefundRequests')}
           />
         ) : null}
+        {isTenant ? (
+          <ActionRow
+            title="Ask for rent help"
+            subtitle="Create a secure link so someone can pay your rent."
+            icon="hand-left-outline"
+            onPress={() => navigation.navigate('RequestRentHelp')}
+          />
+        ) : null}
         {(isTenant || isLandlord) ? (
           <>
             <ActionRow
