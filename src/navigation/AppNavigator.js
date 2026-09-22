@@ -141,6 +141,8 @@ import StateAdminFinanceScreen from '../screens/shared/StateAdminFinanceScreen';
 import FinanceStateAdminScreen from '../screens/shared/FinanceStateAdminScreen';
 import RentSavingsAdminScreen from '../screens/shared/RentSavingsAdminScreen';
 import RentSavingsSetupFeesScreen from '../screens/shared/RentSavingsSetupFeesScreen';
+import RentCalculatorFeesAdminScreen from '../screens/shared/RentCalculatorFeesAdminScreen';
+import TourAnalyticsScreen from '../screens/shared/TourAnalyticsScreen';
 import AgentCommissionAdminScreen from '../screens/shared/AgentCommissionAdminScreen';
 import AdminAccountsScreen from '../screens/shared/AdminAccountsScreen';
 import SurveyAnalyticsScreen from '../screens/shared/SurveyAnalyticsScreen';
@@ -369,6 +371,7 @@ const commonTenancyScreens = () => (
     <Stack.Screen name="RefundRequest" component={RefundRequestScreen} options={{ title: 'Request Refund' }} />
     <Stack.Screen name="RequestRentHelp" component={RequestRentHelpScreen} options={{ title: 'Ask for rent help' }} />
     <Stack.Screen name="PayRentOnBehalf" component={PayRentOnBehalfScreen} options={{ title: "Pay someone's rent" }} />
+    <Stack.Screen name="DisputeDetails" component={DisputeDetailsScreen} options={{ title: 'Dispute Trace' }} />
   </>
 );
 
@@ -669,7 +672,6 @@ const LawyerRoot = ({ initialRouteName = 'LawyerDashboard' }) => (
     <Stack.Screen name="PropertyDetail" component={PropertyDetailScreen} options={{ title: 'Property Details' }} />
     <Stack.Screen name="PropertyAlertRequest" component={PropertyAlertRequestScreen} options={{ title: 'Submit Request' }} />
     <Stack.Screen name="LocationInfo" component={LocationInfoScreen} options={{ title: 'Location' }} />
-    <Stack.Screen name="DisputeDetails" component={DisputeDetailsScreen} options={{ title: 'Dispute Trace' }} />
     <Stack.Screen name="StateMigration" component={StateMigrationScreen} options={{ title: 'State Migration' }} />
     <Stack.Screen name="CourtBundle" component={CourtBundleScreen} options={{ title: 'Court Bundle' }} />
     <Stack.Screen name="VerifyCase" component={VerifyCaseScreen} options={{ title: 'Verify Case' }} />
@@ -764,6 +766,8 @@ const SuperAdminRoot = () => (
     <Stack.Screen name="FinanceStateAdmins" component={FinanceStateAdminScreen} options={{ title: 'State Admin Management' }} />
     <Stack.Screen name="RentSavingsAdmin" component={RentSavingsAdminScreen} options={{ title: 'Rent Savings Withdrawals' }} />
     <Stack.Screen name="RentSavingsSetupFees" component={RentSavingsSetupFeesScreen} options={{ title: 'Rent Savings Setup Fees' }} />
+    <Stack.Screen name="RentCalculatorFeesAdmin" component={RentCalculatorFeesAdminScreen} options={{ title: 'Rent Calculator Fees' }} />
+    <Stack.Screen name="TourAnalytics" component={TourAnalyticsScreen} options={{ title: 'Tour Analytics' }} />
     <Stack.Screen name="AgentCommissionAdmin" component={AgentCommissionAdminScreen} options={{ title: 'Agent Commissions' }} />
     <Stack.Screen name="AdminAccounts" component={AdminAccountsScreen} options={{ title: 'Admin Accounts' }} />
     <Stack.Screen name="SeoTools" component={SeoToolsScreen} options={{ title: 'SEO Tools' }} />

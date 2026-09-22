@@ -646,6 +646,22 @@ const ProfileScreen = ({ navigation }) => {
             onPress={() => navigation.navigate('RentSavingsSetupFees')}
           />
         ) : null}
+        {user?.user_type === 'super_admin' ? (
+          <Button
+            title="Rent Calculator Fees"
+            variant="outline"
+            style={styles.marginTop}
+            onPress={() => navigation.navigate('RentCalculatorFeesAdmin')}
+          />
+        ) : null}
+        {user?.user_type === 'super_admin' ? (
+          <Button
+            title="Tour Analytics"
+            variant="outline"
+            style={styles.marginTop}
+            onPress={() => navigation.navigate('TourAnalytics')}
+          />
+        ) : null}
         {['super_admin', 'admin'].includes(user?.user_type) ? (
           <Button
             title="Agent Commissions"

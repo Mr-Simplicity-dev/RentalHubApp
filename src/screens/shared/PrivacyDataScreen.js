@@ -2,6 +2,8 @@ import React, { useCallback, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { useFocusEffect } from '@react-navigation/native';
+import { File, Paths } from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
 import {
   PremiumButton,
   PremiumCard,
@@ -57,6 +59,30 @@ const PrivacyDataScreen = () => {
     }, [load])
   );
 
+  const downloadExport = useCallback(async () => {
+    if (!data) return;
+    try {
+      const file = new File(Paths.cache, `rentalhub-personal-data-${Date.now()}.json`);
+      try {
+        file.delete();
+      } catch (e) {
+        // File may not exist yet — ignore.
+      }
+      file.write(JSON.stringify(data, null, 2));
+      if (!(await Sharing.isAvailableAsync())) {
+        Toast.show({ type: 'info', text1: 'Sharing is not available on this device' });
+        return;
+      }
+      await Sharing.shareAsync(file.uri, { mimeType: 'application/json', UTI: 'public.json' });
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Could not export your data',
+        text2: getErrorMessage(error, 'Please try again.'),
+      });
+    }
+  }, [data]);
+
   if (loading) {
     return <PremiumCenter loading title="Preparing your data" />;
   }
@@ -85,9 +111,14 @@ const PrivacyDataScreen = () => {
         <>
           <PremiumCard>
             <AppText style={styles.note}>
-              Below is a summary of each stored field. Full values (including file lists) are best
-              reviewed from a desktop browser on the web export page.
+              Below is a summary of each stored field. Download the full export to review every value.
             </AppText>
+            <PremiumButton
+              title="Download my data (JSON)"
+              onPress={downloadExport}
+              icon="download-outline"
+              style={styles.action}
+            />
           </PremiumCard>
           <View style={styles.cardList}>
             {entries.map(([key, value]) => (

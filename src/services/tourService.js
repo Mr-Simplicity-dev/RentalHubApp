@@ -16,4 +16,9 @@ export const tourService = {
     const response = await api.post('/users/tour/events', payload);
     return response.data;
   },
+
+  getAnalytics: async (params = {}) => {
+    const response = await api.get('/users/tour/analytics', { params });
+    return response.data;
+  },
 };
