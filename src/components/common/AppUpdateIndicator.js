@@ -112,7 +112,7 @@ const AppUpdateIndicator = ({ variant = 'floating' }) => {
         accessibilityLabel="RentalHub app update available"
         accessibilityRole="button"
         activeOpacity={0.86}
-        onPress={() => startUpdate('compact_update_dot')}
+        onPress={() => setDismissed(false)}
         style={[styles.dotContainer, isInline ? styles.dotContainerInline : { top: Math.max(insets.top + 12, 18) }]}
       >
         <View style={styles.dotWrap}>
