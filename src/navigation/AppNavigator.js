@@ -140,6 +140,7 @@ import ModerationHubScreen from '../screens/shared/ModerationHubScreen';
 import StateAdminFinanceScreen from '../screens/shared/StateAdminFinanceScreen';
 import FinanceStateAdminScreen from '../screens/shared/FinanceStateAdminScreen';
 import RentSavingsAdminScreen from '../screens/shared/RentSavingsAdminScreen';
+import RentSavingsSetupFeesScreen from '../screens/shared/RentSavingsSetupFeesScreen';
 import AgentCommissionAdminScreen from '../screens/shared/AgentCommissionAdminScreen';
 import AdminAccountsScreen from '../screens/shared/AdminAccountsScreen';
 import SurveyAnalyticsScreen from '../screens/shared/SurveyAnalyticsScreen';
@@ -762,6 +763,7 @@ const SuperAdminRoot = () => (
     <Stack.Screen name="ModerationHub" component={ModerationHubScreen} options={{ title: 'Moderation' }} />
     <Stack.Screen name="FinanceStateAdmins" component={FinanceStateAdminScreen} options={{ title: 'State Admin Management' }} />
     <Stack.Screen name="RentSavingsAdmin" component={RentSavingsAdminScreen} options={{ title: 'Rent Savings Withdrawals' }} />
+    <Stack.Screen name="RentSavingsSetupFees" component={RentSavingsSetupFeesScreen} options={{ title: 'Rent Savings Setup Fees' }} />
     <Stack.Screen name="AgentCommissionAdmin" component={AgentCommissionAdminScreen} options={{ title: 'Agent Commissions' }} />
     <Stack.Screen name="AdminAccounts" component={AdminAccountsScreen} options={{ title: 'Admin Accounts' }} />
     <Stack.Screen name="SeoTools" component={SeoToolsScreen} options={{ title: 'SEO Tools' }} />

@@ -20,4 +20,19 @@ export const rentSavingsAdminService = {
     );
     return response.data;
   },
+
+  getSetupFees: async () => {
+    const response = await api.get('/rent-savings/admin/setup-fees');
+    return response.data;
+  },
+
+  upsertSetupFee: async (payload) => {
+    const response = await api.post('/rent-savings/admin/setup-fees', payload);
+    return response.data;
+  },
+
+  deleteSetupFee: async (feeId) => {
+    const response = await api.delete(`/rent-savings/admin/setup-fees/${feeId}`);
+    return response.data;
+  },
 };

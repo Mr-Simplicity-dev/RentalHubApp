@@ -638,6 +638,14 @@ const ProfileScreen = ({ navigation }) => {
             onPress={() => navigation.navigate('RentSavingsAdmin')}
           />
         ) : null}
+        {user?.user_type === 'super_admin' ? (
+          <Button
+            title="Rent Savings Setup Fees"
+            variant="outline"
+            style={styles.marginTop}
+            onPress={() => navigation.navigate('RentSavingsSetupFees')}
+          />
+        ) : null}
         {['super_admin', 'admin'].includes(user?.user_type) ? (
           <Button
             title="Agent Commissions"
