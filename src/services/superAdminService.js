@@ -104,10 +104,10 @@ export const superAdminService = {
   },
 
   // ===================== ANALYTICS =====================
-  getAnalytics: async () => {
-    const response = await api.get('/super/analytics');
-    return response.data;
-  },
+      getAnalytics: async (range = 'all') => {
+        const response = await api.get('/super/analytics', { params: { range } });
+        return response.data;
+      },
 
   // ===================== REPORTS =====================
   getReports: async () => {

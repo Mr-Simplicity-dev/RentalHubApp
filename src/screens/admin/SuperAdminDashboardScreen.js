@@ -191,9 +191,10 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
   });
   const [verificationFilters, setVerificationFilters] = useState({
     search: '',
-    status: 'pending',
+    status: 'all',
     user_type: 'all',
   });
+  const [availableUserTypes, setAvailableUserTypes] = useState([]);
   const [pricingForm, setPricingForm] = useState(defaultPricingForm);
   const [lawyerInviteSearch, setLawyerInviteSearch] = useState('');
   const [editingInviteId, setEditingInviteId] = useState(null);
@@ -285,6 +286,11 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
     ]);
 
     setVerifications(pickList(verificationsResponse, ['data', 'verifications']));
+    setAvailableUserTypes(
+      Array.isArray(verificationsResponse?.available_user_types)
+        ? verificationsResponse.available_user_types.map((row) => row.role).filter(Boolean)
+        : []
+    );
     setAdminPerformance(pickList(performanceResponse, ['data']));
   };
 
@@ -985,10 +991,15 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
 
         <AppText style={styles.filterLabel}>Role</AppText>
         <View style={styles.filtersRow}>
-          {['all', 'admin', 'landlord', 'tenant'].map((value) => (
+          {[
+            'all',
+            ...(availableUserTypes.length
+              ? availableUserTypes
+              : ['tenant', 'landlord', 'agent', 'lawyer']),
+          ].map((value) => (
             <FilterChip
               key={value}
-              label={value}
+              label={value.replace(/_/g, ' ')}
               active={verificationFilters.user_type === value}
               onPress={() =>
                 setVerificationFilters((prev) => ({ ...prev, user_type: value }))
@@ -1067,6 +1078,14 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
           </View>
         );
       })}
+
+      {verifications.length === 0 ? (
+        <EmptyState
+          icon="shield-checkmark-outline"
+          title="No verifications found"
+          message="No users match these filters. Try a different status or role."
+        />
+      ) : null}
 
       <View style={styles.card}>
         <AppText style={styles.cardTitle}>Admin Verification Performance</AppText>
@@ -2000,6 +2019,16 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
       { label: 'All Time', value: 'all' },
     ];
 
+    const fetchAnalytics = async (range) => {
+      const response = await superAdminService.getAnalytics(range);
+      setAnalytics(pickObject(response, ['data']) || {});
+    };
+
+    const selectTimeRange = (range) => {
+      setAnalyticsTimeRange(range);
+      runAction(() => fetchAnalytics(range), 'Analytics updated', null);
+    };
+
     return (
       <View>
         <View style={styles.card}>
@@ -2011,13 +2040,19 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                 key={opt.value}
                 label={opt.label}
                 active={analyticsTimeRange === opt.value}
-                onPress={() => setAnalyticsTimeRange(opt.value)}
+                onPress={() => selectTimeRange(opt.value)}
               />
             ))}
           </View>
           <Button
             title="Refresh Analytics"
-            onPress={() => runAction(() => loadAll(), 'Analytics refreshed', null)}
+            onPress={() =>
+              runAction(
+                () => fetchAnalytics(analyticsTimeRange),
+                'Analytics refreshed',
+                null
+              )
+            }
             loading={submitting}
           />
         </View>
@@ -2030,16 +2065,35 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
           />
         ) : (
           <View style={styles.analyticsGrid}>
-            {analyticEntries.map(([key, value]) => (
-              <View key={key} style={styles.analyticsCard}>
-                <AppText style={styles.analyticsValue}>
-                  {typeof value === 'number' ? value.toLocaleString() : String(value)}
-                </AppText>
-                <AppText style={styles.analyticsLabel}>
-                  {key.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
-                </AppText>
-              </View>
-            ))}
+            {analyticEntries.map(([key, value]) => {
+              const label = key
+                .replace(/_/g, ' ')
+                .replace(/\b\w/g, (c) => c.toUpperCase());
+              const rows = analyticsBreakdownRows(value);
+              if (rows.length > 0) {
+                return (
+                  <View key={key} style={[styles.analyticsCard, styles.analyticsCardWide]}>
+                    <AppText style={styles.analyticsLabel}>{label}</AppText>
+                    {rows.map((row, index) => (
+                      <View key={`${key}-${index}`} style={styles.breakdownRow}>
+                        <AppText style={styles.breakdownLabel}>{row.label}</AppText>
+                        <AppText style={styles.breakdownValue}>
+                          {typeof row.count === 'number'
+                            ? row.count.toLocaleString()
+                            : String(row.count)}
+                        </AppText>
+                      </View>
+                    ))}
+                  </View>
+                );
+              }
+              return (
+                <View key={key} style={styles.analyticsCard}>
+                  <AppText style={styles.analyticsValue}>{formatAnalyticsValue(value)}</AppText>
+                  <AppText style={styles.analyticsLabel}>{label}</AppText>
+                </View>
+              );
+            })}
           </View>
         )}
       </View>
