@@ -20,6 +20,17 @@ const waitForNavigator = async (timeoutMs = 1600) => {
 };
 
 /**
+ * Nested navigators (tabs inside a stack) keep their route names inside the
+ * child route states, so a flat root routeNames check misses every screen
+ * inside MainTabs. Walk the whole tree instead.
+ */
+const stateHasRoute = (state, routeName) => {
+  if (!state) return false;
+  if ((state.routeNames || []).includes(routeName)) return true;
+  return (state.routes || []).some((route) => stateHasRoute(route.state, routeName));
+};
+
+/**
  * Keeps every automatic and replayed tour attached to the screen it describes.
  * It deliberately renders nothing; it only prepares navigation before the
  * coach-mark engine attempts to measure a registered control.
@@ -38,8 +49,7 @@ const TourNavigationBridge = () => {
       return { status: 'unavailable', reason: 'destination_missing' };
     }
 
-    const availableRoutes = navigationRef.getRootState()?.routeNames || [];
-    if (!availableRoutes.includes(destination.name)) {
+    if (!stateHasRoute(navigationRef.getRootState(), destination.name)) {
       return {
         status: 'unavailable',
         reason: 'route_unavailable',

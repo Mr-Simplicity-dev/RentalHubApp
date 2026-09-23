@@ -162,20 +162,27 @@ export const TourProvider = ({ children }) => {
 
     const token = Symbol(normalizedId);
     targetRegistry.current.set(normalizedId, { ...registration, token });
-    setTargetRegistryVersion((version) => version + 1);
+    // Only invalidate while the walkthrough is actually open. During normal
+    // navigation and screen mounts this otherwise fired on every target layout
+    // and re-rendered the whole tour context, driving an infinite loop.
+    if (walkthroughVisibleRef.current) {
+      setTargetRegistryVersion((version) => version + 1);
+    }
 
     return () => {
       const currentRegistration = targetRegistry.current.get(normalizedId);
       if (currentRegistration?.token === token) {
         targetRegistry.current.delete(normalizedId);
-        setTargetRegistryVersion((version) => version + 1);
+        if (walkthroughVisibleRef.current) {
+          setTargetRegistryVersion((version) => version + 1);
+        }
       }
     };
   }, []);
 
   const notifyTargetLayout = useCallback((targetId) => {
     const normalizedId = String(targetId || '').trim();
-    if (normalizedId && targetRegistry.current.has(normalizedId)) {
+    if (normalizedId && targetRegistry.current.has(normalizedId) && walkthroughVisibleRef.current) {
       setTargetRegistryVersion((version) => version + 1);
     }
   }, []);
@@ -589,6 +596,8 @@ export const TourProvider = ({ children }) => {
     stepsRef.current = nextSteps;
     walkthroughVisibleRef.current = true;
     stepStartedAt.current = Date.now();
+    // Re-measure already-registered targets now that the walkthrough is opening.
+    setTargetRegistryVersion((version) => version + 1);
 
     setActiveWorkflowId(workflowId);
     setCurrentStep(startIndex);

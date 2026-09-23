@@ -339,13 +339,25 @@ const linkingConfig = {
   },
 };
 
+const TAB_TOUR_TARGETS = {
+  HomeTab: 'tab_explore',
+  DashboardTab: 'tab_dashboard',
+  Applications: 'tab_applications',
+  Messages: 'tab_messages',
+};
+
 const tabIcon = (routeName, focused, color, size) => {
   let iconName = 'ellipse-outline';
   if (routeName === 'HomeTab') iconName = focused ? 'compass' : 'compass-outline';
   if (routeName === 'DashboardTab') iconName = focused ? 'person-circle' : 'person-circle-outline';
   if (routeName === 'Applications') iconName = focused ? 'document-text' : 'document-text-outline';
   if (routeName === 'Messages') iconName = focused ? 'chatbubbles' : 'chatbubbles-outline';
-  return <Icon name={iconName} size={size} color={color} />;
+  const icon = <Icon name={iconName} size={size} color={color} />;
+  const targetId = TAB_TOUR_TARGETS[routeName];
+  // Tour targets belong on the tab buttons themselves. Wrapping the whole
+  // screen in a TourTarget remounted screens on every tour-context update and
+  // could drive an infinite layout loop.
+  return targetId ? <TourTarget id={targetId}>{icon}</TourTarget> : icon;
 };
 
 const commonVerificationScreens = () => (
@@ -392,9 +404,12 @@ const commonInfoScreens = () => (
 
 const DesktopOnlyRoot = ({ roleLabel }) => (
   <Stack.Navigator screenOptions={screenOptions}>
-    <Stack.Screen name="DesktopOnly" options={{ headerShown: false }}>
-      {(props) => <DesktopOnlyScreen {...props} roleLabel={roleLabel} />}
-    </Stack.Screen>
+    <Stack.Screen
+      name="DesktopOnly"
+      component={DesktopOnlyScreen}
+      initialParams={{ roleLabel }}
+      options={{ headerShown: false }}
+    />
   </Stack.Navigator>
 );
 
@@ -493,18 +508,10 @@ const MainTabs = () => (
       headerShown: false,
     })}
   >
-    <Tab.Screen name="HomeTab" options={{ title: 'Explore' }}>
-      {(props) => <TourTarget id="tab_explore" style={{ flex: 1 }}><HomeScreen {...props} /></TourTarget>}
-    </Tab.Screen>
-    <Tab.Screen name="DashboardTab" options={{ title: 'My Hub' }}>
-      {(props) => <TourTarget id="tab_dashboard" style={{ flex: 1 }}><DashboardScreen {...props} /></TourTarget>}
-    </Tab.Screen>
-    <Tab.Screen name="Applications" options={{ title: 'Applications' }}>
-      {(props) => <TourTarget id="tab_applications" style={{ flex: 1 }}><ApplicationsScreen {...props} /></TourTarget>}
-    </Tab.Screen>
-    <Tab.Screen name="Messages" options={{ title: 'Messages' }}>
-      {(props) => <TourTarget id="tab_messages" style={{ flex: 1 }}><MessagesScreen {...props} /></TourTarget>}
-    </Tab.Screen>
+    <Tab.Screen name="HomeTab" component={HomeScreen} options={{ title: 'Explore' }} />
+    <Tab.Screen name="DashboardTab" component={DashboardScreen} options={{ title: 'My Hub' }} />
+    <Tab.Screen name="Applications" component={ApplicationsScreen} options={{ title: 'Applications' }} />
+    <Tab.Screen name="Messages" component={MessagesScreen} options={{ title: 'Messages' }} />
   </Tab.Navigator>
 );
 
