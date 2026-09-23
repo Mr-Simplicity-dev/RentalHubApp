@@ -89,7 +89,7 @@ const SupportTicketDetailScreen = ({ navigation, route }) => {
   const lastTypingAtRef = useRef(0);
 
   useLayoutEffect(() => {
-    navigation.setOptions({ headerShown: false });
+    navigation.setOptions({ headerShown: navigation.canGoBack() });
   }, [navigation]);
 
   const loadConversation = async ({ soft = false } = {}) => {

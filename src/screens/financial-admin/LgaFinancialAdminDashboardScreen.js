@@ -457,7 +457,7 @@ const LgaFinancialAdminDashboardScreen = ({ navigation }) => {
   const [withdrawalModalVisible, setWithdrawalModalVisible] = useState(false);
 
   useLayoutEffect(() => {
-    navigation.setOptions({ headerShown: false });
+    navigation.setOptions({ headerShown: navigation.canGoBack() });
   }, [navigation]);
 
   const loadFinanceData = useCallback(async () => {

@@ -101,7 +101,7 @@ const ServiceBookingsScreen = ({ navigation, route }) => {
   const [assignmentByBooking, setAssignmentByBooking] = useState({});
 
   useLayoutEffect(() => {
-    navigation.setOptions({ headerShown: false });
+    navigation.setOptions({ headerShown: navigation.canGoBack() });
   }, [navigation]);
 
   const loadBookings = async () => {

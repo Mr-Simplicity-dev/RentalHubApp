@@ -34,7 +34,7 @@ const StateAdminDashboardScreen = ({ navigation }) => {
     user?.user_type === 'recruitment_admin' || user?.is_recruitment_admin === true;
 
   useLayoutEffect(() => {
-    navigation.setOptions({ headerShown: false });
+    navigation.setOptions({ headerShown: navigation.canGoBack() });
   }, [navigation]);
 
   const loadDashboard = async () => {

@@ -22,7 +22,7 @@ const FinancialAdminDashboardScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
 
   useLayoutEffect(() => {
-    navigation.setOptions({ headerShown: false });
+    navigation.setOptions({ headerShown: navigation.canGoBack() });
   }, [navigation]);
 
   const loadOverview = async () => {

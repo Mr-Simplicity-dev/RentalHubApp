@@ -63,7 +63,7 @@ const SettingsScreen = ({ navigation }) => {
   const [checkingVersion, setCheckingVersion] = useState(false);
 
   useLayoutEffect(() => {
-    navigation.setOptions({ headerShown: false });
+    navigation.setOptions({ headerShown: navigation.canGoBack() });
   }, [navigation]);
 
   useEffect(() => {

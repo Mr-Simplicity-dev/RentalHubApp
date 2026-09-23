@@ -14,7 +14,7 @@ const AgentDashboardScreen = ({ navigation }) => {
   const [profile, setProfile] = useState(null);
 
   useLayoutEffect(() => {
-    navigation.setOptions({ headerShown: false });
+    navigation.setOptions({ headerShown: navigation.canGoBack() });
   }, [navigation]);
 
   useEffect(() => {

@@ -24,7 +24,7 @@ const AdminDashboardScreen = ({ navigation }) => {
   const isCoreAdmin = role === 'admin' || role === 'super_admin';
 
   useLayoutEffect(() => {
-    navigation.setOptions({ headerShown: false });
+    navigation.setOptions({ headerShown: navigation.canGoBack() });
   }, [navigation]);
 
   const loadStats = async () => {

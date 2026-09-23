@@ -16,7 +16,7 @@ const RentSavingsDashboardScreen = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
 
   useLayoutEffect(() => {
-    navigation.setOptions({ headerShown: false });
+    navigation.setOptions({ headerShown: navigation.canGoBack() });
   }, [navigation]);
 
   const loadDashboard = useCallback(async () => {

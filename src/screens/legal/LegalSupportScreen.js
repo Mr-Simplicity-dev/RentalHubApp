@@ -27,7 +27,7 @@ const LegalSupportScreen = ({ navigation }) => {
   });
 
   useLayoutEffect(() => {
-    navigation.setOptions({ headerShown: false });
+    navigation.setOptions({ headerShown: navigation.canGoBack() });
   }, [navigation]);
 
   const loadLegalSupport = async () => {

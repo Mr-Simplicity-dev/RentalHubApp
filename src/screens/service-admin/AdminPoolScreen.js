@@ -15,7 +15,7 @@ const AdminPoolScreen = ({ navigation }) => {
   const canManageLeads = ['super_admin', 'super_support_admin'].includes(user?.user_type);
 
   useLayoutEffect(() => {
-    navigation.setOptions({ headerShown: false });
+    navigation.setOptions({ headerShown: navigation.canGoBack() });
   }, [navigation]);
 
   const load = useCallback(async () => {

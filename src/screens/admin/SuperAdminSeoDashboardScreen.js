@@ -20,7 +20,7 @@ const SuperAdminSeoDashboardScreen = ({ navigation }) => {
   const [pinging, setPinging] = useState(false);
 
   useLayoutEffect(() => {
-    navigation.setOptions({ headerShown: false });
+    navigation.setOptions({ headerShown: navigation.canGoBack() });
   }, [navigation]);
 
   const loadDashboard = async () => {

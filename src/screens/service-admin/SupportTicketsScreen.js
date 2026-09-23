@@ -27,7 +27,7 @@ const SupportTicketsScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
 
   useLayoutEffect(() => {
-    navigation.setOptions({ headerShown: false });
+    navigation.setOptions({ headerShown: navigation.canGoBack() });
   }, [navigation]);
 
   const loadTickets = async () => {
