@@ -7,6 +7,7 @@ import {ActivityIndicator,
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
+  cancelUpdateNotification,
   checkForAppUpdate,
   getDirectApkUrl,
   startAppUpdate,
@@ -60,6 +61,9 @@ const AppUpdateIndicator = ({ variant = 'floating' }) => {
         setVersionState(nextState?.update_available ? nextState : null);
         if (nextState?.update_available) {
           setDismissed(false);
+        } else {
+          // Already up to date — clear any update notification left from a previous download.
+          cancelUpdateNotification().catch(() => {});
         }
       } catch {
         if (active) {

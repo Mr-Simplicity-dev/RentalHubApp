@@ -60,6 +60,17 @@ export const openInstallPermissionSettings = async () => {
   return false;
 };
 
+export const cancelUpdateNotification = async () => {
+  if (Platform.OS === 'android' && RentalHubUpdate?.cancelUpdateNotification) {
+    try {
+      return await RentalHubUpdate.cancelUpdateNotification();
+    } catch (_) {
+      return false;
+    }
+  }
+  return false;
+};
+
 export const startAppUpdate = async (versionState = {}) => {
   const directApkUrl = getDirectApkUrl(versionState);
   const fallbackUrl = getUpdateUrl(versionState);

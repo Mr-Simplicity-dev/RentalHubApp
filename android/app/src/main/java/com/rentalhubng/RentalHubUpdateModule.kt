@@ -95,7 +95,7 @@ class RentalHubUpdateModule(private val reactContext: ReactApplicationContext) :
         .setTitle("RentalHub update")
         .setDescription("Downloading the latest RentalHub app.")
         .setMimeType(APK_MIME_TYPE)
-        .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
+        .setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN)
         .setAllowedOverMetered(true)
         .setAllowedOverRoaming(false)
         .setDestinationInExternalFilesDir(
@@ -134,6 +134,7 @@ class RentalHubUpdateModule(private val reactContext: ReactApplicationContext) :
             if (status != DownloadManager.STATUS_SUCCESSFUL) {
               val reason = if (reasonIndex >= 0) cursor.getInt(reasonIndex) else 0
               stopProgressPolling()
+              postUpdateFailedNotification()
               promise.reject(
                 "APK_DOWNLOAD_FAILED",
                 "RentalHub update download failed. Android reason code: $reason."
@@ -210,6 +211,7 @@ class RentalHubUpdateModule(private val reactContext: ReactApplicationContext) :
               val downloaded = if (downloadedIdx >= 0) cursor.getLong(downloadedIdx) else 0L
               val total = if (totalIdx >= 0) cursor.getLong(totalIdx) else -1L
               emitProgress(downloaded, total, status)
+              postUpdateProgressNotification(downloaded, total, status)
               finished = status == DownloadManager.STATUS_SUCCESSFUL || status == DownloadManager.STATUS_FAILED
             } else {
               finished = true
@@ -234,20 +236,64 @@ class RentalHubUpdateModule(private val reactContext: ReactApplicationContext) :
     progressRunnable = null
   }
 
-  private fun postDownloadCompleteNotification(apkFile: File) {
-    try {
-      val manager =
-        reactContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        val channel = NotificationChannel(
+  private fun ensureUpdateChannels() {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
+    val manager =
+      reactContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    if (manager.getNotificationChannel(UPDATE_PROGRESS_CHANNEL_ID) == null) {
+      manager.createNotificationChannel(
+        NotificationChannel(
+          UPDATE_PROGRESS_CHANNEL_ID,
+          "App update progress",
+          NotificationManager.IMPORTANCE_LOW
+        ).apply {
+          description = "Shows RentalHub app update download progress"
+          setShowBadge(false)
+        }
+      )
+    }
+    if (manager.getNotificationChannel(UPDATE_CHANNEL_ID) == null) {
+      manager.createNotificationChannel(
+        NotificationChannel(
           UPDATE_CHANNEL_ID,
           "App updates",
           NotificationManager.IMPORTANCE_HIGH
         ).apply { description = "RentalHub app update downloads" }
-        manager.createNotificationChannel(channel)
-      }
+      )
+    }
+  }
 
+  private fun postUpdateProgressNotification(downloaded: Long, total: Long, status: Int) {
+    if (status == DownloadManager.STATUS_SUCCESSFUL || status == DownloadManager.STATUS_FAILED) {
+      return
+    }
+    try {
+      ensureUpdateChannels()
+      val manager =
+        reactContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+      val percent = if (total > 0) ((downloaded * 100) / total).toInt().coerceIn(0, 100) else 0
+      val builder = NotificationCompat.Builder(reactContext, UPDATE_PROGRESS_CHANNEL_ID)
+        .setSmallIcon(android.R.drawable.stat_sys_download)
+        .setContentTitle("Downloading RentalHub update")
+        .setContentText(if (total > 0) "$percent% complete" else "Starting download…")
+        .setOngoing(true)
+        .setOnlyAlertOnce(true)
+        .setSilent(true)
+        .setPriority(NotificationCompat.PRIORITY_LOW)
+        .setCategory(NotificationCompat.CATEGORY_PROGRESS)
+      if (total > 0) {
+        builder.setProgress(100, percent, false)
+      } else {
+        builder.setProgress(0, 0, true)
+      }
+      manager.notify(UPDATE_NOTIFICATION_ID, builder.build())
+    } catch (_: Exception) {
+      // Best-effort — in-app progress is unaffected.
+    }
+  }
+
+  private fun installPendingIntent(apkFile: File): PendingIntent? {
+    return try {
       val apkUri = FileProvider.getUriForFile(
         reactContext,
         "${reactContext.packageName}.fileprovider",
@@ -257,25 +303,86 @@ class RentalHubUpdateModule(private val reactContext: ReactApplicationContext) :
         .setDataAndType(apkUri, APK_MIME_TYPE)
         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-      val pendingIntent = PendingIntent.getActivity(
+      PendingIntent.getActivity(
         reactContext,
         0,
         installIntent,
         PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
       )
+    } catch (_: Exception) {
+      null
+    }
+  }
 
-      val notification = NotificationCompat.Builder(reactContext, UPDATE_CHANNEL_ID)
+  private fun postDownloadCompleteNotification(apkFile: File) {
+    try {
+      ensureUpdateChannels()
+      val manager =
+        reactContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+      val pendingIntent = installPendingIntent(apkFile)
+      val builder = NotificationCompat.Builder(reactContext, UPDATE_CHANNEL_ID)
         .setSmallIcon(android.R.drawable.stat_sys_download_done)
-        .setContentTitle("RentalHub update downloaded")
+        .setContentTitle("RentalHub update ready")
         .setContentText("Tap to install the latest version.")
         .setAutoCancel(true)
+        .setOngoing(false)
+        .setOnlyAlertOnce(false)
         .setPriority(NotificationCompat.PRIORITY_HIGH)
-        .setContentIntent(pendingIntent)
-        .build()
-
-      manager.notify(UPDATE_NOTIFICATION_ID, notification)
+        .setCategory(NotificationCompat.CATEGORY_STATUS)
+        .setProgress(0, 0, false)
+      if (pendingIntent != null) {
+        builder.setContentIntent(pendingIntent)
+        builder.addAction(
+          android.R.drawable.stat_sys_download_done,
+          "Install update",
+          pendingIntent
+        )
+      }
+      manager.notify(UPDATE_NOTIFICATION_ID, builder.build())
     } catch (_: Exception) {
       // Best-effort — the in-app installer still opens.
+    }
+  }
+
+  private fun postUpdateFailedNotification() {
+    try {
+      ensureUpdateChannels()
+      val manager =
+        reactContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+      val launchIntent = reactContext.packageManager
+        .getLaunchIntentForPackage(reactContext.packageName)
+        ?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+      val builder = NotificationCompat.Builder(reactContext, UPDATE_CHANNEL_ID)
+        .setSmallIcon(android.R.drawable.stat_notify_error)
+        .setContentTitle("RentalHub update failed")
+        .setContentText("The download did not finish. Open the app to try again.")
+        .setAutoCancel(true)
+        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+      if (launchIntent != null) {
+        builder.setContentIntent(
+          PendingIntent.getActivity(
+            reactContext,
+            1,
+            launchIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+          )
+        )
+      }
+      manager.notify(UPDATE_NOTIFICATION_ID, builder.build())
+    } catch (_: Exception) {
+      // Best-effort.
+    }
+  }
+
+  @ReactMethod
+  fun cancelUpdateNotification(promise: Promise) {
+    try {
+      val manager =
+        reactContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+      manager.cancel(UPDATE_NOTIFICATION_ID)
+      promise.resolve(true)
+    } catch (error: Exception) {
+      promise.reject("CANCEL_UPDATE_NOTIFICATION_FAILED", error.message, error)
     }
   }
 
@@ -306,6 +413,7 @@ class RentalHubUpdateModule(private val reactContext: ReactApplicationContext) :
     private const val UPDATE_PROGRESS_EVENT = "rentalHubUpdateProgress"
     private const val PROGRESS_INTERVAL_MS = 500L
     private const val UPDATE_CHANNEL_ID = "rentalhub_updates"
+    private const val UPDATE_PROGRESS_CHANNEL_ID = "rentalhub_updates_progress"
     private const val UPDATE_NOTIFICATION_ID = 4301
   }
 }
