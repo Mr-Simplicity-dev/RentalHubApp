@@ -87,8 +87,18 @@ class RentalHubUpdateModule(private val reactContext: ReactApplicationContext) :
       val fileName = safeFileName(requestedFileName)
       val destinationDirectory = reactContext.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
       val destinationFile = File(destinationDirectory, fileName)
-      if (destinationFile.exists()) {
-        destinationFile.delete()
+
+      // A previous attempt may already have this exact version on disk. Install it
+      // instead of deleting a good APK and downloading the whole thing again.
+      if (destinationFile.exists() && destinationFile.length() > 0L) {
+        postDownloadCompleteNotification(destinationFile)
+        try {
+          openInstaller(destinationFile)
+          promise.resolve(true)
+        } catch (error: Exception) {
+          promise.reject("APK_INSTALLER_FAILED", error.message, error)
+        }
+        return
       }
 
       val request = DownloadManager.Request(Uri.parse(apkUrl))
@@ -108,7 +118,7 @@ class RentalHubUpdateModule(private val reactContext: ReactApplicationContext) :
         reactContext.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
       val downloadId = downloadManager.enqueue(request)
 
-      startProgressPolling(downloadId, downloadManager)
+      startProgressPolling(downloadId, downloadManager, destinationFile, promise)
 
       val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -121,43 +131,16 @@ class RentalHubUpdateModule(private val reactContext: ReactApplicationContext) :
             // Receiver may already be unregistered if Android delivers duplicate events.
           }
 
-          val query = DownloadManager.Query().setFilterById(downloadId)
-          downloadManager.query(query).use { cursor ->
-            if (cursor == null || !cursor.moveToFirst()) {
-              promise.reject("APK_DOWNLOAD_MISSING", "RentalHub update download could not be found.")
-              return
-            }
-
-            val statusIndex = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)
-            val reasonIndex = cursor.getColumnIndex(DownloadManager.COLUMN_REASON)
-            val status = cursor.getInt(statusIndex)
-            if (status != DownloadManager.STATUS_SUCCESSFUL) {
-              val reason = if (reasonIndex >= 0) cursor.getInt(reasonIndex) else 0
-              stopProgressPolling()
-              postUpdateFailedNotification()
-              promise.reject(
-                "APK_DOWNLOAD_FAILED",
-                "RentalHub update download failed. Android reason code: $reason."
-              )
-              return
-            }
-          }
-
-          stopProgressPolling()
-          postDownloadCompleteNotification(destinationFile)
-
-          try {
-            openInstaller(destinationFile)
-            promise.resolve(true)
-          } catch (error: Exception) {
-            promise.reject("APK_INSTALLER_FAILED", error.message, error)
-          }
+          settleDownload(downloadId, downloadManager, destinationFile, promise)
         }
       }
 
       val filter = IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        reactContext.registerReceiver(receiver, filter, Context.RECEIVER_NOT_EXPORTED)
+        // EXPORTED: DownloadManager delivers this broadcast from another process, and a
+        // NOT_EXPORTED receiver silently never receives it — which is what left 1.0.7/1.0.8
+        // downloads stuck (no completion notification, no installer, promise never settling).
+        reactContext.registerReceiver(receiver, filter, Context.RECEIVER_EXPORTED)
       } else {
         reactContext.registerReceiver(receiver, filter)
       }
@@ -195,7 +178,12 @@ class RentalHubUpdateModule(private val reactContext: ReactApplicationContext) :
     else -> "unknown"
   }
 
-  private fun startProgressPolling(downloadId: Long, downloadManager: DownloadManager) {
+  private fun startProgressPolling(
+    downloadId: Long,
+    downloadManager: DownloadManager,
+    destinationFile: File,
+    promise: Promise
+  ) {
     stopProgressPolling()
     val runnable = object : Runnable {
       override fun run() {
@@ -213,6 +201,11 @@ class RentalHubUpdateModule(private val reactContext: ReactApplicationContext) :
               emitProgress(downloaded, total, status)
               postUpdateProgressNotification(downloaded, total, status)
               finished = status == DownloadManager.STATUS_SUCCESSFUL || status == DownloadManager.STATUS_FAILED
+              // This poller runs in-process, so it is the dependable completion trigger.
+              // The ACTION_DOWNLOAD_COMPLETE broadcast is not reliable on its own.
+              if (finished) {
+                settleDownload(downloadId, downloadManager, destinationFile, promise)
+              }
             } else {
               finished = true
             }
@@ -236,22 +229,66 @@ class RentalHubUpdateModule(private val reactContext: ReactApplicationContext) :
     progressRunnable = null
   }
 
+  private val completionLock = Any()
+  private var settledDownloadId = -1L
+
+  // Called from both the progress poller and the download-complete receiver; whichever
+  // fires first wins and the other becomes a no-op.
+  private fun settleDownload(
+    downloadId: Long,
+    downloadManager: DownloadManager,
+    destinationFile: File,
+    promise: Promise
+  ) {
+    synchronized(completionLock) {
+      if (settledDownloadId == downloadId) return
+      settledDownloadId = downloadId
+    }
+
+    stopProgressPolling()
+
+    var status = DownloadManager.STATUS_FAILED
+    var reason = 0
+    try {
+      val query = DownloadManager.Query().setFilterById(downloadId)
+      downloadManager.query(query).use { cursor ->
+        if (cursor != null && cursor.moveToFirst()) {
+          val statusIndex = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)
+          val reasonIndex = cursor.getColumnIndex(DownloadManager.COLUMN_REASON)
+          if (statusIndex >= 0) status = cursor.getInt(statusIndex)
+          if (reasonIndex >= 0) reason = cursor.getInt(reasonIndex)
+        }
+      }
+    } catch (error: Exception) {
+      promise.reject("APK_DOWNLOAD_MISSING", error.message, error)
+      return
+    }
+
+    if (status != DownloadManager.STATUS_SUCCESSFUL) {
+      postUpdateFailedNotification()
+      promise.reject(
+        "APK_DOWNLOAD_FAILED",
+        "RentalHub update download failed. Android reason code: $reason."
+      )
+      return
+    }
+
+    postDownloadCompleteNotification(destinationFile)
+
+    try {
+      openInstaller(destinationFile)
+      promise.resolve(true)
+    } catch (error: Exception) {
+      promise.reject("APK_INSTALLER_FAILED", error.message, error)
+    }
+  }
+
   private fun ensureUpdateChannels() {
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
     val manager =
       reactContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-    if (manager.getNotificationChannel(UPDATE_PROGRESS_CHANNEL_ID) == null) {
-      manager.createNotificationChannel(
-        NotificationChannel(
-          UPDATE_PROGRESS_CHANNEL_ID,
-          "App update progress",
-          NotificationManager.IMPORTANCE_LOW
-        ).apply {
-          description = "Shows RentalHub app update download progress"
-          setShowBadge(false)
-        }
-      )
-    }
+    // One channel for both the progress and the completion state, so the same
+    // notification id can transition without being pinned to a low-importance channel.
     if (manager.getNotificationChannel(UPDATE_CHANNEL_ID) == null) {
       manager.createNotificationChannel(
         NotificationChannel(
@@ -272,7 +309,7 @@ class RentalHubUpdateModule(private val reactContext: ReactApplicationContext) :
       val manager =
         reactContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
       val percent = if (total > 0) ((downloaded * 100) / total).toInt().coerceIn(0, 100) else 0
-      val builder = NotificationCompat.Builder(reactContext, UPDATE_PROGRESS_CHANNEL_ID)
+      val builder = NotificationCompat.Builder(reactContext, UPDATE_CHANNEL_ID)
         .setSmallIcon(android.R.drawable.stat_sys_download)
         .setContentTitle("Downloading RentalHub update")
         .setContentText(if (total > 0) "$percent% complete" else "Starting download…")
@@ -413,7 +450,6 @@ class RentalHubUpdateModule(private val reactContext: ReactApplicationContext) :
     private const val UPDATE_PROGRESS_EVENT = "rentalHubUpdateProgress"
     private const val PROGRESS_INTERVAL_MS = 500L
     private const val UPDATE_CHANNEL_ID = "rentalhub_updates"
-    private const val UPDATE_PROGRESS_CHANNEL_ID = "rentalhub_updates_progress"
     private const val UPDATE_NOTIFICATION_ID = 4301
   }
 }
