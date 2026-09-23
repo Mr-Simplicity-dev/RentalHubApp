@@ -11,6 +11,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { colors, radius, shadows, typography } from '../../theme';
 
 import AppText from '../../components/common/AppText';
+import { formatDisplayValue } from '../../utils/display';
 export const formatNaira = (value, fallback = '—') => {
   if (value === null || value === undefined || value === '') return fallback;
   const numeric = Number(value);
@@ -95,7 +96,7 @@ export const InfoRow = ({ icon, label, value, valueStyle }) => (
     ) : null}
     <View style={styles.infoCopy}>
       <AppText style={styles.infoLabel}>{label}</AppText>
-      <AppText style={[styles.infoValue, valueStyle]}>{value || '—'}</AppText>
+      <AppText style={[styles.infoValue, valueStyle]}>{formatDisplayValue(value) || '—'}</AppText>
     </View>
   </View>
 );
@@ -146,7 +147,7 @@ export const PremiumButton = ({
 
 export const StatusPill = ({ label, color = colors.muted }) => (
   <View style={[styles.statusPill, { backgroundColor: `${color}18`, borderColor: `${color}45` }]}>
-    <AppText style={[styles.statusText, { color }]}>{String(label || 'Pending').replace(/_/g, ' ')}</AppText>
+    <AppText style={[styles.statusText, { color }]}>{formatDisplayValue(label || 'Pending').replace(/_/g, ' ')}</AppText>
   </View>
 );
 

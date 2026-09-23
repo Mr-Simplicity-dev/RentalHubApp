@@ -11,6 +11,7 @@ import {
 } from '../../components/common/PremiumLayout';
 import { surveyAnalyticsService } from '../../services/surveyAnalyticsService';
 import { getErrorMessage } from '../../utils/http';
+import { formatDisplayValue } from '../../utils/display';
 import { colors, radius, typography } from '../../theme';
 import AppText from '../../components/common/AppText';
 
@@ -147,7 +148,7 @@ const SurveyAnalyticsScreen = () => {
               icon="pulse-outline"
               label="Sources"
               value={Object.keys(sources)
-                .map((key) => `${key}: ${sources[key]}`)
+                .map((key) => `${key}: ${formatDisplayValue(sources[key])}`)
                 .join(', ') || '—'}
             />
             <InfoRow icon="refresh-outline" label="Generated" value={data?.generated_at ? new Date(data.generated_at).toLocaleString() : '—'} />

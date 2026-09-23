@@ -45,12 +45,16 @@ const ZonalListScreen = ({ route }) => {
   const [role, setRole] = useState('all');
 
   const load = useCallback(
-    async ({ page = 1, limit = 100 } = {}) => {
+    async ({ page = 1, limit = 100, search: searchOverride, role: roleOverride } = {}) => {
       setLoading(true);
       try {
+        // Apply passes the freshly typed values explicitly: this callback closes over
+        // the previous state, so reading it directly would filter with stale input.
+        const effectiveSearch = searchOverride !== undefined ? searchOverride : appliedSearch;
+        const effectiveRole = roleOverride !== undefined ? roleOverride : role;
         const params = { page, limit };
-        if (appliedSearch) params.search = appliedSearch;
-        if (meta.role && role && role !== 'all') params.role = role;
+        if (effectiveSearch) params.search = effectiveSearch;
+        if (meta.role && effectiveRole && effectiveRole !== 'all') params.role = effectiveRole;
         const res = await zonalAdminService.listResource(resource, params);
         setRows(pickList(res?.data || res, ['data']));
       } catch (err) {
@@ -77,8 +81,14 @@ const ZonalListScreen = ({ route }) => {
   );
 
   const apply = () => {
-    setAppliedSearch(search.trim());
-    load({ page: 1 });
+    const nextSearch = search.trim();
+    setAppliedSearch(nextSearch);
+    load({ page: 1, search: nextSearch, role });
+  };
+
+  const selectRole = (nextRole) => {
+    setRole(nextRole);
+    load({ page: 1, role: nextRole, search: appliedSearch });
   };
 
   if (loading && rows.length === 0) {
@@ -119,7 +129,7 @@ const ZonalListScreen = ({ route }) => {
                 <TouchableOpacity
                   key={key}
                   activeOpacity={0.85}
-                  onPress={() => setRole(key)}
+                  onPress={() => selectRole(key)}
                   style={[styles.chip, active && styles.chipActive]}
                 >
                   <AppText style={[styles.chipText, active && styles.chipTextActive]}>

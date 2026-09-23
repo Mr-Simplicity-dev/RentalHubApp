@@ -21,6 +21,7 @@ import OperationNoteModal from '../../components/admin/OperationNoteModal';
 import { superAdminService } from '../../services/superAdminService';
 import { authService } from '../../services/authService';
 import { buildUploadUrl, getErrorMessage, pickList, pickObject } from '../../utils/http';
+import { formatDisplayValue, isPlainTextValue } from '../../utils/display';
 import FlagsSection from '../../components/admin/FlagsSection';
 import RegistrationAccessSection from '../../components/admin/RegistrationAccessSection';
 import TenancyWorkflowSection from '../../components/admin/TenancyWorkflowSection';
@@ -98,12 +99,15 @@ const analyticsBreakdownRows = (value) => {
   if (!Array.isArray(value)) return [];
   return value.map((row, index) => {
     if (row && typeof row === 'object') {
-      const label =
+      const rawLabel =
         row.role || row.state || row.month || row.label || row.name || row.key || `Row ${index + 1}`;
-      const count = row.count ?? row.users ?? row.total ?? row.value ?? row.amount ?? '';
-      return { label: String(label).replace(/_/g, ' '), count };
+      const rawCount = row.count ?? row.users ?? row.total ?? row.value ?? row.amount ?? '';
+      return {
+        label: formatDisplayValue(rawLabel).replace(/_/g, ' '),
+        count: isPlainTextValue(rawCount) ? rawCount : formatDisplayValue(rawCount),
+      };
     }
-    return { label: String(row), count: '' };
+    return { label: formatDisplayValue(row), count: '' };
   });
 };
 
@@ -195,6 +199,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
     user_type: 'all',
   });
   const [availableUserTypes, setAvailableUserTypes] = useState([]);
+  const [logSearch, setLogSearch] = useState('');
   const [pricingForm, setPricingForm] = useState(defaultPricingForm);
   const [lawyerInviteSearch, setLawyerInviteSearch] = useState('');
   const [editingInviteId, setEditingInviteId] = useState(null);
@@ -1745,13 +1750,21 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
         />
       </View>
 
-      {broadcasts.map((item) => (
-        <View key={item.id} style={styles.card}>
-          <AppText style={styles.cardTitle}>{item.title}</AppText>
-          <AppText style={styles.meta}>{item.message}</AppText>
-          <AppText style={styles.meta}>Target: {item.target_role || 'all'}</AppText>
-        </View>
-      ))}
+      {broadcasts.length === 0 ? (
+        <EmptyState
+          icon="megaphone-outline"
+          title="No broadcasts yet"
+          message="Broadcasts you send will be listed here."
+        />
+      ) : (
+        broadcasts.map((item) => (
+          <View key={item.id} style={styles.card}>
+            <AppText style={styles.cardTitle}>{item.title}</AppText>
+            <AppText style={styles.meta}>{item.message}</AppText>
+            <AppText style={styles.meta}>Target: {item.target_role || 'all'}</AppText>
+          </View>
+        ))
+      )}
     </>
   );
 
@@ -1988,26 +2001,85 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
   );
 
   const renderFraud = () =>
-    fraud.map((item) => (
-      <View key={item.id} style={styles.card}>
-        <AppText style={styles.cardTitle}>{item.rule || 'Fraud rule'}</AppText>
-        <AppText style={styles.meta}>Score: {item.score}</AppText>
-        <TouchableOpacity onPress={() => runAction(() => superAdminService.resolveFraudFlag(item.id), 'Fraud flag resolved')}>
-          <AppText style={styles.linkText}>Resolve</AppText>
-        </TouchableOpacity>
-      </View>
-    ));
+    fraud.length === 0 ? (
+      <EmptyState
+        icon="alert-circle-outline"
+        title="No fraud flags"
+        message="Suspicious activity flagged by the rules engine will appear here."
+      />
+    ) : (
+      fraud.map((item) => (
+        <View key={item.id} style={styles.card}>
+          <AppText style={styles.cardTitle}>{item.rule || 'Fraud rule'}</AppText>
+          <AppText style={styles.meta}>Score: {item.score}</AppText>
+          <TouchableOpacity onPress={() => runAction(() => superAdminService.resolveFraudFlag(item.id), 'Fraud flag resolved')}>
+            <AppText style={styles.linkText}>Resolve</AppText>
+          </TouchableOpacity>
+        </View>
+      ))
+    );
 
-  const renderLogs = () =>
-    logs.map((item, index) => (
-      <View key={`${item.id || 'log'}-${index}`} style={styles.card}>
-        <AppText style={styles.cardTitle}>{item.action || item.event_type || 'Audit log'}</AppText>
-        <AppText style={styles.meta}>{item.user_name || item.actor_name || 'System'}</AppText>
-        <AppText style={styles.meta}>
-          {item.created_at ? new Date(item.created_at).toLocaleString() : ''}
-        </AppText>
-      </View>
-    ));
+  const renderLogs = () => {
+    const query = logSearch.trim().toLowerCase();
+    const filteredLogs = query
+      ? logs.filter((item) =>
+          [
+            item.action,
+            item.event_type,
+            item.user_name,
+            item.actor_name,
+            item.user_email,
+            item.actor_email,
+            item.target_type,
+          ]
+            .filter(Boolean)
+            .some((field) => String(field).toLowerCase().includes(query))
+        )
+      : logs;
+
+    return (
+      <>
+        <View style={styles.card}>
+          <AppText style={styles.cardTitle}>Audit Logs</AppText>
+          <Input
+            label="Search"
+            value={logSearch}
+            onChangeText={setLogSearch}
+            placeholder="Action, user or target"
+          />
+          <AppText style={styles.meta}>
+            Showing {filteredLogs.length} of {logs.length} entries
+          </AppText>
+        </View>
+
+        {filteredLogs.length === 0 ? (
+          <EmptyState
+            icon="document-text-outline"
+            title="No audit logs found"
+            message={
+              logs.length === 0
+                ? 'Activity will appear here as admins use the platform.'
+                : 'No entries match your search.'
+            }
+          />
+        ) : (
+          filteredLogs.map((item, index) => (
+            <View key={`${item.id || 'log'}-${index}`} style={styles.card}>
+              <AppText style={styles.cardTitle}>
+                {item.action || item.event_type || 'Audit log'}
+              </AppText>
+              <AppText style={styles.meta}>
+                {item.user_name || item.actor_name || 'System'}
+              </AppText>
+              <AppText style={styles.meta}>
+                {item.created_at ? new Date(item.created_at).toLocaleString() : ''}
+              </AppText>
+            </View>
+          ))
+        )}
+      </>
+    );
+  };
 
   // ===================== NEW: ANALYTICS TAB =====================
   const renderStructuredAnalytics = () => {
@@ -2078,9 +2150,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                       <View key={`${key}-${index}`} style={styles.breakdownRow}>
                         <AppText style={styles.breakdownLabel}>{row.label}</AppText>
                         <AppText style={styles.breakdownValue}>
-                          {typeof row.count === 'number'
-                            ? row.count.toLocaleString()
-                            : String(row.count)}
+                          {formatDisplayValue(row.count)}
                         </AppText>
                       </View>
                     ))}

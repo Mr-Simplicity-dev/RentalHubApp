@@ -4,6 +4,7 @@ import Toast from 'react-native-toast-message';
 import { supportService } from '../../services/supportService';
 import { colors, spacing, typography } from '../../theme';
 import { getErrorMessage } from '../../utils/http';
+import { formatDisplayValue } from '../../utils/display';
 
 import AppText from '../../components/common/AppText';
 const ActivityFeedScreen = ({ navigation, route }) => {
@@ -47,7 +48,7 @@ const ActivityFeedScreen = ({ navigation, route }) => {
     <View style={styles.log}>
       <View style={[styles.dot, { backgroundColor: actionColor(item.action) }]} />
       <View style={styles.body}>
-        <AppText style={styles.action}>{item.action.replace(/_/g, ' ')}</AppText>
+        <AppText style={styles.action}>{formatDisplayValue(item.action).replace(/_/g, ' ')}</AppText>
         <AppText style={styles.actor}>
           by {item.user_name || 'System'} ({item.user_type})
         </AppText>
