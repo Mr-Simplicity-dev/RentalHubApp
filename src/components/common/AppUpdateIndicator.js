@@ -27,12 +27,16 @@ const AppUpdateIndicator = ({ variant = 'floating' }) => {
   const [dismissed, setDismissed] = useState(false);
   const [updating, setUpdating] = useState(false);
   const [downloadProgress, setDownloadProgress] = useState(null);
+  const [downloadComplete, setDownloadComplete] = useState(false);
   const [updateAlertsEnabled, setUpdateAlertsEnabled] = useState(true);
 
   // Native Android DownloadManager reports download progress through this event.
   useEffect(() => {
     const subscription = DeviceEventEmitter.addListener(UPDATE_PROGRESS_EVENT, (payload) => {
       setDownloadProgress(payload || null);
+      if (payload?.status === 'successful') {
+        setDownloadComplete(true);
+      }
     });
     return () => subscription.remove();
   }, []);
@@ -81,6 +85,7 @@ const AppUpdateIndicator = ({ variant = 'floating' }) => {
     if (!versionState?.update_available || updating) return;
     setUpdating(true);
     setDownloadProgress(null);
+    setDownloadComplete(false);
     try {
       await startAppUpdate(versionState);
     } catch (error) {
@@ -132,14 +137,21 @@ const AppUpdateIndicator = ({ variant = 'floating' }) => {
       </View>
       <View style={styles.bannerCopy}>
         <AppText style={styles.bannerEyebrow}>
-          {directApkAvailable ? 'DIRECT APK UPDATE' : 'APP UPDATE'}
+          {directApkAvailable ? 'APP UPDATE' : 'APP UPDATE'}
         </AppText>
         <AppText style={styles.bannerTitle}>{title}</AppText>
         <AppText style={styles.bannerText}>
           {message}
           {versionState.latest_version ? ` Latest: ${versionState.latest_version}.` : ''}
         </AppText>
-        {updating && downloadProgress ? (
+        {downloadComplete ? (
+          <View style={styles.progressWrap}>
+            <View style={styles.progressTrack}>
+              <View style={[styles.progressFill, { width: '100%' }]} />
+            </View>
+            <AppText style={styles.progressText}>Download complete — opening installer…</AppText>
+          </View>
+        ) : updating && downloadProgress ? (
           <View style={styles.progressWrap}>
             <View style={styles.progressTrack}>
               <View style={[styles.progressFill, { width: `${Math.max(0, Math.min(100, downloadProgress.progress || 0))}%` }]} />

@@ -1,6 +1,9 @@
 package com.rentalhubng
 
 import android.app.DownloadManager
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -11,6 +14,7 @@ import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
+import androidx.core.app.NotificationCompat
 import androidx.core.content.FileProvider
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.Promise
@@ -139,6 +143,7 @@ class RentalHubUpdateModule(private val reactContext: ReactApplicationContext) :
           }
 
           stopProgressPolling()
+          postDownloadCompleteNotification(destinationFile)
 
           try {
             openInstaller(destinationFile)
@@ -229,6 +234,51 @@ class RentalHubUpdateModule(private val reactContext: ReactApplicationContext) :
     progressRunnable = null
   }
 
+  private fun postDownloadCompleteNotification(apkFile: File) {
+    try {
+      val manager =
+        reactContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val channel = NotificationChannel(
+          UPDATE_CHANNEL_ID,
+          "App updates",
+          NotificationManager.IMPORTANCE_HIGH
+        ).apply { description = "RentalHub app update downloads" }
+        manager.createNotificationChannel(channel)
+      }
+
+      val apkUri = FileProvider.getUriForFile(
+        reactContext,
+        "${reactContext.packageName}.fileprovider",
+        apkFile
+      )
+      val installIntent = Intent(Intent.ACTION_VIEW)
+        .setDataAndType(apkUri, APK_MIME_TYPE)
+        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+      val pendingIntent = PendingIntent.getActivity(
+        reactContext,
+        0,
+        installIntent,
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+      )
+
+      val notification = NotificationCompat.Builder(reactContext, UPDATE_CHANNEL_ID)
+        .setSmallIcon(android.R.drawable.stat_sys_download_done)
+        .setContentTitle("RentalHub update downloaded")
+        .setContentText("Tap to install the latest version.")
+        .setAutoCancel(true)
+        .setPriority(NotificationCompat.PRIORITY_HIGH)
+        .setContentIntent(pendingIntent)
+        .build()
+
+      manager.notify(UPDATE_NOTIFICATION_ID, notification)
+    } catch (_: Exception) {
+      // Best-effort — the in-app installer still opens.
+    }
+  }
+
   private fun openInstaller(apkFile: File) {
     val apkUri = FileProvider.getUriForFile(
       reactContext,
@@ -255,5 +305,7 @@ class RentalHubUpdateModule(private val reactContext: ReactApplicationContext) :
     private const val APK_MIME_TYPE = "application/vnd.android.package-archive"
     private const val UPDATE_PROGRESS_EVENT = "rentalHubUpdateProgress"
     private const val PROGRESS_INTERVAL_MS = 500L
+    private const val UPDATE_CHANNEL_ID = "rentalhub_updates"
+    private const val UPDATE_NOTIFICATION_ID = 4301
   }
 }
