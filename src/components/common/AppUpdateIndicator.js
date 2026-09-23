@@ -22,7 +22,8 @@ const UPDATE_PROGRESS_EVENT = 'rentalHubUpdateProgress';
 
 const AppUpdateIndicator = ({ variant = 'floating' }) => {
   const insets = useSafeAreaInsets();
-  const isInline = variant === 'inline';
+  const isInline = variant === 'inline' || variant === 'overlay';
+  const isOverlay = variant === 'overlay';
   const [versionState, setVersionState] = useState(null);
   const [dismissed, setDismissed] = useState(false);
   const [updating, setUpdating] = useState(false);
@@ -118,7 +119,7 @@ const AppUpdateIndicator = ({ variant = 'floating' }) => {
         accessibilityRole="button"
         activeOpacity={0.86}
         onPress={() => setDismissed(false)}
-        style={[styles.dotContainer, isInline ? styles.dotContainerInline : { top: Math.max(insets.top + 12, 18) }]}
+        style={[styles.dotContainer, isOverlay ? styles.dotContainerOverlay : isInline ? styles.dotContainerInline : { top: Math.max(insets.top + 12, 18) }]}
       >
         <View style={styles.dotWrap}>
           <View style={styles.dotHalo} />
@@ -131,7 +132,7 @@ const AppUpdateIndicator = ({ variant = 'floating' }) => {
   }
 
   return (
-    <View style={[styles.banner, isInline ? styles.bannerInline : { top: Math.max(insets.top + 12, 18) }]}>
+    <View style={[styles.banner, isOverlay ? styles.bannerOverlay : isInline ? styles.bannerInline : { top: Math.max(insets.top + 12, 18) }]}>
       <View style={[styles.bannerIcon, isInline ? styles.bannerIconInline : null]}>
         <Icon name="cloud-download-outline" size={21} color={colors.navy} />
       </View>
@@ -360,6 +361,21 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     zIndex: 1,
+  },
+  bannerOverlay: {
+    alignItems: 'center',
+    bottom: 22,
+    flexDirection: 'column',
+    left: 18,
+    position: 'absolute',
+    right: 18,
+    zIndex: 9000,
+  },
+  dotContainerOverlay: {
+    bottom: 22,
+    position: 'absolute',
+    right: 18,
+    zIndex: 9000,
   },
   bannerIconInline: {
     alignSelf: 'center',

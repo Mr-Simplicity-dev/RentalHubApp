@@ -98,10 +98,11 @@ const WelcomeScreen = ({ navigation }) => {
           <AppText style={styles.trustText}>Secure identity and property verification</AppText>
         </View>
 
-        {/* App update prompt — available before sign-in so anyone can update. */}
-        <AppUpdateIndicator variant="inline" />
       </Animated.View>
       </ScrollView>
+
+      {/* App update prompt — overlays the welcome content so it never shifts layout. */}
+      <AppUpdateIndicator variant="overlay" />
     </SafeAreaView>
   );
 };
