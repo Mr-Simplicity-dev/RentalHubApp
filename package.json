@@ -1,7 +1,7 @@
 {
   "name": "rentalhubmobile",
   "private": true,
-  "version": "1.0.11",
+  "version": "1.0.12",
   "main": "index.js",
   "scripts": {
     "android": "react-native run-android",
@@ -13,6 +13,7 @@
     "build:android:bundle": "cd android && ./gradlew bundleRelease",
     "build:ios": "cd ios && xcodebuild -workspace RentalHubMobile.xcworkspace -scheme RentalHubMobile -configuration Release",
     "build:app": "node scripts/build-all.js",
+    "sync:version": "node scripts/sync-app-version.cjs",
     "test:tour": "node scripts/verify-tour-system.cjs"
   },
   "dependencies": {

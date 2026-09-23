@@ -4,10 +4,13 @@ import api from './api';
 
 const sessionId = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
+// The installed native build is the source of truth. app.json / Expo config can drift
+// from build.gradle, and reading that first made every fresh install keep reporting an
+// old version — so the update check insisted an update was available forever.
 const getAppVersion = () =>
+  Constants.nativeAppVersion ||
   Constants.expoConfig?.version ||
   Constants.manifest?.version ||
-  Constants.nativeAppVersion ||
   null;
 
 export const reportMobileCrash = async (error, errorInfo = {}, metadata = {}) => {
