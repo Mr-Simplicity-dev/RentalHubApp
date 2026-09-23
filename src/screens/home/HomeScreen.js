@@ -81,6 +81,16 @@ const HomeScreen = ({ navigation }) => {
     goToPropertyList(value ? { search: value } : {});
   };
 
+  // Guests arrive here from "Explore homes" on the welcome screen — the brand mark
+  // doubles as the way back to it.
+  const goBackToWelcome = () => {
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    } else {
+      navigation.navigate('Welcome');
+    }
+  };
+
   return (
     <SafeAreaView edges={['top']} style={styles.safeArea}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.surface} />
@@ -97,7 +107,18 @@ const HomeScreen = ({ navigation }) => {
           />
         }>
         <View style={styles.topBar}>
-          <BrandMark compact />
+          {isAuthenticated ? (
+            <BrandMark compact />
+          ) : (
+            <TouchableOpacity
+              accessibilityLabel="Back to welcome screen"
+              accessibilityRole="button"
+              activeOpacity={0.75}
+              onPress={goBackToWelcome}
+              style={styles.brandButton}>
+              <BrandMark compact />
+            </TouchableOpacity>
+          )}
           <TouchableOpacity
             {...notificationsTourTarget}
             accessibilityLabel={isAuthenticated ? 'Open notifications' : 'Sign in'}
@@ -301,6 +322,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 20,
     paddingTop: 9,
+  },
+  brandButton: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    paddingRight: 12,
+    paddingVertical: 6,
   },
   topAction: {
     alignItems: 'center',
