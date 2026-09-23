@@ -80,6 +80,33 @@ const normalizeRequestedSection = (value) => {
   return sections.includes(normalized) ? normalized : null;
 };
 
+// Analytics values can be numbers, arrays of rows (usersByRole, userGrowth,
+// propertiesByState) or plain objects. Render arrays as labelled rows instead
+// of the default "[object Object]" string coercion.
+const formatAnalyticsValue = (value) => {
+  if (typeof value === 'number') return value.toLocaleString();
+  if (value === null || value === undefined) return '—';
+  if (Array.isArray(value)) return `${value.length} item${value.length === 1 ? '' : 's'}`;
+  if (typeof value === 'object') {
+    const keys = Object.keys(value);
+    return `${keys.length} field${keys.length === 1 ? '' : 's'}`;
+  }
+  return String(value);
+};
+
+const analyticsBreakdownRows = (value) => {
+  if (!Array.isArray(value)) return [];
+  return value.map((row, index) => {
+    if (row && typeof row === 'object') {
+      const label =
+        row.role || row.state || row.month || row.label || row.name || row.key || `Row ${index + 1}`;
+      const count = row.count ?? row.users ?? row.total ?? row.value ?? row.amount ?? '';
+      return { label: String(label).replace(/_/g, ' '), count };
+    }
+    return { label: String(row), count: '' };
+  });
+};
+
 const LGA_JURISDICTION_ROLES = new Set([
   'admin',
   'lga_admin',
@@ -779,16 +806,32 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
           />
         ) : (
           <View style={styles.analyticsGrid}>
-            {analyticEntries.map(([key, value]) => (
-              <View key={key} style={styles.analyticsCard}>
-                <AppText style={styles.analyticsValue}>
-                  {typeof value === 'number' ? value.toLocaleString() : String(value)}
-                </AppText>
-                <AppText style={styles.analyticsLabel}>
-                  {key.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
-                </AppText>
-              </View>
-            ))}
+            {analyticEntries.map(([key, value]) => {
+              const rows = analyticsBreakdownRows(value);
+              const isBreakdown = rows.length > 0;
+              return (
+                <View
+                  key={key}
+                  style={[styles.analyticsCard, isBreakdown ? styles.analyticsCardWide : null]}
+                >
+                  <AppText style={styles.analyticsLabel}>
+                    {key.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
+                  </AppText>
+                  {isBreakdown ? (
+                    rows.slice(0, 12).map((row) => (
+                      <View key={`${key}-${row.label}`} style={styles.breakdownRow}>
+                        <AppText style={styles.breakdownLabel} numberOfLines={1}>{row.label}</AppText>
+                        <AppText style={styles.breakdownValue}>
+                          {typeof row.count === 'number' ? row.count.toLocaleString() : row.count}
+                        </AppText>
+                      </View>
+                    ))
+                  ) : (
+                    <AppText style={styles.analyticsValue}>{formatAnalyticsValue(value)}</AppText>
+                  )}
+                </View>
+              );
+            })}
           </View>
         )}
 
@@ -3043,6 +3086,32 @@ const styles = StyleSheet.create({
     minWidth: '47%',
     flex: 1,
     alignItems: 'center',
+  },
+  analyticsCardWide: {
+    alignItems: 'stretch',
+    flexBasis: '100%',
+    minWidth: '100%',
+  },
+  breakdownRow: {
+    alignItems: 'center',
+    borderTopColor: '#eef2f7',
+    borderTopWidth: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 8,
+  },
+  breakdownLabel: {
+    color: '#334155',
+    flex: 1,
+    fontFamily: typography.medium,
+    fontSize: 13,
+    marginRight: 10,
+    textTransform: 'capitalize',
+  },
+  breakdownValue: {
+    color: '#0f172a',
+    fontFamily: typography.bold,
+    fontSize: 14,
   },
   analyticsValue: {
     fontSize: 24,
