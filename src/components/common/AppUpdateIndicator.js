@@ -132,38 +132,38 @@ const AppUpdateIndicator = ({ variant = 'floating' }) => {
 
   return (
     <View style={[styles.banner, isInline ? styles.bannerInline : { top: Math.max(insets.top + 12, 18) }]}>
-      <View style={styles.bannerIcon}>
+      <View style={[styles.bannerIcon, isInline ? styles.bannerIconInline : null]}>
         <Icon name="cloud-download-outline" size={21} color={colors.navy} />
       </View>
-      <View style={styles.bannerCopy}>
-        <AppText style={styles.bannerEyebrow}>
-          {directApkAvailable ? 'APP UPDATE' : 'APP UPDATE'}
+      <View style={[styles.bannerCopy, isInline ? styles.bannerCopyInline : null]}>
+        <AppText style={[styles.bannerEyebrow, isInline ? styles.textCenter : null]}>
+          {directApkAvailable ? 'DIRECT APK UPDATE' : 'APP UPDATE'}
         </AppText>
-        <AppText style={styles.bannerTitle}>{title}</AppText>
-        <AppText style={styles.bannerText}>
+        <AppText style={[styles.bannerTitle, isInline ? styles.textCenter : null]}>{title}</AppText>
+        <AppText style={[styles.bannerText, isInline ? styles.textCenter : null]}>
           {message}
           {versionState.latest_version ? ` Latest: ${versionState.latest_version}.` : ''}
         </AppText>
         {downloadComplete ? (
-          <View style={styles.progressWrap}>
+          <View style={[styles.progressWrap, isInline ? styles.progressWrapInline : null]}>
             <View style={styles.progressTrack}>
               <View style={[styles.progressFill, { width: '100%' }]} />
             </View>
-            <AppText style={styles.progressText}>Download complete — opening installer…</AppText>
+            <AppText style={[styles.progressText, isInline ? styles.textCenter : null]}>Download complete — opening installer…</AppText>
           </View>
         ) : updating && downloadProgress ? (
-          <View style={styles.progressWrap}>
+          <View style={[styles.progressWrap, isInline ? styles.progressWrapInline : null]}>
             <View style={styles.progressTrack}>
               <View style={[styles.progressFill, { width: `${Math.max(0, Math.min(100, downloadProgress.progress || 0))}%` }]} />
             </View>
-            <AppText style={styles.progressText}>
+            <AppText style={[styles.progressText, isInline ? styles.textCenter : null]}>
               {downloadProgress.indeterminate
                 ? 'Downloading update…'
                 : `Downloading update… ${downloadProgress.progress || 0}%`}
             </AppText>
           </View>
         ) : null}
-        <View style={styles.bannerActions}>
+        <View style={[styles.bannerActions, isInline ? styles.bannerActionsInline : null]}>
           <TouchableOpacity
             accessibilityRole="button"
             disabled={updating}
@@ -352,12 +352,33 @@ const styles = StyleSheet.create({
     opacity: 0.68,
   },
   bannerInline: {
+    alignItems: 'center',
+    flexDirection: 'column',
     left: 0,
     marginTop: 16,
     position: 'relative',
     right: 0,
     top: 0,
     zIndex: 1,
+  },
+  bannerIconInline: {
+    alignSelf: 'center',
+  },
+  bannerCopyInline: {
+    alignItems: 'center',
+    flexBasis: 'auto',
+    flexGrow: 0,
+    flexShrink: 0,
+  },
+  bannerActionsInline: {
+    justifyContent: 'center',
+  },
+  progressWrapInline: {
+    alignSelf: 'stretch',
+    width: '100%',
+  },
+  textCenter: {
+    textAlign: 'center',
   },
   dotContainerInline: {
     alignSelf: 'flex-start',
