@@ -11,6 +11,7 @@ import {
   MetricCard,
   MetricGrid,
 } from '../../components/dashboard/DashboardKit';
+import WorkspaceBoard from '../../components/dashboard/WorkspaceBoard';
 
 const AdminTransportationDashboardScreen = ({ navigation }) => {
   const [stats, setStats] = useState({});
@@ -70,11 +71,21 @@ const AdminTransportationDashboardScreen = ({ navigation }) => {
       </MetricGrid>
 
       <DashboardSection title="Mobile workspaces">
-        <ActionRow
-          title="Booking queue"
-          subtitle="Review and manage transportation bookings."
-          icon="car-outline"
-          onPress={() => navigation.navigate('ServiceBookings', { type: 'transportation' })}
+        <WorkspaceBoard
+          groups={[
+            {
+              title: 'Transportation',
+              icon: 'car-outline',
+              items: [
+                {
+                  label: 'Booking Queue',
+                  icon: 'car-outline',
+                  onPress: () =>
+                    navigation.navigate('ServiceBookings', { type: 'transportation' }),
+                },
+              ],
+            },
+          ]}
         />
       </DashboardSection>
     </DashboardScreen>

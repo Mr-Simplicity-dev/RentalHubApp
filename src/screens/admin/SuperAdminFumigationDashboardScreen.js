@@ -11,6 +11,7 @@ import {
   MetricCard,
   MetricGrid,
 } from '../../components/dashboard/DashboardKit';
+import WorkspaceBoard from '../../components/dashboard/WorkspaceBoard';
 
 const SuperAdminFumigationDashboardScreen = ({ navigation }) => {
   const [stats, setStats] = useState(null);
@@ -72,23 +73,31 @@ const SuperAdminFumigationDashboardScreen = ({ navigation }) => {
       </MetricGrid>
 
       <DashboardSection title="Mobile workspaces">
-        <ActionRow
-          title="Booking queue"
-          subtitle="Review recent fumigation and cleaning bookings."
-          icon="sparkles-outline"
-          onPress={() => navigation.navigate('ServiceBookings', { type: 'fumigation' })}
-        />
-        <ActionRow
-          title="Messages"
-          subtitle="Open staff and customer conversations."
-          icon="chatbubbles-outline"
-          onPress={() => navigation.navigate('Messages')}
-        />
-        <ActionRow
-          title="Notifications"
-          subtitle="Review system alerts and updates."
-          icon="notifications-outline"
-          onPress={() => navigation.navigate('Notifications')}
+        <WorkspaceBoard
+          groups={[
+            {
+              title: 'Fumigation & Cleaning',
+              icon: 'sparkles-outline',
+              items: [
+                {
+                  label: 'Booking Queue',
+                  icon: 'sparkles-outline',
+                  onPress: () =>
+                    navigation.navigate('ServiceBookings', { type: 'fumigation' }),
+                },
+                {
+                  label: 'Messages',
+                  icon: 'chatbubbles-outline',
+                  onPress: () => navigation.navigate('Messages'),
+                },
+                {
+                  label: 'Notifications',
+                  icon: 'notifications-outline',
+                  onPress: () => navigation.navigate('Notifications'),
+                },
+              ],
+            },
+          ]}
         />
       </DashboardSection>
     </DashboardScreen>

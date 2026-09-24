@@ -13,6 +13,7 @@ import {
   MetricCard,
   MetricGrid,
 } from '../../components/dashboard/DashboardKit';
+import WorkspaceBoard from '../../components/dashboard/WorkspaceBoard';
 
 const money = (value) => `₦${Number(value || 0).toLocaleString()}`;
 
@@ -153,107 +154,116 @@ const ServiceOperationsDashboardScreen = ({ navigation }) => {
       </MetricGrid>
 
       <DashboardSection title="Mobile workspaces">
-        {profile.family === 'support' ? (
-          <ActionRow
-            title="Support ticket queue"
-            subtitle="Review open, escalated and unread customer tickets."
-            icon="chatbox-ellipses-outline"
-            tourTarget="support_tickets"
-            onPress={() => navigation.navigate('SupportTickets')}
-          />
-        ) : (
-          <ActionRow
-            title="Booking queue"
-            subtitle="Review recent bookings in a native mobile list."
-            icon={profile.icon}
-            tourTarget="service_bookings"
-            onPress={() => navigation.navigate('ServiceBookings', { type: profile.bookingsType })}
-          />
-        )}
-        <ActionRow
-          title="Messages"
-          subtitle="Open staff/customer conversations."
-          icon="chatbubbles-outline"
-          onPress={() => navigation.navigate('Messages')}
-        />
-        <ActionRow
-          title="Notifications"
-          subtitle="Review system alerts and updates."
-          icon="notifications-outline"
-          onPress={() => navigation.navigate('Notifications')}
+        <WorkspaceBoard
+          groups={[
+            {
+              title: 'Daily queue',
+              icon: profile.icon,
+              items: [
+                profile.family === 'support'
+                  ? {
+                      label: 'Support Tickets',
+                      icon: 'chatbox-ellipses-outline',
+                      tourTarget: 'support_tickets',
+                      onPress: () => navigation.navigate('SupportTickets'),
+                    }
+                  : {
+                      label: 'Booking Queue',
+                      icon: profile.icon,
+                      tourTarget: 'service_bookings',
+                      onPress: () =>
+                        navigation.navigate('ServiceBookings', { type: profile.bookingsType }),
+                    },
+                {
+                  label: 'Messages',
+                  icon: 'chatbubbles-outline',
+                  onPress: () => navigation.navigate('Messages'),
+                },
+                {
+                  label: 'Notifications',
+                  icon: 'notifications-outline',
+                  onPress: () => navigation.navigate('Notifications'),
+                },
+              ],
+            },
+          ]}
         />
       </DashboardSection>
 
       <DashboardSection
         title="Native operations"
         subtitle="The daily service-admin controls now stay inside the mobile app."
-        tourTarget={profile.family === 'support' ? 'support_operations' : undefined}
       >
-        {profile.family === 'support' ? (
-          <>
-            <ActionRow
-              title="Admin pool"
-              subtitle="Review available support administrators for your permitted jurisdiction."
-              icon="people-outline"
-              badge="Native"
-              onPress={() => navigation.navigate('AdminPool')}
-            />
-            <ActionRow
-              title="Activity feed"
-              subtitle="Track recent ticket escalations and support actions."
-              icon="reader-outline"
-              badge="Native"
-              tourTarget="support_audit"
-              onPress={() => navigation.navigate('ActivityFeed')}
-            />
-            <ActionRow
-              title="Support dashboard"
-              subtitle="See support metrics and ticket governance in-app."
-              icon="analytics-outline"
-              badge="Native"
-              onPress={() => navigation.navigate('AdminSupportDashboard')}
-            />
-          </>
-        ) : null}
-        {profile.family === 'transportation' ? (
-          <ActionRow
-            title="Transport oversight"
-            subtitle="Open the transport-native command dashboard for your level."
-            icon="speedometer-outline"
-            badge="Native"
-            onPress={() =>
-              navigation.navigate(
-                profile.bookingsType === 'transportation_state'
-                  ? 'AdminTransportationStateDashboard'
-                  : 'ServiceBookings',
-                { type: profile.bookingsType }
-              )
-            }
-          />
-        ) : null}
-        {profile.family === 'fumigation' ? (
-          <ActionRow
-            title="Fumigation oversight"
-            subtitle="Open the native fumigation queue and safety workflow."
-            icon="shield-checkmark-outline"
-            badge="Native"
-            onPress={() =>
-              navigation.navigate(
-                user?.user_type?.includes('state') ? 'AdminFumigationStateDashboard' : 'ServiceBookings',
-                { type: profile.bookingsType }
-              )
-            }
-          />
-        ) : null}
-        {profile.family === 'support' && isSuperSupport ? (
-          <ActionRow
-            title="All activity"
-            subtitle="Review the complete cross-jurisdiction support audit history."
-            icon="list-outline"
-            badge="Super"
-            onPress={() => navigation.navigate('AllActivity')}
-          />
-        ) : null}
+        <WorkspaceBoard
+          groups={[
+            {
+              title: 'Service controls',
+              icon: 'construct-outline',
+              items: [
+                ...(profile.family === 'support'
+                  ? [
+                      {
+                        label: 'Admin Pool',
+                        icon: 'people-outline',
+                        tourTarget: profile.family === 'support' ? 'support_operations' : undefined,
+                        onPress: () => navigation.navigate('AdminPool'),
+                      },
+                      {
+                        label: 'Activity Feed',
+                        icon: 'reader-outline',
+                        tourTarget: 'support_audit',
+                        onPress: () => navigation.navigate('ActivityFeed'),
+                      },
+                      {
+                        label: 'Support Dashboard',
+                        icon: 'analytics-outline',
+                        onPress: () => navigation.navigate('AdminSupportDashboard'),
+                      },
+                    ]
+                  : []),
+                ...(profile.family === 'support' && isSuperSupport
+                  ? [
+                      {
+                        label: 'All Activity',
+                        icon: 'list-outline',
+                        onPress: () => navigation.navigate('AllActivity'),
+                      },
+                    ]
+                  : []),
+                ...(profile.family === 'transportation'
+                  ? [
+                      {
+                        label: 'Transport Oversight',
+                        icon: 'speedometer-outline',
+                        onPress: () =>
+                          navigation.navigate(
+                            profile.bookingsType === 'transportation_state'
+                              ? 'AdminTransportationStateDashboard'
+                              : 'ServiceBookings',
+                            { type: profile.bookingsType }
+                          ),
+                      },
+                    ]
+                  : []),
+                ...(profile.family === 'fumigation'
+                  ? [
+                      {
+                        label: 'Fumigation Oversight',
+                        icon: 'shield-checkmark-outline',
+                        onPress: () =>
+                          navigation.navigate(
+                            user?.user_type?.includes('state')
+                              ? 'AdminFumigationStateDashboard'
+                              : 'ServiceBookings',
+                            { type: profile.bookingsType }
+                          ),
+                      },
+                    ]
+                  : []),
+              ],
+            },
+          ]}
+        />
       </DashboardSection>
     </DashboardScreen>
   );

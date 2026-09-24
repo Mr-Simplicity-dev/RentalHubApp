@@ -11,6 +11,7 @@ import {
   MetricCard,
   MetricGrid,
 } from '../../components/dashboard/DashboardKit';
+import WorkspaceBoard from '../../components/dashboard/WorkspaceBoard';
 
 const AdminFumigationDashboardScreen = ({ navigation }) => {
   const [stats, setStats] = useState({});
@@ -68,11 +69,21 @@ const AdminFumigationDashboardScreen = ({ navigation }) => {
       </MetricGrid>
 
       <DashboardSection title="Mobile workspaces">
-        <ActionRow
-          title="Booking queue"
-          subtitle="Review and manage fumigation bookings."
-          icon="sparkles-outline"
-          onPress={() => navigation.navigate('ServiceBookings', { type: 'fumigation' })}
+        <WorkspaceBoard
+          groups={[
+            {
+              title: 'Fumigation & Cleaning',
+              icon: 'sparkles-outline',
+              items: [
+                {
+                  label: 'Booking Queue',
+                  icon: 'sparkles-outline',
+                  onPress: () =>
+                    navigation.navigate('ServiceBookings', { type: 'fumigation' }),
+                },
+              ],
+            },
+          ]}
         />
       </DashboardSection>
     </DashboardScreen>

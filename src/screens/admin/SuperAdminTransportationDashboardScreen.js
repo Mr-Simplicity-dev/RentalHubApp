@@ -11,6 +11,7 @@ import {
   MetricCard,
   MetricGrid,
 } from '../../components/dashboard/DashboardKit';
+import WorkspaceBoard from '../../components/dashboard/WorkspaceBoard';
 
 const formatCurrency = (value) => `₦${Number(value || 0).toLocaleString()}`;
 
@@ -72,23 +73,31 @@ const SuperAdminTransportationDashboardScreen = ({ navigation }) => {
       </MetricGrid>
 
       <DashboardSection title="Mobile workspaces">
-        <ActionRow
-          title="Booking queue"
-          subtitle="Review recent transportation bookings across all LGAs."
-          icon="car-outline"
-          onPress={() => navigation.navigate('ServiceBookings', { type: 'transportation_super' })}
-        />
-        <ActionRow
-          title="Messages"
-          subtitle="Open staff and customer conversations."
-          icon="chatbubbles-outline"
-          onPress={() => navigation.navigate('Messages')}
-        />
-        <ActionRow
-          title="Notifications"
-          subtitle="Review system alerts and updates."
-          icon="notifications-outline"
-          onPress={() => navigation.navigate('Notifications')}
+        <WorkspaceBoard
+          groups={[
+            {
+              title: 'Transportation',
+              icon: 'car-outline',
+              items: [
+                {
+                  label: 'Booking Queue',
+                  icon: 'car-outline',
+                  onPress: () =>
+                    navigation.navigate('ServiceBookings', { type: 'transportation_super' }),
+                },
+                {
+                  label: 'Messages',
+                  icon: 'chatbubbles-outline',
+                  onPress: () => navigation.navigate('Messages'),
+                },
+                {
+                  label: 'Notifications',
+                  icon: 'notifications-outline',
+                  onPress: () => navigation.navigate('Notifications'),
+                },
+              ],
+            },
+          ]}
         />
       </DashboardSection>
     </DashboardScreen>
