@@ -162,7 +162,7 @@ const BrandSplash = ({ duration = DEFAULT_DURATION_MS, showProgressPercent = fal
           }}
         >
           <Image
-            source={require('../../../assets/brand/01_stacked_amana_light.png')}
+            source={require('../../../assets/brand/03_horizontal_dark_navy.png')}
             style={styles.lockup}
             resizeMode="contain"
             accessibilityLabel="Amana RentalHub"
@@ -231,9 +231,9 @@ const styles = StyleSheet.create({
     width: 152,
   },
   lockup: {
-    height: 148,
-    marginTop: 18,
-    width: 274,
+    height: 74,
+    marginTop: 22,
+    width: 358,
   },
   amana: {
     color: AMANA_RED_ON_DARK,

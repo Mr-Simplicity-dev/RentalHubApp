@@ -11,11 +11,18 @@
         <item name="android:windowLightStatusBar">false</item>
     </style>
 
+    <!--
+      Android 12+ ignores android:windowBackground on the launch theme and draws the
+      system splash instead, so the Amana mark has to live in the icon slot. The
+      composite holds the logo mark with Amana beneath it, sized to survive the
+      circular mask. Branding image covers older releases that still honour it.
+    -->
     <style name="LaunchTheme" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenAnimatedIcon">@drawable/rentalhub_splash_mark</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/amana_launch_composite</item>
         <item name="windowSplashScreenBackground">@color/rentalhub_navy</item>
         <item name="windowSplashScreenIconBackgroundColor">@android:color/transparent</item>
         <item name="windowSplashScreenAnimationDuration">900</item>
+        <item name="windowSplashScreenBrandingImage">@drawable/amana_launch</item>
         <item name="postSplashScreenTheme">@style/AppTheme</item>
     </style>
 
