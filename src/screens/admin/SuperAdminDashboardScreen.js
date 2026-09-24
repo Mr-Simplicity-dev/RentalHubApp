@@ -66,10 +66,99 @@ const sections = [
   'logs',
 ];
 
-const sectionOptions = sections.map((value) => ({
-  value,
-  label: value.replace(/_/g, ' ').replace(/\b\w/g, (letter) => letter.toUpperCase()),
-}));
+// One home for every super-admin workspace, grouped by the job it belongs to.
+// An item either switches an inline section (`section`) or opens a separate screen (`route`).
+const WORKSPACE_GROUPS = [
+  {
+    title: 'People & Verification',
+    icon: 'people-outline',
+    items: [
+      { label: 'Users', section: 'users', icon: 'people-outline' },
+      { label: 'Verifications', section: 'verifications', icon: 'shield-checkmark-outline' },
+      { label: 'Lawyer Invites', section: 'lawyer_invites', icon: 'mail-outline' },
+      { label: 'Admin Management', section: 'admin_management', icon: 'construct-outline' },
+      { label: 'Pending Approvals', section: 'pending_approvals', icon: 'hourglass-outline' },
+      { label: 'Admin Accounts & Reminders', route: 'AdminAccounts', icon: 'person-add-outline' },
+    ],
+  },
+  {
+    title: 'Properties & Trust',
+    icon: 'home-outline',
+    items: [
+      { label: 'Properties', section: 'properties', icon: 'home-outline' },
+      { label: 'Property Requests', section: 'property_requests', icon: 'document-text-outline' },
+      { label: 'Moderation', section: 'moderation', icon: 'shield-outline' },
+      { label: 'Content Moderation', route: 'ContentModeration', icon: 'images-outline' },
+      { label: 'Ratings & Credentials', route: 'ModerationHub', icon: 'star-outline' },
+      { label: 'Reports', section: 'reports', icon: 'flag-outline' },
+      { label: 'Fraud', section: 'fraud', icon: 'alert-circle-outline' },
+    ],
+  },
+  {
+    title: 'Money',
+    icon: 'cash-outline',
+    items: [
+      { label: 'Pricing', section: 'pricing', icon: 'pricetags-outline' },
+      { label: 'Rent Savings Setup Fees', route: 'RentSavingsSetupFees', icon: 'cash-outline' },
+      { label: 'Rent Savings Withdrawals', route: 'RentSavingsAdmin', icon: 'wallet-outline' },
+      { label: 'Rent Calculator Fees', route: 'RentCalculatorFeesAdmin', icon: 'calculator-outline' },
+      { label: 'Agent Commissions', route: 'AgentCommissionAdmin', icon: 'trending-up-outline' },
+      { label: 'Registration Access', section: 'registration_access', icon: 'key-outline' },
+      { label: 'SFA Permissions', section: 'sfa_permissions', icon: 'lock-open-outline' },
+    ],
+  },
+  {
+    title: 'Growth & Marketing',
+    icon: 'trending-up-outline',
+    items: [
+      { label: 'Analytics', section: 'analytics', icon: 'analytics-outline' },
+      { label: 'Survey Analytics', route: 'SurveyAnalytics', icon: 'clipboard-outline' },
+      { label: 'Tour Analytics', route: 'TourAnalytics', icon: 'map-outline' },
+      { label: 'Email & SMS Marketing', route: 'MarketingOps', icon: 'mail-outline' },
+      { label: 'Campaign Builder', route: 'MarketingBuilder', icon: 'megaphone-outline' },
+      { label: 'Email Template Editor', route: 'EmailTemplateEditor', icon: 'code-outline' },
+      { label: 'SEO Tools', route: 'SeoTools', icon: 'search-outline' },
+      { label: 'Diaspora Desk', route: 'DiasporaDesk', icon: 'globe-outline' },
+      { label: 'Broadcasts', section: 'broadcasts', icon: 'radio-outline' },
+      { label: 'Ad Spaces', section: 'ad_spaces', icon: 'image-outline' },
+    ],
+  },
+  {
+    title: 'Operations',
+    icon: 'construct-outline',
+    items: [
+      { label: 'Voice Monitor', route: 'VoiceMonitor', icon: 'call-outline' },
+      { label: 'Court Bundle', route: 'CourtBundle', icon: 'briefcase-outline' },
+      { label: 'State Admin Management', route: 'FinanceStateAdmins', icon: 'business-outline' },
+      { label: 'Service Bookings', route: 'ServiceBookings', icon: 'calendar-outline' },
+      { label: 'Fumigation Compliance', route: 'FumigationCompliance', icon: 'leaf-outline' },
+    ],
+  },
+  {
+    title: 'Platform',
+    icon: 'server-outline',
+    items: [
+      { label: 'Platform Lawyers', section: 'platform_lawyers', icon: 'briefcase-outline' },
+      { label: 'Platform Agents', section: 'platform_agents', icon: 'people-circle-outline' },
+      { label: 'Lawyer Activity', section: 'lawyer_activity', icon: 'pulse-outline' },
+      { label: 'Flags', section: 'flags', icon: 'toggle-outline' },
+      { label: 'Logs', section: 'logs', icon: 'list-outline' },
+    ],
+  },
+];
+
+const sectionOptions = [
+  { value: '__home', label: 'Home', __header: true },
+  { value: 'overview', label: 'Overview', section: 'overview', icon: 'grid-outline' },
+  ...WORKSPACE_GROUPS.flatMap((group) => [
+    { value: `__header_${group.title}`, label: group.title, __header: true },
+    ...group.items.map((item) => ({
+      ...item,
+      value: item.section || item.route,
+      group: group.title,
+    })),
+  ]),
+];
 
 const normalizeRequestedSection = (value) => {
   const requested = String(value || '').trim().toLowerCase();
@@ -735,6 +824,18 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
     ]);
   };
 
+  // Workspace items are either an inline section or a separate screen.
+  const openWorkspace = (item) => {
+    if (!item) return;
+    if (item.section) {
+      setSection(item.section);
+      return;
+    }
+    if (item.route) {
+      navigation.navigate(item.route);
+    }
+  };
+
   const renderOverview = () => {
     const analyticEntries = Object.entries(analytics);
 
@@ -792,6 +893,32 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
             </TouchableOpacity>
           ))}
         </View>
+
+        {WORKSPACE_GROUPS.map((group) => (
+          <View key={group.title} style={styles.workspaceGroup}>
+            <View style={styles.workspaceGroupHeader}>
+              <Icon name={group.icon} size={16} color={colors.blue} />
+              <AppText style={styles.workspaceGroupTitle}>{group.title}</AppText>
+            </View>
+            <View style={styles.workspaceGrid}>
+              {group.items.map((item) => (
+                <TouchableOpacity
+                  key={`${group.title}-${item.label}`}
+                  accessibilityRole="button"
+                  accessibilityLabel={`${group.title}: ${item.label}`}
+                  activeOpacity={0.85}
+                  onPress={() => openWorkspace(item)}
+                  style={styles.workspaceCard}
+                >
+                  <Icon name={item.icon} size={20} color={colors.blue} />
+                  <AppText style={styles.workspaceCardLabel} numberOfLines={2}>
+                    {item.label}
+                  </AppText>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+        ))}
 
         {analyticEntries.length === 0 ? (
           <EmptyState
@@ -3189,9 +3316,11 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
         selectedValue={section}
         searchable
         searchPlaceholder="Search workspaces"
+        getOptionLabel={(item) => item?.label || String(item?.value ?? '')}
         onClose={() => setShowSectionPicker(false)}
         onSelect={(item) => {
-          setSection(item.value);
+          if (item?.__header) return;
+          openWorkspace(item);
           setShowSectionPicker(false);
         }}
       />
@@ -3385,6 +3514,44 @@ const styles = StyleSheet.create({
     fontFamily: typography.semibold,
     fontSize: 11,
     marginTop: 4,
+  },
+  workspaceGroup: {
+    marginBottom: 14,
+  },
+  workspaceGroupHeader: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 7,
+    marginBottom: 8,
+  },
+  workspaceGroupTitle: {
+    color: '#0f172a',
+    fontFamily: typography.bold,
+    fontSize: 14,
+  },
+  workspaceGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  workspaceCard: {
+    alignItems: 'center',
+    backgroundColor: '#ffffff',
+    borderColor: '#e2e8f0',
+    borderRadius: 12,
+    borderWidth: 1,
+    gap: 6,
+    justifyContent: 'center',
+    minHeight: 78,
+    paddingHorizontal: 8,
+    paddingVertical: 12,
+    width: '31.5%',
+  },
+  workspaceCardLabel: {
+    color: '#334155',
+    fontFamily: typography.medium,
+    fontSize: 11,
+    textAlign: 'center',
   },
   analyticsGrid: {
     flexDirection: 'row',

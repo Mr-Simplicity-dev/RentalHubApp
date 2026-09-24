@@ -164,11 +164,23 @@ export const AuthProvider = ({ children }) => {
       return;
     }
 
-    try { await storageService.clearAll(); } catch (e) { console.error('[AuthContext] clearAll failed:', e); }
-    await biometricService.clearStoredSession();
+    // Tell the app you are signed out FIRST so the UI always returns to Welcome.
+    // Wiping the stored credentials used to run before this, so a slow or stuck
+    // secure-storage call left the screen unchanged and logout looked broken.
     setUser(null);
     setIsAuthenticated(false);
     setIsImpersonating(false);
+
+    try {
+      await storageService.clearAll();
+    } catch (e) {
+      console.error('[AuthContext] clearAll failed:', e);
+    }
+    try {
+      await biometricService.clearStoredSession();
+    } catch (e) {
+      console.error('[AuthContext] clearStoredSession failed:', e);
+    }
   };
 
   const logout = async () => {

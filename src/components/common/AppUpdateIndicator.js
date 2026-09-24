@@ -123,7 +123,14 @@ const AppUpdateIndicator = ({ variant = 'floating' }) => {
         accessibilityRole="button"
         activeOpacity={0.86}
         onPress={() => setDismissed(false)}
-        style={[styles.dotContainer, isOverlay ? styles.dotContainerOverlay : isInline ? styles.dotContainerInline : { top: Math.max(insets.top + 12, 18) }]}
+        style={[
+          styles.dotContainer,
+          isOverlay
+            ? [styles.dotContainerOverlay, { bottom: insets.bottom + 62 }]
+            : isInline
+              ? styles.dotContainerInline
+              : { top: Math.max(insets.top + 12, 18) },
+        ]}
       >
         <View style={styles.dotWrap}>
           <View style={styles.dotHalo} />
@@ -376,9 +383,10 @@ const styles = StyleSheet.create({
     zIndex: 9000,
   },
   dotContainerOverlay: {
-    bottom: 22,
+    alignSelf: 'center',
+    bottom: 62,
     position: 'absolute',
-    right: 18,
+    right: 'auto',
     zIndex: 9000,
   },
   bannerIconInline: {

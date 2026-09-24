@@ -614,15 +614,9 @@ const ProfileScreen = ({ navigation }) => {
           style={styles.marginTop}
           onPress={() => navigation.navigate('MyAppeals')}
         />
-        {user?.user_type === 'super_admin' ? (
-          <Button
-            title="Ratings & Credentials Moderation"
-            variant="outline"
-            style={styles.marginTop}
-            onPress={() => navigation.navigate('ModerationHub')}
-          />
-        ) : null}
-        {['super_admin', 'super_financial_admin'].includes(user?.user_type) ? (
+        {/* Super-admin tools now live on the Super Admin dashboard, grouped by job.
+            Only the roles that cannot see that dashboard keep their shortcuts here. */}
+        {user?.user_type === 'super_financial_admin' ? (
           <Button
             title="State Admin Management"
             variant="outline"
@@ -630,124 +624,12 @@ const ProfileScreen = ({ navigation }) => {
             onPress={() => navigation.navigate('FinanceStateAdmins')}
           />
         ) : null}
-        {user?.user_type === 'super_admin' ? (
-          <Button
-            title="Rent Savings Withdrawals"
-            variant="outline"
-            style={styles.marginTop}
-            onPress={() => navigation.navigate('RentSavingsAdmin')}
-          />
-        ) : null}
-        {user?.user_type === 'super_admin' ? (
-          <Button
-            title="Rent Savings Setup Fees"
-            variant="outline"
-            style={styles.marginTop}
-            onPress={() => navigation.navigate('RentSavingsSetupFees')}
-          />
-        ) : null}
-        {user?.user_type === 'super_admin' ? (
-          <Button
-            title="Rent Calculator Fees"
-            variant="outline"
-            style={styles.marginTop}
-            onPress={() => navigation.navigate('RentCalculatorFeesAdmin')}
-          />
-        ) : null}
-        {user?.user_type === 'super_admin' ? (
-          <Button
-            title="Tour Analytics"
-            variant="outline"
-            style={styles.marginTop}
-            onPress={() => navigation.navigate('TourAnalytics')}
-          />
-        ) : null}
-        {['super_admin', 'admin'].includes(user?.user_type) ? (
+        {user?.user_type === 'admin' ? (
           <Button
             title="Agent Commissions"
             variant="outline"
             style={styles.marginTop}
             onPress={() => navigation.navigate('AgentCommissionAdmin')}
-          />
-        ) : null}
-        {user?.user_type === 'super_admin' ? (
-          <Button
-            title="Admin Accounts & Reminders"
-            variant="outline"
-            style={styles.marginTop}
-            onPress={() => navigation.navigate('AdminAccounts')}
-          />
-        ) : null}
-        {user?.user_type === 'super_admin' ? (
-          <Button
-            title="Survey Analytics"
-            variant="outline"
-            style={styles.marginTop}
-            onPress={() => navigation.navigate('SurveyAnalytics')}
-          />
-        ) : null}
-        {user?.user_type === 'super_admin' ? (
-          <Button
-            title="Email & SMS Marketing"
-            variant="outline"
-            style={styles.marginTop}
-            onPress={() => navigation.navigate('MarketingOps')}
-          />
-        ) : null}
-        {user?.user_type === 'super_admin' ? (
-          <Button
-            title="Campaign Builder"
-            variant="outline"
-            style={styles.marginTop}
-            onPress={() => navigation.navigate('MarketingBuilder')}
-          />
-        ) : null}
-        {user?.user_type === 'super_admin' ? (
-          <Button
-            title="Email HTML Editor"
-            variant="outline"
-            style={styles.marginTop}
-            onPress={() => navigation.navigate('EmailTemplateEditor')}
-          />
-        ) : null}
-        {user?.user_type === 'super_admin' ? (
-          <Button
-            title="Diaspora Desk"
-            variant="outline"
-            style={styles.marginTop}
-            onPress={() => navigation.navigate('DiasporaDesk')}
-          />
-        ) : null}
-        {user?.user_type === 'super_admin' ? (
-          <Button
-            title="SEO Tools"
-            variant="outline"
-            style={styles.marginTop}
-            onPress={() => navigation.navigate('SeoTools')}
-          />
-        ) : null}
-        {user?.user_type === 'super_admin' ? (
-          <Button
-            title="Content Moderation"
-            variant="outline"
-            style={styles.marginTop}
-            onPress={() => navigation.navigate('ContentModeration')}
-          />
-        ) : null}
-        {user?.user_type === 'super_admin' ? (
-          <Button
-            title="Voice Monitor"
-            variant="outline"
-            style={styles.marginTop}
-            onPress={() => navigation.navigate('VoiceMonitor')}
-          />
-        ) : null}
-        {user?.user_type === 'super_admin' ? (
-          <Button
-            title="Court Bundle"
-            variant="outline"
-            style={styles.marginTop}
-            onPress={() => navigation.navigate('CourtBundle')}
           />
         ) : null}
         {['lawyer', 'state_lawyer', 'super_lawyer'].includes(user?.user_type) ? (

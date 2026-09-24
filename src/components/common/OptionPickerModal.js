@@ -37,8 +37,10 @@ const OptionPickerModal = ({
     }
 
     const loweredQuery = query.trim().toLowerCase();
-    return options.filter((item) =>
-      getOptionLabel(item).toLowerCase().includes(loweredQuery)
+    // Group headers are only meaningful in the full list; while searching they are
+    // dropped so the results are a plain match list.
+    return options.filter(
+      (item) => !item?.__header && getOptionLabel(item).toLowerCase().includes(loweredQuery)
     );
   }, [getOptionLabel, options, query, searchable]);
 
@@ -67,6 +69,12 @@ const OptionPickerModal = ({
           keyExtractor={(item, index) => `${String(getOptionValue(item))}-${index}`}
           contentContainerStyle={styles.listContent}
           renderItem={({ item }) => {
+            if (item?.__header) {
+              return (
+                <AppText style={styles.groupHeader}>{getOptionLabel(item)}</AppText>
+              );
+            }
+
             const optionLabel = getOptionLabel(item);
             const optionValue = getOptionValue(item);
             const active = String(optionValue) === String(selectedValue);
@@ -141,6 +149,15 @@ const styles = StyleSheet.create({
   listContent: {
     padding: 16,
     paddingBottom: 24,
+  },
+  groupHeader: {
+    color: colors.muted,
+    fontFamily: typography.bold,
+    fontSize: 12,
+    letterSpacing: 0.6,
+    marginBottom: 8,
+    marginTop: 14,
+    textTransform: 'uppercase',
   },
   optionRow: {
     alignItems: 'center',
