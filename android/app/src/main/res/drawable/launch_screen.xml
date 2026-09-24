@@ -1,9 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:drawable="@color/rentalhub_navy" />
+
+    <!-- Logo mark, lifted to leave room for the Amana mark beneath it. -->
     <item
-        android:width="152dp"
-        android:height="152dp"
+        android:width="132dp"
+        android:height="132dp"
         android:drawable="@drawable/rentalhub_splash_mark"
-        android:gravity="center" />
+        android:gravity="center"
+        android:bottom="52dp" />
+
+    <!-- Amana: the only other thing on this screen. -->
+    <item
+        android:width="188dp"
+        android:height="69dp"
+        android:drawable="@drawable/amana_launch"
+        android:gravity="center"
+        android:top="96dp" />
 </layer-list>

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import {Animated, Easing, StatusBar, StyleSheet, View} from 'react-native';
+import {Animated, Easing, Image, StatusBar, StyleSheet, View} from 'react-native';
 import { colors, typography } from '../../theme';
 import { useAccessibilityPreferences } from '../../hooks/useAccessibilityPreferences';
 import BrandLogoMark from './BrandLogoMark';
@@ -161,14 +161,12 @@ const BrandSplash = ({ duration = DEFAULT_DURATION_MS, showProgressPercent = fal
             transform: [{ translateY: copyTranslateY }],
           }}
         >
-          <AppText
-            style={[styles.amana, { fontSize: scaleFont(54) }]}
-            numberOfLines={1}
-            adjustsFontSizeToFit
-          >
-            Amana
-          </AppText>
-          <AppText style={[styles.subscript, { fontSize: scaleFont(15) }]}>RentalHub</AppText>
+          <Image
+            source={require('../../../assets/brand/01_stacked_amana_light.png')}
+            style={styles.lockup}
+            resizeMode="contain"
+            accessibilityLabel="Amana RentalHub"
+          />
           <AppText style={[styles.tagline, { fontSize: scaleFont(13) }]}>Trusted homes. Confident living.</AppText>
         </Animated.View>
       </Animated.View>
@@ -231,6 +229,11 @@ const styles = StyleSheet.create({
     height: 152,
     position: 'absolute',
     width: 152,
+  },
+  lockup: {
+    height: 148,
+    marginTop: 18,
+    width: 274,
   },
   amana: {
     color: AMANA_RED_ON_DARK,

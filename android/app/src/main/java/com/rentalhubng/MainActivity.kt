@@ -21,8 +21,8 @@ class MainActivity : ReactActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     val splashScreen = installSplashScreen()
     splashScreen.setKeepOnScreenCondition {
-      // The launch mark used to blink past in 1.6s; hold it long enough to read.
-      System.currentTimeMillis() - nativeSplashStartedAt < 3200L
+      // The launch mark used to blink past; hold the Amana lockup long enough to read.
+      System.currentTimeMillis() - nativeSplashStartedAt < 4500L
     }
     splashScreen.setOnExitAnimationListener { splashProvider ->
       splashProvider.view
