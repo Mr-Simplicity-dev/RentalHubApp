@@ -3,6 +3,7 @@ import {Animated, Easing, StatusBar, StyleSheet, View} from 'react-native';
 import { colors, typography } from '../../theme';
 import { useAccessibilityPreferences } from '../../hooks/useAccessibilityPreferences';
 import BrandLogoMark from './BrandLogoMark';
+import { AMANA_RED_ON_DARK, AMANA_SCRIPT_FONT } from './BrandMark';
 
 import AppText from '../../components/common/AppText';
 const LOADING_TRACK_WIDTH = 210;
@@ -160,7 +161,13 @@ const BrandSplash = ({ duration = DEFAULT_DURATION_MS, showProgressPercent = fal
             transform: [{ translateY: copyTranslateY }],
           }}
         >
-          <AppText style={[styles.name, { fontSize: scaleFont(34) }]}>RentalHub</AppText>
+          <AppText
+            style={[styles.amana, { fontSize: scaleFont(52) }]}
+            numberOfLines={1}
+            adjustsFontSizeToFit
+          >
+            Amana
+          </AppText>
           <AppText style={[styles.tagline, { fontSize: scaleFont(14) }]}>Trusted homes. Confident living.</AppText>
         </Animated.View>
       </Animated.View>
@@ -223,6 +230,15 @@ const styles = StyleSheet.create({
     height: 152,
     position: 'absolute',
     width: 152,
+  },
+  amana: {
+    color: AMANA_RED_ON_DARK,
+    fontFamily: AMANA_SCRIPT_FONT,
+    fontSize: 52,
+    letterSpacing: 1,
+    lineHeight: 62,
+    marginTop: 18,
+    textAlign: 'center',
   },
   name: {
     color: colors.white,

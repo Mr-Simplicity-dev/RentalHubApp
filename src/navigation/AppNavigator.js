@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, AppState, BackHandler, Linking, Platform } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { navigationRef } from './navigationRef';
@@ -1123,7 +1123,15 @@ const AppNavigator = () => {
     return () => BackHandler.removeEventListener('hardwareBackPress', onBackPress);
   }, []);
 
-  if (loading) {
+  // Hold the opening flash for a beat so the Amana mark is actually readable;
+  // it used to vanish the instant auth finished.
+  const [flashHeld, setFlashHeld] = useState(true);
+  useEffect(() => {
+    const timer = setTimeout(() => setFlashHeld(false), 2600);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (loading || flashHeld) {
     return <BrandSplash />;
   }
 

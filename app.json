@@ -2,14 +2,14 @@
   "expo": {
     "name": "RentalHub NG",
     "slug": "rentalhubmobile",
-    "version": "1.0.17",
+    "version": "1.0.18",
     "orientation": "portrait",
     "icon": "./assets/rentalhub-app-icon.png",
     "scheme": "rentalhub",
     "userInterfaceStyle": "light",
     "android": {
       "package": "com.rentalhubng",
-      "versionCode": 28,
+      "versionCode": 29,
       "adaptiveIcon": {
         "foregroundImage": "./assets/rentalhub-app-icon.png",
         "backgroundColor": "#071A3D"

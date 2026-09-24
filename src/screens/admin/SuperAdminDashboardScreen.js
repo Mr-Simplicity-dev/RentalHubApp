@@ -128,11 +128,13 @@ const WORKSPACE_GROUPS = [
     title: 'Operations',
     icon: 'construct-outline',
     items: [
+      { label: 'Fumigation Oversight', route: 'SuperAdminFumigationDashboard', icon: 'sparkles-outline' },
+      { label: 'Transport Oversight', route: 'SuperAdminTransportationDashboard', icon: 'car-outline' },
+      { label: 'Support Governance', route: 'SuperAdminSupportGovernance', icon: 'headset-outline' },
       { label: 'Voice Monitor', route: 'VoiceMonitor', icon: 'call-outline' },
       { label: 'Court Bundle', route: 'CourtBundle', icon: 'briefcase-outline' },
       { label: 'State Admin Management', route: 'FinanceStateAdmins', icon: 'business-outline' },
       { label: 'Service Bookings', route: 'ServiceBookings', icon: 'calendar-outline' },
-      { label: 'Fumigation Compliance', route: 'FumigationCompliance', icon: 'leaf-outline' },
     ],
   },
   {
