@@ -70,6 +70,7 @@ const AdminFumigationStateDashboardScreen = ({ navigation }) => {
 
       <DashboardSection title="Mobile workspaces">
         <WorkspaceBoard
+          collapsible
           groups={[
             {
               title: 'Fumigation & Cleaning',

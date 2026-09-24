@@ -251,6 +251,7 @@ const DashboardScreen = ({ navigation }) => {
   const [withdrawHistory, setWithdrawHistory] = useState([]);
   const [showFundModal, setShowFundModal] = useState(false);
   const [showWithdrawModal, setShowWithdrawModal] = useState(false);
+  const [showAllCards, setShowAllCards] = useState(false);
   const [fundLoading, setFundLoading] = useState(false);
   const [withdrawLoading, setWithdrawLoading] = useState(false);
   const [withdrawTwoFactor, setWithdrawTwoFactor] = useState(null);
@@ -900,34 +901,44 @@ const DashboardScreen = ({ navigation }) => {
               icon="card-outline"
               onPress={() => navigation.navigate('Subscribe')}
             />
+            {showAllCards ? (
+              <>
+                <StatCard
+                  title="Transport Bookings"
+                  value={transportStats?.total_bookings || 0}
+                  icon="bus-outline"
+                  onPress={() => navigation.navigate('TransportationBookings')}
+                />
+                <StatCard
+                  title="Rent Savings"
+                  value={getRentSavingsValue()}
+                  icon="cash-outline"
+                  onPress={() => navigation.navigate('RentSavingsDashboard')}
+                />
+                <StatCard
+                  title="Rent Calculator"
+                  value="Plan your rent"
+                  icon="calculator-outline"
+                  onPress={() => navigation.navigate('RentCalculator')}
+                />
+                <StatCard
+                  title="Wallet Balance"
+                  value={
+                    walletBalance !== null && walletBalance !== undefined
+                      ? `₦${Number(walletBalance).toLocaleString()}`
+                      : '—'
+                  }
+                  icon="wallet-outline"
+                  tourTarget="tenant_wallet"
+                  onPress={openWithdrawModal}
+                />
+              </>
+            ) : null}
             <StatCard
-              title="Transport Bookings"
-              value={transportStats?.total_bookings || 0}
-              icon="bus-outline"
-              onPress={() => navigation.navigate('TransportationBookings')}
-            />
-            <StatCard
-              title="Rent Savings"
-              value={getRentSavingsValue()}
-              icon="cash-outline"
-              onPress={() => navigation.navigate('RentSavingsDashboard')}
-            />
-            <StatCard
-              title="Rent Calculator"
-              value="Plan your rent"
-              icon="calculator-outline"
-              onPress={() => navigation.navigate('RentCalculator')}
-            />
-            <StatCard
-              title="Wallet Balance"
-              value={
-                walletBalance !== null && walletBalance !== undefined
-                  ? `₦${Number(walletBalance).toLocaleString()}`
-                  : '—'
-              }
-              icon="wallet-outline"
-              tourTarget="tenant_wallet"
-              onPress={openWithdrawModal}
+              title={showAllCards ? 'Show less' : 'More'}
+              value=""
+              icon={showAllCards ? 'chevron-up-circle-outline' : 'ellipsis-horizontal-circle-outline'}
+              onPress={() => setShowAllCards((prev) => !prev)}
             />
           </>
         ) : (
@@ -959,22 +970,32 @@ const DashboardScreen = ({ navigation }) => {
               tourTarget="landlord_messages"
               onPress={() => navigation.navigate('Messages')}
             />
+            {showAllCards ? (
+              <>
+                <StatCard
+                  title="Available to Withdraw"
+                  value={
+                    landlordWallet
+                      ? `₦${Number(landlordWallet.available_to_withdraw || 0).toLocaleString()}`
+                      : '—'
+                  }
+                  icon="wallet-outline"
+                  tourTarget="landlord_wallet"
+                  onPress={openWithdrawModal}
+                />
+                <StatCard
+                  title="Subscription"
+                  value={getTenantSubscriptionValue(stats)}
+                  icon="card-outline"
+                  onPress={() => navigation.navigate('Subscribe')}
+                />
+              </>
+            ) : null}
             <StatCard
-              title="Available to Withdraw"
-              value={
-                landlordWallet
-                  ? `₦${Number(landlordWallet.available_to_withdraw || 0).toLocaleString()}`
-                  : '—'
-              }
-              icon="wallet-outline"
-              tourTarget="landlord_wallet"
-              onPress={openWithdrawModal}
-            />
-            <StatCard
-              title="Subscription"
-              value={getTenantSubscriptionValue(stats)}
-              icon="card-outline"
-              onPress={() => navigation.navigate('Subscribe')}
+              title={showAllCards ? 'Show less' : 'More'}
+              value=""
+              icon={showAllCards ? 'chevron-up-circle-outline' : 'ellipsis-horizontal-circle-outline'}
+              onPress={() => setShowAllCards((prev) => !prev)}
             />
           </>
         )}

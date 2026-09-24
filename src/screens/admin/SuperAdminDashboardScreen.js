@@ -283,7 +283,6 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
   }, [navigation, section]);
 
   const [showSectionPicker, setShowSectionPicker] = useState(false);
-  const [showAllWorkspaces, setShowAllWorkspaces] = useState(false);
   const loadedSections = useRef(new Set());
   const [analytics, setAnalytics] = useState({});
   const [users, setUsers] = useState([]);
@@ -861,36 +860,17 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
     }
   };
 
-  // Overview shows one group of shortcuts plus a "More" card; tapping it reveals
-  // the rest instead of dumping forty cards on the screen at once.
-  const overviewGroups = useMemo(() => {
-    const visible = showAllWorkspaces ? WORKSPACE_GROUPS : WORKSPACE_GROUPS.slice(0, 1);
-
-    return visible.map((group, index) => {
-      const items = group.items.map((item) => ({
-        ...item,
-        onPress: () => openWorkspace(item),
-      }));
-
-      if (index === visible.length - 1) {
-        items.push(
-          showAllWorkspaces
-            ? {
-                label: 'Show less',
-                icon: 'chevron-up-circle-outline',
-                onPress: () => setShowAllWorkspaces(false),
-              }
-            : {
-                label: 'More',
-                icon: 'ellipsis-horizontal-circle-outline',
-                onPress: () => setShowAllWorkspaces(true),
-              }
-        );
-      }
-
-      return { ...group, items };
-    });
-  }, [showAllWorkspaces]);
+  const overviewGroups = useMemo(
+    () =>
+      WORKSPACE_GROUPS.map((group) => ({
+        ...group,
+        items: group.items.map((item) => ({
+          ...item,
+          onPress: () => openWorkspace(item),
+        })),
+      })),
+    []
+  );
 
   const renderOverview = () => {
     const analyticEntries = Object.entries(analytics);
@@ -950,7 +930,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
           ))}
         </View>
 
-        <WorkspaceBoard groups={overviewGroups} />
+        <WorkspaceBoard groups={overviewGroups} collapsible visibleGroups={1} />
 
         {analyticEntries.length === 0 ? (
           <EmptyState

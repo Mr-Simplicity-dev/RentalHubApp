@@ -139,7 +139,7 @@ const SuperFinancialAdminDashboardScreen = ({ navigation }) => {
         title="Financial operations"
         subtitle="Open a focused workspace instead of managing everything on one page."
       >
-        <WorkspaceBoard groups={workspaceGroups} />
+        <WorkspaceBoard groups={workspaceGroups} collapsible />
       </DashboardSection>
     </DashboardScreen>
   );

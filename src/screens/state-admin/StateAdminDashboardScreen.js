@@ -100,6 +100,7 @@ const StateAdminDashboardScreen = ({ navigation }) => {
         subtitle="Move into a focused workflow for each administrative task."
       >
         <WorkspaceBoard
+          collapsible
           groups={[
             {
               title: 'State operations',

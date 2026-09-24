@@ -74,6 +74,7 @@ const SuperAdminTransportationDashboardScreen = ({ navigation }) => {
 
       <DashboardSection title="Mobile workspaces">
         <WorkspaceBoard
+          collapsible
           groups={[
             {
               title: 'Transportation',

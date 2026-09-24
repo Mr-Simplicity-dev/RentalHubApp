@@ -155,6 +155,7 @@ const ServiceOperationsDashboardScreen = ({ navigation }) => {
 
       <DashboardSection title="Mobile workspaces">
         <WorkspaceBoard
+          collapsible
           groups={[
             {
               title: 'Daily queue',
@@ -195,6 +196,7 @@ const ServiceOperationsDashboardScreen = ({ navigation }) => {
         subtitle="The daily service-admin controls now stay inside the mobile app."
       >
         <WorkspaceBoard
+          collapsible
           groups={[
             {
               title: 'Service controls',

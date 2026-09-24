@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { colors, typography } from '../../theme';
@@ -22,7 +22,7 @@ const WorkspaceCard = ({ item, groupTitle }) => {
       onPress={item.onPress}
       style={styles.card}
     >
-      <Icon name={item.icon} size={20} color={colors.blue} />
+      <Icon name={item.icon} size={20} color={item.tint || colors.blue} />
       <AppText style={styles.cardLabel} numberOfLines={2}>
         {item.label}
       </AppText>
@@ -30,25 +30,69 @@ const WorkspaceCard = ({ item, groupTitle }) => {
   );
 };
 
-// Shared shortcut board used by every admin dashboard: workspaces grouped by the
-// job they belong to, one tappable card each. Keeps the overviews consistent.
-const WorkspaceBoard = ({ groups = [] }) => (
-  <View>
-    {groups.map((group) => (
-      <View key={group.title} style={styles.group}>
-        <View style={styles.groupHeader}>
-          {group.icon ? <Icon name={group.icon} size={16} color={colors.blue} /> : null}
-          <AppText style={styles.groupTitle}>{group.title}</AppText>
-        </View>
-        <View style={styles.grid}>
-          {group.items.map((item) => (
-            <WorkspaceCard key={`${group.title}-${item.label}`} item={item} groupTitle={group.title} />
-          ))}
-        </View>
-      </View>
-    ))}
-  </View>
-);
+// Shared shortcut board used by every dashboard: workspaces grouped by the job they
+// belong to, one tappable card each. When the board is long it collapses to a short
+// summary plus a "More" card, so a big console lands as a clean list instead of a
+// wall of tiles. A board with only a handful of cards is never collapsed — a "More"
+// button that reveals nothing would look silly.
+const WorkspaceBoard = ({
+  groups = [],
+  collapsible = false,
+  visibleGroups = 1,
+  maxVisibleCards = 6,
+}) => {
+  const [expanded, setExpanded] = useState(false);
+
+  const totalCards = groups.reduce((sum, group) => sum + group.items.length, 0);
+  const shouldCollapse = collapsible && totalCards > maxVisibleCards;
+
+  const shown =
+    shouldCollapse && !expanded ? groups.slice(0, Math.max(1, visibleGroups)) : groups;
+
+  return (
+    <View>
+      {shown.map((group, index) => {
+        const items = [...group.items];
+
+        if (shouldCollapse && index === shown.length - 1) {
+          items.push(
+            expanded
+              ? {
+                  label: 'Show less',
+                  icon: 'chevron-up-circle-outline',
+                  tint: colors.muted,
+                  onPress: () => setExpanded(false),
+                }
+              : {
+                  label: 'More',
+                  icon: 'ellipsis-horizontal-circle-outline',
+                  tint: colors.blue,
+                  onPress: () => setExpanded(true),
+                }
+          );
+        }
+
+        return (
+          <View key={group.title} style={styles.group}>
+            <View style={styles.groupHeader}>
+              {group.icon ? <Icon name={group.icon} size={16} color={colors.blue} /> : null}
+              <AppText style={styles.groupTitle}>{group.title}</AppText>
+            </View>
+            <View style={styles.grid}>
+              {items.map((item) => (
+                <WorkspaceCard
+                  key={`${group.title}-${item.label}`}
+                  item={item}
+                  groupTitle={group.title}
+                />
+              ))}
+            </View>
+          </View>
+        );
+      })}
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   group: {

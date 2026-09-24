@@ -86,6 +86,7 @@ const FinancialAdminDashboardScreen = ({ navigation }) => {
         subtitle="Open a focused workspace instead of managing everything on one page."
       >
         <WorkspaceBoard
+          collapsible
           groups={[
             {
               title: 'Financial operations',

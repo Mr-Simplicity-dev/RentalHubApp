@@ -167,7 +167,7 @@ const AdminDashboardScreen = ({ navigation }) => {
         title="Priority workspaces"
         subtitle="Choose a task area instead of navigating a desktop-style control panel."
       >
-        <WorkspaceBoard groups={workspaceGroups} />
+        <WorkspaceBoard groups={workspaceGroups} collapsible />
       </DashboardSection>
 
       <DashboardSection
