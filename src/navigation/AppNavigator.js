@@ -1129,6 +1129,9 @@ const AppNavigator = () => {
 
   return (
     <NavigationContainer
+      // Keying on the auth state forces a brand-new navigator on sign-in and
+      // sign-out, so logging out can never leave a stale admin stack on screen.
+      key={isAuthenticated ? 'authenticated' : 'guest'}
       ref={navigationRef}
       linking={linkingConfig}
       fallback={<ActivityIndicator />}>

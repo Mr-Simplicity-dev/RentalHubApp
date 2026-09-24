@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import {Alert,
   FlatList,
   Linking,
@@ -259,6 +259,27 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
   const [section, setSection] = useState(
     () => normalizeRequestedSection(route?.params?.initialPanel) || 'overview'
   );
+  // Switching workspaces stays inside this screen, so the navigator has no back
+  // entry to offer. Put a real top-left back arrow in the header instead.
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft:
+        section === 'overview'
+          ? undefined
+          : () => (
+              <TouchableOpacity
+                accessibilityRole="button"
+                accessibilityLabel="Back to overview"
+                activeOpacity={0.7}
+                onPress={() => setSection('overview')}
+                style={styles.headerBack}
+              >
+                <Icon name="arrow-back" size={22} color={colors.navy} />
+              </TouchableOpacity>
+            ),
+    });
+  }, [navigation, section]);
+
   const [showSectionPicker, setShowSectionPicker] = useState(false);
   const loadedSections = useRef(new Set());
   const [analytics, setAnalytics] = useState({});
@@ -3269,6 +3290,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
         </TouchableOpacity>
       ) : null}
 
+
       <TourTarget
         id={
           ['verifications', 'fraud'].includes(section)
@@ -3512,6 +3534,10 @@ const styles = StyleSheet.create({
     fontFamily: typography.semibold,
     fontSize: 11,
     marginTop: 4,
+  },
+  headerBack: {
+    paddingHorizontal: 4,
+    paddingVertical: 6,
   },
   backToOverview: {
     alignItems: 'center',

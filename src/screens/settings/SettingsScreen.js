@@ -63,7 +63,24 @@ const SettingsScreen = ({ navigation }) => {
   const [checkingVersion, setCheckingVersion] = useState(false);
 
   useLayoutEffect(() => {
-    navigation.setOptions({ headerShown: navigation.canGoBack() });
+    // Always show the header so the back arrow is available, and add an explicit
+    // one when this screen has no stack entry to go back to.
+    navigation.setOptions({
+      headerShown: true,
+      headerLeft: navigation.canGoBack()
+        ? undefined
+        : () => (
+            <TouchableOpacity
+              accessibilityRole="button"
+              accessibilityLabel="Go back"
+              activeOpacity={0.7}
+              onPress={() => navigation.navigate('Profile')}
+              style={styles.headerBack}
+            >
+              <Icon name="arrow-back" size={22} color={colors.navy} />
+            </TouchableOpacity>
+          ),
+    });
   }, [navigation]);
 
   useEffect(() => {
@@ -553,6 +570,10 @@ const SettingsScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  headerBack: {
+    paddingHorizontal: 4,
+    paddingVertical: 6,
+  },
   languageGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
