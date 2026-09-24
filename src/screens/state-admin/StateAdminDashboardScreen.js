@@ -16,6 +16,7 @@ import {
   MetricCard,
   MetricGrid,
 } from '../../components/dashboard/DashboardKit';
+import WorkspaceBoard from '../../components/dashboard/WorkspaceBoard';
 
 const formatCurrency = (value) => `₦${Number(value || 0).toLocaleString()}`;
 
@@ -97,22 +98,32 @@ const StateAdminDashboardScreen = ({ navigation }) => {
       <DashboardSection
         title="Management tools"
         subtitle="Move into a focused workflow for each administrative task."
-        tourTarget="state_management"
       >
-        <ActionRow
-          title="Property approvals"
-          subtitle="Review state property migrations and approval requests."
-          icon="business-outline"
-          onPress={() => navigation.navigate('StateAdminMigrations')}
+        <WorkspaceBoard
+          groups={[
+            {
+              title: 'State operations',
+              icon: 'map-outline',
+              items: [
+                {
+                  label: 'Property Approvals',
+                  icon: 'business-outline',
+                  tourTarget: 'state_management',
+                  onPress: () => navigation.navigate('StateAdminMigrations'),
+                },
+                ...(hasRecruitmentAccess
+                  ? [
+                      {
+                        label: 'Recruitment',
+                        icon: 'people-outline',
+                        onPress: () => navigation.navigate('RecruitmentAdmin'),
+                      },
+                    ]
+                  : []),
+              ],
+            },
+          ]}
         />
-        {hasRecruitmentAccess ? (
-          <ActionRow
-            title="Recruitment"
-            subtitle="Review roles, candidates and hiring activity."
-            icon="people-outline"
-            onPress={() => navigation.navigate('RecruitmentAdmin')}
-          />
-        ) : null}
       </DashboardSection>
 
       <DashboardSection title="Property request workflow" tourTarget="state_requests">

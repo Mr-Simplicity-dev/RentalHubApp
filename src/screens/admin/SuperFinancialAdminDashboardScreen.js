@@ -12,6 +12,7 @@ import {
   MetricCard,
   MetricGrid,
 } from '../../components/dashboard/DashboardKit';
+import WorkspaceBoard from '../../components/dashboard/WorkspaceBoard';
 import { AuthContext } from '../../context/AuthContext';
 
 const formatCurrency = (value) => `₦${Number(value || 0).toLocaleString()}`;
@@ -65,6 +66,58 @@ const SuperFinancialAdminDashboardScreen = ({ navigation }) => {
     { label: 'Controls & Reconciliation', subtitle: 'Audit trails, frozen funds, settlement health and exports', icon: 'shield-checkmark-outline', route: 'FinancialControls' },
   ];
 
+  const workspaceGroups = [
+    {
+      title: 'Financial operations',
+      icon: 'cash-outline',
+      items: [
+        {
+          label: 'Revenue Reports',
+          icon: 'trending-up-outline',
+          tourTarget: 'financial_reports',
+          onPress: () => navigation.navigate('FinancialRevenueReport'),
+        },
+        {
+          label: 'Transactions',
+          icon: 'swap-horizontal-outline',
+          tourTarget: 'financial_transactions',
+          onPress: () => navigation.navigate('FinancialTransactions'),
+        },
+        {
+          label: 'Withdrawals',
+          icon: 'cash-outline',
+          onPress: () => navigation.navigate('FinancialWithdrawals'),
+        },
+        {
+          label: 'Commissions',
+          icon: 'people-outline',
+          onPress: () => navigation.navigate('FinancialCommissions'),
+        },
+        {
+          label: 'Controls & Reconciliation',
+          icon: 'shield-checkmark-outline',
+          tourTarget: 'financial_settlements',
+          onPress: () => navigation.navigate('FinancialControls'),
+        },
+      ],
+    },
+    ...(user?.is_recruitment_admin === true
+      ? [
+          {
+            title: 'People operations',
+            icon: 'people-outline',
+            items: [
+              {
+                label: 'Recruitment',
+                icon: 'people-outline',
+                onPress: () => navigation.navigate('RecruitmentAdmin'),
+              },
+            ],
+          },
+        ]
+      : []),
+  ];
+
   return (
     <DashboardScreen refreshing={loading} onRefresh={loadOverview}>
       <DashboardHero
@@ -86,36 +139,8 @@ const SuperFinancialAdminDashboardScreen = ({ navigation }) => {
         title="Financial operations"
         subtitle="Open a focused workspace instead of managing everything on one page."
       >
-        {actionCards.map((action) => (
-          <ActionRow
-            key={action.route}
-            title={action.label}
-            subtitle={action.subtitle}
-            icon={action.icon}
-            tourTarget={
-              action.route === 'FinancialTransactions'
-                ? 'financial_transactions'
-                : action.route === 'FinancialControls'
-                  ? 'financial_settlements'
-                  : action.route === 'FinancialRevenueReport'
-                    ? 'financial_reports'
-                    : undefined
-            }
-            onPress={() => navigation.navigate(action.route)}
-          />
-        ))}
+        <WorkspaceBoard groups={workspaceGroups} />
       </DashboardSection>
-
-      {user?.is_recruitment_admin === true ? (
-        <DashboardSection title="People operations">
-          <ActionRow
-            title="Recruitment"
-            subtitle="Review roles, candidates and hiring activity."
-            icon="people-outline"
-            onPress={() => navigation.navigate('RecruitmentAdmin')}
-          />
-        </DashboardSection>
-      ) : null}
     </DashboardScreen>
   );
 };

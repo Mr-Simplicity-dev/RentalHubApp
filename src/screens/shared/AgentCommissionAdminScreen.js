@@ -56,7 +56,7 @@ const AgentCommissionAdminScreen = () => {
     setLoading(true);
     try {
       const response = await agentCommissionAdminService.listCommissions(tab);
-      setItems(pickList(response?.data || response, ['data']));
+      setItems(pickList(response, ['data']));
     } catch (err) {
       Toast.show({
         type: 'error',

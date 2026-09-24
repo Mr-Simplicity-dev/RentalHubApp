@@ -52,7 +52,7 @@ const RentSavingsAdminScreen = () => {
       const response = await rentSavingsAdminService.getEarlyWithdrawalRequests({
         status: tab,
       });
-      setItems(pickList(response?.data || response, ['data']));
+      setItems(pickList(response, ['data']));
     } catch (err) {
       Toast.show({
         type: 'error',

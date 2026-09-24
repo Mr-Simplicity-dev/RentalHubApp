@@ -15,6 +15,7 @@ import {
   MetricCard,
   MetricGrid,
 } from '../../components/dashboard/DashboardKit';
+import WorkspaceBoard from '../../components/dashboard/WorkspaceBoard';
 
 const AdminDashboardScreen = ({ navigation }) => {
   const { user } = useContext(AuthContext);
@@ -54,6 +55,90 @@ const AdminDashboardScreen = ({ navigation }) => {
     { label: 'Verifications', value: stats.pendingVerifications ?? stats.pending_verification ?? '-', route: 'AdminVerifications', icon: 'shield-checkmark-outline', color: colors.success },
   ];
 
+  const workspaceGroups = [
+    {
+      title: 'People & Verification',
+      icon: 'people-outline',
+      items: [
+        {
+          label: 'Users',
+          icon: 'people-outline',
+          tourTarget: role === 'lga_admin' ? 'lga_admin_services' : 'admin_workspaces',
+          onPress: () => navigation.navigate('AdminUsers'),
+        },
+        {
+          label: 'Verifications',
+          icon: 'shield-checkmark-outline',
+          onPress: () => navigation.navigate('AdminVerifications'),
+        },
+        ...(isCoreAdmin
+          ? [
+              {
+                label: 'Agent Assignments',
+                icon: 'people-circle-outline',
+                onPress: () => navigation.navigate('AdminAgentAssignments'),
+              },
+            ]
+          : []),
+        ...(user?.is_recruitment_admin === true
+          ? [
+              {
+                label: 'Recruitment',
+                icon: 'briefcase-outline',
+                onPress: () => navigation.navigate('RecruitmentAdmin'),
+              },
+            ]
+          : []),
+      ],
+    },
+    {
+      title: 'Properties & Trust',
+      icon: 'home-outline',
+      items: [
+        {
+          label: 'Properties',
+          icon: 'business-outline',
+          onPress: () => navigation.navigate('AdminProperties'),
+        },
+        {
+          label: 'Applications',
+          icon: 'documents-outline',
+          onPress: () => navigation.navigate('AdminApplications'),
+        },
+        ...(isCoreAdmin
+          ? [
+              {
+                label: 'Compliance & Risk',
+                icon: 'shield-outline',
+                tourTarget: 'admin_compliance',
+                onPress: () => navigation.navigate('AdminCompliance'),
+              },
+            ]
+          : []),
+      ],
+    },
+    ...(isCoreAdmin
+      ? []
+      : [
+          {
+            title: 'Local services',
+            icon: 'construct-outline',
+            items: [
+              {
+                label: 'Transportation',
+                icon: 'car-outline',
+                onPress: () => navigation.navigate('AdminTransportationDashboard'),
+              },
+              {
+                label: 'Fumigation & Cleaning',
+                icon: 'sparkles-outline',
+                onPress: () => navigation.navigate('AdminFumigationDashboard'),
+              },
+            ],
+          },
+        ]),
+  ];
+
   return (
     <DashboardScreen refreshing={loading} onRefresh={loadStats}>
       <DashboardHero
@@ -81,48 +166,8 @@ const AdminDashboardScreen = ({ navigation }) => {
       <DashboardSection
         title="Priority workspaces"
         subtitle="Choose a task area instead of navigating a desktop-style control panel."
-        tourTarget={role === 'lga_admin' ? 'lga_admin_services' : 'admin_workspaces'}
       >
-        {isCoreAdmin ? (
-          <>
-            <ActionRow
-              title="Compliance & Risk"
-              subtitle="Review platform risk and compliance activity."
-              icon="shield-outline"
-              tourTarget="admin_compliance"
-              onPress={() => navigation.navigate('AdminCompliance')}
-            />
-            <ActionRow
-              title="Agent Assignments"
-              subtitle="Assign, deactivate and reassign landlord agents."
-              icon="people-circle-outline"
-              onPress={() => navigation.navigate('AdminAgentAssignments')}
-            />
-            {user?.is_recruitment_admin === true ? (
-              <ActionRow
-                title="Recruitment Admin"
-                subtitle="Manage cycles, roles and applicant reviews."
-                icon="briefcase-outline"
-                onPress={() => navigation.navigate('RecruitmentAdmin')}
-              />
-            ) : null}
-          </>
-        ) : (
-          <>
-            <ActionRow
-              title="Transportation operations"
-              subtitle="Manage transportation activity within your assigned LGA."
-              icon="car-outline"
-              onPress={() => navigation.navigate('AdminTransportationDashboard')}
-            />
-            <ActionRow
-              title="Fumigation & cleaning"
-              subtitle="Manage local fumigation and cleaning service activity."
-              icon="sparkles-outline"
-              onPress={() => navigation.navigate('AdminFumigationDashboard')}
-            />
-          </>
-        )}
+        <WorkspaceBoard groups={workspaceGroups} />
       </DashboardSection>
 
       <DashboardSection

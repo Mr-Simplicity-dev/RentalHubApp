@@ -26,7 +26,7 @@ const ContentModerationHub = () => {
   const loadFlagged = useCallback(async () => {
     try {
       const res = await contentModerationService.getFlaggedMessages();
-      setFlagged(pickList(res?.data || res, ['data']));
+      setFlagged(pickList(res, ['data']));
     } catch (err) {
       Toast.show({
         type: 'error',
@@ -40,7 +40,7 @@ const ContentModerationHub = () => {
     setLoading(true);
     try {
       const res = await contentModerationService.getAdminDamageReports();
-      setDamage(pickList(res?.data || res, ['data', 'reports', 'rows']));
+      setDamage(pickList(res, ['data', 'reports', 'rows']));
     } catch (err) {
       Toast.show({
         type: 'error',

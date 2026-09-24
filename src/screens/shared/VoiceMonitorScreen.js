@@ -44,14 +44,34 @@ const VoiceMonitorScreen = () => {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const [summaryRes, logRes, callbacksRes] = await Promise.all([
-        voiceMonitorService.summary().catch(() => ({ data: null })),
-        voiceMonitorService.callLog().catch(() => ({ data: [] })),
-        voiceMonitorService.callbacks().catch(() => ({ data: [] })),
+      // allSettled, not silent catches: a failed call must surface a message
+      // instead of quietly pretending the numbers are zero.
+      const [summaryResult, logResult, callbacksResult] = await Promise.allSettled([
+        voiceMonitorService.summary(),
+        voiceMonitorService.callLog(),
+        voiceMonitorService.callbacks(),
       ]);
-      setSummary(summaryRes?.data || null);
-      setLog(pickList(logRes?.data || logRes, ['data']));
-      setCallbacks(pickList(callbacksRes?.data || callbacksRes, ['data']));
+
+      if (summaryResult.status === 'fulfilled') {
+        setSummary(summaryResult.value?.data || null);
+      }
+      if (logResult.status === 'fulfilled') {
+        setLog(pickList(logResult.value, ['data']));
+      }
+      if (callbacksResult.status === 'fulfilled') {
+        setCallbacks(pickList(callbacksResult.value, ['data']));
+      }
+
+      const failure = [summaryResult, logResult, callbacksResult].find(
+        (result) => result.status === 'rejected'
+      );
+      if (failure) {
+        Toast.show({
+          type: 'error',
+          text1: 'Could not load all voice data',
+          text2: getErrorMessage(failure.reason, 'Some panels may be incomplete.'),
+        });
+      }
     } finally {
       setLoading(false);
     }

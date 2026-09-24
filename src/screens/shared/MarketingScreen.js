@@ -73,7 +73,7 @@ const MarketingScreen = () => {
         ops.loadCampaigns(),
       ]);
       setStats(statsRes?.data || null);
-      setCampaigns(pickList(campaignsRes?.data || campaignsRes, ['data']));
+      setCampaigns(pickList(campaignsRes, ['data']));
     } catch (err) {
       Toast.show({
         type: 'error',

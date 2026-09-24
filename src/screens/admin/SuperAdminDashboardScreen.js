@@ -30,6 +30,7 @@ import {
   ActionRow,
   DashboardHero,
 } from '../../components/dashboard/DashboardKit';
+import WorkspaceBoard from '../../components/dashboard/WorkspaceBoard';
 import { AuthContext } from '../../context/AuthContext';
 import { colors, typography, radius } from '../../theme';
 import TourTarget from '../../components/tour/TourTarget';
@@ -894,31 +895,15 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
           ))}
         </View>
 
-        {WORKSPACE_GROUPS.map((group) => (
-          <View key={group.title} style={styles.workspaceGroup}>
-            <View style={styles.workspaceGroupHeader}>
-              <Icon name={group.icon} size={16} color={colors.blue} />
-              <AppText style={styles.workspaceGroupTitle}>{group.title}</AppText>
-            </View>
-            <View style={styles.workspaceGrid}>
-              {group.items.map((item) => (
-                <TouchableOpacity
-                  key={`${group.title}-${item.label}`}
-                  accessibilityRole="button"
-                  accessibilityLabel={`${group.title}: ${item.label}`}
-                  activeOpacity={0.85}
-                  onPress={() => openWorkspace(item)}
-                  style={styles.workspaceCard}
-                >
-                  <Icon name={item.icon} size={20} color={colors.blue} />
-                  <AppText style={styles.workspaceCardLabel} numberOfLines={2}>
-                    {item.label}
-                  </AppText>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </View>
-        ))}
+        <WorkspaceBoard
+          groups={WORKSPACE_GROUPS.map((group) => ({
+            ...group,
+            items: group.items.map((item) => ({
+              ...item,
+              onPress: () => openWorkspace(item),
+            })),
+          }))}
+        />
 
         {analyticEntries.length === 0 ? (
           <EmptyState
@@ -3271,6 +3256,19 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
         onPress={() => setShowSectionPicker(true)}
       />
 
+      {section !== 'overview' ? (
+        <TouchableOpacity
+          accessibilityRole="button"
+          accessibilityLabel="Back to overview"
+          activeOpacity={0.85}
+          onPress={() => setSection('overview')}
+          style={styles.backToOverview}
+        >
+          <Icon name="arrow-back" size={18} color={colors.blue} />
+          <AppText style={styles.backToOverviewText}>Back to Overview</AppText>
+        </TouchableOpacity>
+      ) : null}
+
       <TourTarget
         id={
           ['verifications', 'fraud'].includes(section)
@@ -3515,10 +3513,22 @@ const styles = StyleSheet.create({
     fontSize: 11,
     marginTop: 4,
   },
+  backToOverview: {
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    flexDirection: 'row',
+    gap: 7,
+    marginBottom: 10,
+    paddingVertical: 6,
+  },
+  backToOverviewText: {
+    color: colors.blue,
+    fontFamily: typography.semibold,
+    fontSize: 14,
+  },
   workspaceGroup: {
     marginBottom: 14,
-  },
-  workspaceGroupHeader: {
+  },  workspaceGroupHeader: {
     alignItems: 'center',
     flexDirection: 'row',
     gap: 7,

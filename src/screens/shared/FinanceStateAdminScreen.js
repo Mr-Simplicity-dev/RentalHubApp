@@ -46,7 +46,7 @@ const FinanceStateAdminScreen = () => {
     setLoading(true);
     try {
       const response = await financialAdminService.getStateAdmins();
-      setAdmins(pickList(response?.data || response, ['data']));
+      setAdmins(pickList(response, ['data']));
     } catch (err) {
       Toast.show({
         type: 'error',
