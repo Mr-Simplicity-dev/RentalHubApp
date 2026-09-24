@@ -571,42 +571,26 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
     }
   };
 
-  const submitOperationNote = async (note) => {
-    if (!operationPrompt?.target?.id) return;
+  // Many super-admin actions require a written reason for the audit trail. Every one
+  // of them opens this prompt and receives the note in its `run` callback.
+  const openOperationPrompt = (config) => {
+    setOperationPrompt({
+      variant: 'primary',
+      label: 'Reason',
+      confirmText: 'Confirm action',
+      icon: 'document-text-outline',
+      ...config,
+    });
+  };
 
-    let succeeded = false;
-    if (operationPrompt.type === 'ban_user') {
-      succeeded = await runAction(
-        () => superAdminService.banUser(operationPrompt.target.id, note),
-        'User banned'
-      );
-    } else if (operationPrompt.type === 'reject_admin') {
-      succeeded = await runAction(
-        async () => {
-          await superAdminService.rejectPendingAdmin(operationPrompt.target.id, note);
-          await loadPendingAdmins();
-        },
-        'Admin rejected',
-        null
-      );
-    } else if (operationPrompt.type === 'update_jurisdiction') {
-      const jurisdiction = operationPrompt.jurisdiction || {};
-      succeeded = await runAction(
-        async () => {
-          await superAdminService.updateAdminJurisdiction(
-            operationPrompt.target.id,
-            jurisdiction.state,
-            jurisdiction.city || undefined,
-            note
-          );
-          setEditingJurisdiction(null);
-          setJurisdictionForm({ state: '', city: '' });
-          await loadAdmins();
-        },
-        'Admin jurisdiction updated',
-        null
-      );
-    }
+  const submitOperationNote = async (note) => {
+    if (!operationPrompt?.run) return;
+
+    const succeeded = await runAction(
+      () => operationPrompt.run(note),
+      operationPrompt.successMessage || 'Action completed',
+      operationPrompt.reload
+    );
 
     if (succeeded) setOperationPrompt(null);
   };
@@ -877,14 +861,26 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
       Toast.show({ type: 'error', text1: 'Select a bulk action' });
       return;
     }
-    await runAction(
-      async () => {
-        await superAdminService.bulkUserAction(selectedUserIds, bulkAction);
+    const bulkUserCount = selectedUserIds.length;
+    openOperationPrompt({
+      type: 'bulk_users',
+      target: { id: 'bulk-users' },
+      title: `Bulk ${bulkAction} users`,
+      message: `${bulkAction} will be applied to ${bulkUserCount} selected user${
+        bulkUserCount === 1 ? '' : 's'
+      }.`,
+      label: 'Reason',
+      placeholder: 'Explain why this bulk action is needed',
+      confirmText: `Apply to ${bulkUserCount}`,
+      icon: 'people-outline',
+      variant: bulkAction === 'ban' || bulkAction === 'delete' ? 'danger' : 'primary',
+      successMessage: `Bulk action "${bulkAction}" completed on ${bulkUserCount} users`,
+      run: async (note) => {
+        await superAdminService.bulkUserAction(selectedUserIds, bulkAction, note);
         setSelectedUserIds([]);
         setBulkAction('');
       },
-      `Bulk action "${bulkAction}" completed on ${selectedUserIds.length} users`
-    );
+    });
   };
 
   const renderUsers = () => (
@@ -951,7 +947,23 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                   <AppText style={styles.linkText}>Unban</AppText>
                 </TouchableOpacity>
               ) : (
-                <TouchableOpacity onPress={() => setOperationPrompt({ type: 'ban_user', target: item })}>
+                <TouchableOpacity
+                  onPress={() =>
+                    openOperationPrompt({
+                      type: 'ban_user',
+                      target: item,
+                      title: 'Ban user account',
+                      message: `${item.full_name || item.email || 'This user'} will be blocked from accessing RentalHub.`,
+                      label: 'Ban reason',
+                      placeholder: 'Explain why this user must be banned',
+                      confirmText: 'Ban user',
+                      icon: 'ban-outline',
+                      variant: 'danger',
+                      successMessage: 'User banned',
+                      run: (note) => superAdminService.banUser(item.id, note),
+                    })
+                  }
+                >
                   <AppText style={styles.warnText}>Ban</AppText>
                 </TouchableOpacity>
               )}
@@ -1058,10 +1070,19 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
               {reviewStatus === 'pending' ? (
                 <TouchableOpacity
                   onPress={() =>
-                    runAction(
-                      () => superAdminService.rejectVerification(item.id),
-                      'Verification rejected'
-                    )
+                    openOperationPrompt({
+                      type: 'reject_verification',
+                      target: item,
+                      title: 'Reject verification',
+                      message: `${item.full_name || item.email || 'This user'}'s identity verification will be rejected.`,
+                      label: 'Rejection reason',
+                      placeholder: 'Explain why this verification is rejected',
+                      confirmText: 'Reject verification',
+                      icon: 'close-circle-outline',
+                      variant: 'danger',
+                      successMessage: 'Verification rejected',
+                      run: (note) => superAdminService.rejectVerification(item.id, note),
+                    })
                   }
                 >
                   <AppText style={styles.warnText}>Reject</AppText>
@@ -1070,10 +1091,20 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
               {reviewStatus === 'rejected' ? (
                 <TouchableOpacity
                   onPress={() =>
-                    runAction(
-                      () => superAdminService.deleteRejectedVerification(item.id),
-                      'Rejected verification deleted'
-                    )
+                    openOperationPrompt({
+                      type: 'delete_verification',
+                      target: item,
+                      title: 'Delete rejected verification',
+                      message: `${item.full_name || item.email || 'This record'}'s rejected verification will be removed.`,
+                      label: 'Delete reason',
+                      placeholder: 'Explain why this record is being deleted',
+                      confirmText: 'Delete record',
+                      icon: 'trash-outline',
+                      variant: 'danger',
+                      successMessage: 'Rejected verification deleted',
+                      run: (note) =>
+                        superAdminService.deleteRejectedVerification(item.id, note),
+                    })
                   }
                 >
                   <AppText style={styles.warnText}>Delete</AppText>
@@ -1397,14 +1428,26 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
       Toast.show({ type: 'error', text1: 'Select a bulk action' });
       return;
     }
-    await runAction(
-      async () => {
-        await superAdminService.bulkPropertyAction(selectedPropertyIds, bulkAction);
+    const bulkPropertyCount = selectedPropertyIds.length;
+    openOperationPrompt({
+      type: 'bulk_properties',
+      target: { id: 'bulk-properties' },
+      title: `Bulk ${bulkAction} properties`,
+      message: `${bulkAction} will be applied to ${bulkPropertyCount} selected propert${
+        bulkPropertyCount === 1 ? 'y' : 'ies'
+      }.`,
+      label: 'Reason',
+      placeholder: 'Explain why this bulk action is needed',
+      confirmText: `Apply to ${bulkPropertyCount}`,
+      icon: 'home-outline',
+      variant: 'danger',
+      successMessage: `Bulk action "${bulkAction}" completed on ${bulkPropertyCount} properties`,
+      run: async (note) => {
+        await superAdminService.bulkPropertyAction(selectedPropertyIds, bulkAction, note);
         setSelectedPropertyIds([]);
         setBulkAction('');
       },
-      `Bulk action "${bulkAction}" completed on ${selectedPropertyIds.length} properties`
-    );
+    });
   };
 
   const renderProperties = () => (
@@ -1470,15 +1513,62 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
             {item.price ? <AppText style={styles.meta}>Price: N{Number(item.price).toLocaleString()}</AppText> : null}
             <StatusBadge status={item.status || 'active'} />
             <View style={styles.row}>
-              <TouchableOpacity onPress={() => runAction(() => superAdminService.unlistProperty(item.id), 'Property unlisted')}>
+              <TouchableOpacity
+                onPress={() =>
+                  openOperationPrompt({
+                    type: 'unlist_property',
+                    target: item,
+                    title: 'Unlist property',
+                    message: `${item.title || 'This property'} will be hidden from listings.`,
+                    label: 'Unlist reason',
+                    placeholder: 'Explain why this property is being unlisted',
+                    confirmText: 'Unlist property',
+                    icon: 'eye-off-outline',
+                    variant: 'danger',
+                    successMessage: 'Property unlisted',
+                    run: (note) => superAdminService.unlistProperty(item.id, note),
+                  })
+                }
+              >
                 <AppText style={styles.warnText}>Unlist</AppText>
               </TouchableOpacity>
               {item.is_featured ? (
-                <TouchableOpacity onPress={() => runAction(() => superAdminService.unfeatureProperty(item.id), 'Property unfeatured')}>
+                <TouchableOpacity
+                  onPress={() =>
+                    openOperationPrompt({
+                      type: 'unfeature_property',
+                      target: item,
+                      title: 'Remove from featured',
+                      message: `${item.title || 'This property'} will no longer be featured.`,
+                      label: 'Unfeature reason',
+                      placeholder: 'Explain why this property is being unfeatured',
+                      confirmText: 'Unfeature property',
+                      icon: 'star-outline',
+                      variant: 'danger',
+                      successMessage: 'Property unfeatured',
+                      run: (note) => superAdminService.unfeatureProperty(item.id, note),
+                    })
+                  }
+                >
                   <AppText style={styles.linkText}>Unfeature</AppText>
                 </TouchableOpacity>
               ) : (
-                <TouchableOpacity onPress={() => runAction(() => superAdminService.featureProperty(item.id), 'Property featured')}>
+                <TouchableOpacity
+                  onPress={() =>
+                    openOperationPrompt({
+                      type: 'feature_property',
+                      target: item,
+                      title: 'Feature property',
+                      message: `${item.title || 'This property'} will be highlighted as featured.`,
+                      label: 'Feature reason',
+                      placeholder: 'Explain why this property should be featured',
+                      confirmText: 'Feature property',
+                      icon: 'star-outline',
+                      successMessage: 'Property featured',
+                      run: (note) => superAdminService.featureProperty(item.id, note),
+                    })
+                  }
+                >
                   <AppText style={styles.linkText}>Feature</AppText>
                 </TouchableOpacity>
               )}
@@ -1490,17 +1580,34 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
   );
 
   const handleUpdateReportStatus = async (reportId, status) => {
-    await runAction(
-      async () => {
-        await superAdminService.updateReportStatus(reportId, status);
-        setReportStatusTargets((prev) => {
-          const updated = { ...prev };
-          delete updated[reportId];
-          return updated;
-        });
-      },
-      `Report status changed to ${status}`
-    );
+    const applyStatus = async (note) => {
+      await superAdminService.updateReportStatus(reportId, status, note);
+      setReportStatusTargets((prev) => {
+        const updated = { ...prev };
+        delete updated[reportId];
+        return updated;
+      });
+    };
+
+    // The backend only demands an investigation note for closing statuses.
+    if (status !== 'resolved' && status !== 'dismissed') {
+      await runAction(() => applyStatus(''), `Report status changed to ${status}`);
+      return;
+    }
+
+    openOperationPrompt({
+      type: 'report_status',
+      target: { id: reportId },
+      title: `Mark report ${status}`,
+      message: `This report will be marked as ${status}.`,
+      label: 'Investigation note',
+      placeholder: 'Summarise what the investigation found',
+      confirmText: `Mark ${status}`,
+      icon: 'document-text-outline',
+      variant: status === 'dismissed' ? 'danger' : 'primary',
+      successMessage: `Report status changed to ${status}`,
+      run: (note) => applyStatus(note),
+    });
   };
 
   const toggleReportStatusPicker = (reportId) => {
@@ -1584,10 +1691,19 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() =>
-                    runAction(
-                      () => superAdminService.rejectVerification(item.id),
-                      'Verification rejected'
-                    )
+                    openOperationPrompt({
+                      type: 'reject_verification',
+                      target: item,
+                      title: 'Reject verification',
+                      message: `${item.full_name || item.email || 'This user'}'s identity verification will be rejected.`,
+                      label: 'Rejection reason',
+                      placeholder: 'Explain why this verification is rejected',
+                      confirmText: 'Reject verification',
+                      icon: 'close-circle-outline',
+                      variant: 'danger',
+                      successMessage: 'Verification rejected',
+                      run: (note) => superAdminService.rejectVerification(item.id, note),
+                    })
                   }
                 >
                   <AppText style={styles.warnText}>Reject</AppText>
@@ -1607,10 +1723,20 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
               <StatusBadge status={item.status || 'open'} />
               <TouchableOpacity
                 onPress={() =>
-                  runAction(
-                    () => superAdminService.resolveReport(item.id),
-                    'Report resolved'
-                  )
+                  openOperationPrompt({
+                    type: 'resolve_report',
+                    target: item,
+                    title: 'Resolve report',
+                    message: `${
+                      item.reason || item.report_reason || `Report #${item.id}`
+                    } will be marked resolved.`,
+                    label: 'Investigation note',
+                    placeholder: 'Summarise what the investigation found',
+                    confirmText: 'Resolve report',
+                    icon: 'checkmark-circle-outline',
+                    successMessage: 'Report resolved',
+                    run: (note) => superAdminService.resolveReport(item.id, note),
+                  })
                 }
               >
                 <AppText style={styles.linkText}>Resolve</AppText>
@@ -1629,10 +1755,18 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
               <AppText style={styles.meta}>Score: {item.score ?? '-'}</AppText>
               <TouchableOpacity
                 onPress={() =>
-                  runAction(
-                    () => superAdminService.resolveFraudFlag(item.id),
-                    'Fraud flag resolved'
-                  )
+                  openOperationPrompt({
+                    type: 'resolve_fraud',
+                    target: item,
+                    title: 'Resolve fraud flag',
+                    message: `${item.rule || 'This fraud flag'} will be marked resolved.`,
+                    label: 'Resolution note',
+                    placeholder: 'Explain how this flag was investigated and resolved',
+                    confirmText: 'Resolve flag',
+                    icon: 'shield-checkmark-outline',
+                    successMessage: 'Fraud flag resolved',
+                    run: (note) => superAdminService.resolveFraudFlag(item.id, note),
+                  })
                 }
               >
                 <AppText style={styles.linkText}>Resolve</AppText>
@@ -1707,7 +1841,24 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
               )}
 
               <View style={styles.row}>
-                <TouchableOpacity onPress={() => runAction(() => superAdminService.resolveReport(item.id), 'Report resolved')}>
+                <TouchableOpacity
+                  onPress={() =>
+                    openOperationPrompt({
+                      type: 'resolve_report',
+                      target: item,
+                      title: 'Resolve report',
+                      message: `${
+                        item.reason || item.report_reason || `Report #${item.id}`
+                      } will be marked resolved.`,
+                      label: 'Investigation note',
+                      placeholder: 'Summarise what the investigation found',
+                      confirmText: 'Resolve report',
+                      icon: 'checkmark-circle-outline',
+                      successMessage: 'Report resolved',
+                      run: (note) => superAdminService.resolveReport(item.id, note),
+                    })
+                  }
+                >
                   <AppText style={styles.linkText}>Resolve</AppText>
                 </TouchableOpacity>
               </View>
@@ -1772,7 +1923,19 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
     <FlagsSection
       flags={flags}
       onToggle={(key, enabled) =>
-        runAction(() => superAdminService.updateFlag(key, enabled), 'Flag updated')
+        openOperationPrompt({
+          type: 'toggle_flag',
+          target: { id: key },
+          title: `${enabled ? 'Enable' : 'Disable'} feature flag`,
+          message: `${key} will be turned ${enabled ? 'on' : 'off'}.`,
+          label: 'Change reason',
+          placeholder: 'Explain why this flag is changing',
+          confirmText: enabled ? 'Enable flag' : 'Disable flag',
+          icon: 'toggle-outline',
+          variant: enabled ? 'primary' : 'danger',
+          successMessage: 'Flag updated',
+          run: (note) => superAdminService.updateFlag(key, enabled, note),
+        })
       }
     />
   );
@@ -2012,7 +2175,22 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
         <View key={item.id} style={styles.card}>
           <AppText style={styles.cardTitle}>{item.rule || 'Fraud rule'}</AppText>
           <AppText style={styles.meta}>Score: {item.score}</AppText>
-          <TouchableOpacity onPress={() => runAction(() => superAdminService.resolveFraudFlag(item.id), 'Fraud flag resolved')}>
+          <TouchableOpacity
+            onPress={() =>
+              openOperationPrompt({
+                type: 'resolve_fraud',
+                target: item,
+                title: 'Resolve fraud flag',
+                message: `${item.rule || 'This fraud flag'} will be marked resolved.`,
+                label: 'Resolution note',
+                placeholder: 'Explain how this flag was investigated and resolved',
+                confirmText: 'Resolve flag',
+                icon: 'shield-checkmark-outline',
+                successMessage: 'Fraud flag resolved',
+                run: (note) => superAdminService.resolveFraudFlag(item.id, note),
+              })
+            }
+          >
             <AppText style={styles.linkText}>Resolve</AppText>
           </TouchableOpacity>
         </View>
@@ -2215,14 +2393,23 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
           text: 'Delete',
           style: 'destructive',
           onPress: () =>
-            runAction(
-              async () => {
-                await superAdminService.deletePlatformLawyer(lawyerId);
+            openOperationPrompt({
+              type: 'delete_platform_lawyer',
+              target: { id: lawyerId, full_name: lawyerName },
+              title: 'Delete platform lawyer',
+              message: `${lawyerName || 'This lawyer'} will be removed from the platform lawyer list.`,
+              label: 'Deletion reason',
+              placeholder: 'Explain why this lawyer is being removed',
+              confirmText: 'Delete lawyer',
+              icon: 'trash-outline',
+              variant: 'danger',
+              successMessage: 'Platform lawyer removed',
+              reload: null,
+              run: async (note) => {
+                await superAdminService.deletePlatformLawyer(lawyerId, note);
                 await loadPlatformLawyers();
               },
-              'Platform lawyer removed',
-              null
-            ),
+            }),
         },
       ]
     );
@@ -2650,12 +2837,34 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
       return;
     }
 
-    setOperationPrompt({
+    const jurisdiction = {
+      state: jurisdictionForm.state.trim(),
+      city: jurisdictionForm.city.trim(),
+    };
+
+    openOperationPrompt({
       type: 'update_jurisdiction',
       target: targetAdmin,
-      jurisdiction: {
-        state: jurisdictionForm.state.trim(),
-        city: jurisdictionForm.city.trim(),
+      title: 'Update admin jurisdiction',
+      message: `${targetAdmin.full_name || targetAdmin.email || 'This admin'} will be assigned to ${
+        jurisdiction.city ? `${jurisdiction.city}, ` : ''
+      }${jurisdiction.state}.`,
+      label: 'Change reason',
+      placeholder: 'Explain why this jurisdiction is changing',
+      confirmText: 'Update jurisdiction',
+      icon: 'location-outline',
+      successMessage: 'Admin jurisdiction updated',
+      reload: null,
+      run: async (note) => {
+        await superAdminService.updateAdminJurisdiction(
+          targetAdmin.id,
+          jurisdiction.state,
+          jurisdiction.city || undefined,
+          note
+        );
+        setEditingJurisdiction(null);
+        setJurisdictionForm({ state: '', city: '' });
+        await loadAdmins();
       },
     });
   };
@@ -2849,7 +3058,25 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                 <AppText style={styles.linkText}>Approve</AppText>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => setOperationPrompt({ type: 'reject_admin', target: admin })}
+                onPress={() =>
+                  openOperationPrompt({
+                    type: 'reject_admin',
+                    target: admin,
+                    title: 'Reject admin request',
+                    message: `${admin.full_name || admin.email || 'This applicant'} will be rejected and the pending account removed.`,
+                    label: 'Rejection reason',
+                    placeholder: 'Explain why this admin request is rejected',
+                    confirmText: 'Reject admin',
+                    icon: 'close-circle-outline',
+                    variant: 'danger',
+                    successMessage: 'Admin rejected',
+                    reload: null,
+                    run: async (note) => {
+                      await superAdminService.rejectPendingAdmin(admin.id, note);
+                      await loadPendingAdmins();
+                    },
+                  })
+                }
               >
                 <AppText style={styles.warnText}>Reject</AppText>
               </TouchableOpacity>
@@ -2943,49 +3170,13 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
 
       <OperationNoteModal
         visible={Boolean(operationPrompt)}
-        title={
-          operationPrompt?.type === 'ban_user'
-            ? 'Ban user account'
-            : operationPrompt?.type === 'update_jurisdiction'
-              ? 'Update admin jurisdiction'
-              : 'Reject admin request'
-        }
-        message={
-          operationPrompt?.type === 'ban_user'
-            ? `${operationPrompt?.target?.full_name || operationPrompt?.target?.email || 'This user'} will be blocked from accessing RentalHub.`
-            : operationPrompt?.type === 'update_jurisdiction'
-              ? `${operationPrompt?.target?.full_name || operationPrompt?.target?.email || 'This admin'} will be assigned to ${operationPrompt?.jurisdiction?.city ? `${operationPrompt.jurisdiction.city}, ` : ''}${operationPrompt?.jurisdiction?.state || 'the selected jurisdiction'}.`
-              : `${operationPrompt?.target?.full_name || operationPrompt?.target?.email || 'This applicant'} will be rejected and the pending account removed.`
-        }
-        label={
-          operationPrompt?.type === 'ban_user'
-            ? 'Ban reason'
-            : operationPrompt?.type === 'update_jurisdiction'
-              ? 'Change reason'
-              : 'Rejection reason'
-        }
-        placeholder={
-          operationPrompt?.type === 'ban_user'
-            ? 'Explain why this user must be banned'
-            : operationPrompt?.type === 'update_jurisdiction'
-              ? 'Explain why this jurisdiction is changing'
-              : 'Explain why this admin request is rejected'
-        }
-        confirmText={
-          operationPrompt?.type === 'ban_user'
-            ? 'Ban user'
-            : operationPrompt?.type === 'update_jurisdiction'
-              ? 'Update jurisdiction'
-              : 'Reject admin'
-        }
-        icon={
-          operationPrompt?.type === 'ban_user'
-            ? 'ban-outline'
-            : operationPrompt?.type === 'update_jurisdiction'
-              ? 'location-outline'
-              : 'close-circle-outline'
-        }
-        variant={operationPrompt?.type === 'update_jurisdiction' ? 'primary' : 'danger'}
+        title={operationPrompt?.title || 'Confirm action'}
+        message={operationPrompt?.message}
+        label={operationPrompt?.label || 'Reason'}
+        placeholder={operationPrompt?.placeholder}
+        confirmText={operationPrompt?.confirmText || 'Confirm action'}
+        icon={operationPrompt?.icon || 'document-text-outline'}
+        variant={operationPrompt?.variant || 'primary'}
         loading={submitting}
         onCancel={() => setOperationPrompt(null)}
         onConfirm={submitOperationNote}

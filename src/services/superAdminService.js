@@ -27,8 +27,8 @@ export const superAdminService = {
     return response.data;
   },
 
-  bulkUserAction: async (ids, action) => {
-    const response = await api.post('/super/users/bulk', { ids, action });
+  bulkUserAction: async (ids, action, reason) => {
+    const response = await api.post('/super/users/bulk', { ids, action, reason });
     return response.data;
   },
 
@@ -43,23 +43,23 @@ export const superAdminService = {
     return response.data;
   },
 
-  unlistProperty: async (id) => {
-    const response = await api.patch(`/super/properties/${id}/unlist`);
+  unlistProperty: async (id, reason) => {
+    const response = await api.patch(`/super/properties/${id}/unlist`, { reason });
     return response.data;
   },
 
-  featureProperty: async (id) => {
-    const response = await api.patch(`/super/properties/${id}/feature`);
+  featureProperty: async (id, reason) => {
+    const response = await api.patch(`/super/properties/${id}/feature`, { reason });
     return response.data;
   },
 
-  unfeatureProperty: async (id) => {
-    const response = await api.patch(`/super/properties/${id}/unfeature`);
+  unfeatureProperty: async (id, reason) => {
+    const response = await api.patch(`/super/properties/${id}/unfeature`, { reason });
     return response.data;
   },
 
-  bulkPropertyAction: async (ids, action) => {
-    const response = await api.post('/super/properties/bulk', { ids, action });
+  bulkPropertyAction: async (ids, action, reason) => {
+    const response = await api.post('/super/properties/bulk', { ids, action, reason });
     return response.data;
   },
 
@@ -74,13 +74,15 @@ export const superAdminService = {
     return response.data;
   },
 
-  rejectVerification: async (id) => {
-    const response = await api.patch(`/super/verifications/${id}/reject`);
+  rejectVerification: async (id, reviewNote) => {
+    const response = await api.patch(`/super/verifications/${id}/reject`, {
+      review_note: reviewNote,
+    });
     return response.data;
   },
 
-  deleteRejectedVerification: async (id) => {
-    const response = await api.delete(`/super/verifications/${id}`);
+  deleteRejectedVerification: async (id, reason) => {
+    const response = await api.delete(`/super/verifications/${id}`, { data: { reason } });
     return response.data;
   },
 
@@ -115,13 +117,13 @@ export const superAdminService = {
     return response.data;
   },
 
-  updateReportStatus: async (id, status) => {
-    const response = await api.patch(`/super/reports/${id}`, { status });
+  updateReportStatus: async (id, status, note) => {
+    const response = await api.patch(`/super/reports/${id}`, { status, note });
     return response.data;
   },
 
-  resolveReport: async (id) => {
-    const response = await api.patch(`/super/reports/${id}/resolve`);
+  resolveReport: async (id, note) => {
+    const response = await api.patch(`/super/reports/${id}/resolve`, { note });
     return response.data;
   },
 
@@ -153,8 +155,8 @@ export const superAdminService = {
     return response.data;
   },
 
-  updateFlag: async (key, enabled) => {
-    const response = await api.patch(`/super/flags/${key}`, { enabled });
+  updateFlag: async (key, enabled, reason) => {
+    const response = await api.patch(`/super/flags/${key}`, { enabled, reason });
     return response.data;
   },
 
@@ -248,8 +250,8 @@ export const superAdminService = {
     return response.data;
   },
 
-  resolveFraudFlag: async (id) => {
-    const response = await api.patch(`/super/fraud/${id}/resolve`);
+  resolveFraudFlag: async (id, note) => {
+    const response = await api.patch(`/super/fraud/${id}/resolve`, { note });
     return response.data;
   },
 
@@ -274,8 +276,10 @@ export const superAdminService = {
     return response.data;
   },
 
-  deletePlatformLawyer: async (lawyerId) => {
-    const response = await api.delete(`/super/platform-lawyers/${lawyerId}`);
+  deletePlatformLawyer: async (lawyerId, reason) => {
+    const response = await api.delete(`/super/platform-lawyers/${lawyerId}`, {
+      data: { reason },
+    });
     return response.data;
   },
 
