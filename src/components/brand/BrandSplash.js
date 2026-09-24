@@ -162,13 +162,14 @@ const BrandSplash = ({ duration = DEFAULT_DURATION_MS, showProgressPercent = fal
           }}
         >
           <AppText
-            style={[styles.amana, { fontSize: scaleFont(52) }]}
+            style={[styles.amana, { fontSize: scaleFont(54) }]}
             numberOfLines={1}
             adjustsFontSizeToFit
           >
             Amana
           </AppText>
-          <AppText style={[styles.tagline, { fontSize: scaleFont(14) }]}>Trusted homes. Confident living.</AppText>
+          <AppText style={[styles.subscript, { fontSize: scaleFont(15) }]}>RentalHub</AppText>
+          <AppText style={[styles.tagline, { fontSize: scaleFont(13) }]}>Trusted homes. Confident living.</AppText>
         </Animated.View>
       </Animated.View>
       <Animated.View
@@ -234,10 +235,19 @@ const styles = StyleSheet.create({
   amana: {
     color: AMANA_RED_ON_DARK,
     fontFamily: AMANA_SCRIPT_FONT,
-    fontSize: 52,
+    fontSize: 54,
     letterSpacing: 1,
-    lineHeight: 62,
+    lineHeight: 64,
     marginTop: 18,
+    textAlign: 'center',
+  },
+  // RentalHub reads as a subscript of the Amana mark: small, spaced, tucked under.
+  subscript: {
+    color: 'rgba(255, 255, 255, 0.92)',
+    fontFamily: typography.semibold,
+    fontSize: 15,
+    letterSpacing: 3.2,
+    marginTop: 2,
     textAlign: 'center',
   },
   name: {
