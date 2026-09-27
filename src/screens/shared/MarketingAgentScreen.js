@@ -90,9 +90,27 @@ const MarketingAgentScreen = () => {
             icon="people-outline"
           />
           <View style={styles.metricRow}>
-            {metric('Captured', responses.length)}
-            {summary && summary.total ? metric('Total', summary.total) : null}
+            {metric('Captured', summary?.stats?.captured ?? responses.length)}
+            {metric('In progress', summary?.stats?.in_progress ?? 0)}
           </View>
+          <View style={styles.metricRow}>
+            {metric('With email', summary?.stats?.with_email ?? 0)}
+            {metric('With phone', summary?.stats?.with_phone ?? 0)}
+          </View>
+
+          {Array.isArray(summary?.by_lga) && summary.by_lga.length > 0 ? (
+            <PremiumCard>
+              <AppText style={styles.cardTitle}>Captured by LGA</AppText>
+              {summary.by_lga.slice(0, 15).map((row) => (
+                <View key={String(row.lga)} style={styles.breakdownRow}>
+                  <AppText style={styles.breakdownLabel} numberOfLines={1}>
+                    {row.lga}
+                  </AppText>
+                  <AppText style={styles.breakdownValue}>{Number(row.count) || 0}</AppText>
+                </View>
+              ))}
+            </PremiumCard>
+          ) : null}
         </>
       }
       emptyTitle="No respondents yet"
@@ -180,6 +198,27 @@ const styles = StyleSheet.create({
     color: colors.ink,
     fontFamily: typography.bold,
     fontSize: 16,
+    marginBottom: 6,
+  },
+  breakdownRow: {
+    alignItems: 'center',
+    borderBottomColor: colors.border,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 8,
+  },
+  breakdownLabel: {
+    color: colors.ink,
+    flex: 1,
+    fontFamily: typography.regular,
+    fontSize: 13,
+    marginRight: 10,
+  },
+  breakdownValue: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 14,
   },
   code: {
     color: colors.muted,

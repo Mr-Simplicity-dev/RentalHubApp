@@ -76,6 +76,7 @@ const SurveyAnalyticsScreen = () => {
   const completed = Number(meta.completed || 0);
   const rate = total > 0 ? Math.round((completed / total) * 100) : 0;
   const states = Array.isArray(meta.by_state) ? meta.by_state.slice(0, 6) : [];
+  const agents = Array.isArray(meta.by_agent) ? meta.by_agent.slice(0, 12) : [];
   const sources = meta.by_source || {};
   const openCount = Array.isArray(data?.open_answers) ? data.open_answers.length : 0;
 
@@ -167,6 +168,31 @@ const SurveyAnalyticsScreen = () => {
               ))
             )}
           </PremiumCard>
+
+          <PremiumCard>
+            <AppText style={styles.sectionTitle}>Field agent leaderboard</AppText>
+            {agents.length === 0 ? (
+              <AppText style={styles.empty}>No agent-captured responses in this range.</AppText>
+            ) : (
+              agents.map((row, index) => (
+                <View key={String(row.agent_user_id || index)} style={styles.stateRow}>
+                  <View style={styles.agentCopy}>
+                    <AppText style={styles.stateName} numberOfLines={1}>
+                      {index + 1}. {row.agent_name}
+                    </AppText>
+                    <AppText style={styles.empty} numberOfLines={2}>
+                      {Number(row.lgas) || 0} LGA{Number(row.lgas) === 1 ? '' : 's'}
+                      {row.agent_phone ? ` · ${row.agent_phone}` : ''}
+                      {row.last_activity
+                        ? ` · last ${new Date(row.last_activity).toLocaleDateString()}`
+                        : ''}
+                    </AppText>
+                  </View>
+                  <AppText style={styles.stateCount}>{Number(row.captured) || 0}</AppText>
+                </View>
+              ))
+            )}
+          </PremiumCard>
         </>
       )}
     </ScrollView>
@@ -238,8 +264,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
     textTransform: 'uppercase',
   },
-  sectionTitle: {
-    color: colors.ink,
+  sectionTitle: {    color: colors.ink,
     fontFamily: typography.bold,
     fontSize: 15,
     marginBottom: 8,
@@ -255,6 +280,10 @@ const styles = StyleSheet.create({
     color: colors.text,
     fontFamily: typography.regular,
     fontSize: 14,
+  },
+  agentCopy: {
+    flex: 1,
+    marginRight: 10,
   },
   stateCount: {
     color: colors.blue,
