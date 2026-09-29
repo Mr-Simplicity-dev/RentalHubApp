@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Share, StyleSheet, TouchableOpacity, View } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
 import { useFocusEffect } from '@react-navigation/native';
 import {
@@ -30,6 +31,7 @@ const formatDate = (value) => {
 const MarketingAgentScreen = () => {
   const [responses, setResponses] = useState([]);
   const [summary, setSummary] = useState(null);
+  const [invite, setInvite] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const load = useCallback(async () => {
@@ -46,6 +48,15 @@ const MarketingAgentScreen = () => {
             : [];
       setResponses(rows);
       setSummary(payload && !Array.isArray(payload) ? payload : null);
+
+      // The invite link is a separate, non-critical call: a failure must not blank
+      // the respondents list.
+      try {
+        const inviteResponse = await surveyService.marketingAgentInvite();
+        setInvite(inviteResponse?.data || null);
+      } catch {
+        setInvite(null);
+      }
     } catch (err) {
       Toast.show({
         type: 'error',
@@ -63,6 +74,22 @@ const MarketingAgentScreen = () => {
       load();
     }, [load])
   );
+
+  const shareInvite = async () => {
+    if (!invite?.invite_url) return;
+    try {
+      await Share.share({
+        message: `Open your RentalHub account here: ${invite.invite_url}`,
+        url: invite.invite_url,
+      });
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Could not share',
+        text2: getErrorMessage(error, 'Try copying the link instead.'),
+      });
+    }
+  };
 
   if (loading) {
     return <PremiumCenter loading title="Loading respondents" />;
@@ -97,6 +124,64 @@ const MarketingAgentScreen = () => {
             {metric('With email', summary?.stats?.with_email ?? 0)}
             {metric('With phone', summary?.stats?.with_phone ?? 0)}
           </View>
+
+          {summary?.commissions ? (
+            <>
+              <View style={styles.metricRow}>
+                {metric(
+                  'Earned',
+                  `₦${Number(summary.commissions.total_earned || 0).toLocaleString()}`
+                )}
+                {metric('Accounts', summary.commissions.qualified_count || 0)}
+              </View>
+              <View style={styles.metricRow}>
+                {metric(
+                  'Wallet',
+                  `₦${Number(summary.commissions.wallet_balance || 0).toLocaleString()}`
+                )}
+                {metric('Reversed', summary.commissions.reversed_count || 0)}
+              </View>
+            </>
+          ) : null}
+
+          {invite?.invite_url ? (
+            <PremiumCard>
+              <AppText style={styles.cardTitle}>Open an account for someone</AppText>
+              <AppText style={styles.code}>
+                Share this link — they register themselves, set their own password and
+                choose their lawyer. You earn when they verify and when they pay.
+              </AppText>
+              <AppText style={styles.inviteCode}>{invite.referral_code}</AppText>
+              <TouchableOpacity onPress={shareInvite} style={styles.shareButton}>
+                <Icon name="share-social-outline" size={16} color={colors.white} />
+                <AppText style={styles.shareButtonText}>Share signup link</AppText>
+              </TouchableOpacity>
+            </PremiumCard>
+          ) : null}
+
+          {Array.isArray(summary?.commissions?.commissions) &&
+          summary.commissions.commissions.length > 0 ? (
+            <PremiumCard>
+              <AppText style={styles.cardTitle}>Commission history</AppText>
+              {summary.commissions.commissions.slice(0, 15).map((row) => (
+                <View key={String(row.id)} style={styles.breakdownRow}>
+                  <View style={styles.agentCopy}>
+                    <AppText style={styles.breakdownLabel} numberOfLines={1}>
+                      {row.new_user_name || row.new_user_email || 'Account'}
+                    </AppText>
+                    <AppText style={styles.code}>
+                      {row.account_type} ·{' '}
+                      {row.stage === 'verified' ? 'verified' : 'registration paid'} ·{' '}
+                      {row.status}
+                    </AppText>
+                  </View>
+                  <AppText style={styles.breakdownValue}>
+                    ₦{Number(row.amount || 0).toLocaleString()}
+                  </AppText>
+                </View>
+              ))}
+            </PremiumCard>
+          ) : null}
 
           {Array.isArray(summary?.by_lga) && summary.by_lga.length > 0 ? (
             <PremiumCard>
@@ -218,6 +303,28 @@ const styles = StyleSheet.create({
   breakdownValue: {
     color: colors.ink,
     fontFamily: typography.bold,
+    fontSize: 14,
+  },
+  inviteCode: {
+    color: colors.blue,
+    fontFamily: typography.bold,
+    fontSize: 22,
+    letterSpacing: 2,
+    marginTop: 10,
+  },
+  shareButton: {
+    alignItems: 'center',
+    backgroundColor: colors.blue,
+    borderRadius: radius.md,
+    flexDirection: 'row',
+    gap: 8,
+    justifyContent: 'center',
+    marginTop: 12,
+    paddingVertical: 12,
+  },
+  shareButtonText: {
+    color: colors.white,
+    fontFamily: typography.semibold,
     fontSize: 14,
   },
   code: {

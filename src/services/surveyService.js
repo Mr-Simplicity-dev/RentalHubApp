@@ -47,6 +47,11 @@ export const surveyService = {
     return response.data;
   },
 
+  marketingAgentInvite: async () => {
+    const response = await api.get('/survey/marketing-agent/invite');
+    return response.data;
+  },
+
   publicFlags: async () => {
     const response = await api.get('/survey/public-flags');
     return response.data;
