@@ -48,6 +48,7 @@ const WalletWithdrawModal = ({
   const [accountNameError, setAccountNameError] = useState('');
   const [consentChecked, setConsentChecked] = useState(false);
   const [showBankPicker, setShowBankPicker] = useState(false);
+  const [bankSuggestions, setBankSuggestions] = useState([]);
 
   useEffect(() => {
     if (!visible) return;
@@ -112,6 +113,35 @@ const WalletWithdrawModal = ({
     }
   };
 
+  // Every bank where this number resolves. A NUBAN is unique per bank, so one number
+  // can be real at several fintechs at once — we suggest them and let the person pick.
+  const sweepBanksForNumber = async (accountNumber) => {
+    setAccountNameLoading(true);
+    setAccountNameError('');
+    try {
+      const response = await paymentService.resolveAccountAcrossBanks(accountNumber);
+      const matches = response?.data?.matches || [];
+      setBankSuggestions(matches);
+
+      if (matches.length === 1) {
+        setWithdrawForm((prev) => ({
+          ...prev,
+          bank_name: matches[0].bank_name,
+          account_name: matches[0].account_name,
+        }));
+      } else if (matches.length === 0) {
+        setAccountNameError('No bank matched this number. Pick your bank manually.');
+      }
+    } catch (error) {
+      setBankSuggestions([]);
+      setAccountNameError(
+        error?.response?.data?.message || 'Could not check this number. Pick your bank manually.'
+      );
+    } finally {
+      setAccountNameLoading(false);
+    }
+  };
+
   const handleAccountNumberChange = (value) => {
     const digits = String(value || '').replace(/\D/g, '').slice(0, 10);
     setWithdrawForm((prev) => ({
@@ -119,10 +149,22 @@ const WalletWithdrawModal = ({
       account_number: digits,
       account_name: prev.account_name && digits.length === 10 ? prev.account_name : '',
     }));
+    setBankSuggestions([]);
 
-    if (digits.length === 10 && withdrawForm.bank_name) {
-      fetchAccountName(withdrawForm.bank_name, digits);
+    if (digits.length === 10) {
+      // Sweep first: it tells us which bank the number actually belongs to.
+      sweepBanksForNumber(digits);
     }
+  };
+
+  const handleSuggestionSelect = (match) => {
+    setWithdrawForm((prev) => ({
+      ...prev,
+      bank_name: match.bank_name,
+      account_name: match.account_name,
+    }));
+    setBankSuggestions([]);
+    setAccountNameError('');
   };
 
   const handleBankSelect = (bankName) => {
@@ -233,6 +275,29 @@ const WalletWithdrawModal = ({
 
             {accountNameLoading ? (
               <ActivityIndicator color="#0284c7" />
+            ) : null}
+
+            {bankSuggestions.length > 0 ? (
+              <View style={styles.suggestionBox}>
+                <AppText style={styles.suggestionTitle}>
+                  This number matches {bankSuggestions.length} bank
+                  {bankSuggestions.length === 1 ? '' : 's'} — pick the one you use:
+                </AppText>
+                {bankSuggestions.map((match) => (
+                  <TouchableOpacity
+                    key={match.bank_code}
+                    accessibilityRole="button"
+                    onPress={() => handleSuggestionSelect(match)}
+                    style={styles.suggestionRow}
+                  >
+                    <View style={styles.suggestionCopy}>
+                      <AppText style={styles.suggestionBank}>{match.bank_name}</AppText>
+                      <AppText style={styles.suggestionName}>{match.account_name}</AppText>
+                    </View>
+                    <Icon name="chevron-forward" size={18} color="#0284c7" />
+                  </TouchableOpacity>
+                ))}
+              </View>
             ) : null}
 
             {accountNameError ? (
@@ -363,6 +428,41 @@ const styles = StyleSheet.create({
   },
   warningText: { flex: 1, color: '#92400e', fontSize: 13, lineHeight: 18 },
   errorText: { color: '#dc2626', fontSize: 13 },
+  suggestionBox: {
+    backgroundColor: '#f0f7ff',
+    borderColor: '#bfdbfe',
+    borderRadius: 10,
+    borderWidth: 1,
+    marginTop: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+  },
+  suggestionTitle: {
+    color: '#1e3a8a',
+    fontFamily: typography.medium,
+    fontSize: 12,
+    marginBottom: 6,
+  },
+  suggestionRow: {
+    alignItems: 'center',
+    borderTopColor: '#dbeafe',
+    borderTopWidth: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 10,
+  },
+  suggestionCopy: { flex: 1, marginRight: 8 },
+  suggestionBank: {
+    color: colors.ink,
+    fontFamily: typography.semibold,
+    fontSize: 14,
+  },
+  suggestionName: {
+    color: '#475569',
+    fontFamily: typography.regular,
+    fontSize: 12,
+    marginTop: 1,
+  },
   consentRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   consentText: { flex: 1, color: '#334155', fontSize: 13 },
   switchLink: { alignItems: 'center' },

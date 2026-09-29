@@ -11,6 +11,8 @@ import {
   PremiumListScreen,
 } from '../../components/common/PremiumLayout';
 import { surveyService } from '../../services/surveyService';
+import { paymentService } from '../../services/paymentService';
+import WalletWithdrawModal from '../../components/dashboard/WalletWithdrawModal';
 import { getErrorMessage, pickList } from '../../utils/http';
 import { colors, radius, typography } from '../../theme';
 import AppText from '../../components/common/AppText';
@@ -75,8 +77,41 @@ const MarketingAgentScreen = () => {
     }, [load])
   );
 
-  const shareInvite = async () => {
-    if (!invite?.invite_url) return;
+  const [withdrawOpen, setWithdrawOpen] = useState(false);
+  const [withdrawSubmitting, setWithdrawSubmitting] = useState(false);
+  const [withdrawForm, setWithdrawForm] = useState({
+    amount: '',
+    bank_name: '',
+    account_number: '',
+    account_name: '',
+  });
+
+  const submitWithdrawal = async () => {
+    if (withdrawSubmitting) return;
+    setWithdrawSubmitting(true);
+    try {
+      await paymentService.requestWalletWithdrawal({
+        amount: Number(withdrawForm.amount),
+        bank_name: withdrawForm.bank_name,
+        account_number: withdrawForm.account_number,
+        account_name: withdrawForm.account_name,
+      });
+      Toast.show({ type: 'success', text1: 'Withdrawal requested' });
+      setWithdrawOpen(false);
+      setWithdrawForm({ amount: '', bank_name: '', account_number: '', account_name: '' });
+      load();
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Withdrawal failed',
+        text2: getErrorMessage(error, 'Could not request this withdrawal'),
+      });
+    } finally {
+      setWithdrawSubmitting(false);
+    }
+  };
+
+  const shareInvite = async () => {    if (!invite?.invite_url) return;
     try {
       await Share.share({
         message: `Open your RentalHub account here: ${invite.invite_url}`,
@@ -103,6 +138,7 @@ const MarketingAgentScreen = () => {
   );
 
   return (
+    <>
     <PremiumListScreen
       data={responses}
       keyExtractor={(item, index) => String(item.id || item.respondent_code || `r-${index}`)}
@@ -156,6 +192,15 @@ const MarketingAgentScreen = () => {
                 <Icon name="share-social-outline" size={16} color={colors.white} />
                 <AppText style={styles.shareButtonText}>Share signup link</AppText>
               </TouchableOpacity>
+              {Number(summary?.commissions?.wallet_balance || 0) > 0 ? (
+                <TouchableOpacity
+                  onPress={() => setWithdrawOpen(true)}
+                  style={styles.withdrawButton}
+                >
+                  <Icon name="cash-outline" size={16} color={colors.blue} />
+                  <AppText style={styles.withdrawButtonText}>Withdraw commission</AppText>
+                </TouchableOpacity>
+              ) : null}
             </PremiumCard>
           ) : null}
 
@@ -230,6 +275,17 @@ const MarketingAgentScreen = () => {
         </PremiumCard>
       )}
     />
+    <WalletWithdrawModal
+      visible={withdrawOpen}
+      onClose={() => setWithdrawOpen(false)}
+      onSubmit={submitWithdrawal}
+      loading={withdrawSubmitting}
+      walletBalance={Number(summary?.commissions?.wallet_balance || 0)}
+      withdrawForm={withdrawForm}
+      setWithdrawForm={setWithdrawForm}
+      withdrawHistory={[]}
+    />
+    </>
   );
 };
 
@@ -324,6 +380,22 @@ const styles = StyleSheet.create({
   },
   shareButtonText: {
     color: colors.white,
+    fontFamily: typography.semibold,
+    fontSize: 14,
+  },
+  withdrawButton: {
+    alignItems: 'center',
+    borderColor: colors.blue,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    flexDirection: 'row',
+    gap: 8,
+    justifyContent: 'center',
+    marginTop: 10,
+    paddingVertical: 12,
+  },
+  withdrawButtonText: {
+    color: colors.blue,
     fontFamily: typography.semibold,
     fontSize: 14,
   },

@@ -124,6 +124,13 @@ export const paymentService = {
     return response.data;
   },
 
+  // Sweep every bank for one account number. The same number can be real at several
+  // fintechs at once, so this returns all matches and lets the person choose.
+  resolveAccountAcrossBanks: async (account_number) => {
+    const response = await api.post('/payments/resolve-account', { account_number });
+    return response.data;
+  },
+
   verifyBankAccount: async ({ bank_name, account_number }) => {
     const response = await api.post('/payments/verify-account', {
       bank_name,
