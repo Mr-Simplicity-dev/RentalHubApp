@@ -21,6 +21,29 @@ export const legalService = {
     return response.data;
   },
 
+  sendDisputeMessage: async (disputeId, message) => {
+    const response = await api.post(`/disputes/${disputeId}/messages`, { message });
+    return response.data;
+  },
+
+  editDisputeMessage: async (disputeId, messageId, message) => {
+    const response = await api.patch(`/disputes/${disputeId}/messages/${messageId}`, { message });
+    return response.data;
+  },
+
+  uploadDisputeEvidence: async (disputeId, file) => {
+    const formData = new FormData();
+    formData.append('file', {
+      uri: file.uri,
+      name: file.fileName || file.name || 'evidence',
+      type: file.type || 'application/octet-stream',
+    });
+    const response = await api.post(`/disputes/${disputeId}/evidence`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response.data;
+  },
+
   getPublicLawyerDirectory: async () => {
     const response = await api.get('/legal/directory');
     return response.data;

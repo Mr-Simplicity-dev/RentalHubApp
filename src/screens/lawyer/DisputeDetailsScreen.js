@@ -2,6 +2,7 @@ import React, { useEffect, useLayoutEffect, useState } from 'react';
 import {ActivityIndicator,
   ScrollView,
   StyleSheet,
+  TextInput,
   TouchableOpacity,
   View,} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -47,6 +48,51 @@ const DisputeDetailsScreen = ({ navigation, route }) => {
   useEffect(() => {
     loadDispute();
   }, [disputeId]);
+
+  const [newMessage, setNewMessage] = useState('');
+  const [sendingMessage, setSendingMessage] = useState(false);
+  const [uploadingEvidence, setUploadingEvidence] = useState(false);
+
+  const sendMessage = async () => {
+    const body = newMessage.trim();
+    if (!body || sendingMessage) return;
+    setSendingMessage(true);
+    try {
+      await legalService.sendDisputeMessage(disputeId, body);
+      setNewMessage('');
+      await loadDispute();
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Could not send',
+        text2: getErrorMessage(error, 'Your message was not sent'),
+      });
+    } finally {
+      setSendingMessage(false);
+    }
+  };
+
+  const pickAndUploadEvidence = async () => {
+    if (uploadingEvidence) return;
+    try {
+      const { launchImageLibrary } = require('react-native-image-picker');
+      const result = await launchImageLibrary({ mediaType: 'mixed', selectionLimit: 1 });
+      if (result?.didCancel || !result?.assets?.length) return;
+
+      setUploadingEvidence(true);
+      await legalService.uploadDisputeEvidence(disputeId, result.assets[0]);
+      Toast.show({ type: 'success', text1: 'Evidence uploaded' });
+      await loadDispute();
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Upload failed',
+        text2: getErrorMessage(error, 'Could not upload this file'),
+      });
+    } finally {
+      setUploadingEvidence(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -144,6 +190,24 @@ const DisputeDetailsScreen = ({ navigation, route }) => {
 
       <View style={styles.card}>
         <View style={styles.cardHeading}><Icon name="folder-open-outline" size={20} color={colors.blue} /><AppText style={styles.cardTitle}>Evidence</AppText><AppText style={styles.count}>{evidence.length}</AppText></View>
+        {!dispute.is_legally_sealed ? (
+          <TouchableOpacity
+            accessibilityRole="button"
+            accessibilityLabel="Upload evidence"
+            disabled={uploadingEvidence}
+            onPress={pickAndUploadEvidence}
+            style={[styles.uploadButton, uploadingEvidence && styles.composerSendDisabled]}
+          >
+            {uploadingEvidence ? (
+              <ActivityIndicator color={colors.white} size="small" />
+            ) : (
+              <Icon name="cloud-upload-outline" size={16} color={colors.white} />
+            )}
+            <AppText style={styles.uploadButtonText}>
+              {uploadingEvidence ? 'Uploading…' : 'Upload evidence'}
+            </AppText>
+          </TouchableOpacity>
+        ) : null}
         {evidence.length === 0 ? (
           <AppText style={styles.emptyText}>No evidence uploaded.</AppText>
         ) : (
@@ -168,6 +232,39 @@ const DisputeDetailsScreen = ({ navigation, route }) => {
 
       <View style={styles.card}>
         <View style={styles.cardHeading}><Icon name="chatbubbles-outline" size={20} color={colors.blue} /><AppText style={styles.cardTitle}>Case messages</AppText><AppText style={styles.count}>{messages.length}</AppText></View>
+        {!dispute.is_legally_sealed ? (
+          <View style={styles.composerRow}>
+            <TextInput
+              value={newMessage}
+              onChangeText={setNewMessage}
+              placeholder="Write a message…"
+              placeholderTextColor={colors.muted}
+              style={styles.composerInput}
+              multiline
+              editable={!sendingMessage}
+            />
+            <TouchableOpacity
+              accessibilityRole="button"
+              accessibilityLabel="Send message"
+              disabled={sendingMessage || !newMessage.trim()}
+              onPress={sendMessage}
+              style={[
+                styles.composerSend,
+                (sendingMessage || !newMessage.trim()) && styles.composerSendDisabled,
+              ]}
+            >
+              {sendingMessage ? (
+                <ActivityIndicator color={colors.white} size="small" />
+              ) : (
+                <Icon name="send" size={16} color={colors.white} />
+              )}
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <AppText style={styles.emptyText}>
+            This dispute is legally sealed — no further messages can be added.
+          </AppText>
+        )}
         {messages.length === 0 ? (
           <AppText style={styles.emptyText}>No messages yet.</AppText>
         ) : (
@@ -244,6 +341,49 @@ const styles = StyleSheet.create({
   cardTitle: { flex: 1, marginLeft: 8, fontFamily: typography.bold, fontSize: 16, color: colors.ink },
   count: { minWidth: 25, textAlign: 'center', paddingVertical: 3, paddingHorizontal: 7, borderRadius: radius.pill, overflow: 'hidden', backgroundColor: colors.surfaceBlue, fontFamily: typography.semibold, fontSize: 13, color: colors.blue },
   emptyText: { fontFamily: typography.regular, color: colors.muted },
+  composerRow: {
+    alignItems: 'flex-end',
+    flexDirection: 'row',
+    gap: 8,
+    marginTop: 12,
+  },
+  composerInput: {
+    backgroundColor: colors.white,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    color: colors.ink,
+    flex: 1,
+    fontFamily: typography.regular,
+    maxHeight: 110,
+    minHeight: 44,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+  },
+  composerSend: {
+    alignItems: 'center',
+    backgroundColor: colors.blue,
+    borderRadius: 22,
+    height: 44,
+    justifyContent: 'center',
+    width: 44,
+  },
+  composerSendDisabled: { opacity: 0.5 },
+  uploadButton: {
+    alignItems: 'center',
+    backgroundColor: colors.blue,
+    borderRadius: radius.md,
+    flexDirection: 'row',
+    gap: 8,
+    justifyContent: 'center',
+    marginTop: 12,
+    paddingVertical: 11,
+  },
+  uploadButtonText: {
+    color: colors.white,
+    fontFamily: typography.semibold,
+    fontSize: 14,
+  },
   listRow: {
     paddingVertical: 10,
     borderTopWidth: 1,

@@ -70,8 +70,8 @@ android {
         applicationId = "com.rentalhubng"
         minSdkVersion = rootProject.ext.minSdkVersion
         targetSdkVersion = rootProject.ext.targetSdkVersion
-        versionCode = 37
-        versionName = "1.0.26"
+        versionCode = 38
+        versionName = "1.0.27"
     }
     signingConfigs {
         debug {

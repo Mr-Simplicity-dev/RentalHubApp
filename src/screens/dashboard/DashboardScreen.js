@@ -1179,6 +1179,32 @@ const DashboardScreen = ({ navigation }) => {
       </DashboardSection>
 
       <DashboardSection title="More">
+        {/* These four had no in-app entry point at all — reachable only by deep link
+            or the hidden NativeTools hub. Surfaced here so they are actually findable. */}
+        <ActionRow
+          title="My Disputes"
+          subtitle="Track disputes you have opened and their progress."
+          icon="shield-half-outline"
+          onPress={() => navigation.navigate('MyDisputes')}
+        />
+        <ActionRow
+          title="My Damage Reports"
+          subtitle="Damage you have reported and their outcomes."
+          icon="alert-circle-outline"
+          onPress={() => navigation.navigate('MyDamageReports')}
+        />
+        <ActionRow
+          title="My Subscriptions"
+          subtitle="Properties you have unlocked access to."
+          icon="key-outline"
+          onPress={() => navigation.navigate('SubscribedProperties')}
+        />
+        <ActionRow
+          title="Rate RentalHub"
+          subtitle="Tell us how the platform is working for you."
+          icon="star-outline"
+          onPress={() => navigation.navigate('PlatformRatings')}
+        />
         <ActionRow
           title="Careers"
           subtitle="View openings and submit applications."

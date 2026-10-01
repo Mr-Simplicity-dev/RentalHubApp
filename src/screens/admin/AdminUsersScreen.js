@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import Toast from 'react-native-toast-message';
+import Icon from 'react-native-vector-icons/Ionicons';
 import OperationNoteModal from '../../components/admin/OperationNoteModal';
 import { adminService } from '../../services/adminService';
 import { getErrorMessage, pickList } from '../../utils/http';
@@ -15,7 +16,7 @@ import {
 import { colors, typography } from '../../theme';
 
 import AppText from '../../components/common/AppText';
-const AdminUsersScreen = () => {
+const AdminUsersScreen = ({ navigation }) => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -82,15 +83,23 @@ const AdminUsersScreen = () => {
         }
         renderItem={({ item }) => (
           <PremiumCard>
-            <View style={styles.cardHeader}>
-              <View style={styles.avatar}>
-                <AppText style={styles.avatarText}>{String(item.full_name || item.email || 'U').slice(0, 1).toUpperCase()}</AppText>
+            <TouchableOpacity
+              accessibilityRole="button"
+              accessibilityLabel={`Open ${item.full_name || 'user'} details`}
+              activeOpacity={0.85}
+              onPress={() => navigation.navigate('AdminUserDetail', { id: item.id })}
+            >
+              <View style={styles.cardHeader}>
+                <View style={styles.avatar}>
+                  <AppText style={styles.avatarText}>{String(item.full_name || item.email || 'U').slice(0, 1).toUpperCase()}</AppText>
+                </View>
+                <View style={styles.cardCopy}>
+                  <AppText style={styles.cardTitle}>{item.full_name || 'Unnamed user'}</AppText>
+                  <AppText style={styles.cardMeta}>{item.email || 'No email provided'}</AppText>
+                </View>
+                <Icon name="chevron-forward" size={20} color={colors.muted} />
               </View>
-              <View style={styles.cardCopy}>
-                <AppText style={styles.cardTitle}>{item.full_name || 'Unnamed user'}</AppText>
-                <AppText style={styles.cardMeta}>{item.email || 'No email provided'}</AppText>
-              </View>
-            </View>
+            </TouchableOpacity>
             <InfoRow icon="shield-outline" label="Role" value={item.user_type || '—'} />
             <InfoRow icon="call-outline" label="Phone" value={item.phone || item.phone_number || '—'} />
             {['tenant', 'landlord'].includes(item.user_type) ? (

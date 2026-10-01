@@ -96,7 +96,7 @@ const ApplicationsScreen = ({ navigation }) => {
       } else if (action === 'approve') {
         await applicationService.approveApplication(id);
       } else {
-        await applicationService.rejectApplication(id, 'Rejected from RentalHub mobile app');
+        await applicationService.rejectApplication(id, 'Rejected from Mobile App');
       }
       setItems((current) =>
         current.map((item) =>

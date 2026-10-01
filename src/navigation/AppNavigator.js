@@ -916,6 +916,14 @@ const StateAdminRoot = () => (
     <Stack.Screen name="StateAdminDashboard" component={StateAdminDashboardScreen} options={{ title: 'State Admin' }} />
     <Stack.Screen name="StateAdminFinance" component={StateAdminFinanceScreen} options={{ title: 'Commissions & Withdrawals' }} />
     <Stack.Screen name="StateAdminMigrations" component={StateAdminMigrationsScreen} options={{ title: 'Property Approvals' }} />
+    {/* State admins had a narrower mobile surface than the web (which exposes users,
+        transactions, oversight and calculator fees). Registered here so the dashboard
+        board can reach them. */}
+    <Stack.Screen name="AdminUsers" component={AdminUsersScreen} options={{ title: 'Users' }} />
+    <Stack.Screen name="AdminUserDetail" component={AdminUserDetailScreen} options={{ title: 'User' }} />
+    <Stack.Screen name="FinancialTransactions" component={FinancialTransactionsScreen} options={{ title: 'Transactions' }} />
+    <Stack.Screen name="AdminCompliance" component={AdminComplianceScreen} options={{ title: 'Oversight' }} />
+    <Stack.Screen name="RentCalculatorFeesAdmin" component={RentCalculatorFeesAdminScreen} options={{ title: 'Calculator Fees' }} />
     <Stack.Screen name="AdminAppeals" component={AdminAppealsScreen} options={{ title: 'Appeals' }} />
     <Stack.Screen name="RecruitmentAdmin" component={RecruitmentAdminScreen} options={{ title: 'Recruitment Admin' }} />
     <Stack.Screen name="AdminTransportationStateDashboard" component={AdminTransportationStateDashboardScreen} options={{ title: 'State Transport' }} />
@@ -978,6 +986,9 @@ const RecruitmentAdminRoot = () => (
 const MarketingAgentRoot = () => (
   <Stack.Navigator screenOptions={screenOptions}>
     <Stack.Screen name="MarketingAgentDashboard" component={MarketingAgentScreen} options={{ title: 'Survey Respondents' }} />
+    {/* Field capture: the backend attributes the response to the signed-in
+        marketing agent, so this is how the role actually earns. */}
+    <Stack.Screen name="PublicSurvey" component={PublicSurveyScreen} options={{ title: 'Conduct Survey' }} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
     {commonVerificationScreens()}
     {commonAppealScreens()}

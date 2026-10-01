@@ -331,7 +331,7 @@ const PrivacyPolicyScreen = () => (
         <AppText style={styles.paragraph}>
           RentalHub NG ("RentalHub", "we", "us" or "our"), operating in Nigeria, is
           responsible for the personal data processed through rentalhub.com.ng, the
-          RentalHub mobile applications and connected RentalHub services, unless a
+          Mobile Applications and connected RentalHub services, unless a
           separate notice says otherwise.
         </AppText>
         <AppText style={styles.paragraph}>

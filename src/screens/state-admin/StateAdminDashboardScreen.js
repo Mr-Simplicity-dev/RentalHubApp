@@ -112,6 +112,36 @@ const StateAdminDashboardScreen = ({ navigation }) => {
                   tourTarget: 'state_management',
                   onPress: () => navigation.navigate('StateAdminMigrations'),
                 },
+                {
+                  label: 'Users',
+                  icon: 'people-outline',
+                  onPress: () => navigation.navigate('AdminUsers'),
+                },
+                {
+                  label: 'Transactions',
+                  icon: 'swap-horizontal-outline',
+                  onPress: () => navigation.navigate('FinancialTransactions'),
+                },
+                {
+                  label: 'Commissions',
+                  icon: 'cash-outline',
+                  onPress: () => navigation.navigate('StateAdminFinance'),
+                },
+                {
+                  label: 'Oversight',
+                  icon: 'shield-outline',
+                  onPress: () => navigation.navigate('AdminCompliance'),
+                },
+                {
+                  label: 'Calculator Fees',
+                  icon: 'calculator-outline',
+                  onPress: () => navigation.navigate('RentCalculatorFeesAdmin'),
+                },
+                {
+                  label: 'Appeals',
+                  icon: 'document-text-outline',
+                  onPress: () => navigation.navigate('AdminAppeals'),
+                },
                 ...(hasRecruitmentAccess
                   ? [
                       {

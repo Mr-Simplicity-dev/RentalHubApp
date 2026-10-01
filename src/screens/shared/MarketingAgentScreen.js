@@ -30,7 +30,7 @@ const formatDate = (value) => {
   }
 };
 
-const MarketingAgentScreen = () => {
+const MarketingAgentScreen = ({ navigation }) => {
   const [responses, setResponses] = useState([]);
   const [summary, setSummary] = useState(null);
   const [invite, setInvite] = useState(null);
@@ -152,6 +152,17 @@ const MarketingAgentScreen = () => {
             subtitle="People you have captured for the market-research survey."
             icon="people-outline"
           />
+
+          <TouchableOpacity
+            accessibilityRole="button"
+            accessibilityLabel="Conduct a survey for someone"
+            activeOpacity={0.88}
+            onPress={() => navigation.navigate('PublicSurvey')}
+            style={styles.conductButton}
+          >
+            <Icon name="add-circle-outline" size={18} color={colors.white} />
+            <AppText style={styles.conductButtonText}>Conduct Survey</AppText>
+          </TouchableOpacity>
           <View style={styles.metricRow}>
             {metric('Captured', summary?.stats?.captured ?? responses.length)}
             {metric('In progress', summary?.stats?.in_progress ?? 0)}
@@ -398,6 +409,21 @@ const styles = StyleSheet.create({
     color: colors.blue,
     fontFamily: typography.semibold,
     fontSize: 14,
+  },
+  conductButton: {
+    alignItems: 'center',
+    backgroundColor: colors.blue,
+    borderRadius: radius.md,
+    flexDirection: 'row',
+    gap: 8,
+    justifyContent: 'center',
+    marginBottom: 12,
+    paddingVertical: 13,
+  },
+  conductButtonText: {
+    color: colors.white,
+    fontFamily: typography.semibold,
+    fontSize: 15,
   },
   code: {
     color: colors.muted,

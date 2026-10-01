@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import Toast from 'react-native-toast-message';
+import Icon from 'react-native-vector-icons/Ionicons';
 import { adminService } from '../../services/adminService';
 import { getErrorMessage, pickList } from '../../utils/http';
 import {
@@ -13,7 +14,7 @@ import {
 import { colors, typography } from '../../theme';
 
 import AppText from '../../components/common/AppText';
-const AdminPropertiesScreen = () => {
+const AdminPropertiesScreen = ({ navigation }) => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -62,19 +63,27 @@ const AdminPropertiesScreen = () => {
           'Location unavailable';
 
         return (
-          <PremiumCard>
-            <View style={styles.cardHeader}>
-              <View style={styles.propertyIcon}>
-                <AppText style={styles.propertyIconText}>RH</AppText>
+          <TouchableOpacity
+            accessibilityRole="button"
+            accessibilityLabel={`Open ${item.title || 'property'}`}
+            activeOpacity={0.85}
+            onPress={() => navigation.navigate('AdminPropertyDetail', { id: item.id })}
+          >
+            <PremiumCard>
+              <View style={styles.cardHeader}>
+                <View style={styles.propertyIcon}>
+                  <AppText style={styles.propertyIconText}>RH</AppText>
+                </View>
+                <View style={styles.cardCopy}>
+                  <AppText style={styles.cardTitle}>{item.title || 'Untitled property'}</AppText>
+                  <AppText style={styles.cardMeta}>{location}</AppText>
+                </View>
+                <Icon name="chevron-forward" size={20} color={colors.muted} />
               </View>
-              <View style={styles.cardCopy}>
-                <AppText style={styles.cardTitle}>{item.title || 'Untitled property'}</AppText>
-                <AppText style={styles.cardMeta}>{location}</AppText>
-              </View>
-            </View>
-            <InfoRow icon="person-outline" label="Landlord" value={item.landlord_name || 'No landlord name'} />
-            <InfoRow icon="pricetag-outline" label="Status" value={item.status || item.approval_status || '—'} />
-          </PremiumCard>
+              <InfoRow icon="person-outline" label="Landlord" value={item.landlord_name || 'No landlord name'} />
+              <InfoRow icon="pricetag-outline" label="Status" value={item.status || item.approval_status || '—'} />
+            </PremiumCard>
+          </TouchableOpacity>
         );
       }}
     />
