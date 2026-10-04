@@ -43,7 +43,7 @@ const AdminInspectionsScreen = () => {
     refresh ? setLoading(true) : setLoading(true);
     try {
       const response = await api.get('/admin/inspections');
-      setItems(pickList(response?.data || response, ['data']));
+      setItems(pickList(response, ['data']));
     } catch (error) {
       Toast.show({
         type: 'error',

@@ -56,7 +56,7 @@ const ZonalListScreen = ({ route }) => {
         if (effectiveSearch) params.search = effectiveSearch;
         if (meta.role && effectiveRole && effectiveRole !== 'all') params.role = effectiveRole;
         const res = await zonalAdminService.listResource(resource, params);
-        setRows(pickList(res?.data || res, ['data']));
+        setRows(pickList(res, ['data']));
       } catch (err) {
         Toast.show({
           type: 'error',

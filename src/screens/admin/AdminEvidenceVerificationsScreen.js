@@ -22,7 +22,7 @@ const AdminEvidenceVerificationsScreen = () => {
     setLoading(true);
     try {
       const response = await api.get('/admin/evidence-verifications');
-      setItems(pickList(response?.data || response, ['data']));
+      setItems(pickList(response, ['data']));
     } catch (error) {
       Toast.show({
         type: 'error',
