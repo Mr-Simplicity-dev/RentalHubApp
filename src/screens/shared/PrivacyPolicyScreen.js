@@ -88,7 +88,7 @@ const DATA_CATEGORIES = [
     icon: 'chatbubbles-outline',
     title: 'Messages, calls, support and legal records',
     data:
-      'In-app messages, typing/read/online signals, call and WebRTC signalling/session metadata, support tickets and replies, notification history, dispute records, evidence, damage reports, photos, inspection notes, legal authorisations and lawyer activity. Live WebRTC audio/video is processed between participants for delivery rather than stored as an ordinary call record.',
+      'In-app messages, typing/read/online signals, call and WebRTC signalling/session metadata, support tickets and replies, notification history, dispute records, evidence, property reports, photos, inspection notes, legal authorisations and lawyer activity. Live WebRTC audio/video is processed between participants for delivery rather than stored as an ordinary call record.',
     purpose:
       'Deliver communications and support, facilitate calls, investigate complaints, preserve evidence, enforce platform rules, protect users and manage disputes or legal workflows.',
     basis:
@@ -181,7 +181,7 @@ const PROVIDERS = [
     icon: 'sparkles-outline',
     name: 'Anthropic Claude',
     text:
-      'When damage-image analysis is used, RentalHub sends the submitted damage photograph to Anthropic Claude for a non-binding assessment and stores the resulting analysis with the damage workflow.',
+      'When condition-image analysis is used, RentalHub sends the submitted condition photograph to Anthropic Claude for a non-binding assessment and stores the resulting analysis with the condition workflow.',
   },
   {
     icon: 'server-outline',
@@ -573,7 +573,7 @@ const PrivacyPolicyScreen = () => (
       <PolicyCard>
         <AppText style={styles.paragraph}>
           RentalHub may use automated tools to assist with identity checks, fraud and risk
-          signals, property or service recommendations, matching, diagnostics and damage
+          signals, property or service recommendations, matching, diagnostics and condition
           analysis. These tools support platform workflows; authorised people may review
           important outcomes.
         </AppText>

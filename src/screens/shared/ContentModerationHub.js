@@ -16,6 +16,14 @@ import { getErrorMessage, pickList } from '../../utils/http';
 import { colors, radius, typography } from '../../theme';
 import AppText from '../../components/common/AppText';
 
+const conditionTypeLabel = (value) => {
+  if (!value) return '';
+  const mapped = value === 'water_damage' ? 'Water' : value;
+  return String(mapped)
+    .replace(/_/g, ' ')
+    .replace(/\b\w/g, (letter) => letter.toUpperCase());
+};
+
 const ContentModerationHub = () => {
   const [tab, setTab] = useState('flagged');
   const [flagged, setFlagged] = useState([]);
@@ -45,7 +53,7 @@ const ContentModerationHub = () => {
       Toast.show({
         type: 'error',
         text1: 'Failed',
-        text2: getErrorMessage(err, 'Could not load damage reports'),
+        text2: getErrorMessage(err, 'Could not load property reports'),
       });
       setDamage([]);
     } finally {
@@ -135,7 +143,7 @@ const ContentModerationHub = () => {
   }
 
   if (loading && damage.length === 0) {
-    return <PremiumCenter loading title="Loading damage reports" />;
+    return <PremiumCenter loading title="Loading property reports" />;
   }
 
   return (
@@ -145,8 +153,8 @@ const ContentModerationHub = () => {
       refreshing={loading}
       onRefresh={loadDamage}
       header={moderationHeader(tab, setTab)}
-      emptyTitle="No damage reports"
-      emptyMessage="Damage reports across the platform will appear here."
+      emptyTitle="No property reports"
+      emptyMessage="Property reports across the platform will appear here."
       emptyIcon="warning-outline"
       renderItem={({ item }) => (
         <PremiumCard>
@@ -158,7 +166,7 @@ const ContentModerationHub = () => {
             <StatusPill label={item.status || 'draft'} color={item.status === 'published' ? colors.success : colors.blue} />
           </View>
           <AppText style={styles.cardText}>
-            {[item.report_title, item.damage_type].filter(Boolean).join(' · ') || `Report #${item.id}`}
+            {[item.report_title, conditionTypeLabel(item.damage_type)].filter(Boolean).join(' · ') || `Report #${item.id}`}
           </AppText>
           {item.description ? <AppText style={styles.cardMeta}>{item.description}</AppText> : null}
           {item.severity ? <InfoRow icon="warning-outline" label="Severity" value={item.severity} /> : null}
@@ -193,7 +201,7 @@ const moderationHeader = (tab, setTab) => (
     <PremiumHero
       eyebrow="Moderation"
       title="Content moderation"
-      subtitle="Clear flagged messages and publish or unpublish damage reports."
+      subtitle="Clear flagged messages and publish or unpublish property reports."
       icon="shield-checkmark-outline"
     />
     <View style={styles.tabRow}>
@@ -207,7 +215,7 @@ const moderationHeader = (tab, setTab) => (
             style={[styles.tab, active && styles.tabActive]}
           >
             <AppText style={[styles.tabText, active && styles.tabTextActive]}>
-              {key === 'flagged' ? 'Flagged messages' : 'Damage reports'}
+              {key === 'flagged' ? 'Flagged messages' : 'Property reports'}
             </AppText>
           </TouchableOpacity>
         );

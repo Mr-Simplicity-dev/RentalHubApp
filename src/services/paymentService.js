@@ -67,6 +67,13 @@ export const paymentService = {
     return response.data;
   },
 
+  downloadReceiptPdf: async (paymentId) => {
+    const response = await api.get(`/payments/receipt-pdf/${paymentId}`, {
+      responseType: 'arraybuffer',
+    });
+    return response.data;
+  },
+
   initializePropertyUnlock: async (propertyId, paymentMethod = 'paystack') => {
     const response = await api.post('/payments/unlock-property', {
       property_id: propertyId,

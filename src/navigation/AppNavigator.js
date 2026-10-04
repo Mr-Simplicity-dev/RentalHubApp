@@ -562,7 +562,7 @@ const TenantRoot = () => (
     <Stack.Screen name="NativeTools" component={NativeToolsScreen} options={{ title: 'More Tools' }} />
     {commonInfoScreens()}
     <Stack.Screen name="MyDisputes" component={MyDisputesScreen} options={{ title: 'My Disputes' }} />
-    <Stack.Screen name="MyDamageReports" component={MyDamageReportsScreen} options={{ title: 'Damage Reports' }} />
+    <Stack.Screen name="MyDamageReports" component={MyDamageReportsScreen} options={{ title: 'Property Reports' }} />
     <Stack.Screen name="SubscribedProperties" component={SubscribedPropertiesScreen} options={{ title: 'My Subscriptions' }} />
     <Stack.Screen name="Careers" component={CareersScreen} options={{ title: 'Careers' }} />
     <Stack.Screen name="RecruitmentAdmin" component={RecruitmentAdminScreen} options={{ title: 'Recruitment Admin' }} />
@@ -613,7 +613,7 @@ const LandlordRoot = () => (
     <Stack.Screen name="NativeTools" component={NativeToolsScreen} options={{ title: 'More Tools' }} />
     {commonInfoScreens()}
     <Stack.Screen name="MyDisputes" component={MyDisputesScreen} options={{ title: 'My Disputes' }} />
-    <Stack.Screen name="MyDamageReports" component={MyDamageReportsScreen} options={{ title: 'Damage Reports' }} />
+    <Stack.Screen name="MyDamageReports" component={MyDamageReportsScreen} options={{ title: 'Property Reports' }} />
     <Stack.Screen name="SubscribedProperties" component={SubscribedPropertiesScreen} options={{ title: 'My Subscriptions' }} />
     <Stack.Screen name="Careers" component={CareersScreen} options={{ title: 'Careers' }} />
     <Stack.Screen name="RecruitmentAdmin" component={RecruitmentAdminScreen} options={{ title: 'Recruitment Admin' }} />
@@ -663,7 +663,7 @@ const AgentRoot = () => (
     <Stack.Screen name="NativeTools" component={NativeToolsScreen} options={{ title: 'More Tools' }} />
     {commonInfoScreens()}
     <Stack.Screen name="MyDisputes" component={MyDisputesScreen} options={{ title: 'My Disputes' }} />
-    <Stack.Screen name="MyDamageReports" component={MyDamageReportsScreen} options={{ title: 'Damage Reports' }} />
+    <Stack.Screen name="MyDamageReports" component={MyDamageReportsScreen} options={{ title: 'Property Reports' }} />
     <Stack.Screen name="SubscribedProperties" component={SubscribedPropertiesScreen} options={{ title: 'My Subscriptions' }} />
     <Stack.Screen name="Careers" component={CareersScreen} options={{ title: 'Careers' }} />
     <Stack.Screen name="RecruitmentAdmin" component={RecruitmentAdminScreen} options={{ title: 'Recruitment Admin' }} />
@@ -713,7 +713,7 @@ const LawyerRoot = ({ initialRouteName = 'LawyerDashboard' }) => (
     <Stack.Screen name="NativeTools" component={NativeToolsScreen} options={{ title: 'More Tools' }} />
     {commonInfoScreens()}
     <Stack.Screen name="MyDisputes" component={MyDisputesScreen} options={{ title: 'My Disputes' }} />
-    <Stack.Screen name="MyDamageReports" component={MyDamageReportsScreen} options={{ title: 'Damage Reports' }} />
+    <Stack.Screen name="MyDamageReports" component={MyDamageReportsScreen} options={{ title: 'Property Reports' }} />
     <Stack.Screen name="SubscribedProperties" component={SubscribedPropertiesScreen} options={{ title: 'My Subscriptions' }} />
     <Stack.Screen name="Careers" component={CareersScreen} options={{ title: 'Careers' }} />
     <Stack.Screen name="RecruitmentAdmin" component={RecruitmentAdminScreen} options={{ title: 'Recruitment Admin' }} />
@@ -757,7 +757,7 @@ const AdminRoot = () => (
     <Stack.Screen name="NativeTools" component={NativeToolsScreen} options={{ title: 'More Tools' }} />
     {commonInfoScreens()}
     <Stack.Screen name="MyDisputes" component={MyDisputesScreen} options={{ title: 'My Disputes' }} />
-    <Stack.Screen name="MyDamageReports" component={MyDamageReportsScreen} options={{ title: 'Damage Reports' }} />
+    <Stack.Screen name="MyDamageReports" component={MyDamageReportsScreen} options={{ title: 'Property Reports' }} />
     <Stack.Screen name="SubscribedProperties" component={SubscribedPropertiesScreen} options={{ title: 'My Subscriptions' }} />
     <Stack.Screen name="Careers" component={CareersScreen} options={{ title: 'Careers' }} />
     <Stack.Screen name="RecruitmentAdmin" component={RecruitmentAdminScreen} options={{ title: 'Recruitment Admin' }} />
@@ -849,7 +849,7 @@ const SuperAdminRoot = () => (
     <Stack.Screen name="NativeTools" component={NativeToolsScreen} options={{ title: 'More Tools' }} />
     {commonInfoScreens()}
     <Stack.Screen name="MyDisputes" component={MyDisputesScreen} options={{ title: 'My Disputes' }} />
-    <Stack.Screen name="MyDamageReports" component={MyDamageReportsScreen} options={{ title: 'Damage Reports' }} />
+    <Stack.Screen name="MyDamageReports" component={MyDamageReportsScreen} options={{ title: 'Property Reports' }} />
     <Stack.Screen name="SubscribedProperties" component={SubscribedPropertiesScreen} options={{ title: 'My Subscriptions' }} />
     <Stack.Screen name="Careers" component={CareersScreen} options={{ title: 'Careers' }} />
     <Stack.Screen name="RecruitmentAdmin" component={RecruitmentAdminScreen} options={{ title: 'Recruitment Admin' }} />
@@ -902,7 +902,7 @@ const FinancialAdminRoot = ({ initialRouteName = 'FinancialAdminDashboard' }) =>
     <Stack.Screen name="NativeTools" component={NativeToolsScreen} options={{ title: 'More Tools' }} />
     {commonInfoScreens()}
     <Stack.Screen name="MyDisputes" component={MyDisputesScreen} options={{ title: 'My Disputes' }} />
-    <Stack.Screen name="MyDamageReports" component={MyDamageReportsScreen} options={{ title: 'Damage Reports' }} />
+    <Stack.Screen name="MyDamageReports" component={MyDamageReportsScreen} options={{ title: 'Property Reports' }} />
     <Stack.Screen name="SubscribedProperties" component={SubscribedPropertiesScreen} options={{ title: 'My Subscriptions' }} />
     <Stack.Screen name="Careers" component={CareersScreen} options={{ title: 'Careers' }} />
     <Stack.Screen name="RecruitmentAdmin" component={RecruitmentAdminScreen} options={{ title: 'Recruitment Admin' }} />

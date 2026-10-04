@@ -41,6 +41,9 @@ const prettyLabel = (value = '') =>
     .replace(/_/g, ' ')
     .replace(/\b\w/g, (letter) => letter.toUpperCase());
 
+const conditionTypeLabel = (value) =>
+  value === 'water_damage' ? 'Water' : prettyLabel(value || 'Condition');
+
 const PropertyDetailScreen = ({ route, navigation }) => {
   const propertyId = route?.params?.id;
   const { width } = useWindowDimensions();
@@ -533,7 +536,7 @@ const PropertyDetailScreen = ({ route, navigation }) => {
                 </View>
               </View>
               <AppText style={styles.conditionMeta}>
-                {prettyLabel(latestDamageReport.damage_type || 'Condition')} ·{' '}
+                {conditionTypeLabel(latestDamageReport.damage_type)} ·{' '}
                 {prettyLabel(latestDamageReport.severity || 'Severity unavailable')}
               </AppText>
               {latestDamageReport.room_location ? (
@@ -622,7 +625,7 @@ const PropertyDetailScreen = ({ route, navigation }) => {
             <Button
               onPress={() => setShowDamageCapture(true)}
               style={styles.damageButton}
-              title="Report property damage"
+              title="Report property condition"
               variant="outline"
             />
           ) : null}

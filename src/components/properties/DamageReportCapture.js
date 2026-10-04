@@ -24,7 +24,7 @@ const DAMAGE_TYPES = [
   { value: 'hole', label: 'Hole' },
   { value: 'dent', label: 'Dent' },
   { value: 'stain', label: 'Stain' },
-  { value: 'water_damage', label: 'Water Damage' },
+  { value: 'water_damage', label: 'Water' },
   { value: 'mold', label: 'Mold' },
   { value: 'other', label: 'Other' },
 ];
@@ -298,7 +298,7 @@ const DamageReportCapture = ({ visible, propertyId, onClose, onSaved }) => {
         <View style={styles.sheet}>
           <View style={styles.header}>
             <AppText style={styles.title}>Property Maintenance Assessment</AppText>
-            <TouchableOpacity accessibilityLabel="Close damage assessment" accessibilityRole="button" onPress={handleClose}>
+            <TouchableOpacity accessibilityLabel="Close condition assessment" accessibilityRole="button" onPress={handleClose}>
               <Icon name="close" size={24} color="#64748b" />
             </TouchableOpacity>
           </View>
@@ -307,7 +307,7 @@ const DamageReportCapture = ({ visible, propertyId, onClose, onSaved }) => {
             {stage === 'workflow' ? (
               <>
                 <AppText style={styles.lead}>
-                  Capture a clear photo of the damage. AI will suggest details you can review before saving.
+                  Capture a clear photo of the issue. AI will suggest details you can review before saving.
                 </AppText>
                 <Button title="Open Camera" onPress={capturePhoto} />
               </>
@@ -322,7 +322,7 @@ const DamageReportCapture = ({ visible, propertyId, onClose, onSaved }) => {
                 {analyzing ? (
                   <View style={styles.analyzingRow}>
                     <ActivityIndicator color="#0284c7" />
-                    <AppText style={styles.analyzingText}>Analyzing damage photo...</AppText>
+                    <AppText style={styles.analyzingText}>Analyzing photo...</AppText>
                   </View>
                 ) : null}
 
@@ -339,7 +339,7 @@ const DamageReportCapture = ({ visible, propertyId, onClose, onSaved }) => {
                 {analysisError ? <AppText style={styles.warningText}>{analysisError}</AppText> : null}
                 {retryAction ? (
                   <TouchableOpacity
-                    accessibilityLabel="Retry last damage evidence upload step"
+                    accessibilityLabel="Retry last report evidence upload step"
                     accessibilityRole="button"
                     style={styles.retryButton}
                     onPress={retryAction}
@@ -356,12 +356,12 @@ const DamageReportCapture = ({ visible, propertyId, onClose, onSaved }) => {
                   onPress={() => setPickerType('room')}
                 />
                 <SelectField
-                  label="Damage Type"
+                  label="Condition Type"
                   value={
                     DAMAGE_TYPES.find((item) => item.value === form.damage_type)?.label ||
                     form.damage_type
                   }
-                  placeholder="Select damage type"
+                  placeholder="Select condition type"
                   onPress={() => setPickerType('damage_type')}
                 />
                 <SelectField

@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import {ActivityIndicator,
   FlatList,
+  Modal,
   RefreshControl,
   StyleSheet,
   TouchableOpacity,
@@ -8,6 +9,8 @@ import {ActivityIndicator,
 import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
+import { File, Paths } from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
 import { paymentService } from '../../services/paymentService';
 import { colors, radius, typography } from '../../theme';
 import { getErrorMessage, pickList } from '../../utils/http';
@@ -56,6 +59,8 @@ const PaymentHistoryScreen = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [payments, setPayments] = useState([]);
   const [filter, setFilter] = useState('all');
+  const [selectedReceipt, setSelectedReceipt] = useState(null);
+  const [receiptBusy, setReceiptBusy] = useState(false);
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
@@ -104,6 +109,55 @@ const PaymentHistoryScreen = ({ navigation }) => {
           ),
     [filter, payments]
   );
+
+  const isCompletedPayment = (payment) =>
+    ['completed', 'successful', 'success'].includes(payment.payment_status);
+
+  const saveReceiptPdf = async (payment) => {
+    const buffer = await paymentService.downloadReceiptPdf(payment.id);
+    const fileName = `receipt-${String(payment.id || '0').padStart(6, '0')}.pdf`;
+    const file = new File(Paths.cache, fileName);
+    try {
+      file.delete();
+    } catch {}
+    file.create();
+    file.write(new Uint8Array(buffer));
+    return file;
+  };
+
+  const handleShareReceipt = async () => {
+    if (!selectedReceipt) return;
+    setReceiptBusy(true);
+    try {
+      const file = await saveReceiptPdf(selectedReceipt);
+      if (await Sharing.isAvailableAsync()) {
+        await Sharing.shareAsync(file.uri, {
+          mimeType: 'application/pdf',
+          UTI: 'com.adobe.pdf',
+          dialogTitle: 'Receipt',
+        });
+      } else {
+        Toast.show({ type: 'info', text1: 'Saved', text2: `Receipt saved to ${file.uri}` });
+      }
+    } catch (error) {
+      Toast.show({ type: 'error', text1: 'Could not share receipt', text2: getErrorMessage(error, 'Please try again.') });
+    } finally {
+      setReceiptBusy(false);
+    }
+  };
+
+  const handleDownloadReceipt = async () => {
+    if (!selectedReceipt) return;
+    setReceiptBusy(true);
+    try {
+      const file = await saveReceiptPdf(selectedReceipt);
+      Toast.show({ type: 'success', text1: 'Receipt saved', text2: `Saved to ${file.uri}` });
+    } catch (error) {
+      Toast.show({ type: 'error', text1: 'Could not download receipt', text2: getErrorMessage(error, 'Please try again.') });
+    } finally {
+      setReceiptBusy(false);
+    }
+  };
 
   return (
     <SafeAreaView edges={['top']} style={styles.safeArea}>
@@ -181,8 +235,12 @@ const PaymentHistoryScreen = ({ navigation }) => {
         }
         renderItem={({ item }) => {
           const visual = statusVisual(item.payment_status);
+          const completed = isCompletedPayment(item);
           return (
-            <View style={styles.card}>
+            <TouchableOpacity
+              activeOpacity={completed ? 0.7 : 1}
+              onPress={completed ? () => setSelectedReceipt(item) : undefined}
+              style={styles.card}>
               <View style={[styles.paymentIcon, { backgroundColor: visual.background }]}>
                 <Icon name={visual.icon} size={20} color={visual.color} />
               </View>
@@ -199,6 +257,9 @@ const PaymentHistoryScreen = ({ navigation }) => {
                     Ref: {item.transaction_reference}
                   </AppText>
                 ) : null}
+                {completed ? (
+                  <AppText style={styles.viewReceipt}>Tap to view receipt</AppText>
+                ) : null}
               </View>
               <View style={styles.paymentRight}>
                 <AppText style={styles.amount}>{formatAmount(item.amount)}</AppText>
@@ -208,11 +269,89 @@ const PaymentHistoryScreen = ({ navigation }) => {
                   </AppText>
                 </View>
               </View>
-            </View>
+            </TouchableOpacity>
           );
         }}
         showsVerticalScrollIndicator={false}
       />
+
+      <Modal
+        visible={Boolean(selectedReceipt)}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setSelectedReceipt(null)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.receiptSheet}>
+            <View style={styles.receiptHeader}>
+              <AppText style={styles.receiptEyebrow}>RECEIPT</AppText>
+              <TouchableOpacity onPress={() => setSelectedReceipt(null)}>
+                <Icon name="close" size={22} color={colors.muted} />
+              </TouchableOpacity>
+            </View>
+
+            {selectedReceipt ? (
+              <>
+                <View style={styles.receiptCard}>
+                  <AppText style={styles.receiptNumber}>
+                    #{String(selectedReceipt.id || '').padStart(6, '0')}
+                  </AppText>
+                  <AppText style={styles.receiptType}>
+                    {formatPaymentType(selectedReceipt.payment_type)}
+                  </AppText>
+                  <AppText style={styles.receiptAmount}>
+                    {formatAmount(selectedReceipt.amount)}
+                  </AppText>
+
+                  <View style={styles.receiptRow}>
+                    <AppText style={styles.receiptLabel}>Date</AppText>
+                    <AppText style={styles.receiptValue}>
+                      {selectedReceipt.created_at ? new Date(selectedReceipt.created_at).toLocaleString() : '-'}
+                    </AppText>
+                  </View>
+                  <View style={styles.receiptRow}>
+                    <AppText style={styles.receiptLabel}>Reference</AppText>
+                    <AppText style={styles.receiptValue}>
+                      {selectedReceipt.transaction_reference || '-'}
+                    </AppText>
+                  </View>
+                  <View style={styles.receiptRow}>
+                    <AppText style={styles.receiptLabel}>Status</AppText>
+                    <AppText style={styles.receiptValue}>{selectedReceipt.payment_status}</AppText>
+                  </View>
+                  <View style={styles.receiptRow}>
+                    <AppText style={styles.receiptLabel}>Method</AppText>
+                    <AppText style={styles.receiptValue}>{selectedReceipt.payment_method || 'Paystack'}</AppText>
+                  </View>
+                </View>
+
+                <View style={styles.receiptActions}>
+                  <TouchableOpacity
+                    onPress={handleShareReceipt}
+                    disabled={receiptBusy}
+                    style={styles.receiptButton}>
+                    {receiptBusy ? (
+                      <ActivityIndicator color={colors.white} size="small" />
+                    ) : (
+                      <Icon name="share-social-outline" size={18} color={colors.white} />
+                    )}
+                    <AppText style={styles.receiptButtonText}>Share</AppText>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={handleDownloadReceipt}
+                    disabled={receiptBusy}
+                    style={[styles.receiptButton, styles.receiptButtonSecondary]}>
+                    <Icon name="download-outline" size={18} color={colors.blue} />
+                    <AppText style={[styles.receiptButtonText, styles.receiptButtonTextSecondary]}>
+                      Download PDF
+                    </AppText>
+                  </TouchableOpacity>
+                </View>
+              </>
+            ) : null}
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -289,6 +428,7 @@ const styles = StyleSheet.create({
   },
   filterRow: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: 8,
     marginBottom: 15,
   },
@@ -354,6 +494,12 @@ const styles = StyleSheet.create({
     fontSize: 13,
     marginTop: 3,
   },
+  viewReceipt: {
+    color: colors.blue,
+    fontFamily: typography.semibold,
+    fontSize: 12,
+    marginTop: 5,
+  },
   paymentRight: { alignItems: 'flex-end', marginLeft: 7 },
   amount: {
     color: colors.ink,
@@ -405,6 +551,101 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     marginTop: 7,
     textAlign: 'center',
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(7, 26, 61, 0.55)',
+  },
+  receiptSheet: {
+    backgroundColor: colors.surface,
+    borderTopLeftRadius: 26,
+    borderTopRightRadius: 26,
+    padding: 18,
+    paddingBottom: 28,
+  },
+  receiptHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 14,
+  },
+  receiptEyebrow: {
+    color: colors.blue,
+    fontFamily: typography.bold,
+    fontSize: 13,
+    letterSpacing: 1.25,
+  },
+  receiptCard: {
+    backgroundColor: colors.white,
+    borderColor: colors.border,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    padding: 18,
+  },
+  receiptNumber: {
+    color: colors.muted,
+    fontFamily: typography.semibold,
+    fontSize: 13,
+  },
+  receiptType: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 16,
+    marginTop: 4,
+  },
+  receiptAmount: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 28,
+    letterSpacing: -0.75,
+    marginTop: 8,
+  },
+  receiptRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 10,
+  },
+  receiptLabel: {
+    color: colors.muted,
+    fontFamily: typography.regular,
+    fontSize: 13,
+  },
+  receiptValue: {
+    color: colors.ink,
+    fontFamily: typography.semibold,
+    fontSize: 13,
+    flex: 1,
+    textAlign: 'right',
+    marginLeft: 12,
+  },
+  receiptActions: {
+    flexDirection: 'row',
+    gap: 10,
+    marginTop: 16,
+  },
+  receiptButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    backgroundColor: colors.blue,
+    borderRadius: 14,
+    paddingVertical: 14,
+  },
+  receiptButtonSecondary: {
+    backgroundColor: colors.white,
+    borderColor: colors.blue,
+    borderWidth: 1,
+  },
+  receiptButtonText: {
+    color: colors.white,
+    fontFamily: typography.bold,
+    fontSize: 14,
+  },
+  receiptButtonTextSecondary: {
+    color: colors.blue,
   },
 });
 

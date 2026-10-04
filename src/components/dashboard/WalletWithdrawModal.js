@@ -375,6 +375,9 @@ const WalletWithdrawModal = ({
         options={bankOptions}
         onSelect={(option) => handleBankSelect(option.value)}
         onClose={() => setShowBankPicker(false)}
+        searchable
+        searchPlaceholder="Search banks"
+        emptyText="No matching bank"
       />
     </Modal>
   );

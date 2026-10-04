@@ -21,7 +21,7 @@ import { getErrorMessage, pickList } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
 
-const FILTERS = [
+const ALL_FILTERS = [
   { value: 'all', label: 'All' },
   { value: 'PENDING_LANDLORD_REVIEW', label: 'Landlord review' },
   { value: 'PENDING_LANDLORD_SIGNATURE', label: 'Landlord signature' },
@@ -29,6 +29,26 @@ const FILTERS = [
   { value: 'PENDING_TENANT_SIGNATURE', label: 'Tenant signature' },
   { value: 'FULLY_EXECUTED', label: 'Executed' },
 ];
+
+const getFiltersForRole = (role) => {
+  if (role === 'landlord') {
+    return [
+      { value: 'all', label: 'All' },
+      { value: 'PENDING_LANDLORD_REVIEW', label: 'Landlord review' },
+      { value: 'PENDING_LANDLORD_SIGNATURE', label: 'Landlord signature' },
+      { value: 'FULLY_EXECUTED', label: 'Executed' },
+    ];
+  }
+  if (role === 'tenant') {
+    return [
+      { value: 'all', label: 'All' },
+      { value: 'PENDING_TENANT_REVIEW', label: 'Tenant review' },
+      { value: 'PENDING_TENANT_SIGNATURE', label: 'Tenant signature' },
+      { value: 'FULLY_EXECUTED', label: 'Executed' },
+    ];
+  }
+  return ALL_FILTERS;
+};
 
 const needsAction = (agreement, role) => {
   if (role === 'landlord') {
@@ -48,6 +68,8 @@ const TenancyAgreementsScreen = ({ navigation }) => {
   const [filter, setFilter] = useState('all');
 
   const role = user?.user_type === 'landlord' ? 'landlord' : user?.user_type === 'tenant' ? 'tenant' : null;
+
+  const filters = useMemo(() => getFiltersForRole(role), [role]);
 
   const load = async ({ refresh = false } = {}) => {
     refresh ? setRefreshing(true) : setLoading(true);
@@ -107,7 +129,7 @@ const TenancyAgreementsScreen = ({ navigation }) => {
               </View>
             ) : null}
             <View style={styles.filterRow}>
-              {FILTERS.map((option) => (
+              {filters.map((option) => (
                 <TouchableOpacity
                   key={option.value}
                   onPress={() => setFilter(option.value)}

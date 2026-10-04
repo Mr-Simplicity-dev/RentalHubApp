@@ -1,7 +1,8 @@
 import React, { useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import {Alert,
   FlatList,
-  Linking,
+  Image,
+  Modal,
   ScrollView,
   StyleSheet,
   Switch,
@@ -20,7 +21,9 @@ import AdminAccountActions from '../../components/admin/AdminAccountActions';
 import OperationNoteModal from '../../components/admin/OperationNoteModal';
 import { superAdminService } from '../../services/superAdminService';
 import { authService } from '../../services/authService';
-import { buildUploadUrl, getErrorMessage, pickList, pickObject } from '../../utils/http';
+import { API_BASE_URL } from '../../services/api';
+import { storageService } from '../../services/storageService';
+import { getErrorMessage, pickList, pickObject } from '../../utils/http';
 import { formatDisplayValue, isPlainTextValue } from '../../utils/display';
 import FlagsSection from '../../components/admin/FlagsSection';
 import RegistrationAccessSection from '../../components/admin/RegistrationAccessSection';
@@ -287,6 +290,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
   const [analytics, setAnalytics] = useState({});
   const [users, setUsers] = useState([]);
   const [verifications, setVerifications] = useState([]);
+  const [passportPreview, setPassportPreview] = useState(null);
   const [properties, setProperties] = useState([]);
   const [reports, setReports] = useState([]);
   const [broadcasts, setBroadcasts] = useState([]);
@@ -1119,6 +1123,28 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
     </>
   );
 
+  const openPassportPhoto = async (item) => {
+    const filename = String(item.passport_photo_url || '')
+      .replace(/\\/g, '/')
+      .split('/')
+      .pop();
+    if (!filename) return;
+    try {
+      const token = await storageService.getToken();
+      setPassportPreview({
+        uri: `${API_BASE_URL}/users/passport-photo/${encodeURIComponent(filename)}`,
+        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+        name: item.full_name || item.email || 'User',
+      });
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Could not open passport photo',
+        text2: getErrorMessage(error, 'Please try again.'),
+      });
+    }
+  };
+
   const renderVerifications = () => (
     <>
       <View style={styles.card}>
@@ -1188,7 +1214,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
             <AppText style={styles.meta}>Verified By: {item.identity_verified_by_name || '-'}</AppText>
             {item.passport_photo_url ? (
               <TouchableOpacity
-                onPress={() => Linking.openURL(buildUploadUrl(item.passport_photo_url))}
+                onPress={() => openPassportPhoto(item)}
               >
                 <AppText style={styles.linkText}>Open passport photo</AppText>
               </TouchableOpacity>
@@ -1282,6 +1308,33 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
           ))
         )}
       </View>
+
+      <Modal
+        visible={Boolean(passportPreview)}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setPassportPreview(null)}
+      >
+        <View style={styles.photoModalOverlay}>
+          <View style={styles.photoModalCard}>
+            <View style={styles.photoModalHeader}>
+              <AppText style={styles.photoModalTitle}>
+                {passportPreview?.name || 'Passport photo'}
+              </AppText>
+              <TouchableOpacity onPress={() => setPassportPreview(null)}>
+                <Icon name="close" size={24} color={colors.ink} />
+              </TouchableOpacity>
+            </View>
+            {passportPreview ? (
+              <Image
+                source={{ uri: passportPreview.uri, headers: passportPreview.headers }}
+                resizeMode="contain"
+                style={styles.photoModalImage}
+              />
+            ) : null}
+          </View>
+        </View>
+      </Modal>
     </>
   );
 
@@ -3440,6 +3493,37 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', gap: 16, marginTop: 10, flexWrap: 'wrap' },
   linkText: { color: '#0284c7', fontWeight: '700', marginTop: 8 },
   warnText: { color: '#dc2626', fontWeight: '700', marginTop: 8 },
+  photoModalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(7, 26, 61, 0.6)',
+    justifyContent: 'center',
+    padding: 20,
+  },
+  photoModalCard: {
+    backgroundColor: colors.white,
+    borderRadius: 16,
+    padding: 14,
+    maxHeight: '85%',
+  },
+  photoModalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+  },
+  photoModalTitle: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 16,
+    flex: 1,
+    marginRight: 10,
+  },
+  photoModalImage: {
+    width: '100%',
+    height: 420,
+    borderRadius: 10,
+    backgroundColor: colors.surface,
+  },
   filterLabel: {
     marginBottom: 8,
     color: '#334155',

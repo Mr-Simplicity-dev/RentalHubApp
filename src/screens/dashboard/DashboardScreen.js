@@ -1188,17 +1188,19 @@ const DashboardScreen = ({ navigation }) => {
           onPress={() => navigation.navigate('MyDisputes')}
         />
         <ActionRow
-          title="My Damage Reports"
-          subtitle="Damage you have reported and their outcomes."
+          title="Property Reports"
+          subtitle="Report property situation and track their outcomes."
           icon="alert-circle-outline"
           onPress={() => navigation.navigate('MyDamageReports')}
         />
-        <ActionRow
-          title="My Subscriptions"
-          subtitle="Properties you have unlocked access to."
-          icon="key-outline"
-          onPress={() => navigation.navigate('SubscribedProperties')}
-        />
+        {isTenant ? (
+          <ActionRow
+            title="My Subscriptions"
+            subtitle="Properties you have unlocked access to."
+            icon="key-outline"
+            onPress={() => navigation.navigate('SubscribedProperties')}
+          />
+        ) : null}
         <ActionRow
           title="Rate RentalHub"
           subtitle="Tell us how the platform is working for you."

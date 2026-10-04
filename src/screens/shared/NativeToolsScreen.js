@@ -11,9 +11,6 @@ import {
 const makePublicFeatures = () => [
   { label: 'Home', path: '/' },
   { label: 'Contact Support', path: '/contact-widget' },
-  { label: 'WhatsApp Assistant', path: '/whatsapp-bot' },
-  { label: 'Lawyers Directory', path: '/lawyers' },
-  { label: 'Legal Support', path: '/legal-support' },
   { label: 'Properties', path: '/properties' },
   { label: 'Transportation Booking', path: '/transportation/book' },
   { label: 'Fumigation & Cleaning Booking', path: '/fumigation-cleaning/booking' },
@@ -51,7 +48,7 @@ const makeProtectedFeatures = (
     { label: 'Transport Bookings', path: '/transportation/bookings' },
     { label: 'Fumigation Bookings', path: '/fumigation-cleaning/bookings' },
     { label: 'My Disputes', path: '/my-disputes' },
-    { label: 'Damage Reports', path: '/my-damage-reports' },
+    { label: 'Property Reports', path: '/my-damage-reports' },
     { label: 'Subscribed Properties', path: '/subscribed-properties' },
     { label: 'Platform Ratings', path: '/platform-ratings' },
     { label: 'Verification Status', path: '/verification-status' },
@@ -283,7 +280,7 @@ const makeProtectedFeatures = (
   }
 
   if (userType === 'tenant') {
-    return [...base, { label: 'Tenant Dashboard', path: '/tenant/dashboard' }];
+    return base;
   }
 
   return base;
@@ -469,6 +466,7 @@ const NativeToolsScreen = ({ navigation }) => {
     '/my-damage-reports': { name: 'MyDamageReports' },
     '/subscribed-properties': { name: 'SubscribedProperties' },
     '/platform-ratings': { name: 'PlatformRatings' },
+    '/verification-status': { name: 'VerificationStatus' },
     '/contact-widget': { name: 'ContactWidget' },
     '/whatsapp-bot': { name: 'WhatsAppBot' },
   };

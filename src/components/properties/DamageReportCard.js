@@ -3,6 +3,15 @@ import {View, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import AppText from '../../components/common/AppText';
+
+const conditionTypeLabel = (value) => {
+  if (!value) return '';
+  const mapped = value === 'water_damage' ? 'Water' : value;
+  return String(mapped)
+    .replace(/_/g, ' ')
+    .replace(/\b\w/g, (letter) => letter.toUpperCase());
+};
+
 const DamageReportCard = ({ report, onPress, compact = false }) => {
   if (!report) return null;
 
@@ -22,7 +31,7 @@ const DamageReportCard = ({ report, onPress, compact = false }) => {
         <View style={[styles.severityDot, { backgroundColor: severityColor }]} />
         <View style={styles.compactContent}>
           <AppText style={styles.compactTitle} numberOfLines={1}>
-            {report.damage_type || 'Damage Report'}
+            {conditionTypeLabel(report.damage_type) || 'Property Report'}
           </AppText>
           <AppText style={styles.compactMeta}>
             {report.room_location || 'N/A'} | Severity: {report.severity || 'N/A'}
@@ -40,7 +49,7 @@ const DamageReportCard = ({ report, onPress, compact = false }) => {
       )}
       <View style={styles.content}>
         <View style={styles.header}>
-          <AppText style={styles.title}>{report.damage_type || 'Damage Report'}</AppText>
+          <AppText style={styles.title}>{conditionTypeLabel(report.damage_type) || 'Property Report'}</AppText>
           <View style={[styles.badge, { backgroundColor: severityColor + '20' }]}>
             <AppText style={[styles.badgeText, { color: severityColor }]}>
               {report.severity || 'N/A'}

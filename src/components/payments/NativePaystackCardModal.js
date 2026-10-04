@@ -119,7 +119,7 @@ const NativePaystackCardModal = ({
             </View>
           )}
 
-          {browserUrl ? (
+          {browserUrl && !nativeAvailable ? (
             <TouchableOpacity
               disabled={launching || fallbackLoading}
               onPress={handleFallback}
@@ -127,9 +127,7 @@ const NativePaystackCardModal = ({
               {fallbackLoading ? (
                 <ActivityIndicator color="#0A66C2" />
               ) : (
-                <AppText style={styles.secondaryText}>
-                  {nativeAvailable ? 'Use Paystack browser checkout instead' : 'Open Paystack checkout'}
-                </AppText>
+                <AppText style={styles.secondaryText}>Open Paystack checkout</AppText>
               )}
             </TouchableOpacity>
           ) : null}

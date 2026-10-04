@@ -62,7 +62,7 @@ const MyDamageReportsScreen = ({ navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Could not load damage reports',
+        text1: 'Could not load property reports',
         text2: getErrorMessage(error, 'Please check your connection and try again.'),
       });
     } finally {
@@ -126,7 +126,7 @@ const MyDamageReportsScreen = ({ navigation }) => {
         </TouchableOpacity>
         <View style={styles.headerCopy}>
           <AppText style={styles.eyebrow}>PROPERTY REPORTS</AppText>
-          <AppText style={styles.title}>Damage reports</AppText>
+          <AppText style={styles.title}>Property reports</AppText>
         </View>
         <View style={styles.headerSpacer} />
       </View>
@@ -153,9 +153,9 @@ const MyDamageReportsScreen = ({ navigation }) => {
               <View style={styles.emptyIcon}>
                 <Icon name="warning-outline" size={31} color={colors.blue} />
               </View>
-              <AppText style={styles.emptyTitle}>No damage reports</AppText>
+              <AppText style={styles.emptyTitle}>No property reports</AppText>
               <AppText style={styles.emptyText}>
-                You have not filed any damage reports. If you notice damage in a property, you can submit a report from the property detail screen.
+                You have not filed any property reports. If you notice an issue in a property, you can submit a report from the property detail screen.
               </AppText>
             </View>
           )

@@ -7,21 +7,34 @@ import {
   DashboardScreen,
   DashboardSection,
 } from '../../components/dashboard/DashboardKit';
+import BrandMark from '../../components/brand/BrandMark';
 import { colors, radius, typography } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 import { AuthContext } from '../../context/AuthContext';
 import TourTarget from '../../components/tour/TourTarget';
+
+const WHATSAPP_NUMBER = '2348030601238';
+
 const SupportScreen = ({ navigation }) => {
   const { user } = useContext(AuthContext);
   const tourId = user?.user_type === 'landlord' ? 'landlord_support' : 'tenant_support';
+
+  const openWhatsApp = () => {
+    const message = encodeURIComponent('Hello Amana RentalHub, I need support.');
+    Linking.openURL(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`);
+  };
+
   return (
     <DashboardScreen>
       <TourTarget id={tourId} padding={6} radius={18}>
+        <View style={styles.brandRow}>
+          <BrandMark compact />
+        </View>
         <DashboardHero
           eyebrow="SUPPORT"
           title="Contact support"
-          subtitle="Reach the RentalHub support team for help with your account, properties, payments or anything else."
+          subtitle="Reach the Amana RentalHub support team for help with your account, properties, payments or anything else."
           icon="headset-outline"
         />
       </TourTarget>
@@ -42,9 +55,21 @@ const SupportScreen = ({ navigation }) => {
         </View>
 
         <ActionRow
-          title="Email support"
-          subtitle="Send us a message and we will respond as soon as possible."
+          title="WhatsApp us"
+          subtitle="Chat with us on WhatsApp for a quick response."
+          icon="logo-whatsapp"
+          onPress={openWhatsApp}
+        />
+        <ActionRow
+          title="Contact us"
+          subtitle="Send us a ticket and we will respond as soon as possible."
           icon="mail-outline"
+          onPress={() => navigation.navigate('ContactWidget')}
+        />
+        <ActionRow
+          title="Email support"
+          subtitle="Reach us by email for detailed assistance."
+          icon="mail-unread-outline"
           onPress={() => Linking.openURL('mailto:support@rentalhub.com.ng')}
         />
         <ActionRow
@@ -65,7 +90,7 @@ const SupportScreen = ({ navigation }) => {
         <View style={styles.infoCard}>
           <AppText style={styles.bullet}>•</AppText>
           <AppText style={styles.infoText}>
-            If you are experiencing a problem with a property, payment or another user, you can file a dispute or damage report from the relevant screen.
+            If you are experiencing a problem with a property, payment or another user, you can file a dispute or property report from the relevant screen.
           </AppText>
         </View>
         <View style={styles.infoCard}>
@@ -80,6 +105,11 @@ const SupportScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  brandRow: {
+    alignItems: 'center',
+    paddingTop: 8,
+    paddingBottom: 4,
+  },
   contactCard: {
     backgroundColor: colors.navy,
     borderRadius: radius.md,
