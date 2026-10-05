@@ -1178,6 +1178,15 @@ const DashboardScreen = ({ navigation }) => {
         ) : null}
       </DashboardSection>
 
+      <DashboardSection title="Support">
+        <ActionRow
+          title="Contact support"
+          subtitle="Chat, email or call our support team."
+          icon="headset-outline"
+          onPress={() => navigation.navigate('Support')}
+        />
+      </DashboardSection>
+
       <DashboardSection title="More">
         {/* These four had no in-app entry point at all — reachable only by deep link
             or the hidden NativeTools hub. Surfaced here so they are actually findable. */}

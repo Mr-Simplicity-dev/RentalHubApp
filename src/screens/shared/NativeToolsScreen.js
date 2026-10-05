@@ -10,7 +10,6 @@ import {
 
 const makePublicFeatures = () => [
   { label: 'Home', path: '/' },
-  { label: 'Contact Support', path: '/contact-widget' },
   { label: 'Properties', path: '/properties' },
   { label: 'Transportation Booking', path: '/transportation/book' },
   { label: 'Fumigation & Cleaning Booking', path: '/fumigation-cleaning/booking' },
