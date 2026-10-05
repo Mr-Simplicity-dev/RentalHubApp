@@ -608,12 +608,14 @@ const ProfileScreen = ({ navigation }) => {
           style={styles.marginTop}
           onPress={() => navigation.navigate('Notifications')}
         />
-        <Button
-          title="My Appeals"
-          variant="outline"
-          style={styles.marginTop}
-          onPress={() => navigation.navigate('MyAppeals')}
-        />
+        {['tenant', 'user', 'landlord', 'agent', 'lawyer', 'state_lawyer', 'super_lawyer'].includes(user?.user_type) ? (
+          <Button
+            title="My Appeals"
+            variant="outline"
+            style={styles.marginTop}
+            onPress={() => navigation.navigate('MyAppeals')}
+          />
+        ) : null}
         {/* Super-admin tools now live on the Super Admin dashboard, grouped by job.
             Only the roles that cannot see that dashboard keep their shortcuts here. */}
         {user?.user_type === 'super_financial_admin' ? (

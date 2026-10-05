@@ -35,7 +35,7 @@ export const registerForPushNotifications = async () => {
       vibrationPattern: [0, 250, 180, 250],
     });
     await Notifications.setNotificationChannelAsync('general', {
-      name: 'RentalHub updates',
+      name: 'Updates',
       importance: Notifications.AndroidImportance.DEFAULT,
       sound: 'default',
     });

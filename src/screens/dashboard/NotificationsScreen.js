@@ -183,7 +183,7 @@ const NotificationsScreen = ({ navigation }) => {
               <View style={styles.cardBody}>
                 <View style={styles.cardHeading}>
                   <AppText style={styles.cardTitle} numberOfLines={1}>
-                    {item.title || item.notification_type || 'RentalHub update'}
+                    {item.title || item.notification_type || 'Update'}
                   </AppText>
                   {!item.is_read ? <View style={styles.unreadDot} /> : null}
                 </View>

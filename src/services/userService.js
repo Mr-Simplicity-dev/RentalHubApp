@@ -34,6 +34,11 @@ export const userService = {
     return response.data;
   },
 
+  addNin: async (payload) => {
+    const response = await api.post('/users/identity/nin', payload);
+    return response.data;
+  },
+
   createLiveCaptureSession: async () => {
     const response = await api.post('/users/verification/live-capture/session');
     return response.data;

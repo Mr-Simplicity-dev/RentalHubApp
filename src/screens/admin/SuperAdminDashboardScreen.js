@@ -10,6 +10,7 @@ import {Alert,
   TouchableOpacity,
   View,} from 'react-native';
 import Toast from 'react-native-toast-message';
+import * as Notifications from 'expo-notifications';
 import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
 import SelectField from '../../components/common/SelectField';
@@ -21,6 +22,7 @@ import AdminAccountActions from '../../components/admin/AdminAccountActions';
 import OperationNoteModal from '../../components/admin/OperationNoteModal';
 import { superAdminService } from '../../services/superAdminService';
 import { authService } from '../../services/authService';
+import { notificationService } from '../../services/notificationService';
 import { API_BASE_URL } from '../../services/api';
 import { storageService } from '../../services/storageService';
 import { getErrorMessage, pickList, pickObject } from '../../utils/http';
@@ -134,6 +136,8 @@ const WORKSPACE_GROUPS = [
       { label: 'Fumigation Oversight', route: 'SuperAdminFumigationDashboard', icon: 'sparkles-outline' },
       { label: 'Transport Oversight', route: 'SuperAdminTransportationDashboard', icon: 'car-outline' },
       { label: 'Support Governance', route: 'SuperAdminSupportGovernance', icon: 'headset-outline' },
+      { label: 'Notifications', route: 'Notifications', icon: 'notifications-outline' },
+      { label: 'Appeals', route: 'AdminAppeals', icon: 'git-compare-outline' },
       { label: 'Voice Monitor', route: 'VoiceMonitor', icon: 'call-outline' },
       { label: 'Court Bundle', route: 'CourtBundle', icon: 'briefcase-outline' },
       { label: 'State Admin Management', route: 'FinanceStateAdmins', icon: 'business-outline' },
@@ -291,6 +295,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
   const [users, setUsers] = useState([]);
   const [verifications, setVerifications] = useState([]);
   const [passportPreview, setPassportPreview] = useState(null);
+  const [unreadCount, setUnreadCount] = useState(0);
   const [properties, setProperties] = useState([]);
   const [reports, setReports] = useState([]);
   const [broadcasts, setBroadcasts] = useState([]);
@@ -348,6 +353,27 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
     applyRequestedSection();
     return navigation.addListener('focus', applyRequestedSection);
   }, [navigation, route?.params?.initialPanel]);
+
+  const loadUnreadCount = async () => {
+    try {
+      const response = await notificationService.getUnreadCount();
+      setUnreadCount(Number(response?.data?.unread_count || 0));
+    } catch (error) {
+      // keep the previous count
+    }
+  };
+
+  useEffect(() => {
+    loadUnreadCount();
+    const focusSub = navigation.addListener('focus', loadUnreadCount);
+    const receivedSub = Notifications.addNotificationReceivedListener(() => {
+      loadUnreadCount();
+    });
+    return () => {
+      focusSub();
+      receivedSub.remove();
+    };
+  }, [navigation]);
   const [editingLawyerId, setEditingLawyerId] = useState(null);
   const [lawyerApplications, setLawyerApplications] = useState([]);
   const [showLawyerApplications, setShowLawyerApplications] = useState(false);
@@ -903,6 +929,14 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
         section: 'verifications',
         value: Number(analytics.verifiedUsers ?? 0) || 0,
       },
+      {
+        key: 'notifications',
+        label: 'Notifications',
+        icon: 'notifications-outline',
+        route: 'Notifications',
+        value: unreadCount,
+        badge: true,
+      },
     ];
 
     return (
@@ -921,12 +955,27 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
               accessibilityRole="button"
               accessibilityLabel={`${card.label}: ${card.value.toLocaleString()}`}
               activeOpacity={0.85}
-              onPress={() => setSection(card.section)}
+              onPress={() =>
+                card.section
+                  ? setSection(card.section)
+                  : card.route
+                    ? navigation.navigate(card.route)
+                    : null
+              }
               style={styles.summaryCard}
             >
               <View style={styles.summaryCardTop}>
                 <AppText style={styles.summaryCardLabel}>{card.label}</AppText>
-                <Icon name={card.icon} size={20} color={colors.blue} />
+                <View>
+                  <Icon name={card.icon} size={20} color={colors.blue} />
+                  {card.badge && Number(card.value) > 0 ? (
+                    <View style={styles.summaryBadge}>
+                      <AppText style={styles.summaryBadgeText}>
+                        {Number(card.value) > 99 ? '99+' : card.value}
+                      </AppText>
+                    </View>
+                  ) : null}
+                </View>
               </View>
               <AppText style={styles.summaryCardValue}>{card.value.toLocaleString()}</AppText>
               <AppText style={styles.summaryCardHint}>Tap to view →</AppText>
@@ -3326,6 +3375,27 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
         onRefresh={() => loadSection(section, true)}
         tourTarget="super_overview"
       />
+      <View style={styles.headerBellRow}>
+        <TouchableOpacity
+          accessibilityRole="button"
+          accessibilityLabel={`Notifications${unreadCount ? `, ${unreadCount} unread` : ''}`}
+          activeOpacity={0.85}
+          onPress={() => navigation.navigate('Notifications')}
+          style={styles.headerBell}
+        >
+          <Icon name="notifications-outline" size={22} color={colors.navy} />
+          {unreadCount > 0 ? (
+            <View style={styles.headerBellBadge}>
+              <AppText style={styles.headerBellBadgeText}>
+                {unreadCount > 99 ? '99+' : unreadCount}
+              </AppText>
+            </View>
+          ) : null}
+        </TouchableOpacity>
+        <AppText style={styles.headerBellLabel}>
+          {unreadCount > 0 ? `${unreadCount} unread notification${unreadCount === 1 ? '' : 's'}` : 'No new notifications'}
+        </AppText>
+      </View>
       <AdminAccountActions navigation={navigation} />
       <ActionRow
         title={selectedSection?.label || 'Choose workspace'}
@@ -3605,6 +3675,63 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  summaryBadge: {
+    position: 'absolute',
+    top: -6,
+    right: -8,
+    minWidth: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: '#dc2626',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 4,
+  },
+  summaryBadgeText: {
+    color: '#ffffff',
+    fontFamily: typography.bold,
+    fontSize: 11,
+  },
+  headerBellRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginBottom: 10,
+    marginTop: -2,
+  },
+  headerBell: {
+    alignItems: 'center',
+    backgroundColor: '#ffffff',
+    borderColor: '#e2e8f0',
+    borderRadius: 22,
+    borderWidth: 1,
+    height: 44,
+    justifyContent: 'center',
+    width: 44,
+  },
+  headerBellBadge: {
+    position: 'absolute',
+    top: -4,
+    right: -4,
+    minWidth: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: '#dc2626',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 4,
+  },
+  headerBellBadgeText: {
+    color: '#ffffff',
+    fontFamily: typography.bold,
+    fontSize: 11,
+  },
+  headerBellLabel: {
+    color: '#64748b',
+    fontFamily: typography.medium,
+    fontSize: 13,
+    flex: 1,
   },
   summaryCardLabel: {
     color: '#64748b',

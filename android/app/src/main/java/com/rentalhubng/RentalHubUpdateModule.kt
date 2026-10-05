@@ -102,8 +102,8 @@ class RentalHubUpdateModule(private val reactContext: ReactApplicationContext) :
       }
 
       val request = DownloadManager.Request(Uri.parse(apkUrl))
-        .setTitle("RentalHub update")
-        .setDescription("Downloading the latest RentalHub app.")
+        .setTitle("Update")
+        .setDescription("Downloading the latest update.")
         .setMimeType(APK_MIME_TYPE)
         .setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN)
         .setAllowedOverMetered(true)
@@ -268,7 +268,7 @@ class RentalHubUpdateModule(private val reactContext: ReactApplicationContext) :
       postUpdateFailedNotification()
       promise.reject(
         "APK_DOWNLOAD_FAILED",
-        "RentalHub update download failed. Android reason code: $reason."
+        "Update download failed. Android reason code: $reason."
       )
       return
     }
@@ -311,7 +311,7 @@ class RentalHubUpdateModule(private val reactContext: ReactApplicationContext) :
       val percent = if (total > 0) ((downloaded * 100) / total).toInt().coerceIn(0, 100) else 0
       val builder = NotificationCompat.Builder(reactContext, UPDATE_CHANNEL_ID)
         .setSmallIcon(android.R.drawable.stat_sys_download)
-        .setContentTitle("Downloading RentalHub update")
+        .setContentTitle("Downloading update")
         .setContentText(if (total > 0) "$percent% complete" else "Starting download…")
         .setOngoing(true)
         .setOnlyAlertOnce(true)
@@ -359,7 +359,7 @@ class RentalHubUpdateModule(private val reactContext: ReactApplicationContext) :
       val pendingIntent = installPendingIntent(apkFile)
       val builder = NotificationCompat.Builder(reactContext, UPDATE_CHANNEL_ID)
         .setSmallIcon(android.R.drawable.stat_sys_download_done)
-        .setContentTitle("RentalHub update ready")
+        .setContentTitle("Update ready")
         .setContentText("Tap to install the latest version.")
         .setAutoCancel(true)
         .setOngoing(false)
@@ -391,7 +391,7 @@ class RentalHubUpdateModule(private val reactContext: ReactApplicationContext) :
         ?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
       val builder = NotificationCompat.Builder(reactContext, UPDATE_CHANNEL_ID)
         .setSmallIcon(android.R.drawable.stat_notify_error)
-        .setContentTitle("RentalHub update failed")
+        .setContentTitle("Update failed")
         .setContentText("The download did not finish. Open the app to try again.")
         .setAutoCancel(true)
         .setPriority(NotificationCompat.PRIORITY_DEFAULT)

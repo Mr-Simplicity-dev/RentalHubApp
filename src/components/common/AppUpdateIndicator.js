@@ -110,16 +110,16 @@ const AppUpdateIndicator = ({ variant = 'floating' }) => {
 
   const directApkAvailable = Boolean(getDirectApkUrl(versionState));
   const title = versionState.update_required
-    ? 'Important Amana RentalHub update'
-    : 'New Amana RentalHub update available';
+    ? 'Important update'
+    : 'New update available';
   const message =
     versionState.message ||
-    'A newer version of Amana RentalHub is available. Update when you are ready.';
+    'A newer version of the app is available. Update when you are ready.';
 
   if (dismissed) {
     return (
       <TouchableOpacity
-        accessibilityLabel="Amana RentalHub app update available"
+        accessibilityLabel="App update available"
         accessibilityRole="button"
         activeOpacity={0.86}
         onPress={() => setDismissed(false)}
