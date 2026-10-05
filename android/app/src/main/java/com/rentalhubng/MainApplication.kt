@@ -14,6 +14,7 @@ import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.load
 import com.facebook.react.defaults.DefaultReactNativeHost
 import com.facebook.react.soloader.OpenSourceMergedSoMapping
 import com.facebook.soloader.SoLoader
+import com.paystack.android.core.Paystack
 
 class MainApplication : Application(), ReactApplication {
 
@@ -42,6 +43,14 @@ class MainApplication : Application(), ReactApplication {
   override fun onCreate() {
     super.onCreate()
     SoLoader.init(this, OpenSourceMergedSoMapping)
+    try {
+      Paystack.builder()
+        .setPublicKey(BuildConfig.PAYSTACK_PUBLIC_KEY)
+        .setLoggingEnabled(BuildConfig.DEBUG)
+        .build()
+    } catch (error: Throwable) {
+      // Best-effort: the checkout sheet surfaces its own error if init failed.
+    }
     if (BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {
       load()
     }
