@@ -16,6 +16,7 @@ import { colors, radius, typography } from '../../theme';
 import { getErrorMessage, pickList } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
+import BrandMark from '../../components/brand/BrandMark';
 import { AuthContext } from '../../context/AuthContext';
 import { useTourTarget } from '../../components/tour/TourTarget';
 const PAYMENT_TYPE_LABELS = {
@@ -26,6 +27,23 @@ const PAYMENT_TYPE_LABELS = {
   general_platform_fee: 'Platform payment',
   wallet_funding: 'Wallet funding',
 };
+
+const CHANNEL_LABELS = {
+  card: 'Card',
+  bank_transfer: 'Bank Transfer',
+  bank: 'Bank',
+  ussd: 'USSD',
+  qr: 'QR Code',
+  mobile_money: 'Mobile Money',
+  pos: 'POS',
+  transfer: 'Transfer',
+  apple_pay: 'Apple Pay',
+  google_pay: 'Google Pay',
+};
+const humanizeChannel = (channel) =>
+  CHANNEL_LABELS[channel] ||
+  String(channel || '').replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()) ||
+  '';
 
 const formatAmount = (amount) => `₦${Number(amount || 0).toLocaleString()}`;
 
@@ -293,6 +311,9 @@ const PaymentHistoryScreen = ({ navigation }) => {
             {selectedReceipt ? (
               <>
                 <View style={styles.receiptCard}>
+                  <View style={styles.receiptBrand}>
+                    <BrandMark compact />
+                  </View>
                   <AppText style={styles.receiptNumber}>
                     #{String(selectedReceipt.id || '').padStart(6, '0')}
                   </AppText>
@@ -320,8 +341,12 @@ const PaymentHistoryScreen = ({ navigation }) => {
                     <AppText style={styles.receiptValue}>{selectedReceipt.payment_status}</AppText>
                   </View>
                   <View style={styles.receiptRow}>
-                    <AppText style={styles.receiptLabel}>Method</AppText>
-                    <AppText style={styles.receiptValue}>{selectedReceipt.payment_method || 'Paystack'}</AppText>
+                    <AppText style={styles.receiptLabel}>Payment method</AppText>
+                    <AppText style={styles.receiptValue}>
+                      {selectedReceipt.payment_channel
+                        ? `${selectedReceipt.payment_method || 'Paystack'} — ${humanizeChannel(selectedReceipt.payment_channel)}`
+                        : selectedReceipt.payment_method || 'Paystack'}
+                    </AppText>
                   </View>
                 </View>
 
@@ -582,6 +607,9 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
     borderWidth: 1,
     padding: 18,
+  },
+  receiptBrand: {
+    marginBottom: 12,
   },
   receiptNumber: {
     color: colors.muted,
