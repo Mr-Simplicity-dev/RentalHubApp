@@ -86,6 +86,7 @@ import FinancialWithdrawalsScreen from '../screens/financial-admin/FinancialWith
 import FinancialCommissionsScreen from '../screens/financial-admin/FinancialCommissionsScreen';
 import FinancialControlsScreen from '../screens/financial-admin/FinancialControlsScreen';
 import LgaFinancialAdminDashboardScreen from '../screens/financial-admin/LgaFinancialAdminDashboardScreen';
+import ZonalFinancialAdminDashboardScreen from '../screens/financial-admin/ZonalFinancialAdminDashboardScreen';
 
 // ========== State Admin ==========
 import StateAdminDashboardScreen from '../screens/state-admin/StateAdminDashboardScreen';
@@ -863,6 +864,7 @@ const FinancialAdminRoot = ({ initialRouteName = 'FinancialAdminDashboard' }) =>
     <Stack.Screen name="FinancialAdminDashboard" component={FinancialAdminDashboardScreen} options={{ title: 'Financial Admin' }} />
     <Stack.Screen name="FinanceStateAdmins" component={FinanceStateAdminScreen} options={{ title: 'State Admin Management' }} />
     <Stack.Screen name="LgaFinancialAdminDashboard" component={LgaFinancialAdminDashboardScreen} options={{ title: 'LGA Financial Admin' }} />
+    <Stack.Screen name="ZonalFinancialAdminDashboard" component={ZonalFinancialAdminDashboardScreen} options={{ title: 'Zonal Financial Admin' }} />
     <Stack.Screen name="FinancialRevenueReport" component={FinancialRevenueReportScreen} options={{ title: 'Revenue Reports' }} />
     <Stack.Screen name="FinancialTransactions" component={FinancialTransactionsScreen} options={{ title: 'Transactions' }} />
     <Stack.Screen name="FinancialWithdrawals" component={FinancialWithdrawalsScreen} options={{ title: 'Withdrawals' }} />
@@ -1038,6 +1040,8 @@ const RoleRouter = ({ userType }) => {
       return <FinancialAdminRoot initialRouteName="LgaFinancialAdminDashboard" />;
     case 'super_financial_admin':
       return <FinancialAdminRoot initialRouteName="SuperFinancialAdminDashboard" />;
+    case 'zonal_financial_admin':
+      return <FinancialAdminRoot initialRouteName="ZonalFinancialAdminDashboard" />;
     case 'state_admin':
     case 'state_financial_admin':
       return <StateAdminRoot />;

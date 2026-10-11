@@ -32,7 +32,9 @@ export const RealtimeProvider = ({ children }) => {
 
       socket.emit(eventName, payload, (response = {}) => {
         if (response.success === false) {
-          reject(new Error(response.message || 'Realtime action failed'));
+          const error = new Error(response.message || 'Realtime action failed');
+          error.code = response.code;
+          reject(error);
           return;
         }
         resolve(response);
@@ -202,6 +204,18 @@ export const RealtimeProvider = ({ children }) => {
     return response;
   }, [emitWithAck]);
 
+  const inviteSupportCall = useCallback(async () => {
+    const response = await emitWithAck('call:support', {});
+    if (response?.call) {
+      setActiveCall({
+        ...response.call,
+        callType: 'audio',
+        direction: 'outgoing',
+      });
+    }
+    return response;
+  }, [emitWithAck]);
+
   const acceptCall = useCallback(async (callId) => {
     const response = await emitWithAck('call:accept', { callId });
     setActiveCall((current) => ({ ...(current || {}), callId, status: 'accepted' }));
@@ -235,6 +249,7 @@ export const RealtimeProvider = ({ children }) => {
       emitCallSignal,
       emitTyping,
       inviteCall,
+      inviteSupportCall,
       isUserOnline: (userId) => onlineUserIds.has(String(userId)),
       rejectCall,
       subscribe,
@@ -249,6 +264,7 @@ export const RealtimeProvider = ({ children }) => {
       emitCallSignal,
       emitTyping,
       inviteCall,
+      inviteSupportCall,
       onlineUserIds,
       rejectCall,
       subscribe,

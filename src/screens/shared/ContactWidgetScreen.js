@@ -13,6 +13,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { AuthContext } from '../../context/AuthContext';
+import { useRealtime } from '../../context/RealtimeContext';
 import { supportService } from '../../services/supportService';
 import { guestSupportCredentialService } from '../../services/guestSupportCredentialService';
 import { colors, radius, typography } from '../../theme';
@@ -94,9 +95,11 @@ const STATUS_COLORS = {
 
 const ContactWidgetScreen = ({ navigation }) => {
   const { user, isAuthenticated } = useContext(AuthContext);
+  const { inviteSupportCall, connected } = useRealtime();
 
   const [view, setView] = useState('menu');
   const [form, setForm] = useState({ name: '', email: '', state: '', lga: '', subject: '', message: '', priority: 'medium' });
+  const [callingSupport, setCallingSupport] = useState(false);
   const [sending, setSending] = useState(false);
   const [tickets, setTickets] = useState([]);
   const [loadingTickets, setLoadingTickets] = useState(false);
@@ -450,6 +453,31 @@ const ContactWidgetScreen = ({ navigation }) => {
     </View>
   );
 
+  const handleCallSupport = async () => {
+    if (!connected) {
+      Toast.show({ type: 'info', text1: 'Connecting', text2: 'Realtime connection is not ready yet.' });
+      return;
+    }
+    setCallingSupport(true);
+    try {
+      await inviteSupportCall();
+    } catch (error) {
+      if (error?.code === 'NO_AGENT') {
+        setForm((p) => ({ ...p, subject: p.subject?.trim() || 'Support call request' }));
+        setView(isAuthenticated ? 'auth-form' : 'form');
+        Toast.show({
+          type: 'info',
+          text1: 'No agent available',
+          text2: 'Please leave a message and we will get back to you.',
+        });
+      } else {
+        Toast.show({ type: 'error', text1: 'Call failed', text2: error?.message || 'Could not start the support call.' });
+      }
+    } finally {
+      setCallingSupport(false);
+    }
+  };
+
   const renderMenu = () => (
     <View style={styles.menuContainer}>
       <View style={styles.heroCard}>
@@ -507,6 +535,17 @@ const ContactWidgetScreen = ({ navigation }) => {
         <View style={styles.menuRowText}>
           <AppText style={styles.menuRowTitle}>Email support</AppText>
           <AppText style={styles.menuRowSub}>support@rentalhub.com.ng</AppText>
+        </View>
+        <Icon name="chevron-forward" size={18} color={colors.muted} />
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.menuRow} onPress={handleCallSupport} disabled={callingSupport}>
+        <View style={[styles.menuIcon, { backgroundColor: '#DBEAFE' }]}>
+          <Icon name="headset-outline" size={20} color="#2563EB" />
+        </View>
+        <View style={styles.menuRowText}>
+          <AppText style={styles.menuRowTitle}>{callingSupport ? 'Connecting…' : 'Call support'}</AppText>
+          <AppText style={styles.menuRowSub}>Talk to a support agent in-app</AppText>
         </View>
         <Icon name="chevron-forward" size={18} color={colors.muted} />
       </TouchableOpacity>

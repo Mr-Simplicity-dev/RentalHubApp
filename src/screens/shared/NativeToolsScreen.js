@@ -317,6 +317,7 @@ const NativeToolsScreen = ({ navigation }) => {
     financial_admin: { name: 'FinancialAdminDashboard' },
     lga_financial_admin: { name: 'LgaFinancialAdminDashboard' },
     super_financial_admin: { name: 'SuperFinancialAdminDashboard' },
+    zonal_financial_admin: { name: 'ZonalFinancialAdminDashboard' },
     recruitment_admin: { name: 'RecruitmentAdmin' },
     state_admin: { name: 'StateAdminDashboard' },
     state_financial_admin: { name: 'StateAdminDashboard' },

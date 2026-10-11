@@ -113,7 +113,7 @@ const maskAccountNumber = (value) => {
   return `••••••${digits.slice(-4)}`;
 };
 
-const WithdrawalRequestModal = ({
+export const WithdrawalRequestModal = ({
   visible,
   withdrawable,
   onClose,

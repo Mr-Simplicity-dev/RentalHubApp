@@ -129,6 +129,11 @@ export const financialAdminService = {
     return response.data;
   },
 
+  getZonalOverview: async () => {
+    const response = await api.get('/zonal-financial-admin/overview');
+    return response.data;
+  },
+
   getPersonalWithdrawalHistory: async () => {
     const response = await api.get('/financial-admin/withdrawals/history');
     return response.data;

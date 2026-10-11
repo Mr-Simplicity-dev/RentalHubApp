@@ -24,6 +24,7 @@ try {
 }
 
 const callTitle = (call = {}) => {
+  if (call.isSupport) return 'Support call';
   if (call.callType === 'virtual_tour') return 'Virtual property tour';
   if (call.callType === 'video') return 'Video call';
   return 'Audio call';
