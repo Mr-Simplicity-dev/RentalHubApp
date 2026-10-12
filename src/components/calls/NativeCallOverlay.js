@@ -1,13 +1,16 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {ActivityIndicator,
   Modal,
   StyleSheet,
+  TextInput,
   TouchableOpacity,
   View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
 import { getWebRtcIceServers, isVideoEnabledCall } from '../../config/webrtcConfig';
 import { useRealtime } from '../../context/RealtimeContext';
+import { AuthContext } from '../../context/AuthContext';
+import { voiceMonitorService } from '../../services/voiceMonitorService';
 import { colors, radius, shadows, typography } from '../../theme';
 
 import AppText from '../../components/common/AppText';
@@ -35,6 +38,43 @@ const otherPartyName = (call = {}) =>
     ? call.caller?.full_name || call.caller?.name || 'RentalHub user'
     : call.receiver?.full_name || call.receiver?.name || 'RentalHub user';
 
+const normalizeParticipants = (call = {}) => {
+  const rawParticipants = Array.isArray(call?.participants)
+    ? call.participants
+    : Array.isArray(call?.supportParticipants)
+      ? call.supportParticipants
+      : [];
+
+  if (rawParticipants.length) {
+    return rawParticipants.slice(0, 5).map((participant, index) => ({
+      id: participant?.id || participant?.userId || participant?.callId || `${participant?.name || 'participant'}-${index}`,
+      name: participant?.name || participant?.full_name || participant?.displayName || participant?.role || `Agent ${index + 1}`,
+      role: participant?.role || participant?.status || (index === 0 ? 'Speaker' : 'Listener'),
+      status: participant?.status || (index === 0 ? 'Connected' : 'Listening'),
+    }));
+  }
+
+  const primaryName = otherPartyName(call);
+  return [{
+    id: call?.callId || 'primary-call',
+    name: primaryName,
+    role: call?.direction === 'incoming' ? 'Caller' : 'Guest',
+    status: 'Connected',
+  }];
+};
+
+const getParticipantInitials = (participant = {}) => {
+  const label = String(participant.name || 'A').trim();
+  if (!label) return 'A';
+  return label
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join('')
+    .toUpperCase() || 'A';
+};
+
 const getStreamUrl = (stream) => {
   if (!stream) return null;
   if (typeof stream.toURL === 'function') return stream.toURL();
@@ -45,12 +85,16 @@ const NativeCallOverlay = () => {
   const {
     acceptCall,
     activeCall,
+    addCallParticipant,
     clearCall,
     emitCallSignal,
     endCall,
     rejectCall,
+    removeCallParticipant,
     subscribe,
+    transferCallHost,
   } = useRealtime();
+  const { user } = React.useContext(AuthContext);
   const peerRef = useRef(null);
   const localStreamRef = useRef(null);
   const remoteStreamRef = useRef(null);
@@ -61,6 +105,10 @@ const NativeCallOverlay = () => {
   const [mediaStatus, setMediaStatus] = useState('idle');
   const [microphoneEnabled, setMicrophoneEnabled] = useState(true);
   const [cameraEnabled, setCameraEnabled] = useState(true);
+  const [showAddParticipant, setShowAddParticipant] = useState(false);
+  const [participantUserId, setParticipantUserId] = useState('');
+  const [recentRoomHistory, setRecentRoomHistory] = useState([]);
+  const displayParticipants = useMemo(() => normalizeParticipants(activeCall), [activeCall]);
 
   useEffect(() => {
     activeCallRef.current = activeCall;
@@ -179,6 +227,23 @@ const NativeCallOverlay = () => {
   }, [activeCall, beginMediaCall]);
 
   useEffect(() => {
+    let isMounted = true;
+    const loadRecentHistory = async () => {
+      if (!user?.id) return;
+      try {
+        const response = await voiceMonitorService.myCallRoomHistory();
+        if (!isMounted) return;
+        setRecentRoomHistory(Array.isArray(response?.data) ? response.data : []);
+      } catch {
+        if (isMounted) setRecentRoomHistory([]);
+      }
+    };
+
+    void loadRecentHistory();
+    return () => { isMounted = false; };
+  }, [user?.id]);
+
+  useEffect(() => {
     const unsubscribeOffer = subscribe('call:signal:offer', async ({ callId, description } = {}) => {
       const call = activeCallRef.current;
       if (!call || String(call.callId) !== String(callId)) return;
@@ -242,6 +307,10 @@ const NativeCallOverlay = () => {
   const videoCall = isVideoEnabledCall(activeCall.callType);
   const localUrl = getStreamUrl(localStream);
   const remoteUrl = getStreamUrl(remoteStream);
+  const participantColors = ['#2563eb', '#8b5cf6', '#10b981', '#f59e0b', '#ef4444'];
+  const participantSummary = displayParticipants.length > 1
+    ? `${displayParticipants.length}-way support room`
+    : callTitle(activeCall);
 
   const safeAction = async (action, fallback) => {
     try {
@@ -272,6 +341,62 @@ const NativeCallOverlay = () => {
     return endCall(activeCall.callId);
   };
 
+  const handleAddParticipant = async () => {
+    const parsedId = Number(String(participantUserId).trim());
+    if (!activeCall?.callId || !parsedId || !addCallParticipant) return;
+
+    const response = await addCallParticipant({
+      callId: activeCall.callId,
+      userId: parsedId,
+      role: 'participant',
+    });
+
+    if (response?.success) {
+      setParticipantUserId('');
+      setShowAddParticipant(false);
+    } else {
+      Toast.show({
+        type: 'error',
+        text1: 'Could not add participant',
+        text2: response?.message || 'Please try another user.',
+      });
+    }
+  };
+
+  const handleRemoveParticipant = async (targetUserId) => {
+    if (!activeCall?.callId || !targetUserId || !removeCallParticipant) return;
+
+    const response = await removeCallParticipant({
+      callId: activeCall.callId,
+      userId: Number(targetUserId),
+    });
+
+    if (!response?.success) {
+      Toast.show({
+        type: 'error',
+        text1: 'Could not remove participant',
+        text2: response?.message || 'Please try again.',
+      });
+    }
+  };
+
+  const handleTransferHost = async (targetUserId) => {
+    if (!activeCall?.callId || !targetUserId || !transferCallHost) return;
+
+    const response = await transferCallHost({
+      callId: activeCall.callId,
+      userId: Number(targetUserId),
+    });
+
+    if (!response?.success) {
+      Toast.show({
+        type: 'error',
+        text1: 'Could not transfer host',
+        text2: response?.message || 'Please try again.',
+      });
+    }
+  };
+
   return (
     <Modal transparent animationType="fade" visible>
       <View style={[styles.backdrop, isAccepted && styles.liveBackdrop]}>
@@ -299,6 +424,49 @@ const NativeCallOverlay = () => {
                   </AppText>
                 </View>
               )}
+              {displayParticipants.length > 1 ? (
+                <View style={styles.participantGrid}>
+                  {displayParticipants.slice(0, 5).map((participant, index) => (
+                    <View
+                      key={participant.id || `${participant.name}-${index}`}
+                      style={[
+                        styles.participantTile,
+                        index === 0 && styles.primaryParticipantTile,
+                        { borderColor: participantColors[index % participantColors.length] },
+                      ]}
+                    >
+                      {Number(activeCall?.hostUserId || activeCall?.caller?.id) === Number(user?.id) && Number(participant.id) !== Number(activeCall?.hostUserId || activeCall?.caller?.id) ? (
+                        <TouchableOpacity
+                          accessibilityRole="button"
+                          onPress={() => handleTransferHost(participant.id)}
+                          style={styles.transferHostButton}
+                        >
+                          <Icon name="arrow-redo-outline" size={14} color={colors.white} />
+                        </TouchableOpacity>
+                      ) : null}
+                      {Number(participant.id) !== Number(activeCall?.caller?.id) && Number(participant.id) !== Number(activeCall?.receiver?.id) ? (
+                        <TouchableOpacity
+                          accessibilityRole="button"
+                          onPress={() => handleRemoveParticipant(participant.id)}
+                          style={styles.removeParticipantButton}
+                        >
+                          <Icon name="close-circle" size={16} color={colors.white} />
+                        </TouchableOpacity>
+                      ) : null}
+                      <View
+                        style={[
+                          styles.participantAvatar,
+                          { backgroundColor: participantColors[index % participantColors.length] },
+                        ]}
+                      >
+                        <AppText style={styles.participantAvatarText}>{getParticipantInitials(participant)}</AppText>
+                      </View>
+                      <AppText style={styles.participantName} numberOfLines={1}>{participant.name}</AppText>
+                      <AppText style={styles.participantRole}>{participant.role}</AppText>
+                    </View>
+                  ))}
+                </View>
+              ) : null}
               {localUrl && videoCall ? (
                 <RTCView
                   mirror
@@ -321,16 +489,64 @@ const NativeCallOverlay = () => {
           <AppText style={[styles.eyebrow, isAccepted && styles.liveEyebrow]}>
             {isAccepted ? String(mediaStatus).replace(/_/g, ' ') : activeCall.status || 'RINGING'}
           </AppText>
-          <AppText style={[styles.title, isAccepted && styles.liveTitle]}>{callTitle(activeCall)}</AppText>
+          <AppText style={[styles.title, isAccepted && styles.liveTitle]}>{participantSummary}</AppText>
           <AppText style={[styles.subtitle, isAccepted && styles.liveSubtitle]}>
             {isIncoming
               ? `${otherPartyName(activeCall)} is requesting this session.`
-              : `With ${otherPartyName(activeCall)}`}
+              : displayParticipants.length > 1
+                ? `${displayParticipants.length} active participants in this call room.`
+                : `With ${otherPartyName(activeCall)}`}
           </AppText>
           {activeCall.propertyTitle ? (
             <AppText style={[styles.propertyText, isAccepted && styles.livePropertyText]}>
               {activeCall.propertyTitle}
             </AppText>
+          ) : null}
+
+          {recentRoomHistory.length > 0 ? (
+            <View style={styles.historyCard}>
+              <AppText style={styles.historyTitle}>Recent room activity</AppText>
+              {recentRoomHistory.slice(0, 3).map((event) => (
+                <View key={event.id || `${event.callId}-${event.createdAt}`} style={styles.historyRow}>
+                  <AppText style={styles.historyAction}>{String(event.action || '').replace(/_/g, ' ')}</AppText>
+                  <AppText style={styles.historyMeta}>
+                    {event.actorName || 'Someone'} → {event.targetName || 'Room'}
+                  </AppText>
+                </View>
+              ))}
+            </View>
+          ) : null}
+
+          {isAccepted ? (
+            <View style={styles.addParticipantBlock}>
+              <TouchableOpacity
+                accessibilityRole="button"
+                style={styles.addParticipantButton}
+                onPress={() => setShowAddParticipant((current) => !current)}
+              >
+                <Icon name="person-add-outline" size={18} color={colors.white} />
+                <AppText style={styles.addParticipantButtonText}>Add participant</AppText>
+              </TouchableOpacity>
+              {showAddParticipant ? (
+                <View style={styles.addParticipantRow}>
+                  <TextInput
+                    value={participantUserId}
+                    onChangeText={setParticipantUserId}
+                    keyboardType="numeric"
+                    placeholder="User ID"
+                    style={styles.addParticipantInput}
+                    placeholderTextColor="#94a3b8"
+                  />
+                  <TouchableOpacity
+                    accessibilityRole="button"
+                    style={styles.addParticipantSubmit}
+                    onPress={handleAddParticipant}
+                  >
+                    <AppText style={styles.addParticipantSubmitText}>Add</AppText>
+                  </TouchableOpacity>
+                </View>
+              ) : null}
+            </View>
           ) : null}
 
           <View style={styles.actions}>
@@ -463,6 +679,75 @@ const styles = StyleSheet.create({
     top: 54,
     width: 112,
   },
+  participantGrid: {
+    position: 'absolute',
+    bottom: 18,
+    left: 18,
+    right: 18,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 8,
+  },
+  participantTile: {
+    backgroundColor: 'rgba(15, 23, 42, 0.75)',
+    borderRadius: 14,
+    borderWidth: 1,
+    flex: 1,
+    paddingHorizontal: 8,
+    paddingVertical: 10,
+    alignItems: 'center',
+    position: 'relative',
+  },
+  primaryParticipantTile: {
+    borderWidth: 2,
+  },
+  removeParticipantButton: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(239, 68, 68, 0.9)',
+    borderRadius: 12,
+    height: 22,
+    justifyContent: 'center',
+    position: 'absolute',
+    right: 6,
+    top: 6,
+    width: 22,
+  },
+  transferHostButton: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(59, 130, 246, 0.9)',
+    borderRadius: 12,
+    height: 22,
+    justifyContent: 'center',
+    position: 'absolute',
+    left: 6,
+    top: 6,
+    width: 22,
+  },
+  participantAvatar: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 6,
+  },
+  participantAvatarText: {
+    color: colors.white,
+    fontFamily: typography.bold,
+    fontSize: 11,
+  },
+  participantName: {
+    color: colors.white,
+    fontFamily: typography.semibold,
+    fontSize: 10,
+    maxWidth: '100%',
+  },
+  participantRole: {
+    color: 'rgba(255, 255, 255, 0.72)',
+    fontFamily: typography.regular,
+    fontSize: 9,
+    marginTop: 2,
+  },
   iconWrap: {
     alignItems: 'center',
     backgroundColor: colors.surfaceBlue,
@@ -516,6 +801,88 @@ const styles = StyleSheet.create({
   },
   livePropertyText: {
     color: '#94A3B8',
+  },
+  addParticipantBlock: {
+    marginTop: 12,
+    width: '100%',
+  },
+  addParticipantButton: {
+    alignItems: 'center',
+    backgroundColor: '#4F46E5',
+    borderRadius: 12,
+    flexDirection: 'row',
+    gap: 8,
+    justifyContent: 'center',
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+  },
+  addParticipantButtonText: {
+    color: colors.white,
+    fontFamily: typography.bold,
+    fontSize: 13,
+  },
+  addParticipantRow: {
+    flexDirection: 'row',
+    gap: 8,
+    marginTop: 10,
+  },
+  addParticipantInput: {
+    backgroundColor: '#E2E8F0',
+    borderRadius: 10,
+    color: '#0F172A',
+    flex: 1,
+    fontFamily: typography.regular,
+    fontSize: 14,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+  },
+  addParticipantSubmit: {
+    alignItems: 'center',
+    backgroundColor: '#0F172A',
+    borderRadius: 10,
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+  },
+  addParticipantSubmitText: {
+    color: colors.white,
+    fontFamily: typography.bold,
+    fontSize: 13,
+  },
+  historyCard: {
+    backgroundColor: 'rgba(15, 23, 42, 0.7)',
+    borderColor: 'rgba(148, 163, 184, 0.3)',
+    borderRadius: 12,
+    borderWidth: 1,
+    marginTop: 14,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    width: '100%',
+  },
+  historyTitle: {
+    color: colors.white,
+    fontFamily: typography.bold,
+    fontSize: 12,
+    marginBottom: 8,
+    textTransform: 'uppercase',
+  },
+  historyRow: {
+    borderTopColor: 'rgba(148, 163, 184, 0.24)',
+    borderTopWidth: 1,
+    paddingTop: 8,
+    marginTop: 8,
+  },
+  historyAction: {
+    color: '#E2E8F0',
+    fontFamily: typography.semibold,
+    fontSize: 12,
+    textTransform: 'capitalize',
+  },
+  historyMeta: {
+    color: '#CBD5E1',
+    fontFamily: typography.regular,
+    fontSize: 11,
+    marginTop: 2,
   },
   actions: {
     alignItems: 'center',

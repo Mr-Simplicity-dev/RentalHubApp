@@ -1,5 +1,5 @@
-import React, { useCallback, useState } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { useFocusEffect } from '@react-navigation/native';
 import {
@@ -34,35 +34,175 @@ const STATUS_COLORS = {
   cancelled: colors.muted,
 };
 
+const DUTY_STATUS_COLORS = {
+  offline: colors.muted,
+  on_duty: colors.success,
+  on_call: colors.blue,
+};
+
+const DUTY_LABELS = {
+  offline: 'Offline',
+  on_duty: 'On duty',
+  on_call: 'On a call',
+};
+
 const VoiceMonitorScreen = () => {
   const [tab, setTab] = useState('summary');
   const [summary, setSummary] = useState(null);
+  const [deskScope, setDeskScope] = useState(null);
   const [log, setLog] = useState([]);
   const [callbacks, setCallbacks] = useState([]);
+  const [dutyStatus, setDutyStatus] = useState([]);
+  const [callSidInput, setCallSidInput] = useState('');
+  const [callContext, setCallContext] = useState(null);
+  const [department, setDepartment] = useState('finance');
+  const [note, setNote] = useState('');
+  const [actionBusy, setActionBusy] = useState(false);
+  const [liveStatus, setLiveStatus] = useState('idle');
   const [loading, setLoading] = useState(true);
+
+  const autoPopulateCallSid = useCallback((sourceLog) => {
+    const activeCall = Array.isArray(sourceLog)
+      ? sourceLog.find((item) => ['in-progress', 'queued', 'ringing'].includes(String(item?.status || '').toLowerCase()))
+      : null;
+    const detectedSid = String(activeCall?.call_sid || '').trim();
+    if (detectedSid && !callSidInput) {
+      setCallSidInput(detectedSid);
+      return detectedSid;
+    }
+    return detectedSid || callSidInput;
+  }, [callSidInput]);
+
+  const resolveCallContext = useCallback(async (requestedCallSid) => {
+    const sid = String(requestedCallSid || '').trim();
+    if (!sid) {
+      Toast.show({
+        type: 'info',
+        text1: 'Missing call SID',
+        text2: 'Paste the active agent call SID before loading the call context.',
+      });
+      return;
+    }
+
+    try {
+      const response = await voiceMonitorService.callContext(sid);
+      if (!response?.success) {
+        throw new Error(response?.message || 'Could not resolve the current call.');
+      }
+      setCallSidInput(sid);
+      setCallContext(response.data || null);
+      setLiveStatus('live');
+      Toast.show({
+        type: 'success',
+        text1: 'Call context loaded',
+        text2: 'The active caller is now ready for escalation actions.',
+      });
+    } catch (error) {
+      setLiveStatus('stale');
+      setCallContext(null);
+      Toast.show({
+        type: 'error',
+        text1: 'Call context unavailable',
+        text2: getErrorMessage(error, 'The active call could not be resolved.'),
+      });
+    }
+  }, []);
+
+  const runEscalationAction = useCallback(async (action) => {
+    const sid = String(callSidInput || '').trim();
+    if (!sid) {
+      Toast.show({
+        type: 'info',
+        text1: 'No call SID available',
+        text2: 'Enter the active agent call SID to continue.',
+      });
+      return;
+    }
+
+    const normalizedDepartment = String(department || '').trim();
+    if (['consult', 'transfer'].includes(action) && !normalizedDepartment) {
+      Toast.show({
+        type: 'info',
+        text1: 'No department selected',
+        text2: 'Choose a valid escalation department before acting on the call.',
+      });
+      return;
+    }
+
+    setActionBusy(true);
+    try {
+      const response = await voiceMonitorService.escalate({
+        callSid: sid,
+        action,
+        department: normalizedDepartment,
+        note: String(note || '').trim() || undefined,
+      });
+
+      if (!response?.success) {
+        throw new Error(response?.message || 'The escalation action failed.');
+      }
+
+      Toast.show({
+        type: 'success',
+        text1: 'Action sent',
+        text2: `The ${action} action was accepted by the voice desk.`,
+      });
+      if (action === 'cancel-consult' || action === 'transfer') {
+        setCallContext(null);
+      }
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Escalation failed',
+        text2: getErrorMessage(error, 'The remote voice desk rejected the action.'),
+      });
+    } finally {
+      setActionBusy(false);
+    }
+  }, [callContext, callSidInput, department, note]);
 
   const load = useCallback(async () => {
     setLoading(true);
     try {
       // allSettled, not silent catches: a failed call must surface a message
       // instead of quietly pretending the numbers are zero.
-      const [summaryResult, logResult, callbacksResult] = await Promise.allSettled([
+      const [summaryResult, deskScopeResult, logResult, callbacksResult, dutyStatusResult] = await Promise.allSettled([
         voiceMonitorService.summary(),
+        voiceMonitorService.deskScope(),
         voiceMonitorService.callLog(),
         voiceMonitorService.callbacks(),
+        voiceMonitorService.dutyStatus(),
       ]);
 
       if (summaryResult.status === 'fulfilled') {
         setSummary(summaryResult.value?.data || null);
       }
+      if (deskScopeResult.status === 'fulfilled') {
+        setDeskScope(deskScopeResult.value?.data || null);
+      }
       if (logResult.status === 'fulfilled') {
-        setLog(pickList(logResult.value, ['data']));
+        const nextLog = pickList(logResult.value, ['data']);
+        setLog(nextLog);
+        const detectedSid = autoPopulateCallSid(nextLog);
+        if (detectedSid && !callContext) {
+          try {
+            const contextResponse = await voiceMonitorService.callContext(detectedSid);
+            if (contextResponse?.success) {
+              setCallContext(contextResponse.data || null);
+            }
+          } catch {
+            // best effort; manual retry still works when the SID is stale
+          }
+        }
       }
       if (callbacksResult.status === 'fulfilled') {
         setCallbacks(pickList(callbacksResult.value, ['data']));
       }
+      if (dutyStatusResult.status === 'fulfilled') {
+        setDutyStatus(Array.isArray(dutyStatusResult.value?.data) ? dutyStatusResult.value.data : []);
+      }
 
-      const failure = [summaryResult, logResult, callbacksResult].find(
+      const failure = [summaryResult, deskScopeResult, logResult, callbacksResult, dutyStatusResult].find(
         (result) => result.status === 'rejected'
       );
       if (failure) {
@@ -75,7 +215,36 @@ const VoiceMonitorScreen = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [autoPopulateCallSid, callContext]);
+
+  useEffect(() => {
+    if (!callSidInput) {
+      setLiveStatus('idle');
+      return undefined;
+    }
+
+    let cancelled = false;
+    const poll = async () => {
+      const sid = String(callSidInput || '').trim();
+      if (!sid) return;
+      try {
+        const contextResponse = await voiceMonitorService.callContext(sid);
+        if (!cancelled && contextResponse?.success) {
+          setCallContext(contextResponse.data || null);
+          setLiveStatus('live');
+        }
+      } catch {
+        if (!cancelled) setLiveStatus('stale');
+      }
+    };
+
+    poll();
+    const timer = setInterval(poll, 15000);
+    return () => {
+      cancelled = true;
+      clearInterval(timer);
+    };
+  }, [callSidInput]);
 
   useFocusEffect(
     useCallback(() => {
@@ -97,8 +266,8 @@ const VoiceMonitorScreen = () => {
     <>
       <PremiumHero
         eyebrow="Voice console"
-        title="Live voice monitor"
-        subtitle="Read-only call log, callback requests and day counters for the support line."
+        title="Live voice desk"
+        subtitle="Support queue scope, callback requests and live call counters for the active support line."
         icon="call-outline"
       />
       <View style={styles.tabRow}>
@@ -136,8 +305,146 @@ const VoiceMonitorScreen = () => {
         </View>
         <PremiumCard>
           <AppText style={styles.note}>
-            Super admin / support roles can view these counters and records read-only from the app.
+            Support roles can review the live queue assignment and the current call data from this desk.
           </AppText>
+          {deskScope ? (
+            <View style={styles.scopeList}>
+              <InfoRow icon="people-outline" label="Queue" value={deskScope.queue || '—'} />
+              <InfoRow icon="toggle-outline" label="Geo routing" value={deskScope.geo_enabled ? 'Enabled' : 'Single queue'} />
+              <InfoRow icon="location-outline" label="State" value={deskScope.scope?.state || '—'} />
+              <InfoRow icon="map-outline" label="LGA" value={deskScope.scope?.lga || '—'} />
+              <InfoRow icon="time-outline" label="Waiting room" value={deskScope.waiting_room || '—'} />
+            </View>
+          ) : null}
+        </PremiumCard>
+
+        <PremiumCard>
+          <View style={styles.sectionHeaderRow}>
+            <AppText style={styles.sectionTitle}>Agents on duty</AppText>
+          </View>
+          {dutyStatus.length === 0 ? (
+            <AppText style={styles.emptyHint}>No agent lines are currently reporting their duty status.</AppText>
+          ) : (
+            <View style={styles.chipRow}>
+              {dutyStatus.map((agent) => (
+                <View key={agent.identity} style={styles.dutyChip}>
+                  <AppText style={styles.dutyIdentity}>{agent.identity}</AppText>
+                  <StatusPill
+                    label={DUTY_LABELS[agent.state] || agent.state}
+                    color={DUTY_STATUS_COLORS[agent.state] || colors.muted}
+                  />
+                </View>
+              ))}
+            </View>
+          )}
+        </PremiumCard>
+
+        <PremiumCard>
+          <View style={styles.sectionHeaderRow}>
+            <AppText style={styles.sectionTitle}>Live escalation controls</AppText>
+            <View style={[styles.liveBadge, liveStatus === 'live' ? styles.liveBadgeActive : styles.liveBadgeIdle]}>
+              <AppText style={styles.liveBadgeText}>{liveStatus === 'live' ? 'Live' : liveStatus === 'stale' ? 'Stale' : 'Idle'}</AppText>
+            </View>
+          </View>
+          <TextInput
+            value={callSidInput}
+            onChangeText={setCallSidInput}
+            placeholder="Auto-detected active agent call SID"
+            autoCapitalize="none"
+            autoCorrect={false}
+            style={styles.input}
+          />
+          <View style={styles.inlineActionRow}>
+            <TouchableOpacity
+              activeOpacity={0.85}
+              onPress={() => resolveCallContext(callSidInput || autoPopulateCallSid(log))}
+              style={[styles.primaryButton, styles.inlineButton]}
+            >
+              <AppText style={styles.primaryButtonText}>Load call</AppText>
+            </TouchableOpacity>
+          </View>
+
+          {callContext ? (
+            <>
+              <View style={styles.scopeList}>
+                <InfoRow icon="person-outline" label="Caller" value={callContext.callerNumber || '—'} />
+                <InfoRow icon="alert-circle-outline" label="Source" value={callContext.source || '—'} />
+                <InfoRow icon="grid-outline" label="Room" value={callContext.roomName || '—'} />
+              </View>
+
+              <AppText style={styles.sectionMeta}>Current department</AppText>
+              <TextInput
+                value={department}
+                onChangeText={setDepartment}
+                placeholder="finance"
+                autoCapitalize="none"
+                autoCorrect={false}
+                style={styles.input}
+              />
+
+              <AppText style={styles.sectionMeta}>Escalation note</AppText>
+              <TextInput
+                value={note}
+                onChangeText={setNote}
+                placeholder="Optional note for the escalation"
+                autoCapitalize="sentences"
+                autoCorrect={false}
+                multiline
+                style={[styles.input, styles.noteInput]}
+              />
+
+              <View style={styles.actionGrid}>
+                <TouchableOpacity
+                  disabled={actionBusy}
+                  activeOpacity={0.85}
+                  onPress={() => runEscalationAction('consult')}
+                  style={[styles.primaryButton, styles.actionButton]}
+                >
+                  <AppText style={styles.primaryButtonText}>Consult</AppText>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  disabled={actionBusy}
+                  activeOpacity={0.85}
+                  onPress={() => runEscalationAction('transfer')}
+                  style={[styles.secondaryButton, styles.actionButton]}
+                >
+                  <AppText style={styles.secondaryButtonText}>Transfer</AppText>
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.actionGrid}>
+                <TouchableOpacity
+                  disabled={actionBusy}
+                  activeOpacity={0.85}
+                  onPress={() => runEscalationAction('cancel-consult')}
+                  style={[styles.secondaryButton, styles.actionButton]}
+                >
+                  <AppText style={styles.secondaryButtonText}>Cancel consult</AppText>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  disabled={actionBusy}
+                  activeOpacity={0.85}
+                  onPress={() => runEscalationAction('consult-up')}
+                  style={[styles.primaryButton, styles.actionButton]}
+                >
+                  <AppText style={styles.primaryButtonText}>Hand-up consult</AppText>
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.actionGrid}>
+                <TouchableOpacity
+                  disabled={actionBusy}
+                  activeOpacity={0.85}
+                  onPress={() => runEscalationAction('transfer-up')}
+                  style={[styles.secondaryButton, styles.actionButton]}
+                >
+                  <AppText style={styles.secondaryButtonText}>Transfer up</AppText>
+                </TouchableOpacity>
+              </View>
+            </>
+          ) : (
+            <AppText style={styles.emptyHint}>No active call is currently detected. Open the call log or paste the current agent call SID to attach a live call.</AppText>
+          )}
         </PremiumCard>
       </View>
     );
@@ -237,6 +544,120 @@ const styles = StyleSheet.create({
   tabTextActive: {
     color: colors.white,
   },
+  sectionHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+  },
+  chipRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  dutyChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: radius.pill,
+    backgroundColor: colors.white,
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+  },
+  dutyIdentity: {
+    color: colors.text,
+    fontFamily: typography.semibold,
+    fontSize: 11,
+  },
+  sectionTitle: {
+    fontFamily: typography.semibold,
+    fontSize: 16,
+    color: colors.text,
+  },
+  liveBadge: {
+    borderRadius: 999,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+  },
+  liveBadgeActive: {
+    backgroundColor: colors.success,
+  },
+  liveBadgeIdle: {
+    backgroundColor: colors.muted,
+  },
+  liveBadgeText: {
+    color: colors.white,
+    fontFamily: typography.semibold,
+    fontSize: 11,
+    textTransform: 'uppercase',
+  },
+  sectionMeta: {
+    fontFamily: typography.medium,
+    fontSize: 12,
+    color: colors.muted,
+    marginTop: 12,
+    marginBottom: 8,
+    textTransform: 'uppercase',
+    letterSpacing: 0.4,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    backgroundColor: colors.white,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    fontSize: 14,
+    color: colors.text,
+    marginBottom: 10,
+  },
+  noteInput: {
+    minHeight: 72,
+    textAlignVertical: 'top',
+  },
+  inlineActionRow: {
+    flexDirection: 'row',
+    marginBottom: 8,
+  },
+  inlineButton: {
+    width: '100%',
+  },
+  primaryButton: {
+    backgroundColor: colors.blue,
+    borderRadius: radius.md,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  primaryButtonText: {
+    color: colors.white,
+    fontFamily: typography.semibold,
+    fontSize: 13,
+  },
+  secondaryButton: {
+    backgroundColor: colors.muted,
+    borderRadius: radius.md,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  secondaryButtonText: {
+    color: colors.white,
+    fontFamily: typography.semibold,
+    fontSize: 13,
+  },
+  actionGrid: {
+    flexDirection: 'row',
+    gap: 10,
+    marginTop: 12,
+  },
+  actionButton: {
+    flex: 1,
+  },
   metricRow: {
     flexDirection: 'row',
     gap: 10,
@@ -294,6 +715,17 @@ const styles = StyleSheet.create({
     fontFamily: typography.regular,
     fontSize: 13,
     lineHeight: 19,
+    marginBottom: 12,
+  },
+  emptyHint: {
+    color: colors.muted,
+    fontFamily: typography.regular,
+    fontSize: 12,
+    lineHeight: 18,
+    marginTop: 8,
+  },
+  scopeList: {
+    marginTop: 6,
   },
 });
 

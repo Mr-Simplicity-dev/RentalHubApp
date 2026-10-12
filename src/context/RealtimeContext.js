@@ -130,6 +130,19 @@ export const RealtimeProvider = ({ children }) => {
           if (!disposed) setActiveCall(null);
         }, 1200);
       });
+      socket.on('call:room:updated', (room = {}) => {
+        if (!disposed) {
+          setActiveCall((current) => ({
+            ...(current || {}),
+            callId: room.callId || current?.callId,
+            status: room.status || current?.status || 'accepted',
+            participants: room.participants || current?.participants || [],
+            callType: room.callType || current?.callType,
+            propertyId: room.propertyId ?? current?.propertyId,
+            propertyTitle: room.propertyTitle ?? current?.propertyTitle,
+          }));
+        }
+      });
     };
 
     void connect();
@@ -234,6 +247,67 @@ export const RealtimeProvider = ({ children }) => {
     return response;
   }, [emitWithAck]);
 
+  const joinCallRoom = useCallback(async ({ callId, role = 'participant' } = {}) => {
+    const response = await emitWithAck('call:room:join', { callId, role });
+    if (response?.participants) {
+      setActiveCall((current) => ({
+        ...(current || {}),
+        callId,
+        participants: response.participants,
+      }));
+    }
+    return response;
+  }, [emitWithAck]);
+
+  const addCallParticipant = useCallback(async ({ callId, userId, role = 'participant' } = {}) => {
+    const response = await emitWithAck('call:room:add-participant', { callId, userId, role });
+    if (response?.participants) {
+      setActiveCall((current) => ({
+        ...(current || {}),
+        callId,
+        participants: response.participants,
+      }));
+    }
+    return response;
+  }, [emitWithAck]);
+
+  const removeCallParticipant = useCallback(async ({ callId, userId } = {}) => {
+    const response = await emitWithAck('call:room:remove-participant', { callId, userId });
+    if (response?.participants) {
+      setActiveCall((current) => ({
+        ...(current || {}),
+        callId,
+        participants: response.participants,
+      }));
+    }
+    return response;
+  }, [emitWithAck]);
+
+  const transferCallHost = useCallback(async ({ callId, userId } = {}) => {
+    const response = await emitWithAck('call:room:transfer-host', { callId, userId });
+    if (response?.participants) {
+      setActiveCall((current) => ({
+        ...(current || {}),
+        callId,
+        participants: response.participants,
+        hostUserId: userId,
+      }));
+    }
+    return response;
+  }, [emitWithAck]);
+
+  const leaveCallRoom = useCallback(async ({ callId } = {}) => {
+    const response = await emitWithAck('call:room:leave', { callId });
+    if (response?.participants) {
+      setActiveCall((current) => ({
+        ...(current || {}),
+        callId,
+        participants: response.participants,
+      }));
+    }
+    return response;
+  }, [emitWithAck]);
+
   const clearCall = useCallback(() => {
     setActiveCall(null);
   }, []);
@@ -243,6 +317,7 @@ export const RealtimeProvider = ({ children }) => {
       checkPresence,
       acceptCall,
       activeCall,
+      addCallParticipant,
       clearCall,
       connected,
       endCall,
@@ -251,12 +326,17 @@ export const RealtimeProvider = ({ children }) => {
       inviteCall,
       inviteSupportCall,
       isUserOnline: (userId) => onlineUserIds.has(String(userId)),
+      joinCallRoom,
+      leaveCallRoom,
       rejectCall,
+      removeCallParticipant,
       subscribe,
+      transferCallHost,
     }),
     [
       acceptCall,
       activeCall,
+      addCallParticipant,
       checkPresence,
       clearCall,
       connected,
@@ -265,9 +345,13 @@ export const RealtimeProvider = ({ children }) => {
       emitTyping,
       inviteCall,
       inviteSupportCall,
+      joinCallRoom,
+      leaveCallRoom,
       onlineUserIds,
       rejectCall,
+      removeCallParticipant,
       subscribe,
+      transferCallHost,
     ]
   );
 
