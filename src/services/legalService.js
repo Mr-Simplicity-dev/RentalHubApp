@@ -49,6 +49,16 @@ export const legalService = {
     return response.data;
   },
 
+  getTreatedCases: async () => {
+    const response = await api.get('/legal/treated-cases');
+    return response.data;
+  },
+
+  getInternalLawyerDirectory: async () => {
+    const response = await api.get('/legal/lawyer-directory');
+    return response.data;
+  },
+
   getUnlockedLawyerDirectory: async () => {
     const response = await api.get('/legal/directory/full');
     return response.data;

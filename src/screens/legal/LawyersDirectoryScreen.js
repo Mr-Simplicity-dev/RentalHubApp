@@ -3,20 +3,28 @@ import {ActivityIndicator, StyleSheet, View} from 'react-native';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { legalService } from '../../services/legalService';
-import { getErrorMessage, pickList } from '../../utils/http';
+import { getErrorMessage, pickList, pickObject } from '../../utils/http';
 import { colors, radius, typography } from '../../theme';
 import AppText from '../../components/common/AppText';
 import {
-ActionRow,
+  ActionRow,
   DashboardHero,
-  DashboardNotice,
   DashboardScreen,
   DashboardSection,
+  MetricCard,
+  MetricGrid,
 } from '../../components/dashboard/DashboardKit';
 
+const formatDate = (value) => {
+  if (!value) return '';
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return '';
+  return d.toLocaleDateString('en-NG', { month: 'short', year: 'numeric' });
+};
+
 const LawyersDirectoryScreen = ({ navigation }) => {
-  const [lawyers, setLawyers] = useState([]);
-  const [meta, setMeta] = useState(null);
+  const [stats, setStats] = useState({ total_resolved: 0, tenant_against_landlord: 0, landlord_against_tenant: 0 });
+  const [cases, setCases] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useLayoutEffect(() => {
@@ -26,14 +34,14 @@ const LawyersDirectoryScreen = ({ navigation }) => {
   const loadDirectory = async () => {
     setLoading(true);
     try {
-      const response = await legalService.getPublicLawyerDirectory();
-      setLawyers(pickList(response, ['data']));
-      setMeta(response?.meta || null);
+      const response = await legalService.getTreatedCases();
+      setStats(pickObject(response, ['data', 'stats']) || {});
+      setCases(pickList(response, ['data', 'cases']));
     } catch (error) {
       Toast.show({
         type: 'error',
         text1: 'Directory unavailable',
-        text2: getErrorMessage(error, 'Could not load lawyers'),
+        text2: getErrorMessage(error, 'Could not load legal coverage data'),
       });
     } finally {
       setLoading(false);
@@ -47,60 +55,52 @@ const LawyersDirectoryScreen = ({ navigation }) => {
   return (
     <DashboardScreen refreshing={loading} onRefresh={loadDirectory}>
       <DashboardHero
-        eyebrow="LEGAL DIRECTORY"
-        title="Platform lawyers"
-        subtitle="Browse RentalHub platform lawyers and legal protection options from the app."
+        eyebrow="LEGAL COVERAGE"
+        title="Treated cases"
+        subtitle="A track record of tenancy and property disputes resolved through RentalHub legal coverage."
         icon="scale-outline"
         onRefresh={loadDirectory}
       />
 
-      <DashboardNotice
-        title="Directory access"
-        message={
-          meta?.unlock_amount
-            ? `Public details are visible now. Full contact access may require a ₦${Number(meta.unlock_amount).toLocaleString()} unlock.`
-            : 'Public details are visible now. Full contact access may require unlock.'
-        }
-      />
+      <MetricGrid>
+        <MetricCard color={colors.success} icon="checkmark-done-outline" label="Resolved" value={String(stats.total_resolved || 0)} />
+        <MetricCard color={colors.blue} icon="person-outline" label="Tenant cases" value={String(stats.tenant_against_landlord || 0)} />
+        <MetricCard color={colors.navy} icon="business-outline" label="Landlord cases" value={String(stats.landlord_against_tenant || 0)} />
+      </MetricGrid>
 
       <DashboardSection title="Legal help">
         <ActionRow
-          title="Legal Support Coverage"
-          subtitle="Check coverage and submit a legal assistance request."
+          title="Legal coverage & requests"
+          subtitle="Check your coverage and submit a legal assistance request."
           icon="shield-checkmark-outline"
           onPress={() => navigation.navigate('LegalSupport')}
         />
       </DashboardSection>
 
-      <DashboardSection title="Available lawyers">
-        {loading && !lawyers.length ? <ActivityIndicator color={colors.blue} /> : null}
-        {!loading && !lawyers.length ? (
-          <AppText style={styles.empty}>No platform lawyers are listed yet.</AppText>
+      <DashboardSection title="Recently treated cases">
+        {loading && !cases.length ? <ActivityIndicator color={colors.blue} /> : null}
+        {!loading && !cases.length ? (
+          <AppText style={styles.empty}>No resolved cases have been published yet.</AppText>
         ) : null}
-        {lawyers.map((lawyer, index) => (
-          <View key={String(lawyer.id || lawyer.email || index)} style={styles.card}>
-            <View style={styles.avatar}>
-              <AppText style={styles.avatarText}>
-                {String(lawyer.full_name || lawyer.name || 'L').charAt(0).toUpperCase()}
-              </AppText>
-            </View>
-            <View style={styles.cardCopy}>
-              <AppText style={styles.name}>{lawyer.full_name || lawyer.name || 'Platform Lawyer'}</AppText>
-              <AppText style={styles.meta}>
-                {[lawyer.state, lawyer.city, lawyer.lga].filter(Boolean).join(' · ') || 'RentalHub legal network'}
-              </AppText>
-              <AppText style={styles.bio} numberOfLines={3}>
-                {lawyer.bio || lawyer.specialization || lawyer.experience || 'Verified legal support for tenancy and property matters.'}
-              </AppText>
-              <View style={styles.badgeRow}>
-                <View style={styles.badge}>
-                  <Icon name="checkmark-circle" size={13} color={colors.success} />
-                  <AppText style={styles.badgeText}>Platform listed</AppText>
-                </View>
+        {cases.map((item, index) => {
+          const isTenant = item.direction === 'tenant_landlord';
+          return (
+            <View key={String(item.id || index)} style={styles.card}>
+              <View style={[styles.iconWrap, isTenant ? styles.iconTenant : styles.iconLandlord]}>
+                <Icon name={isTenant ? 'person-outline' : 'business-outline'} size={18} color={isTenant ? '#1D4ED8' : '#334155'} />
               </View>
+              <View style={styles.cardCopy}>
+                <AppText style={styles.title}>
+                  {isTenant ? 'Tenant to landlord' : 'Landlord to tenant'}
+                </AppText>
+                <AppText style={styles.meta}>
+                  {[item.state, formatDate(item.resolved_at)].filter(Boolean).join(' · ') || 'Resolved matter'}
+                </AppText>
+              </View>
+              <Icon name="checkmark-circle" size={20} color={colors.success} />
             </View>
-          </View>
-        ))}
+          );
+        })}
       </DashboardSection>
     </DashboardScreen>
   );
@@ -108,6 +108,7 @@ const LawyersDirectoryScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   card: {
+    alignItems: 'center',
     backgroundColor: colors.white,
     borderColor: colors.border,
     borderRadius: radius.md,
@@ -116,52 +117,26 @@ const styles = StyleSheet.create({
     gap: 12,
     padding: 14,
   },
-  avatar: {
+  iconWrap: {
     alignItems: 'center',
-    backgroundColor: colors.navy,
-    borderRadius: 22,
-    height: 44,
+    borderRadius: 20,
+    height: 40,
     justifyContent: 'center',
-    width: 44,
+    width: 40,
   },
-  avatarText: {
-    color: colors.white,
-    fontFamily: typography.bold,
-    fontSize: 18,
-  },
+  iconTenant: { backgroundColor: '#DBEAFE' },
+  iconLandlord: { backgroundColor: '#F1F5F9' },
   cardCopy: { flex: 1 },
-  name: {
+  title: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 16,
+    fontSize: 15,
   },
   meta: {
     color: colors.muted,
-    fontFamily: typography.medium,
-    fontSize: 13,
-    marginTop: 3,
-  },
-  bio: {
-    color: colors.text,
     fontFamily: typography.regular,
     fontSize: 13,
-    lineHeight: 18,
-    marginTop: 8,
-  },
-  badgeRow: { flexDirection: 'row', marginTop: 10 },
-  badge: {
-    alignItems: 'center',
-    backgroundColor: '#ECFDF3',
-    borderRadius: radius.pill,
-    flexDirection: 'row',
-    gap: 4,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-  },
-  badgeText: {
-    color: '#166534',
-    fontFamily: typography.semibold,
-    fontSize: 13,
+    marginTop: 3,
   },
   empty: {
     color: colors.muted,
