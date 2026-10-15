@@ -182,6 +182,7 @@ import SuperAdminTransportationDashboardScreen from '../screens/admin/SuperAdmin
 import SuperAdminFumigationDashboardScreen from '../screens/admin/SuperAdminFumigationDashboardScreen';
 import SuperFinancialAdminDashboardScreen from '../screens/admin/SuperFinancialAdminDashboardScreen';
 import StateLawyerDashboardScreen from '../screens/lawyer/StateLawyerDashboardScreen';
+import ZonalLawyerDashboardScreen from '../screens/lawyer/ZonalLawyerDashboardScreen';
 import SuperLawyerDashboardScreen from '../screens/lawyer/SuperLawyerDashboardScreen';
 const Stack = (Platform.OS === 'web' ? createStackNavigator : createNativeStackNavigator)();
 const Tab = createBottomTabNavigator();
@@ -684,6 +685,7 @@ const LawyerRoot = ({ initialRouteName = 'LawyerDashboard' }) => (
     <Stack.Screen name="CourtBundle" component={CourtBundleScreen} options={{ title: 'Court Bundle' }} />
     <Stack.Screen name="VerifyCase" component={VerifyCaseScreen} options={{ title: 'Verify Case' }} />
     <Stack.Screen name="StateLawyerDashboard" component={StateLawyerDashboardScreen} options={{ title: 'State Lawyer' }} />
+    <Stack.Screen name="ZonalLawyerDashboard" component={ZonalLawyerDashboardScreen} options={{ title: 'Zonal Lawyer' }} />
     <Stack.Screen name="SuperLawyerDashboard" component={SuperLawyerDashboardScreen} options={{ title: 'Super Lawyer' }} />
     <Stack.Screen name="Messages" component={MessagesScreen} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
@@ -1023,6 +1025,8 @@ const RoleRouter = ({ userType }) => {
       return <LawyerRoot />;
     case 'state_lawyer':
       return <LawyerRoot initialRouteName="StateLawyerDashboard" />;
+    case 'zonal_lawyer':
+      return <LawyerRoot initialRouteName="ZonalLawyerDashboard" />;
     case 'super_lawyer':
       return <LawyerRoot initialRouteName="SuperLawyerDashboard" />;
     case 'admin':
@@ -1051,9 +1055,11 @@ const RoleRouter = ({ userType }) => {
     case 'transportation_admin':
     case 'lga_transportation_admin':
     case 'state_transportation_admin':
+    case 'zonal_transportation_admin':
     case 'fumigation_admin':
     case 'lga_fumigation_admin':
     case 'state_fumigation_admin':
+    case 'zonal_fumigation_admin':
       return <ServiceAdminRoot />;
     case 'recruitment_admin':
       return <RecruitmentAdminRoot />;

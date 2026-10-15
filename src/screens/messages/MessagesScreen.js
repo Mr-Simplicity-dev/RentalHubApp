@@ -37,7 +37,7 @@ const initials = (name = 'User') =>
 
 const MessagesScreen = ({ navigation, route }) => {
   const { user } = useContext(AuthContext);
-  const messageTourId = ['lawyer', 'state_lawyer', 'super_lawyer'].includes(user?.user_type)
+  const messageTourId = ['lawyer', 'state_lawyer', 'zonal_lawyer', 'super_lawyer'].includes(user?.user_type)
     ? 'lawyer_clients'
     : user?.user_type === 'landlord'
       ? 'landlord_messages'

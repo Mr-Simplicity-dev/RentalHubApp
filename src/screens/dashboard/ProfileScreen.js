@@ -608,7 +608,7 @@ const ProfileScreen = ({ navigation }) => {
           style={styles.marginTop}
           onPress={() => navigation.navigate('Notifications')}
         />
-        {['tenant', 'user', 'landlord', 'agent', 'lawyer', 'state_lawyer', 'super_lawyer'].includes(user?.user_type) ? (
+        {['tenant', 'user', 'landlord', 'agent', 'lawyer', 'state_lawyer', 'zonal_lawyer', 'super_lawyer'].includes(user?.user_type) ? (
           <Button
             title="My Appeals"
             variant="outline"
@@ -634,7 +634,7 @@ const ProfileScreen = ({ navigation }) => {
             onPress={() => navigation.navigate('AgentCommissionAdmin')}
           />
         ) : null}
-        {['lawyer', 'state_lawyer', 'super_lawyer'].includes(user?.user_type) ? (
+        {['lawyer', 'state_lawyer', 'zonal_lawyer', 'super_lawyer'].includes(user?.user_type) ? (
           <Button
             title="Court Bundle"
             variant="outline"

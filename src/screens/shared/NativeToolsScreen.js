@@ -310,6 +310,7 @@ const NativeToolsScreen = ({ navigation }) => {
     agent: { name: 'AgentDashboard' },
     lawyer: { name: 'LawyerDashboard' },
     state_lawyer: { name: 'StateLawyerDashboard' },
+    zonal_lawyer: { name: 'ZonalLawyerDashboard' },
     super_lawyer: { name: 'SuperLawyerDashboard' },
     admin: { name: 'AdminDashboard' },
     lga_admin: { name: 'AdminDashboard' },
@@ -327,10 +328,12 @@ const NativeToolsScreen = ({ navigation }) => {
     transportation_admin: { name: 'ServiceOperationsDashboard' },
     lga_transportation_admin: { name: 'ServiceOperationsDashboard' },
     state_transportation_admin: { name: 'ServiceOperationsDashboard' },
+    zonal_transportation_admin: { name: 'ServiceOperationsDashboard' },
     super_transportation_admin: { name: 'ServiceOperationsDashboard' },
     fumigation_admin: { name: 'ServiceOperationsDashboard' },
     lga_fumigation_admin: { name: 'ServiceOperationsDashboard' },
     state_fumigation_admin: { name: 'ServiceOperationsDashboard' },
+    zonal_fumigation_admin: { name: 'ServiceOperationsDashboard' },
     super_fumigation_admin: { name: 'ServiceOperationsDashboard' },
   }[user?.user_type];
   const usesMainTabs = user?.user_type === 'tenant' || user?.user_type === 'landlord';
