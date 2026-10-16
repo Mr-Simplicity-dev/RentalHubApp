@@ -52,6 +52,7 @@ import MessagesScreen from '../screens/messages/MessagesScreen';
 import LawyerDashboardScreen from '../screens/lawyer/LawyerDashboardScreen';
 import DisputeDetailsScreen from '../screens/lawyer/DisputeDetailsScreen';
 import LawyersDirectoryScreen from '../screens/legal/LawyersDirectoryScreen';
+import InternalLawyerDirectoryScreen from '../screens/legal/InternalLawyerDirectoryScreen';
 import LegalSupportScreen from '../screens/legal/LegalSupportScreen';
 
 import VerifyCaseScreen from '../screens/shared/VerifyCaseScreen';
@@ -475,6 +476,7 @@ const ServiceAdminRoot = () => (
     <Stack.Screen name="AdminTransportationStateDashboard" component={AdminTransportationStateDashboardScreen} options={{ title: 'State Transport' }} />
     <Stack.Screen name="AdminFumigationStateDashboard" component={AdminFumigationStateDashboardScreen} options={{ title: 'State Fumigation' }} />
     <Stack.Screen name="AdminSupportDashboard" component={AdminSupportDashboardScreen} options={{ title: 'Support Dashboard' }} />
+    <Stack.Screen name="InternalLawyerDirectory" component={InternalLawyerDirectoryScreen} options={{ title: 'Lawyer Directory' }} />
     <Stack.Screen name="AdminPool" component={AdminPoolScreen} options={{ title: 'Admin Pool' }} />
     <Stack.Screen name="ActivityFeed" component={ActivityFeedScreen} options={{ title: 'Activity Feed' }} />
     <Stack.Screen name="AllActivity" component={ActivityFeedScreen} options={{ title: 'All Activity' }} initialParams={{ all: true }} />
