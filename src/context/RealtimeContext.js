@@ -134,12 +134,14 @@ export const RealtimeProvider = ({ children }) => {
         if (!disposed) {
           setActiveCall((current) => ({
             ...(current || {}),
+            ...room,
             callId: room.callId || current?.callId,
             status: room.status || current?.status || 'accepted',
             participants: room.participants || current?.participants || [],
             callType: room.callType || current?.callType,
             propertyId: room.propertyId ?? current?.propertyId,
             propertyTitle: room.propertyTitle ?? current?.propertyTitle,
+            hostUserId: room.hostUserId ?? current?.hostUserId ?? current?.caller?.id ?? current?.receiver?.id,
           }));
         }
       });
@@ -290,7 +292,7 @@ export const RealtimeProvider = ({ children }) => {
         ...(current || {}),
         callId,
         participants: response.participants,
-        hostUserId: userId,
+        hostUserId: response.hostUserId ?? userId,
       }));
     }
     return response;
