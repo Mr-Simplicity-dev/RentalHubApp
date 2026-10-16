@@ -21,6 +21,7 @@ const WelcomeScreen = ({ navigation }) => {
   const compact = height < 720 || width < 360;
   const contentY = useRef(new Animated.Value(22)).current;
   const contentOpacity = useRef(new Animated.Value(0)).current;
+  const hintBounce = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     Animated.parallel([
@@ -36,6 +37,17 @@ const WelcomeScreen = ({ navigation }) => {
       }),
     ]).start();
   }, [contentOpacity, contentY]);
+
+  useEffect(() => {
+    const loop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(hintBounce, { toValue: -7, duration: 520, useNativeDriver: true }),
+        Animated.timing(hintBounce, { toValue: 0, duration: 520, useNativeDriver: true }),
+      ])
+    );
+    loop.start();
+    return () => loop.stop();
+  }, [hintBounce]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -54,6 +66,14 @@ const WelcomeScreen = ({ navigation }) => {
           <AppText style={styles.exploreText}>Explore homes</AppText>
           <Icon name="arrow-forward" size={17} color={colors.white} />
         </TouchableOpacity>
+      </View>
+
+      <View style={styles.exploreHintWrap} pointerEvents="none">
+        <View style={styles.exploreArrow} />
+        <Animated.View style={[styles.exploreHint, { transform: [{ translateY: hintBounce }] }]}>
+          <Icon name="arrow-up" size={13} color={colors.navy} />
+          <AppText style={styles.exploreHintText}>Click here to view listed properties</AppText>
+        </Animated.View>
       </View>
 
       <ScrollView
@@ -159,6 +179,37 @@ const styles = StyleSheet.create({
     color: '#DDEBFF',
     fontFamily: typography.semibold,
     fontSize: 13,
+  },
+  exploreHintWrap: {
+    alignItems: 'flex-end',
+    marginTop: 4,
+    paddingRight: 6,
+  },
+  exploreArrow: {
+    borderBottomColor: colors.gold,
+    borderBottomWidth: 9,
+    borderLeftColor: 'transparent',
+    borderLeftWidth: 8,
+    borderRightColor: 'transparent',
+    borderRightWidth: 8,
+    height: 0,
+    marginRight: 18,
+    width: 0,
+  },
+  exploreHint: {
+    alignItems: 'center',
+    backgroundColor: colors.gold,
+    borderRadius: radius.pill,
+    flexDirection: 'row',
+    gap: 5,
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+    ...shadows.soft,
+  },
+  exploreHintText: {
+    color: colors.navy,
+    fontFamily: typography.bold,
+    fontSize: 12,
   },
   body: {
     flex: 1,
