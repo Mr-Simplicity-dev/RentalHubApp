@@ -33,12 +33,16 @@ const callTitle = (call = {}) => {
   return 'Audio call';
 };
 
-const otherPartyName = (call = {}) =>
-  call.direction === 'incoming'
+const otherPartyName = (call = {}) => {
+  if (!call) return 'RentalHub user';
+  return call.direction === 'incoming'
     ? call.caller?.full_name || call.caller?.name || 'RentalHub user'
     : call.receiver?.full_name || call.receiver?.name || 'RentalHub user';
+};
 
 const normalizeParticipants = (call = {}) => {
+  if (!call) return [];
+
   const rawParticipants = Array.isArray(call?.participants)
     ? call.participants
     : Array.isArray(call?.supportParticipants)
