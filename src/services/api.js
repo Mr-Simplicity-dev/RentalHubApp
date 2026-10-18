@@ -27,8 +27,10 @@ const resolveDefaultApiBaseUrl = () => {
 
 let _apiBaseUrl;
 try {
-  _apiBaseUrl = isConfiguredApiUrl(process.env.API_BASE_URL)
-    ? normalizeUrl(process.env.API_BASE_URL)
+  const configuredApiBaseUrl =
+    process.env.EXPO_PUBLIC_API_BASE_URL || process.env.API_BASE_URL;
+  _apiBaseUrl = isConfiguredApiUrl(configuredApiBaseUrl)
+    ? normalizeUrl(configuredApiBaseUrl)
     : resolveDefaultApiBaseUrl();
 } catch (e) {
   console.error('[api]', e.message);
