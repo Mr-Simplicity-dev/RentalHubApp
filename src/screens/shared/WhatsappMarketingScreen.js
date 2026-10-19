@@ -337,6 +337,12 @@ const WhatsappMarketingScreen = () => {
                 <AppText style={styles.metricValue}>{Number(messageStats.failed ?? 0)}</AppText>
                 <AppText style={styles.metricLabel}>Failed</AppText>
               </View>
+              <View style={styles.metric}>
+                <AppText style={styles.metricValue}>
+                  {`${Number(stats?.daily_quota?.sent_today ?? 0)}/${Number(stats?.daily_quota?.limit ?? 250)}`}
+                </AppText>
+                <AppText style={styles.metricLabel}>Today</AppText>
+              </View>
             </View>
 
             <View style={styles.rules}>
