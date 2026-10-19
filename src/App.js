@@ -15,6 +15,7 @@ import NetworkStatusBanner from './components/common/NetworkStatusBanner';
 import NativeCallOverlay from './components/calls/NativeCallOverlay';
 import AppUpdateIndicator from './components/common/AppUpdateIndicator';
 import NinCaptureModal from './components/identity/NinCaptureModal';
+import MfaCodeModal from './components/common/MfaCodeModal';
 import AppErrorBoundary from './components/common/AppErrorBoundary';
 import { subscribeNetworkStatus } from './services/networkStatusService';
 import { flushOfflineQueue, hydrateOfflineQueue } from './services/offlineActionQueueService';
@@ -83,6 +84,7 @@ const AppContent = () => {
       <NativeCallOverlay />
       {isAuthenticated ? <AppUpdateIndicator /> : null}
       {isAuthenticated ? <NinCaptureModal /> : null}
+      {isAuthenticated ? <MfaCodeModal /> : null}
       <TourNavigationBridge />
       <NativeTourManager />
       <Toast />

@@ -51,7 +51,7 @@ const ProfileScreen = ({ navigation }) => {
     authService
       .getTwoFactorStatus()
       .then((res) => {
-        if (active) setTwoFa((prev) => ({ ...prev, enabled: Boolean(res?.data?.enabled), checked: true }));
+        if (active) setTwoFa((prev) => ({ ...prev, enabled: res?.data?.totp_enabled === true, checked: true }));
       })
       .catch(() => {
         if (active) setTwoFa((prev) => ({ ...prev, checked: true }));

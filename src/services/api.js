@@ -5,6 +5,7 @@ import {
   markNetworkProblem,
 } from './networkStatusService';
 import { storageService } from './storageService';
+import { requestMfaCode, resetMfaAttempts } from './mfaPromptService';
 
 const DEFAULT_LOCAL_API_BASE_URL =
   Platform.OS === 'android' ? 'http://10.0.2.2:5000/api' : 'http://localhost:5000/api';
@@ -195,11 +196,35 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => {
     markNetworkHealthy();
+    if (response.config?.mfaAttempts) resetMfaAttempts();
     return response;
   },
   async (error) => {
     markNetworkProblem(error);
     const originalRequest = error.config || {};
+
+    if (
+      error.response?.status === 403 &&
+      error.response?.data?.code === 'MFA_REQUIRED'
+    ) {
+      const attempts = (originalRequest.mfaAttempts || 0) + 1;
+
+      if (attempts > 3) {
+        return Promise.reject(error);
+      }
+
+      try {
+        const mfaCode = await requestMfaCode();
+        originalRequest.mfaAttempts = attempts;
+        originalRequest.headers = {
+          ...(originalRequest.headers || {}),
+          'X-RentalHub-Mfa-Code': mfaCode,
+        };
+        return api(originalRequest);
+      } catch (promptError) {
+        return Promise.reject(error);
+      }
+    }
 
     if (
       error.response?.status === 401 &&

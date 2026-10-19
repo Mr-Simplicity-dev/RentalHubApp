@@ -2,6 +2,9 @@ import React, { useMemo } from 'react';
 import {StyleSheet, Switch, View} from 'react-native';
 
 import AppText from '../../components/common/AppText';
+
+// Labels mirror the web admin flags tab (client/src/components/admin/FlagsTab.jsx)
+// so both surfaces list and describe the same switches.
 const FLAG_LABELS = {
   allow_registration: {
     label: 'Allow Registration',
@@ -23,44 +26,137 @@ const FLAG_LABELS = {
     label: 'Landlord Registration Payment',
     description: 'Require payment before landlord account creation.',
   },
+  diaspora_registration: {
+    label: 'Diaspora Registration',
+    description: 'Allow foreign registrations with international passport verification and USD pricing.',
+  },
+  diaspora_registration_payment: {
+    label: 'Diaspora Registration Payment',
+    description: 'Require a USD-quoted registration payment before a diaspora account is created.',
+  },
+  diaspora_require_foreign_card: {
+    label: 'Diaspora Foreign Card Required',
+    description: 'Reject diaspora payments funded by Nigerian-issued cards.',
+  },
   nin_number: { label: 'NIN Requirement', description: 'Require NIN for local registrations.' },
   passport_number: {
     label: 'Passport Requirement',
     description: 'Require passport for foreign registrations.',
   },
-  property_alert_payment: { label: 'Property Alert Payment', description: '' },
+  property_alert_payment: {
+    label: 'Property Alert Payment',
+    description: 'Require payment before processing "Notify me when available" requests.',
+  },
   ads_enabled: { label: 'Ad Spaces', description: 'Show managed ads on key pages.' },
   tenant_landlord_referrals: {
     label: 'Tenant & Landlord Referrals',
     description: 'Allow referral invite links and credits.',
   },
+  allow_applications: {
+    label: 'Agent Applications',
+    description: 'Allow users to submit rental agent applications.',
+  },
+  allow_property_posting: {
+    label: 'Property Posting',
+    description: 'Allow landlords and agents to post new properties.',
+  },
+  require_property_ownership_verification: {
+    label: 'Ownership Verification',
+    description: 'Show only ownership-verified listings publicly. Existing listings stay visible.',
+  },
+  maintenance_mode: {
+    label: 'Maintenance Mode',
+    description: 'Block non-admin activity while maintenance is in progress.',
+  },
+  survey_public_enabled: {
+    label: 'Public Survey Link',
+    description: 'Show the market-research survey link in the site footer.',
+  },
+  survey_location_gate: {
+    label: 'Survey Location Gate',
+    description: 'Require respondents to be inside the allowed survey area and block VPN connections.',
+  },
+  local_rate_ip_check: {
+    label: 'Local Rate IP Check',
+    description: 'Block the local (₦) registration rate for foreign IPs and VPN connections.',
+  },
+  voice_geo_routing: {
+    label: 'Voice Geo Routing',
+    description: 'Route inbound voice calls by the caller’s state/LGA.',
+  },
 };
 
-const PARENT_KEY = 'allow_registration';
-const CHILD_KEYS = ['allow_tenant_registration', 'allow_landlord_registration'];
-const OTHER_KEYS = [
+const REGISTRATION_PARENT_KEY = 'allow_registration';
+const REGISTRATION_CHILD_KEYS = ['allow_tenant_registration', 'allow_landlord_registration'];
+const REGISTRATION_OTHER_KEYS = [
   'tenant_registration_payment',
   'landlord_registration_payment',
+  'diaspora_registration',
+  'diaspora_registration_payment',
+  'diaspora_require_foreign_card',
   'nin_number',
   'passport_number',
+];
+
+const PLATFORM_PRIORITY_FLAG_ORDER = [
   'property_alert_payment',
   'ads_enabled',
   'tenant_landlord_referrals',
 ];
 
+const HIDDEN_KEYS = new Set([
+  'survey_location_gate',
+]);
+
 const FlagsSection = ({ flags = [], onToggle }) => {
+  // Merge what the API returned with every known label: a flag that is missing
+  // from the response still renders (off) instead of silently disappearing.
+  const mergedFlags = useMemo(() => {
+    const map = new Map((flags || []).map((flag) => [flag.key, { ...flag }]));
+
+    Object.entries(FLAG_LABELS).forEach(([key, meta]) => {
+      if (!map.has(key)) {
+        map.set(key, { key, enabled: false, description: meta.description });
+      }
+    });
+
+    return Array.from(map.values());
+  }, [flags]);
+
   const flagMap = useMemo(
-    () => new Map((flags || []).map((flag) => [flag.key, flag])),
-    [flags]
+    () => new Map(mergedFlags.map((flag) => [flag.key, flag])),
+    [mergedFlags]
   );
 
-  const masterEnabled = flagMap.get(PARENT_KEY)?.enabled === true;
+  const masterEnabled = flagMap.get(REGISTRATION_PARENT_KEY)?.enabled === true;
+
+  const platformFlags = useMemo(() => {
+    const registrationKeys = new Set([
+      REGISTRATION_PARENT_KEY,
+      ...REGISTRATION_CHILD_KEYS,
+      ...REGISTRATION_OTHER_KEYS,
+    ]);
+
+    const weight = new Map(PLATFORM_PRIORITY_FLAG_ORDER.map((key, index) => [key, index]));
+
+    // Everything the server has that is not already listed above, so new flags
+    // added later show up here automatically.
+    return mergedFlags
+      .filter((flag) => !registrationKeys.has(flag.key) && !HIDDEN_KEYS.has(flag.key))
+      .sort((a, b) => {
+        const aWeight = weight.has(a.key) ? weight.get(a.key) : Number.MAX_SAFE_INTEGER;
+        const bWeight = weight.has(b.key) ? weight.get(b.key) : Number.MAX_SAFE_INTEGER;
+
+        return aWeight !== bWeight ? aWeight - bWeight : a.key.localeCompare(b.key);
+      });
+  }, [mergedFlags]);
 
   const renderRow = (key, { nested = false, forceInactive = false } = {}) => {
     const flag = flagMap.get(key);
     if (!flag) return null;
 
-    const meta = FLAG_LABELS[key] || { label: key, description: flag.description || '' };
+    const meta = FLAG_LABELS[key] || {};
+    const description = meta.description || flag.description || '';
     const effective = !forceInactive && flag.enabled === true;
 
     return (
@@ -69,8 +165,8 @@ const FlagsSection = ({ flags = [], onToggle }) => {
         style={[styles.card, nested && styles.nestedCard, forceInactive && styles.inactiveCard]}
       >
         <View style={styles.cardBody}>
-          <AppText style={styles.cardTitle}>{meta.label}</AppText>
-          {meta.description ? <AppText style={styles.meta}>{meta.description}</AppText> : null}
+          <AppText style={styles.cardTitle}>{meta.label || key}</AppText>
+          {description ? <AppText style={styles.meta}>{description}</AppText> : null}
           {forceInactive && flag.enabled ? (
             <AppText style={styles.hint}>Saved on, inactive while master registration is off.</AppText>
           ) : null}
@@ -92,10 +188,16 @@ const FlagsSection = ({ flags = [], onToggle }) => {
       <AppText style={styles.subheading}>
         Master switch plus per-role registration. Location rules are under Registration Access.
       </AppText>
-      {renderRow(PARENT_KEY)}
-      {CHILD_KEYS.map((key) => renderRow(key, { nested: true, forceInactive: !masterEnabled }))}
-      <AppText style={[styles.heading, styles.sectionGap]}>Other Registration & Platform Flags</AppText>
-      {OTHER_KEYS.map((key) => renderRow(key))}
+      {renderRow(REGISTRATION_PARENT_KEY)}
+      {REGISTRATION_CHILD_KEYS.map((key) =>
+        renderRow(key, { nested: true, forceInactive: !masterEnabled })
+      )}
+      {REGISTRATION_OTHER_KEYS.map((key) => renderRow(key))}
+      <AppText style={[styles.heading, styles.sectionGap]}>Platform &amp; Survey Flags</AppText>
+      <AppText style={styles.subheading}>
+        Every other platform switch on this account. New server flags appear here automatically.
+      </AppText>
+      {platformFlags.map((flag) => renderRow(flag.key))}
     </View>
   );
 };
