@@ -121,6 +121,7 @@ const WORKSPACE_GROUPS = [
       { label: 'Survey Analytics', route: 'SurveyAnalytics', icon: 'clipboard-outline' },
       { label: 'Tour Analytics', route: 'TourAnalytics', icon: 'map-outline' },
       { label: 'Email & SMS Marketing', route: 'MarketingOps', icon: 'mail-outline' },
+      { label: 'WhatsApp Marketing', route: 'WhatsappMarketing', icon: 'logo-whatsapp' },
       { label: 'Campaign Builder', route: 'MarketingBuilder', icon: 'megaphone-outline' },
       { label: 'Email Template Editor', route: 'EmailTemplateEditor', icon: 'code-outline' },
       { label: 'SEO Tools', route: 'SeoTools', icon: 'search-outline' },

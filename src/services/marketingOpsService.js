@@ -73,6 +73,46 @@ export const marketingOpsService = {
     return response.data;
   },
 
+  // WhatsApp
+  whatsappStats: async () => {
+    const response = await api.get('/whatsapp-marketing/stats');
+    return response.data;
+  },
+  whatsappAudience: async ({ scope = 'all', user_type = '' } = {}) => {
+    const params = { scope };
+    if (scope === 'user_type' && user_type) params.user_type = user_type;
+    const response = await api.get('/whatsapp-marketing/audience', { params });
+    return response.data;
+  },
+  whatsappCampaigns: async () => {
+    const response = await api.get('/whatsapp-marketing/campaigns');
+    return response.data;
+  },
+  whatsappCreateCampaign: async (payload) => {
+    const response = await api.post('/whatsapp-marketing/campaigns', payload);
+    return response.data;
+  },
+  whatsappSendCampaign: async (campaignId, note) => {
+    const response = await api.post(`/whatsapp-marketing/campaigns/${campaignId}/send`, { note });
+    return response.data;
+  },
+  whatsappRetryCampaign: async (campaignId, note) => {
+    const response = await api.post(`/whatsapp-marketing/campaigns/${campaignId}/retry`, { note });
+    return response.data;
+  },
+  whatsappDeleteCampaign: async (campaignId, note) => {
+    const response = await api.delete(`/whatsapp-marketing/campaigns/${campaignId}`, { data: { note } });
+    return response.data;
+  },
+  whatsappCampaignStats: async (campaignId) => {
+    const response = await api.get(`/whatsapp-marketing/campaigns/${campaignId}/stats`);
+    return response.data;
+  },
+  whatsappUploadMedia: async (formData) => {
+    const response = await api.post('/whatsapp-marketing/media', formData);
+    return response.data;
+  },
+
   // Diaspora desk
   diasporaOverview: async () => {
     const response = await api.get('/admin/diaspora/overview');
