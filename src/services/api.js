@@ -6,6 +6,7 @@ import {
 } from './networkStatusService';
 import { storageService } from './storageService';
 import { requestMfaCode, resetMfaAttempts } from './mfaPromptService';
+import Toast from 'react-native-toast-message';
 
 const DEFAULT_LOCAL_API_BASE_URL =
   Platform.OS === 'android' ? 'http://10.0.2.2:5000/api' : 'http://localhost:5000/api';
@@ -43,6 +44,7 @@ export const API_ORIGIN = API_BASE_URL.replace(/\/api$/i, '');
 
 const api = axios.create({
   baseURL: API_BASE_URL,
+  timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
     'X-RentalHub-Client': 'native',
@@ -81,6 +83,20 @@ const invalidateNativeSession = async () => {
 
 let isRefreshing = false;
 let pendingRequests = [];
+
+// The server answers 429 when a client hits its ceiling — without a visible
+// warning the press just looks like a dead button.
+let lastRateLimitNoticeAt = 0;
+const showRateLimitNotice = (message) => {
+  const now = Date.now();
+  if (now - lastRateLimitNoticeAt < 4000) return;
+  lastRateLimitNoticeAt = now;
+  Toast.show({
+    type: 'info',
+    text1: 'Slow down a moment',
+    text2: message || 'Too many requests. Please wait a moment and try again.',
+  });
+};
 
 const isSessionValidationRequest = (config = {}) => {
   return Boolean(config.authCritical);
@@ -141,6 +157,7 @@ const refreshNativeSession = async () => {
         'Content-Type': 'application/json',
         'X-RentalHub-Client': 'native',
       },
+      timeout: 30000,
     }
   );
 
@@ -186,6 +203,14 @@ api.interceptors.request.use(
     }
 
     config.headers['X-RentalHub-Client'] = 'native';
+
+    // Uploads are exempt from the default timeout: a large file on slow
+    // mobile data can legitimately take minutes, and XHR timeouts count
+    // the upload too.
+    if (config.data && typeof FormData !== 'undefined' && config.data instanceof FormData) {
+      config.timeout = 0;
+    }
+
     return config;
   },
   (error) => {
@@ -202,6 +227,10 @@ api.interceptors.response.use(
   async (error) => {
     markNetworkProblem(error);
     const originalRequest = error.config || {};
+
+    if (error.response?.status === 429) {
+      showRateLimitNotice(error.response.data?.message);
+    }
 
     if (
       error.response?.status === 403 &&
@@ -256,6 +285,9 @@ api.interceptors.response.use(
         return api(originalRequest);
       } catch (refreshError) {
         markNetworkProblem(refreshError);
+        if (refreshError?.response?.status === 429) {
+          showRateLimitNotice(refreshError.response.data?.message);
+        }
         const sessionIsInvalid = isTerminalSessionError(refreshError);
 
         if (sessionIsInvalid) {
