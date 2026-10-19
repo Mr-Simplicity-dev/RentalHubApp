@@ -618,13 +618,13 @@ const DashboardScreen = ({ navigation }) => {
   const shareReferralInvite = async () => {
     if (!referralInfo?.invite_url) return;
 
-    const shareText = `Join RentalHub NG with my invite link and I earn ₦${Number(
+    const shareText = `Join Amana RentalHub NG with my invite link and I earn ₦${Number(
       referralInfo.reward_amount || 1000
     ).toLocaleString()} subscription credit when your registration is complete.`;
 
     try {
       await Share.share({
-        title: 'RentalHub NG invite',
+        title: 'Amana RentalHub NG invite',
         message: `${shareText}\n${referralInfo.invite_url}`,
         url: referralInfo.invite_url,
       });
@@ -642,7 +642,7 @@ const DashboardScreen = ({ navigation }) => {
   const openWhatsappReferralShare = () => {
     if (!referralInfo?.invite_url) return;
 
-    const shareText = `Join RentalHub NG with my invite link: ${referralInfo.invite_url}`;
+    const shareText = `Join Amana RentalHub NG with my invite link: ${referralInfo.invite_url}`;
     Linking.openURL(`https://wa.me/?text=${encodeURIComponent(shareText)}`);
   };
 

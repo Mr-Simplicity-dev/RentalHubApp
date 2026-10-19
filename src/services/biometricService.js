@@ -69,7 +69,7 @@ const getSetOptions = () => {
     service: BIOMETRIC_SERVICE,
     authenticationPrompt: {
       title: 'Enable biometric login',
-      subtitle: 'Secure quick sign-in for RentalHub NG',
+      subtitle: 'Secure quick sign-in for Amana RentalHub NG',
       description: 'Confirm your identity to save this login securely',
       cancel: 'Cancel',
     },
@@ -93,7 +93,7 @@ const getGetOptions = () => {
     service: BIOMETRIC_SERVICE,
     authenticationPrompt: {
       title: 'Use biometric login',
-      subtitle: 'Sign in to RentalHub NG',
+      subtitle: 'Sign in to Amana RentalHub NG',
       description: 'Use your saved biometric login to continue',
       cancel: 'Use password',
     },

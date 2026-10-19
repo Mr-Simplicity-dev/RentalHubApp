@@ -40,7 +40,7 @@ const whatsappFaqData = [
   {
     id: 'legal',
     keywords: ['legal', 'lawyer', 'attorney', 'protection', 'coverage', 'law', 'document', 'agreement', 'dispute', 'nba', 'access fee', '2000'],
-    answer: 'For a one-time fee of \u20A62,000 at registration, you get Legal Protection Coverage. A lawyer is assigned to you automatically, and you can submit legal assistance requests from your dashboard anytime. This covers document reviews, tenancy agreements, and advisory.',
+    answer: 'For a one-time fee of \u20A62,000 at registration, you get the needed assistance . We ensures that all processes are delegently observed and due assistance is given right from your dashboard anytime. This covers document reviews, agreements, and advisory.',
   },
   {
     id: 'fumigation',
@@ -162,7 +162,7 @@ const WhatsAppBotScreen = ({ navigation }) => {
         setMessages([{
           id: 'bot-greeting',
           type: 'bot',
-          text: "Hi! I'm RentalHub's virtual assistant. How can I help you today?",
+          text: "Hi! I'm Amana RentalHub's virtual assistant. How can I help you today?",
           showQuickReplies: true,
           created_at: new Date().toISOString(),
         }]);
@@ -237,7 +237,7 @@ const WhatsAppBotScreen = ({ navigation }) => {
   const handleTalkToAgent = useCallback(() => {
     setConnectedToAgent(true);
     setAwaitingResponse(null);
-    const waMsg = 'Hello RentalHub NG, I need help finding a home.';
+    const waMsg = 'Hello Amana RentalHub NG, I need help finding a home.';
     const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(waMsg)}`;
     Linking.openURL(url).catch(() => {});
   }, []);
@@ -381,7 +381,7 @@ const WhatsAppBotScreen = ({ navigation }) => {
           <Icon name="logo-whatsapp" size={18} color={colors.white} />
         </View>
         <View style={styles.headerText}>
-          <AppText style={styles.headerTitle}>RentalHub Assistant</AppText>
+          <AppText style={styles.headerTitle}>Amana RentalHub Assistant</AppText>
           <AppText style={styles.headerSubtitle}>Need help? Chat with us!</AppText>
         </View>
       </View>

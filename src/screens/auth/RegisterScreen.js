@@ -326,7 +326,7 @@ const RegisterScreen = ({ navigation, route }) => {
     }
 
     if (!form.use_rentalhub_lawyers && !form.lawyer_email?.trim()) {
-      return 'Enter a lawyer email or choose RentalHub NG lawyers.';
+      return 'Enter a lawyer email or choose Amana RentalHub NG lawyers.';
     }
 
     if (!emailPattern.test(form.email || '')) {
@@ -411,7 +411,7 @@ const RegisterScreen = ({ navigation, route }) => {
 
     if (step === 1) {
       if (!form.use_rentalhub_lawyers && !emailPattern.test(form.lawyer_email.trim())) {
-        return 'Enter a valid lawyer email or choose RentalHub NG lawyers.';
+        return 'Enter a valid lawyer email or choose Amana RentalHub NG lawyers.';
       }
       if (userType === 'landlord' && form.add_agent && !form.use_rentalhub_agents) {
         if (!form.agent_full_name.trim()) return 'Enter the agentâ€™s full name.';
@@ -484,7 +484,7 @@ const RegisterScreen = ({ navigation, route }) => {
       Toast.show({
         type: 'error',
         text1: 'Unavailable',
-        text2: 'Diaspora registration is currently disabled on RentalHub NG.',
+        text2: 'Diaspora registration is currently disabled on Amana RentalHub NG.',
       });
       return;
     }
@@ -836,7 +836,7 @@ const RegisterScreen = ({ navigation, route }) => {
           </AppText>
           <AppText style={styles.priceMeta}>
             {requiresPayment
-              ? 'Includes registration and any selected RentalHub NG lawyer or agent access fees.'
+              ? 'Includes registration and any selected Amana RentalHub NG lawyer or agent access fees.'
               : `No payment required for ${userType} registration right now.`}
           </AppText>
           <AppText style={styles.priceMeta}>
@@ -899,8 +899,8 @@ const RegisterScreen = ({ navigation, route }) => {
         >
           <AppText style={styles.agentToggleLabel}>
             {form.use_rentalhub_lawyers
-              ? 'Using RentalHub NG lawyers (â‚¦2,000)'
-              : 'Use RentalHub NG lawyers instead (â‚¦2,000)'}
+              ? 'Using Amana RentalHub NG lawyers (â‚¦2,000)'
+              : 'Use Amana RentalHub NG lawyers instead (â‚¦2,000)'}
           </AppText>
         </TouchableOpacity>
 
@@ -929,8 +929,8 @@ const RegisterScreen = ({ navigation, route }) => {
           >
             <AppText style={styles.agentToggleLabel}>
               {form.use_rentalhub_agents
-                ? 'Using RentalHub NG agents (â‚¦5,000)'
-                : 'Use RentalHub NG agents instead (â‚¦5,000)'}
+                ? 'Using Amana RentalHub NG agents (â‚¦5,000)'
+                : 'Use Amana RentalHub NG agents instead (â‚¦5,000)'}
             </AppText>
           </TouchableOpacity>
         ) : null}

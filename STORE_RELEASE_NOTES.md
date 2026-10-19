@@ -25,6 +25,17 @@
 
 ## Version 1.0.1
 
-- Replaced placeholder Android launcher artwork with the RentalHub NG brand icon.
+- Replaced placeholder Android launcher artwork with the Amana RentalHub NG brand icon.
 - Added the complete opaque iOS App Icon asset catalog, including the App Store marketing icon.
 - Synchronized Android and iOS release versions and corrected duplicate Android app-link declarations.
+
+## Version 1.0.34 (build 45 / iOS 13)
+
+- Payment History receipt now uses the shared platform receipt (ARH receipt number, document
+  type, humanized status and payment method, Africa/Lagos date, itemised totals).
+- Rent payments show the full rent detail block (property, tenant, landlord, rental period and
+  the landlord-side platform fee note).
+- Added the computer-generated receipt notice.
+- Accepts the new `ARH_LOC_` location-access and `ARH_TRANSPORT_` reference formats while keeping
+  the legacy `LOC_` and `TRANSPORT_` formats working.
+

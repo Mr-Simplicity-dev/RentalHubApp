@@ -98,7 +98,7 @@ const PrivacyDataScreen = () => {
       <PremiumHero
         eyebrow="Privacy"
         title="My personal data"
-        subtitle="A read-only summary of the data RentalHub NG holds for your account (NDPR export)."
+        subtitle="A read-only summary of the data Amana RentalHub NG holds for your account (NDPR export)."
         icon="lock-closed-outline"
       />
 

@@ -251,7 +251,7 @@ const SurveyScreen = ({ navigation }) => {
         title={status?.completed ? 'Survey completed' : 'Nothing to complete'}
         message={
           status?.completed
-            ? 'Thank you for completing the RentalHub NG survey.'
+            ? 'Thank you for completing the Amana RentalHub NG survey.'
             : status?.exempt
               ? 'Your account is not required to complete the survey.'
               : 'There is no active survey for you right now.'
@@ -295,7 +295,7 @@ const SurveyScreen = ({ navigation }) => {
       <PremiumHero
         eyebrow="Market research"
         title={status?.part_a_done ? 'Continue survey' : 'Survey'}
-        subtitle="Your answers help RentalHub NG improve how renters and landlords are served."
+        subtitle="Your answers help Amana RentalHub NG improve how renters and landlords are served."
         icon="chatbubbles-outline"
       />
 

@@ -15,7 +15,7 @@ const AboutUsScreen = ({ navigation }) => {
     <DashboardScreen>
       <DashboardHero
         eyebrow="ABOUT"
-        title="About RentalHub NG"
+        title="About Amana RentalHub NG"
         subtitle="Nigeria's trusted platform for finding, managing, and securing rental properties."
         icon="information-circle-outline"
       />
@@ -23,7 +23,7 @@ const AboutUsScreen = ({ navigation }) => {
       <DashboardSection title="Our mission">
         <View style={styles.card}>
           <AppText style={styles.text}>
-            RentalHub NG makes renting in Nigeria transparent, secure, and hassle-free. We connect tenants with verified properties and provide landlords with powerful management tools.
+            Amana RentalHub NG makes renting in Nigeria transparent, secure, and hassle-free. We connect tenants with verified properties and provide landlords with powerful management tools.
           </AppText>
         </View>
       </DashboardSection>

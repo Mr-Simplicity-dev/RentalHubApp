@@ -79,6 +79,8 @@ const PaymentHistoryScreen = ({ navigation }) => {
   const [filter, setFilter] = useState('all');
   const [selectedReceipt, setSelectedReceipt] = useState(null);
   const [receiptBusy, setReceiptBusy] = useState(false);
+  const [receiptData, setReceiptData] = useState(null);
+  const [receiptLoading, setReceiptLoading] = useState(false);
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
@@ -130,6 +132,26 @@ const PaymentHistoryScreen = ({ navigation }) => {
 
   const isCompletedPayment = (payment) =>
     ['completed', 'successful', 'success'].includes(payment.payment_status);
+
+  const openReceipt = async (payment) => {
+    setSelectedReceipt(payment);
+    setReceiptData(null);
+    setReceiptLoading(true);
+    try {
+      const response = await paymentService.getReceiptData(payment.id);
+      setReceiptData(response?.data || null);
+    } catch (error) {
+      setReceiptData(null);
+    } finally {
+      setReceiptLoading(false);
+    }
+  };
+
+  const closeReceipt = () => {
+    setSelectedReceipt(null);
+    setReceiptData(null);
+    setReceiptLoading(false);
+  };
 
   const saveReceiptPdf = async (payment) => {
     const buffer = await paymentService.downloadReceiptPdf(payment.id);
@@ -257,7 +279,7 @@ const PaymentHistoryScreen = ({ navigation }) => {
           return (
             <TouchableOpacity
               activeOpacity={completed ? 0.7 : 1}
-              onPress={completed ? () => setSelectedReceipt(item) : undefined}
+              onPress={completed ? () => openReceipt(item) : undefined}
               style={styles.card}>
               <View style={[styles.paymentIcon, { backgroundColor: visual.background }]}>
                 <Icon name={visual.icon} size={20} color={visual.color} />
@@ -297,13 +319,13 @@ const PaymentHistoryScreen = ({ navigation }) => {
         visible={Boolean(selectedReceipt)}
         transparent
         animationType="slide"
-        onRequestClose={() => setSelectedReceipt(null)}
+        onRequestClose={closeReceipt}
       >
         <View style={styles.modalOverlay}>
           <View style={styles.receiptSheet}>
             <View style={styles.receiptHeader}>
               <AppText style={styles.receiptEyebrow}>RECEIPT</AppText>
-              <TouchableOpacity onPress={() => setSelectedReceipt(null)}>
+              <TouchableOpacity onPress={closeReceipt}>
                 <Icon name="close" size={22} color={colors.muted} />
               </TouchableOpacity>
             </View>
@@ -314,40 +336,118 @@ const PaymentHistoryScreen = ({ navigation }) => {
                   <View style={styles.receiptBrand}>
                     <BrandMark compact />
                   </View>
-                  <AppText style={styles.receiptNumber}>
-                    #{String(selectedReceipt.id || '').padStart(6, '0')}
-                  </AppText>
-                  <AppText style={styles.receiptType}>
-                    {formatPaymentType(selectedReceipt.payment_type)}
-                  </AppText>
-                  <AppText style={styles.receiptAmount}>
-                    {formatAmount(selectedReceipt.amount)}
-                  </AppText>
 
-                  <View style={styles.receiptRow}>
-                    <AppText style={styles.receiptLabel}>Date</AppText>
-                    <AppText style={styles.receiptValue}>
-                      {selectedReceipt.created_at ? new Date(selectedReceipt.created_at).toLocaleString() : '-'}
-                    </AppText>
-                  </View>
-                  <View style={styles.receiptRow}>
-                    <AppText style={styles.receiptLabel}>Reference</AppText>
-                    <AppText style={styles.receiptValue}>
-                      {selectedReceipt.transaction_reference || '-'}
-                    </AppText>
-                  </View>
-                  <View style={styles.receiptRow}>
-                    <AppText style={styles.receiptLabel}>Status</AppText>
-                    <AppText style={styles.receiptValue}>{selectedReceipt.payment_status}</AppText>
-                  </View>
-                  <View style={styles.receiptRow}>
-                    <AppText style={styles.receiptLabel}>Payment method</AppText>
-                    <AppText style={styles.receiptValue}>
-                      {selectedReceipt.payment_channel
-                        ? `${selectedReceipt.payment_method || 'Paystack'} — ${humanizeChannel(selectedReceipt.payment_channel)}`
-                        : selectedReceipt.payment_method || 'Paystack'}
-                    </AppText>
-                  </View>
+                  {receiptLoading ? (
+                    <View style={styles.receiptLoading}>
+                      <ActivityIndicator color={colors.blue} size="small" />
+                      <AppText style={styles.receiptLoadingText}>Preparing receipt…</AppText>
+                    </View>
+                  ) : (
+                    <>
+                      <AppText style={styles.receiptNumber}>
+                        {receiptData?.receiptNumber
+                          || `ARH-RCPT-${String(selectedReceipt.id || 0).padStart(6, '0')}`}
+                      </AppText>
+                      <AppText style={styles.receiptDocType}>
+                        {receiptData?.documentType || 'OFFICIAL PAYMENT RECEIPT'}
+                      </AppText>
+                      <AppText style={styles.receiptType}>
+                        {formatPaymentType(selectedReceipt.payment_type)}
+                      </AppText>
+                      <AppText style={styles.receiptAmount}>
+                        {receiptData?.total || formatAmount(selectedReceipt.amount)}
+                      </AppText>
+
+                      <View style={styles.receiptRow}>
+                        <AppText style={styles.receiptLabel}>Date</AppText>
+                        <AppText style={styles.receiptValue}>
+                          {receiptData?.date
+                            || (selectedReceipt.created_at
+                              ? new Date(selectedReceipt.created_at).toLocaleString()
+                              : '-')}
+                        </AppText>
+                      </View>
+                      <View style={styles.receiptRow}>
+                        <AppText style={styles.receiptLabel}>Reference</AppText>
+                        <AppText style={styles.receiptValue}>
+                          {receiptData?.reference || selectedReceipt.transaction_reference || '-'}
+                        </AppText>
+                      </View>
+                      <View style={styles.receiptRow}>
+                        <AppText style={styles.receiptLabel}>Status</AppText>
+                        <AppText style={[styles.receiptValue, styles.receiptStatus]}>
+                          {receiptData?.status || selectedReceipt.payment_status}
+                        </AppText>
+                      </View>
+                      <View style={styles.receiptRow}>
+                        <AppText style={styles.receiptLabel}>Payment method</AppText>
+                        <AppText style={styles.receiptValue}>
+                          {receiptData?.methodLine
+                            || (selectedReceipt.payment_channel
+                              ? `${selectedReceipt.payment_method || 'Paystack'} — ${humanizeChannel(selectedReceipt.payment_channel)}`
+                              : selectedReceipt.payment_method || 'Paystack')}
+                        </AppText>
+                      </View>
+                      {receiptData?.currency ? (
+                        <View style={styles.receiptRow}>
+                          <AppText style={styles.receiptLabel}>Currency</AppText>
+                          <AppText style={styles.receiptValue}>{receiptData.currency}</AppText>
+                        </View>
+                      ) : null}
+
+                      {receiptData?.rent ? (
+                        <View style={styles.receiptBlock}>
+                          {[
+                            ['Payment For', receiptData.rent.paymentFor],
+                            ['Property', receiptData.rent.propertyTitle],
+                            ['Property Address', receiptData.rent.propertyAddress],
+                            ['Tenant', receiptData.rent.tenantName],
+                            ['Landlord', receiptData.rent.landlordName],
+                            [
+                              'Rental Period',
+                              receiptData.rent.rentalPeriod
+                                ? receiptData.rent.rentalPeriod.end
+                                  ? `${receiptData.rent.rentalPeriod.start} - ${receiptData.rent.rentalPeriod.end}`
+                                  : receiptData.rent.rentalPeriod.start
+                                : null,
+                            ],
+                          ]
+                            .filter(([, value]) => value)
+                            .map(([label, value]) => (
+                              <View key={label} style={styles.receiptRow}>
+                                <AppText style={styles.receiptLabel}>{label}</AppText>
+                                <AppText style={styles.receiptValue}>{value}</AppText>
+                              </View>
+                            ))}
+                        </View>
+                      ) : null}
+
+                      {receiptData?.items?.length ? (
+                        <View style={styles.receiptBlock}>
+                          {receiptData.items.map((item, index) => (
+                            <View key={`${item.label}-${index}`} style={styles.receiptRow}>
+                              <AppText style={styles.receiptLabel}>{item.label}</AppText>
+                              <AppText style={styles.receiptValue}>{item.amount}</AppText>
+                            </View>
+                          ))}
+                          <View style={[styles.receiptRow, styles.receiptTotalRow]}>
+                            <AppText style={styles.receiptTotalLabel}>Total Paid</AppText>
+                            <AppText style={styles.receiptTotalAmount}>{receiptData.total}</AppText>
+                          </View>
+                        </View>
+                      ) : null}
+
+                      {Number(receiptData?.rent?.platformFee) > 0 ? (
+                        <AppText style={styles.receiptFeeNote}>
+                          {`Platform/Service Fee: ₦${Number(receiptData.rent.platformFee).toLocaleString()} (deducted from the landlord's payout - not charged to you)`}
+                        </AppText>
+                      ) : null}
+
+                      <AppText style={styles.receiptNotice}>
+                        This is a computer-generated receipt and does not require a signature.
+                      </AppText>
+                    </>
+                  )}
                 </View>
 
                 <View style={styles.receiptActions}>
@@ -646,6 +746,71 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: 'right',
     marginLeft: 12,
+  },
+  receiptDocType: {
+    color: colors.blue,
+    fontFamily: typography.bold,
+    fontSize: 11,
+    letterSpacing: 0.75,
+    marginTop: 6,
+    textTransform: 'uppercase',
+  },
+  receiptStatus: {
+    color: colors.success,
+  },
+  receiptLoading: {
+    alignItems: 'center',
+    paddingVertical: 22,
+  },
+  receiptLoadingText: {
+    color: colors.muted,
+    fontFamily: typography.medium,
+    fontSize: 13,
+    marginTop: 10,
+  },
+  receiptBlock: {
+    borderTopColor: colors.border,
+    borderTopWidth: 1,
+    marginTop: 14,
+    paddingTop: 4,
+  },
+  receiptTotalRow: {
+    borderTopColor: colors.border,
+    borderTopWidth: 1,
+    marginTop: 12,
+    paddingTop: 12,
+  },
+  receiptTotalLabel: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 14,
+  },
+  receiptTotalAmount: {
+    color: colors.blue,
+    flex: 1,
+    fontFamily: typography.bold,
+    fontSize: 14,
+    marginLeft: 12,
+    textAlign: 'right',
+  },
+  receiptFeeNote: {
+    backgroundColor: colors.surfaceBlue,
+    borderRadius: radius.sm,
+    color: colors.text,
+    fontFamily: typography.regular,
+    fontSize: 11,
+    lineHeight: 16,
+    marginTop: 14,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+  },
+  receiptNotice: {
+    color: colors.muted,
+    fontFamily: typography.regular,
+    fontSize: 10,
+    lineHeight: 15,
+    marginTop: 14,
+    textAlign: 'center',
   },
   receiptActions: {
     flexDirection: 'row',

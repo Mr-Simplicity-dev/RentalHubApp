@@ -329,7 +329,7 @@ const PrivacyPolicyScreen = () => (
     <DashboardSection title="1. Who controls your data">
       <PolicyCard>
         <AppText style={styles.paragraph}>
-          RentalHub NG ("RentalHub", "we", "us" or "our"), operating in Nigeria, is
+          Amana RentalHub NG ("RentalHub", "we", "us" or "our"), operating in Nigeria, is
           responsible for the personal data processed through rentalhub.com.ng, the
           Mobile Applications and connected RentalHub services, unless a
           separate notice says otherwise.

@@ -104,7 +104,7 @@ export const startAppUpdate = async (versionState = {}) => {
 
     await RentalHubUpdate.downloadAndInstallApk(
       directApkUrl,
-      `rentalhub-${latestVersion}.apk`
+      `amana-rentalhub-${latestVersion}.apk`
     );
     trackMobileEvent('app_update_direct_apk_started', {
       latest_version: latestVersion,

@@ -67,6 +67,11 @@ export const paymentService = {
     return response.data;
   },
 
+  getReceiptData: async (paymentId) => {
+    const response = await api.get(`/payments/receipt/${paymentId}`);
+    return response.data;
+  },
+
   downloadReceiptPdf: async (paymentId) => {
     const response = await api.get(`/payments/receipt-pdf/${paymentId}`, {
       responseType: 'arraybuffer',

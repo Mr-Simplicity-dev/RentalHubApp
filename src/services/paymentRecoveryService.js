@@ -28,7 +28,7 @@ const getQueryParam = (url, keys) => {
 
 export const inferPaymentFlow = (reference = '') => {
   const ref = String(reference).toUpperCase();
-  if (ref.startsWith('TRANSPORT_')) return 'transportation';
+  if (ref.startsWith('TRANSPORT_') || ref.startsWith('ARH_TRANSPORT_')) return 'transportation';
   if (ref.startsWith('FUMIGATION_') || ref.startsWith('CLEANING_')) return 'fumigation';
   if (ref.includes('WALLET')) return 'wallet';
   if (ref.includes('RENT')) return 'rent';

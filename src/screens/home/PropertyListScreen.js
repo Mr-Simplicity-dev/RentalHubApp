@@ -69,7 +69,8 @@ const PropertyListScreen = ({ route, navigation }) => {
   const genericPaymentReference = route?.params?.reference || route?.params?.trxref || '';
   const locationAccessReference =
     route?.params?.location_access_ref ||
-    (String(genericPaymentReference).startsWith('LOC_') ? genericPaymentReference : '');
+    (String(genericPaymentReference).startsWith('LOC_') ||
+    String(genericPaymentReference).startsWith('ARH_LOC_') ? genericPaymentReference : '');
   const activeFilterCount = FILTER_KEYS.filter(
     (key) => filters[key] !== '' && filters[key] !== null && filters[key] !== undefined
   ).length;
@@ -152,7 +153,9 @@ const PropertyListScreen = ({ route, navigation }) => {
   ]);
 
   useEffect(() => {
-    const isLocationReference = String(genericPaymentReference).startsWith('LOC_');
+    const refValue = String(genericPaymentReference);
+    // LEGACY compatibility: LOC_ (historical) and ARH_LOC_ (new).
+    const isLocationReference = refValue.startsWith('LOC_') || refValue.startsWith('ARH_LOC_');
     const shouldOpenRequest =
       route?.params?.request === '1' ||
       route?.params?.request === 1 ||

@@ -12,7 +12,7 @@ const DesktopOnlyScreen = ({ roleLabel, route }) => {
     <PremiumCenter
       icon="laptop-outline"
       title="Web console account"
-      message={`Your ${effectiveLabel || 'account'} is managed from the RentalHub NG web console. Open the site in a desktop browser to continue — sign out there when you are done.`}
+      message={`Your ${effectiveLabel || 'account'} is managed from the Amana RentalHub NG web console. Open the site in a desktop browser to continue — sign out there when you are done.`}
       actionLabel="Open web console"
       onAction={openConsole}
     />

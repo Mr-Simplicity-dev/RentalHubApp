@@ -68,7 +68,7 @@ const RequestRentHelpScreen = () => {
     if (!createdLink) return;
     try {
       await Share.share({
-        message: `Pay my rent securely on RentalHub NG: ${createdLink}`,
+        message: `Pay my rent securely on Amana RentalHub NG: ${createdLink}`,
         url: createdLink,
       });
     } catch (error) {

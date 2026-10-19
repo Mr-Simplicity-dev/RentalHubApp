@@ -261,7 +261,7 @@ const PropertyDetailScreen = ({ route, navigation }) => {
   const shareProperty = async () => {
     const link = `https://rentalhub.com.ng/properties/${propertyId}`;
     await Share.share({
-      message: `${property?.title || 'View this verified home'} on RentalHub NG\n${link}`,
+      message: `${property?.title || 'View this verified home'} on Amana RentalHub NG\n${link}`,
       title: property?.title || 'RentalHub property',
       url: link,
     });
