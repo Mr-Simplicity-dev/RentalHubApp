@@ -78,8 +78,8 @@ export const marketingOpsService = {
     const response = await api.get('/whatsapp-marketing/stats');
     return response.data;
   },
-  whatsappAudience: async ({ scope = 'all', user_type = '' } = {}) => {
-    const params = { scope };
+  whatsappAudience: async ({ scope = 'all', user_type = '', source = 'users' } = {}) => {
+    const params = { scope, source };
     if (scope === 'user_type' && user_type) params.user_type = user_type;
     const response = await api.get('/whatsapp-marketing/audience', { params });
     return response.data;
@@ -110,6 +110,22 @@ export const marketingOpsService = {
   },
   whatsappUploadMedia: async (formData) => {
     const response = await api.post('/whatsapp-marketing/media', formData);
+    return response.data;
+  },
+  whatsappContacts: async () => {
+    const response = await api.get('/whatsapp-marketing/contacts');
+    return response.data;
+  },
+  whatsappImportContacts: async (phones) => {
+    const response = await api.post('/whatsapp-marketing/contacts/import', { phones });
+    return response.data;
+  },
+  whatsappCheckContacts: async (payload = { all: true }) => {
+    const response = await api.post('/whatsapp-marketing/contacts/check', payload);
+    return response.data;
+  },
+  whatsappDeleteContact: async (id) => {
+    const response = await api.delete(`/whatsapp-marketing/contacts/${id}`);
     return response.data;
   },
 

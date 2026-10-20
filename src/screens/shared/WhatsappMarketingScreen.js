@@ -58,6 +58,7 @@ const emptyForm = {
   content: '',
   scope: 'all',
   user_type: '',
+  source: 'users',
   media: { type: '', url: '' },
   headerMedia: { type: '', url: '' },
 };
@@ -105,16 +106,27 @@ const WhatsappMarketingScreen = () => {
   const [uploading, setUploading] = useState('');
   const [noteModal, setNoteModal] = useState({ open: false, type: 'send', target: null, note: '', error: '' });
   const [statsModal, setStatsModal] = useState({ open: false, data: null });
+  const [contacts, setContacts] = useState([]);
+  const [contactStats, setContactStats] = useState(null);
+  const [showContacts, setShowContacts] = useState(false);
+  const [showPasteBox, setShowPasteBox] = useState(false);
+  const [contactPaste, setContactPaste] = useState('');
+  const [contactBusy, setContactBusy] = useState('');
 
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const [statsRes, campaignsRes] = await Promise.all([
+      const [statsRes, campaignsRes, contactsRes] = await Promise.all([
         marketingOpsService.whatsappStats(),
         marketingOpsService.whatsappCampaigns(),
+        marketingOpsService.whatsappContacts().catch(() => null),
       ]);
       setStats(statsRes?.data || null);
       setCampaigns(pickList(campaignsRes, ['data']));
+      if (contactsRes?.data) {
+        setContacts(contactsRes.data.contacts || []);
+        setContactStats(contactsRes.data.stats || null);
+      }
     } catch (err) {
       Toast.show({
         type: 'error',
@@ -143,8 +155,9 @@ const WhatsappMarketingScreen = () => {
     setAudienceLoading(true);
     try {
       const res = await marketingOpsService.whatsappAudience({
-        scope: form.scope,
-        user_type: form.user_type.trim(),
+        scope: form.source === 'users' ? form.scope : 'all',
+        user_type: form.source === 'users' ? form.user_type.trim() : '',
+        source: form.source,
       });
       setAudience(res?.data?.count ?? 0);
     } catch (err) {
@@ -243,7 +256,7 @@ const WhatsappMarketingScreen = () => {
     if (form.kind === 'text' && !form.content.trim() && !form.media.url.trim()) {
       return Toast.show({ type: 'info', text1: 'Write a message or attach media' });
     }
-    if (form.scope === 'user_type' && !form.user_type.trim()) {
+    if (form.source === 'users' && form.scope === 'user_type' && !form.user_type.trim()) {
       return Toast.show({ type: 'info', text1: 'Enter the user type to target' });
     }
 
@@ -253,8 +266,9 @@ const WhatsappMarketingScreen = () => {
         name: form.name.trim(),
         kind: form.kind,
         recipient_filter: {
-          scope: form.scope,
-          user_type: form.scope === 'user_type' ? form.user_type.trim() : null,
+          scope: form.source === 'users' ? form.scope : 'all',
+          user_type: form.source === 'users' && form.scope === 'user_type' ? form.user_type.trim() : null,
+          source: form.source,
         },
         media_type: form.kind === 'text' ? form.media.type || null : null,
         media_url: form.kind === 'text' ? form.media.url.trim() || null : null,
@@ -284,6 +298,71 @@ const WhatsappMarketingScreen = () => {
       Toast.show({ type: 'error', text1: 'Failed', text2: getErrorMessage(err, 'Could not create campaign') });
     } finally {
       setBusyKey(null);
+    }
+  };
+
+  const importPastedContacts = async () => {
+    const phones = String(contactPaste || '')
+      .split(/[\r\n,;]+/)
+      .map((p) => p.replace(/[\s"']/g, ''))
+      .filter((p) => p.length >= 10);
+
+    if (phones.length === 0) {
+      Toast.show({ type: 'info', text1: 'Paste at least one phone number' });
+      return;
+    }
+
+    setContactBusy('import');
+    try {
+      const res = await marketingOpsService.whatsappImportContacts(phones);
+      const data = res?.data || {};
+      Toast.show({
+        type: 'success',
+        text1: `Imported ${data.added ?? 0}`,
+        text2: `Duplicates ${data.duplicates ?? 0} · Invalid ${data.invalid ?? 0} · Total ${data.total ?? 0}`,
+      });
+      setContactPaste('');
+      setShowPasteBox(false);
+      await load();
+    } catch (err) {
+      Toast.show({ type: 'error', text1: 'Import failed', text2: getErrorMessage(err, 'Could not import numbers') });
+    } finally {
+      setContactBusy('');
+    }
+  };
+
+  const checkContacts = async () => {
+    setContactBusy('check');
+    try {
+      const res = await marketingOpsService.whatsappCheckContacts({ all: true });
+      const data = res?.data || {};
+      if ((data.checked ?? 0) === 0) {
+        Toast.show({ type: 'info', text1: 'Nothing new to check' });
+      } else {
+        Toast.show({
+          type: 'success',
+          text1: `Checked ${data.checked}`,
+          text2: `On WhatsApp ${data.valid ?? 0} · Not on WhatsApp ${data.invalid ?? 0}`,
+        });
+      }
+      await load();
+    } catch (err) {
+      Toast.show({ type: 'error', text1: 'Check failed', text2: getErrorMessage(err, 'WhatsApp check failed') });
+    } finally {
+      setContactBusy('');
+    }
+  };
+
+  const removeContact = async (contact) => {
+    setContactBusy(`del:${contact.id}`);
+    try {
+      await marketingOpsService.whatsappDeleteContact(contact.id);
+      Toast.show({ type: 'success', text1: 'Contact removed' });
+      await load();
+    } catch (err) {
+      Toast.show({ type: 'error', text1: 'Failed', text2: getErrorMessage(err, 'Could not remove contact') });
+    } finally {
+      setContactBusy('');
     }
   };
 
@@ -464,11 +543,22 @@ const WhatsappMarketingScreen = () => {
 
                   <AppText style={styles.mediaHeading}>Audience</AppText>
                   <ChannelToggle
-                    options={[{ value: 'all', label: 'All users' }, { value: 'user_type', label: 'By user type' }]}
-                    value={form.scope}
-                    onChange={(scope) => updateForm({ scope })}
+                    options={[
+                      { value: 'users', label: 'Users' },
+                      { value: 'contacts', label: 'Imported' },
+                      { value: 'both', label: 'Both' },
+                    ]}
+                    value={form.source}
+                    onChange={(source) => updateForm({ source })}
                   />
-                  {form.scope === 'user_type' ? (
+                  {form.source === 'users' ? (
+                    <ChannelToggle
+                      options={[{ value: 'all', label: 'All users' }, { value: 'user_type', label: 'By user type' }]}
+                      value={form.scope}
+                      onChange={(scope) => updateForm({ scope })}
+                    />
+                  ) : null}
+                  {form.source === 'users' && form.scope === 'user_type' ? (
                     <Input
                       label="User type"
                       value={form.user_type}
@@ -479,7 +569,7 @@ const WhatsappMarketingScreen = () => {
                   ) : null}
 
                   {audience !== null ? (
-                    <AppText style={styles.audienceText}>≈ {audience} user(s) will receive this campaign.</AppText>
+                    <AppText style={styles.audienceText}>≈ {audience} recipient(s) will receive this campaign.</AppText>
                   ) : null}
 
                   <PremiumButton
@@ -500,6 +590,118 @@ const WhatsappMarketingScreen = () => {
                 </PremiumCard>
               </>
             ) : null}
+
+            <PremiumSectionTitle
+              title="WhatsApp contacts"
+              subtitle="Numbers that are not platform users. Import them, then check who is on WhatsApp."
+            />
+            <PremiumCard>
+              <View style={styles.contactStatsRow}>
+                <View style={styles.contactStatBox}>
+                  <AppText style={styles.contactStatValue}>{contactStats?.total ?? 0}</AppText>
+                  <AppText style={styles.contactStatLabel}>Total</AppText>
+                </View>
+                <View style={[styles.contactStatBox, styles.contactStatValid]}>
+                  <AppText style={[styles.contactStatValue, styles.contactStatValidText]}>
+                    {contactStats?.valid ?? 0}
+                  </AppText>
+                  <AppText style={styles.contactStatLabel}>On WhatsApp</AppText>
+                </View>
+                <View style={[styles.contactStatBox, styles.contactStatInvalid]}>
+                  <AppText style={[styles.contactStatValue, styles.contactStatInvalidText]}>
+                    {contactStats?.invalid ?? 0}
+                  </AppText>
+                  <AppText style={styles.contactStatLabel}>Not on WA</AppText>
+                </View>
+                <View style={styles.contactStatBox}>
+                  <AppText style={[styles.contactStatValue, styles.contactStatMuted]}>
+                    {contactStats?.unknown ?? 0}
+                  </AppText>
+                  <AppText style={styles.contactStatLabel}>Not checked</AppText>
+                </View>
+              </View>
+
+              {showPasteBox ? (
+                <>
+                  <Input
+                    label="Paste phone numbers"
+                    value={contactPaste}
+                    onChangeText={setContactPaste}
+                    placeholder="0803..., 0809... (one per line or comma separated)"
+                    multiline
+                    numberOfLines={4}
+                    containerStyle={styles.fieldGap}
+                  />
+                  <PremiumButton
+                    title="Import numbers"
+                    icon="cloud-upload-outline"
+                    onPress={importPastedContacts}
+                    loading={contactBusy === 'import'}
+                    style={styles.fieldGap}
+                  />
+                </>
+              ) : null}
+
+              <PremiumButton
+                title={showPasteBox ? 'Close import box' : 'Import numbers (paste)'}
+                variant="secondary"
+                icon="add-circle-outline"
+                onPress={() => setShowPasteBox((v) => !v)}
+                style={styles.fieldGap}
+              />
+              <PremiumButton
+                title="Check on WhatsApp"
+                icon="checkmark-circle-outline"
+                onPress={checkContacts}
+                loading={contactBusy === 'check'}
+                style={styles.fieldGap}
+              />
+              <PremiumButton
+                title={showContacts ? 'Hide contacts' : `Show contacts (${contacts.length})`}
+                variant="secondary"
+                icon="people-outline"
+                onPress={() => setShowContacts((v) => !v)}
+                style={styles.fieldGap}
+              />
+            </PremiumCard>
+
+            {showContacts
+              ? contacts.map((c) => (
+                  <PremiumCard key={c.id}>
+                    <View style={styles.cardTop}>
+                      <View style={styles.cardCopy}>
+                        <AppText style={styles.cardTitle}>{c.phone}</AppText>
+                        <AppText style={styles.cardMeta}>{c.full_name || 'No name'} · {c.source}</AppText>
+                        {c.wa_checked_at ? (
+                          <AppText style={styles.cardMeta}>Checked {formatDate(c.wa_checked_at)}</AppText>
+                        ) : null}
+                      </View>
+                      <StatusPill
+                        label={
+                          c.wa_status === 'valid'
+                            ? 'On WhatsApp'
+                            : c.wa_status === 'invalid'
+                            ? 'Not on WhatsApp'
+                            : 'Not checked'
+                        }
+                        color={
+                          c.wa_status === 'valid' ? '#16a34a' : c.wa_status === 'invalid' ? '#dc2626' : colors.muted
+                        }
+                      />
+                    </View>
+                    <View style={styles.actions}>
+                      <PremiumButton
+                        title="Remove"
+                        variant="secondary"
+                        icon="trash-outline"
+                        onPress={() => removeContact(c)}
+                        loading={contactBusy === `del:${c.id}`}
+                        style={styles.actionButton}
+                      />
+                    </View>
+                  </PremiumCard>
+                ))
+              : null}
           </>
         }
         emptyTitle="No WhatsApp campaigns yet"
@@ -738,6 +940,23 @@ const styles = StyleSheet.create({
   modalHint: { color: colors.muted, fontFamily: typography.regular, fontSize: 11, lineHeight: 16, marginTop: 10 },
   modalActions: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginTop: 16 },
   statsRow: { flexDirection: 'row', gap: 8, marginTop: 14 },
+  contactStatsRow: { flexDirection: 'row', gap: 8 },
+  contactStatBox: {
+    flex: 1,
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
+    borderWidth: 1,
+    borderRadius: radius.md,
+    paddingVertical: 10,
+    alignItems: 'center',
+  },
+  contactStatValid: { backgroundColor: '#F0FDF4', borderColor: '#86EFAC' },
+  contactStatInvalid: { backgroundColor: '#FEF2F2', borderColor: '#FCA5A5' },
+  contactStatValue: { color: colors.ink, fontFamily: typography.bold, fontSize: 18 },
+  contactStatValidText: { color: '#15803D' },
+  contactStatInvalidText: { color: '#B91C1C' },
+  contactStatMuted: { color: colors.muted },
+  contactStatLabel: { color: colors.muted, fontFamily: typography.regular, fontSize: 10, marginTop: 2, textAlign: 'center' },
   statBox: {
     flex: 1,
     backgroundColor: colors.surface,
