@@ -21,6 +21,7 @@ import Toast from 'react-native-toast-message';
 import BrandImagePlaceholder from '../../components/common/BrandImagePlaceholder';
 import Button from '../../components/common/Button';
 import DamageReportCapture from '../../components/properties/DamageReportCapture';
+import PropertyVideoPlayer from '../../components/properties/PropertyVideoPlayer';
 import { AuthContext } from '../../context/AuthContext';
 import { useRealtime } from '../../context/RealtimeContext';
 import { applicationService } from '../../services/applicationService';
@@ -425,6 +426,12 @@ const PropertyDetailScreen = ({ route, navigation }) => {
           ) : null}
         </View>
 
+        {property.video_url ? (
+          <View style={styles.videoWrap}>
+            <PropertyVideoPlayer uri={property.video_url} />
+          </View>
+        ) : null}
+
         <View style={styles.content}>
           <View style={styles.headingRow}>
             <View style={styles.headingCopy}>
@@ -777,6 +784,11 @@ const styles = StyleSheet.create({
   content: {
     backgroundColor: colors.surface,
     padding: 20,
+  },
+  videoWrap: {
+    backgroundColor: colors.surface,
+    paddingHorizontal: 20,
+    paddingTop: 16,
   },
   headingRow: {
     alignItems: 'flex-start',

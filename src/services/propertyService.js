@@ -61,6 +61,14 @@ export const propertyService = {
     return response.data;
   },
 
+  // A property photo must be provably live. The server hands out a one-use
+  // ticket per capture, and rejects the listing unless the number of tickets
+  // matches the number of photos — the same contract the web camera uses.
+  createLiveCaptureSession: async () => {
+    const response = await api.post('/properties/image-capture-session');
+    return response.data;
+  },
+
   // Landlord property management
   createProperty: async (propertyData, config = {}) => {
     const formData = new FormData();

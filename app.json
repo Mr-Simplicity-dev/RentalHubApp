@@ -36,7 +36,8 @@
           "defaultChannel": "messages"
         }
       ],
-      "expo-sharing"
+      "expo-sharing",
+      "expo-video"
     ]
   }
 }

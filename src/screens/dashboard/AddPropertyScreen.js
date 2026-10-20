@@ -1,10 +1,13 @@
 import React, { useLayoutEffect, useState } from 'react';
-import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {Image, ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
+import LivePropertyCapture, {
+  MAX_PROPERTY_PHOTOS,
+} from '../../components/properties/LivePropertyCapture';
 import { propertyService } from '../../services/propertyService';
 import { getErrorMessage } from '../../utils/http';
 import { colors, radius, shadows, typography } from '../../theme';
@@ -14,6 +17,9 @@ const propertyTypes = ['apartment', 'house', 'duplex', 'studio', 'bungalow', 'fl
 
 const AddPropertyScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
+  const [captureOpen, setCaptureOpen] = useState(false);
+  const [images, setImages] = useState([]);
+  const [imageCaptureTokens, setImageCaptureTokens] = useState([]);
   const [form, setForm] = useState({
     title: '',
     description: '',
@@ -38,6 +44,16 @@ const AddPropertyScreen = ({ navigation }) => {
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
+  const handleCapture = (photo, token) => {
+    setImages((current) => [...current, photo]);
+    setImageCaptureTokens((current) => [...current, token]);
+  };
+
+  const handleRemovePhoto = (index) => {
+    setImages((current) => current.filter((_, itemIndex) => itemIndex !== index));
+    setImageCaptureTokens((current) => current.filter((_, tokenIndex) => tokenIndex !== index));
+  };
+
   const handleSubmit = async () => {
     if (
       !form.title.trim() ||
@@ -56,6 +72,27 @@ const AddPropertyScreen = ({ navigation }) => {
       });
       return;
     }
+
+    // The server refuses a listing without live photos, so catch it here with a
+    // clearer message instead of letting the upload fail.
+    if (images.length === 0) {
+      Toast.show({
+        type: 'error',
+        text1: 'Add property photos',
+        text2: 'Capture at least one live property photo before submitting.',
+      });
+      return;
+    }
+
+    if (imageCaptureTokens.length !== images.length) {
+      Toast.show({
+        type: 'error',
+        text1: 'Retake the photos',
+        text2: 'Every photo must be captured live before publishing.',
+      });
+      return;
+    }
+
     const latitude = Number(form.latitude);
     const longitude = Number(form.longitude);
     if (
@@ -78,6 +115,9 @@ const AddPropertyScreen = ({ navigation }) => {
         rent_amount: Number(form.rent_amount || 0),
         latitude,
         longitude,
+        images,
+        image_capture_source: 'live_camera',
+        image_capture_tokens: JSON.stringify(imageCaptureTokens),
       };
       const response = await propertyService.createProperty(payload);
       if (response.success) {
@@ -169,6 +209,42 @@ const AddPropertyScreen = ({ navigation }) => {
       </View>
       </View>
 
+      <AppText style={styles.sectionLabel}>PROPERTY PHOTOS</AppText>
+      <View style={styles.card}>
+        <AppText style={styles.fieldLabel}>Live photos</AppText>
+        <AppText style={styles.photoHint}>
+          Property photos must be captured live in the app. Gallery images are not accepted.
+        </AppText>
+
+        {images.length > 0 ? (
+          <View style={styles.photoGrid}>
+            {images.map((photo, index) => (
+              <View key={`${photo.uri}-${index}`} style={styles.photoItem}>
+                <Image source={{ uri: photo.uri }} style={styles.photoThumb} />
+                <TouchableOpacity
+                  accessibilityLabel={`Remove photo ${index + 1}`}
+                  onPress={() => handleRemovePhoto(index)}
+                  style={styles.photoRemove}>
+                  <Icon name="close" size={13} color={colors.white} />
+                </TouchableOpacity>
+              </View>
+            ))}
+          </View>
+        ) : null}
+
+        <TouchableOpacity
+          accessibilityLabel="Open live camera"
+          onPress={() => setCaptureOpen(true)}
+          style={[styles.captureButton, images.length >= MAX_PROPERTY_PHOTOS && styles.captureButtonDisabled]}>
+          <Icon name="camera-outline" size={19} color={colors.white} />
+          <AppText style={styles.captureButtonText}>
+            {images.length === 0
+              ? 'Open live camera'
+              : `Add more photos (${images.length}/${MAX_PROPERTY_PHOTOS})`}
+          </AppText>
+        </TouchableOpacity>
+      </View>
+
       <AppText style={styles.sectionLabel}>LOCATION</AppText>
       <View style={styles.card}>
       <Input label="State" value={form.state} onChangeText={(value) => onChange('state', value)} />
@@ -222,6 +298,14 @@ const AddPropertyScreen = ({ navigation }) => {
         <AppText style={styles.reviewText}>RentalHub reviews listings before they become publicly available.</AppText>
       </View>
     </ScrollView>
+
+    <LivePropertyCapture
+      visible={captureOpen}
+      photos={images}
+      onCapture={handleCapture}
+      onRemove={handleRemovePhoto}
+      onClose={() => setCaptureOpen(false)}
+    />
     </SafeAreaView>
   );
 };
@@ -251,6 +335,31 @@ const styles = StyleSheet.create({
   numberRow: { flexDirection: 'row', gap: 10 },
   numberField: { flex: 1 },
   coordinateHint: { color: colors.muted, fontFamily: typography.regular, fontSize: 13, lineHeight: 15, marginBottom: 10 },
+  photoHint: { color: colors.muted, fontFamily: typography.regular, fontSize: 13, lineHeight: 16, marginBottom: 12 },
+  photoGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 9, marginBottom: 13 },
+  photoItem: { height: 74, width: 74 },
+  photoThumb: { borderRadius: radius.md, height: '100%', width: '100%' },
+  photoRemove: {
+    alignItems: 'center',
+    backgroundColor: colors.danger,
+    borderRadius: 10,
+    height: 20,
+    justifyContent: 'center',
+    position: 'absolute',
+    right: -5,
+    top: -5,
+    width: 20,
+  },
+  captureButton: {
+    alignItems: 'center',
+    backgroundColor: colors.blue,
+    borderRadius: radius.md,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    paddingVertical: 13,
+  },
+  captureButtonDisabled: { opacity: 0.55 },
+  captureButtonText: { color: colors.white, fontFamily: typography.semibold, fontSize: 14, marginLeft: 8 },
   frequencyRow: { flexDirection: 'row', gap: 10 },
   frequency: { alignItems: 'center', backgroundColor: colors.surface, borderColor: colors.border, borderRadius: radius.md, borderWidth: 1, flex: 1, paddingVertical: 12 },
   frequencyActive: { backgroundColor: colors.surfaceBlue, borderColor: colors.blue },
