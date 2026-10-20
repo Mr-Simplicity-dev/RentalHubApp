@@ -318,8 +318,8 @@ const WhatsappMarketingScreen = () => {
       const data = res?.data || {};
       Toast.show({
         type: 'success',
-        text1: `Imported ${data.added ?? 0}`,
-        text2: `Duplicates ${data.duplicates ?? 0} · Invalid ${data.invalid ?? 0} · Total ${data.total ?? 0}`,
+        text1: `Imported ${data.added ?? 0} new`,
+        text2: `Already in system ${data.alreadyKnown ?? 0} · Duplicates ${data.duplicates ?? 0} · Invalid ${data.invalid ?? 0}`,
       });
       setContactPaste('');
       setShowPasteBox(false);
@@ -361,6 +361,23 @@ const WhatsappMarketingScreen = () => {
       await load();
     } catch (err) {
       Toast.show({ type: 'error', text1: 'Failed', text2: getErrorMessage(err, 'Could not remove contact') });
+    } finally {
+      setContactBusy('');
+    }
+  };
+
+  const removeInvalidContacts = async () => {
+    if ((contactStats?.invalid ?? 0) === 0) {
+      Toast.show({ type: 'info', text1: 'No invalid contacts to delete' });
+      return;
+    }
+    setContactBusy('delInvalid');
+    try {
+      const res = await marketingOpsService.whatsappDeleteInvalidContacts();
+      Toast.show({ type: 'success', text1: `Removed ${res?.data?.deleted ?? 0} invalid contact(s)` });
+      await load();
+    } catch (err) {
+      Toast.show({ type: 'error', text1: 'Failed', text2: getErrorMessage(err, 'Could not delete invalid contacts') });
     } finally {
       setContactBusy('');
     }
@@ -654,6 +671,14 @@ const WhatsappMarketingScreen = () => {
                 icon="checkmark-circle-outline"
                 onPress={checkContacts}
                 loading={contactBusy === 'check'}
+                style={styles.fieldGap}
+              />
+              <PremiumButton
+                title={`Delete all invalid (${contactStats?.invalid ?? 0})`}
+                variant="secondary"
+                icon="trash-outline"
+                onPress={removeInvalidContacts}
+                loading={contactBusy === 'delInvalid'}
                 style={styles.fieldGap}
               />
               <PremiumButton

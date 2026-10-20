@@ -128,6 +128,10 @@ export const marketingOpsService = {
     const response = await api.delete(`/whatsapp-marketing/contacts/${id}`);
     return response.data;
   },
+  whatsappDeleteInvalidContacts: async () => {
+    const response = await api.delete('/whatsapp-marketing/contacts/invalid');
+    return response.data;
+  },
 
   // Diaspora desk
   diasporaOverview: async () => {
