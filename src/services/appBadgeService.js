@@ -20,6 +20,26 @@ const toCount = (response) => {
 };
 
 export const fetchUnreadActivityCount = async () => {
+  // Prefer the server's single combined total so the count cannot drift
+  // between the icon badge and the in-app badge.
+  const activityResult = await Promise.allSettled([
+    notificationService.getUnreadActivity(),
+  ]);
+
+  if (activityResult[0].status === 'fulfilled') {
+    const data = activityResult[0].value?.data || {};
+    const total = Number(data.total ?? data.unread_count ?? 0);
+    const unreadNotifications = Number(data.unread_notifications || 0);
+    const unreadMessages = Number(data.unread_messages || 0);
+    if (Number.isFinite(total)) {
+      return {
+        total: Math.max(0, total),
+        unreadMessages: Math.max(0, unreadMessages),
+        unreadNotifications: Math.max(0, unreadNotifications),
+      };
+    }
+  }
+
   const [messageResult, notificationResult] = await Promise.allSettled([
     messageService.getUnreadCount(),
     notificationService.getUnreadCount(),

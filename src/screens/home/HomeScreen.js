@@ -15,6 +15,7 @@ import BrandMark from '../../components/brand/BrandMark';
 import PropertyCard from '../../components/properties/PropertyCard';
 import { useTourTarget } from '../../components/tour/TourTarget';
 import { AuthContext } from '../../context/AuthContext';
+import { fetchUnreadActivityCount } from '../../services/appBadgeService';
 import { propertyService } from '../../services/propertyService';
 import { colors, radius, shadows, typography } from '../../theme';
 import { getErrorMessage, pickList } from '../../utils/http';
@@ -34,6 +35,7 @@ const HomeScreen = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [featured, setFeatured] = useState([]);
   const [locations, setLocations] = useState([]);
+  const [unreadTotal, setUnreadTotal] = useState(0);
 
   const featuredCards = useMemo(() => featured.slice(0, 6), [featured]);
   const firstName = String(user?.full_name || user?.name || '').trim().split(/\s+/)[0];
@@ -72,6 +74,34 @@ const HomeScreen = ({ navigation }) => {
     loadHome();
   }, []);
 
+  // Keep the in-app badge in step with the icon badge while this screen is up.
+  useEffect(() => {
+    if (!isAuthenticated || !user?.id) {
+      setUnreadTotal(0);
+      return undefined;
+    }
+
+    let cancelled = false;
+    const refreshUnread = async () => {
+      try {
+        const counts = await fetchUnreadActivityCount();
+        if (!cancelled) setUnreadTotal(Number(counts?.total || 0));
+      } catch {
+        // Leave the previous number in place on a transient failure.
+      }
+    };
+
+    refreshUnread();
+    const intervalId = setInterval(refreshUnread, 30000);
+    const unsubscribe = navigation.addListener('focus', refreshUnread);
+
+    return () => {
+      cancelled = true;
+      clearInterval(intervalId);
+      unsubscribe();
+    };
+  }, [isAuthenticated, user?.id, navigation]);
+
   const goToPropertyList = (params = {}) => {
     navigation.navigate('PropertyList', params);
   };
@@ -108,7 +138,16 @@ const HomeScreen = ({ navigation }) => {
         }>
         <View style={styles.topBar}>
           {isAuthenticated ? (
-            <BrandMark compact />
+            <View style={styles.brandWrap}>
+              <BrandMark compact />
+              {unreadTotal > 0 ? (
+                <View style={styles.logoBadge}>
+                  <AppText style={styles.logoBadgeText}>
+                    {unreadTotal > 99 ? '99+' : unreadTotal}
+                  </AppText>
+                </View>
+              ) : null}
+            </View>
           ) : (
             <TouchableOpacity
               accessibilityLabel="Back to welcome screen"
@@ -121,7 +160,11 @@ const HomeScreen = ({ navigation }) => {
           )}
           <TouchableOpacity
             {...notificationsTourTarget}
-            accessibilityLabel={isAuthenticated ? 'Open notifications' : 'Sign in'}
+            accessibilityLabel={
+              isAuthenticated
+                ? `Open notifications${unreadTotal ? `, ${unreadTotal} unread` : ''}`
+                : 'Sign in'
+            }
             accessibilityRole="button"
             onPress={() =>
               navigation.navigate(isAuthenticated ? 'Notifications' : 'Login')
@@ -132,7 +175,13 @@ const HomeScreen = ({ navigation }) => {
               size={21}
               color={colors.navy}
             />
-            {isAuthenticated ? <View style={styles.notificationDot} /> : null}
+            {isAuthenticated && unreadTotal > 0 ? (
+              <View style={styles.actionBadge}>
+                <AppText style={styles.actionBadgeText}>
+                  {unreadTotal > 99 ? '99+' : unreadTotal}
+                </AppText>
+              </View>
+            ) : null}
           </TouchableOpacity>
         </View>
 
@@ -350,6 +399,49 @@ const styles = StyleSheet.create({
     right: 7,
     top: 7,
     width: 10,
+  },
+  brandWrap: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    position: 'relative',
+  },
+  logoBadge: {
+    alignItems: 'center',
+    backgroundColor: colors.danger,
+    borderColor: colors.white,
+    borderRadius: 9,
+    borderWidth: 2,
+    justifyContent: 'center',
+    minWidth: 20,
+    paddingHorizontal: 4,
+    position: 'absolute',
+    right: -8,
+    top: -6,
+  },
+  logoBadgeText: {
+    color: colors.white,
+    fontFamily: typography.bold,
+    fontSize: 10,
+    lineHeight: 14,
+  },
+  actionBadge: {
+    alignItems: 'center',
+    backgroundColor: colors.danger,
+    borderColor: colors.white,
+    borderRadius: 9,
+    borderWidth: 2,
+    justifyContent: 'center',
+    minWidth: 20,
+    paddingHorizontal: 4,
+    position: 'absolute',
+    right: -2,
+    top: -4,
+  },
+  actionBadgeText: {
+    color: colors.white,
+    fontFamily: typography.bold,
+    fontSize: 10,
+    lineHeight: 14,
   },
   intro: {
     paddingHorizontal: 20,

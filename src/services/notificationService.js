@@ -11,6 +11,14 @@ export const notificationService = {
     return response.data;
   },
 
+  // One number for everything unread (notifications + messages). The server
+  // owns this total so the phone badge, the app logo badge and the web badge
+  // all agree.
+  getUnreadActivity: async () => {
+    const response = await api.get('/notifications/unread/activity');
+    return response.data;
+  },
+
   markAsRead: async (notificationId) => {
     const response = await api.patch(`/notifications/${notificationId}/read`);
     return response.data;
