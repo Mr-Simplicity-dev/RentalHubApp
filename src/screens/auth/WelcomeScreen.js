@@ -71,17 +71,19 @@ const WelcomeScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-      {/* Language choice sits before sign-in so the whole app can follow it. */}
-      <View style={[styles.languageRow, isRTL && styles.languageRowRTL]}>
-        <LanguageDropdown tone="dark" />
-      </View>
-
       <View style={[styles.exploreHintWrap, isRTL && styles.exploreHintWrapRTL]} pointerEvents="none">
         <View style={styles.exploreArrow} />
         <Animated.View style={[styles.exploreHint, { transform: [{ translateY: hintBounce }] }]}>
           <Icon name="arrow-up" size={13} color={colors.navy} />
           <AppText style={styles.exploreHintText}>{t('welcome.exploreHint')}</AppText>
         </Animated.View>
+      </View>
+
+      {/* Language choice sits before sign-in so the whole app can follow it.
+          Centred on its own full-width row, below the "click here" hint and
+          clear of the eyebrow, so it never crowds either. */}
+      <View style={styles.languageRow}>
+        <LanguageDropdown fullWidth tone="dark" />
       </View>
 
       <ScrollView
@@ -178,13 +180,11 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
   languageRow: {
-    alignItems: 'flex-start',
-    marginTop: 2,
-    width: 210,
-  },
-  languageRowRTL: {
-    alignItems: 'flex-end',
-    alignSelf: 'flex-end',
+    alignItems: 'center',
+    marginTop: 18,
+    marginBottom: 26,
+    paddingHorizontal: 24,
+    width: '100%',
   },
   exploreButton: {
     alignItems: 'center',
@@ -200,6 +200,7 @@ const styles = StyleSheet.create({
   exploreHintWrap: {
     alignItems: 'flex-end',
     marginTop: 4,
+    marginBottom: 2,
     paddingRight: 6,
   },
   exploreHintWrapRTL: {

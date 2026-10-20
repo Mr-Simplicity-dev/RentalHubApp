@@ -15,7 +15,7 @@ import AppText from './AppText';
 // A compact dropdown that lets a signed-out visitor pick their language from
 // the welcome screen, before any account exists. It reads and writes the same
 // stored preference as Settings, so the choice survives sign-in.
-const LanguageDropdown = ({ tone = 'light' }) => {
+const LanguageDropdown = ({ tone = 'light', fullWidth = false }) => {
   const { language, languages, setLanguage, t } = useLanguage();
   const [open, setOpen] = useState(false);
   const [restartNeeded, setRestartNeeded] = useState(false);
@@ -47,7 +47,7 @@ const LanguageDropdown = ({ tone = 'light' }) => {
         accessibilityRole="button"
         accessibilityHint={t('welcome.languageHelp')}
         onPress={() => setOpen(true)}
-        style={[triggerStyle, styles.triggerBase]}
+        style={[triggerStyle, styles.triggerBase, fullWidth && styles.triggerFull]}
       >
         <Icon
           name="language-outline"
@@ -153,6 +153,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   triggerCopy: { flex: 1 },
+  triggerFull: {
+    alignSelf: 'stretch',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
   label: {
     color: colors.muted,
     fontFamily: typography.medium,
