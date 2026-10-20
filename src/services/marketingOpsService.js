@@ -10,28 +10,50 @@ export const marketingOpsService = {
     const response = await api.get('/email-marketing/campaigns');
     return response.data;
   },
-  sendEmailCampaign: async (campaignId) => {
-    const response = await api.post(`/email-marketing/campaigns/${campaignId}/send`);
+  // The backend refuses a launch without an approval note, so every send and
+  // retry carries one (the mobile UI collects it in a dialog).
+  sendEmailCampaign: async (campaignId, note) => {
+    const response = await api.post(`/email-marketing/campaigns/${campaignId}/send`, { note });
     return response.data;
   },
-  emailSubscribers: async () => {
-    const response = await api.get('/email-marketing/subscribers', { params: { limit: 200 } });
+  emailDeleteCampaign: async (campaignId, note) => {
+    const response = await api.delete(`/email-marketing/campaigns/${campaignId}`, { data: { note } });
+    return response.data;
+  },
+  emailCampaignStats: async (campaignId) => {
+    const response = await api.get(`/email-marketing/campaigns/${campaignId}/stats`);
+    return response.data;
+  },
+  emailSubscribers: async (params = { limit: 200 }) => {
+    const response = await api.get('/email-marketing/subscribers', { params });
     return response.data;
   },
   emailAddSubscriber: async ({ email, full_name }) => {
     const response = await api.post('/email-marketing/subscribers', { email, full_name });
     return response.data;
   },
-  emailDeleteSubscriber: async (id) => {
-    const response = await api.delete(`/email-marketing/subscribers/${id}`);
+  emailDeleteSubscriber: async (id, note) => {
+    const response = await api.delete(`/email-marketing/subscribers/${id}`, { data: { note } });
+    return response.data;
+  },
+  emailImportSubscribers: async (emails) => {
+    const response = await api.post('/email-marketing/subscribers/import', { emails });
+    return response.data;
+  },
+  emailDeleteUnsubscribed: async (note) => {
+    const response = await api.delete('/email-marketing/subscribers/unsubscribed', { data: { note } });
+    return response.data;
+  },
+  emailTemplates: async () => {
+    const response = await api.get('/email-marketing/templates');
     return response.data;
   },
   emailCreateTemplate: async ({ name, subject, htmlContent }) => {
-    const response = await api.post('/email-marketing/templates', { name, subject, htmlContent });
+    const response = await api.post('/email-marketing/templates', { name, subject, content_html: htmlContent });
     return response.data;
   },
-  emailCreateCampaign: async ({ name, subject, content_html }) => {
-    const response = await api.post('/email-marketing/campaigns', { name, subject, content_html });
+  emailCreateCampaign: async ({ name, subject, content_html, template_id }) => {
+    const response = await api.post('/email-marketing/campaigns', { name, subject, content_html, template_id });
     return response.data;
   },
 
@@ -44,32 +66,52 @@ export const marketingOpsService = {
     const response = await api.get('/sms-marketing/campaigns');
     return response.data;
   },
-  sendSmsCampaign: async (campaignId) => {
-    const response = await api.post(`/sms-marketing/campaigns/${campaignId}/send`);
+  sendSmsCampaign: async (campaignId, note) => {
+    const response = await api.post(`/sms-marketing/campaigns/${campaignId}/send`, { note });
     return response.data;
   },
-  retrySmsCampaign: async (campaignId) => {
-    const response = await api.post(`/sms-marketing/campaigns/${campaignId}/retry`);
+  retrySmsCampaign: async (campaignId, note) => {
+    const response = await api.post(`/sms-marketing/campaigns/${campaignId}/retry`, { note });
     return response.data;
   },
-  smsSubscribers: async () => {
-    const response = await api.get('/sms-marketing/subscribers', { params: { limit: 200 } });
+  smsDeleteCampaign: async (campaignId, note) => {
+    const response = await api.delete(`/sms-marketing/campaigns/${campaignId}`, { data: { note } });
+    return response.data;
+  },
+  smsCampaignStats: async (campaignId) => {
+    const response = await api.get(`/sms-marketing/campaigns/${campaignId}/stats`);
+    return response.data;
+  },
+  smsSubscribers: async (params = { limit: 200 }) => {
+    const response = await api.get('/sms-marketing/subscribers', { params });
     return response.data;
   },
   smsAddSubscriber: async ({ phone, full_name }) => {
     const response = await api.post('/sms-marketing/subscribers', { phone, full_name });
     return response.data;
   },
-  smsDeleteSubscriber: async (id) => {
-    const response = await api.delete(`/sms-marketing/subscribers/${id}`);
+  smsDeleteSubscriber: async (id, note) => {
+    const response = await api.delete(`/sms-marketing/subscribers/${id}`, { data: { note } });
+    return response.data;
+  },
+  smsImportSubscribers: async (phones) => {
+    const response = await api.post('/sms-marketing/subscribers/import', { phones });
+    return response.data;
+  },
+  smsDeleteUnsubscribed: async (note) => {
+    const response = await api.delete('/sms-marketing/subscribers/unsubscribed', { data: { note } });
+    return response.data;
+  },
+  smsTemplates: async () => {
+    const response = await api.get('/sms-marketing/templates');
     return response.data;
   },
   smsCreateTemplate: async ({ name, content }) => {
     const response = await api.post('/sms-marketing/templates', { name, content });
     return response.data;
   },
-  smsCreateCampaign: async ({ name, template_id }) => {
-    const response = await api.post('/sms-marketing/campaigns', { name, template_id });
+  smsCreateCampaign: async ({ name, template_id, content }) => {
+    const response = await api.post('/sms-marketing/campaigns', { name, template_id, content });
     return response.data;
   },
 
