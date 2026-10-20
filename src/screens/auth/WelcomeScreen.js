@@ -11,6 +11,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BrandMark from '../../components/brand/BrandMark';
 import AppUpdateIndicator from '../../components/common/AppUpdateIndicator';
+import LanguageDropdown from '../../components/common/LanguageDropdown';
+import { useLanguage } from '../../context/LanguageContext';
 import { colors, radius, shadows, typography } from '../../theme';
 import AppText from '../../components/common/AppText';
 
@@ -18,6 +20,7 @@ const logo = require('../../../assets/rentalhub-app-icon.png');
 
 const WelcomeScreen = ({ navigation }) => {
   const { height, width } = useWindowDimensions();
+  const { isRTL, t, textAlign } = useLanguage();
   const compact = height < 720 || width < 360;
   const contentY = useRef(new Animated.Value(22)).current;
   const contentOpacity = useRef(new Animated.Value(0)).current;
@@ -59,20 +62,25 @@ const WelcomeScreen = ({ navigation }) => {
       <View style={styles.top}>
         <BrandMark light compact />
         <TouchableOpacity
-          accessibilityLabel="Explore homes without signing in"
+          accessibilityLabel={t('welcome.explore')}
           accessibilityRole="button"
           onPress={() => navigation.navigate('Home')}
           style={styles.exploreButton}>
-          <AppText style={styles.exploreText}>Explore homes</AppText>
-          <Icon name="arrow-forward" size={17} color={colors.white} />
+          <AppText style={styles.exploreText}>{t('welcome.explore')}</AppText>
+          <Icon name={isRTL ? 'arrow-back' : 'arrow-forward'} size={17} color={colors.white} />
         </TouchableOpacity>
       </View>
 
-      <View style={styles.exploreHintWrap} pointerEvents="none">
+      {/* Language choice sits before sign-in so the whole app can follow it. */}
+      <View style={[styles.languageRow, isRTL && styles.languageRowRTL]}>
+        <LanguageDropdown tone="dark" />
+      </View>
+
+      <View style={[styles.exploreHintWrap, isRTL && styles.exploreHintWrapRTL]} pointerEvents="none">
         <View style={styles.exploreArrow} />
         <Animated.View style={[styles.exploreHint, { transform: [{ translateY: hintBounce }] }]}>
           <Icon name="arrow-up" size={13} color={colors.navy} />
-          <AppText style={styles.exploreHintText}>Click here to view listed properties</AppText>
+          <AppText style={styles.exploreHintText}>{t('welcome.exploreHint')}</AppText>
         </Animated.View>
       </View>
 
@@ -83,39 +91,39 @@ const WelcomeScreen = ({ navigation }) => {
       <Animated.View style={{ opacity: contentOpacity, transform: [{ translateY: contentY }] }}>
         <View style={styles.eyebrow}>
           <View style={styles.eyebrowDot} />
-          <AppText style={styles.eyebrowText}>VERIFIED RENTALS ACROSS NIGERIA</AppText>
+          <AppText style={[styles.eyebrowText, { textAlign }]}>{t('welcome.eyebrow')}</AppText>
         </View>
-        <AppText accessibilityRole="header" style={[styles.title, compact && styles.titleCompact]}>Your next home,{'\n'}handled with care.</AppText>
-        <AppText style={styles.subtitle}>
-          Find trusted properties, manage your tenancy and move with confidence—all in one place.
+        <AppText accessibilityRole="header" style={[styles.title, compact && styles.titleCompact, { textAlign }]}>{t('welcome.title')}</AppText>
+        <AppText style={[styles.subtitle, { textAlign }]}>
+          {t('welcome.subtitle')}
         </AppText>
 
         <View style={styles.actions}>
           <TouchableOpacity
-            accessibilityLabel="Create a RentalHub account"
+            accessibilityLabel={t('welcome.createAccount')}
             accessibilityRole="button"
             activeOpacity={0.86}
             onPress={() => navigation.navigate('Register')}
             style={styles.primaryButton}>
-            <AppText style={styles.primaryText}>Create an account</AppText>
+            <AppText style={styles.primaryText}>{t('welcome.createAccount')}</AppText>
             <View style={styles.primaryIcon}>
-              <Icon name="arrow-forward" size={19} color={colors.navy} />
+              <Icon name={isRTL ? 'arrow-back' : 'arrow-forward'} size={19} color={colors.navy} />
             </View>
           </TouchableOpacity>
 
           <TouchableOpacity
-            accessibilityLabel="Sign in to your RentalHub account"
+            accessibilityLabel={t('welcome.signIn')}
             accessibilityRole="button"
             activeOpacity={0.82}
             onPress={() => navigation.navigate('Login')}
             style={styles.secondaryButton}>
-            <AppText style={styles.secondaryText}>I already have an account</AppText>
+            <AppText style={styles.secondaryText}>{t('welcome.signIn')}</AppText>
           </TouchableOpacity>
         </View>
 
         <View style={styles.trustRow}>
           <Icon name="shield-checkmark" size={17} color="#8DB9F2" />
-          <AppText style={styles.trustText}>Secure identity and property verification</AppText>
+          <AppText style={styles.trustText}>{t('welcome.trust')}</AppText>
         </View>
 
       </Animated.View>
@@ -169,6 +177,15 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingTop: 10,
   },
+  languageRow: {
+    alignItems: 'flex-start',
+    marginTop: 2,
+    width: 210,
+  },
+  languageRowRTL: {
+    alignItems: 'flex-end',
+    alignSelf: 'flex-end',
+  },
   exploreButton: {
     alignItems: 'center',
     flexDirection: 'row',
@@ -184,6 +201,11 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     marginTop: 4,
     paddingRight: 6,
+  },
+  exploreHintWrapRTL: {
+    alignItems: 'flex-start',
+    paddingLeft: 6,
+    paddingRight: 0,
   },
   exploreArrow: {
     borderBottomColor: colors.gold,
