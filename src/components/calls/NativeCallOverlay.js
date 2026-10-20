@@ -179,17 +179,28 @@ const NativeCallOverlay = () => {
     setMediaStatus(videoCall ? 'requesting_camera' : 'requesting_microphone');
 
     try {
-      const stream = await mediaDevices.getUserMedia({
-        audio: true,
-        video: videoCall
-          ? {
-              facingMode: 'user',
-              width: 640,
-              height: 480,
-              frameRate: 24,
-            }
-          : false,
-      });
+      const videoConstraints = videoCall
+        ? {
+            facingMode: 'user',
+            width: { ideal: 1280 },
+            height: { ideal: 720 },
+            frameRate: { ideal: 30, max: 30 },
+          }
+        : false;
+
+      let stream;
+      try {
+        stream = await mediaDevices.getUserMedia({ audio: true, video: videoConstraints });
+      } catch (highQualityError) {
+        // A slow phone or a weak camera may refuse 720p. Falling back to a
+        // lower resolution keeps the call alive instead of failing it.
+        if (!videoCall) throw highQualityError;
+
+        stream = await mediaDevices.getUserMedia({
+          audio: true,
+          video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 }, frameRate: { ideal: 24 } },
+        });
+      }
 
       localStreamRef.current = stream;
       setLocalStream(stream);
