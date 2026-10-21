@@ -21,6 +21,23 @@ import AppText from '../common/AppText';
 
 export const MAX_PROPERTY_PHOTOS = 8;
 
+/**
+ * The guided shot list. It is the running order the landlord is prompted to
+ * shoot in, and the order the server builds the automatic tour video in, so the
+ * video walks in from the street and moves through the house. Keep this in step
+ * with GUIDED_SHOTS in the server's propertyTourVideo.js.
+ */
+export const GUIDED_SHOT_PROMPTS = [
+  { key: 'building_front', label: 'Front of the building', hint: 'Stand outside and face the main entrance.' },
+  { key: 'compound', label: 'Compound / surroundings', hint: 'Show the yard, gate and parking space.' },
+  { key: 'sitting_room', label: 'Sitting room', hint: 'Stand at the doorway and show the whole room.' },
+  { key: 'kitchen', label: 'Kitchen', hint: 'Capture the counters and fittings.' },
+  { key: 'bedroom', label: 'Bedroom', hint: 'Show the room and any wardrobe.' },
+  { key: 'bathroom', label: 'Bathroom', hint: 'Show the fittings and water source.' },
+  { key: 'toilet', label: 'Toilet', hint: 'Show the toilet and its condition.' },
+  { key: 'street', label: 'Street outside', hint: 'Show the road and how the house is reached.' },
+];
+
 const LivePropertyCapture = ({ visible, photos = [], onCapture, onRemove, onClose }) => {
   const [permission, requestPermission] = useCameraPermissions();
   const cameraRef = useRef(null);
@@ -96,6 +113,7 @@ const LivePropertyCapture = ({ visible, photos = [], onCapture, onRemove, onClos
   }, [busy, ready, photos.length, onCapture]);
 
   const canCaptureMore = photos.length < MAX_PROPERTY_PHOTOS;
+  const currentShot = GUIDED_SHOT_PROMPTS[Math.min(photos.length, GUIDED_SHOT_PROMPTS.length - 1)];
 
   const renderBody = () => {
     if (!permission) {
@@ -149,6 +167,16 @@ const LivePropertyCapture = ({ visible, photos = [], onCapture, onRemove, onClos
           </TouchableOpacity>
         </View>
 
+        {canCaptureMore ? (
+          <View style={styles.promptCard} pointerEvents="none">
+            <AppText style={styles.promptStep}>
+              Shot {photos.length + 1} of {Math.min(MAX_PROPERTY_PHOTOS, GUIDED_SHOT_PROMPTS.length)}
+            </AppText>
+            <AppText style={styles.promptTitle}>{currentShot.label}</AppText>
+            <AppText style={styles.promptHint}>{currentShot.hint}</AppText>
+          </View>
+        ) : null}
+
         <View style={styles.bottomBar}>
           <TouchableOpacity
             accessibilityLabel="Take photo"
@@ -167,6 +195,13 @@ const LivePropertyCapture = ({ visible, photos = [], onCapture, onRemove, onClos
             {photos.map((photo, index) => (
               <View key={`${photo.uri}-${index}`} style={styles.stripItem}>
                 <Image source={{ uri: photo.uri }} style={styles.stripImage} />
+                {GUIDED_SHOT_PROMPTS[index] ? (
+                  <View style={styles.stripLabel}>
+                    <AppText style={styles.stripLabelText} numberOfLines={1}>
+                      {index + 1}. {GUIDED_SHOT_PROMPTS[index].label}
+                    </AppText>
+                  </View>
+                ) : null}
                 <TouchableOpacity
                   accessibilityLabel={`Remove photo ${index + 1}`}
                   onPress={() => onRemove?.(index)}
@@ -195,6 +230,29 @@ const styles = StyleSheet.create({
   centeredText: { color: '#CBD5E1', fontSize: 14, lineHeight: 20, marginBottom: 18, textAlign: 'center' },
   cameraWrap: { flex: 1 },
   flash: { ...StyleSheet.absoluteFillObject, backgroundColor: colors.white },
+  // Guided prompt sits mid-frame so the landlord reads it while composing the shot.
+  promptCard: {
+    alignSelf: 'center',
+    backgroundColor: 'rgba(11,18,32,0.78)',
+    borderRadius: radius.md,
+    marginTop: 18,
+    maxWidth: 320,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  promptStep: { color: colors.gold, fontSize: 11, fontWeight: '800', letterSpacing: 0.8, textTransform: 'uppercase' },
+  promptTitle: { color: colors.white, fontSize: 17, fontWeight: '800', marginTop: 4 },
+  promptHint: { color: '#CBD5E1', fontSize: 12.5, lineHeight: 18, marginTop: 3 },
+  stripLabel: {
+    backgroundColor: 'rgba(11,18,32,0.82)',
+    bottom: 0,
+    left: 0,
+    paddingHorizontal: 5,
+    paddingVertical: 2,
+    position: 'absolute',
+    right: 0,
+  },
+  stripLabelText: { color: colors.white, fontSize: 9.5, fontWeight: '700' },
   topBar: {
     alignItems: 'center',
     flexDirection: 'row',
