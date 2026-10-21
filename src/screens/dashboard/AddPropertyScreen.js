@@ -5,8 +5,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
-import LivePropertyCapture, {
+import {
   MAX_PROPERTY_PHOTOS,
+  MAX_PROPERTY_CLIPS,
+  GUIDED_SHOT_PROMPTS,
 } from '../../components/properties/LivePropertyCapture';
 import { propertyService } from '../../services/propertyService';
 import { getErrorMessage } from '../../utils/http';
@@ -20,6 +22,8 @@ const AddPropertyScreen = ({ navigation }) => {
   const [captureOpen, setCaptureOpen] = useState(false);
   const [images, setImages] = useState([]);
   const [imageCaptureTokens, setImageCaptureTokens] = useState([]);
+  const [clips, setClips] = useState([]);
+  const [clipCaptureTokens, setClipCaptureTokens] = useState([]);
   const [form, setForm] = useState({
     title: '',
     description: '',
@@ -52,6 +56,16 @@ const AddPropertyScreen = ({ navigation }) => {
   const handleRemovePhoto = (index) => {
     setImages((current) => current.filter((_, itemIndex) => itemIndex !== index));
     setImageCaptureTokens((current) => current.filter((_, tokenIndex) => tokenIndex !== index));
+  };
+
+  const handleRecordClip = (clip, token) => {
+    setClips((current) => [...current, clip]);
+    setClipCaptureTokens((current) => [...current, token]);
+  };
+
+  const handleRemoveClip = (index) => {
+    setClips((current) => current.filter((_, itemIndex) => itemIndex !== index));
+    setClipCaptureTokens((current) => current.filter((_, tokenIndex) => tokenIndex !== index));
   };
 
   const handleSubmit = async () => {
@@ -121,6 +135,20 @@ const AddPropertyScreen = ({ navigation }) => {
       };
       const response = await propertyService.createProperty(payload);
       if (response.success) {
+        // Clips are optional; upload them after the listing exists.
+        const createdId = response.data?.id || response.data?.property?.id;
+        if (createdId && clips.length && clipCaptureTokens.length === clips.length) {
+          try {
+            await propertyService.uploadClips(createdId, clips, clipCaptureTokens, []);
+          } catch (error) {
+            Toast.show({
+              type: 'info',
+              text1: 'Property created',
+              text2: 'The listing is live, but the clips could not be added.',
+            });
+          }
+        }
+
         Toast.show({ type: 'success', text1: 'Property created' });
         navigation.navigate('MyProperties');
       } else {
@@ -213,7 +241,7 @@ const AddPropertyScreen = ({ navigation }) => {
       <View style={styles.card}>
         <AppText style={styles.fieldLabel}>Live photos</AppText>
         <AppText style={styles.photoHint}>
-          Property photos must be captured live in the app. Gallery images are not accepted.
+          Property photos must be captured live in the app. Gallery images are not accepted. Up to 8 photos. Add optional clips in photo/clip mode.
         </AppText>
 
         {images.length > 0 ? (
@@ -232,15 +260,51 @@ const AddPropertyScreen = ({ navigation }) => {
           </View>
         ) : null}
 
+        {images.length > 0 || clips.length > 0 ? (
+          <View style={styles.photoGrid}>
+            {images.map((photo, index) => (
+              <View key={`${photo.uri}-${index}`} style={styles.photoItem}>
+                <Image source={{ uri: photo.uri }} style={styles.photoThumb} />
+                <TouchableOpacity
+                  accessibilityLabel={`Remove photo ${index + 1}`}
+                  onPress={() => handleRemovePhoto(index)}
+                  style={styles.photoRemove}>
+                  <Icon name="close" size={13} color={colors.white} />
+                </TouchableOpacity>
+              </View>
+            ))}
+            {clips.map((clip, index) => (
+              <View key={`${clip.uri}-${index}`} style={styles.clipItem}>
+                <View style={styles.clipIcon}>
+                  <Icon name="videocam" size={16} color={colors.white} />
+                </View>
+                <AppText style={styles.clipLabel} numberOfLines={1}>
+                  Clip {index + 1}
+                </AppText>
+                <TouchableOpacity
+                  accessibilityLabel={`Remove clip ${index + 1}`}
+                  onPress={() => handleRemoveClip(index)}
+                  style={styles.photoRemove}>
+                  <Icon name="close" size={13} color={colors.white} />
+                </TouchableOpacity>
+              </View>
+            ))}
+          </View>
+        ) : null}
+
         <TouchableOpacity
           accessibilityLabel="Open live camera"
           onPress={() => setCaptureOpen(true)}
-          style={[styles.captureButton, images.length >= MAX_PROPERTY_PHOTOS && styles.captureButtonDisabled]}>
+          disabled={images.length >= MAX_PROPERTY_PHOTOS && clips.length >= MAX_PROPERTY_CLIPS}
+          style={[
+            styles.captureButton,
+            images.length >= MAX_PROPERTY_PHOTOS && clips.length >= MAX_PROPERTY_CLIPS && styles.captureButtonDisabled,
+          ]}>
           <Icon name="camera-outline" size={19} color={colors.white} />
           <AppText style={styles.captureButtonText}>
-            {images.length === 0
-              ? 'Open live camera'
-              : `Add more photos (${images.length}/${MAX_PROPERTY_PHOTOS})`}
+            {images.length === 0 && clips.length === 0
+              ? 'Open live camera (Photos & Clips)'
+              : `Add more (Photos ${images.length}/${MAX_PROPERTY_PHOTOS} • Clips ${clips.length}/${MAX_PROPERTY_CLIPS})`}
           </AppText>
         </TouchableOpacity>
       </View>
@@ -304,6 +368,9 @@ const AddPropertyScreen = ({ navigation }) => {
       photos={images}
       onCapture={handleCapture}
       onRemove={handleRemovePhoto}
+      clips={clips}
+      onRecordClip={handleRecordClip}
+      onRemoveClip={handleRemoveClip}
       onClose={() => setCaptureOpen(false)}
     />
     </SafeAreaView>
@@ -335,7 +402,23 @@ const styles = StyleSheet.create({
   numberRow: { flexDirection: 'row', gap: 10 },
   numberField: { flex: 1 },
   coordinateHint: { color: colors.muted, fontFamily: typography.regular, fontSize: 13, lineHeight: 15, marginBottom: 10 },
-  photoHint: { color: colors.muted, fontFamily: typography.regular, fontSize: 13, lineHeight: 16, marginBottom: 12 },
+  clipItem: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(11,18,32,0.82)',
+    borderRadius: radius.md,
+    height: 74,
+    justifyContent: 'center',
+    width: 74,
+  },
+  clipIcon: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,0.14)',
+    borderRadius: 18,
+    height: 36,
+    justifyContent: 'center',
+    width: 36,
+  },
+  clipLabel: { color: colors.white, fontFamily: typography.semibold, fontSize: 9.5, marginTop: 3 },
   photoGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 9, marginBottom: 13 },
   photoItem: { height: 74, width: 74 },
   photoThumb: { borderRadius: radius.md, height: '100%', width: '100%' },

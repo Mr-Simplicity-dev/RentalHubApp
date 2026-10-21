@@ -20,6 +20,8 @@ import AppText from '../common/AppText';
  */
 
 export const MAX_PROPERTY_PHOTOS = 8;
+export const MAX_PROPERTY_CLIPS = 4;
+export const MAX_CLIP_SECONDS = 6;
 
 /**
  * The guided shot list. It is the running order the landlord is prompted to
@@ -38,13 +40,26 @@ export const GUIDED_SHOT_PROMPTS = [
   { key: 'street', label: 'Street outside', hint: 'Show the road and how the house is reached.' },
 ];
 
-const LivePropertyCapture = ({ visible, photos = [], onCapture, onRemove, onClose }) => {
+const LivePropertyCapture = ({
+  visible,
+  photos = [],
+  onCapture,
+  onRemove,
+  clips = [],
+  onRecordClip,
+  onRemoveClip,
+  onClose,
+}) => {
   const [permission, requestPermission] = useCameraPermissions();
   const cameraRef = useRef(null);
   const [facing, setFacing] = useState('back');
   const [ready, setReady] = useState(false);
   const [busy, setBusy] = useState(false);
   const [flash, setFlash] = useState(false);
+  const [mode, setMode] = useState('photo');
+  const [recording, setRecording] = useState(false);
+  const [seconds, setSeconds] = useState(0);
+  const clipTimerRef = useRef(null);
 
   useEffect(() => {
     if (visible && permission && !permission.granted) {
@@ -53,8 +68,20 @@ const LivePropertyCapture = ({ visible, photos = [], onCapture, onRemove, onClos
   }, [visible, permission, requestPermission]);
 
   useEffect(() => {
-    if (!visible) setReady(false);
+    if (!visible) {
+      setReady(false);
+      setMode('photo');
+      setRecording(false);
+      setSeconds(0);
+    }
   }, [visible]);
+
+  useEffect(
+    () => () => {
+      if (clipTimerRef.current) clearInterval(clipTimerRef.current);
+    },
+    []
+  );
 
   const takePhoto = useCallback(async () => {
     if (busy || !cameraRef.current || !ready) return;
@@ -112,7 +139,82 @@ const LivePropertyCapture = ({ visible, photos = [], onCapture, onRemove, onClos
     }
   }, [busy, ready, photos.length, onCapture]);
 
+  const startRecording = useCallback(async () => {
+    if (busy || recording || !cameraRef.current || !ready) return;
+
+    if (clips.length >= MAX_PROPERTY_CLIPS) {
+      Toast.show({
+        type: 'info',
+        text1: 'Clip limit reached',
+        text2: `You can record up to ${MAX_PROPERTY_CLIPS} property clips.`,
+      });
+      return;
+    }
+
+    setBusy(true);
+    setRecording(true);
+    setSeconds(0);
+
+    clipTimerRef.current = setInterval(() => {
+      setSeconds((current) => current + 1);
+    }, 1000);
+
+    try {
+      const clip = await cameraRef.current.recordAsync({ maxDuration: MAX_CLIP_SECONDS });
+      if (!clip?.uri) {
+        Toast.show({ type: 'error', text1: 'Could not record clip', text2: 'Please try again.' });
+        return;
+      }
+
+      // Same rule as the photos: the ticket is asked for after the recording.
+      const session = await propertyService.createLiveCaptureSession();
+      const token = session?.data?.token;
+
+      if (!session?.success || !token) {
+        Toast.show({
+          type: 'error',
+          text1: 'Could not verify live capture',
+          text2: 'Please record the clip again.',
+        });
+        return;
+      }
+
+      onRecordClip?.(
+        {
+          uri: clip.uri,
+          type: 'video/mp4',
+          fileName: `property-clip-${Date.now()}.mp4`,
+        },
+        token
+      );
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Recording failed',
+        text2: error?.response?.data?.message || 'Could not record the clip. Please try again.',
+      });
+    } finally {
+      if (clipTimerRef.current) {
+        clearInterval(clipTimerRef.current);
+        clipTimerRef.current = null;
+      }
+      setRecording(false);
+      setSeconds(0);
+      setBusy(false);
+    }
+  }, [busy, clips.length, onRecordClip, ready, recording]);
+
+  const stopRecording = useCallback(() => {
+    if (!recording || !cameraRef.current) return;
+    try {
+      cameraRef.current.stopRecording();
+    } catch (error) {
+      // stopRecording throws if the recorder already finished on its own.
+    }
+  }, [recording]);
+
   const canCaptureMore = photos.length < MAX_PROPERTY_PHOTOS;
+  const canRecordMore = clips.length < MAX_PROPERTY_CLIPS;
   const currentShot = GUIDED_SHOT_PROMPTS[Math.min(photos.length, GUIDED_SHOT_PROMPTS.length - 1)];
 
   const renderBody = () => {
@@ -143,7 +245,7 @@ const LivePropertyCapture = ({ visible, photos = [], onCapture, onRemove, onClos
           ref={cameraRef}
           style={StyleSheet.absoluteFill}
           facing={facing}
-          mode="picture"
+          mode={mode === 'clip' ? 'video' : 'picture'}
           onCameraReady={() => setReady(true)}
         />
         {flash ? <View style={styles.flash} /> : null}
@@ -154,10 +256,21 @@ const LivePropertyCapture = ({ visible, photos = [], onCapture, onRemove, onClos
             style={styles.topButton}>
             <Icon name="close" size={22} color={colors.white} />
           </TouchableOpacity>
-          <View style={styles.counterPill}>
-            <AppText style={styles.counterText}>
-              {photos.length} / {MAX_PROPERTY_PHOTOS}
-            </AppText>
+          <View style={styles.modePill}>
+            <TouchableOpacity
+              accessibilityLabel="Photo mode"
+              disabled={recording}
+              onPress={() => setMode('photo')}
+              style={[styles.modeButton, mode === 'photo' && styles.modeButtonActive]}>
+              <AppText style={[styles.modeText, mode === 'photo' && styles.modeTextActive]}>Photo</AppText>
+            </TouchableOpacity>
+            <TouchableOpacity
+              accessibilityLabel="Clip mode"
+              disabled={recording}
+              onPress={() => setMode('clip')}
+              style={[styles.modeButton, mode === 'clip' && styles.modeButtonActive]}>
+              <AppText style={[styles.modeText, mode === 'clip' && styles.modeTextActive]}>Clip</AppText>
+            </TouchableOpacity>
           </View>
           <TouchableOpacity
             accessibilityLabel="Switch camera"
@@ -167,7 +280,7 @@ const LivePropertyCapture = ({ visible, photos = [], onCapture, onRemove, onClos
           </TouchableOpacity>
         </View>
 
-        {canCaptureMore ? (
+        {mode === 'photo' && canCaptureMore ? (
           <View style={styles.promptCard} pointerEvents="none">
             <AppText style={styles.promptStep}>
               Shot {photos.length + 1} of {Math.min(MAX_PROPERTY_PHOTOS, GUIDED_SHOT_PROMPTS.length)}
@@ -177,17 +290,46 @@ const LivePropertyCapture = ({ visible, photos = [], onCapture, onRemove, onClos
           </View>
         ) : null}
 
+        {mode === 'clip' ? (
+          <View style={styles.promptCard} pointerEvents="none">
+            <AppText style={styles.promptStep}>
+              Clip {clips.length + 1} of {MAX_PROPERTY_CLIPS}
+            </AppText>
+            <AppText style={styles.promptTitle}>
+              {recording ? `Recording... ${seconds}s / ${MAX_CLIP_SECONDS}s` : 'Film a short clip'}
+            </AppText>
+            <AppText style={styles.promptHint}>
+              Clips are slowed down and woven into your automatic tour video.
+            </AppText>
+          </View>
+        ) : null}
+
         <View style={styles.bottomBar}>
-          <TouchableOpacity
-            accessibilityLabel="Take photo"
-            disabled={busy || !ready || !canCaptureMore}
-            onPress={takePhoto}
-            style={[
-              styles.shutter,
-              (busy || !ready || !canCaptureMore) && styles.shutterDisabled,
-            ]}>
-            <View style={styles.shutterInner} />
-          </TouchableOpacity>
+          {mode === 'photo' ? (
+            <TouchableOpacity
+              accessibilityLabel="Take photo"
+              disabled={busy || !ready || !canCaptureMore}
+              onPress={takePhoto}
+              style={[
+                styles.shutter,
+                (busy || !ready || !canCaptureMore) && styles.shutterDisabled,
+              ]}>
+              <View style={styles.shutterInner} />
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              accessibilityLabel={recording ? 'Stop recording' : 'Record clip'}
+              disabled={(!ready || !canRecordMore) || (!recording && busy)}
+              onPress={recording ? stopRecording : startRecording}
+              style={[
+                styles.shutter,
+                styles.shutterClip,
+                recording && styles.shutterRecording,
+                !ready || !canRecordMore ? styles.shutterDisabled : null,
+              ]}>
+              <View style={recording ? styles.stopInner : styles.recordInner} />
+            </TouchableOpacity>
+          )}
         </View>
 
         {photos.length > 0 ? (
@@ -205,6 +347,27 @@ const LivePropertyCapture = ({ visible, photos = [], onCapture, onRemove, onClos
                 <TouchableOpacity
                   accessibilityLabel={`Remove photo ${index + 1}`}
                   onPress={() => onRemove?.(index)}
+                  style={styles.stripRemove}>
+                  <Icon name="close" size={13} color={colors.white} />
+                </TouchableOpacity>
+              </View>
+            ))}
+          </View>
+        ) : null}
+
+        {clips.length > 0 ? (
+          <View style={styles.clipStrip}>
+            {clips.map((clip, index) => (
+              <View key={`${clip.uri}-${index}`} style={styles.clipItem}>
+                <View style={styles.clipIcon}>
+                  <Icon name="videocam" size={16} color={colors.white} />
+                </View>
+                <AppText style={styles.clipLabel} numberOfLines={1}>
+                  Clip {index + 1}
+                </AppText>
+                <TouchableOpacity
+                  accessibilityLabel={`Remove clip ${index + 1}`}
+                  onPress={() => onRemoveClip?.(index)}
                   style={styles.stripRemove}>
                   <Icon name="close" size={13} color={colors.white} />
                 </TouchableOpacity>
@@ -275,6 +438,46 @@ const styles = StyleSheet.create({
     paddingVertical: 7,
   },
   counterText: { color: colors.white, fontSize: 13, fontWeight: '700' },
+  modePill: {
+    backgroundColor: 'rgba(0,0,0,0.45)',
+    borderRadius: radius.pill,
+    flexDirection: 'row',
+    padding: 3,
+  },
+  modeButton: {
+    borderRadius: radius.pill,
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+  },
+  modeButtonActive: { backgroundColor: colors.gold },
+  modeText: { color: '#CBD5E1', fontSize: 13, fontWeight: '700' },
+  modeTextActive: { color: '#0B1220' },
+  clipStrip: {
+    bottom: 26,
+    flexDirection: 'row',
+    gap: 9,
+    left: 0,
+    paddingHorizontal: 16,
+    position: 'absolute',
+    right: 0,
+  },
+  clipItem: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(11,18,32,0.82)',
+    borderRadius: radius.md,
+    height: 62,
+    justifyContent: 'center',
+    width: 72,
+  },
+  clipIcon: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,0.14)',
+    borderRadius: 18,
+    height: 36,
+    justifyContent: 'center',
+    width: 36,
+  },
+  clipLabel: { color: colors.white, fontSize: 9.5, fontWeight: '700', marginTop: 3 },
   bottomBar: { alignItems: 'center', bottom: 118, left: 0, position: 'absolute', right: 0 },
   shutter: {
     alignItems: 'center',
@@ -287,6 +490,10 @@ const styles = StyleSheet.create({
   },
   shutterDisabled: { opacity: 0.45 },
   shutterInner: { backgroundColor: colors.white, borderRadius: 30, height: 60, width: 60 },
+  shutterClip: { borderColor: colors.white },
+  shutterRecording: { borderColor: colors.danger },
+  recordInner: { backgroundColor: colors.danger, borderRadius: 12, height: 30, width: 30 },
+  stopInner: { backgroundColor: colors.danger, borderRadius: 6, height: 28, width: 28 },
   strip: {
     bottom: 26,
     flexDirection: 'row',
