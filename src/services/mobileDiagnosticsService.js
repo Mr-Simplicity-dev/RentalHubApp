@@ -13,6 +13,18 @@ const getAppVersion = () =>
   Constants.manifest?.version ||
   null;
 
+const getBuildNumber = () => {
+  const android = Constants.expoConfig?.android || Constants.manifest?.android || {};
+  const ios = Constants.expoConfig?.ios || Constants.manifest?.ios || {};
+  if (Platform.OS === 'android') {
+    return String(android.versionCode || Constants.nativeBuildVersion || '').trim() || null;
+  }
+  if (Platform.OS === 'ios') {
+    return String(ios.buildNumber || Constants.nativeBuildVersion || '').trim() || null;
+  }
+  return String(Constants.nativeBuildVersion || '').trim() || null;
+};
+
 export const reportMobileCrash = async (error, errorInfo = {}, metadata = {}) => {
   const message = error?.message || String(error || 'Unknown mobile error');
   const payload = {
@@ -61,6 +73,7 @@ export const checkMobileAppVersion = async () => {
     params: {
       platform: Platform.OS,
       version: getAppVersion(),
+      buildNumber: getBuildNumber(),
     },
   });
   return response.data;
