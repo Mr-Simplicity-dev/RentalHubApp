@@ -13,19 +13,18 @@ const run = (cmd, opts = {}) => {
   execSync(cmd, { stdio: 'inherit', cwd: ROOT, ...opts });
 };
 
-const getNextBuildNumber = () => {
+const getBuildNumber = () => {
   try {
-    if (fs.existsSync(VERSION_JSON_PATH)) {
-      const prev = JSON.parse(fs.readFileSync(VERSION_JSON_PATH, 'utf8'));
-      return String(parseInt(prev.buildNumber || '0', 10) + 1);
-    }
+    const gradle = fs.readFileSync(path.join(ANDROID_DIR, 'app', 'build.gradle'), 'utf8');
+    const match = gradle.match(/versionCode\s*=\s*(\d+)/);
+    if (match) return match[1];
   } catch {}
   return '1';
 };
 
 const writeBuildInfo = (version) => {
   fs.mkdirSync(UPLOADS_DIR, { recursive: true });
-  const buildNumber = getNextBuildNumber();
+  const buildNumber = getBuildNumber();
   const info = {
     version,
     buildNumber,
@@ -58,6 +57,8 @@ const main = () => {
       fs.mkdirSync(UPLOADS_DIR, { recursive: true });
       const destPath = path.join(UPLOADS_DIR, 'app.apk');
       fs.copyFileSync(apkPath, destPath);
+      // Some operators link to the raw build name; keep both paths on the same build.
+      fs.copyFileSync(apkPath, path.join(UPLOADS_DIR, 'app-release.apk'));
       writeBuildInfo(version);
       const size = fs.statSync(apkPath).size;
       console.log(`>>> APK: ${(size / 1024 / 1024).toFixed(1)} MB`);
