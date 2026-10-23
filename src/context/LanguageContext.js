@@ -81,9 +81,16 @@ export const LanguageProvider = ({ children }) => {
       SUPPORTED_LANGUAGES.find(({ code }) => code === normalized)?.rtl
     );
     const restartRequired = I18nManager.isRTL !== nextIsRTL;
-    await AsyncStorage.setItem(LANGUAGE_STORAGE_KEY, normalized);
+    // Copy and direction update first: awaiting storage here delayed the
+    // re-render of every label, so a slow device looked stuck on the old
+    // language after tapping a new one.
     setLanguageState(normalized);
     setRtlRestartRequired(restartRequired);
+    try {
+      await AsyncStorage.setItem(LANGUAGE_STORAGE_KEY, normalized);
+    } catch {
+      // The choice still applies for the current session.
+    }
     return { language: normalized, restartRequired };
   }, []);
 

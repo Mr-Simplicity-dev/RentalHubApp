@@ -19,6 +19,7 @@ const LanguageDropdown = ({ tone = 'light', fullWidth = false }) => {
   const { language, languages, setLanguage, t } = useLanguage();
   const [open, setOpen] = useState(false);
   const [restartNeeded, setRestartNeeded] = useState(false);
+  const [switching, setSwitching] = useState(false);
 
   const current = useMemo(
     () => languages.find((option) => option.code === language) || languages[0],
@@ -26,12 +27,20 @@ const LanguageDropdown = ({ tone = 'light', fullWidth = false }) => {
   );
 
   const choose = async (code) => {
+    if (switching) return;
     setOpen(false);
     if (code === language) return;
-    const result = await setLanguage(code);
-    // Switching between left-to-right and right-to-left only takes full effect
-    // after the app is reopened, so say so instead of leaving it looking broken.
-    setRestartNeeded(Boolean(result?.restartRequired));
+    setSwitching(true);
+    try {
+      const result = await setLanguage(code);
+      // Switching between left-to-right and right-to-left only takes full effect
+      // after the app is reopened, so say so instead of leaving it looking broken.
+      setRestartNeeded(Boolean(result?.restartRequired));
+    } catch {
+      // Keep the previous language if the switch could not be applied.
+    } finally {
+      setSwitching(false);
+    }
   };
 
   const onDark = tone === 'dark';

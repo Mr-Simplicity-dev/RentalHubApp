@@ -43,6 +43,7 @@ export const RealtimeProvider = ({ children }) => {
 
   useEffect(() => {
     let disposed = false;
+    const pendingCallTimers = new Set();
 
     const disconnect = () => {
       socketRef.current?.disconnect();
@@ -51,9 +52,23 @@ export const RealtimeProvider = ({ children }) => {
       setOnlineUserIds(new Set());
     };
 
+    // Rejected/missed/ended events fade the call overlay out after a short
+    // delay. Those timers must be tracked so a logout or provider unmount
+    // cannot leave a stale full-screen call Modal mounted over the app.
+    const scheduleCallClear = (delayMs) => {
+      const timer = setTimeout(() => {
+        pendingCallTimers.delete(timer);
+        if (!disposed) setActiveCall(null);
+      }, delayMs);
+      pendingCallTimers.add(timer);
+    };
+
     const connect = async () => {
       if (!isAuthenticated || !user?.id) {
         disconnect();
+        pendingCallTimers.forEach((timer) => clearTimeout(timer));
+        pendingCallTimers.clear();
+        setActiveCall(null);
         return;
       }
 
@@ -114,21 +129,15 @@ export const RealtimeProvider = ({ children }) => {
       });
       socket.on('call:rejected', (call = {}) => {
         if (!disposed) setActiveCall((current) => ({ ...(current || {}), ...call, status: 'rejected' }));
-        setTimeout(() => {
-          if (!disposed) setActiveCall(null);
-        }, 1800);
+        scheduleCallClear(1800);
       });
       socket.on('call:missed', (call = {}) => {
         if (!disposed) setActiveCall((current) => ({ ...(current || {}), ...call, status: 'missed' }));
-        setTimeout(() => {
-          if (!disposed) setActiveCall(null);
-        }, 1800);
+        scheduleCallClear(1800);
       });
       socket.on('call:ended', (call = {}) => {
         if (!disposed) setActiveCall((current) => ({ ...(current || {}), ...call, status: 'ended' }));
-        setTimeout(() => {
-          if (!disposed) setActiveCall(null);
-        }, 1200);
+        scheduleCallClear(1200);
       });
       socket.on('call:room:updated', (room = {}) => {
         if (!disposed) {
@@ -150,6 +159,8 @@ export const RealtimeProvider = ({ children }) => {
     void connect();
     return () => {
       disposed = true;
+      pendingCallTimers.forEach((timer) => clearTimeout(timer));
+      pendingCallTimers.clear();
       disconnect();
     };
   }, [isAuthenticated, user?.id]);

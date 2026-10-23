@@ -81,7 +81,7 @@ const AppContent = () => {
       <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
       <NetworkStatusBanner />
       <AppNavigator />
-      <NativeCallOverlay />
+      {isAuthenticated ? <NativeCallOverlay /> : null}
       {isAuthenticated ? <AppUpdateIndicator /> : null}
       {isAuthenticated ? <NinCaptureModal /> : null}
       {isAuthenticated ? <MfaCodeModal /> : null}

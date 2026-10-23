@@ -1,5 +1,6 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import {Animated,
+  I18nManager,
   Image,
   StatusBar,
   StyleSheet,
@@ -22,9 +23,34 @@ const WelcomeScreen = ({ navigation }) => {
   const { height, width } = useWindowDimensions();
   const { isRTL, t, textAlign } = useLanguage();
   const compact = height < 720 || width < 360;
+  const nativeRTL = Boolean(I18nManager.isRTL);
+  const directionOverride = nativeRTL !== isRTL ? (isRTL ? 'rtl' : 'ltr') : null;
+  const textDirection = isRTL ? 'rtl' : 'ltr';
   const contentY = useRef(new Animated.Value(22)).current;
   const contentOpacity = useRef(new Animated.Value(0)).current;
   const hintBounce = useRef(new Animated.Value(0)).current;
+  const navigatingRef = useRef(false);
+  const navigateTimerRef = useRef(null);
+
+  const navigateOnce = useCallback((routeName) => {
+    if (navigatingRef.current) return;
+    navigatingRef.current = true;
+    navigation.navigate(routeName);
+    if (navigateTimerRef.current) {
+      clearTimeout(navigateTimerRef.current);
+    }
+    navigateTimerRef.current = setTimeout(() => {
+      navigatingRef.current = false;
+      navigateTimerRef.current = null;
+    }, 700);
+  }, [navigation]);
+
+  useEffect(() => () => {
+    if (navigateTimerRef.current) {
+      clearTimeout(navigateTimerRef.current);
+      navigateTimerRef.current = null;
+    }
+  }, []);
 
   useEffect(() => {
     Animated.parallel([
@@ -53,29 +79,29 @@ const WelcomeScreen = ({ navigation }) => {
   }, [hintBounce]);
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={[styles.safeArea, directionOverride ? { direction: directionOverride } : null]}>
       <StatusBar barStyle="light-content" backgroundColor={colors.navy} />
-      <Image source={logo} style={styles.watermark} resizeMode="contain" />
-      <View style={styles.orbTop} />
-      <View style={styles.orbBottom} />
+      <Image source={logo} style={styles.watermark} resizeMode="contain" pointerEvents="none" />
+      <View style={styles.orbTop} pointerEvents="none" />
+      <View style={styles.orbBottom} pointerEvents="none" />
 
       <View style={styles.top}>
         <BrandMark light compact />
         <TouchableOpacity
           accessibilityLabel={t('welcome.explore')}
           accessibilityRole="button"
-          onPress={() => navigation.navigate('Home')}
+          onPress={() => navigateOnce('Home')}
           style={styles.exploreButton}>
-          <AppText style={styles.exploreText}>{t('welcome.explore')}</AppText>
+          <AppText style={[styles.exploreText, { textAlign, writingDirection: textDirection }]}>{t('welcome.explore')}</AppText>
           <Icon name={isRTL ? 'arrow-back' : 'arrow-forward'} size={17} color={colors.white} />
         </TouchableOpacity>
       </View>
 
-      <View style={[styles.exploreHintWrap, isRTL && styles.exploreHintWrapRTL]} pointerEvents="none">
+      <View style={styles.exploreHintWrap} pointerEvents="none">
         <View style={styles.exploreArrow} />
         <Animated.View style={[styles.exploreHint, { transform: [{ translateY: hintBounce }] }]}>
           <Icon name="arrow-up" size={13} color={colors.navy} />
-          <AppText style={styles.exploreHintText}>{t('welcome.exploreHint')}</AppText>
+          <AppText style={[styles.exploreHintText, { textAlign, writingDirection: textDirection }]}>{t('welcome.exploreHint')}</AppText>
         </Animated.View>
       </View>
 
@@ -93,10 +119,10 @@ const WelcomeScreen = ({ navigation }) => {
       <Animated.View style={{ opacity: contentOpacity, transform: [{ translateY: contentY }] }}>
         <View style={styles.eyebrow}>
           <View style={styles.eyebrowDot} />
-          <AppText style={[styles.eyebrowText, { textAlign }]}>{t('welcome.eyebrow')}</AppText>
+          <AppText style={[styles.eyebrowText, isRTL && styles.eyebrowTextRTL, { textAlign, writingDirection: textDirection }]}>{t('welcome.eyebrow')}</AppText>
         </View>
-        <AppText accessibilityRole="header" style={[styles.title, compact && styles.titleCompact, { textAlign }]}>{t('welcome.title')}</AppText>
-        <AppText style={[styles.subtitle, { textAlign }]}>
+        <AppText accessibilityRole="header" style={[styles.title, compact && styles.titleCompact, isRTL && styles.titleRTL, { textAlign, writingDirection: textDirection }]}>{t('welcome.title')}</AppText>
+        <AppText style={[styles.subtitle, { textAlign, writingDirection: textDirection }]}>
           {t('welcome.subtitle')}
         </AppText>
 
@@ -105,9 +131,9 @@ const WelcomeScreen = ({ navigation }) => {
             accessibilityLabel={t('welcome.createAccount')}
             accessibilityRole="button"
             activeOpacity={0.86}
-            onPress={() => navigation.navigate('Register')}
+            onPress={() => navigateOnce('Register')}
             style={styles.primaryButton}>
-            <AppText style={styles.primaryText}>{t('welcome.createAccount')}</AppText>
+            <AppText style={[styles.primaryText, { textAlign, writingDirection: textDirection }]}>{t('welcome.createAccount')}</AppText>
             <View style={styles.primaryIcon}>
               <Icon name={isRTL ? 'arrow-back' : 'arrow-forward'} size={19} color={colors.navy} />
             </View>
@@ -117,15 +143,15 @@ const WelcomeScreen = ({ navigation }) => {
             accessibilityLabel={t('welcome.signIn')}
             accessibilityRole="button"
             activeOpacity={0.82}
-            onPress={() => navigation.navigate('Login')}
+            onPress={() => navigateOnce('Login')}
             style={styles.secondaryButton}>
-            <AppText style={styles.secondaryText}>{t('welcome.signIn')}</AppText>
+            <AppText style={[styles.secondaryText, { textAlign, writingDirection: textDirection }]}>{t('welcome.signIn')}</AppText>
           </TouchableOpacity>
         </View>
 
         <View style={styles.trustRow}>
           <Icon name="shield-checkmark" size={17} color="#8DB9F2" />
-          <AppText style={styles.trustText}>{t('welcome.trust')}</AppText>
+          <AppText style={[styles.trustText, { textAlign, writingDirection: textDirection }]}>{t('welcome.trust')}</AppText>
         </View>
 
       </Animated.View>
@@ -201,12 +227,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     marginTop: 4,
     marginBottom: 2,
-    paddingRight: 6,
-  },
-  exploreHintWrapRTL: {
-    alignItems: 'flex-start',
-    paddingLeft: 6,
-    paddingRight: 0,
+    paddingEnd: 6,
   },
   exploreArrow: {
     borderBottomColor: colors.gold,
@@ -216,7 +237,7 @@ const styles = StyleSheet.create({
     borderRightColor: 'transparent',
     borderRightWidth: 8,
     height: 0,
-    marginRight: 18,
+    marginEnd: 18,
     width: 0,
   },
   exploreHint: {
@@ -256,7 +277,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.gold,
     borderRadius: 4,
     height: 7,
-    marginRight: 9,
+    marginEnd: 9,
     width: 7,
   },
   eyebrowText: {
@@ -265,12 +286,18 @@ const styles = StyleSheet.create({
     fontSize: 13,
     letterSpacing: 1.25,
   },
+  eyebrowTextRTL: {
+    letterSpacing: 0,
+  },
   title: {
     color: colors.white,
     fontFamily: typography.bold,
     fontSize: 36,
     letterSpacing: -1.25,
     lineHeight: 48,
+  },
+  titleRTL: {
+    letterSpacing: 0,
   },
   titleCompact: {
     fontSize: 36,
@@ -295,8 +322,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     height: 58,
     justifyContent: 'space-between',
-    paddingLeft: 20,
-    paddingRight: 10,
+    paddingStart: 20,
+    paddingEnd: 10,
     ...shadows.soft,
   },
   primaryText: {
@@ -335,7 +362,7 @@ const styles = StyleSheet.create({
     color: '#8FA8CA',
     fontFamily: typography.medium,
     fontSize: 13,
-    marginLeft: 7,
+    marginStart: 7,
   },
 });
 

@@ -625,19 +625,26 @@ export const TourProvider = ({ children }) => {
     const relevantSteps = stepsRef.current;
     const index = clampStep(currentStepRef.current, relevantSteps.length);
     const stepDefinition = relevantSteps[index];
-    await saveDismissal();
-    await clearProgress();
-    recordEvent(eventType, {
-      currentStep: index,
-      stepId: stepDefinition?.id,
-      totalSteps: relevantSteps.length,
-    });
+    // Hide the full-screen tour overlay before any persistence/network work:
+    // awaiting AsyncStorage or the tour event request kept the transparent
+    // Modal mounted and swallowed every touch on the screens underneath.
     walkthroughVisibleRef.current = false;
     setWalkthroughVisible(false);
     setWelcomeVisible(false);
     setResumeState(null);
     setCurrentStep(0);
     setActiveWorkflowId(null);
+    try {
+      await saveDismissal();
+      await clearProgress();
+    } catch {
+      // Persistence is best-effort; the overlay is already dismissed.
+    }
+    recordEvent(eventType, {
+      currentStep: index,
+      stepId: stepDefinition?.id,
+      totalSteps: relevantSteps.length,
+    });
   }, [clearProgress, recordEvent, saveDismissal]);
 
   const nextStep = useCallback(() => {
@@ -796,14 +803,20 @@ export const TourProvider = ({ children }) => {
   const skipTour = useCallback(() => finishTour('skipped'), [finishTour]);
 
   const dismissWelcome = useCallback(async () => {
-    await saveDismissal();
+    // Dismiss immediately so the welcome Modal never traps touches while the
+    // dismissal timestamp and analytics event are still in flight.
+    setWelcomeVisible(false);
+    try {
+      await saveDismissal();
+    } catch {
+      // Ignore storage failures; the prompt stays closed for this session.
+    }
     recordEvent('dismissed', {
       currentStep: resumeState?.index,
       source: resumeState ? 'resume_prompt' : 'welcome',
       stepId: resumeState?.stepId,
       workflowId: resumeState?.workflowId,
     });
-    setWelcomeVisible(false);
   }, [recordEvent, resumeState, saveDismissal]);
 
   const replayTour = useCallback(() => startTour({ replay: true }), [startTour]);
