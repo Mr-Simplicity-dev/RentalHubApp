@@ -22,6 +22,7 @@ import { getErrorMessage, pickList, pickObject } from '../../utils/http';
 import { colors, radius, shadows, typography } from '../../theme';
 
 import AppText from '../../components/common/AppText';
+import BankTransferCheckout from '../../components/BankTransferCheckout';
 const LAWYER_ACCESS_FEE = 2000;
 const AGENT_ACCESS_FEE = 5000;
 const TENANT_REGISTRATION_FEE = 3000;
@@ -62,6 +63,10 @@ const RegisterScreen = ({ navigation, route }) => {
     '';
   const [loading, setLoading] = useState(false);
   const [paymentLoading, setPaymentLoading] = useState(false);
+  const [showPaymentMethodChooser, setShowPaymentMethodChooser] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState(null);
+  const [bankTransferData, setBankTransferData] = useState(null);
+  const [showBankTransferModal, setShowBankTransferModal] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [locationOptions, setLocationOptions] = useState([]);
@@ -491,7 +496,7 @@ const RegisterScreen = ({ navigation, route }) => {
     setIsForeigner(value);
   };
 
-  const handleRegister = async () => {
+  const handleRegister = async (methodOverride) => {
     if (!registrationFlags.registration_master_enabled) {
       Toast.show({
         type: 'error',
@@ -547,10 +552,34 @@ const RegisterScreen = ({ navigation, route }) => {
     }
 
     if (requiresPayment) {
+      const chosenMethod = methodOverride || paymentMethod;
+
+      if (!chosenMethod) {
+        setShowPaymentMethodChooser(true);
+        return;
+      }
+
       setPaymentLoading(true);
       try {
-        const response = await authService.initializeRegistrationPayment(payload, turnstileToken);
+        const response = await authService.initializeRegistrationPayment(
+          { ...payload, payment_method: chosenMethod },
+          turnstileToken
+        );
         const responseData = pickObject(response, ['data']) || {};
+
+        if (responseData.payment_method === 'bank_transfer') {
+          setBankTransferData({
+            reference: responseData.reference,
+            amount: responseData.amount,
+            bank_accounts: responseData.bank_accounts || [],
+            virtual_account: responseData.virtual_account || null,
+          });
+          setShowBankTransferModal(true);
+          turnstileRef.current?.reset();
+          turnstileTokenRef.current = null;
+          return;
+        }
+
         const paymentUrl = responseData.authorization_url;
         const reference = responseData.reference;
 
@@ -613,6 +642,32 @@ const RegisterScreen = ({ navigation, route }) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const choosePaymentMethod = (method) => {
+    setPaymentMethod(method);
+    setShowPaymentMethodChooser(false);
+    setTimeout(() => handleRegister(method), 200);
+  };
+
+  const closeBankTransfer = () => {
+    setShowBankTransferModal(false);
+    setBankTransferData(null);
+    setPaymentMethod(null);
+    turnstileRef.current?.reset();
+    turnstileTokenRef.current = null;
+  };
+
+  const handleBankTransferPaid = () => {
+    setShowBankTransferModal(false);
+    setBankTransferData(null);
+    setPaymentMethod(null);
+    Toast.show({
+      type: 'success',
+      text1: 'Registration payment confirmed',
+      text2: 'Your account has been created. Sign in with the password you chose.',
+    });
+    navigation.navigate('Login');
   };
 
   const completePaidRegistration = async (reference = paymentState.reference) => {
@@ -1112,6 +1167,15 @@ const RegisterScreen = ({ navigation, route }) => {
           secureTextEntry
           icon="lock-closed-outline"
         />
+          {requiresPayment ? (
+            <AppText style={styles.identityPaymentNotice}>
+              If you choose bank transfer, a collection account may be opened in your name by our
+              regulated banking partner. For that purpose only, it receives the name and, where the
+              partner bank requires it, the NIN from your verified identity record. It does not hold
+              your wallet balance.
+            </AppText>
+          ) : null}
+
           <TouchableOpacity
             accessibilityRole="checkbox"
             accessibilityState={{ checked: acceptedTerms }}
@@ -1147,7 +1211,7 @@ const RegisterScreen = ({ navigation, route }) => {
 
         <Button
           title={requiresPayment ? 'Proceed to Payment' : 'Create Account'}
-          onPress={handleRegister}
+          onPress={() => handleRegister()}
           loading={loading || paymentLoading}
           style={styles.cta}
           disabled={!isFormComplete}
@@ -1237,6 +1301,76 @@ const RegisterScreen = ({ navigation, route }) => {
         getOptionValue={(item) => String(item)}
         onClose={() => setShowLgaPicker(false)}
         onSelect={(item) => onChange('lga_name', String(item))}
+      />
+
+      <Modal
+        transparent
+        visible={showPaymentMethodChooser}
+        animationType="fade"
+        onRequestClose={() => setShowPaymentMethodChooser(false)}
+      >
+        <View style={styles.chooserOverlay}>
+          <View style={styles.chooserCard}>
+            <AppText style={styles.chooserTitle}>Choose how to pay</AppText>
+            <AppText style={styles.chooserAmount}>
+              ₦{Number(displayedRegistrationAmount || 0).toLocaleString()}
+            </AppText>
+
+            <TouchableOpacity
+              activeOpacity={0.86}
+              onPress={() => choosePaymentMethod('paystack')}
+              style={styles.chooserOption}
+            >
+              <View style={styles.chooserIcon}>
+                <Icon name="card-outline" size={22} color="#0d9488" />
+              </View>
+              <View style={styles.chooserCopy}>
+                <AppText style={styles.chooserOptionTitle}>Pay with card</AppText>
+                <AppText style={styles.chooserOptionText}>Card, bank account or USSD via Paystack</AppText>
+              </View>
+              <Icon name="chevron-forward" size={20} color="#94a3b8" />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              activeOpacity={0.86}
+              onPress={() => choosePaymentMethod('bank_transfer')}
+              style={styles.chooserOption}
+            >
+              <View style={styles.chooserIcon}>
+                <Icon name="business-outline" size={22} color="#0d9488" />
+              </View>
+              <View style={styles.chooserCopy}>
+                <AppText style={styles.chooserOptionTitle}>Pay by bank transfer</AppText>
+                <AppText style={styles.chooserOptionText}>Transfer to the account shown, then upload your screenshot</AppText>
+              </View>
+              <Icon name="chevron-forward" size={20} color="#94a3b8" />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => setShowPaymentMethodChooser(false)}
+              style={styles.chooserCancel}
+            >
+              <AppText style={styles.chooserCancelText}>Cancel</AppText>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      <BankTransferCheckout
+        visible={showBankTransferModal}
+        onClose={closeBankTransfer}
+        mode="registration"
+        amount={bankTransferData?.amount}
+        reference={bankTransferData?.reference}
+        accounts={bankTransferData?.bank_accounts || []}
+        virtualAccount={bankTransferData?.virtual_account || null}
+        statusEndpoint={
+          bankTransferData?.reference
+            ? `/virtual-accounts/registration/${bankTransferData.reference}`
+            : undefined
+        }
+        onRegistrationPaid={handleBankTransferPaid}
+        onRegistrationApproved={handleBankTransferPaid}
       />
 
       {foreignCardAdjustment ? (
@@ -1679,6 +1813,79 @@ const styles = StyleSheet.create({
   },
   adjustDisabled: {
     opacity: 0.6,
+  },
+  identityPaymentNotice: {
+    backgroundColor: '#f0fdfa',
+    borderColor: '#99f6e4',
+    borderRadius: 12,
+    borderWidth: 1,
+    color: '#115e59',
+    fontFamily: typography.regular,
+    fontSize: 12,
+    lineHeight: 18,
+    marginBottom: 12,
+    padding: 12,
+  },
+  chooserOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(7, 26, 61, 0.5)',
+    justifyContent: 'center',
+    padding: 20,
+  },
+  chooserCard: {
+    backgroundColor: colors.white,
+    borderRadius: 18,
+    padding: 20,
+    gap: 10,
+  },
+  chooserTitle: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 18,
+  },
+  chooserAmount: {
+    color: colors.blue,
+    fontFamily: typography.bold,
+    fontSize: 24,
+    marginBottom: 4,
+  },
+  chooserOption: {
+    alignItems: 'center',
+    borderColor: colors.border,
+    borderRadius: 14,
+    borderWidth: 1,
+    flexDirection: 'row',
+    gap: 12,
+    padding: 14,
+  },
+  chooserIcon: {
+    alignItems: 'center',
+    backgroundColor: '#f0fdfa',
+    borderRadius: 12,
+    height: 42,
+    justifyContent: 'center',
+    width: 42,
+  },
+  chooserCopy: { flex: 1 },
+  chooserOptionTitle: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 15,
+  },
+  chooserOptionText: {
+    color: colors.muted,
+    fontFamily: typography.regular,
+    fontSize: 12,
+    marginTop: 2,
+  },
+  chooserCancel: {
+    alignItems: 'center',
+    paddingVertical: 10,
+  },
+  chooserCancelText: {
+    color: colors.muted,
+    fontFamily: typography.medium,
+    fontSize: 14,
   },
 });
 

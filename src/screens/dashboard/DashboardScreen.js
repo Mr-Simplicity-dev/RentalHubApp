@@ -16,6 +16,8 @@ import { AuthContext } from '../../context/AuthContext';
 import WalletFundModal from '../../components/dashboard/WalletFundModal';
 import WalletWithdrawModal from '../../components/dashboard/WalletWithdrawModal';
 import WithdrawalFactorModal from '../../components/dashboard/WithdrawalFactorModal';
+import BankTransferCheckout from '../../components/BankTransferCheckout';
+import bankTransferService from '../../services/bankTransferService';
 import {
   ActionRow,
   DashboardSection,
@@ -250,6 +252,7 @@ const DashboardScreen = ({ navigation }) => {
   const [landlordPropertyFee, setLandlordPropertyFee] = useState(null);
   const [withdrawHistory, setWithdrawHistory] = useState([]);
   const [showFundModal, setShowFundModal] = useState(false);
+  const [walletBankTransfer, setWalletBankTransfer] = useState(null);
   const [showWithdrawModal, setShowWithdrawModal] = useState(false);
   const [showAllCards, setShowAllCards] = useState(false);
   const [fundLoading, setFundLoading] = useState(false);
@@ -444,13 +447,51 @@ const DashboardScreen = ({ navigation }) => {
     await loadWalletData();
   };
 
-  const handleFundWallet = async (amountInput) => {
+  const handleFundWallet = async (amountInput, method = 'paystack') => {
     if (!amountInput || Number(amountInput) < 100) {
       Toast.show({
         type: 'error',
         text1: 'Invalid amount',
         text2: 'Minimum funding amount is ₦100',
       });
+      return;
+    }
+
+    if (method === 'bank_transfer') {
+      setFundLoading(true);
+      try {
+        let virtualAccount = null;
+        try {
+          const walletResponse = await bankTransferService.getWalletAccount();
+          const walletData = walletResponse?.data || {};
+          if (walletData.available && walletData.account) {
+            virtualAccount = walletData.account;
+          }
+        } catch (walletError) {
+          virtualAccount = null;
+        }
+
+        let accounts = [];
+        if (!virtualAccount) {
+          const accountsResponse = await bankTransferService.getAccounts();
+          accounts = accountsResponse?.data || [];
+        }
+
+        setShowFundModal(false);
+        setWalletBankTransfer({
+          amount: Number(amountInput),
+          virtual_account: virtualAccount,
+          bank_accounts: accounts,
+        });
+      } catch (error) {
+        Toast.show({
+          type: 'error',
+          text1: 'Could not load transfer details',
+          text2: getErrorMessage(error, 'Please try again.'),
+        });
+      } finally {
+        setFundLoading(false);
+      }
       return;
     }
 
@@ -1317,6 +1358,20 @@ const DashboardScreen = ({ navigation }) => {
         onSwitchToWithdraw={() => {
           setShowFundModal(false);
           openWithdrawModal();
+        }}
+      />
+
+      <BankTransferCheckout
+        visible={Boolean(walletBankTransfer)}
+        onClose={() => setWalletBankTransfer(null)}
+        mode="wallet"
+        amount={walletBankTransfer?.amount}
+        accounts={walletBankTransfer?.bank_accounts || []}
+        virtualAccount={walletBankTransfer?.virtual_account || null}
+        onWalletCredited={async () => {
+          setWalletBankTransfer(null);
+          Toast.show({ type: 'success', text1: 'Wallet funded' });
+          await Promise.all([loadWalletData(), loadDashboard({ refresh: true })]);
         }}
       />
 

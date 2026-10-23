@@ -1,6 +1,6 @@
 import { Platform } from 'react-native';
 
-const pickImageFromWeb = () =>
+const pickImageFromWeb = (accept = 'image/*') =>
   new Promise((resolve) => {
     if (typeof document === 'undefined') {
       resolve({
@@ -12,8 +12,8 @@ const pickImageFromWeb = () =>
 
     const input = document.createElement('input');
     input.type = 'file';
-    input.accept = 'image/*';
-    input.setAttribute('capture', 'user');
+    input.accept = accept;
+    input.removeAttribute('capture');
 
     input.onchange = () => {
       const file = input.files?.[0];
@@ -28,7 +28,7 @@ const pickImageFromWeb = () =>
         asset: {
           file,
           uri: URL.createObjectURL(file),
-          name: file.name || 'passport.jpg',
+          name: file.name || 'transfer.jpg',
           type: file.type || 'image/jpeg',
         },
       });
@@ -37,10 +37,16 @@ const pickImageFromWeb = () =>
     input.click();
   });
 
+const toDataUrl = (base64, type = 'image/jpeg') => {
+  if (!base64) return '';
+  if (String(base64).startsWith('data:')) return base64;
+  return `data:${type};base64,${base64}`;
+};
+
 export const cameraService = {
   pickPassportPhoto: async () => {
     if (Platform.OS === 'web') {
-      return pickImageFromWeb();
+      return pickImageFromWeb('image/*');
     }
 
     try {
@@ -77,6 +83,71 @@ export const cameraService = {
       return {
         cancelled: true,
         message: 'Camera is not available on this device right now.',
+      };
+    }
+  },
+
+  pickTransferScreenshot: async () => {
+    if (Platform.OS === 'web') {
+      const result = await pickImageFromWeb('image/*');
+      if (result.cancelled || !result.asset) return result;
+
+      const proofImage = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result || ''));
+        reader.onerror = () => resolve('');
+        reader.readAsDataURL(result.asset.file);
+      });
+
+      return { ...result, proofImage };
+    }
+
+    try {
+      const { launchImageLibrary } = require('react-native-image-picker');
+      const result = await launchImageLibrary({
+        mediaType: 'photo',
+        selectionLimit: 1,
+        includeBase64: true,
+        maxWidth: 900,
+        maxHeight: 1600,
+        quality: 0.6,
+      });
+
+      if (result?.didCancel) {
+        return { cancelled: true };
+      }
+
+      const asset = result?.assets?.[0];
+
+      if (!asset) {
+        return {
+          cancelled: true,
+          message: 'No image was selected.',
+        };
+      }
+
+      const proofImage = toDataUrl(asset.base64, asset.type || 'image/jpeg');
+
+      if (!proofImage) {
+        return {
+          cancelled: true,
+          message: 'Could not prepare the screenshot. Try again with a smaller image.',
+        };
+      }
+
+      return {
+        cancelled: false,
+        asset: {
+          uri: asset.uri,
+          name: asset.fileName || 'transfer-screenshot.jpg',
+          type: asset.type || 'image/jpeg',
+        },
+        proofImage,
+      };
+    } catch (error) {
+      return {
+        cancelled: true,
+        message: 'Photo library is not available on this device right now.',
       };
     }
   },
