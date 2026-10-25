@@ -15,6 +15,7 @@ const makePublicFeatures = () => [
   { label: 'Fumigation & Cleaning Booking', path: '/fumigation-cleaning/booking' },
   { label: 'Fumigation & Cleaning Catalog', path: '/fumigation-cleaning/catalog' },
   { label: 'About RentalHub', path: '/about' },
+  { label: 'Resolved dispute cases', path: '/legal-support' },
   { label: 'Support Centre', path: '/support' },
   { label: 'Verify Email', path: '/verify-email' },
   { label: 'Verify Phone', path: '/verify-phone' },
