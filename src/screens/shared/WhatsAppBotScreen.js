@@ -1,9 +1,11 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useContext, useState, useRef, useEffect, useCallback } from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity, KeyboardAvoidingView, Platform, SafeAreaView, Linking, ActivityIndicator } from 'react-native';
 import TextInput from '../../components/common/AppTextInput';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { colors, radius, typography, typeScale } from '../../theme';
 
+import {AuthContext} from '../../context/AuthContext';
+import {askAccountAssistant,submitAssistantTicket,needsAccount} from '../../services/accountAssistantService';
 import AppText from '../../components/common/AppText';
 const WHATSAPP_NUMBER = '2348030601238';
 const BOT_DELAY = 1000;
@@ -32,7 +34,7 @@ const whatsappFaqData = [
   {
     id: 'legal',
     keywords: ['legal', 'lawyer', 'attorney', 'protection', 'coverage', 'law', 'document', 'agreement', 'dispute', 'nba', 'access fee', '2000'],
-    answer: 'For a one-time fee of \u20A62,000 at registration, you get the needed assistance . We ensures that all processes are delegently observed and due assistance is given right from your dashboard anytime. This covers document reviews, agreements, and advisory.',
+    answer: 'Paid coverage is required for private assistance requests. Check your coverage status from your dashboard; registration shows any applicable coverage fee before payment.',
   },
   {
     id: 'fumigation',
@@ -57,7 +59,7 @@ const whatsappFaqData = [
   {
     id: 'registration',
     keywords: ['register', 'sign up', 'create account', 'join', 'tenant', 'landlord', 'signup', 'how to join'],
-    answer: "Registration is quick and free. Choose whether you're a tenant or landlord, fill in your details, and you're in. Tenants pay a \u20A63,000 registration fee and landlords pay \u20A65,000. You can also opt for Legal Protection Coverage (\u20A62,000) during signup.",
+    answer: 'Choose a tenant or landlord account and complete the registration form. The current registration and optional coverage fees are shown before payment.',
   },
   {
     id: 'verification',
@@ -99,7 +101,7 @@ const isConfirmation = (text) => {
 
 const isMenuRequest = (text) => {
   const clean = text.toLowerCase().replace(/[^a-z ]/g, '').trim();
-  return MENU_WORDS.some((w) => clean === w || clean.startsWith(w + ' ') || clean.endsWith(' ' + w));
+  return MENU_WORDS.some((w) => clean === w);
 };
 
 const isNegative = (text) => {
@@ -120,6 +122,12 @@ const QUICK_REPLIES = [
 ];
 
 const WhatsAppBotScreen = ({ navigation }) => {
+  const {user,isAuthenticated}=useContext(AuthContext);
+  const authKey=isAuthenticated?String(user?.id || '')+':'+user?.user_type:'guest';
+  const authKeyRef=useRef(authKey);authKeyRef.current=authKey;
+  const requestBusy=useRef(false);const topicRef=useRef(null);
+  const [requestPending,setRequestPending]=useState(false);
+  useEffect(()=>{setMessages([]);setInput('');setAwaitingResponse(null);setConnectedToAgent(false);topicRef.current=null;},[authKey]);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isBotTyping, setIsBotTyping] = useState(false);
@@ -165,7 +173,7 @@ const WhatsAppBotScreen = ({ navigation }) => {
       mountedRef.current = false;
       clearTimeout(timer);
     };
-  }, []);
+  }, [authKey]);
 
   useEffect(() => {
     scrollToBottom();
@@ -177,8 +185,10 @@ const WhatsAppBotScreen = ({ navigation }) => {
       {
         id: `bot-${Date.now()}`,
         type: 'bot',
+        owner: authKeyRef.current,
         text,
         created_at: new Date().toISOString(),
+        ticketDraft: faq?.ticketDraft || null,
         link: faq?.link || null,
         linkText: faq?.linkText || null,
         showQuickReplies: showQR || false,
@@ -189,7 +199,7 @@ const WhatsAppBotScreen = ({ navigation }) => {
   const addUserMessage = useCallback((text) => {
     setMessages((prev) => [
       ...prev,
-      { id: `user-${Date.now()}`, type: 'user', text, created_at: new Date().toISOString() },
+      { id: `user-${Date.now()}`, type: 'user', owner: authKeyRef.current, text, created_at: new Date().toISOString() },
     ]);
   }, []);
 
@@ -234,8 +244,38 @@ const WhatsAppBotScreen = ({ navigation }) => {
     Linking.openURL(url).catch(() => {});
   }, []);
 
+  const tryAccountReply = useCallback(async msg => {
+    if(!isAuthenticated || !['tenant','landlord'].includes(user?.user_type)) {
+      if(needsAccount(msg)){addBotMessage('Sign in to ask about your account or submit a support ticket.',{link:'/login',linkText:'Sign in to your account'});return true;}return false;
+    }
+    const key=authKeyRef.current;requestBusy.current=true;setRequestPending(true);setIsBotTyping(true);
+    try {
+      const answer=await askAccountAssistant(msg,{...(awaitingRef.current==='ticket_details'?{mode:'ticket'}:{}),...(topicRef.current?{previousTopic:topicRef.current}:{})});
+      if(!mountedRef.current || key!==authKeyRef.current)return true;
+      if(!answer || typeof answer.handled!=='boolean')throw new Error('Invalid assistant response');
+      if(!answer.handled)return false;
+      if(answer.topic)topicRef.current=answer.topic;
+      setAwaitingResponse(answer.needsDetails?'ticket_details':null);addBotMessage(answer.text,answer);return true;
+    } catch {if(!needsAccount(msg) && findBestMatch(msg) && awaitingRef.current!=='ticket_details' && !/^(why|when|what about)\b/i.test(msg))return false;if(mountedRef.current && key===authKeyRef.current)addBotMessage('I could not verify your account records. Please try again or open support. No ticket has been submitted by this question.',{link:'/support',linkText:'Open support'});return true;}
+    finally {requestBusy.current=false;if(mountedRef.current){setRequestPending(false);setIsBotTyping(false);}}
+  },[isAuthenticated,user?.user_type,addBotMessage]);
+  const submitTicket = useCallback(async message => {
+    if(requestBusy.current || !message.ticketDraft || (message.owner && message.owner!==authKeyRef.current) || !isAuthenticated)return;
+    const key=authKeyRef.current;requestBusy.current=true;setRequestPending(true);
+    setMessages(items=>items.map(item=>item.id===message.id?{...item,ticketDraft:null}:item));
+    try {const ticket=await submitAssistantTicket(message.ticketDraft);if(mountedRef.current && key===authKeyRef.current)addBotMessage('Your support ticket #'+ticket.id+' has been submitted. Status: '+(ticket.status || 'open')+'.',{link:'/support',linkText:'View my support tickets'});}
+    catch {if(mountedRef.current && key===authKeyRef.current)addBotMessage('I could not confirm whether the ticket was saved. Check your support tickets before submitting again to avoid duplicates.',{link:'/support',linkText:'Check my support tickets'});}
+    finally {requestBusy.current=false;if(mountedRef.current)setRequestPending(false);}
+  },[isAuthenticated,addBotMessage]);
+  const openCard = link => {
+    if(link==='/dashboard')return navigation.navigate('MainTabs',{screen:'DashboardTab'});
+    if(link==='/applications')return navigation.navigate('MainTabs',{screen:'Applications'});
+    const screens={'/refund-requests':'RefundRequests','/login':'Login','/register':'Register','/properties':'PropertyList','/my-properties':'MyProperties','/profile':'Profile','/subscribe':'Subscribe','/payment-history':'PaymentHistory','/support':'Support','/assistance':'Assistance','/rent-savings':'RentSavingsDashboard','/my-disputes':'MyDisputes','/transportation/bookings':'TransportationBookings','/fumigation-cleaning/bookings':'FumigationCleaningBookings'};
+    if(screens[link])navigation.navigate(screens[link]);
+  };
   const handleSend = useCallback(
-    (text) => {
+    async (text) => {
+      if(requestBusy.current)return;
       const msg = (text || input).trim();
       if (!msg) return;
       setInput('');
@@ -282,12 +322,14 @@ const WhatsAppBotScreen = ({ navigation }) => {
         return;
       }
 
+      if(await tryAccountReply(msg))return;
       setAwaitingResponse(null);
 
       const match = findBestMatch(msg);
       if (match) {
         botReplyWithTyping(() => {
-          addBotMessage(match.answer, match);
+          const reply=isAuthenticated && ['registration','list-property'].includes(match.id)?{answer:'You are already signed in. Manage your account and available actions from your dashboard.',link:'/dashboard',linkText:'Open my dashboard'}:{...match,...({ 'find-property':{link:'/properties',linkText:'Search properties'},'registration':{link:'/register',linkText:'Create an account'},'list-property':{link:'/register',linkText:'Create an account'},'support':{link:'/support',linkText:'Open support'} }[match.id] || {})};
+          addBotMessage(reply.answer, reply);
           askAnythingElse();
         });
       } else {
@@ -299,24 +341,11 @@ const WhatsAppBotScreen = ({ navigation }) => {
         });
       }
     },
-    [input, addUserMessage, addBotMessage, botReplyWithTyping, askAnythingElse, handleTalkToAgent]
+    [input, addUserMessage, addBotMessage, botReplyWithTyping, askAnythingElse, handleTalkToAgent, tryAccountReply, isAuthenticated]
   );
 
-  const handleQuickReply = useCallback(
-    (question) => {
-      addUserMessage(question);
-      setAwaitingResponse(null);
-
-      const match = findBestMatch(question);
-      if (match) {
-        botReplyWithTyping(() => {
-          addBotMessage(match.answer, match);
-          askAnythingElse();
-        });
-      }
-    },
-    [addUserMessage, addBotMessage, botReplyWithTyping, askAnythingElse]
-  );
+  const handleQuickReply = question => handleSend(question);
+  const quickReplies=isAuthenticated?['My wallet balance','My payments','My verification status','My support tickets','Create a ticket']:QUICK_REPLIES;
 
   const renderBubble = (msg) => {
     const isUser = msg.type === 'user';
@@ -339,9 +368,11 @@ const WhatsAppBotScreen = ({ navigation }) => {
               {formatTime(msg.created_at)}
             </AppText>
           )}
+          {msg.ticketDraft && <TouchableOpacity disabled={requestPending} style={styles.qrChip} onPress={()=>submitTicket(msg)}><AppText style={styles.qrChipText}>Submit ticket</AppText></TouchableOpacity>}
+          {msg.link && <TouchableOpacity style={styles.qrChip} onPress={()=>openCard(msg.link)}><AppText style={styles.qrChipText}>{msg.linkText || 'Open page'}</AppText></TouchableOpacity>}
           {msg.showQuickReplies && (
             <View style={styles.quickRepliesWrap}>
-              {QUICK_REPLIES.map((qr, i) => (
+              {quickReplies.map((qr, i) => (
                 <TouchableOpacity
                   key={i}
                   style={styles.qrChip}
@@ -385,7 +416,7 @@ const WhatsAppBotScreen = ({ navigation }) => {
           contentContainerStyle={styles.messagesContent}
           keyboardShouldPersistTaps="handled"
         >
-          {messages.map(renderBubble)}
+          {messages.filter(message=>!message.owner || message.owner===authKey).map(renderBubble)}
 
           {isBotTyping && (
             <View style={[styles.bubbleRow]}>
@@ -405,8 +436,8 @@ const WhatsAppBotScreen = ({ navigation }) => {
           {connectedToAgent && (
             <View style={styles.agentCard}>
               <Icon name="headset-outline" size={24} color={colors.success} />
-              <AppText style={styles.agentTitle}>Connected to agent on WhatsApp</AppText>
-              <AppText style={styles.agentSub}>Continue your conversation there</AppText>
+              <AppText style={styles.agentTitle}>WhatsApp opened</AppText>
+              <AppText style={styles.agentSub}>Continue with support there. Your account session is not transferred.</AppText>
             </View>
           )}
         </ScrollView>
@@ -432,14 +463,14 @@ const WhatsAppBotScreen = ({ navigation }) => {
               onChangeText={setInput}
               placeholder="Type your question..."
               placeholderTextColor={colors.muted}
-              editable={!connectedToAgent}
+              editable={!connectedToAgent && !requestPending}
               onSubmitEditing={() => handleSend()}
               returnKeyType="send"
             />
             <TouchableOpacity
               style={[styles.sendBtn, (!input.trim() || connectedToAgent) && styles.sendBtnDisabled]}
               onPress={() => handleSend()}
-              disabled={!input.trim() || connectedToAgent}
+              disabled={!input.trim() || connectedToAgent || requestPending}
               activeOpacity={0.7}
             >
               <Icon name="paper-plane" size={18} color={colors.white} />

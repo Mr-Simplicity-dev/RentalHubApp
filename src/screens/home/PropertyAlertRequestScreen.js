@@ -1,3 +1,5 @@
+import {useLanguage} from '../../context/LanguageContext';
+const consentCopy=require('../../i18n/propertyRequestConsent.cjs');
 import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import {KeyboardAvoidingView,
   Platform,
@@ -38,6 +40,7 @@ const defaultPricing = {
 };
 
 const PropertyAlertRequestScreen = ({ route, navigation }) => {
+  const {language}=useLanguage();
   const paymentReference =
     route?.params?.alert_ref ||
     route?.params?.reference ||
@@ -62,6 +65,7 @@ const PropertyAlertRequestScreen = ({ route, navigation }) => {
     full_name: route?.params?.full_name || '',
     email: route?.params?.email || '',
     phone: '',
+    whatsapp_opt_in: false,
     property_type: route?.params?.property_type || '',
     state_id: route?.params?.state_id ? String(route.params.state_id) : '',
     lga_name: route?.params?.lga_name || '',
@@ -178,6 +182,7 @@ const PropertyAlertRequestScreen = ({ route, navigation }) => {
     full_name: form.full_name.trim(),
     email: form.email.trim().toLowerCase(),
     phone: form.phone.trim() || undefined,
+    whatsapp_opt_in: form.whatsapp_opt_in === true,
     property_type: form.property_type,
     state_id: form.state_id ? Number(form.state_id) : undefined,
     lga_name: form.lga_name.trim() || undefined,
@@ -394,6 +399,7 @@ const PropertyAlertRequestScreen = ({ route, navigation }) => {
           placeholder="+234..."
           keyboardType="phone-pad"
         />
+        <TouchableOpacity accessibilityRole="checkbox" accessibilityState={{checked:form.whatsapp_opt_in === true}} onPress={()=>onChange('whatsapp_opt_in',!form.whatsapp_opt_in)} style={{flexDirection:'row',alignItems:'flex-start',gap:10,paddingVertical:12}}><Icon name={form.whatsapp_opt_in?'checkbox':'square-outline'} size={24} color={colors.blue} /><AppText style={{flex:1,color:colors.text}}>{consentCopy[language] || consentCopy.en}</AppText></TouchableOpacity>
         </View>
 
         <AppText style={styles.sectionLabel}>PROPERTY PREFERENCES</AppText>

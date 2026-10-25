@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Linking, RefreshControl, ScrollView, Share, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Linking, Modal, RefreshControl, ScrollView, Share, StyleSheet, TouchableOpacity, View } from 'react-native';
 import TextInput from '../../components/common/AppTextInput';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -244,6 +244,7 @@ const DashboardScreen = ({ navigation }) => {
   const [landlordWallet, setLandlordWallet] = useState(null);
   const [landlordPropertyFee, setLandlordPropertyFee] = useState(null);
   const [withdrawHistory, setWithdrawHistory] = useState([]);
+  const [showWallet, setShowWallet] = useState(false);
   const [showFundModal, setShowFundModal] = useState(false);
   const [walletBankTransfer, setWalletBankTransfer] = useState(null);
   const [showWithdrawModal, setShowWithdrawModal] = useState(false);
@@ -956,7 +957,7 @@ const DashboardScreen = ({ navigation }) => {
                   onPress={() => navigation.navigate('RentCalculator')}
                 />
                 <StatCard
-                  title="Wallet Balance"
+                  title="Wallet"
                   value={
                     walletBalance !== null && walletBalance !== undefined
                       ? `₦${Number(walletBalance).toLocaleString()}`
@@ -964,8 +965,11 @@ const DashboardScreen = ({ navigation }) => {
                   }
                   icon="wallet-outline"
                   tourTarget="tenant_wallet"
-                  onPress={openWithdrawModal}
+                  onPress={() => setShowWallet(true)}
                 />
+                <StatCard title="Disputes" value="Track cases" icon="shield-half-outline" onPress={() => navigation.navigate('MyDisputes')} />
+                <StatCard title="Property Reports" value="Report an issue" icon="home-outline" onPress={() => navigation.navigate('MyDamageReports')} />
+                <StatCard title="Support" value="Get help" icon="headset-outline" onPress={() => navigation.navigate('Support')} />
               </>
             ) : null}
             <StatCard
@@ -1015,7 +1019,7 @@ const DashboardScreen = ({ navigation }) => {
                   }
                   icon="wallet-outline"
                   tourTarget="landlord_wallet"
-                  onPress={openWithdrawModal}
+                  onPress={() => setShowWallet(true)}
                 />
                 <StatCard
                   title="Subscription"
@@ -1023,6 +1027,9 @@ const DashboardScreen = ({ navigation }) => {
                   icon="card-outline"
                   onPress={() => navigation.navigate('Subscribe')}
                 />
+                <StatCard title="Disputes" value="Track cases" icon="shield-half-outline" onPress={() => navigation.navigate('MyDisputes')} />
+                <StatCard title="Property Reports" value="Report an issue" icon="home-outline" onPress={() => navigation.navigate('MyDamageReports')} />
+                <StatCard title="Support" value="Get help" icon="headset-outline" onPress={() => navigation.navigate('Support')} />
               </>
             ) : null}
             <StatCard
@@ -1194,22 +1201,7 @@ const DashboardScreen = ({ navigation }) => {
             onPress={() => navigation.navigate('RequestRentHelp')}
           />
         ) : null}
-        {(isTenant || isLandlord) ? (
-          <>
-            <ActionRow
-              title="Fund Wallet"
-              subtitle="Top up securely through Paystack."
-              icon="add-circle-outline"
-              onPress={openFundModal}
-            />
-            <ActionRow
-              title="Withdraw Funds"
-              subtitle="Transfer your available balance."
-              icon="wallet-outline"
-              onPress={openWithdrawModal}
-            />
-          </>
-        ) : null}
+        {(isTenant || isLandlord) ? <ActionRow title="Wallet" subtitle="View your balance, fund your wallet or withdraw funds." icon="wallet-outline" onPress={() => setShowWallet(true)} /> : null}
       </DashboardSection>
 
       <DashboardSection title="Support">
@@ -1341,6 +1333,17 @@ const DashboardScreen = ({ navigation }) => {
 
       <AdSpace placement="dashboard_inline" />
 
+      <Modal visible={showWallet} transparent animationType="fade" onRequestClose={() => setShowWallet(false)}>
+        <View style={{flex:1,justifyContent:'center',backgroundColor:'rgba(15,23,42,0.55)',padding:20}}>
+          <View style={{backgroundColor:colors.white,borderRadius:radius.lg,padding:20,gap:16}}>
+            <AppText accessibilityRole="header" style={{fontFamily:typography.bold,fontSize:typeScale.xl,color:colors.ink}}>Wallet</AppText>
+            <AppText style={{color:colors.text}}>Available balance: {walletBalance == null ? '—' : '₦'+Number(walletBalance).toLocaleString()}</AppText>
+            <ActionRow title="Fund Wallet" subtitle="Add money securely to your wallet." icon="add-circle-outline" onPress={() => {setShowWallet(false);openFundModal();}} />
+            <ActionRow title="Withdraw Funds" subtitle="Transfer your available balance." icon="wallet-outline" onPress={() => {setShowWallet(false);openWithdrawModal();}} />
+            <ActionRow title="Close" icon="close-outline" onPress={() => setShowWallet(false)} />
+          </View>
+        </View>
+      </Modal>
       <WalletFundModal
         visible={showFundModal}
         onClose={() => setShowFundModal(false)}

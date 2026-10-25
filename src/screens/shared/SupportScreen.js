@@ -17,7 +17,7 @@ import TourTarget from '../../components/tour/TourTarget';
 const WHATSAPP_NUMBER = '2348030601238';
 
 const SupportScreen = ({ navigation }) => {
-  const { user } = useContext(AuthContext);
+  const { user, isAuthenticated } = useContext(AuthContext);
   const tourId = user?.user_type === 'landlord' ? 'landlord_support' : 'tenant_support';
 
   const openWhatsApp = () => {
@@ -33,11 +33,21 @@ const SupportScreen = ({ navigation }) => {
         </View>
         <DashboardHero
           eyebrow="SUPPORT"
-          title="Contact support"
+          title="Support centre"
           subtitle="Reach the Amana RentalHub support team for help with your account, properties, payments or anything else."
           icon="headset-outline"
         />
       </TourTarget>
+
+      <DashboardSection title="Help and support">
+        <ActionRow title="Chat assistant" subtitle="Ask questions about RentalHub or your signed-in account." icon="chatbubbles-outline" onPress={() => navigation.navigate('WhatsAppBot')} />
+        <ActionRow title="Submit a support ticket" subtitle="Describe a problem and send it to our support team." icon="create-outline" onPress={() => navigation.navigate('ContactWidget', {initialView:'form'})} />
+        {isAuthenticated ? <ActionRow title="My support tickets" subtitle="Check progress, read replies and continue your conversations." icon="document-text-outline" onPress={() => navigation.navigate('ContactWidget', {initialView:'tickets'})} /> : null}
+        <ActionRow title="Live support and in-app calls" subtitle="Open the support conversation and calling options." icon="headset-outline" onPress={() => navigation.navigate('ContactWidget')} />
+        {isAuthenticated && ['tenant','landlord'].includes(user?.user_type) ? <>
+          <ActionRow title="Coverage assistance" subtitle="Check paid coverage and request private assistance." icon="shield-checkmark-outline" onPress={() => navigation.navigate('Assistance')} />
+        </> : null}
+      </DashboardSection>
 
       <DashboardSection title="Get in touch">
         <View style={styles.contactCard}>
@@ -48,7 +58,7 @@ const SupportScreen = ({ navigation }) => {
             <View style={styles.contactCopy}>
               <AppText style={styles.contactTitle}>We are here to help</AppText>
               <AppText style={styles.contactText}>
-                Our support team responds within 24 hours during business days.
+                Choose the support option that fits your issue. You can follow ticket replies in the app.
               </AppText>
             </View>
           </View>
@@ -60,24 +70,14 @@ const SupportScreen = ({ navigation }) => {
           icon="logo-whatsapp"
           onPress={openWhatsApp}
         />
-        <ActionRow
-          title="Contact us"
-          subtitle="Send us a ticket and we will respond as soon as possible."
-          icon="mail-outline"
-          onPress={() => navigation.navigate('ContactWidget')}
-        />
+
         <ActionRow
           title="Email support"
           subtitle="Reach us by email for detailed assistance."
           icon="mail-unread-outline"
           onPress={() => Linking.openURL('mailto:support@rentalhub.com.ng')}
         />
-        <ActionRow
-          title="Call us"
-          subtitle="Speak with a support representative during business hours."
-          icon="call-outline"
-          onPress={() => Linking.openURL('tel:+2348001234567')}
-        />
+
         <ActionRow
           title="Frequently asked questions"
           subtitle="Find quick answers to common questions."

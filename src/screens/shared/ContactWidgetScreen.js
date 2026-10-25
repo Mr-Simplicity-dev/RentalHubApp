@@ -85,11 +85,17 @@ const STATUS_COLORS = {
   closed: { bg: '#E5E7EB', text: '#6B7280' },
 };
 
-const ContactWidgetScreen = ({ navigation }) => {
+const ContactWidgetScreen = ({ navigation, route }) => {
   const { user, isAuthenticated } = useContext(AuthContext);
   const { inviteSupportCall, connected } = useRealtime();
 
   const [view, setView] = useState('menu');
+  useEffect(() => {
+    const initialView=route?.params?.initialView;
+    if (!['form','tickets'].includes(initialView)) return;
+    setView(initialView==='tickets' && isAuthenticated ? 'tickets' : isAuthenticated ? 'auth-form' : 'form');
+    navigation.setParams({initialView:undefined});
+  }, [route?.params?.initialView, isAuthenticated, navigation]);
   const [form, setForm] = useState({ name: '', email: '', state: '', lga: '', subject: '', message: '', priority: 'medium' });
   const [callingSupport, setCallingSupport] = useState(false);
   const [sending, setSending] = useState(false);
