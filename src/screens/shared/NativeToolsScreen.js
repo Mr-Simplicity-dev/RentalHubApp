@@ -15,7 +15,7 @@ const makePublicFeatures = () => [
   { label: 'Fumigation & Cleaning Booking', path: '/fumigation-cleaning/booking' },
   { label: 'Fumigation & Cleaning Catalog', path: '/fumigation-cleaning/catalog' },
   { label: 'About RentalHub', path: '/about' },
-  { label: 'Resolved dispute cases', path: '/legal-support' },
+  { label: 'Resolved dispute cases', path: '/cases' },
   { label: 'Support Centre', path: '/support' },
   { label: 'Verify Email', path: '/verify-email' },
   { label: 'Verify Phone', path: '/verify-phone' },
@@ -36,6 +36,7 @@ const makeProtectedFeatures = (
   hasLgaJurisdiction = false
 ) => {
   const base = [
+    { label: 'Request assistance', path: '/assistance' },
     { label: 'Profile', path: '/profile' },
     { label: 'Payment History', path: '/payment-history' },
     { label: 'Saved Properties', path: '/saved-properties' },
@@ -349,6 +350,8 @@ const NativeToolsScreen = ({ navigation }) => {
       ? { name: 'MainTabs', params: { screen: 'HomeTab' } }
       : { name: 'Home' },
     '/about': { name: 'AboutUs' },
+    '/cases': { name: 'Cases' },
+    '/assistance': { name: 'Assistance' },
     '/lawyers': { name: 'LawyersDirectory' },
     '/legal-support': { name: 'LegalSupport' },
     '/properties': { name: 'PropertyList' },

@@ -1,6 +1,5 @@
 import {AuthContext} from '../../context/AuthContext';
 import {useLanguage} from '../../context/LanguageContext';
-import TreatedCasesPanel from '../../components/legal/TreatedCasesPanel';
 const legalCopy=require('../../i18n/legalCasesCopy.cjs');
 import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
@@ -25,7 +24,6 @@ const LegalSupportScreen = ({ navigation }) => {
   const {isAuthenticated}=useContext(AuthContext);
   const {language}=useLanguage();
   const copy=legalCopy[language]||legalCopy.en;
-  const [refreshToken,setRefreshToken]=useState(0);
   const [coverage, setCoverage] = useState(null);
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -53,8 +51,8 @@ const LegalSupportScreen = ({ navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Legal support unavailable',
-        text2: getErrorMessage(error, 'Could not load legal support'),
+        text1: 'Assistance unavailable',
+        text2: getErrorMessage(error, 'Could not load assistance'),
       });
     } finally {
       setLoading(false);
@@ -65,7 +63,7 @@ const LegalSupportScreen = ({ navigation }) => {
     loadLegalSupport();
   }, [isAuthenticated]);
 
-  const refreshLegalSupport=()=>{setRefreshToken(n=>n+1);loadLegalSupport();};
+  const refreshLegalSupport=()=>{loadLegalSupport();};
 
   const submitRequest = async () => {
     if(!isAuthenticated)return;
@@ -78,13 +76,13 @@ const LegalSupportScreen = ({ navigation }) => {
     try {
       await legalService.submitSupportRequest(form);
       setForm({ subject: '', description: '', urgency: 'normal' });
-      Toast.show({ type: 'success', text1: 'Legal request submitted' });
+      Toast.show({ type: 'success', text1: 'Assistance request submitted' });
       await loadLegalSupport();
     } catch (error) {
       Toast.show({
         type: 'error',
         text1: 'Request failed',
-        text2: getErrorMessage(error, 'Could not submit legal request'),
+        text2: getErrorMessage(error, 'Could not submit assistance request'),
       });
     } finally {
       setSubmitting(false);
@@ -94,27 +92,28 @@ const LegalSupportScreen = ({ navigation }) => {
   return (
     <DashboardScreen refreshing={loading} onRefresh={refreshLegalSupport}>
       <DashboardHero
-        eyebrow={copy.resolved}
-        title={copy.title}
-        subtitle={copy.intro}
+
+        title={copy.assistance_title}
+        subtitle={copy.assistance_intro}
         icon="shield-checkmark-outline"
         onRefresh={refreshLegalSupport}
       />
 
-      <TreatedCasesPanel refreshToken={refreshToken}/>
+
       {isAuthenticated ? <>
       <DashboardNotice
-        title={coverage?.has_coverage ? 'Coverage active' : 'Coverage not active'}
+        title={coverage?.has_coverage ? copy.coverage_active : copy.coverage_required}
         message={
           coverage?.has_coverage
-            ? 'You can submit a request and RentalHub will connect it to legal support.'
-            : 'Legal Protection Coverage is required before submitting legal assistance requests.'
+            ? copy.coverage_active_desc
+            : copy.coverage_required_desc
         }
         variant={coverage?.has_coverage ? 'info' : 'warning'}
       />
 
+      {!loading && !coverage?.has_coverage ? <DashboardSection title={copy.coverage_required}><ActionRow title={copy.coverage_enquiry} icon="help-circle-outline" onPress={()=>navigation.navigate('Support')}/></DashboardSection> : null}
       {coverage?.has_coverage ? (
-        <DashboardSection title="Request legal assistance">
+        <DashboardSection title={copy.request}>
           <TextInput
             placeholder="Subject"
             placeholderTextColor={colors.muted}
@@ -124,7 +123,7 @@ const LegalSupportScreen = ({ navigation }) => {
           />
           <TextInput
             multiline
-            placeholder="Describe your legal issue"
+            placeholder="Describe your issue"
             placeholderTextColor={colors.muted}
             value={form.description}
             onChangeText={(value) => setForm((prev) => ({ ...prev, description: value }))}
@@ -151,7 +150,7 @@ const LegalSupportScreen = ({ navigation }) => {
       <DashboardSection title="Your requests">
         {loading && !requests.length ? <ActivityIndicator color={colors.blue} /> : null}
         {!loading && !requests.length ? (
-          <AppText style={styles.empty}>No legal assistance requests yet.</AppText>
+          <AppText style={styles.empty}>No assistance requests yet.</AppText>
         ) : null}
         {requests.map((request) => (
           <View key={String(request.id)} style={styles.requestCard}>
