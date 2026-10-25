@@ -206,7 +206,7 @@ const CareersScreen = ({ navigation, route }) => {
       <PremiumHero
         eyebrow="Careers"
         title="Join RentalHub"
-        subtitle="Apply for available roles and track your progress from a polished mobile portal."
+        subtitle={copy.portal_intro}
         icon="briefcase-outline"
       />
 
