@@ -106,6 +106,7 @@ const CareersScreen = ({ navigation, route }) => {
   const volunteer=selectedRole?.opportunity_type==='volunteer';
   const intakeOpen=status?.is_active===true||status?.volunteer_applications_enabled===true;
   const visibleRoles=roles.filter(role=>opportunityFilter==='all'||(role.opportunity_type||'employment')===opportunityFilter);
+  const volunteerBrowsing=volunteer||(!selectedRole&&(opportunityFilter==='volunteer'||(visibleRoles.length>0&&visibleRoles.every(role=>role.opportunity_type==='volunteer'))));
 
   const updateField = (field, value) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -220,6 +221,7 @@ const CareersScreen = ({ navigation, route }) => {
 
 <AppText style={styles.sectionTitle}>{copy.opportunities_title}</AppText>
       <View style={styles.chipRow}>{['all','employment','volunteer'].map(type=><TouchableOpacity key={type} accessibilityRole="button" accessibilityState={{selected:opportunityFilter===type}} style={[styles.chip,opportunityFilter===type&&styles.chipActive]} onPress={()=>{setOpportunityFilter(type);setSelectedRoleId('');}}><AppText style={styles.chipText}>{copy['opportunity_'+type]}</AppText></TouchableOpacity>)}</View>
+      {volunteerBrowsing ? <View style={styles.noticeCard}><AppText style={styles.noticeTitle}>{copy.volunteer_free}</AppText><AppText style={styles.noticeText}>{copy.volunteer_notice}</AppText></View> : null}
       {visibleRoles.length > 0 ? (
         <View style={styles.roleGrid}>
           {visibleRoles.map((role) => {
