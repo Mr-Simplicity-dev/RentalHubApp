@@ -438,6 +438,9 @@ const GuestStack = () => (
     <Stack.Screen name="AcceptLawyerInvite" component={AcceptLawyerInviteScreen} options={{ title: 'Lawyer Invite' }} />
     <Stack.Screen name="AcceptAgentInvite" component={AcceptAgentInviteScreen} options={{ title: 'Agent Invite' }} />
     {commonInfoScreens()}
+    <Stack.Screen name="Careers" component={CareersScreen} options={{ title: 'Careers' }} />
+    <Stack.Screen name="RecruitmentApplication" component={RecruitmentApplicationScreen} options={{ title: 'Application' }} />
+    <Stack.Screen name="Interview" component={InterviewScreen} options={{ title: 'Interview' }} />
     <Stack.Screen name="NativeTools" component={NativeToolsScreen} options={{ title: 'More Tools' }} />
     <Stack.Screen name="TransportationBooking" component={TransportationBookingScreen} options={{ title: 'Transportation' }} />
     <Stack.Screen name="TransportationBookings" component={TransportationBookingsScreen} options={{ title: 'Transport Bookings' }} />

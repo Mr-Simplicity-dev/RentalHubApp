@@ -1,3 +1,4 @@
+import RecruitmentOpportunityManager from '../../components/admin/RecruitmentOpportunityManager';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Alert, ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import TextInput from '../../components/common/AppTextInput';
@@ -19,7 +20,7 @@ import AdminAccountActions from '../../components/admin/AdminAccountActions';
 
 import AppText from '../../components/common/AppText';
 const statusOptions = ['all', 'submitted', 'under_review', 'shortlisted', 'approved', 'rejected', 'disqualified'];
-const paymentOptions = ['all', 'pending', 'paid', 'failed'];
+const paymentOptions = ['all', 'not_applicable', 'pending', 'paid', 'failed'];
 
 const formatCurrency = (value) => `₦${Number(value || 0).toLocaleString()}`;
 
@@ -62,8 +63,8 @@ const ApplicantCard = ({ applicant, onDecision, onReport }) => {
       </View>
 
       <View style={styles.detailGrid}>
-        <AppText style={styles.detailText}>Role: {applicant.role_title || 'N/A'}</AppText>
-        <AppText style={styles.detailText}>Payment: {applicant.payment_status || 'pending'}</AppText>
+        <AppText style={styles.detailText}>Role: {applicant.role_title || 'N/A'} {applicant.opportunity_type==='volunteer'?'· VOLUNTEER':''}</AppText>
+        <AppText style={styles.detailText}>Payment: {applicant.opportunity_type==='volunteer'?'Not Applicable':(applicant.payment_status||'pending')}</AppText>
         <AppText style={styles.detailText}>Location: {[applicant.state_name, applicant.lga_name].filter(Boolean).join(', ') || 'N/A'}</AppText>
         <AppText style={styles.detailText}>Interview: {score != null ? `${Math.round(Number(score))}%` : 'Not completed'}</AppText>
       </View>
@@ -101,6 +102,7 @@ const RecruitmentAdminScreen = ({ navigation }) => {
     visible: false,
   });
   const [filters, setFilters] = useState({
+    opportunity_type: '',
     status: 'all',
     payment_status: 'all',
     cycle_id: '',
@@ -111,6 +113,7 @@ const RecruitmentAdminScreen = ({ navigation }) => {
 
   const queryParams = useMemo(() => {
     const params = { limit: 25, page: filters.page };
+    if(filters.opportunity_type)params.opportunity_type=filters.opportunity_type;
     if (filters.status !== 'all') params.status = filters.status;
     if (filters.payment_status !== 'all') params.payment_status = filters.payment_status;
     if (filters.cycle_id) params.cycle_id = filters.cycle_id;
@@ -128,7 +131,7 @@ const RecruitmentAdminScreen = ({ navigation }) => {
         recruitmentService.getStatus(),
         recruitmentService.getAdminCycles(),
         recruitmentService.getAdminRoles(),
-        recruitmentService.getAnalytics(filters.cycle_id ? { cycle_id: filters.cycle_id } : {}),
+        recruitmentService.getAnalytics({cycle_id:filters.cycle_id||undefined,opportunity_type:filters.opportunity_type||undefined}),
         recruitmentService.getApplicants(queryParams),
       ]);
 
@@ -261,12 +264,14 @@ const RecruitmentAdminScreen = ({ navigation }) => {
       <AdminAccountActions navigation={navigation} />
 
       <MetricGrid tourTarget="recruitment_overview" tourLabel="Recruitment overview">
+        <MetricCard label="Volunteers" value={String(analytics?.volunteer_applicants||0)} icon="heart-outline" color={colors.success} />
         <MetricCard label="Applicants" value={String(analytics?.total_applicants || pagination?.total || applicants.length)} icon="people-outline" color={colors.blue} />
         <MetricCard label="Fees" value={formatCurrency(paidFees)} icon="card-outline" color={colors.success} />
         <MetricCard label="Interviews" value={String(completedInterviews)} icon="videocam-outline" color="#A66B00" />
         <MetricCard label="Avg score" value={`${Math.round(Number(averageScore || 0))}%`} icon="school-outline" color={colors.navy} />
       </MetricGrid>
 
+      <RecruitmentOpportunityManager status={status} cycles={cycles} roles={roles} onSaved={loadData} />
       <DashboardSection title="Recruitment status">
         <DashboardNotice
           title={status?.is_active ? 'Recruitment is open' : 'Recruitment is closed'}
@@ -288,6 +293,7 @@ const RecruitmentAdminScreen = ({ navigation }) => {
           style={styles.searchInput}
         />
 
+        <AppText style={styles.filterLabel}>Opportunity type</AppText><View style={styles.chipRow}>{['','employment','volunteer'].map(type=><Chip key={type||'all'} label={type||'All opportunities'} active={filters.opportunity_type===type} onPress={()=>{updateFilter('opportunity_type',type);updateFilter('payment_status','all');}}/>)}</View>
         <AppText style={styles.filterLabel}>Status</AppText>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipRow}>
           {statusOptions.map((option) => (
@@ -416,7 +422,10 @@ const RecruitmentAdminScreen = ({ navigation }) => {
                   ['Role', detailModal.applicant?.role_title],
                   ['Location', [detailModal.applicant?.state_name, detailModal.applicant?.lga_name].filter(Boolean).join(', ')],
                   ['Status', detailModal.applicant?.status],
-                  ['Payment', detailModal.applicant?.payment_status],
+                  ['Payment', detailModal.applicant?.opportunity_type==='volunteer'?'Not Applicable':detailModal.applicant?.payment_status],
+                  ['Opportunity type',detailModal.applicant?.opportunity_type||'employment'],
+                  ['Volunteer motivation',detailModal.applicant?.volunteer_motivation],
+                  ['Availability',detailModal.applicant?.availability],
                   ['Interview score', detailModal.applicant?.interview_score ?? detailModal.applicant?.score],
                   ['Education', detailModal.applicant?.highest_education],
                   ['Experience', detailModal.applicant?.years_of_experience],

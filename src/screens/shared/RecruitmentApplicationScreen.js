@@ -1,3 +1,5 @@
+import {useLanguage} from '../../context/LanguageContext';
+const recruitmentCopy = require('../../i18n/recruitmentCopy.cjs');
 import React, { useEffect, useMemo, useState } from 'react';
 import {Alert, StyleSheet, TouchableOpacity, View} from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
@@ -39,6 +41,8 @@ const ProgressBar = ({ value }) => (
 );
 
 const RecruitmentApplicationScreen = ({ route }) => {
+  const {language}=useLanguage();
+  const copy=recruitmentCopy[language]||recruitmentCopy.en;
   const initialApplication = route?.params?.application || null;
   const [application, setApplication] = useState(initialApplication);
   const [loading, setLoading] = useState(!initialApplication);
@@ -88,10 +92,11 @@ const RecruitmentApplicationScreen = ({ route }) => {
   }, [applicationId]);
 
   const canUpload = useMemo(() => {
-    return application?.payment_status === 'paid' && application?.access_code_used;
+    return application?.opportunity_type==='volunteer'||(application?.payment_status === 'paid' && application?.access_code_used);
   }, [application]);
 
   const openPayment = async () => {
+    if(application?.opportunity_type==='volunteer')return;
     if (!applicationId) return;
 
     try {
@@ -294,6 +299,13 @@ const RecruitmentApplicationScreen = ({ route }) => {
   if (loading) {
     return <PremiumCenter loading title="Loading your application" message="Preparing your recruitment progress..." />;
   }
+
+  if(application?.opportunity_type==='volunteer') return <PremiumScreen>
+    <PremiumHero eyebrow={copy.opportunity_volunteer} title={copy.volunteer_received} subtitle={copy.volunteer_confirmation} icon="heart-outline" />
+    <PremiumCard><InfoRow label="Reference" value={application.reference_number}/><InfoRow label="Opportunity" value={application.role_title}/><InfoRow label="Status" value={application.status}/><AppText variant="bodySm">{copy.volunteer_free}</AppText></PremiumCard>
+    {error?<AppText color={colors.danger}>{error}</AppText>:null}
+    {['submitted','under_review'].includes(application.status)&&<PremiumCard><AppText variant="h4">{copy.optional_cv}</AppText><PremiumButton title={copy.optional_cv} variant="secondary" onPress={()=>pickFile('cv')}/>{selectedFiles.cv?<><AppText variant="bodySm">{selectedFiles.cv.fileName}</AppText><PremiumButton title={copy.upload_documents} onPress={uploadDocuments} loading={uploading}/></>:null}</PremiumCard>}
+  </PremiumScreen>;
 
   const paymentStatus = application?.payment_status || 'pending';
   const appStatus = application?.status || 'draft';

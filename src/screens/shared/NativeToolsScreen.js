@@ -293,7 +293,7 @@ const NativeToolsScreen = ({ navigation }) => {
     () =>
       makeProtectedFeatures(
         user?.user_type,
-        user?.is_recruitment_admin === true,
+        ['super_admin','recruitment_admin'].includes(user?.user_type) || user?.is_recruitment_admin === true,
         Boolean(user?.assigned_state && user?.assigned_city)
       ),
     [

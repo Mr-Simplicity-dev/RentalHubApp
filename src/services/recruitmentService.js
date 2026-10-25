@@ -1,6 +1,9 @@
 import api from './api';
 
 export const recruitmentService = {
+  toggleVolunteers: (enabled) => api.put('/recruitment/admin/settings/volunteers',{volunteer_applications_enabled:enabled}),
+  createRole: (payload) => api.post('/recruitment/admin/roles',payload),
+  updateRole: (id,payload) => api.put(`/recruitment/admin/roles/${id}`,payload),
   getStatus: () => api.get('/recruitment/status'),
   getActiveCycles: () => api.get('/recruitment/cycles/active'),
   getActiveRoles: (cycleId) => api.get('/recruitment/roles/active', {

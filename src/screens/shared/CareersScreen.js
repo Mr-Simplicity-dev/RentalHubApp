@@ -1,3 +1,5 @@
+import {useLanguage} from '../../context/LanguageContext';
+const recruitmentCopy = require('../../i18n/recruitmentCopy.cjs');
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, ScrollView, StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native';
 import TextInput from '../../components/common/AppTextInput';
@@ -23,10 +25,15 @@ const emptyForm = {
   current_employment_status: '',
   skills_qualifications: '',
   suitability_reason: '',
+  volunteer_motivation: '',
+  availability: '',
   application_track: 'standard',
 };
 
-const CareersScreen = ({ navigation }) => {
+const CareersScreen = ({ navigation, route }) => {
+  const {language}=useLanguage();
+  const copy=recruitmentCopy[language]||recruitmentCopy.en;
+  const [opportunityFilter,setOpportunityFilter]=useState(['employment','volunteer'].includes(route?.params?.type)?route.params.type:'all');
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [status, setStatus] = useState(null);
@@ -61,6 +68,8 @@ const CareersScreen = ({ navigation }) => {
       setRoles(rolesRes?.data?.data || []);
       setStates(statesRes?.data?.data || []);
     } catch (err) {
+      setStatus(null);
+      setRoles([]);
       setError(getErrorMessage(err, 'Could not load recruitment information'));
     } finally {
       setLoading(false);
@@ -94,11 +103,17 @@ const CareersScreen = ({ navigation }) => {
     [roles, selectedRoleId]
   );
 
+  const volunteer=selectedRole?.opportunity_type==='volunteer';
+  const intakeOpen=status?.is_active===true||status?.volunteer_applications_enabled===true;
+  const visibleRoles=roles.filter(role=>opportunityFilter==='all'||(role.opportunity_type||'employment')===opportunityFilter);
+
   const updateField = (field, value) => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = async () => {
+    if (!intakeOpen) return;
+    if(volunteer&&(!form.volunteer_motivation.trim()||!form.availability.trim())){Toast.show({type:'error',text1:copy.volunteer_fields_required});return;}
     if (!selectedRoleId) {
       Toast.show({ type: 'error', text1: 'Choose a role', text2: 'Pick a role before submitting your application.' });
       return;
@@ -126,7 +141,9 @@ const CareersScreen = ({ navigation }) => {
         current_employment_status: form.current_employment_status,
         skills_qualifications: form.skills_qualifications,
         suitability_reason: form.suitability_reason,
-        application_track: form.application_track,
+        application_track: volunteer?'standard':form.application_track,
+        volunteer_motivation: form.volunteer_motivation,
+        availability: form.availability,
         turnstile_token: turnstileToken,
       };
 
@@ -135,7 +152,7 @@ const CareersScreen = ({ navigation }) => {
       setSubmittedApplication(data);
       setLookupEmail(data?.email_address || form.email_address);
       setLookupReference(data?.reference_number || '');
-      Toast.show({ type: 'success', text1: 'Application started', text2: 'Your application is ready for payment and document upload.' });
+      Toast.show({ type:'success', text1:data?.opportunity_type==='volunteer'?copy.volunteer_received:'Application started', text2:data?.opportunity_type==='volunteer'?copy.volunteer_confirmation:'Your application is ready for payment and document upload.' });
     } catch (err) {
       Toast.show({ type: 'error', text1: 'Submission failed', text2: getErrorMessage(err, 'Could not submit your application') });
     } finally {
@@ -193,34 +210,35 @@ const CareersScreen = ({ navigation }) => {
       />
 
       <View style={styles.noticeCard}>
-        <AppText style={styles.noticeTitle}>{status?.is_active ? 'Recruitment is open' : 'Recruitment is currently closed'}</AppText>
+        <AppText style={styles.noticeTitle}>{intakeOpen ? copy.opportunities_title : 'Recruitment is currently closed'}</AppText>
         <AppText style={styles.noticeText}>
-          {status?.message || (status?.is_active ? 'Applications are currently being accepted.' : 'Please check back later for the next opportunities.')}
+          {status?.message || (intakeOpen ? 'Applications are currently being accepted.' : 'Please check back later for the next opportunities.')}
         </AppText>
       </View>
 
       {error ? <AppText style={styles.errorText}>{error}</AppText> : null}
 
-      <AppText style={styles.sectionTitle}>Choose a role</AppText>
-      {roles.length > 0 ? (
+<AppText style={styles.sectionTitle}>{copy.opportunities_title}</AppText>
+      <View style={styles.chipRow}>{['all','employment','volunteer'].map(type=><TouchableOpacity key={type} accessibilityRole="button" accessibilityState={{selected:opportunityFilter===type}} style={[styles.chip,opportunityFilter===type&&styles.chipActive]} onPress={()=>{setOpportunityFilter(type);setSelectedRoleId('');}}><AppText style={styles.chipText}>{copy['opportunity_'+type]}</AppText></TouchableOpacity>)}</View>
+      {visibleRoles.length > 0 ? (
         <View style={styles.roleGrid}>
-          {roles.map((role) => {
+          {visibleRoles.map((role) => {
             const active = String(role.id) === String(selectedRoleId);
             return (
               <TouchableOpacity
                 key={role.id}
                 style={[styles.roleCard, active && styles.roleCardActive]}
-                onPress={() => setSelectedRoleId(role.id)}
+                onPress={() => {setSelectedRoleId(role.id);updateField('application_track','standard');}}
               >
                 <AppText style={[styles.roleTitle, active && styles.roleTitleActive]}>{role.title}</AppText>
-                <AppText style={styles.roleMeta}>{role.type || 'Role'}</AppText>
-                <AppText style={styles.roleMeta}>â‚¦{Number(role.application_fee || 0).toLocaleString()} standard</AppText>
+                <AppText style={styles.roleMeta}>{role.opportunity_type==='volunteer'?copy.volunteer_position:copy.employment_position}</AppText>
+                <AppText style={styles.roleMeta}>{role.opportunity_type==='volunteer'?copy.volunteer_free:('₦'+Number(role.application_fee||0).toLocaleString()+' standard')}</AppText>
               </TouchableOpacity>
             );
           })}
         </View>
       ) : (
-        <AppText style={styles.emptyText}>No active roles are available right now.</AppText>
+        <AppText style={styles.emptyText}>{copy.no_opportunities}</AppText>
       )}
 
       {selectedRole ? (
@@ -231,6 +249,7 @@ const CareersScreen = ({ navigation }) => {
         </View>
       ) : null}
 
+      {intakeOpen && selectedRole && !submittedApplication ? <>
       <AppText style={styles.sectionTitle}>Your details</AppText>
       <View style={styles.formCard}>
         <TextInput style={styles.input} placeholder="Full name" value={form.full_name} onChangeText={(v) => updateField('full_name', v)} />
@@ -244,7 +263,8 @@ const CareersScreen = ({ navigation }) => {
         <TextInput style={[styles.input, styles.textarea]} placeholder="Skills and qualifications" value={form.skills_qualifications} onChangeText={(v) => updateField('skills_qualifications', v)} multiline />
         <TextInput style={[styles.input, styles.textarea]} placeholder="Why you are suitable for this role" value={form.suitability_reason} onChangeText={(v) => updateField('suitability_reason', v)} multiline />
 
-        <AppText style={styles.helperLabel}>Application track</AppText>
+<View>{volunteer&&<><AppText style={styles.noticeText}>{copy.volunteer_notice}</AppText><AppText style={styles.helperLabel}>{copy.volunteer_motivation}</AppText><TextInput accessibilityLabel={copy.volunteer_motivation} style={[styles.input,styles.textarea]} value={form.volunteer_motivation} onChangeText={v=>updateField('volunteer_motivation',v)} multiline maxLength={5000}/><AppText style={styles.helperLabel}>{copy.volunteer_availability}</AppText><TextInput accessibilityLabel={copy.volunteer_availability} style={[styles.input,styles.textarea]} value={form.availability} onChangeText={v=>updateField('availability',v)} multiline maxLength={5000}/></>}</View>
+        {!volunteer && <><AppText style={styles.helperLabel}>Application track</AppText>
         <View style={styles.trackRow}>
           {['standard', 'premium'].map((track) => {
             const active = form.application_track === track;
@@ -260,6 +280,7 @@ const CareersScreen = ({ navigation }) => {
           })}
         </View>
 
+        </>}
         <AppText style={styles.helperLabel}>State</AppText>
         <View style={styles.chipRow}>
           {states.map((state) => {
@@ -305,16 +326,18 @@ const CareersScreen = ({ navigation }) => {
         />
 
         <TouchableOpacity style={styles.submitButton} onPress={handleSubmit} disabled={submitting}>
-          {submitting ? <ActivityIndicator color="#ffffff" /> : <AppText style={styles.submitButtonText}>Submit application</AppText>}
+          {submitting ? <ActivityIndicator color="#ffffff" /> : <AppText style={styles.submitButtonText}>{volunteer?copy.apply_volunteer:'Submit application'}</AppText>}
         </TouchableOpacity>
       </View>
 
+      </> : null}
       {submittedApplication ? (
         <View style={styles.successCard}>
-          <AppText style={styles.successTitle}>Application started</AppText>
+          <AppText style={styles.successTitle}>{submittedApplication.opportunity_type==='volunteer'?copy.volunteer_received:'Application started'}</AppText>
           <AppText style={styles.successText}>Reference: {submittedApplication.reference_number}</AppText>
           <AppText style={styles.successText}>Status: {submittedApplication.status}</AppText>
-          <AppText style={styles.successText}>Next: complete payment and upload your supporting documents.</AppText>
+          <AppText style={styles.successText}>{submittedApplication.opportunity_type==='volunteer'?copy.volunteer_confirmation:'Next: complete payment and upload your supporting documents.'}</AppText>
+          <TouchableOpacity style={styles.secondaryButton} onPress={()=>navigation.navigate('RecruitmentApplication',{application:submittedApplication})}><AppText style={styles.secondaryButtonText}>{submittedApplication.opportunity_type==='volunteer'?copy.optional_cv:'Application progress'}</AppText></TouchableOpacity>
         </View>
       ) : null}
 
@@ -333,7 +356,7 @@ const CareersScreen = ({ navigation }) => {
           {lookupLoading ? <ActivityIndicator color="#0284c7" /> : <AppText style={styles.secondaryButtonText}>Lookup applications</AppText>}
         </TouchableOpacity>
         {applications.map((application) => {
-          const canStartInterview = String(application.status || '').toLowerCase() === 'shortlisted';
+          const canStartInterview = application.status === 'shortlisted' && application.interview_activated === true;
           return (
             <View key={application.id} style={styles.applicationRow}>
               <AppText style={styles.applicationTitle}>{application.role_title || 'Application'}</AppText>
