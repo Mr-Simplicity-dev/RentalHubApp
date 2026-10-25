@@ -1,4 +1,8 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import {AuthContext} from '../../context/AuthContext';
+import {useLanguage} from '../../context/LanguageContext';
+import TreatedCasesPanel from '../../components/legal/TreatedCasesPanel';
+const legalCopy=require('../../i18n/legalCasesCopy.cjs');
+import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import TextInput from '../../components/common/AppTextInput';
 import Toast from 'react-native-toast-message';
@@ -8,6 +12,7 @@ import { colors, radius, typography, typeScale } from '../../theme';
 import Button from '../../components/common/Button';
 import AppText from '../../components/common/AppText';
 import {
+ActionRow,
 DashboardHero,
   DashboardNotice,
   DashboardScreen,
@@ -17,6 +22,10 @@ DashboardHero,
 const urgencyOptions = ['normal', 'urgent', 'emergency'];
 
 const LegalSupportScreen = ({ navigation }) => {
+  const {isAuthenticated}=useContext(AuthContext);
+  const {language}=useLanguage();
+  const copy=legalCopy[language]||legalCopy.en;
+  const [refreshToken,setRefreshToken]=useState(0);
   const [coverage, setCoverage] = useState(null);
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -32,6 +41,7 @@ const LegalSupportScreen = ({ navigation }) => {
   }, [navigation]);
 
   const loadLegalSupport = async () => {
+    if(!isAuthenticated){setCoverage(null);setRequests([]);setLoading(false);return;}
     setLoading(true);
     try {
       const [coverageRes, requestsRes] = await Promise.all([
@@ -53,9 +63,12 @@ const LegalSupportScreen = ({ navigation }) => {
 
   useEffect(() => {
     loadLegalSupport();
-  }, []);
+  }, [isAuthenticated]);
+
+  const refreshLegalSupport=()=>{setRefreshToken(n=>n+1);loadLegalSupport();};
 
   const submitRequest = async () => {
+    if(!isAuthenticated)return;
     if (!form.subject.trim() || !form.description.trim()) {
       Toast.show({ type: 'info', text1: 'Subject and description are required' });
       return;
@@ -79,15 +92,17 @@ const LegalSupportScreen = ({ navigation }) => {
   };
 
   return (
-    <DashboardScreen refreshing={loading} onRefresh={loadLegalSupport}>
+    <DashboardScreen refreshing={loading} onRefresh={refreshLegalSupport}>
       <DashboardHero
-        eyebrow="LEGAL PROTECTION"
-        title="Legal support"
-        subtitle="Check your coverage, submit a legal assistance request and track past requests."
+        eyebrow={copy.resolved}
+        title={copy.title}
+        subtitle={copy.intro}
         icon="shield-checkmark-outline"
-        onRefresh={loadLegalSupport}
+        onRefresh={refreshLegalSupport}
       />
 
+      <TreatedCasesPanel refreshToken={refreshToken}/>
+      {isAuthenticated ? <>
       <DashboardNotice
         title={coverage?.has_coverage ? 'Coverage active' : 'Coverage not active'}
         message={
@@ -151,6 +166,7 @@ const LegalSupportScreen = ({ navigation }) => {
           </View>
         ))}
       </DashboardSection>
+      </> : <DashboardSection title={copy.assistance}><ActionRow title={copy.sign_in} icon="log-in-outline" onPress={()=>navigation.navigate('Login')}/></DashboardSection>}
     </DashboardScreen>
   );
 };

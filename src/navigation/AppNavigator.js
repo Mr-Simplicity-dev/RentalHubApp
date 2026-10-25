@@ -398,8 +398,8 @@ const commonInfoScreens = () => (
     <Stack.Screen name="LocationInfoLga" component={LocationInfoScreen} options={{ title: 'Location' }} />
     <Stack.Screen name="AreaInfo" component={LocationInfoScreen} options={{ title: 'Location' }} />
     <Stack.Screen name="VerifyCaseAlias" component={VerifyCaseScreen} options={{ title: 'Verify Case' }} />
-    <Stack.Screen name="LawyersDirectory" component={LawyersDirectoryScreen} options={{ title: 'Lawyers' }} />
-    <Stack.Screen name="LegalSupport" component={LegalSupportScreen} options={{ title: 'Legal Support' }} />
+    <Stack.Screen name="LawyersDirectory" component={LawyersDirectoryScreen} options={{ title: 'Resolved cases' }} />
+    <Stack.Screen name="LegalSupport" component={LegalSupportScreen} options={{ title: 'Resolved cases & legal support' }} />
     <Stack.Screen name="PlatformRatings" component={PlatformRatingsScreen} options={{ title: 'Ratings' }} />
     <Stack.Screen name="WhatsAppBot" component={WhatsAppBotScreen} options={{ title: 'WhatsApp Assistant' }} />
     <Stack.Screen name="Settings" component={SettingsScreen} options={{ title: 'Settings' }} />
