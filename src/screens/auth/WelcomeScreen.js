@@ -1,3 +1,4 @@
+const recruitmentCopy = require('../../i18n/recruitmentCopy.cjs');
 import React, { useCallback, useEffect, useRef } from 'react';
 import {Animated,
   I18nManager,
@@ -21,7 +22,8 @@ const logo = require('../../../assets/rentalhub-app-icon.png');
 
 const WelcomeScreen = ({ navigation }) => {
   const { height, width } = useWindowDimensions();
-  const { isRTL, t, textAlign } = useLanguage();
+  const { isRTL, t, textAlign, language } = useLanguage();
+  const careersCopy=recruitmentCopy[language]||recruitmentCopy.en;
   const compact = height < 720 || width < 360;
   const nativeRTL = Boolean(I18nManager.isRTL);
   const directionOverride = nativeRTL !== isRTL ? (isRTL ? 'rtl' : 'ltr') : null;
@@ -149,6 +151,11 @@ const WelcomeScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
 
+        <TouchableOpacity accessibilityRole="button" accessibilityLabel={careersCopy.opportunities_title} onPress={()=>navigateOnce('Careers')} style={styles.careersButton}>
+          <View style={{flex:1}}><AppText style={[styles.secondaryText,{textAlign}]}>{careersCopy.opportunities_title}</AppText><AppText variant="caption" color="#C7D6EF" style={{marginTop:4,textAlign}}>{careersCopy.no_account_required}</AppText></View>
+          <Icon name="heart-outline" size={23} color={colors.gold}/>
+        </TouchableOpacity>
+
         <View style={styles.trustRow}>
           <Icon name="shield-checkmark" size={17} color="#8DB9F2" />
           <AppText style={[styles.trustText, { textAlign, writingDirection: textDirection }]}>{t('welcome.trust')}</AppText>
@@ -164,6 +171,7 @@ const WelcomeScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  careersButton: {backgroundColor:colors.navySoft,borderWidth:1,borderColor:'#446494',borderRadius:radius.md,padding:16,minHeight:68,flexDirection:'row',alignItems:'center',gap:12,marginTop:16},
   safeArea: {
     backgroundColor: colors.navy,
     flex: 1,
