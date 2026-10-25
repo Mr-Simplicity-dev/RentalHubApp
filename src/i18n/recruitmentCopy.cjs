@@ -18,7 +18,8 @@ module.exports = {
     "volunteer_confirmation": "Thank you for your interest in volunteering with Amana RentalHub NG. Your application has been received successfully. Our team will review your application and contact you if you are selected for the next stage.",
     "volunteer_fields_required": "Please provide your motivation and availability.",
     "optional_cv": "CV / document (optional)",
-    "upload_documents": "Upload document"
+    "upload_documents": "Upload document",
+    "no_account_required": "No account needed — apply as a volunteer"
   },
   "fr": {
     "opportunities_title": "Opportunités de carrière",
@@ -39,7 +40,8 @@ module.exports = {
     "volunteer_confirmation": "Merci de votre intérêt pour le bénévolat chez Amana RentalHub NG. Votre candidature a bien été reçue. Notre équipe l’examinera et vous contactera si vous êtes retenu pour la prochaine étape.",
     "volunteer_fields_required": "Veuillez indiquer votre motivation et vos disponibilités.",
     "optional_cv": "CV / document (facultatif)",
-    "upload_documents": "Téléverser le document"
+    "upload_documents": "Téléverser le document",
+    "no_account_required": "Aucun compte nécessaire — postulez comme bénévole"
   },
   "ar": {
     "opportunities_title": "فرص مهنية",
@@ -60,7 +62,8 @@ module.exports = {
     "volunteer_confirmation": "شكراً لاهتمامك بالتطوع لدى Amana RentalHub NG. تم استلام طلبك بنجاح. سيراجع فريقنا طلبك ويتواصل معك إذا تم اختيارك للمرحلة التالية.",
     "volunteer_fields_required": "يرجى توضيح دوافعك وأوقات تفرغك.",
     "optional_cv": "السيرة الذاتية / مستند (اختياري)",
-    "upload_documents": "رفع المستند"
+    "upload_documents": "رفع المستند",
+    "no_account_required": "لا يلزم حساب — قدّم طلب تطوع"
   },
   "ru": {
     "opportunities_title": "Карьерные возможности",
@@ -81,7 +84,8 @@ module.exports = {
     "volunteer_confirmation": "Спасибо за интерес к волонтёрству в Amana RentalHub NG. Ваша заявка получена. Наша команда рассмотрит её и свяжется с вами, если вы будете выбраны для следующего этапа.",
     "volunteer_fields_required": "Укажите мотивацию и доступное время.",
     "optional_cv": "Резюме / документ (необязательно)",
-    "upload_documents": "Загрузить документ"
+    "upload_documents": "Загрузить документ",
+    "no_account_required": "Аккаунт не нужен — подайте заявку волонтёра"
   },
   "zh": {
     "opportunities_title": "职业机会",
@@ -102,7 +106,8 @@ module.exports = {
     "volunteer_confirmation": "感谢您有意参与 Amana RentalHub NG 的志愿服务。您的申请已成功收到。我们的团队将审核申请；如果您获选进入下一阶段，我们会与您联系。",
     "volunteer_fields_required": "请填写申请动机和可服务时间。",
     "optional_cv": "简历／文档（可选）",
-    "upload_documents": "上传文档"
+    "upload_documents": "上传文档",
+    "no_account_required": "无需账户 — 申请成为志愿者"
   },
   "ha": {
     "opportunities_title": "Damar aiki",
@@ -123,7 +128,8 @@ module.exports = {
     "volunteer_confirmation": "Mun gode da sha’awar yin aikin sa kai da Amana RentalHub NG. An karɓi buƙatarka. Ƙungiyarmu za ta duba ta kuma ta tuntube ka idan an zaɓe ka zuwa mataki na gaba.",
     "volunteer_fields_required": "Ka bayyana dalilinka da lokacin da kake samu.",
     "optional_cv": "CV / takarda (ba dole ba)",
-    "upload_documents": "Loda takarda"
+    "upload_documents": "Loda takarda",
+    "no_account_required": "Ba a buƙatar asusu — nemi aikin sa kai"
   },
   "yo": {
     "opportunities_title": "Àwọn àǹfààní iṣẹ́",
@@ -144,7 +150,8 @@ module.exports = {
     "volunteer_confirmation": "A dúpẹ́ fún ìfẹ́ rẹ sí iṣẹ́ ìyọ̀ǹda pẹ̀lú Amana RentalHub NG. A ti gba ìbéèrè rẹ. Ẹgbẹ́ wa yóò yẹ̀ ẹ́ wò, a ó sì kàn sí ọ bí a bá yàn ọ fún ìpele tó kàn.",
     "volunteer_fields_required": "Jọ̀wọ́ sọ ìdí rẹ àti àkókò tí o wà lárọwọ́tó.",
     "optional_cv": "CV / ìwé (kì í ṣe dandan)",
-    "upload_documents": "Gbé ìwé sókè"
+    "upload_documents": "Gbé ìwé sókè",
+    "no_account_required": "Kò nílò àkọọ́lẹ̀ — forúkọ sílẹ̀ gẹ́gẹ́ bí olùyọ̀ǹda"
   },
   "ig": {
     "opportunities_title": "Ohere ọrụ",
@@ -165,6 +172,7 @@ module.exports = {
     "volunteer_confirmation": "Daalụ maka mmasị gị n’ịrụ ọrụ afọ ofufo na Amana RentalHub NG. Anatala akwụkwọ gị nke ọma. Ndị otu anyị ga-enyocha ya ma kpọtụrụ gị ma ọ bụrụ na a họrọ gị maka ọkwa ọzọ.",
     "volunteer_fields_required": "Biko kọwaa ihe kpaliri gị na oge ị nwere.",
     "optional_cv": "CV / akwụkwọ (ọ bụghị iwu)",
-    "upload_documents": "Bulite akwụkwọ"
+    "upload_documents": "Bulite akwụkwọ",
+    "no_account_required": "Achọghị akaụntụ — tinye akwụkwọ ọrụ afọ ofufo"
   }
 };
