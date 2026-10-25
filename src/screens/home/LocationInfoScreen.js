@@ -3,7 +3,7 @@ import {ActivityIndicator, StyleSheet, View} from 'react-native';
 import Toast from 'react-native-toast-message';
 import { propertyService } from '../../services/propertyService';
 import { getErrorMessage, pickList } from '../../utils/http';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import AppText from '../../components/common/AppText';
 import {
 ActionRow,
@@ -153,13 +153,15 @@ const styles = StyleSheet.create({
   locationName: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
     textTransform: 'capitalize',
   },
   locationMeta: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 4,
   },
   empty: {

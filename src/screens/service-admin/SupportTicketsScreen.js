@@ -4,7 +4,7 @@ import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { serviceAdminService } from '../../services/serviceAdminService';
 import { getErrorMessage, pickList } from '../../utils/http';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import AppText from '../../components/common/AppText';
 import TourTarget from '../../components/tour/TourTarget';
 import {
@@ -137,7 +137,8 @@ const styles = StyleSheet.create({
     color: colors.ink,
     flex: 1,
     fontFamily: typography.bold,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
   },
   badge: {
     borderRadius: radius.pill,
@@ -153,8 +154,8 @@ const styles = StyleSheet.create({
   description: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 18,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginTop: 8,
   },
   metaRow: {
@@ -167,24 +168,28 @@ const styles = StyleSheet.create({
     color: colors.muted,
     flex: 1,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   unread: {
     color: colors.danger,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   escalation: {
     color: '#A66B00',
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 8,
     textTransform: 'capitalize',
   },
   openNative: {
     color: colors.blue,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 8,
   },
   empty: {

@@ -1,10 +1,11 @@
 import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react';
-import {ActivityIndicator, Alert, StyleSheet, Switch, TextInput, TouchableOpacity, View} from 'react-native';
+import { ActivityIndicator, Alert, StyleSheet, Switch, TouchableOpacity, View } from 'react-native';
+import TextInput from '../../components/common/AppTextInput';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { serviceAdminService } from '../../services/serviceAdminService';
 import { getErrorMessage } from '../../utils/http';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import AppText from '../../components/common/AppText';
 import {
 DashboardHero,
@@ -241,19 +242,21 @@ const styles = StyleSheet.create({
   checkTitle: {
     color: colors.ink,
     fontFamily: typography.semibold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   checkSubtitle: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 17,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginTop: 3,
   },
   label: {
     color: colors.ink,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginBottom: 6,
     marginTop: 4,
   },
@@ -264,7 +267,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     color: colors.ink,
     fontFamily: typography.regular,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
     marginBottom: 12,
     paddingHorizontal: 14,
     paddingVertical: 12,
@@ -289,8 +293,9 @@ const styles = StyleSheet.create({
   },
   submitText: {
     color: colors.white,
-    fontFamily: typography.bold,
-    fontSize: 14,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
 });
 

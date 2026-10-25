@@ -14,7 +14,7 @@ import BrandMark from '../../components/brand/BrandMark';
 import AppUpdateIndicator from '../../components/common/AppUpdateIndicator';
 import LanguageDropdown from '../../components/common/LanguageDropdown';
 import { useLanguage } from '../../context/LanguageContext';
-import { colors, radius, shadows, typography } from '../../theme';
+import { colors, radius, shadows, typography, typeScale } from '../../theme';
 import AppText from '../../components/common/AppText';
 
 const logo = require('../../../assets/rentalhub-app-icon.png');
@@ -221,7 +221,8 @@ const styles = StyleSheet.create({
   exploreText: {
     color: '#DDEBFF',
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   exploreHintWrap: {
     alignItems: 'flex-end',
@@ -253,7 +254,8 @@ const styles = StyleSheet.create({
   exploreHintText: {
     color: colors.navy,
     fontFamily: typography.bold,
-    fontSize: 12,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
   },
   body: {
     flex: 1,
@@ -283,31 +285,32 @@ const styles = StyleSheet.create({
   eyebrowText: {
     color: '#A9C9F7',
     fontFamily: typography.bold,
-    fontSize: 13,
-    letterSpacing: 1.25,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
+    letterSpacing: 0.8,
   },
   eyebrowTextRTL: {
     letterSpacing: 0,
   },
   title: {
     color: colors.white,
-    fontFamily: typography.bold,
-    fontSize: 36,
-    letterSpacing: -1.25,
-    lineHeight: 48,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.xxl,
+    letterSpacing: -0.3,
+    lineHeight: 36,
   },
   titleRTL: {
     letterSpacing: 0,
   },
   titleCompact: {
-    fontSize: 36,
-    lineHeight: 40,
+    fontSize: typeScale.xxl,
+    lineHeight: 36,
   },
   subtitle: {
     color: '#B7C8E2',
     fontFamily: typography.regular,
-    fontSize: 16,
-    lineHeight: 25,
+    fontSize: typeScale.base,
+    lineHeight: 24,
     marginTop: 18,
     maxWidth: 355,
   },
@@ -329,7 +332,8 @@ const styles = StyleSheet.create({
   primaryText: {
     color: colors.navy,
     fontFamily: typography.bold,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
   },
   primaryIcon: {
     alignItems: 'center',
@@ -350,7 +354,8 @@ const styles = StyleSheet.create({
   secondaryText: {
     color: colors.white,
     fontFamily: typography.semibold,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
   },
   trustRow: {
     alignItems: 'center',
@@ -361,7 +366,8 @@ const styles = StyleSheet.create({
   trustText: {
     color: '#8FA8CA',
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginStart: 7,
   },
 });

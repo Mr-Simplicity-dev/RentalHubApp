@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { useFonts } from 'expo-font';
 import { StatusBar } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AuthProvider } from './context/AuthContext';
@@ -93,6 +94,15 @@ const AppContent = () => {
 };
 
 const App = () => {
+  const [fontsLoaded, fontError] = useFonts({
+    'Inter-Regular': require('../assets/fonts/Inter-Regular.ttf'),
+    'Inter-Medium': require('../assets/fonts/Inter-Medium.ttf'),
+    'Inter-SemiBold': require('../assets/fonts/Inter-SemiBold.ttf'),
+    'Inter-Bold': require('../assets/fonts/Inter-Bold.ttf'),
+  });
+
+  if (!fontsLoaded && !fontError) return null;
+
   return (
     <AppErrorBoundary>
       <SafeAreaProvider>

@@ -13,7 +13,7 @@ import {
 } from '../../components/common/PremiumLayout';
 import { courtBundleService } from '../../services/courtBundleService';
 import { getErrorMessage } from '../../utils/http';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import AppText from '../../components/common/AppText';
 
 const CourtBundleScreen = () => {
@@ -116,9 +116,9 @@ const CourtBundleScreen = () => {
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.surface, padding: 18 },
   hero: { backgroundColor: colors.white, borderWidth: 0, padding: 0, marginBottom: 14 },
-  error: { color: colors.danger, fontFamily: typography.medium, fontSize: 13, marginTop: 10 },
+  error: { color: colors.danger, fontFamily: typography.medium, fontSize: typeScale.xs, lineHeight: 18, marginTop: 10 },
   action: { marginTop: 16 },
-  note: { color: colors.muted, fontFamily: typography.regular, fontSize: 12, marginTop: 12, lineHeight: 18 },
+  note: { color: colors.muted, fontFamily: typography.regular, fontSize: typeScale.xs, marginTop: 12, lineHeight: 18 },
 });
 
 export default CourtBundleScreen;

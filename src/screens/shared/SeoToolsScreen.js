@@ -11,7 +11,7 @@ import {
 } from '../../components/common/PremiumLayout';
 import { complianceOpsService } from '../../services/complianceOpsService';
 import { getErrorMessage } from '../../utils/http';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import AppText from '../../components/common/AppText';
 
 const SeoToolsScreen = () => {
@@ -154,13 +154,15 @@ const styles = StyleSheet.create({
   },
   heroTitle: {
     color: colors.white,
-    fontFamily: typography.bold,
-    fontSize: 18,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.md,
+    lineHeight: 26,
   },
   heroText: {
     color: '#B9C9E5',
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 4,
   },
   metricRow: {
@@ -184,12 +186,14 @@ const styles = StyleSheet.create({
   metricValue: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 20,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
   },
   metricLabel: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 11,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 2,
     textTransform: 'uppercase',
   },

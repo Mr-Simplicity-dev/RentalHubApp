@@ -15,7 +15,7 @@ import {
 } from '../../components/common/PremiumLayout';
 import { adminService } from '../../services/adminService';
 import { getErrorMessage, pickObject } from '../../utils/http';
-import { colors, typography } from '../../theme';
+import { colors, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const AdminUserDetailScreen = ({ route, navigation }) => {
@@ -172,13 +172,15 @@ const styles = StyleSheet.create({
   userName: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 20,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
     textAlign: 'center',
   },
   userEmail: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginBottom: 10,
     marginTop: 3,
   },
@@ -188,13 +190,14 @@ const styles = StyleSheet.create({
   },
   dangerTitle: {
     color: colors.danger,
-    fontFamily: typography.bold,
-    fontSize: 18,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.md,
+    lineHeight: 26,
   },
   dangerCopy: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
     lineHeight: 18,
     marginBottom: 12,
     marginTop: 5,

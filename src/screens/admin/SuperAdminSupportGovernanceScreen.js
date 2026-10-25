@@ -2,7 +2,7 @@ import React, { useEffect, useLayoutEffect, useState } from 'react';
 import {FlatList, StyleSheet, View} from 'react-native';
 import Toast from 'react-native-toast-message';
 import api from '../../services/api';
-import { colors, typography, radius } from '../../theme';
+import { colors, typography, radius, typeScale } from '../../theme';
 import { getErrorMessage } from '../../utils/http';
 import AppText from '../../components/common/AppText';
 import {
@@ -134,7 +134,8 @@ const styles = StyleSheet.create({
   empty: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   ticketCard: {
     backgroundColor: colors.white,
@@ -147,12 +148,14 @@ const styles = StyleSheet.create({
   ticketTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   ticketMeta: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 4,
   },
 });

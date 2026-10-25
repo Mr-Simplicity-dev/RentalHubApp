@@ -14,7 +14,7 @@ import { surveyService } from '../../services/surveyService';
 import { paymentService } from '../../services/paymentService';
 import WalletWithdrawModal from '../../components/dashboard/WalletWithdrawModal';
 import { getErrorMessage, pickList } from '../../utils/http';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import AppText from '../../components/common/AppText';
 
 const formatDate = (value) => {
@@ -327,12 +327,14 @@ const styles = StyleSheet.create({
   metricValue: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 22,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
   },
   metricLabel: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 11,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 2,
     textTransform: 'uppercase',
   },
@@ -349,7 +351,8 @@ const styles = StyleSheet.create({
   cardTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
     marginBottom: 6,
   },
   breakdownRow: {
@@ -364,19 +367,22 @@ const styles = StyleSheet.create({
     color: colors.ink,
     flex: 1,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginRight: 10,
   },
   breakdownValue: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   inviteCode: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 22,
-    letterSpacing: 2,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
+    letterSpacing: 0.8,
     marginTop: 10,
   },
   shareButton: {
@@ -392,7 +398,8 @@ const styles = StyleSheet.create({
   shareButtonText: {
     color: colors.white,
     fontFamily: typography.semibold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   withdrawButton: {
     alignItems: 'center',
@@ -408,7 +415,8 @@ const styles = StyleSheet.create({
   withdrawButtonText: {
     color: colors.blue,
     fontFamily: typography.semibold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   conductButton: {
     alignItems: 'center',
@@ -423,12 +431,14 @@ const styles = StyleSheet.create({
   conductButtonText: {
     color: colors.white,
     fontFamily: typography.semibold,
-    fontSize: 15,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
   },
   code: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 2,
   },
   pill: {
@@ -440,7 +450,8 @@ const styles = StyleSheet.create({
   pillText: {
     color: colors.blue,
     fontFamily: typography.semibold,
-    fontSize: 11,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     textTransform: 'capitalize',
   },
 });

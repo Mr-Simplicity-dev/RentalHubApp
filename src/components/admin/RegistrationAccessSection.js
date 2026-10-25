@@ -1,3 +1,4 @@
+import { typeScale } from '../../theme';
 import React, { useEffect, useMemo, useState } from 'react';
 import {Alert, StyleSheet, Switch, TouchableOpacity, View} from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -230,8 +231,8 @@ const RegistrationAccessSection = () => {
 
 const styles = StyleSheet.create({
   wrap: { gap: 8 },
-  heading: { fontSize: 16, fontWeight: '700', color: '#0f172a' },
-  subheading: { fontSize: 13, color: '#64748b', marginBottom: 8 },
+  heading: { fontSize: typeScale.base, lineHeight: 24, fontWeight: '700', color: '#0f172a' },
+  subheading: { fontSize: typeScale.xs, lineHeight: 18, color: '#64748b', marginBottom: 8 },
   sectionGap: { marginTop: 16 },
   switchRow: {
     flexDirection: 'row',
@@ -239,7 +240,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginVertical: 8,
   },
-  switchLabel: { fontSize: 14, color: '#334155' },
+  switchLabel: { fontSize: typeScale.sm, lineHeight: 20, color: '#334155' },
   card: {
     backgroundColor: '#fff',
     borderWidth: 1,
@@ -248,8 +249,8 @@ const styles = StyleSheet.create({
     padding: 12,
     marginBottom: 8,
   },
-  cardTitle: { fontSize: 14, fontWeight: '600', color: '#0f172a' },
-  meta: { fontSize: 13, color: '#64748b', marginTop: 4 },
+  cardTitle: { fontSize: typeScale.sm, lineHeight: 20, fontWeight: '600', color: '#0f172a' },
+  meta: { fontSize: typeScale.xs, lineHeight: 18, color: '#64748b', marginTop: 4 },
   row: { flexDirection: 'row', gap: 16, marginTop: 8 },
   link: { color: '#2563eb', fontWeight: '600' },
   danger: { color: '#dc2626', fontWeight: '600' },

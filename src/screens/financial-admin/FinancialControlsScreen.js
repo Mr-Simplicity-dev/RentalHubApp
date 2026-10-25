@@ -1,19 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import {ActivityIndicator,
-  Alert,
-  Modal,
-  Pressable,
-  ScrollView,
-  Share,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  View,} from 'react-native';
+import { ActivityIndicator, Alert, Modal, Pressable, ScrollView, Share, StyleSheet, TouchableOpacity, View } from 'react-native';
+import TextInput from '../../components/common/AppTextInput';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
 import { financialAdminService } from '../../services/financialAdminService';
 import { trackMobileEvent } from '../../services/mobileDiagnosticsService';
-import { colors, radius, shadows, typography } from '../../theme';
+import { colors, radius, shadows, typography, typeScale } from '../../theme';
 import { getErrorMessage, pickList, pickObject } from '../../utils/http';
 import AppText from '../../components/common/AppText';
 import {
@@ -652,13 +644,15 @@ const styles = StyleSheet.create({
   pillLabel: {
     color: colors.blue,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     textTransform: 'capitalize',
   },
   pillValue: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
     marginTop: 2,
   },
   warningText: {
@@ -691,31 +685,34 @@ const styles = StyleSheet.create({
     color: colors.ink,
     flex: 1,
     fontFamily: typography.semibold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
     textTransform: 'capitalize',
   },
   recordAmount: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   dangerValue: {
     color: colors.danger,
     fontFamily: typography.bold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   recordMeta: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
     lineHeight: 18,
     marginTop: 6,
   },
   recordDate: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 13,
-    lineHeight: 16,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 5,
   },
   emptyState: {
@@ -730,7 +727,8 @@ const styles = StyleSheet.create({
   emptyText: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     textAlign: 'center',
   },
   statsGrid: {
@@ -757,14 +755,15 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 20,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
   },
   modalSubtitle: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 18,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginTop: 6,
   },
   input: {
@@ -773,7 +772,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     color: colors.ink,
     fontFamily: typography.medium,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
     marginTop: 12,
     paddingHorizontal: 14,
     paddingVertical: 12,
@@ -795,8 +795,9 @@ const styles = StyleSheet.create({
   },
   freezeButtonText: {
     color: colors.white,
-    fontFamily: typography.bold,
-    fontSize: 14,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
 });
 

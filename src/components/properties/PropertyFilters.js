@@ -1,17 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import {KeyboardAvoidingView,
-  Modal,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  View,} from 'react-native';
+import { KeyboardAvoidingView, Modal, Platform, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import TextInput from '../common/AppTextInput';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Button from '../common/Button';
 import OptionPickerModal from '../common/OptionPickerModal';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const propertyTypes = [
@@ -267,13 +261,15 @@ const styles = StyleSheet.create({
   eyebrow: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 13,
-    letterSpacing: 1.25,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
+    letterSpacing: 0.8,
   },
   title: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 24,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.xl,
+    lineHeight: 32,
     letterSpacing: -0.5,
     marginTop: 3,
   },
@@ -294,7 +290,8 @@ const styles = StyleSheet.create({
   sectionTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
     marginBottom: 11,
     marginTop: 13,
   },
@@ -317,13 +314,15 @@ const styles = StyleSheet.create({
   currency: {
     color: colors.text,
     fontFamily: typography.semibold,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
   },
   priceInput: {
     color: colors.ink,
     flex: 1,
     fontFamily: typography.regular,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
     paddingHorizontal: 8,
   },
   select: {
@@ -341,12 +340,14 @@ const styles = StyleSheet.create({
   selectLabel: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   selectValue: {
     color: colors.ink,
     fontFamily: typography.semibold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
     marginTop: 2,
   },
   placeholder: {
@@ -374,7 +375,8 @@ const styles = StyleSheet.create({
     color: colors.ink,
     flex: 1,
     fontFamily: typography.regular,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
     paddingHorizontal: 10,
   },
   footer: {
@@ -393,7 +395,8 @@ const styles = StyleSheet.create({
   resetText: {
     color: colors.text,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   applyButton: {
     flex: 1,

@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import {Modal, StyleSheet, TextInput, View} from 'react-native';
+import { Modal, StyleSheet, View } from 'react-native';
+import TextInput from './AppTextInput';
 import {
   cancelMfaChallenge,
   getMfaState,
   submitMfaCode,
   subscribeMfaChallenge,
 } from '../../services/mfaPromptService';
-import {colors, radius, typography} from '../../theme';
+import {colors, radius, typography, typeScale} from '../../theme';
 import AppText from '../../components/common/AppText';
 import Button from '../../components/common/Button';
 
@@ -107,16 +108,17 @@ const styles = StyleSheet.create({
   icon: {fontSize: 28},
   title: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 22,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
     textAlign: 'center',
     marginTop: 14,
   },
   subtitle: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 19,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     textAlign: 'center',
     marginTop: 8,
     marginBottom: 18,
@@ -124,7 +126,8 @@ const styles = StyleSheet.create({
   label: {
     color: colors.ink,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 12,
     marginBottom: 6,
   },
@@ -135,8 +138,9 @@ const styles = StyleSheet.create({
     borderRadius: radius.md,
     color: colors.ink,
     fontFamily: typography.medium,
-    fontSize: 22,
-    letterSpacing: 8,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
+    letterSpacing: 0.8,
     textAlign: 'center',
     paddingHorizontal: 14,
     paddingVertical: 13,
@@ -144,7 +148,8 @@ const styles = StyleSheet.create({
   error: {
     color: colors.danger,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 10,
   },
   submitButton: {

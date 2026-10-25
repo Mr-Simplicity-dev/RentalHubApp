@@ -12,7 +12,7 @@ import Toast from 'react-native-toast-message';
 import { File, Paths } from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import { paymentService } from '../../services/paymentService';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import { getErrorMessage, pickList } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
@@ -506,13 +506,15 @@ const styles = StyleSheet.create({
   eyebrow: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 13,
-    letterSpacing: 1.25,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
+    letterSpacing: 0.8,
   },
   title: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 20,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
     marginTop: 2,
   },
   list: { padding: 16, paddingBottom: 28 },
@@ -535,20 +537,23 @@ const styles = StyleSheet.create({
   summaryLabel: {
     color: '#AFC2DF',
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 16,
   },
   summaryAmount: {
     color: colors.white,
     fontFamily: typography.bold,
-    fontSize: 32,
-    letterSpacing: -1.25,
+    fontSize: typeScale.hero,
+    lineHeight: 40,
+    letterSpacing: -0.3,
     marginTop: 3,
   },
   summaryMeta: {
     color: '#8FA8CA',
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 6,
   },
   filterRow: {
@@ -572,7 +577,8 @@ const styles = StyleSheet.create({
   filterText: {
     color: colors.text,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   filterTextActive: {
     color: colors.white,
@@ -599,37 +605,43 @@ const styles = StyleSheet.create({
   type: {
     color: colors.ink,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   meta: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 4,
   },
   date: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 5,
   },
   reference: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 3,
   },
   viewReceipt: {
     color: colors.blue,
     fontFamily: typography.semibold,
-    fontSize: 12,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 5,
   },
   paymentRight: { alignItems: 'flex-end', marginLeft: 7 },
   amount: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   statusPill: {
     borderRadius: radius.pill,
@@ -639,7 +651,8 @@ const styles = StyleSheet.create({
   },
   statusText: {
     fontFamily: typography.bold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     textTransform: 'uppercase',
   },
   center: {
@@ -652,7 +665,8 @@ const styles = StyleSheet.create({
   loadingText: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 12,
   },
   emptyIcon: {
@@ -665,15 +679,16 @@ const styles = StyleSheet.create({
   },
   emptyTitle: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 20,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
     marginTop: 17,
   },
   emptyText: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 20,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 7,
     textAlign: 'center',
   },
@@ -698,8 +713,9 @@ const styles = StyleSheet.create({
   receiptEyebrow: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 13,
-    letterSpacing: 1.25,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
+    letterSpacing: 0.8,
   },
   receiptCard: {
     backgroundColor: colors.white,
@@ -714,19 +730,22 @@ const styles = StyleSheet.create({
   receiptNumber: {
     color: colors.muted,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   receiptType: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
     marginTop: 4,
   },
   receiptAmount: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 28,
-    letterSpacing: -0.75,
+    fontSize: typeScale.xxl,
+    lineHeight: 36,
+    letterSpacing: -0.3,
     marginTop: 8,
   },
   receiptRow: {
@@ -737,12 +756,14 @@ const styles = StyleSheet.create({
   receiptLabel: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   receiptValue: {
     color: colors.ink,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     flex: 1,
     textAlign: 'right',
     marginLeft: 12,
@@ -750,7 +771,8 @@ const styles = StyleSheet.create({
   receiptDocType: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 11,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     letterSpacing: 0.75,
     marginTop: 6,
     textTransform: 'uppercase',
@@ -765,7 +787,8 @@ const styles = StyleSheet.create({
   receiptLoadingText: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 10,
   },
   receiptBlock: {
@@ -783,13 +806,15 @@ const styles = StyleSheet.create({
   receiptTotalLabel: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   receiptTotalAmount: {
     color: colors.blue,
     flex: 1,
     fontFamily: typography.bold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
     marginLeft: 12,
     textAlign: 'right',
   },
@@ -798,8 +823,8 @@ const styles = StyleSheet.create({
     borderRadius: radius.sm,
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 11,
-    lineHeight: 16,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 14,
     paddingHorizontal: 10,
     paddingVertical: 8,
@@ -807,8 +832,8 @@ const styles = StyleSheet.create({
   receiptNotice: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 10,
-    lineHeight: 15,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginTop: 14,
     textAlign: 'center',
   },
@@ -834,8 +859,9 @@ const styles = StyleSheet.create({
   },
   receiptButtonText: {
     color: colors.white,
-    fontFamily: typography.bold,
-    fontSize: 14,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   receiptButtonTextSecondary: {
     color: colors.blue,

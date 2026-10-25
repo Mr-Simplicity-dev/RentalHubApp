@@ -1,13 +1,6 @@
 import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
-import {ActivityIndicator,
-  Alert,
-  Modal,
-  Pressable,
-  StyleSheet,
-  Switch,
-  TextInput,
-  TouchableOpacity,
-  View,} from 'react-native';
+import { ActivityIndicator, Alert, Modal, Pressable, StyleSheet, Switch, TouchableOpacity, View } from 'react-native';
+import TextInput from '../../components/common/AppTextInput';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
 import { AuthContext } from '../../context/AuthContext';
@@ -22,7 +15,7 @@ import {
   DashboardScreen,
   DashboardSection,
 } from '../../components/dashboard/DashboardKit';
-import { colors, typography } from '../../theme';
+import { colors, typography, typeScale } from '../../theme';
 import {
   DEFAULT_APP_SETTINGS,
   getSyncedAppSettings,
@@ -598,7 +591,8 @@ const styles = StyleSheet.create({
   languageOptionText: {
     color: colors.text,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   languageOptionTextSelected: {
     color: colors.blue,
@@ -619,13 +613,14 @@ const styles = StyleSheet.create({
   switchTitle: {
     color: colors.ink,
     fontFamily: typography.semibold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   switchSubtitle: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 17,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginTop: 3,
   },
   versionCard: {
@@ -647,12 +642,14 @@ const styles = StyleSheet.create({
   versionTitle: {
     color: colors.ink,
     fontFamily: typography.semibold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   versionMeta: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 3,
   },
   versionBadge: {
@@ -681,8 +678,8 @@ const styles = StyleSheet.create({
   versionMessage: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 18,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginTop: 10,
   },
   versionActions: {
@@ -703,7 +700,8 @@ const styles = StyleSheet.create({
   versionButtonText: {
     color: colors.blue,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   versionButtonPrimary: {
     alignItems: 'center',
@@ -717,7 +715,8 @@ const styles = StyleSheet.create({
   versionButtonPrimaryText: {
     color: colors.white,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   modalBackdrop: {
     backgroundColor: 'rgba(7, 26, 61, 0.55)',
@@ -737,13 +736,15 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 20,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
   },
   modalSubtitle: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginTop: 3,
   },
   warningBox: {
@@ -761,13 +762,14 @@ const styles = StyleSheet.create({
     color: colors.danger,
     flex: 1,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
     lineHeight: 18,
   },
   inputLabel: {
     color: colors.ink,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginBottom: 6,
     marginTop: 16,
   },
@@ -777,7 +779,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     color: colors.ink,
     fontFamily: typography.regular,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
     paddingHorizontal: 14,
     paddingVertical: 12,
   },
@@ -793,8 +796,9 @@ const styles = StyleSheet.create({
   },
   deleteButtonText: {
     color: colors.white,
-    fontFamily: typography.bold,
-    fontSize: 14,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   disabled: {
     opacity: 0.65,

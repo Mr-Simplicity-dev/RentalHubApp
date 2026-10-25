@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import TextInput from '../../components/common/AppTextInput';
 import Toast from 'react-native-toast-message';
 import { useFocusEffect } from '@react-navigation/native';
 import {
@@ -12,7 +13,7 @@ import {
 } from '../../components/common/PremiumLayout';
 import { voiceMonitorService } from '../../services/voiceMonitorService';
 import { getErrorMessage, pickList } from '../../utils/http';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import AppText from '../../components/common/AppText';
 
 const formatTime = (value) => {
@@ -539,7 +540,8 @@ const styles = StyleSheet.create({
   tabText: {
     color: colors.text,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   tabTextActive: {
     color: colors.white,
@@ -569,11 +571,13 @@ const styles = StyleSheet.create({
   dutyIdentity: {
     color: colors.text,
     fontFamily: typography.semibold,
-    fontSize: 11,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   sectionTitle: {
     fontFamily: typography.semibold,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
     color: colors.text,
   },
   liveBadge: {
@@ -595,7 +599,8 @@ const styles = StyleSheet.create({
   },
   sectionMeta: {
     fontFamily: typography.medium,
-    fontSize: 12,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     color: colors.muted,
     marginTop: 12,
     marginBottom: 8,
@@ -609,7 +614,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     paddingHorizontal: 12,
     paddingVertical: 10,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
     color: colors.text,
     marginBottom: 10,
   },
@@ -635,7 +641,8 @@ const styles = StyleSheet.create({
   primaryButtonText: {
     color: colors.white,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   secondaryButton: {
     backgroundColor: colors.muted,
@@ -648,7 +655,8 @@ const styles = StyleSheet.create({
   secondaryButtonText: {
     color: colors.white,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   actionGrid: {
     flexDirection: 'row',
@@ -679,12 +687,14 @@ const styles = StyleSheet.create({
   metricValue: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 20,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
   },
   metricLabel: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 11,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 2,
     textTransform: 'uppercase',
   },
@@ -701,27 +711,29 @@ const styles = StyleSheet.create({
   cardTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
     textTransform: 'capitalize',
   },
   cardMeta: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 2,
   },
   note: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 19,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginBottom: 12,
   },
   emptyHint: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 12,
-    lineHeight: 18,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginTop: 8,
   },
   scopeList: {

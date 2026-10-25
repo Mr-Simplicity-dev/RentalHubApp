@@ -12,7 +12,7 @@ import {
 } from '../../components/common/PremiumLayout';
 import { complianceOpsService } from '../../services/complianceOpsService';
 import { getErrorMessage } from '../../utils/http';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import AppText from '../../components/common/AppText';
 
 const describeValue = (value) => {
@@ -167,26 +167,28 @@ const styles = StyleSheet.create({
   rowKey: {
     color: colors.muted,
     fontFamily: typography.semibold,
-    fontSize: 12,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     textTransform: 'uppercase',
   },
   rowValue: {
     color: colors.ink,
     fontFamily: typography.regular,
-    fontSize: 14,
+    fontSize: typeScale.sm,
     lineHeight: 20,
     marginTop: 2,
   },
   note: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 19,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   error: {
     color: colors.danger,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginBottom: 10,
   },
   action: {
@@ -195,7 +197,8 @@ const styles = StyleSheet.create({
   empty: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
 });
 

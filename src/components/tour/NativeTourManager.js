@@ -26,7 +26,7 @@ import AppText from '../common/AppText';
 import { AuthContext } from '../../context/AuthContext';
 import { useTour } from '../../context/TourContext';
 import { useLanguage } from '../../context/LanguageContext';
-import { colors, radius, shadows, typography } from '../../theme';
+import { colors, radius, shadows, typography, typeScale } from '../../theme';
 import { useAccessibilityPreferences } from '../../hooks/useAccessibilityPreferences';
 
 const CARD_MARGIN = 16;
@@ -1376,7 +1376,8 @@ const styles = StyleSheet.create({
     color: colors.text,
     flex: 1,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginLeft: 9,
   },
   startButton: {
@@ -1395,7 +1396,8 @@ const styles = StyleSheet.create({
   laterText: {
     color: colors.muted,
     fontFamily: typography.semibold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   coachOverlay: {
     ...StyleSheet.absoluteFillObject,
@@ -1433,13 +1435,15 @@ const styles = StyleSheet.create({
   coachStepCount: {
     color: colors.gold,
     fontFamily: typography.bold,
-    fontSize: 11,
-    letterSpacing: 1.35,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
+    letterSpacing: 0.8,
   },
   coachHeaderTitle: {
     color: colors.white,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 2,
     maxWidth: 240,
   },
@@ -1457,7 +1461,8 @@ const styles = StyleSheet.create({
   coachSkipText: {
     color: colors.white,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   coachProgressTrack: {
     backgroundColor: 'rgba(255, 255, 255, 0.22)',
@@ -1556,8 +1561,9 @@ const styles = StyleSheet.create({
   coachEyebrow: {
     color: '#8A6500',
     fontFamily: typography.bold,
-    fontSize: 10,
-    letterSpacing: 1.15,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
+    letterSpacing: 0.8,
     marginBottom: 2,
   },
   walkthroughTitle: {
@@ -1586,8 +1592,8 @@ const styles = StyleSheet.create({
     color: colors.white,
     flex: 1,
     fontFamily: typography.semibold,
-    fontSize: 12,
-    lineHeight: 17,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginLeft: 8,
   },
   locatingRow: {
@@ -1602,7 +1608,8 @@ const styles = StyleSheet.create({
   locatingText: {
     color: colors.white,
     fontFamily: typography.medium,
-    fontSize: 12,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginLeft: 9,
   },
   missingTargetNotice: {
@@ -1621,8 +1628,8 @@ const styles = StyleSheet.create({
     color: colors.text,
     flex: 1,
     fontFamily: typography.medium,
-    fontSize: 12,
-    lineHeight: 17,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginLeft: 8,
   },
   retryButton: {
@@ -1637,8 +1644,9 @@ const styles = StyleSheet.create({
   },
   retryButtonText: {
     color: colors.navy,
-    fontFamily: typography.bold,
-    fontSize: 12,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginLeft: 5,
   },
   targetHint: {

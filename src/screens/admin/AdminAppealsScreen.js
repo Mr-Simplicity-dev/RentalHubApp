@@ -11,7 +11,7 @@ import {
   StatusPill,
 } from '../../components/common/PremiumLayout';
 import { appealsService } from '../../services/appealsService';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import { getErrorMessage, pickList, pickObject } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
@@ -266,7 +266,8 @@ const styles = StyleSheet.create({
   filterText: {
     color: colors.text,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   filterTextActive: {
     color: colors.white,
@@ -284,13 +285,15 @@ const styles = StyleSheet.create({
   title: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
     textTransform: 'capitalize',
   },
   appellant: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 4,
   },
   fullButton: {

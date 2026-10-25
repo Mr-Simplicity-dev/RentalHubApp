@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useLanguage } from '../../context/LanguageContext';
-import { colors, radius, shadows, typography } from '../../theme';
+import { colors, radius, shadows, typography, typeScale } from '../../theme';
 import AppText from './AppText';
 
 // A compact dropdown that lets a signed-out visitor pick their language from
@@ -170,24 +170,26 @@ const styles = StyleSheet.create({
   label: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 10,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     letterSpacing: 0.6,
     textTransform: 'uppercase',
   },
   labelOnDark: {
     color: '#A9C9F7',
     fontFamily: typography.medium,
-    fontSize: 10,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     letterSpacing: 0.6,
     textTransform: 'uppercase',
   },
-  value: { color: colors.ink, fontFamily: typography.semibold, fontSize: 14 },
-  valueOnDark: { color: colors.white, fontFamily: typography.semibold, fontSize: 14 },
+  value: { color: colors.ink, fontFamily: typography.semibold, fontSize: typeScale.sm, lineHeight: 20 },
+  valueOnDark: { color: colors.white, fontFamily: typography.semibold, fontSize: typeScale.sm, lineHeight: 20 },
   restartNote: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 11,
-    lineHeight: 16,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 6,
   },
   restartNoteOnDark: { color: '#A9C9F7' },
@@ -212,7 +214,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 6,
   },
-  sheetTitle: { color: colors.ink, fontFamily: typography.bold, fontSize: 17 },
+  sheetTitle: { color: colors.ink, fontFamily: typography.bold, fontSize: typeScale.base, lineHeight: 24 },
   closeButton: {
     alignItems: 'center',
     height: 34,
@@ -230,14 +232,14 @@ const styles = StyleSheet.create({
   },
   optionSelected: { backgroundColor: colors.surfaceBlue },
   optionCopy: { flex: 1 },
-  optionText: { color: colors.ink, fontFamily: typography.medium, fontSize: 16 },
+  optionText: { color: colors.ink, fontFamily: typography.medium, fontSize: typeScale.base, lineHeight: 24 },
   optionTextSelected: { color: colors.blue, fontFamily: typography.semibold },
-  optionMeta: { color: colors.muted, fontFamily: typography.regular, fontSize: 12, marginTop: 2 },
+  optionMeta: { color: colors.muted, fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18, marginTop: 2 },
   sheetHint: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 12,
-    lineHeight: 18,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginTop: 16,
   },
 });

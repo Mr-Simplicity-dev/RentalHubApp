@@ -14,7 +14,7 @@ import {
 import { AuthContext } from '../../context/AuthContext';
 import { rentCalculatorService } from '../../services/rentCalculatorService';
 import { getErrorMessage } from '../../utils/http';
-import { colors, radius, shadows, typography } from '../../theme';
+import { colors, radius, shadows, typography, typeScale } from '../../theme';
 import AppText from '../../components/common/AppText';
 
 const numOrEmpty = (value) => {
@@ -259,7 +259,8 @@ const styles = StyleSheet.create({
   fieldLabel: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginBottom: 8,
   },
   freqRow: {
@@ -283,7 +284,8 @@ const styles = StyleSheet.create({
   freqText: {
     color: colors.text,
     fontFamily: typography.semibold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   freqTextActive: {
     color: colors.white,
@@ -294,7 +296,8 @@ const styles = StyleSheet.create({
   error: {
     color: colors.danger,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginBottom: 8,
   },
   results: {
@@ -310,21 +313,23 @@ const styles = StyleSheet.create({
   heroEyebrow: {
     color: colors.gold,
     fontFamily: typography.semibold,
-    fontSize: 11,
-    letterSpacing: 1,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
+    letterSpacing: 0.8,
     textTransform: 'uppercase',
   },
   heroValue: {
     color: colors.white,
     fontFamily: typography.bold,
-    fontSize: 36,
+    fontSize: typeScale.hero,
+    lineHeight: 40,
     marginTop: 6,
   },
   heroCaption: {
     color: '#B9C9E5',
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 19,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 6,
   },
   budgetGood: {
@@ -338,13 +343,14 @@ const styles = StyleSheet.create({
   budgetTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 15,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
   },
   budgetText: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 19,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 4,
   },
   totalRow: {
@@ -359,12 +365,14 @@ const styles = StyleSheet.create({
   totalLabel: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 15,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
   },
   totalValue: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 20,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
   },
   savingsCard: {
     backgroundColor: colors.navy,
@@ -376,21 +384,23 @@ const styles = StyleSheet.create({
   savingsEyebrow: {
     color: colors.gold,
     fontFamily: typography.semibold,
-    fontSize: 11,
-    letterSpacing: 1,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
+    letterSpacing: 0.8,
     textTransform: 'uppercase',
   },
   savingsValue: {
     color: colors.white,
     fontFamily: typography.bold,
-    fontSize: 30,
+    fontSize: typeScale.xxl,
+    lineHeight: 36,
     marginTop: 6,
   },
   savingsText: {
     color: '#B9C9E5',
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 19,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 6,
   },
   planCtaCard: {
@@ -399,13 +409,14 @@ const styles = StyleSheet.create({
   planCtaTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
   },
   planCtaText: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 19,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 4,
     marginBottom: 12,
   },

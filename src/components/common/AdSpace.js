@@ -7,7 +7,7 @@ import {Image,
 import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
 import api from '../../services/api';
-import { colors, radius, shadows, typography } from '../../theme';
+import { colors, radius, shadows, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const PLACEMENTS = {
@@ -181,7 +181,8 @@ const styles = StyleSheet.create({
   playText: {
     color: colors.white,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   image: {
     height: 160,
@@ -197,26 +198,28 @@ const styles = StyleSheet.create({
   sponsored: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 13,
-    letterSpacing: 1.25,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
+    letterSpacing: 0.8,
   },
   sponsorName: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   title: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 16,
-    lineHeight: 21,
+    fontSize: typeScale.base,
+    lineHeight: 24,
     marginTop: 6,
   },
   description: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 18,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginTop: 5,
   },
   cta: {
@@ -233,7 +236,8 @@ const styles = StyleSheet.create({
   ctaText: {
     color: colors.white,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
 });
 

@@ -8,7 +8,7 @@ import {
   DashboardScreen,
   DashboardSection,
 } from '../../components/dashboard/DashboardKit';
-import { colors, radius, shadows, typography } from '../../theme';
+import { colors, radius, shadows, typography, typeScale } from '../../theme';
 
 const EFFECTIVE_DATE = '29 July 2026';
 
@@ -710,7 +710,8 @@ const styles = StyleSheet.create({
   metaText: {
     color: colors.navy,
     fontFamily: typography.semibold,
-    fontSize: 12,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   principleGrid: {
     flexDirection: 'row',
@@ -738,13 +739,13 @@ const styles = StyleSheet.create({
   principleTitle: {
     color: colors.white,
     fontFamily: typography.bold,
-    fontSize: 14,
-    lineHeight: 19,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   principleText: {
     color: '#C6D3E8',
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: typeScale.xs,
     lineHeight: 18,
     marginTop: 5,
   },
@@ -760,8 +761,8 @@ const styles = StyleSheet.create({
   paragraph: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 21,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
   },
   bulletRow: {
     alignItems: 'flex-start',
@@ -772,8 +773,8 @@ const styles = StyleSheet.create({
     color: colors.text,
     flex: 1,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 20,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   cardHeading: {
     alignItems: 'center',
@@ -793,8 +794,8 @@ const styles = StyleSheet.create({
     color: colors.ink,
     flex: 1,
     fontFamily: typography.bold,
-    fontSize: 15,
-    lineHeight: 21,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
   },
   labelledCopy: {
     borderTopColor: colors.border,
@@ -804,15 +805,16 @@ const styles = StyleSheet.create({
   fieldLabel: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 11,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     letterSpacing: 0.6,
     textTransform: 'uppercase',
   },
   fieldText: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 20,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 5,
   },
   providerCard: {
@@ -839,14 +841,14 @@ const styles = StyleSheet.create({
   providerName: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 14,
-    lineHeight: 19,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   providerText: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 12,
-    lineHeight: 19,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 4,
   },
   securityCaveat: {
@@ -856,8 +858,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     color: '#7A4A00',
     fontFamily: typography.medium,
-    fontSize: 12,
-    lineHeight: 19,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     padding: 12,
   },
   contactLink: {
@@ -885,14 +887,14 @@ const styles = StyleSheet.create({
   contactLabel: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 11,
-    lineHeight: 15,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   contactValue: {
     color: colors.blue,
     fontFamily: typography.semibold,
-    fontSize: 13,
-    lineHeight: 19,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 2,
   },
   endMark: {
@@ -915,14 +917,14 @@ const styles = StyleSheet.create({
   endTitle: {
     color: colors.white,
     fontFamily: typography.bold,
-    fontSize: 17,
-    lineHeight: 23,
+    fontSize: typeScale.base,
+    lineHeight: 24,
     marginTop: 12,
   },
   endText: {
     color: '#B9C9E5',
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: typeScale.xs,
     lineHeight: 18,
     marginTop: 4,
     textAlign: 'center',

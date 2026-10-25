@@ -10,7 +10,7 @@ import {
 } from '../../components/common/PremiumLayout';
 import { zonalAdminService } from '../../services/zonalAdminService';
 import { getErrorMessage } from '../../utils/http';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import AppText from '../../components/common/AppText';
 
 const ZonalAdminScreen = ({ navigation }) => {
@@ -152,19 +152,22 @@ const styles = StyleSheet.create({
   metricValue: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 20,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
   },
   metricLabel: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 11,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 2,
     textTransform: 'uppercase',
   },
   sectionTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 15,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginBottom: 8,
   },
   stateRow: {
@@ -175,18 +178,21 @@ const styles = StyleSheet.create({
   stateName: {
     color: colors.ink,
     fontFamily: typography.semibold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   stateMeta: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 2,
   },
   empty: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   quickRow: {
     flexDirection: 'row',
@@ -205,7 +211,8 @@ const styles = StyleSheet.create({
   quickText: {
     color: colors.blue,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
 });
 

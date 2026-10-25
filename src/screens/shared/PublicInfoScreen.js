@@ -7,7 +7,7 @@ import {
   DashboardScreen,
   DashboardSection,
 } from '../../components/dashboard/DashboardKit';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import PrivacyPolicyScreen from './PrivacyPolicyScreen';
 
 import AppText from '../../components/common/AppText';
@@ -193,15 +193,15 @@ const styles = StyleSheet.create({
   bullet: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 18,
-    lineHeight: 22,
+    fontSize: typeScale.md,
+    lineHeight: 26,
   },
   infoText: {
     color: colors.text,
     flex: 1,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 20,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
 });
 

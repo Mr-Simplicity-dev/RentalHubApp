@@ -1,3 +1,4 @@
+import { typeScale } from '../../theme';
 import React from 'react';
 import {View, StyleSheet, ActivityIndicator} from 'react-native';
 
@@ -17,7 +18,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f8fafc',
     gap: 12,
   },
-  text: { color: '#64748b', fontSize: 16, fontWeight: '500' },
+  text: { color: '#64748b', fontSize: typeScale.base, lineHeight: 24, fontWeight: '500' },
 });
 
 export default LoadingScreen;

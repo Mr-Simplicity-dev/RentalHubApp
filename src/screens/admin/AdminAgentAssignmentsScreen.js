@@ -16,7 +16,7 @@ import {
 } from '../../components/common/PremiumLayout';
 import { adminAgentService } from '../../services/adminAgentService';
 import { getErrorMessage, pickList } from '../../utils/http';
-import { colors, typography } from '../../theme';
+import { colors, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const getStatusColor = (status) => {
@@ -226,8 +226,9 @@ const AdminAgentAssignmentsScreen = () => {
 const styles = StyleSheet.create({
   formTitle: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 18,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.md,
+    lineHeight: 26,
     marginBottom: 12,
   },
   rowHeader: {
@@ -242,12 +243,14 @@ const styles = StyleSheet.create({
   name: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
   },
   meta: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 3,
   },
   actions: {

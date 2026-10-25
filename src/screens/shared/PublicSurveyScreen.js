@@ -14,7 +14,7 @@ import {
 import { propertyService } from '../../services/propertyService';
 import { surveyService } from '../../services/surveyService';
 import { getErrorMessage, pickList } from '../../utils/http';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import AppText from '../../components/common/AppText';
 
 const newClientId = () => `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
@@ -390,11 +390,11 @@ const PublicSurveyScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.surface },
   content: { padding: 18, paddingBottom: 36 },
-  fieldLabel: { color: colors.ink, fontFamily: typography.semibold, fontSize: 14, marginBottom: 8 },
+  fieldLabel: { color: colors.ink, fontFamily: typography.semibold, fontSize: typeScale.sm, lineHeight: 20, marginBottom: 8 },
   typeRow: { flexDirection: 'row', gap: 10, marginBottom: 14 },
   typeButton: { flex: 1, borderColor: colors.border, borderRadius: radius.md, borderWidth: 1, paddingVertical: 12, alignItems: 'center', backgroundColor: colors.white },
   typeButtonActive: { backgroundColor: colors.blue, borderColor: colors.blue },
-  typeText: { color: colors.text, fontFamily: typography.semibold, fontSize: 14 },
+  typeText: { color: colors.text, fontFamily: typography.semibold, fontSize: typeScale.sm, lineHeight: 20 },
   typeTextActive: { color: colors.white },
   pickerRow: {
     borderColor: colors.border,
@@ -408,21 +408,22 @@ const styles = StyleSheet.create({
   pickerRowText: {
     color: colors.ink,
     fontFamily: typography.medium,
-    fontSize: 15,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
   },
   fieldGap: { marginTop: 12 },
-  error: { color: colors.danger, fontFamily: typography.medium, fontSize: 13, marginTop: 10 },
+  error: { color: colors.danger, fontFamily: typography.medium, fontSize: typeScale.xs, lineHeight: 18, marginTop: 10 },
   submit: { marginTop: 16 },
   progressRow: { flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 12 },
   progressTrack: { flex: 1, height: 8, borderRadius: 4, backgroundColor: colors.border, overflow: 'hidden' },
   progressFill: { height: '100%', borderRadius: 4, backgroundColor: colors.blue },
-  prompt: { color: colors.ink, fontFamily: typography.bold, fontSize: 17, lineHeight: 24, marginBottom: 14 },
+  prompt: { color: colors.ink, fontFamily: typography.bold, fontSize: typeScale.base, lineHeight: 24, marginBottom: 14 },
   options: { gap: 10 },
   optionButton: { borderColor: colors.border, borderRadius: radius.md, borderWidth: 1, paddingHorizontal: 12, paddingVertical: 12, backgroundColor: colors.white },
   optionSelected: { backgroundColor: colors.surfaceBlue, borderColor: colors.blue },
-  optionText: { color: colors.text, fontFamily: typography.regular, fontSize: 14, lineHeight: 20 },
+  optionText: { color: colors.text, fontFamily: typography.regular, fontSize: typeScale.sm, lineHeight: 20 },
   optionTextSelected: { color: colors.ink, fontFamily: typography.medium },
-  note: { color: '#B46B00', fontFamily: typography.medium, fontSize: 13, marginTop: 12 },
+  note: { color: '#B46B00', fontFamily: typography.medium, fontSize: typeScale.xs, lineHeight: 18, marginTop: 12 },
 });
 
 export default PublicSurveyScreen;

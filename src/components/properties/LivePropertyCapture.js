@@ -5,7 +5,7 @@ import { CameraView, useCameraPermissions } from 'expo-camera';
 import Toast from 'react-native-toast-message';
 import Button from '../common/Button';
 import { propertyService } from '../../services/propertyService';
-import { colors, radius } from '../../theme';
+import { colors, radius, typeScale } from '../../theme';
 
 import AppText from '../common/AppText';
 
@@ -389,8 +389,8 @@ const LivePropertyCapture = ({
 const styles = StyleSheet.create({
   root: { backgroundColor: '#000', flex: 1 },
   centered: { alignItems: 'center', flex: 1, justifyContent: 'center', padding: 26 },
-  centeredTitle: { color: colors.white, fontSize: 19, fontWeight: '800', marginBottom: 8, marginTop: 12 },
-  centeredText: { color: '#CBD5E1', fontSize: 14, lineHeight: 20, marginBottom: 18, textAlign: 'center' },
+  centeredTitle: { color: colors.white, fontSize: typeScale.md, lineHeight: 26, fontWeight: '800', marginBottom: 8, marginTop: 12 },
+  centeredText: { color: '#CBD5E1', fontSize: typeScale.sm, lineHeight: 20, marginBottom: 18, textAlign: 'center' },
   cameraWrap: { flex: 1 },
   flash: { ...StyleSheet.absoluteFillObject, backgroundColor: colors.white },
   // Guided prompt sits mid-frame so the landlord reads it while composing the shot.
@@ -403,9 +403,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
-  promptStep: { color: colors.gold, fontSize: 11, fontWeight: '800', letterSpacing: 0.8, textTransform: 'uppercase' },
-  promptTitle: { color: colors.white, fontSize: 17, fontWeight: '800', marginTop: 4 },
-  promptHint: { color: '#CBD5E1', fontSize: 12.5, lineHeight: 18, marginTop: 3 },
+  promptStep: { color: colors.gold, fontSize: typeScale.xs, lineHeight: 18, fontWeight: '800', letterSpacing: 0.8, textTransform: 'uppercase' },
+  promptTitle: { color: colors.white, fontSize: typeScale.base, lineHeight: 24, fontWeight: '800', marginTop: 4 },
+  promptHint: { color: '#CBD5E1', fontSize: typeScale.reading, lineHeight: 22, marginTop: 3 },
   stripLabel: {
     backgroundColor: 'rgba(11,18,32,0.82)',
     bottom: 0,
@@ -415,7 +415,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 0,
   },
-  stripLabelText: { color: colors.white, fontSize: 9.5, fontWeight: '700' },
+  stripLabelText: { color: colors.white, fontSize: typeScale.xs, lineHeight: 18, fontWeight: '700' },
   topBar: {
     alignItems: 'center',
     flexDirection: 'row',
@@ -437,7 +437,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 7,
   },
-  counterText: { color: colors.white, fontSize: 13, fontWeight: '700' },
+  counterText: { color: colors.white, fontSize: typeScale.xs, lineHeight: 18, fontWeight: '700' },
   modePill: {
     backgroundColor: 'rgba(0,0,0,0.45)',
     borderRadius: radius.pill,
@@ -450,7 +450,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
   },
   modeButtonActive: { backgroundColor: colors.gold },
-  modeText: { color: '#CBD5E1', fontSize: 13, fontWeight: '700' },
+  modeText: { color: '#CBD5E1', fontSize: typeScale.xs, lineHeight: 18, fontWeight: '700' },
   modeTextActive: { color: '#0B1220' },
   clipStrip: {
     bottom: 26,
@@ -477,7 +477,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: 36,
   },
-  clipLabel: { color: colors.white, fontSize: 9.5, fontWeight: '700', marginTop: 3 },
+  clipLabel: { color: colors.white, fontSize: typeScale.xs, lineHeight: 18, fontWeight: '700', marginTop: 3 },
   bottomBar: { alignItems: 'center', bottom: 118, left: 0, position: 'absolute', right: 0 },
   shutter: {
     alignItems: 'center',

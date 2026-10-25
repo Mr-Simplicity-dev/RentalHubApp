@@ -5,7 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import { legalService } from '../../services/legalService';
 import { getErrorMessage, pickList } from '../../utils/http';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import TourTarget, { useTourTarget } from '../../components/tour/TourTarget';
 import {
   TourScrollProvider,
@@ -224,11 +224,11 @@ const styles = StyleSheet.create({
   heroTop: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' },
   heroIcon: { alignItems: 'center', backgroundColor: 'rgba(255,201,40,0.14)', borderRadius: 21, height: 42, justifyContent: 'center', width: 42 },
   verifyButton: { alignItems: 'center', backgroundColor: colors.gold, borderRadius: radius.pill, flexDirection: 'row', gap: 6, paddingHorizontal: 12, paddingVertical: 9 },
-  verifyText: { color: colors.navy, fontFamily: typography.bold, fontSize: 13 },
-  heroEyebrow: { color: '#9BC3F4', fontFamily: typography.bold, fontSize: 13, letterSpacing: 1.25, marginTop: 16 },
-  title: { fontSize: 24, fontFamily: typography.bold, color: colors.white, marginTop: 4 },
-  heroText: { color: '#AFC2DF', fontFamily: typography.regular, fontSize: 13, lineHeight: 18, marginTop: 6 },
-  sectionTitle: { fontSize: 18, fontFamily: typography.bold, color: colors.ink, marginTop: 22, marginBottom: 9 },
+  verifyText: { color: colors.navy, fontFamily: typography.bold, fontSize: typeScale.xs, lineHeight: 18 },
+  heroEyebrow: { color: '#9BC3F4', fontFamily: typography.bold, fontSize: typeScale.xs, lineHeight: 18, letterSpacing: 0.8, marginTop: 16 },
+  title: { fontSize: typeScale.xl, lineHeight: 32, fontFamily: typography.semibold, color: colors.white, marginTop: 4 },
+  heroText: { color: '#AFC2DF', fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18, marginTop: 6 },
+  sectionTitle: { fontSize: typeScale.md, lineHeight: 26, fontFamily: typography.semibold, color: colors.ink, marginTop: 22, marginBottom: 9 },
   card: {
     backgroundColor: colors.white,
     borderWidth: 1,
@@ -239,13 +239,13 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   cardActive: { borderColor: colors.blue, backgroundColor: colors.surfaceBlue },
-  cardTitle: { fontSize: 16, fontFamily: typography.bold, color: colors.ink },
-  cardMeta: { marginTop: 4, color: colors.muted, fontFamily: typography.regular, fontSize: 13, paddingRight: 20 },
+  cardTitle: { fontSize: typeScale.base, lineHeight: 24, fontFamily: typography.bold, color: colors.ink },
+  cardMeta: { marginTop: 4, color: colors.muted, fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18, paddingRight: 20 },
   cardText: { marginTop: 8, color: colors.text, fontFamily: typography.regular },
   cardArrow: { position: 'absolute', right: 12, top: 18 },
   row: { flexDirection: 'row', gap: 16, marginTop: 10, flexWrap: 'wrap' },
-  linkText: { color: colors.blue, fontFamily: typography.semibold, fontSize: 13 },
-  linkWarn: { color: colors.danger, fontFamily: typography.semibold, fontSize: 13 },
+  linkText: { color: colors.blue, fontFamily: typography.semibold, fontSize: typeScale.xs, lineHeight: 18 },
+  linkWarn: { color: colors.danger, fontFamily: typography.semibold, fontSize: typeScale.xs, lineHeight: 18 },
   empty: { color: colors.muted, fontFamily: typography.regular },
   migrationLink: {
     alignItems: 'center',
@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 8,
   },
-  migrationLinkText: { color: colors.blue, fontFamily: typography.semibold, fontSize: 13 },
+  migrationLinkText: { color: colors.blue, fontFamily: typography.semibold, fontSize: typeScale.xs, lineHeight: 18 },
 });
 
 export default LawyerDashboardScreen;

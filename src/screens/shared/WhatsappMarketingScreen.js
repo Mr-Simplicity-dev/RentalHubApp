@@ -15,7 +15,7 @@ import {
 } from '../../components/common/PremiumLayout';
 import { marketingOpsService } from '../../services/marketingOpsService';
 import { getErrorMessage, pickList } from '../../utils/http';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import AppText from '../../components/common/AppText';
 
 const STATUS_COLORS = {
@@ -882,7 +882,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 7,
   },
-  heroActionText: { color: colors.white, fontFamily: typography.semibold, fontSize: 13 },
+  heroActionText: { color: colors.white, fontFamily: typography.semibold, fontSize: typeScale.xs, lineHeight: 18 },
   metricRow: { flexDirection: 'row', gap: 10, marginBottom: 12 },
   metric: {
     flex: 1,
@@ -894,11 +894,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   metricAccent: { backgroundColor: colors.surfaceBlue, borderColor: colors.blue },
-  metricValue: { color: colors.ink, fontFamily: typography.bold, fontSize: 20 },
+  metricValue: { color: colors.ink, fontFamily: typography.bold, fontSize: typeScale.lg, lineHeight: 28 },
   metricLabel: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 11,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 2,
     textTransform: 'uppercase',
   },
@@ -910,13 +911,14 @@ const styles = StyleSheet.create({
     marginBottom: 14,
     padding: 12,
   },
-  rulesText: { color: '#92400E', fontFamily: typography.regular, fontSize: 12, lineHeight: 18 },
-  fieldLabel: { color: colors.muted, fontFamily: typography.semibold, fontSize: 12, marginBottom: 6, textTransform: 'uppercase' },
+  rulesText: { color: '#92400E', fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18 },
+  fieldLabel: { color: colors.muted, fontFamily: typography.semibold, fontSize: typeScale.xs, lineHeight: 18, marginBottom: 6, textTransform: 'uppercase' },
   fieldGap: { marginTop: 12 },
   mediaHeading: {
     color: colors.ink,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginBottom: 8,
     marginTop: 16,
   },
@@ -930,9 +932,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
   },
   toggleActive: { backgroundColor: colors.blue, borderColor: colors.blue },
-  toggleText: { color: colors.text, fontFamily: typography.semibold, fontSize: 12 },
+  toggleText: { color: colors.text, fontFamily: typography.semibold, fontSize: typeScale.xs, lineHeight: 18 },
   toggleTextActive: { color: colors.white },
-  audienceText: { color: colors.ink, fontFamily: typography.regular, fontSize: 13, marginTop: 12 },
+  audienceText: { color: colors.ink, fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18, marginTop: 12 },
   cardTop: {
     alignItems: 'flex-start',
     flexDirection: 'row',
@@ -941,8 +943,8 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   cardCopy: { flex: 1 },
-  cardTitle: { color: colors.ink, fontFamily: typography.bold, fontSize: 16 },
-  cardMeta: { color: colors.muted, fontFamily: typography.regular, fontSize: 12, marginTop: 2 },
+  cardTitle: { color: colors.ink, fontFamily: typography.bold, fontSize: typeScale.base, lineHeight: 24 },
+  cardMeta: { color: colors.muted, fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18, marginTop: 2 },
   actions: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginTop: 12 },
   actionButton: { flexGrow: 1, minWidth: 120 },
   modalOverlay: {
@@ -959,10 +961,10 @@ const styles = StyleSheet.create({
     width: '100%',
     maxWidth: 480,
   },
-  modalTitle: { color: colors.ink, fontFamily: typography.bold, fontSize: 16 },
-  modalMeta: { color: colors.muted, fontFamily: typography.regular, fontSize: 12, marginTop: 3 },
-  modalError: { color: colors.danger, fontFamily: typography.regular, fontSize: 12, marginTop: 6 },
-  modalHint: { color: colors.muted, fontFamily: typography.regular, fontSize: 11, lineHeight: 16, marginTop: 10 },
+  modalTitle: { color: colors.ink, fontFamily: typography.bold, fontSize: typeScale.base, lineHeight: 24 },
+  modalMeta: { color: colors.muted, fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18, marginTop: 3 },
+  modalError: { color: colors.danger, fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18, marginTop: 6 },
+  modalHint: { color: colors.muted, fontFamily: typography.regular, fontSize: typeScale.reading, lineHeight: 22, marginTop: 10 },
   modalActions: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginTop: 16 },
   statsRow: { flexDirection: 'row', gap: 8, marginTop: 14 },
   contactStatsRow: { flexDirection: 'row', gap: 8 },
@@ -977,11 +979,11 @@ const styles = StyleSheet.create({
   },
   contactStatValid: { backgroundColor: '#F0FDF4', borderColor: '#86EFAC' },
   contactStatInvalid: { backgroundColor: '#FEF2F2', borderColor: '#FCA5A5' },
-  contactStatValue: { color: colors.ink, fontFamily: typography.bold, fontSize: 18 },
+  contactStatValue: { color: colors.ink, fontFamily: typography.bold, fontSize: typeScale.md, lineHeight: 26 },
   contactStatValidText: { color: '#15803D' },
   contactStatInvalidText: { color: '#B91C1C' },
   contactStatMuted: { color: colors.muted },
-  contactStatLabel: { color: colors.muted, fontFamily: typography.regular, fontSize: 10, marginTop: 2, textAlign: 'center' },
+  contactStatLabel: { color: colors.muted, fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18, marginTop: 2, textAlign: 'center' },
   statBox: {
     flex: 1,
     backgroundColor: colors.surface,
@@ -989,10 +991,10 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     alignItems: 'center',
   },
-  statValue: { color: colors.ink, fontFamily: typography.bold, fontSize: 18 },
-  statLabel: { color: colors.muted, fontFamily: typography.regular, fontSize: 11, marginTop: 2 },
+  statValue: { color: colors.ink, fontFamily: typography.bold, fontSize: typeScale.md, lineHeight: 26 },
+  statLabel: { color: colors.muted, fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18, marginTop: 2 },
   failureList: { marginTop: 14 },
-  failureText: { color: colors.danger, fontFamily: typography.regular, fontSize: 12, marginBottom: 4 },
+  failureText: { color: colors.danger, fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18, marginBottom: 4 },
 });
 
 export default WhatsappMarketingScreen;

@@ -19,7 +19,7 @@ import { authService } from '../../services/authService';
 import { propertyService } from '../../services/propertyService';
 import TurnstileWidget from '../../components/common/TurnstileWidget';
 import { getErrorMessage, pickList, pickObject } from '../../utils/http';
-import { colors, radius, shadows, typography } from '../../theme';
+import { colors, radius, shadows, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 import BankTransferCheckout from '../../components/BankTransferCheckout';
@@ -118,6 +118,8 @@ const RegisterScreen = ({ navigation, route }) => {
   );
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const passportPattern = /^[A-Za-z0-9]{6,20}$/;
+  const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{10,}$/;
+  const passwordRequirement = 'Password must be at least 10 characters and include uppercase, lowercase, a number, and a special character.';
 
   const availableLgas = selectedState?.lgas || [];
   const steps = [
@@ -152,8 +154,8 @@ const RegisterScreen = ({ navigation, route }) => {
       form.full_name.trim() &&
       emailPattern.test(form.email.trim()) &&
       form.phone.trim() &&
-      (form.use_rentalhub_lawyers || emailPattern.test(form.lawyer_email.trim())) &&
-      form.password.length >= 8 &&
+      emailPattern.test(form.lawyer_email.trim()) &&
+      passwordPattern.test(form.password) &&
       form.password === form.confirm_password &&
       (userType !== 'landlord' ||
         !form.add_agent ||
@@ -283,7 +285,7 @@ const RegisterScreen = ({ navigation, route }) => {
       full_name: form.full_name.trim(),
       email: form.email.trim().toLowerCase(),
       phone: form.phone.trim(),
-      lawyer_email: form.use_rentalhub_lawyers ? '' : form.lawyer_email.trim().toLowerCase(),
+      lawyer_email: form.lawyer_email.trim().toLowerCase(),
       use_rentalhub_lawyers: form.use_rentalhub_lawyers === true,
       use_rentalhub_agents: userType === 'landlord' && form.use_rentalhub_agents === true,
       add_agent: userType === 'landlord' ? form.add_agent === true : false,
@@ -330,8 +332,8 @@ const RegisterScreen = ({ navigation, route }) => {
       return 'Full name, email, phone, and password are required.';
     }
 
-    if (!form.use_rentalhub_lawyers && !form.lawyer_email?.trim()) {
-      return 'Enter a lawyer email or choose Amana RentalHub NG lawyers.';
+    if (!form.lawyer_email?.trim()) {
+      return 'Enter the lawyer email to use for registration.';
     }
 
     if (!emailPattern.test(form.email || '')) {
@@ -342,15 +344,15 @@ const RegisterScreen = ({ navigation, route }) => {
       return 'Passwords do not match.';
     }
 
-    if (form.password.length < 8) {
-      return 'Password must be at least 8 characters.';
+    if (!passwordPattern.test(form.password)) {
+      return passwordRequirement;
     }
 
     if (!acceptedTerms) {
       return 'Accept the Terms and Privacy Policy to continue.';
     }
 
-    if (!form.use_rentalhub_lawyers && !emailPattern.test(form.lawyer_email || '')) {
+    if (!emailPattern.test(form.lawyer_email.trim())) {
       return 'Enter a valid lawyer email.';
     }
 
@@ -415,8 +417,8 @@ const RegisterScreen = ({ navigation, route }) => {
     }
 
     if (step === 1) {
-      if (!form.use_rentalhub_lawyers && !emailPattern.test(form.lawyer_email.trim())) {
-        return 'Enter a valid lawyer email or choose Amana RentalHub NG lawyers.';
+      if (!emailPattern.test(form.lawyer_email.trim())) {
+        return 'Enter a valid lawyer email.';
       }
       if (userType === 'landlord' && form.add_agent && !form.use_rentalhub_agents) {
         if (!form.agent_full_name.trim()) return 'Enter the agentâ€™s full name.';
@@ -446,7 +448,7 @@ const RegisterScreen = ({ navigation, route }) => {
     }
 
     if (step === 3) {
-      if (form.password.length < 8) return 'Password must be at least 8 characters.';
+      if (!passwordPattern.test(form.password)) return passwordRequirement;
       if (form.password !== form.confirm_password) return 'Passwords do not match.';
       if (!acceptedTerms) return 'Accept the Terms and Privacy Policy to continue.';
     }
@@ -948,7 +950,6 @@ const RegisterScreen = ({ navigation, route }) => {
             setForm((prev) => ({
               ...prev,
               use_rentalhub_lawyers: !prev.use_rentalhub_lawyers,
-              lawyer_email: !prev.use_rentalhub_lawyers ? '' : prev.lawyer_email,
             }))
           }
         >
@@ -959,8 +960,7 @@ const RegisterScreen = ({ navigation, route }) => {
           </AppText>
         </TouchableOpacity>
 
-        {!form.use_rentalhub_lawyers ? (
-          <Input
+        <Input
             label="Lawyer Email"
             value={form.lawyer_email}
             onChangeText={(value) => onChange('lawyer_email', value)}
@@ -969,7 +969,6 @@ const RegisterScreen = ({ navigation, route }) => {
             autoCapitalize="none"
             icon="briefcase-outline"
           />
-        ) : null}
 
         {userType === 'landlord' ? (
           <TouchableOpacity
@@ -1143,7 +1142,7 @@ const RegisterScreen = ({ navigation, route }) => {
             <TouchableOpacity onPress={() => changeStep(1)} style={styles.reviewSupport}>
               <AppText style={styles.reviewSupportText}>
                 {form.use_rentalhub_lawyers
-                  ? 'RentalHub lawyer support selected'
+                  ? `RentalHub lawyer support selected: ${form.lawyer_email}`
                   : `Personal lawyer: ${form.lawyer_email || 'not entered'}`}
               </AppText>
               <Icon name="chevron-forward" size={16} color={colors.blue} />
@@ -1155,10 +1154,11 @@ const RegisterScreen = ({ navigation, route }) => {
           label="Password"
           value={form.password}
           onChangeText={(value) => onChange('password', value)}
-          placeholder="Minimum 8 characters"
+          placeholder="Minimum 10 characters"
           secureTextEntry
           icon="lock-closed-outline"
         />
+        <AppText style={styles.identityPaymentNotice}>{passwordRequirement}</AppText>
         <Input
           label="Confirm Password"
           value={form.confirm_password}
@@ -1457,13 +1457,15 @@ const styles = StyleSheet.create({
   stepCount: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 13,
-    letterSpacing: 1.25,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
+    letterSpacing: 0.8,
   },
   stepPercent: {
     color: colors.muted,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   progressTrack: {
     backgroundColor: colors.border,
@@ -1480,22 +1482,24 @@ const styles = StyleSheet.create({
   eyebrow: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 13,
-    letterSpacing: 1.25,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
+    letterSpacing: 0.8,
     marginTop: 16,
   },
   title: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 32,
-    letterSpacing: -1.25,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.xxl,
+    lineHeight: 36,
+    letterSpacing: -0.3,
     marginTop: 9,
   },
   subtitle: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 16,
-    lineHeight: 23,
+    fontSize: typeScale.base,
+    lineHeight: 24,
     marginBottom: 24,
     marginTop: 9,
   },
@@ -1512,7 +1516,8 @@ const styles = StyleSheet.create({
   choiceLabel: {
     color: colors.text,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginBottom: 8,
     marginLeft: 2,
   },
@@ -1544,11 +1549,13 @@ const styles = StyleSheet.create({
   },
   priceLabel: {
     color: colors.muted,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     fontFamily: typography.semibold,
   },
   priceAmount: {
-    fontSize: 32,
+    fontSize: typeScale.hero,
+    lineHeight: 40,
     fontFamily: typography.bold,
     color: colors.ink,
     marginTop: 4,
@@ -1580,13 +1587,15 @@ const styles = StyleSheet.create({
   reviewEyebrow: {
     color: '#9BC3F4',
     fontFamily: typography.bold,
-    fontSize: 13,
-    letterSpacing: 1.25,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
+    letterSpacing: 0.8,
   },
   reviewTitle: {
     color: colors.white,
-    fontFamily: typography.bold,
-    fontSize: 20,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
     marginTop: 3,
   },
   editButton: {
@@ -1608,7 +1617,8 @@ const styles = StyleSheet.create({
     color: '#D8E4F5',
     flex: 1,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginLeft: 8,
   },
   reviewSupport: {
@@ -1623,7 +1633,8 @@ const styles = StyleSheet.create({
     color: '#D8E4F5',
     flex: 1,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   agentBlock: {
     marginBottom: 8,
@@ -1642,7 +1653,8 @@ const styles = StyleSheet.create({
   agentToggleLabel: {
     color: colors.blue,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     textAlign: 'center',
   },
   termsRow: {
@@ -1669,10 +1681,12 @@ const styles = StyleSheet.create({
     color: colors.text,
     flex: 1,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 17,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   termsLink: {
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     color: colors.blue,
     fontFamily: typography.semibold,
   },
@@ -1735,7 +1749,8 @@ const styles = StyleSheet.create({
     padding: 14,
   },
   paymentTitle: {
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
     fontWeight: '800',
     color: '#0f172a',
   },
@@ -1767,20 +1782,22 @@ const styles = StyleSheet.create({
   },
   adjustTitle: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 18,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.md,
+    lineHeight: 26,
   },
   adjustText: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 20,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 8,
   },
   adjustAmount: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 15,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginTop: 12,
   },
   adjustPrimary: {
@@ -1793,7 +1810,8 @@ const styles = StyleSheet.create({
   adjustPrimaryText: {
     color: colors.white,
     fontFamily: typography.bold,
-    fontSize: 15,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
   },
   adjustGhost: {
     borderRadius: 12,
@@ -1804,12 +1822,14 @@ const styles = StyleSheet.create({
   adjustGhostText: {
     color: colors.blue,
     fontFamily: typography.semibold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   adjustCancel: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   adjustDisabled: {
     opacity: 0.6,
@@ -1821,8 +1841,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     color: '#115e59',
     fontFamily: typography.regular,
-    fontSize: 12,
-    lineHeight: 18,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginBottom: 12,
     padding: 12,
   },
@@ -1840,13 +1860,15 @@ const styles = StyleSheet.create({
   },
   chooserTitle: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 18,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.md,
+    lineHeight: 26,
   },
   chooserAmount: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 24,
+    fontSize: typeScale.xl,
+    lineHeight: 32,
     marginBottom: 4,
   },
   chooserOption: {
@@ -1870,12 +1892,14 @@ const styles = StyleSheet.create({
   chooserOptionTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 15,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
   },
   chooserOptionText: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 2,
   },
   chooserCancel: {
@@ -1885,7 +1909,8 @@ const styles = StyleSheet.create({
   chooserCancelText: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
 });
 

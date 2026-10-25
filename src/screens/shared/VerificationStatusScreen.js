@@ -1,17 +1,12 @@
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import {ActivityIndicator,
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  View,} from 'react-native';
+import { ActivityIndicator, RefreshControl, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import TextInput from '../../components/common/AppTextInput';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import Button from '../../components/common/Button';
 import { userService } from '../../services/userService';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import { getErrorMessage, pickObject } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
@@ -473,13 +468,15 @@ const styles = StyleSheet.create({
   eyebrow: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 13,
-    letterSpacing: 1.25,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
+    letterSpacing: 0.8,
   },
   title: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 20,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
     marginTop: 2,
   },
   content: { padding: 18, paddingBottom: 30 },
@@ -487,7 +484,8 @@ const styles = StyleSheet.create({
   loadingText: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 12,
   },
   hero: {
@@ -507,22 +505,24 @@ const styles = StyleSheet.create({
   heroEyebrow: {
     color: '#9BC3F4',
     fontFamily: typography.bold,
-    fontSize: 13,
-    letterSpacing: 1.25,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
+    letterSpacing: 0.8,
     marginTop: 17,
   },
   heroTitle: {
     color: colors.white,
-    fontFamily: typography.bold,
-    fontSize: 24,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.xl,
+    lineHeight: 32,
     letterSpacing: -0.5,
     marginTop: 5,
   },
   heroText: {
     color: '#B7C8E2',
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 20,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 8,
   },
   progressTrack: {
@@ -536,8 +536,9 @@ const styles = StyleSheet.create({
   sectionEyebrow: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 13,
-    letterSpacing: 1.25,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
+    letterSpacing: 0.8,
     marginBottom: 9,
     marginTop: 26,
   },
@@ -565,12 +566,14 @@ const styles = StyleSheet.create({
     color: colors.ink,
     flex: 1,
     fontFamily: typography.semibold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   stepStatus: {
     color: colors.muted,
     fontFamily: typography.bold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     textTransform: 'uppercase',
   },
   stepStatusComplete: { color: colors.success },
@@ -579,14 +582,15 @@ const styles = StyleSheet.create({
   stepText: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 17,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 4,
   },
   documentText: {
     color: colors.text,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 5,
     textTransform: 'capitalize',
   },
@@ -594,7 +598,8 @@ const styles = StyleSheet.create({
   stepActionText: {
     color: colors.blue,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginRight: 5,
   },
   divider: { backgroundColor: colors.border, height: 1, marginLeft: 54 },
@@ -610,26 +615,28 @@ const styles = StyleSheet.create({
   revalidationTitle: {
     color: '#8A6700',
     fontFamily: typography.bold,
-    fontSize: 15,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     flex: 1,
   },
   revalidationReason: {
     color: '#8A6700',
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
     lineHeight: 18,
   },
   revalidationInstructions: {
     color: '#A67C00',
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: typeScale.xs,
     marginTop: 6,
-    lineHeight: 17,
+    lineHeight: 18,
   },
   revalidationDue: {
     color: '#CC5500',
     fontFamily: typography.bold,
-    fontSize: 12,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 8,
   },
   reviewNoteCard: {
@@ -643,14 +650,15 @@ const styles = StyleSheet.create({
   reviewNoteTitle: {
     color: colors.danger,
     fontFamily: typography.bold,
-    fontSize: 12,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   reviewNoteText: {
     color: colors.danger,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
     marginTop: 4,
-    lineHeight: 17,
+    lineHeight: 18,
   },
   submittedBanner: {
     alignItems: 'center',
@@ -665,13 +673,15 @@ const styles = StyleSheet.create({
     color: colors.blue,
     flex: 1,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   revalidationForm: { marginTop: 14 },
   fieldLabel: {
     color: colors.ink,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginBottom: 5,
   },
   input: {
@@ -681,7 +691,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     color: colors.ink,
     fontFamily: typography.regular,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
     paddingHorizontal: 14,
     paddingVertical: 12,
   },
@@ -692,13 +703,15 @@ const styles = StyleSheet.create({
   fieldError: {
     color: colors.danger,
     fontFamily: typography.medium,
-    fontSize: 12,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 4,
   },
   errorText: {
     color: colors.danger,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 12,
     textAlign: 'center',
   },
@@ -712,7 +725,7 @@ const styles = StyleSheet.create({
   livePhotoText: {
     color: colors.blue,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
     lineHeight: 18,
     marginTop: 6,
   },
@@ -731,13 +744,14 @@ const styles = StyleSheet.create({
   privacyTitle: {
     color: colors.ink,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   privacyText: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 15,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 3,
   },
 });

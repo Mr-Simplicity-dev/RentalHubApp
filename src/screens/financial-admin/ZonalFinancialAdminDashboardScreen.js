@@ -28,7 +28,7 @@ import {
   MetricGrid,
 } from '../../components/dashboard/DashboardKit';
 import { financialAdminService } from '../../services/financialAdminService';
-import { colors, typography } from '../../theme';
+import { colors, typography, typeScale } from '../../theme';
 import { getErrorMessage, pickList, pickObject } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
@@ -267,14 +267,15 @@ const styles = StyleSheet.create({
   emptyTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
     marginTop: 12,
   },
   emptyMessage: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 19,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginTop: 5,
     paddingHorizontal: 10,
     textAlign: 'center',
@@ -292,13 +293,15 @@ const styles = StyleSheet.create({
   historyLabel: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     textTransform: 'uppercase',
   },
   historyAmount: {
     color: colors.navy,
     fontFamily: typography.bold,
-    fontSize: 24,
+    fontSize: typeScale.xl,
+    lineHeight: 32,
     marginTop: 3,
   },
   zoneMetricRow: {
@@ -317,13 +320,15 @@ const styles = StyleSheet.create({
   zoneMetricLabel: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 12,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     textTransform: 'uppercase',
   },
   zoneMetricValue: {
     color: colors.navy,
     fontFamily: typography.bold,
-    fontSize: 20,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
     marginTop: 6,
   },
 });

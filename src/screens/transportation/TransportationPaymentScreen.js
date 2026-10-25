@@ -17,7 +17,7 @@ import {
   PremiumScreen,
   PremiumSectionTitle,
 } from '../../components/common/PremiumLayout';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const TransportationPaymentScreen = ({ route, navigation }) => {
@@ -207,18 +207,21 @@ const styles = StyleSheet.create({
   totalLabel: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   totalHint: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginTop: 3,
   },
   totalValue: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 24,
+    fontSize: typeScale.xl,
+    lineHeight: 32,
   },
   methodRow: {
     alignItems: 'center',
@@ -240,12 +243,13 @@ const styles = StyleSheet.create({
   methodTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
   },
   methodText: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
     lineHeight: 18,
     marginTop: 3,
   },

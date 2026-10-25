@@ -13,7 +13,7 @@ import { authService } from '../../services/authService';
 import { storageService } from '../../services/storageService';
 import { cameraService } from '../../services/cameraService';
 import { getErrorMessage, getReviewStatus, pickObject } from '../../utils/http';
-import { colors, radius, shadows, typography } from '../../theme';
+import { colors, radius, shadows, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const ProfileScreen = ({ navigation }) => {
@@ -483,10 +483,10 @@ const ProfileScreen = ({ navigation }) => {
 
         <View style={{ borderTopWidth: 1, borderTopColor: colors.border, marginTop: 16, paddingTop: 14 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-            <AppText style={{ color: colors.ink, fontFamily: typography.semibold, fontSize: 14 }}>
+            <AppText style={{ color: colors.ink, fontFamily: typography.semibold, fontSize: typeScale.sm, lineHeight: 20 }}>
               Two-factor authentication
             </AppText>
-            <AppText style={{ color: twoFa.enabled ? colors.success : colors.muted, fontFamily: typography.semibold, fontSize: 12 }}>
+            <AppText style={{ color: twoFa.enabled ? colors.success : colors.muted, fontFamily: typography.semibold, fontSize: typeScale.xs, lineHeight: 18 }}>
               {twoFa.enabled ? 'Enabled' : twoFa.checked ? 'Off' : 'Checking…'}
             </AppText>
           </View>
@@ -506,7 +506,7 @@ const ProfileScreen = ({ navigation }) => {
               <AppText style={styles.helperText}>
                 Add this secret to your authenticator app (Google Authenticator, Authy, etc.):
               </AppText>
-              <AppText selectable style={{ color: colors.ink, fontFamily: typography.medium, fontSize: 13, marginVertical: 6 }}>
+              <AppText selectable style={{ color: colors.ink, fontFamily: typography.medium, fontSize: typeScale.xs, lineHeight: 18, marginVertical: 6 }}>
                 {twoFaSecret}
               </AppText>
               <Input
@@ -538,7 +538,7 @@ const ProfileScreen = ({ navigation }) => {
               </AppText>
               <View style={{ backgroundColor: colors.surface, borderRadius: radius.md, padding: 10, marginVertical: 8 }}>
                 {twoFaRecovery.map((code) => (
-                  <AppText key={code} style={{ color: colors.ink, fontFamily: typography.medium, fontSize: 13, marginVertical: 2 }}>
+                  <AppText key={code} style={{ color: colors.ink, fontFamily: typography.medium, fontSize: typeScale.xs, lineHeight: 18, marginVertical: 2 }}>
                     {code}
                   </AppText>
                 ))}
@@ -693,13 +693,15 @@ const styles = StyleSheet.create({
   headerEyebrow: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 13,
-    letterSpacing: 1.25,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
+    letterSpacing: 0.8,
   },
   headerTitle: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 20,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
     marginTop: 2,
   },
   content: { padding: 18, paddingBottom: 30 },
@@ -737,8 +739,9 @@ const styles = StyleSheet.create({
   },
   title: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 24,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.xl,
+    lineHeight: 32,
     letterSpacing: -0.5,
     marginTop: 14,
     textAlign: 'center',
@@ -746,7 +749,8 @@ const styles = StyleSheet.create({
   subtitle: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginTop: 4,
     textAlign: 'center',
   },
@@ -760,7 +764,8 @@ const styles = StyleSheet.create({
   roleText: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     letterSpacing: 0.5,
     textTransform: 'uppercase',
   },
@@ -788,11 +793,12 @@ const styles = StyleSheet.create({
     width: 36,
   },
   cardHeaderCopy: { flex: 1 },
-  cardTitle: { fontSize: 16, fontFamily: typography.bold, color: colors.ink },
+  cardTitle: { fontSize: typeScale.base, lineHeight: 24, fontFamily: typography.bold, color: colors.ink },
   cardCaption: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 2,
   },
   statusText: { color: colors.text, fontFamily: typography.regular, marginBottom: 7 },
@@ -839,13 +845,14 @@ const styles = StyleSheet.create({
   switchTitle: {
     color: colors.ink,
     fontFamily: typography.semibold,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
   },
   switchDescription: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 18,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginTop: 4,
   },
   helperText: {

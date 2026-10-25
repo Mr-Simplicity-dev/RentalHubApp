@@ -1,17 +1,12 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import {ActivityIndicator,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  View,} from 'react-native';
+import { ActivityIndicator, ScrollView, StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native';
+import TextInput from '../../components/common/AppTextInput';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import recruitmentService from '../../services/recruitmentService';
 import { getErrorMessage } from '../../utils/http';
 import { PremiumHero } from '../../components/common/PremiumLayout';
-import { colors, radius, shadows, typography } from '../../theme';
+import { colors, radius, shadows, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 import TurnstileWidget from '../../components/common/TurnstileWidget';
@@ -383,7 +378,7 @@ const styles = StyleSheet.create({
   content: { padding: 18, paddingBottom: 34 },
   centered: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.surface },
   centerText: { marginTop: 8, color: colors.muted, fontFamily: typography.medium },
-  title: { fontSize: 32, fontFamily: typography.bold, color: colors.ink },
+  title: { fontSize: typeScale.xxl, lineHeight: 36, fontFamily: typography.semibold, color: colors.ink },
   subtitle: { color: colors.muted, fontFamily: typography.regular, marginTop: 6, marginBottom: 12 },
   noticeCard: {
     backgroundColor: colors.surfaceBlue,
@@ -394,9 +389,9 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     ...shadows.soft,
   },
-  noticeTitle: { color: colors.blue, fontSize: 16, fontFamily: typography.bold },
+  noticeTitle: { color: colors.blue, fontSize: typeScale.base, lineHeight: 24, fontFamily: typography.bold },
   noticeText: { color: colors.navySoft, fontFamily: typography.regular, marginTop: 4, lineHeight: 20 },
-  sectionTitle: { fontSize: 18, fontFamily: typography.bold, color: colors.ink, marginBottom: 10, marginTop: 6 },
+  sectionTitle: { fontSize: typeScale.md, lineHeight: 26, fontFamily: typography.semibold, color: colors.ink, marginBottom: 10, marginTop: 6 },
   roleGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: 10 },
   roleCard: {
     width: '48%',
@@ -410,7 +405,7 @@ const styles = StyleSheet.create({
   roleCardActive: { borderColor: colors.blue, backgroundColor: colors.surfaceBlue },
   roleTitle: { color: colors.ink, fontFamily: typography.bold },
   roleTitleActive: { color: colors.blue },
-  roleMeta: { color: colors.muted, fontFamily: typography.regular, fontSize: 13, marginTop: 4 },
+  roleMeta: { color: colors.muted, fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18, marginTop: 4 },
   selectionCard: { backgroundColor: colors.white, borderRadius: radius.md, padding: 14, borderWidth: 1, borderColor: colors.border, marginBottom: 12, ...shadows.soft },
   selectionTitle: { fontFamily: typography.bold, color: colors.ink },
   selectionText: { color: colors.blue, marginTop: 4, fontFamily: typography.semibold },
@@ -427,16 +422,16 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
   },
   textarea: { minHeight: 86, textAlignVertical: 'top' },
-  helperLabel: { color: colors.text, fontSize: 13, fontFamily: typography.semibold, marginBottom: 6, marginTop: 4 },
+  helperLabel: { color: colors.text, fontSize: typeScale.xs, lineHeight: 18, fontFamily: typography.semibold, marginBottom: 6, marginTop: 4 },
   trackRow: { flexDirection: 'row', gap: 8, marginBottom: 6 },
   trackButton: { borderWidth: 1, borderColor: colors.border, borderRadius: radius.pill, paddingHorizontal: 12, paddingVertical: 8 },
   trackButtonActive: { backgroundColor: colors.blue, borderColor: colors.blue },
-  trackText: { color: colors.text, fontSize: 13, fontFamily: typography.semibold },
+  trackText: { color: colors.text, fontSize: typeScale.xs, lineHeight: 18, fontFamily: typography.semibold },
   trackTextActive: { color: colors.white },
   chipRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 8 },
   chip: { borderWidth: 1, borderColor: colors.border, borderRadius: radius.pill, paddingHorizontal: 10, paddingVertical: 8 },
   chipActive: { backgroundColor: colors.blue, borderColor: colors.blue },
-  chipText: { color: colors.text, fontSize: 13, fontFamily: typography.semibold },
+  chipText: { color: colors.text, fontSize: typeScale.xs, lineHeight: 18, fontFamily: typography.semibold },
   chipTextActive: { color: colors.white },
   submitButton: { backgroundColor: colors.blue, borderRadius: radius.md, paddingVertical: 14, alignItems: 'center', marginTop: 8 },
   submitButtonText: { color: colors.white, fontFamily: typography.bold },
@@ -449,9 +444,9 @@ const styles = StyleSheet.create({
   applicationRow: { borderTopWidth: 1, borderTopColor: colors.border, paddingTop: 10, marginTop: 10 },
   applicationTitle: { color: colors.ink, fontFamily: typography.bold },
   interviewButton: { backgroundColor: colors.blue, borderRadius: radius.sm, alignItems: 'center', marginTop: 10, paddingVertical: 11 },
-  interviewButtonText: { color: colors.white, fontFamily: typography.bold, fontSize: 13 },
+  interviewButtonText: { color: colors.white, fontFamily: typography.semibold, fontSize: typeScale.xs, lineHeight: 18 },
   interviewSecondaryButton: { backgroundColor: colors.white, borderColor: colors.blue, borderWidth: 1 },
-  interviewSecondaryButtonText: { color: colors.blue, fontFamily: typography.bold, fontSize: 13 },
+  interviewSecondaryButtonText: { color: colors.blue, fontFamily: typography.semibold, fontSize: typeScale.xs, lineHeight: 18 },
   emptyText: { color: colors.muted, fontFamily: typography.regular, marginBottom: 10 },
   errorText: { color: colors.danger, marginBottom: 10, fontFamily: typography.semibold },
 });

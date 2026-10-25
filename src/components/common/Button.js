@@ -1,6 +1,6 @@
 import React from 'react';
 import {TouchableOpacity, StyleSheet, ActivityIndicator} from 'react-native';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const Button = ({
@@ -84,8 +84,11 @@ const styles = StyleSheet.create({
     opacity: 0.48,
   },
   text: {
+    flexShrink: 1,
+    textAlign: 'center',
     fontFamily: typography.semibold,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
   },
   primaryText: {
     color: colors.white,
@@ -109,10 +112,12 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
   },
   smallText: {
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   largeText: {
-    fontSize: 18,
+    fontSize: typeScale.md,
+    lineHeight: 26,
   },
 });
 

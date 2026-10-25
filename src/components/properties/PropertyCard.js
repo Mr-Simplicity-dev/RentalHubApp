@@ -2,7 +2,7 @@ import React from 'react';
 import {View, Image, TouchableOpacity, StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import BrandImagePlaceholder from '../common/BrandImagePlaceholder';
-import { colors, radius, shadows, typography } from '../../theme';
+import { colors, radius, shadows, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const formatCurrency = (value) => {
@@ -125,8 +125,9 @@ const styles = StyleSheet.create({
   },
   title: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 18,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.md,
+    lineHeight: 26,
     letterSpacing: 0,
   },
   row: {
@@ -136,7 +137,8 @@ const styles = StyleSheet.create({
   meta: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginLeft: 6,
   },
   gap: {
@@ -150,12 +152,14 @@ const styles = StyleSheet.create({
   price: {
     color: colors.navy,
     fontFamily: typography.bold,
-    fontSize: 20,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
   },
   frequency: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginLeft: 5,
   },
 });

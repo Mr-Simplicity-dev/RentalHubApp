@@ -11,7 +11,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import { rentHelpService } from '../../services/rentHelpService';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import { getErrorMessage, pickList } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
@@ -192,10 +192,10 @@ const styles = StyleSheet.create({
     width: 40,
   },
   headerBody: { flex: 1, marginLeft: 11 },
-  title: { color: colors.ink, fontFamily: typography.bold, fontSize: 17 },
-  subtitle: { color: colors.muted, fontFamily: typography.regular, fontSize: 12, lineHeight: 18, marginTop: 5 },
+  title: { color: colors.ink, fontFamily: typography.bold, fontSize: typeScale.base, lineHeight: 24 },
+  subtitle: { color: colors.muted, fontFamily: typography.regular, fontSize: typeScale.reading, lineHeight: 22, marginTop: 5 },
   center: { alignItems: 'center', justifyContent: 'center', paddingVertical: 40 },
-  loadingText: { color: colors.muted, fontFamily: typography.medium, fontSize: 13, marginTop: 12 },
+  loadingText: { color: colors.muted, fontFamily: typography.medium, fontSize: typeScale.xs, lineHeight: 18, marginTop: 12 },
   notice: {
     alignItems: 'flex-start',
     backgroundColor: '#FFF6DD',
@@ -205,11 +205,12 @@ const styles = StyleSheet.create({
     marginTop: 14,
     padding: 13,
   },
-  noticeText: { color: '#7A4A00', flex: 1, fontFamily: typography.regular, fontSize: 13, lineHeight: 19 },
+  noticeText: { color: '#7A4A00', flex: 1, fontFamily: typography.regular, fontSize: typeScale.reading, lineHeight: 22 },
   sectionLabel: {
     color: colors.text,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginBottom: 8,
     marginTop: 16,
   },
@@ -225,8 +226,8 @@ const styles = StyleSheet.create({
   },
   propertyRowSelected: { borderColor: '#0F766E', backgroundColor: '#F0FDFA' },
   propertyBody: { flex: 1, marginLeft: 10 },
-  propertyTitle: { color: colors.ink, fontFamily: typography.semibold, fontSize: 14 },
-  propertyMeta: { color: colors.muted, fontFamily: typography.regular, fontSize: 12, marginTop: 3 },
+  propertyTitle: { color: colors.ink, fontFamily: typography.semibold, fontSize: typeScale.sm, lineHeight: 20 },
+  propertyMeta: { color: colors.muted, fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18, marginTop: 3 },
   primaryButton: {
     alignItems: 'center',
     backgroundColor: '#0F766E',
@@ -236,7 +237,7 @@ const styles = StyleSheet.create({
     minHeight: 48,
   },
   buttonDisabled: { opacity: 0.5 },
-  primaryButtonText: { color: colors.white, fontFamily: typography.semibold, fontSize: 14 },
+  primaryButtonText: { color: colors.white, fontFamily: typography.semibold, fontSize: typeScale.sm, lineHeight: 20 },
   linkCard: {
     backgroundColor: '#ECFDF5',
     borderColor: '#A7F3D0',
@@ -245,8 +246,8 @@ const styles = StyleSheet.create({
     marginTop: 16,
     padding: 14,
   },
-  linkLabel: { color: '#047857', fontFamily: typography.bold, fontSize: 11, letterSpacing: 0.6 },
-  linkValue: { color: colors.ink, fontFamily: typography.regular, fontSize: 12, marginTop: 8 },
+  linkLabel: { color: '#047857', fontFamily: typography.bold, fontSize: typeScale.xs, lineHeight: 18, letterSpacing: 0.6 },
+  linkValue: { color: colors.ink, fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18, marginTop: 8 },
   shareButton: {
     alignItems: 'center',
     backgroundColor: '#059669',
@@ -257,9 +258,9 @@ const styles = StyleSheet.create({
     marginTop: 12,
     minHeight: 44,
   },
-  shareButtonText: { color: colors.white, fontFamily: typography.semibold, fontSize: 14 },
+  shareButtonText: { color: colors.white, fontFamily: typography.semibold, fontSize: typeScale.sm, lineHeight: 20 },
   linkReset: { alignItems: 'center', marginTop: 12 },
-  linkResetText: { color: '#047857', fontFamily: typography.semibold, fontSize: 13, textDecorationLine: 'underline' },
+  linkResetText: { color: '#047857', fontFamily: typography.semibold, fontSize: typeScale.xs, lineHeight: 18, textDecorationLine: 'underline' },
 });
 
 export default RequestRentHelpScreen;

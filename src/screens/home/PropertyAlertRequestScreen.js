@@ -16,7 +16,7 @@ import { propertyService } from '../../services/propertyService';
 import useNativePaystackCheckout from '../../hooks/useNativePaystackCheckout';
 import { hasPaystackCheckout } from '../../services/nativePaymentService';
 import { getErrorMessage, pickList, pickObject } from '../../utils/http';
-import { colors, radius, shadows, typography } from '../../theme';
+import { colors, radius, shadows, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const propertyTypes = [
@@ -560,13 +560,15 @@ const styles = StyleSheet.create({
   headerEyebrow: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 13,
-    letterSpacing: 1.25,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
+    letterSpacing: 0.8,
   },
   headerTitle: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 20,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
     letterSpacing: -0.5,
     marginTop: 2,
   },
@@ -582,16 +584,16 @@ const styles = StyleSheet.create({
   },
   title: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 32,
-    letterSpacing: -1.25,
-    lineHeight: 35,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.xxl,
+    letterSpacing: -0.3,
+    lineHeight: 36,
     marginTop: 16,
   },
   subtitle: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 14,
+    fontSize: typeScale.reading,
     lineHeight: 22,
     marginBottom: 20,
     marginTop: 8,
@@ -614,26 +616,29 @@ const styles = StyleSheet.create({
   priceLabel: {
     color: '#AFC2DF',
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   priceAmount: {
     color: colors.white,
     fontFamily: typography.bold,
-    fontSize: 24,
+    fontSize: typeScale.xl,
+    lineHeight: 32,
     marginTop: 4,
   },
   priceMeta: {
     color: '#AFC2DF',
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
     lineHeight: 18,
     marginTop: 6,
   },
   sectionLabel: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 13,
-    letterSpacing: 1.25,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
+    letterSpacing: 0.8,
     marginBottom: 9,
     marginLeft: 3,
     marginTop: 4,
@@ -666,7 +671,8 @@ const styles = StyleSheet.create({
   pendingTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
   },
   pendingText: {
     color: colors.text,

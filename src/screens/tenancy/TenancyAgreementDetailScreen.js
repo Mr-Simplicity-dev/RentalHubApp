@@ -1,14 +1,6 @@
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import {
-  ActivityIndicator,
-  Alert,
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { ActivityIndicator, Alert, RefreshControl, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import TextInput from '../../components/common/AppTextInput';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
@@ -18,7 +10,7 @@ import {
   tenancyAgreementStatusVisual,
   TENANCY_AGREEMENT_STATUS_LABELS,
 } from '../../services/tenancyAgreementService';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import { getErrorMessage, pickObject } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
@@ -372,7 +364,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   headerBack: { alignItems: 'center', height: 36, justifyContent: 'center', width: 36 },
-  headerTitle: { color: colors.ink, flex: 1, fontFamily: typography.bold, fontSize: 17, textAlign: 'center' },
+  headerTitle: { color: colors.ink, flex: 1, fontFamily: typography.bold, fontSize: typeScale.base, lineHeight: 24, textAlign: 'center' },
   headerIcon: {
     alignItems: 'center',
     backgroundColor: colors.surfaceBlue,
@@ -392,10 +384,10 @@ const styles = StyleSheet.create({
   cardTop: { alignItems: 'flex-start', flexDirection: 'row' },
   statusIcon: { alignItems: 'center', borderRadius: 20, height: 40, justifyContent: 'center', width: 40 },
   cardHeading: { flex: 1, marginLeft: 11 },
-  cardTitle: { color: colors.ink, fontFamily: typography.bold, fontSize: 17, lineHeight: 21 },
-  cardMeta: { color: colors.muted, fontFamily: typography.regular, fontSize: 13, marginTop: 4 },
+  cardTitle: { color: colors.ink, fontFamily: typography.bold, fontSize: typeScale.base, lineHeight: 24 },
+  cardMeta: { color: colors.muted, fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18, marginTop: 4 },
   statusPill: { alignSelf: 'flex-start', borderRadius: radius.pill, marginTop: 12, paddingHorizontal: 10, paddingVertical: 6 },
-  statusText: { fontFamily: typography.bold, fontSize: 12, textTransform: 'uppercase' },
+  statusText: { fontFamily: typography.bold, fontSize: typeScale.xs, lineHeight: 18, textTransform: 'uppercase' },
   section: {
     backgroundColor: colors.white,
     borderColor: colors.border,
@@ -404,16 +396,16 @@ const styles = StyleSheet.create({
     marginTop: 14,
     padding: 15,
   },
-  sectionTitle: { color: colors.ink, fontFamily: typography.bold, fontSize: 16, marginBottom: 10 },
+  sectionTitle: { color: colors.ink, fontFamily: typography.bold, fontSize: typeScale.base, lineHeight: 24, marginBottom: 10 },
   row: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 },
-  rowLabel: { color: colors.muted, flex: 1, fontFamily: typography.regular, fontSize: 13 },
-  rowValue: { color: colors.ink, flex: 1.3, fontFamily: typography.semibold, fontSize: 13, textAlign: 'right' },
-  clause: { color: colors.text, fontFamily: typography.regular, fontSize: 13, lineHeight: 19, marginBottom: 6 },
-  mutedText: { color: colors.muted, fontFamily: typography.regular, fontSize: 13 },
+  rowLabel: { color: colors.muted, flex: 1, fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18 },
+  rowValue: { color: colors.ink, flex: 1.3, fontFamily: typography.semibold, fontSize: typeScale.xs, lineHeight: 18, textAlign: 'right' },
+  clause: { color: colors.text, fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18, marginBottom: 6 },
+  mutedText: { color: colors.muted, fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18 },
   signatureRow: { alignItems: 'center', flexDirection: 'row', marginBottom: 10 },
   signatureBody: { flex: 1, marginLeft: 9 },
-  signatureRole: { color: colors.ink, fontFamily: typography.bold, fontSize: 13 },
-  signatureMeta: { color: colors.muted, fontFamily: typography.regular, fontSize: 12, marginTop: 2 },
+  signatureRole: { color: colors.ink, fontFamily: typography.bold, fontSize: typeScale.xs, lineHeight: 18 },
+  signatureMeta: { color: colors.muted, fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18, marginTop: 2 },
   actionCard: {
     backgroundColor: '#FFF9EC',
     borderColor: '#F2D9A6',
@@ -422,8 +414,8 @@ const styles = StyleSheet.create({
     marginTop: 14,
     padding: 15,
   },
-  actionTitle: { color: '#7A4A00', fontFamily: typography.bold, fontSize: 16 },
-  actionHint: { color: '#7A4A00', fontFamily: typography.regular, fontSize: 12, lineHeight: 18, marginTop: 6 },
+  actionTitle: { color: '#7A4A00', fontFamily: typography.bold, fontSize: typeScale.base, lineHeight: 24 },
+  actionHint: { color: '#7A4A00', fontFamily: typography.regular, fontSize: typeScale.reading, lineHeight: 22, marginTop: 6 },
   primaryButton: {
     alignItems: 'center',
     backgroundColor: colors.blue,
@@ -434,9 +426,9 @@ const styles = StyleSheet.create({
     marginTop: 13,
     minHeight: 46,
   },
-  primaryButtonText: { color: colors.white, fontFamily: typography.semibold, fontSize: 14 },
+  primaryButtonText: { color: colors.white, fontFamily: typography.semibold, fontSize: typeScale.sm, lineHeight: 20 },
   signBlock: { marginTop: 13 },
-  inputLabel: { color: '#7A4A00', fontFamily: typography.semibold, fontSize: 12, marginBottom: 5 },
+  inputLabel: { color: '#7A4A00', fontFamily: typography.semibold, fontSize: typeScale.xs, lineHeight: 18, marginBottom: 5 },
   input: {
     backgroundColor: colors.white,
     borderColor: '#E4CD9A',
@@ -444,12 +436,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     color: colors.ink,
     fontFamily: typography.regular,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
     paddingHorizontal: 12,
     paddingVertical: 11,
   },
   consentRow: { alignItems: 'flex-start', flexDirection: 'row', gap: 8, marginTop: 12 },
-  consentText: { color: '#7A4A00', flex: 1, fontFamily: typography.regular, fontSize: 12, lineHeight: 18 },
+  consentText: { color: '#7A4A00', flex: 1, fontFamily: typography.regular, fontSize: typeScale.reading, lineHeight: 22 },
   signButton: {
     alignItems: 'center',
     backgroundColor: colors.success,
@@ -460,7 +453,7 @@ const styles = StyleSheet.create({
     marginTop: 13,
     minHeight: 46,
   },
-  offlineHint: { color: '#8A6A2A', fontFamily: typography.regular, fontSize: 11, marginTop: 8 },
+  offlineHint: { color: '#8A6A2A', fontFamily: typography.regular, fontSize: typeScale.reading, lineHeight: 22, marginTop: 8 },
   declineBlock: { borderTopColor: '#F2D9A6', borderTopWidth: 1, marginTop: 16, paddingTop: 14 },
   declineButton: {
     alignItems: 'center',
@@ -471,15 +464,15 @@ const styles = StyleSheet.create({
     marginTop: 12,
     minHeight: 44,
   },
-  declineButtonText: { color: colors.danger, fontFamily: typography.semibold, fontSize: 14 },
+  declineButtonText: { color: colors.danger, fontFamily: typography.semibold, fontSize: typeScale.sm, lineHeight: 20 },
   historyRow: { flexDirection: 'row', marginBottom: 11 },
   historyDot: { backgroundColor: colors.border, borderRadius: 4, height: 8, marginTop: 5, width: 8 },
   historyBody: { flex: 1, marginLeft: 10 },
-  historyTitle: { color: colors.ink, fontFamily: typography.semibold, fontSize: 13 },
-  historyMeta: { color: colors.muted, fontFamily: typography.regular, fontSize: 12, marginTop: 2 },
+  historyTitle: { color: colors.ink, fontFamily: typography.semibold, fontSize: typeScale.xs, lineHeight: 18 },
+  historyMeta: { color: colors.muted, fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18, marginTop: 2 },
   center: { alignItems: 'center', backgroundColor: colors.surface, flex: 1, justifyContent: 'center', padding: 24 },
-  loadingText: { color: colors.muted, fontFamily: typography.medium, fontSize: 13, marginTop: 12 },
-  emptyTitle: { color: colors.ink, fontFamily: typography.bold, fontSize: 18, marginTop: 14 },
+  loadingText: { color: colors.muted, fontFamily: typography.medium, fontSize: typeScale.xs, lineHeight: 18, marginTop: 12 },
+  emptyTitle: { color: colors.ink, fontFamily: typography.semibold, fontSize: typeScale.md, lineHeight: 26, marginTop: 14 },
   backButton: {
     backgroundColor: colors.blue,
     borderRadius: radius.pill,
@@ -487,7 +480,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     paddingVertical: 11,
   },
-  backButtonText: { color: colors.white, fontFamily: typography.semibold, fontSize: 13 },
+  backButtonText: { color: colors.white, fontFamily: typography.semibold, fontSize: typeScale.xs, lineHeight: 18 },
 });
 
 export default TenancyAgreementDetailScreen;

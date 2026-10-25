@@ -10,7 +10,7 @@ import Input from '../common/Input';
 import Button from '../common/Button';
 import SelectField from '../common/SelectField';
 import OptionPickerModal from '../common/OptionPickerModal';
-import { colors, typography } from '../../theme';
+import { colors, typography, typeScale } from '../../theme';
 import { paymentService } from '../../services/paymentService';
 import { pickList } from '../../utils/http';
 
@@ -357,7 +357,7 @@ const WalletWithdrawModal = ({
                       {item.status || 'pending'} · {item.bank_name || 'Bank'}
                     </AppText>
                     {item.rejection_reason || item.payout_failed_reason ? (
-                      <AppText style={{ color: '#dc2626', fontSize: 12, marginTop: 4 }}>
+                      <AppText style={{ color: '#dc2626', fontSize: typeScale.xs, lineHeight: 18, marginTop: 4 }}>
                         Reason: {item.rejection_reason || item.payout_failed_reason}
                       </AppText>
                     ) : null}
@@ -405,7 +405,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#e2e8f0',
   },
   headerTitle: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  title: { fontFamily: typography.bold, fontSize: 18, color: colors.ink },
+  title: { fontFamily: typography.semibold, fontSize: typeScale.md, lineHeight: 26, color: colors.ink },
   body: { padding: 16, paddingBottom: 28, gap: 12 },
   balanceCard: {
     backgroundColor: '#f0fdfa',
@@ -417,8 +417,8 @@ const styles = StyleSheet.create({
   balanceCardGreen: { backgroundColor: '#f0fdf4', borderColor: '#bbf7d0' },
   balanceCardAmber: { backgroundColor: '#fffbeb', borderColor: '#fde68a' },
   landlordGrid: { flexDirection: 'row', gap: 10 },
-  balanceLabel: { fontFamily: typography.semibold, color: '#475569', fontSize: 13 },
-  balanceValue: { fontFamily: typography.bold, color: colors.ink, fontSize: 20, marginTop: 4 },
+  balanceLabel: { fontFamily: typography.semibold, color: '#475569', fontSize: typeScale.xs, lineHeight: 18 },
+  balanceValue: { fontFamily: typography.bold, color: colors.ink, fontSize: typeScale.lg, lineHeight: 28, marginTop: 4 },
   warningCard: {
     flexDirection: 'row',
     gap: 8,
@@ -429,8 +429,8 @@ const styles = StyleSheet.create({
     padding: 12,
     alignItems: 'flex-start',
   },
-  warningText: { flex: 1, color: '#92400e', fontSize: 13, lineHeight: 18 },
-  errorText: { color: '#dc2626', fontSize: 13 },
+  warningText: { flex: 1, color: '#92400e', fontSize: typeScale.xs, lineHeight: 18 },
+  errorText: { color: '#dc2626', fontSize: typeScale.xs, lineHeight: 18 },
   suggestionBox: {
     backgroundColor: '#f0f7ff',
     borderColor: '#bfdbfe',
@@ -443,7 +443,8 @@ const styles = StyleSheet.create({
   suggestionTitle: {
     color: '#1e3a8a',
     fontFamily: typography.medium,
-    fontSize: 12,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginBottom: 6,
   },
   suggestionRow: {
@@ -458,18 +459,20 @@ const styles = StyleSheet.create({
   suggestionBank: {
     color: colors.ink,
     fontFamily: typography.semibold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   suggestionName: {
     color: '#475569',
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 1,
   },
   consentRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
-  consentText: { flex: 1, color: '#334155', fontSize: 13 },
+  consentText: { flex: 1, color: '#334155', fontSize: typeScale.reading, lineHeight: 22 },
   switchLink: { alignItems: 'center' },
-  switchText: { color: '#0d9488', fontWeight: '600', fontSize: 13 },
+  switchText: { color: '#0d9488', fontWeight: '600', fontSize: typeScale.xs, lineHeight: 18 },
   historySection: { marginTop: 8 },
   historyTitle: { fontFamily: typography.bold, color: colors.ink, marginBottom: 8 },
   historyItem: {
@@ -480,7 +483,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   historyAmount: { fontFamily: typography.bold, color: colors.ink },
-  historyMeta: { marginTop: 2, color: colors.muted, fontSize: 13 },
+  historyMeta: { marginTop: 2, color: colors.muted, fontSize: typeScale.xs, lineHeight: 18 },
 });
 
 export default WalletWithdrawModal;

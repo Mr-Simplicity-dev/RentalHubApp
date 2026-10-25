@@ -4,7 +4,7 @@ import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { legalService } from '../../services/legalService';
 import { getErrorMessage, pickList } from '../../utils/http';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import AppText from '../../components/common/AppText';
 import {
   DashboardHero,
@@ -128,12 +128,14 @@ const styles = StyleSheet.create({
   name: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
   },
   meta: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 2,
   },
   tierBadge: {
@@ -145,13 +147,15 @@ const styles = StyleSheet.create({
   tierText: {
     color: colors.blue,
     fontFamily: typography.semibold,
-    fontSize: 12,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   casesHeader: { marginTop: 12 },
   casesLabel: {
     color: colors.muted,
     fontFamily: typography.semibold,
-    fontSize: 12,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     textTransform: 'uppercase',
   },
   caseRow: {
@@ -164,12 +168,14 @@ const styles = StyleSheet.create({
     color: colors.text,
     flex: 1,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   caseStatus: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 12,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     textTransform: 'capitalize',
   },
   empty: {

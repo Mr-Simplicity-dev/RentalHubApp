@@ -15,7 +15,7 @@ import Button from '../../components/common/Button';
 import Input from '../../components/common/Input';
 import { AuthContext } from '../../context/AuthContext';
 import { applicationService } from '../../services/applicationService';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import { getErrorMessage, pickObject } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
@@ -480,13 +480,15 @@ const styles = StyleSheet.create({
   loadingText: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 12,
   },
   notFoundTitle: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 20,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
     marginTop: 13,
   },
   backAction: { marginTop: 18, minWidth: 180 },
@@ -512,13 +514,15 @@ const styles = StyleSheet.create({
   eyebrow: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 13,
-    letterSpacing: 1.25,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
+    letterSpacing: 0.8,
   },
   headerTitle: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 20,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
     marginTop: 2,
   },
   content: { padding: 18, paddingBottom: 32 },
@@ -542,20 +546,22 @@ const styles = StyleSheet.create({
   heroEyebrow: {
     color: colors.muted,
     fontFamily: typography.bold,
-    fontSize: 13,
-    letterSpacing: 1.25,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
+    letterSpacing: 0.8,
   },
   heroTitle: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 20,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
     marginTop: 2,
   },
   heroText: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 15,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 4,
   },
   propertyCard: {
@@ -576,13 +582,15 @@ const styles = StyleSheet.create({
   propertyCopy: { flex: 1, marginLeft: 11 },
   propertyTitle: {
     color: colors.white,
-    fontFamily: typography.bold,
-    fontSize: 18,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.md,
+    lineHeight: 26,
   },
   propertyLocation: {
     color: '#AFC2DF',
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 3,
   },
   propertyFacts: {
@@ -593,11 +601,12 @@ const styles = StyleSheet.create({
     marginTop: 15,
     paddingTop: 14,
   },
-  factLabel: { color: '#8FA8CA', fontFamily: typography.medium, fontSize: 13 },
+  factLabel: { color: '#8FA8CA', fontFamily: typography.medium, fontSize: typeScale.xs, lineHeight: 18 },
   factValue: {
     color: colors.white,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 3,
     maxWidth: 145,
   },
@@ -615,14 +624,15 @@ const styles = StyleSheet.create({
   noteLabel: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 13,
-    letterSpacing: 1.25,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
+    letterSpacing: 0.8,
   },
   noteText: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 17,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 4,
   },
   negotiationHeader: {
@@ -634,13 +644,15 @@ const styles = StyleSheet.create({
   sectionEyebrow: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 13,
-    letterSpacing: 1.25,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
+    letterSpacing: 0.8,
   },
   sectionTitle: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 20,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
     marginTop: 3,
   },
   agreedPill: {
@@ -652,7 +664,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 9,
     paddingVertical: 6,
   },
-  agreedText: { color: colors.success, fontFamily: typography.bold, fontSize: 13 },
+  agreedText: { color: colors.success, fontFamily: typography.bold, fontSize: typeScale.xs, lineHeight: 18 },
   offerRow: { flexDirection: 'row', gap: 10, marginTop: 12 },
   offerCard: {
     backgroundColor: colors.white,
@@ -662,11 +674,12 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 14,
   },
-  offerLabel: { color: colors.muted, fontFamily: typography.medium, fontSize: 13 },
+  offerLabel: { color: colors.muted, fontFamily: typography.medium, fontSize: typeScale.xs, lineHeight: 18 },
   offerValue: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
     marginTop: 4,
   },
   agreedCard: {
@@ -678,11 +691,12 @@ const styles = StyleSheet.create({
     marginTop: 10,
     padding: 14,
   },
-  agreedLabel: { color: colors.success, fontFamily: typography.medium, fontSize: 13 },
+  agreedLabel: { color: colors.success, fontFamily: typography.medium, fontSize: typeScale.xs, lineHeight: 18 },
   agreedValue: {
     color: '#08714A',
     fontFamily: typography.bold,
-    fontSize: 20,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
     marginTop: 3,
   },
   timelineCard: {
@@ -696,7 +710,8 @@ const styles = StyleSheet.create({
   timelineTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
     marginBottom: 14,
   },
   timelineItem: { flexDirection: 'row' },
@@ -714,25 +729,28 @@ const styles = StyleSheet.create({
   timelineAction: {
     color: colors.ink,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   timelineMeta: {
     color: colors.blue,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 3,
   },
   timelineNote: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 15,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 5,
   },
   timelineDate: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 5,
   },
   formCard: {
@@ -745,8 +763,9 @@ const styles = StyleSheet.create({
   },
   formTitle: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 18,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.md,
+    lineHeight: 26,
     marginBottom: 14,
   },
   formActions: { flexDirection: 'row', gap: 9 },
@@ -765,8 +784,8 @@ const styles = StyleSheet.create({
     color: colors.text,
     flex: 1,
     fontFamily: typography.medium,
-    fontSize: 13,
-    lineHeight: 15,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginLeft: 8,
   },
 });

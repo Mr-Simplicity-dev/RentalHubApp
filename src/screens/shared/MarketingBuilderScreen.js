@@ -10,7 +10,7 @@ import {
 } from '../../components/common/PremiumLayout';
 import { marketingOpsService } from '../../services/marketingOpsService';
 import { getErrorMessage } from '../../utils/http';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import AppText from '../../components/common/AppText';
 
 const MarketingBuilderScreen = () => {
@@ -204,11 +204,11 @@ const styles = StyleSheet.create({
   tabRow: { flexDirection: 'row', gap: 8, marginBottom: 16 },
   tab: { flex: 1, borderColor: colors.border, borderRadius: radius.pill, borderWidth: 1, paddingVertical: 9, alignItems: 'center', backgroundColor: colors.white },
   tabActive: { backgroundColor: colors.blue, borderColor: colors.blue },
-  tabText: { color: colors.text, fontFamily: typography.semibold, fontSize: 13 },
+  tabText: { color: colors.text, fontFamily: typography.semibold, fontSize: typeScale.xs, lineHeight: 18 },
   tabTextActive: { color: colors.white },
   fieldGap: { marginTop: 12 },
   action: { marginTop: 14 },
-  note: { color: colors.muted, fontFamily: typography.regular, fontSize: 12, lineHeight: 18, marginTop: 10 },
+  note: { color: colors.muted, fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18, marginTop: 10 },
 });
 
 export default MarketingBuilderScreen;

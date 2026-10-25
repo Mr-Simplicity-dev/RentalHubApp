@@ -13,7 +13,7 @@ import {
 } from '../../components/common/PremiumLayout';
 import { contentModerationService } from '../../services/contentModerationService';
 import { getErrorMessage, pickList } from '../../utils/http';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import AppText from '../../components/common/AppText';
 
 const conditionTypeLabel = (value) => {
@@ -236,11 +236,11 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
   },
   tabActive: { backgroundColor: colors.blue, borderColor: colors.blue },
-  tabText: { color: colors.text, fontFamily: typography.semibold, fontSize: 13 },
+  tabText: { color: colors.text, fontFamily: typography.semibold, fontSize: typeScale.xs, lineHeight: 18 },
   tabTextActive: { color: colors.white },
-  cardTitle: { color: colors.ink, fontFamily: typography.bold, fontSize: 16 },
-  cardMeta: { color: colors.muted, fontFamily: typography.regular, fontSize: 12, marginTop: 2 },
-  cardText: { color: colors.text, fontFamily: typography.regular, fontSize: 13, lineHeight: 19, marginTop: 4 },
+  cardTitle: { color: colors.ink, fontFamily: typography.bold, fontSize: typeScale.base, lineHeight: 24 },
+  cardMeta: { color: colors.muted, fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18, marginTop: 2 },
+  cardText: { color: colors.text, fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18, marginTop: 4 },
   rowBetween: {
     alignItems: 'flex-start',
     flexDirection: 'row',

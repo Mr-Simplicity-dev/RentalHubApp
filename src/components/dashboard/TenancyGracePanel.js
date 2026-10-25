@@ -1,5 +1,7 @@
+import { typeScale } from '../../theme';
 import React, { useEffect, useState } from 'react';
-import {StyleSheet, TextInput, TouchableOpacity, View} from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import TextInput from '../common/AppTextInput';
 import Toast from 'react-native-toast-message';
 import Button from '../common/Button';
 import SelectField from '../common/SelectField';
@@ -326,16 +328,17 @@ const styles = StyleSheet.create({
     borderColor: '#e2e8f0',
     padding: 14,
   },
-  heading: { fontSize: 18, fontWeight: '700', color: '#0f172a' },
-  subheading: { fontSize: 13, color: '#64748b', marginTop: 4, marginBottom: 10 },
-  sectionTitle: { fontSize: 16, fontWeight: '600', marginTop: 12, color: '#0f172a' },
+  heading: { fontSize: typeScale.md, lineHeight: 26, fontWeight: '700', color: '#0f172a' },
+  subheading: { fontSize: typeScale.xs, lineHeight: 18, color: '#64748b', marginTop: 4, marginBottom: 10 },
+  sectionTitle: { fontSize: typeScale.base, lineHeight: 24, fontWeight: '600', marginTop: 12, color: '#0f172a' },
   input: {
     borderWidth: 1,
     borderColor: '#e2e8f0',
     borderRadius: 8,
     padding: 10,
     marginTop: 8,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   card: {
     marginTop: 10,
@@ -343,8 +346,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#f8fafc',
     borderRadius: 8,
   },
-  cardTitle: { fontSize: 14, fontWeight: '600', color: '#0f172a' },
-  meta: { fontSize: 13, color: '#64748b', marginTop: 4 },
+  cardTitle: { fontSize: typeScale.sm, lineHeight: 20, fontWeight: '600', color: '#0f172a' },
+  meta: { fontSize: typeScale.xs, lineHeight: 18, color: '#64748b', marginTop: 4 },
   chipRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginVertical: 8 },
   chip: {
     borderWidth: 1,
@@ -354,7 +357,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
   },
   chipActive: { backgroundColor: '#4f46e5', borderColor: '#4f46e5' },
-  chipText: { fontSize: 13, color: '#334155' },
+  chipText: { fontSize: typeScale.xs, lineHeight: 18, color: '#334155' },
   chipTextActive: { color: '#fff' },
   row: { flexDirection: 'row', gap: 12, marginTop: 8, flexWrap: 'wrap' },
   link: { color: '#2563eb', fontWeight: '600' },

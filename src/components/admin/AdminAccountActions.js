@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import {Alert, StyleSheet, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { AuthContext } from '../../context/AuthContext';
-import { colors, radius, shadows, typography } from '../../theme';
+import { colors, radius, shadows, typography, typeScale } from '../../theme';
 import { useAccessibilityPreferences } from '../../hooks/useAccessibilityPreferences';
 
 import AppText from '../../components/common/AppText';
@@ -117,7 +117,8 @@ const styles = StyleSheet.create({
   },
   label: {
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
 });
 

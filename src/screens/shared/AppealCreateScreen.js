@@ -15,7 +15,7 @@ import { AuthContext } from '../../context/AuthContext';
 import { appealsService } from '../../services/appealsService';
 import { propertyService } from '../../services/propertyService';
 import { getErrorMessage, pickList } from '../../utils/http';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import AppText from '../../components/common/AppText';
 
 const TYPES = [
@@ -265,13 +265,14 @@ const styles = StyleSheet.create({
   typeTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
   },
   typeHint: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 19,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginTop: 4,
   },
   propertyCard: {
@@ -293,27 +294,28 @@ const styles = StyleSheet.create({
   propertyTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
   },
   propertyMeta: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
     lineHeight: 18,
     marginTop: 3,
   },
   rejectionReason: {
     color: colors.danger,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 19,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 8,
   },
   note: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 19,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 8,
   },
   fieldGap: {
@@ -322,7 +324,8 @@ const styles = StyleSheet.create({
   error: {
     color: colors.danger,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 10,
   },
   submitBtn: {

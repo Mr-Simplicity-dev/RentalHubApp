@@ -16,7 +16,7 @@ import {
 import { applicationService } from '../../services/applicationService';
 import { rentSavingsService } from '../../services/rentSavingsService';
 import { getErrorMessage, pickList } from '../../utils/http';
-import { colors, typography } from '../../theme';
+import { colors, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const SavingsGoalCreateScreen = ({ navigation }) => {
@@ -190,25 +190,28 @@ const styles = StyleSheet.create({
   propertyTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
   },
   propertyMeta: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
     lineHeight: 18,
     marginTop: 3,
   },
   propertyRent: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 20,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
     marginTop: 10,
   },
   error: {
     color: colors.danger,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginBottom: 10,
   },
   submitBtn: {

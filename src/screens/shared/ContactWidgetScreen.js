@@ -1,14 +1,6 @@
 import React, { useState, useEffect, useRef, useContext, useCallback } from 'react';
-import {View,
-  StyleSheet,
-  ScrollView,
-  TextInput,
-  TouchableOpacity,
-  ActivityIndicator,
-  KeyboardAvoidingView,
-  Platform,
-  Linking,
-  RefreshControl,} from 'react-native';
+import { View, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, KeyboardAvoidingView, Platform, Linking, RefreshControl } from 'react-native';
+import TextInput from '../../components/common/AppTextInput';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
 import { launchImageLibrary } from 'react-native-image-picker';
@@ -16,7 +8,7 @@ import { AuthContext } from '../../context/AuthContext';
 import { useRealtime } from '../../context/RealtimeContext';
 import { supportService } from '../../services/supportService';
 import { guestSupportCredentialService } from '../../services/guestSupportCredentialService';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const MAX_FILE_SIZE = 15 * 1024 * 1024;
@@ -1126,12 +1118,14 @@ const styles = StyleSheet.create({
   headerTitle: {
     color: colors.white,
     fontFamily: typography.semibold,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
   },
   headerSubtitle: {
     color: '#B9C9E5',
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginTop: 1,
   },
   body: {
@@ -1163,16 +1157,17 @@ const styles = StyleSheet.create({
   },
   heroTitle: {
     color: colors.white,
-    fontFamily: typography.bold,
-    fontSize: 18,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.md,
+    lineHeight: 26,
     marginBottom: 6,
   },
   heroText: {
     color: '#B9C9E5',
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
     textAlign: 'center',
-    lineHeight: 19,
+    lineHeight: 18,
   },
   menuRow: {
     flexDirection: 'row',
@@ -1196,12 +1191,14 @@ const styles = StyleSheet.create({
   },
   menuRowTitle: {
     fontFamily: typography.semibold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
     color: colors.ink,
   },
   menuRowSub: {
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     color: colors.muted,
     marginTop: 2,
   },
@@ -1212,13 +1209,15 @@ const styles = StyleSheet.create({
   },
   formHint: {
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     color: colors.muted,
     marginBottom: 8,
   },
   label: {
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     color: colors.text,
     marginTop: 10,
     marginBottom: 6,
@@ -1231,7 +1230,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 12,
     fontFamily: typography.regular,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
     color: colors.ink,
   },
   textArea: {
@@ -1260,7 +1260,8 @@ const styles = StyleSheet.create({
   },
   chipText: {
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     color: colors.text,
   },
   chipTextActive: {
@@ -1281,7 +1282,8 @@ const styles = StyleSheet.create({
   },
   primaryBtnText: {
     fontFamily: typography.semibold,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
     color: colors.white,
   },
   secondaryBtn: {
@@ -1291,12 +1293,14 @@ const styles = StyleSheet.create({
   },
   secondaryBtnText: {
     fontFamily: typography.medium,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
     color: colors.blue,
   },
   linkText: {
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     color: colors.blue,
     textAlign: 'center',
     marginTop: 16,
@@ -1311,13 +1315,15 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   successTitle: {
-    fontFamily: typography.bold,
-    fontSize: 18,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.md,
+    lineHeight: 26,
     color: colors.ink,
   },
   successSub: {
     fontFamily: typography.regular,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
     color: colors.muted,
     marginTop: 6,
   },
@@ -1337,13 +1343,15 @@ const styles = StyleSheet.create({
   },
   infoLabel: {
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     color: colors.muted,
     marginBottom: 2,
   },
   infoValue: {
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     color: colors.ink,
   },
 
@@ -1352,9 +1360,10 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     color: colors.muted,
-    letterSpacing: 1.25,
+    letterSpacing: 0.8,
     textTransform: 'uppercase',
     marginBottom: 12,
   },
@@ -1365,7 +1374,8 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontFamily: typography.regular,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
     color: colors.muted,
   },
   ticketCard: {
@@ -1387,7 +1397,8 @@ const styles = StyleSheet.create({
   },
   ticketSubject: {
     fontFamily: typography.semibold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
     color: colors.ink,
     flex: 1,
     marginRight: 8,
@@ -1399,12 +1410,14 @@ const styles = StyleSheet.create({
   },
   statusText: {
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     textTransform: 'capitalize',
   },
   ticketMeta: {
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     color: colors.muted,
     marginTop: 6,
   },
@@ -1418,7 +1431,8 @@ const styles = StyleSheet.create({
   },
   unreadText: {
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     color: colors.danger,
   },
 
@@ -1437,7 +1451,8 @@ const styles = StyleSheet.create({
   },
   convSubjectText: {
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     color: colors.text,
     flex: 1,
   },
@@ -1448,7 +1463,8 @@ const styles = StyleSheet.create({
   },
   emptyConvText: {
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     color: colors.muted,
     textAlign: 'center',
     paddingVertical: 24,
@@ -1476,13 +1492,14 @@ const styles = StyleSheet.create({
   },
   bubbleAuthor: {
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     color: colors.blue,
     marginBottom: 2,
   },
   bubbleText: {
     fontFamily: typography.regular,
-    fontSize: 14,
+    fontSize: typeScale.sm,
     color: colors.ink,
     lineHeight: 20,
   },
@@ -1491,7 +1508,8 @@ const styles = StyleSheet.create({
   },
   bubbleTime: {
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     color: colors.muted,
     marginTop: 4,
   },
@@ -1511,13 +1529,15 @@ const styles = StyleSheet.create({
   },
   attachmentText: {
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     color: colors.white,
     flex: 1,
   },
   failedText: {
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     color: '#FCA5A5',
     marginTop: 2,
   },
@@ -1527,7 +1547,8 @@ const styles = StyleSheet.create({
   },
   typingText: {
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     color: colors.muted,
     fontStyle: 'italic',
   },
@@ -1550,7 +1571,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 10,
     fontFamily: typography.regular,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
     color: colors.ink,
     maxHeight: 100,
   },
@@ -1585,7 +1607,8 @@ const styles = StyleSheet.create({
   filePreviewText: {
     flex: 1,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     color: colors.text,
   },
 
@@ -1622,26 +1645,29 @@ const styles = StyleSheet.create({
   },
   contactBubbleAuthor: {
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     color: colors.blue,
     marginBottom: 2,
   },
   contactBubbleMsg: {
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
     color: colors.ink,
-    lineHeight: 19,
+    lineHeight: 18,
   },
   contactBubbleLink: {
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     color: colors.blue,
     marginTop: 4,
     textDecorationLine: 'underline',
   },
   contactBubbleTime: {
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     color: colors.muted,
     marginTop: 4,
   },
@@ -1665,7 +1691,8 @@ const styles = StyleSheet.create({
   },
   statusIndicatorText: {
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     color: colors.success,
     fontStyle: 'italic',
   },

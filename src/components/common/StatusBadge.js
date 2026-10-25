@@ -1,3 +1,4 @@
+import { typeScale } from '../../theme';
 import React from 'react';
 import {View, StyleSheet} from 'react-native';
 
@@ -39,7 +40,7 @@ const styles = StyleSheet.create({
     borderRadius: 99,
     alignSelf: 'flex-start',
   },
-  text: { fontSize: 13, fontWeight: '700', textTransform: 'capitalize' },
+  text: { fontSize: typeScale.xs, lineHeight: 18, fontWeight: '700', textTransform: 'capitalize' },
 });
 
 export default StatusBadge;

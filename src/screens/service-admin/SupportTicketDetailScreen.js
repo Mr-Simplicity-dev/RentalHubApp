@@ -1,20 +1,13 @@
 import React, { useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import {ActivityIndicator,
-  Alert,
-  KeyboardAvoidingView,
-  Linking,
-  Platform,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  View,} from 'react-native';
+import { ActivityIndicator, Alert, KeyboardAvoidingView, Linking, Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
+import TextInput from '../../components/common/AppTextInput';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { AuthContext } from '../../context/AuthContext';
 import { supportService } from '../../services/supportService';
 import { buildUploadUrl, getErrorMessage, pickList, pickObject } from '../../utils/http';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import AppText from '../../components/common/AppText';
 import {
 DashboardHero,
@@ -637,20 +630,23 @@ const styles = StyleSheet.create({
   statusLabel: {
     color: colors.muted,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     textTransform: 'uppercase',
   },
   statusValue: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
     marginTop: 4,
     textTransform: 'capitalize',
   },
   controlLabel: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 12,
   },
   controlRow: {
@@ -680,7 +676,8 @@ const styles = StyleSheet.create({
   controlText: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   controlTextStrong: {
     color: colors.white,
@@ -694,7 +691,8 @@ const styles = StyleSheet.create({
   busyText: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   noteInput: {
     backgroundColor: colors.white,
@@ -728,31 +726,35 @@ const styles = StyleSheet.create({
   replyAuthor: {
     color: colors.ink,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   replyMessage: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 20,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginTop: 6,
   },
   replyAttachment: {
     color: colors.blue,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 6,
   },
   replyTime: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 8,
   },
   editedText: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 3,
   },
   inlineActions: {
@@ -763,17 +765,20 @@ const styles = StyleSheet.create({
   inlineAction: {
     color: colors.muted,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   inlineActionPrimary: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   inlineActionDanger: {
     color: colors.danger,
     fontFamily: typography.bold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   editInput: {
     backgroundColor: colors.white,
@@ -805,19 +810,21 @@ const styles = StyleSheet.create({
     color: colors.ink,
     flex: 1,
     fontFamily: typography.bold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   noteRole: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     textTransform: 'capitalize',
   },
   noteText: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 20,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 7,
   },
   empty: {
@@ -850,7 +857,8 @@ const styles = StyleSheet.create({
   attachmentLabel: {
     color: colors.blue,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginBottom: 2,
     marginLeft: 14,
   },

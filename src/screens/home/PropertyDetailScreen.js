@@ -31,7 +31,7 @@ import { recoverPayment, savePendingPayment } from '../../services/paymentRecove
 import { propertyService } from '../../services/propertyService';
 import useNativePaystackCheckout from '../../hooks/useNativePaystackCheckout';
 import { hasPaystackCheckout } from '../../services/nativePaymentService';
-import { colors, radius, shadows, typography } from '../../theme';
+import { colors, radius, shadows, typography, typeScale } from '../../theme';
 import { getErrorMessage } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
@@ -693,7 +693,8 @@ const styles = StyleSheet.create({
   loadingText: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 12,
   },
   notFoundIcon: {
@@ -706,14 +707,16 @@ const styles = StyleSheet.create({
   },
   notFoundTitle: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 20,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
     marginTop: 18,
   },
   empty: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
     marginTop: 7,
   },
   returnButton: {
@@ -762,7 +765,8 @@ const styles = StyleSheet.create({
   photoCountText: {
     color: colors.white,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   featuredBadge: {
     alignItems: 'center',
@@ -779,7 +783,8 @@ const styles = StyleSheet.create({
   featuredText: {
     color: colors.navy,
     fontFamily: typography.bold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   content: {
     backgroundColor: colors.surface,
@@ -800,9 +805,9 @@ const styles = StyleSheet.create({
   },
   title: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 24,
-    letterSpacing: -1.25,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.xl,
+    letterSpacing: -0.3,
     lineHeight: 32,
   },
   locationRow: {
@@ -814,7 +819,8 @@ const styles = StyleSheet.create({
     color: colors.muted,
     flex: 1,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginLeft: 5,
   },
   saveButton: {
@@ -839,13 +845,15 @@ const styles = StyleSheet.create({
   price: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 32,
+    fontSize: typeScale.hero,
+    lineHeight: 40,
     letterSpacing: -0.5,
   },
   frequency: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   factGrid: {
     alignItems: 'center',
@@ -874,14 +882,16 @@ const styles = StyleSheet.create({
   factValue: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 7,
     maxWidth: '95%',
   },
   factLabel: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 2,
   },
   factDivider: {
@@ -894,16 +904,17 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 20,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
     letterSpacing: -0.5,
     marginBottom: 10,
   },
   description: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 14,
-    lineHeight: 23,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
   },
   amenities: {
     flexDirection: 'row',
@@ -924,7 +935,8 @@ const styles = StyleSheet.create({
   amenityText: {
     color: colors.text,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   conditionCard: {
     backgroundColor: '#FFF9E9',
@@ -950,33 +962,36 @@ const styles = StyleSheet.create({
   cardEyebrow: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 13,
-    letterSpacing: 1.25,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
+    letterSpacing: 0.8,
   },
   cardTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
     marginTop: 2,
   },
   conditionMeta: {
     color: '#855400',
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 9,
   },
   conditionText: {
     color: '#6B4A14',
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 20,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 9,
   },
   recommendation: {
     color: colors.navySoft,
     fontFamily: typography.semibold,
-    fontSize: 13,
-    lineHeight: 19,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 10,
   },
   contactCard: {
@@ -1023,7 +1038,8 @@ const styles = StyleSheet.create({
   contactActionText: {
     color: colors.blue,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   lockedCard: {
     alignItems: 'center',
@@ -1043,16 +1059,17 @@ const styles = StyleSheet.create({
   },
   lockedTitle: {
     color: colors.white,
-    fontFamily: typography.bold,
-    fontSize: 18,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.md,
+    lineHeight: 26,
     marginTop: 14,
     textAlign: 'center',
   },
   lockedText: {
     color: '#B7C8E2',
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 20,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 7,
     textAlign: 'center',
   },
@@ -1074,8 +1091,8 @@ const styles = StyleSheet.create({
     color: colors.muted,
     flex: 1,
     fontFamily: typography.medium,
-    fontSize: 13,
-    lineHeight: 15,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginLeft: 7,
   },
   bottomBar: {
@@ -1116,7 +1133,8 @@ const styles = StyleSheet.create({
   calcCtaText: {
     color: colors.blue,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
 });
 

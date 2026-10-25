@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const SelectField = ({
@@ -39,8 +39,9 @@ const styles = StyleSheet.create({
   },
   label: {
     color: colors.text,
-    fontFamily: typography.semibold,
-    fontSize: 14,
+    fontFamily: typography.medium,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
     marginBottom: 8,
   },
   field: {
@@ -48,7 +49,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderColor: colors.border,
     borderRadius: radius.md,
-    minHeight: 52,
+    minHeight: 54,
+    paddingVertical: 12,
     borderWidth: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -62,16 +64,18 @@ const styles = StyleSheet.create({
     color: colors.ink,
     flex: 1,
     fontFamily: typography.regular,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
     marginRight: 10,
   },
   placeholder: {
-    color: '#96A2B8',
+    color: '#6B7890',
   },
   helperText: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 5,
   },
 });

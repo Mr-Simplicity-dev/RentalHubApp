@@ -20,7 +20,7 @@ import { hasPaystackCheckout } from '../../services/nativePaymentService';
 import { savePendingPayment } from '../../services/paymentRecoveryService';
 import recruitmentService from '../../services/recruitmentService';
 import { getErrorMessage } from '../../utils/http';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const DOCUMENT_FIELDS = [
@@ -449,15 +449,16 @@ const RecruitmentApplicationScreen = ({ route }) => {
 const styles = StyleSheet.create({
   cardTitle: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 18,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.md,
+    lineHeight: 26,
     marginBottom: 8,
   },
   cardText: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 19,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   blockGap: {
     marginTop: 12,
@@ -480,12 +481,14 @@ const styles = StyleSheet.create({
   docLabel: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   docHint: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginTop: 3,
   },
   docButton: {
@@ -501,8 +504,9 @@ const styles = StyleSheet.create({
   },
   docButtonText: {
     color: colors.blue,
-    fontFamily: typography.bold,
-    fontSize: 13,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   progressTrack: {
     backgroundColor: colors.border,
@@ -527,18 +531,20 @@ const styles = StyleSheet.create({
   uploadProgressTitle: {
     color: colors.navy,
     fontFamily: typography.bold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   uploadProgressText: {
     color: colors.blue,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 6,
   },
   lockedCopy: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
     lineHeight: 18,
     marginTop: 10,
     textAlign: 'center',
@@ -550,8 +556,8 @@ const styles = StyleSheet.create({
   errorText: {
     color: colors.danger,
     fontFamily: typography.semibold,
-    fontSize: 13,
-    lineHeight: 19,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
 });
 

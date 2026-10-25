@@ -16,7 +16,7 @@ import {
 } from '../../components/common/PremiumLayout';
 import { rentSavingsService } from '../../services/rentSavingsService';
 import { getErrorMessage, pickList, pickObject } from '../../utils/http';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const ProgressBar = ({ value }) => (
@@ -233,13 +233,15 @@ const styles = StyleSheet.create({
   amountLabel: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     textTransform: 'uppercase',
   },
   amountValue: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 18,
+    fontSize: typeScale.md,
+    lineHeight: 26,
     marginTop: 5,
   },
   savedValue: {
@@ -259,7 +261,8 @@ const styles = StyleSheet.create({
   progressText: {
     color: colors.text,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginBottom: 8,
     marginTop: 8,
     textAlign: 'center',
@@ -267,7 +270,7 @@ const styles = StyleSheet.create({
   description: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 14,
+    fontSize: typeScale.reading,
     lineHeight: 22,
   },
   addButton: {
@@ -284,8 +287,9 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 20,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
     marginBottom: 14,
   },
   modalActions: {

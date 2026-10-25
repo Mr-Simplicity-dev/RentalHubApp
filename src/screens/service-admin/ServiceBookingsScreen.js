@@ -4,7 +4,7 @@ import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { serviceAdminService } from '../../services/serviceAdminService';
 import { getErrorMessage, pickList } from '../../utils/http';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import AppText from '../../components/common/AppText';
 import TourTarget from '../../components/tour/TourTarget';
 import {
@@ -654,12 +654,14 @@ const styles = StyleSheet.create({
   title: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   meta: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 3,
   },
   badge: {
@@ -676,7 +678,7 @@ const styles = StyleSheet.create({
   detail: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
     lineHeight: 18,
     marginTop: 10,
   },
@@ -689,7 +691,8 @@ const styles = StyleSheet.create({
   paymentText: {
     color: colors.text,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     textTransform: 'capitalize',
   },
   recordGrid: {
@@ -704,8 +707,8 @@ const styles = StyleSheet.create({
   recordText: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 16,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   actionGroup: {
     flexDirection: 'row',
@@ -734,7 +737,8 @@ const styles = StyleSheet.create({
   actionChipText: {
     color: colors.blue,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   actionChipTextDanger: {
     color: colors.danger,
@@ -767,12 +771,14 @@ const styles = StyleSheet.create({
   operationsTitle: {
     color: colors.ink,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   operationsSubtitle: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginTop: 2,
   },
   timelineButton: {
@@ -787,7 +793,8 @@ const styles = StyleSheet.create({
   timelineButtonText: {
     color: colors.blue,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   operationRow: {
     flexDirection: 'row',
@@ -807,26 +814,29 @@ const styles = StyleSheet.create({
   operationTitle: {
     color: colors.ink,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     textTransform: 'capitalize',
   },
   operationMeta: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 2,
   },
   operationNote: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 16,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 3,
   },
   operationsEmpty: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 10,
   },
   complianceButton: {
@@ -845,7 +855,8 @@ const styles = StyleSheet.create({
   complianceText: {
     color: colors.success,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   empty: {
     color: colors.muted,

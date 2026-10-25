@@ -1,3 +1,4 @@
+import { typeScale } from '../../theme';
 import React, { useMemo } from 'react';
 import {StyleSheet, Switch, View} from 'react-native';
 
@@ -204,8 +205,8 @@ const FlagsSection = ({ flags = [], onToggle }) => {
 
 const styles = StyleSheet.create({
   wrap: { gap: 8 },
-  heading: { fontSize: 16, fontWeight: '700', color: '#0f172a' },
-  subheading: { fontSize: 13, color: '#64748b', marginBottom: 8 },
+  heading: { fontSize: typeScale.base, lineHeight: 24, fontWeight: '700', color: '#0f172a' },
+  subheading: { fontSize: typeScale.xs, lineHeight: 18, color: '#64748b', marginBottom: 8 },
   sectionGap: { marginTop: 12 },
   card: {
     backgroundColor: '#fff',
@@ -220,12 +221,12 @@ const styles = StyleSheet.create({
   nestedCard: { marginLeft: 12, borderLeftWidth: 3, borderLeftColor: '#6366f1' },
   inactiveCard: { opacity: 0.75, backgroundColor: '#f8fafc' },
   cardBody: { flex: 1, paddingRight: 8 },
-  cardTitle: { fontSize: 16, fontWeight: '600', color: '#0f172a' },
-  meta: { fontSize: 13, color: '#64748b', marginTop: 4 },
-  hint: { fontSize: 13, color: '#b45309', marginTop: 4 },
-  keyText: { fontSize: 13, color: '#94a3b8', marginTop: 4 },
+  cardTitle: { fontSize: typeScale.base, lineHeight: 24, fontWeight: '600', color: '#0f172a' },
+  meta: { fontSize: typeScale.xs, lineHeight: 18, color: '#64748b', marginTop: 4 },
+  hint: { fontSize: typeScale.reading, lineHeight: 22, color: '#b45309', marginTop: 4 },
+  keyText: { fontSize: typeScale.xs, lineHeight: 18, color: '#94a3b8', marginTop: 4 },
   switchWrap: { alignItems: 'flex-end' },
-  status: { fontSize: 13, fontWeight: '600', marginBottom: 4 },
+  status: { fontSize: typeScale.xs, lineHeight: 18, fontWeight: '600', marginBottom: 4 },
   on: { color: '#15803d' },
   off: { color: '#64748b' },
 });

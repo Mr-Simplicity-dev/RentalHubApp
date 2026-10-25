@@ -7,7 +7,7 @@ import {
   DashboardScreen,
   DashboardSection,
 } from '../../components/dashboard/DashboardKit';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const AboutUsScreen = ({ navigation }) => {
@@ -85,8 +85,8 @@ const styles = StyleSheet.create({
   text: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 14,
-    lineHeight: 22,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
 });
 

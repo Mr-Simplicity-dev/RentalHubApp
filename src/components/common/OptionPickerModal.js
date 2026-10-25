@@ -1,13 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import {FlatList,
-  Modal,
-  SafeAreaView,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  View,} from 'react-native';
+import { FlatList, Modal, SafeAreaView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import TextInput from './AppTextInput';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const OptionPickerModal = ({
@@ -120,8 +115,9 @@ const styles = StyleSheet.create({
   },
   title: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 20,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
     letterSpacing: -0.5,
   },
   closeButton: {
@@ -153,7 +149,8 @@ const styles = StyleSheet.create({
   groupHeader: {
     color: colors.muted,
     fontFamily: typography.bold,
-    fontSize: 12,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     letterSpacing: 0.6,
     marginBottom: 8,
     marginTop: 14,
@@ -179,7 +176,8 @@ const styles = StyleSheet.create({
     color: colors.ink,
     flex: 1,
     fontFamily: typography.medium,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
     marginRight: 10,
   },
   optionTextActive: {

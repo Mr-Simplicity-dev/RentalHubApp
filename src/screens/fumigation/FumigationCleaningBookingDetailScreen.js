@@ -17,7 +17,7 @@ import {
   PremiumSectionTitle,
   StatusPill,
 } from '../../components/common/PremiumLayout';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const STATUS_COLORS = {
@@ -239,23 +239,26 @@ const styles = StyleSheet.create({
   totalLabel: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   paymentStatus: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 3,
   },
   totalValue: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 20,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
   },
   bodyText: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 14,
+    fontSize: typeScale.reading,
     lineHeight: 22,
   },
   actions: {

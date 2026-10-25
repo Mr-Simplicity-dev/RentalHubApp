@@ -17,7 +17,7 @@ import { AuthContext } from '../../context/AuthContext';
 import { stateMigrationService } from '../../services/stateMigrationService';
 import { propertyService } from '../../services/propertyService';
 import { getErrorMessage, pickList } from '../../utils/http';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import AppText from '../../components/common/AppText';
 
 const STATUS_COLORS = {
@@ -257,7 +257,8 @@ const styles = StyleSheet.create({
   chipText: {
     color: colors.text,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   chipTextSelected: {
     color: colors.white,
@@ -271,14 +272,15 @@ const styles = StyleSheet.create({
   error: {
     color: colors.danger,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 10,
   },
   note: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 19,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   row: {
     alignItems: 'flex-start',
@@ -289,14 +291,15 @@ const styles = StyleSheet.create({
   reason: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 19,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 6,
   },
   date: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 8,
   },
 });

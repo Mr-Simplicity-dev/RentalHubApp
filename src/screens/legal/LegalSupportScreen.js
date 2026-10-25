@@ -1,9 +1,10 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react';
-import {ActivityIndicator, StyleSheet, TextInput, View} from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import TextInput from '../../components/common/AppTextInput';
 import Toast from 'react-native-toast-message';
 import { legalService } from '../../services/legalService';
 import { getErrorMessage, pickList, pickObject } from '../../utils/http';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import Button from '../../components/common/Button';
 import AppText from '../../components/common/AppText';
 import {
@@ -207,14 +208,16 @@ const styles = StyleSheet.create({
     color: colors.ink,
     flex: 1,
     fontFamily: typography.bold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   statusPill: {
     backgroundColor: colors.surfaceBlue,
     borderRadius: radius.pill,
     color: colors.blue,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     overflow: 'hidden',
     paddingHorizontal: 8,
     paddingVertical: 4,
@@ -223,14 +226,15 @@ const styles = StyleSheet.create({
   requestDescription: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 18,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginTop: 8,
   },
   requestMeta: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 8,
   },
   empty: {

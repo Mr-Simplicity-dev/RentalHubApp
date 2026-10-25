@@ -1,5 +1,7 @@
+import { typeScale } from '../../theme';
 import React, { useEffect, useState } from 'react';
-import {StyleSheet, TextInput, TouchableOpacity, View} from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import TextInput from '../common/AppTextInput';
 import Toast from 'react-native-toast-message';
 import Button from '../common/Button';
 import { tenancyAdjustmentService } from '../../services/tenancyAdjustmentService';
@@ -166,9 +168,9 @@ const TenancyWorkflowSection = ({ title = 'Tenancy Grace and Refund Enablement' 
 
 const styles = StyleSheet.create({
   wrap: { gap: 8, marginTop: 12 },
-  heading: { fontSize: 16, fontWeight: '700', color: '#0f172a' },
-  subheading: { fontSize: 13, color: '#64748b' },
-  sectionTitle: { fontSize: 16, fontWeight: '700', color: '#0f172a', marginTop: 12 },
+  heading: { fontSize: typeScale.base, lineHeight: 24, fontWeight: '700', color: '#0f172a' },
+  subheading: { fontSize: typeScale.xs, lineHeight: 18, color: '#64748b' },
+  sectionTitle: { fontSize: typeScale.base, lineHeight: 24, fontWeight: '700', color: '#0f172a', marginTop: 12 },
   card: {
     backgroundColor: '#fff',
     borderWidth: 1,
@@ -177,15 +179,16 @@ const styles = StyleSheet.create({
     padding: 12,
     marginBottom: 8,
   },
-  cardTitle: { fontSize: 14, fontWeight: '600', color: '#0f172a' },
-  meta: { fontSize: 13, color: '#64748b', marginTop: 4 },
+  cardTitle: { fontSize: typeScale.sm, lineHeight: 20, fontWeight: '600', color: '#0f172a' },
+  meta: { fontSize: typeScale.xs, lineHeight: 18, color: '#64748b', marginTop: 4 },
   input: {
     borderWidth: 1,
     borderColor: '#e2e8f0',
     borderRadius: 8,
     padding: 10,
     marginTop: 8,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   row: { flexDirection: 'row', gap: 16, marginTop: 8 },
   link: { color: '#2563eb', fontWeight: '600' },

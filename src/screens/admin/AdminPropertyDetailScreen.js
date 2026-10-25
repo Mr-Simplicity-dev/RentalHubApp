@@ -15,7 +15,7 @@ import {
 } from '../../components/common/PremiumLayout';
 import { adminService } from '../../services/adminService';
 import { getErrorMessage, pickObject } from '../../utils/http';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const getStatusColor = (status) => {
@@ -197,25 +197,28 @@ const styles = StyleSheet.create({
   price: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 32,
+    fontSize: typeScale.hero,
+    lineHeight: 40,
   },
   frequency: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 2,
     textTransform: 'uppercase',
   },
   description: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 14,
+    fontSize: typeScale.reading,
     lineHeight: 22,
   },
   actionTitle: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 18,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.md,
+    lineHeight: 26,
     marginBottom: 12,
   },
   actions: {
@@ -233,7 +236,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 6,
     overflow: 'hidden',
     paddingHorizontal: 12,

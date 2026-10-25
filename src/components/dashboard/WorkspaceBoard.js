@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { colors, typography } from '../../theme';
+import { colors, typography, typeScale } from '../../theme';
 import { useTourTarget } from '../tour/TourTarget';
 import AppText from '../common/AppText';
 
@@ -107,7 +107,8 @@ const styles = StyleSheet.create({
   groupTitle: {
     color: '#0f172a',
     fontFamily: typography.bold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   grid: {
     flexDirection: 'row',
@@ -130,7 +131,8 @@ const styles = StyleSheet.create({
   cardLabel: {
     color: '#334155',
     fontFamily: typography.medium,
-    fontSize: 11,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     textAlign: 'center',
   },
 });

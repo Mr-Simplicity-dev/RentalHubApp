@@ -15,7 +15,7 @@ import {
   StatusPill,
 } from '../../components/common/PremiumLayout';
 import { AuthContext } from '../../context/AuthContext';
-import { colors, typography } from '../../theme';
+import { colors, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const STATUS_COLORS = {
@@ -343,7 +343,8 @@ const styles = StyleSheet.create({
   cardTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
   },
   actions: {
     flexDirection: 'row',
@@ -368,13 +369,15 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 18,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.md,
+    lineHeight: 26,
   },
   modalSubtitle: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginTop: 4,
   },
   fieldGap: {
@@ -383,7 +386,8 @@ const styles = StyleSheet.create({
   error: {
     color: colors.danger,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 10,
   },
   modalActions: {

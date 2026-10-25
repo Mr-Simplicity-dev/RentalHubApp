@@ -16,7 +16,7 @@ import {
   tenancyAgreementStatusVisual,
   TENANCY_AGREEMENT_STATUS_LABELS,
 } from '../../services/tenancyAgreementService';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import { getErrorMessage, pickList } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
@@ -224,8 +224,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 13,
   },
-  eyebrow: { color: colors.blue, fontFamily: typography.bold, fontSize: 13, letterSpacing: 1.25 },
-  title: { color: colors.ink, fontFamily: typography.bold, fontSize: 22, letterSpacing: -0.5, marginTop: 3 },
+  eyebrow: { color: colors.blue, fontFamily: typography.bold, fontSize: typeScale.xs, lineHeight: 18, letterSpacing: 0.8 },
+  title: { color: colors.ink, fontFamily: typography.semibold, fontSize: typeScale.lg, lineHeight: 28, letterSpacing: -0.5, marginTop: 3 },
   headerIcon: {
     alignItems: 'center',
     backgroundColor: colors.surfaceBlue,
@@ -245,7 +245,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     padding: 12,
   },
-  actionBannerText: { color: '#7A4A00', flex: 1, fontFamily: typography.semibold, fontSize: 13 },
+  actionBannerText: { color: '#7A4A00', flex: 1, fontFamily: typography.semibold, fontSize: typeScale.xs, lineHeight: 18 },
   filterRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 15 },
   filterChip: {
     backgroundColor: colors.white,
@@ -256,7 +256,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   filterChipActive: { backgroundColor: colors.blue, borderColor: colors.blue },
-  filterText: { color: colors.text, fontFamily: typography.medium, fontSize: 12 },
+  filterText: { color: colors.text, fontFamily: typography.medium, fontSize: typeScale.xs, lineHeight: 18 },
   filterTextActive: { color: colors.white, fontFamily: typography.semibold },
   card: {
     backgroundColor: colors.white,
@@ -269,14 +269,14 @@ const styles = StyleSheet.create({
   cardTop: { alignItems: 'flex-start', flexDirection: 'row' },
   statusIcon: { alignItems: 'center', borderRadius: 20, height: 40, justifyContent: 'center', width: 40 },
   cardHeading: { flex: 1, marginLeft: 11, marginRight: 7 },
-  cardTitle: { color: colors.ink, fontFamily: typography.bold, fontSize: 16, lineHeight: 20 },
-  cardMeta: { color: colors.muted, fontFamily: typography.regular, fontSize: 13, marginTop: 4 },
+  cardTitle: { color: colors.ink, fontFamily: typography.bold, fontSize: typeScale.base, lineHeight: 24 },
+  cardMeta: { color: colors.muted, fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18, marginTop: 4 },
   actionPill: { backgroundColor: '#FFF0EF', borderRadius: radius.pill, paddingHorizontal: 9, paddingVertical: 5 },
-  actionPillText: { color: '#D92D20', fontFamily: typography.bold, fontSize: 11, textTransform: 'uppercase' },
+  actionPillText: { color: '#D92D20', fontFamily: typography.bold, fontSize: typeScale.xs, lineHeight: 18, textTransform: 'uppercase' },
   detailRow: { alignItems: 'center', flexDirection: 'row', marginTop: 10 },
-  detailText: { color: colors.muted, flex: 1, fontFamily: typography.regular, fontSize: 13, marginLeft: 5 },
+  detailText: { color: colors.muted, flex: 1, fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18, marginLeft: 5 },
   center: { alignItems: 'center', flex: 1, justifyContent: 'center', minHeight: 360, paddingHorizontal: 26 },
-  loadingText: { color: colors.muted, fontFamily: typography.medium, fontSize: 13, marginTop: 12 },
+  loadingText: { color: colors.muted, fontFamily: typography.medium, fontSize: typeScale.xs, lineHeight: 18, marginTop: 12 },
   emptyIcon: {
     alignItems: 'center',
     backgroundColor: colors.surfaceBlue,
@@ -285,8 +285,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: 68,
   },
-  emptyTitle: { color: colors.ink, fontFamily: typography.bold, fontSize: 19, marginTop: 17, textAlign: 'center' },
-  emptyText: { color: colors.muted, fontFamily: typography.regular, fontSize: 13, lineHeight: 20, marginTop: 7, textAlign: 'center' },
+  emptyTitle: { color: colors.ink, fontFamily: typography.semibold, fontSize: typeScale.md, lineHeight: 26, marginTop: 17, textAlign: 'center' },
+  emptyText: { color: colors.muted, fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18, marginTop: 7, textAlign: 'center' },
 });
 
 export default TenancyAgreementsScreen;

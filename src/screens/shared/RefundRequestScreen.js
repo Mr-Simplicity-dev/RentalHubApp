@@ -13,7 +13,7 @@ import {
 } from '../../components/common/PremiumLayout';
 import { tenancyAdjustmentService } from '../../services/tenancyAdjustmentService';
 import { getErrorMessage, pickList } from '../../utils/http';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import AppText from '../../components/common/AppText';
 
 const formatNaira = (value) => `₦${Number(value || 0).toLocaleString()}`;
@@ -273,25 +273,28 @@ const styles = StyleSheet.create({
   paymentTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
   },
   paymentMeta: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: typeScale.xs,
     lineHeight: 18,
     marginTop: 3,
   },
   paymentAmount: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 20,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
     marginTop: 8,
   },
   paymentDate: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 2,
   },
   categoryCard: {
@@ -305,7 +308,8 @@ const styles = StyleSheet.create({
   categoryLabel: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 15,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
   },
   categoryLabelSelected: {
     color: colors.blue,
@@ -313,8 +317,8 @@ const styles = StyleSheet.create({
   categoryHint: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 19,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginTop: 3,
   },
   categoryHintSelected: {
@@ -326,7 +330,8 @@ const styles = StyleSheet.create({
   error: {
     color: colors.danger,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 10,
   },
   submitBtn: {
@@ -335,8 +340,8 @@ const styles = StyleSheet.create({
   note: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 19,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
 });
 

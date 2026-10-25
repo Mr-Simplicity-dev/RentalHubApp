@@ -12,7 +12,7 @@ import {
 } from '../../components/common/PremiumLayout';
 import { rentSavingsService } from '../../services/rentSavingsService';
 import { getErrorMessage, pickList } from '../../utils/http';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const getProgress = (item) => {
@@ -133,12 +133,14 @@ const styles = StyleSheet.create({
   cardTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
   },
   cardTarget: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 24,
+    fontSize: typeScale.xl,
+    lineHeight: 32,
     marginTop: 5,
   },
   progressBar: {
@@ -156,7 +158,8 @@ const styles = StyleSheet.create({
   progressCopy: {
     color: colors.text,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 8,
   },
 });

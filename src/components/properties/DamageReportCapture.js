@@ -15,7 +15,7 @@ import SelectField from '../common/SelectField';
 import OptionPickerModal from '../common/OptionPickerModal';
 import { propertyService } from '../../services/propertyService';
 import { getErrorMessage } from '../../utils/http';
-import { typography } from '../../theme';
+import { typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const DAMAGE_TYPES = [
@@ -457,13 +457,13 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#e2e8f0',
   },
-  title: { fontSize: 18, fontFamily: typography.bold, color: '#0f172a', flex: 1, paddingRight: 8 },
+  title: { fontSize: typeScale.md, lineHeight: 26, fontFamily: typography.semibold, color: '#0f172a', flex: 1, paddingRight: 8 },
   body: { padding: 16, paddingBottom: 28, gap: 12 },
   lead: { color: '#475569', lineHeight: 20 },
   preview: { width: '100%', height: 220, borderRadius: 12, backgroundColor: '#e2e8f0' },
   analyzingRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   analyzingText: { color: '#0284c7', fontWeight: '600' },
-  warningText: { color: '#b45309', fontSize: 13 },
+  warningText: { color: '#b45309', fontSize: typeScale.xs, lineHeight: 18 },
   progressCard: {
     backgroundColor: '#eff6ff',
     borderColor: '#bfdbfe',
@@ -471,10 +471,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 12,
   },
-  progressTitle: { color: '#1e3a8a', fontSize: 13, fontFamily: typography.bold },
+  progressTitle: { color: '#1e3a8a', fontSize: typeScale.xs, lineHeight: 18, fontFamily: typography.bold },
   progressTrack: { backgroundColor: '#dbeafe', borderRadius: 999, height: 8, marginTop: 9, overflow: 'hidden' },
   progressFill: { backgroundColor: '#0284c7', height: '100%' },
-  progressText: { color: '#1d4ed8', fontSize: 13, marginTop: 6 },
+  progressText: { color: '#1d4ed8', fontSize: typeScale.xs, lineHeight: 18, marginTop: 6 },
   retryButton: {
     alignItems: 'center',
     backgroundColor: '#eff6ff',
@@ -484,7 +484,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 10,
   },
-  retryText: { color: '#1d4ed8', fontSize: 13, fontFamily: typography.bold },
+  retryText: { color: '#1d4ed8', fontSize: typeScale.xs, lineHeight: 18, fontFamily: typography.bold },
 });
 
 export default DamageReportCapture;

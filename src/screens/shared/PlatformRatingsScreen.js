@@ -1,20 +1,13 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import {ActivityIndicator,
-  FlatList,
-  Modal,
-  Pressable,
-  RefreshControl,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  View,} from 'react-native';
+import { ActivityIndicator, FlatList, Modal, Pressable, RefreshControl, StyleSheet, TouchableOpacity, View } from 'react-native';
+import TextInput from '../../components/common/AppTextInput';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
 import { ratingService } from '../../services/ratingService';
 import { getErrorMessage, pickList } from '../../utils/http';
 import Button from '../../components/common/Button';
-import { colors, radius, shadows, typography } from '../../theme';
+import { colors, radius, shadows, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const CONTEXT_LABELS = {
@@ -534,7 +527,8 @@ const styles = StyleSheet.create({
   tabLabel: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   tabLabelActive: {
     color: colors.blue,
@@ -590,20 +584,23 @@ const styles = StyleSheet.create({
   oppContext: {
     color: colors.blue,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
   oppTitle: {
     color: colors.ink,
     fontFamily: typography.semibold,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
     marginTop: 3,
   },
   oppLocation: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 3,
   },
   publicCard: {
@@ -640,7 +637,8 @@ const styles = StyleSheet.create({
   publicName: {
     color: colors.ink,
     fontFamily: typography.semibold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   publicVerifiedRow: {
     alignItems: 'center',
@@ -651,24 +649,27 @@ const styles = StyleSheet.create({
   publicVerifiedText: {
     color: colors.success,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   publicTime: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   publicComment: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 19,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 8,
   },
   publicContext: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 8,
     fontStyle: 'italic',
   },
@@ -683,13 +684,15 @@ const styles = StyleSheet.create({
   emptyTitle: {
     color: colors.ink,
     fontFamily: typography.semibold,
-    fontSize: 18,
+    fontSize: typeScale.md,
+    lineHeight: 26,
     marginTop: 14,
   },
   emptySubtitle: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 14,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginTop: 6,
     textAlign: 'center',
     maxWidth: 260,
@@ -715,7 +718,8 @@ const styles = StyleSheet.create({
   modalTitle: {
     color: colors.ink,
     fontFamily: typography.semibold,
-    fontSize: 18,
+    fontSize: typeScale.md,
+    lineHeight: 26,
   },
   modalCloseBtn: {
     padding: 4,
@@ -737,12 +741,14 @@ const styles = StyleSheet.create({
   modalContextText: {
     color: colors.blue,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   modalSource: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
     marginTop: 10,
   },
   modalSection: {
@@ -751,7 +757,8 @@ const styles = StyleSheet.create({
   modalLabel: {
     color: colors.ink,
     fontFamily: typography.semibold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
     marginBottom: 10,
   },
   starPickerRow: {
@@ -769,7 +776,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     color: colors.ink,
     fontFamily: typography.regular,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
     minHeight: 90,
     padding: 12,
   },
@@ -787,7 +795,8 @@ const styles = StyleSheet.create({
   pickerButtonText: {
     color: colors.ink,
     fontFamily: typography.regular,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   pickerDropdown: {
     backgroundColor: colors.white,
@@ -812,7 +821,8 @@ const styles = StyleSheet.create({
   pickerOptionText: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   pickerOptionTextActive: {
     color: colors.blue,
@@ -833,8 +843,8 @@ const styles = StyleSheet.create({
     color: colors.muted,
     fontFamily: typography.regular,
     flex: 1,
-    fontSize: 13,
-    lineHeight: 17,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   modalFooter: {
     backgroundColor: colors.white,

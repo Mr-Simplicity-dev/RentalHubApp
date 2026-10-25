@@ -15,7 +15,7 @@ import {
   openPaystackBrowserCheckout,
 } from '../../services/nativePaymentService';
 import { getErrorMessage } from '../../utils/http';
-import { colors, typography } from '../../theme';
+import { colors, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const NativePaystackCardModal = ({
@@ -170,8 +170,8 @@ const styles = StyleSheet.create({
     width: 36,
   },
   headerCopy: { flex: 1 },
-  title: { fontFamily: typography.bold, color: '#071A3D', fontSize: 20 },
-  subtitle: { color: '#64748b', fontSize: 13, lineHeight: 18, marginTop: 3 },
+  title: { fontFamily: typography.semibold, color: '#071A3D', fontSize: typeScale.lg, lineHeight: 28 },
+  subtitle: { color: '#64748b', fontSize: typeScale.reading, lineHeight: 22, marginTop: 3 },
   closeButton: {
     alignItems: 'center',
     height: 34,
@@ -186,8 +186,8 @@ const styles = StyleSheet.create({
     marginBottom: 14,
     padding: 13,
   },
-  amountLabel: { color: '#2563eb', fontSize: 13, fontWeight: '700' },
-  amountValue: { fontFamily: typography.bold, color: '#071A3D', fontSize: 20, marginTop: 3 },
+  amountLabel: { color: '#2563eb', fontSize: typeScale.xs, lineHeight: 18, fontWeight: '700' },
+  amountValue: { fontFamily: typography.bold, color: '#071A3D', fontSize: typeScale.lg, lineHeight: 28, marginTop: 3 },
   nativeCard: {
     alignItems: 'center',
     backgroundColor: '#f8fafc',
@@ -196,10 +196,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 16,
   },
-  nativeTitle: { fontFamily: typography.bold, color: '#071A3D', fontSize: 16, marginTop: 8 },
+  nativeTitle: { fontFamily: typography.bold, color: '#071A3D', fontSize: typeScale.base, lineHeight: 24, marginTop: 8 },
   nativeText: {
     color: '#475569',
-    fontSize: 13,
+    fontSize: typeScale.xs,
     lineHeight: 18,
     marginTop: 6,
     textAlign: 'center',
@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
     marginTop: 14,
     paddingVertical: 14,
   },
-  primaryText: { fontFamily: typography.bold, color: '#ffffff', fontSize: 16 },
+  primaryText: { fontFamily: typography.bold, color: '#ffffff', fontSize: typeScale.base, lineHeight: 24 },
   secondaryButton: {
     alignItems: 'center',
     borderColor: '#0A66C2',
@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     paddingVertical: 13,
   },
-  secondaryText: { fontFamily: typography.bold, color: '#0A66C2', fontSize: 14 },
+  secondaryText: { fontFamily: typography.bold, color: '#0A66C2', fontSize: typeScale.sm, lineHeight: 20 },
   fallbackCard: {
     alignItems: 'flex-start',
     backgroundColor: '#eff6ff',
@@ -231,12 +231,12 @@ const styles = StyleSheet.create({
     gap: 6,
     padding: 14,
   },
-  fallbackTitle: { fontFamily: typography.bold, color: '#1e3a8a', fontSize: 14 },
-  fallbackText: { color: '#475569', fontSize: 13, lineHeight: 18 },
+  fallbackTitle: { fontFamily: typography.bold, color: '#1e3a8a', fontSize: typeScale.sm, lineHeight: 20 },
+  fallbackText: { color: '#475569', fontSize: typeScale.xs, lineHeight: 18 },
   platformNote: {
     color: '#64748b',
-    fontSize: 13,
-    lineHeight: 16,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 10,
     textAlign: 'center',
   },

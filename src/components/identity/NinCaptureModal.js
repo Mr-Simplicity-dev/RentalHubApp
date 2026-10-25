@@ -1,10 +1,11 @@
 import React, { useContext, useState } from 'react';
-import {ActivityIndicator, Modal, StyleSheet, TextInput, View} from 'react-native';
+import { ActivityIndicator, Modal, StyleSheet, View } from 'react-native';
+import TextInput from '../common/AppTextInput';
 import Toast from 'react-native-toast-message';
 import { AuthContext } from '../../context/AuthContext';
 import { userService } from '../../services/userService';
 import { getErrorMessage } from '../../utils/http';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 
@@ -133,16 +134,17 @@ const styles = StyleSheet.create({
   icon: { fontSize: 28 },
   title: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 22,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
     textAlign: 'center',
     marginTop: 14,
   },
   subtitle: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 19,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     textAlign: 'center',
     marginTop: 8,
     marginBottom: 18,
@@ -150,7 +152,8 @@ const styles = StyleSheet.create({
   label: {
     color: colors.ink,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 12,
     marginBottom: 6,
   },
@@ -161,14 +164,16 @@ const styles = StyleSheet.create({
     borderRadius: radius.md,
     color: colors.ink,
     fontFamily: typography.regular,
-    fontSize: 15,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     paddingHorizontal: 14,
     paddingVertical: 13,
   },
   error: {
     color: colors.danger,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 10,
   },
   submitButton: {
@@ -182,8 +187,9 @@ const styles = StyleSheet.create({
   },
   submitText: {
     color: colors.white,
-    fontFamily: typography.bold,
-    fontSize: 16,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.base,
+    lineHeight: 24,
   },
 });
 

@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import {StyleSheet, TextInput, View} from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import TextInput from '../../components/common/AppTextInput';
 import Toast from 'react-native-toast-message';
 import {
   InfoRow,
@@ -10,7 +11,7 @@ import {
   StatusPill,
 } from '../../components/common/PremiumLayout';
 import { superAdminService } from '../../services/superAdminService';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import { getErrorMessage, pickList, pickObject } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
@@ -152,7 +153,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     color: colors.ink,
     fontFamily: typography.regular,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
     marginBottom: 8,
     paddingHorizontal: 14,
     paddingVertical: 12,
@@ -160,7 +162,8 @@ const styles = StyleSheet.create({
   summary: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginBottom: 14,
   },
   cardHeader: {
@@ -176,12 +179,14 @@ const styles = StyleSheet.create({
   actor: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
   },
   email: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 3,
   },
 });

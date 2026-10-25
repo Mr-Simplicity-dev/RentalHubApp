@@ -1,17 +1,13 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import {ActivityIndicator,
-  Modal,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  View} from 'react-native';
+import { ActivityIndicator, Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
+import TextInput from '../common/AppTextInput';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
 import { getWebRtcIceServers, isVideoEnabledCall } from '../../config/webrtcConfig';
 import { useRealtime } from '../../context/RealtimeContext';
 import { AuthContext } from '../../context/AuthContext';
 import { voiceMonitorService } from '../../services/voiceMonitorService';
-import { colors, radius, shadows, typography } from '../../theme';
+import { colors, radius, shadows, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 let mediaDevices, RTCIceCandidate, RTCPeerConnection, RTCSessionDescription, RTCView;
@@ -679,7 +675,8 @@ const styles = StyleSheet.create({
   remotePlaceholderText: {
     color: colors.white,
     fontFamily: typography.semibold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
     marginTop: 12,
     textAlign: 'center',
   },
@@ -754,13 +751,15 @@ const styles = StyleSheet.create({
   participantName: {
     color: colors.white,
     fontFamily: typography.semibold,
-    fontSize: 10,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     maxWidth: '100%',
   },
   participantRole: {
     color: 'rgba(255, 255, 255, 0.72)',
     fontFamily: typography.regular,
-    fontSize: 9,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 2,
   },
   iconWrap: {
@@ -777,8 +776,9 @@ const styles = StyleSheet.create({
   eyebrow: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 13,
-    letterSpacing: 1.25,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
+    letterSpacing: 0.8,
     marginTop: 18,
     textTransform: 'uppercase',
   },
@@ -788,8 +788,9 @@ const styles = StyleSheet.create({
   },
   title: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 24,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.xl,
+    lineHeight: 32,
     marginTop: 6,
     textAlign: 'center',
   },
@@ -799,8 +800,8 @@ const styles = StyleSheet.create({
   subtitle: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 14,
-    lineHeight: 21,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginTop: 8,
     textAlign: 'center',
   },
@@ -810,7 +811,8 @@ const styles = StyleSheet.create({
   propertyText: {
     color: colors.muted,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 7,
     textAlign: 'center',
   },
@@ -833,8 +835,9 @@ const styles = StyleSheet.create({
   },
   addParticipantButtonText: {
     color: colors.white,
-    fontFamily: typography.bold,
-    fontSize: 13,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   addParticipantRow: {
     flexDirection: 'row',
@@ -847,7 +850,8 @@ const styles = StyleSheet.create({
     color: '#0F172A',
     flex: 1,
     fontFamily: typography.regular,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
     paddingHorizontal: 12,
     paddingVertical: 10,
   },
@@ -861,8 +865,9 @@ const styles = StyleSheet.create({
   },
   addParticipantSubmitText: {
     color: colors.white,
-    fontFamily: typography.bold,
-    fontSize: 13,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   historyCard: {
     backgroundColor: 'rgba(15, 23, 42, 0.7)',
@@ -877,7 +882,8 @@ const styles = StyleSheet.create({
   historyTitle: {
     color: colors.white,
     fontFamily: typography.bold,
-    fontSize: 12,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginBottom: 8,
     textTransform: 'uppercase',
   },
@@ -890,13 +896,15 @@ const styles = StyleSheet.create({
   historyAction: {
     color: '#E2E8F0',
     fontFamily: typography.semibold,
-    fontSize: 12,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     textTransform: 'capitalize',
   },
   historyMeta: {
     color: '#CBD5E1',
     fontFamily: typography.regular,
-    fontSize: 11,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 2,
   },
   actions: {
@@ -941,8 +949,9 @@ const styles = StyleSheet.create({
   },
   endButtonText: {
     color: colors.white,
-    fontFamily: typography.bold,
-    fontSize: 14,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   closeButton: {
     backgroundColor: colors.surfaceBlue,
@@ -952,8 +961,9 @@ const styles = StyleSheet.create({
   },
   closeButtonText: {
     color: colors.blue,
-    fontFamily: typography.bold,
-    fontSize: 14,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
 });
 

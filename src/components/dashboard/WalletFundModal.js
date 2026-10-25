@@ -7,7 +7,7 @@ import {Modal,
 import Icon from 'react-native-vector-icons/Ionicons';
 import Input from '../common/Input';
 import Button from '../common/Button';
-import { colors, typography } from '../../theme';
+import { colors, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const PRESET_AMOUNTS = [1000, 2000, 5000, 10000, 20000, 50000, 100000, 200000];
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#e2e8f0',
   },
   headerTitle: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  title: { fontFamily: typography.bold, fontSize: 18, color: '#0f172a' },
+  title: { fontFamily: typography.semibold, fontSize: typeScale.md, lineHeight: 26, color: '#0f172a' },
   body: { padding: 16, paddingBottom: 28, gap: 12 },
   balanceCard: {
     backgroundColor: '#f0fdfa',
@@ -183,8 +183,8 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 14,
   },
-  balanceLabel: { color: '#0f766e', fontSize: 13, fontWeight: '600' },
-  balanceValue: { fontFamily: typography.bold, color: '#115e59', fontSize: 24, marginTop: 4 },
+  balanceLabel: { color: '#0f766e', fontSize: typeScale.xs, lineHeight: 18, fontWeight: '600' },
+  balanceValue: { fontFamily: typography.bold, color: '#115e59', fontSize: typeScale.xl, lineHeight: 32, marginTop: 4 },
   sectionLabel: { color: '#334155', fontWeight: '700', marginTop: 4 },
   presetGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   presetBtn: {
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
   presetBtnActive: { borderColor: '#0d9488', backgroundColor: '#f0fdfa' },
-  presetText: { color: '#475569', fontWeight: '600', fontSize: 13 },
+  presetText: { color: '#475569', fontWeight: '600', fontSize: typeScale.xs, lineHeight: 18 },
   presetTextActive: { color: '#0f766e' },
   noteCard: {
     flexDirection: 'row',
@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
     padding: 12,
     alignItems: 'flex-start',
   },
-  noteText: { flex: 1, color: '#166534', fontSize: 13, lineHeight: 18 },
+  noteText: { flex: 1, color: '#166534', fontSize: typeScale.xs, lineHeight: 18 },
   methodCard: {
     alignItems: 'center',
     borderWidth: 1,
@@ -219,10 +219,10 @@ const styles = StyleSheet.create({
   },
   methodCardActive: { borderColor: '#0d9488', backgroundColor: '#f0fdfa' },
   methodCopy: { flex: 1 },
-  methodTitle: { color: '#0f172a', fontSize: 14, fontWeight: '700' },
-  methodText: { color: '#64748b', fontSize: 12, marginTop: 2 },
+  methodTitle: { color: '#0f172a', fontSize: typeScale.sm, lineHeight: 20, fontWeight: '700' },
+  methodText: { color: '#64748b', fontSize: typeScale.xs, lineHeight: 18, marginTop: 2 },
   switchLink: { marginTop: 4, alignItems: 'center' },
-  switchText: { color: '#4f46e5', fontWeight: '600', fontSize: 13 },
+  switchText: { color: '#4f46e5', fontWeight: '600', fontSize: typeScale.xs, lineHeight: 18 },
 });
 
 export default WalletFundModal;

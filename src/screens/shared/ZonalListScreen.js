@@ -13,7 +13,7 @@ import {
 } from '../../components/common/PremiumLayout';
 import { zonalAdminService } from '../../services/zonalAdminService';
 import { getErrorMessage, pickList } from '../../utils/http';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import AppText from '../../components/common/AppText';
 
 const META = {
@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
   },
   chipActive: { backgroundColor: colors.blue, borderColor: colors.blue },
-  chipText: { color: colors.text, fontFamily: typography.medium, fontSize: 13 },
+  chipText: { color: colors.text, fontFamily: typography.medium, fontSize: typeScale.xs, lineHeight: 18 },
   chipTextActive: { color: colors.white },
   apply: { marginTop: 12, alignSelf: 'flex-end' },
   rowBetween: {
@@ -197,9 +197,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     gap: 8,
   },
-  cardTitle: { color: colors.ink, fontFamily: typography.bold, fontSize: 16 },
-  cardMeta: { color: colors.muted, fontFamily: typography.regular, fontSize: 12, marginTop: 2 },
-  empty: { color: colors.muted, fontFamily: typography.regular, fontSize: 13 },
+  cardTitle: { color: colors.ink, fontFamily: typography.bold, fontSize: typeScale.base, lineHeight: 24 },
+  cardMeta: { color: colors.muted, fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18, marginTop: 2 },
+  empty: { color: colors.muted, fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18 },
 });
 
 export default ZonalListScreen;

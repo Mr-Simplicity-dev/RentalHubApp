@@ -6,13 +6,8 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import {ActivityIndicator,
-  FlatList,
-  RefreshControl,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  View,} from 'react-native';
+import { ActivityIndicator, FlatList, RefreshControl, StyleSheet, TouchableOpacity, View } from 'react-native';
+import TextInput from '../../components/common/AppTextInput';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
@@ -25,7 +20,7 @@ import { savePendingPayment } from '../../services/paymentRecoveryService';
 import useNativePaystackCheckout from '../../hooks/useNativePaystackCheckout';
 import { hasPaystackCheckout } from '../../services/nativePaymentService';
 import AdSpace from '../../components/common/AdSpace';
-import { colors, radius, shadows, typography } from 
+import { colors, radius, shadows, typography, typeScale } from
 '../../theme';
 import { getErrorMessage, pickList } from '../../utils/http';
 
@@ -605,13 +600,15 @@ const styles = StyleSheet.create({
   eyebrow: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 13,
-    letterSpacing: 1.25,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
+    letterSpacing: 0.8,
   },
   title: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 20,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
     letterSpacing: -0.5,
     marginTop: 2,
   },
@@ -635,7 +632,8 @@ const styles = StyleSheet.create({
     color: colors.ink,
     flex: 1,
     fontFamily: typography.regular,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
     paddingHorizontal: 10,
   },
   filterButton: {
@@ -667,7 +665,8 @@ const styles = StyleSheet.create({
   filterCountText: {
     color: colors.navy,
     fontFamily: typography.bold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   list: {
     padding: 16,
@@ -685,12 +684,14 @@ const styles = StyleSheet.create({
   resultText: {
     color: colors.ink,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   filterSummary: {
     color: colors.blue,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   accessCard: {
     backgroundColor: colors.navy,
@@ -710,28 +711,31 @@ const styles = StyleSheet.create({
   accessEyebrow: {
     color: '#9BC3F4',
     fontFamily: typography.bold,
-    fontSize: 13,
-    letterSpacing: 1.25,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
+    letterSpacing: 0.8,
     marginTop: 17,
   },
   accessTitle: {
     color: colors.white,
-    fontFamily: typography.bold,
-    fontSize: 20,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
     letterSpacing: -0.5,
     marginTop: 5,
   },
   accessText: {
     color: '#B7C8E2',
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 20,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 9,
   },
   accessMeta: {
     color: '#8FA8CA',
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 6,
   },
   accessButton: {
@@ -748,8 +752,9 @@ const styles = StyleSheet.create({
   },
   accessButtonText: {
     color: colors.navy,
-    fontFamily: typography.bold,
-    fontSize: 13,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   disabled: {
     opacity: 0.6,
@@ -763,7 +768,8 @@ const styles = StyleSheet.create({
   loadingText: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 12,
   },
   emptyState: {
@@ -783,15 +789,16 @@ const styles = StyleSheet.create({
   },
   emptyTitle: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 20,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
     marginTop: 17,
   },
   emptyText: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 20,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 8,
     textAlign: 'center',
   },
@@ -806,7 +813,8 @@ const styles = StyleSheet.create({
   emptyActionText: {
     color: colors.blue,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   footer: {
     paddingVertical: 15,
@@ -825,7 +833,8 @@ const styles = StyleSheet.create({
   endText: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
 });
 

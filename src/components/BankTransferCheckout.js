@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Button from './common/Button';
 import Input from './common/Input';
 import AppText from './common/AppText';
-import { radius, typography } from '../theme';
+import { radius, typography, typeScale } from '../theme';
 import { cameraService } from '../services/cameraService';
 import bankTransferService from '../services/bankTransferService';
 import api from '../services/api';
@@ -369,32 +369,32 @@ const styles = StyleSheet.create({
   sheet: { backgroundColor: '#fff', borderTopLeftRadius: radius.xl, borderTopRightRadius: radius.xl, maxHeight: '92%' },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: '#e2e8f0' },
   headerTitle: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  title: { fontFamily: typography.bold, fontSize: 18, color: '#0f172a' },
+  title: { fontFamily: typography.semibold, fontSize: typeScale.md, lineHeight: 26, color: '#0f172a' },
   body: { padding: 16, paddingBottom: 28, gap: 12 },
   amountCard: { backgroundColor: '#f0fdfa', borderWidth: 1, borderColor: '#99f6e4', borderRadius: radius.lg, padding: 14 },
-  amountLabel: { color: '#0f766e', fontSize: 13, fontWeight: '600' },
-  amountValue: { fontFamily: typography.bold, color: '#115e59', fontSize: 26, marginTop: 4 },
-  amountNote: { color: '#0f766e', fontSize: 12, marginTop: 4 },
+  amountLabel: { color: '#0f766e', fontSize: typeScale.xs, lineHeight: 18, fontWeight: '600' },
+  amountValue: { fontFamily: typography.bold, color: '#115e59', fontSize: typeScale.xl, lineHeight: 32, marginTop: 4 },
+  amountNote: { color: '#0f766e', fontSize: typeScale.xs, lineHeight: 18, marginTop: 4 },
   accountCard: { backgroundColor: '#fff', borderWidth: 1, borderColor: '#e2e8f0', borderRadius: radius.lg, padding: 14, gap: 8 },
   sectionTitle: { color: '#334155', fontWeight: '700', marginTop: 4 },
   detailRow: { flexDirection: 'row', justifyContent: 'space-between', gap: 12 },
-  detailLabel: { color: '#64748b', fontSize: 13 },
-  detailValue: { color: '#0f172a', fontSize: 14, fontWeight: '600', textAlign: 'right', flexShrink: 1 },
-  listeningText: { color: '#16a34a', fontWeight: '600', fontSize: 13, marginTop: 4 },
+  detailLabel: { color: '#64748b', fontSize: typeScale.xs, lineHeight: 18 },
+  detailValue: { color: '#0f172a', fontSize: typeScale.sm, lineHeight: 20, fontWeight: '600', textAlign: 'right', flexShrink: 1 },
+  listeningText: { color: '#16a34a', fontWeight: '600', fontSize: typeScale.xs, lineHeight: 18, marginTop: 4 },
   accountsList: { gap: 8 },
   accountItem: { flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderColor: '#e2e8f0', borderRadius: radius.lg, padding: 12, gap: 10 },
   accountItemActive: { borderColor: '#0d9488', backgroundColor: '#f0fdfa' },
   accountBank: { color: '#0f172a', fontWeight: '700' },
   accountBankActive: { color: '#115e59' },
-  accountName: { color: '#475569', fontSize: 13 },
+  accountName: { color: '#475569', fontSize: typeScale.xs, lineHeight: 18 },
   accountNumber: { color: '#0f172a', fontFamily: typography.bold, marginTop: 2 },
-  mutedText: { color: '#64748b', fontSize: 13 },
+  mutedText: { color: '#64748b', fontSize: typeScale.xs, lineHeight: 18 },
   preview: { width: '100%', height: 200, backgroundColor: '#f8fafc', borderRadius: radius.lg, borderWidth: 1, borderColor: '#e2e8f0' },
   cta: { marginTop: 6 },
   cancelBtn: { alignItems: 'center', paddingVertical: 10 },
   cancelText: { color: '#475569', fontWeight: '600' },
   successBody: { alignItems: 'center', padding: 28, gap: 10 },
-  successTitle: { fontFamily: typography.bold, fontSize: 20, color: '#065f46' },
+  successTitle: { fontFamily: typography.semibold, fontSize: typeScale.lg, lineHeight: 28, color: '#065f46' },
   successText: { color: '#065f46', textAlign: 'center' },
   pendingBody: { padding: 18, gap: 10 },
   pendingText: { color: '#334155' },

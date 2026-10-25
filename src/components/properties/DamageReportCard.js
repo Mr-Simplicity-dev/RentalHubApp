@@ -1,3 +1,4 @@
+import { typeScale } from '../../theme';
 import React from 'react';
 import {View, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -95,8 +96,8 @@ const styles = StyleSheet.create({
   },
   severityDot: { width: 10, height: 10, borderRadius: 5 },
   compactContent: { flex: 1 },
-  compactTitle: { fontSize: 14, fontWeight: '600', color: '#0f172a' },
-  compactMeta: { color: '#64748b', fontSize: 13, marginTop: 1 },
+  compactTitle: { fontSize: typeScale.sm, lineHeight: 20, fontWeight: '600', color: '#0f172a' },
+  compactMeta: { color: '#64748b', fontSize: typeScale.xs, lineHeight: 18, marginTop: 1 },
   card: {
     backgroundColor: '#ffffff',
     borderWidth: 1,
@@ -108,14 +109,14 @@ const styles = StyleSheet.create({
   image: { width: '100%', height: 180 },
   content: { padding: 14 },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  title: { fontSize: 16, fontWeight: '700', color: '#0f172a', flex: 1 },
+  title: { fontSize: typeScale.base, lineHeight: 24, fontWeight: '700', color: '#0f172a', flex: 1 },
   badge: {
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 99,
   },
   badgeText: { fontSize: 13, fontWeight: '700', textTransform: 'capitalize' },
-  location: { color: '#475569', fontSize: 13, marginTop: 4 },
+  location: { color: '#475569', fontSize: typeScale.xs, lineHeight: 18, marginTop: 4 },
   description: { color: '#334155', marginTop: 8, lineHeight: 20 },
   recommendation: {
     flexDirection: 'row',
@@ -125,7 +126,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 10,
   },
-  recommendationText: { color: '#1d4ed8', fontSize: 13, flex: 1 },
+  recommendationText: { color: '#1d4ed8', fontSize: typeScale.xs, lineHeight: 18, flex: 1 },
   footer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -134,8 +135,8 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#f1f5f9',
   },
-  date: { color: '#64748b', fontSize: 13 },
-  status: { color: '#64748b', fontSize: 13, fontWeight: '600', textTransform: 'capitalize' },
+  date: { color: '#64748b', fontSize: typeScale.xs, lineHeight: 18 },
+  status: { color: '#64748b', fontSize: typeScale.xs, lineHeight: 18, fontWeight: '600', textTransform: 'capitalize' },
 });
 
 export default DamageReportCard;

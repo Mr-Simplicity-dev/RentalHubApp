@@ -14,7 +14,7 @@ import {
 } from '../../components/common/PremiumLayout';
 import recruitmentService from '../../services/recruitmentService';
 import { getErrorMessage } from '../../utils/http';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 
@@ -804,7 +804,8 @@ const styles = StyleSheet.create({
   warningBannerText: {
     color: colors.white,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     textAlign: 'center',
   },
   challengeBanner: {
@@ -820,7 +821,8 @@ const styles = StyleSheet.create({
   challengeText: {
     color: colors.white,
     fontFamily: typography.bold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
     textAlign: 'center',
   },
   questionCard: {
@@ -844,12 +846,14 @@ const styles = StyleSheet.create({
   progressHeaderText: {
     color: colors.muted,
     fontFamily: typography.semibold,
-    fontSize: 12,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   timerText: {
     color: colors.gold,
     fontFamily: typography.bold,
-    fontSize: 15,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
   },
   progressTrack: {
     backgroundColor: colors.border,
@@ -865,7 +869,7 @@ const styles = StyleSheet.create({
   questionText: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 17,
+    fontSize: typeScale.base,
     lineHeight: 24,
     marginBottom: 12,
     marginTop: 10,
@@ -893,8 +897,8 @@ const styles = StyleSheet.create({
     color: colors.ink,
     flex: 1,
     fontFamily: typography.medium,
-    fontSize: 14,
-    lineHeight: 19,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   skipButton: {
     alignItems: 'center',
@@ -907,7 +911,8 @@ const styles = StyleSheet.create({
   skipText: {
     color: colors.danger,
     fontFamily: typography.bold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   lockedOverlay: {
     alignItems: 'center',
@@ -923,14 +928,15 @@ const styles = StyleSheet.create({
   },
   lockedTitle: {
     color: colors.white,
-    fontFamily: typography.bold,
-    fontSize: 22,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
   },
   lockedText: {
     color: '#FECACA',
     fontFamily: typography.regular,
-    fontSize: 14,
-    lineHeight: 21,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
     marginBottom: 18,
     marginTop: 8,
     textAlign: 'center',
@@ -952,8 +958,9 @@ const styles = StyleSheet.create({
   },
   completeTitle: {
     color: colors.success,
-    fontFamily: typography.bold,
-    fontSize: 18,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.md,
+    lineHeight: 26,
     marginBottom: 8,
   },
   consentRow: {
@@ -979,14 +986,15 @@ const styles = StyleSheet.create({
   checkboxMark: {
     color: colors.white,
     fontFamily: typography.bold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   consentText: {
     color: colors.text,
     flex: 1,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 20,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
   },
 });
 

@@ -13,7 +13,7 @@ import {
 } from '../../components/common/PremiumLayout';
 import { adminService } from '../../services/adminService';
 import { getErrorMessage } from '../../utils/http';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const AdminLedgerScreen = () => {
@@ -142,15 +142,16 @@ const styles = StyleSheet.create({
   },
   resultTitle: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 20,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
     marginTop: 14,
   },
   resultMessage: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 14,
-    lineHeight: 21,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginTop: 5,
   },
   details: {
@@ -180,8 +181,8 @@ const styles = StyleSheet.create({
     color: colors.text,
     flex: 1,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 20,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
 });
 

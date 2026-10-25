@@ -2,7 +2,7 @@ import React, { useCallback, useLayoutEffect, useState } from 'react';
 import {FlatList, StyleSheet, TouchableOpacity, View} from 'react-native';
 import Toast from 'react-native-toast-message';
 import { supportService } from '../../services/supportService';
-import { colors, spacing, typography } from '../../theme';
+import { colors, spacing, typography, typeScale } from '../../theme';
 import { getErrorMessage } from '../../utils/http';
 import { formatDisplayValue } from '../../utils/display';
 
@@ -77,16 +77,16 @@ const ActivityFeedScreen = ({ navigation, route }) => {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F8FAFC', padding: spacing.md },
-  title: { fontSize: 24, fontWeight: '700', color: '#1E293B', marginBottom: spacing.sm },
+  title: { fontSize: typeScale.xl, lineHeight: 32, fontWeight: '700', color: '#1E293B', marginBottom: spacing.sm },
   refresh: { alignSelf: 'flex-end', marginBottom: spacing.sm },
   log: { flexDirection: 'row', alignItems: 'flex-start', backgroundColor: '#FFF', borderRadius: 12, padding: spacing.md, marginBottom: spacing.sm, borderWidth: 1, borderColor: '#E2E8F0' },
   dot: { width: 10, height: 10, borderRadius: 5, marginTop: 6, marginRight: spacing.sm },
   body: { flex: 1 },
-  action: { fontSize: 14, fontWeight: '600', color: '#1E293B', textTransform: 'capitalize' },
-  actor: { fontSize: 13, color: '#64748B', marginTop: 2 },
-  location: { fontSize: 13, color: '#94A3B8', marginTop: 1 },
+  action: { fontSize: typeScale.sm, lineHeight: 20, fontWeight: '600', color: '#1E293B', textTransform: 'capitalize' },
+  actor: { fontSize: typeScale.xs, lineHeight: 18, color: '#64748B', marginTop: 2 },
+  location: { fontSize: typeScale.xs, lineHeight: 18, color: '#94A3B8', marginTop: 1 },
   meta: { fontSize: 13, color: '#94A3B8', marginTop: 2, fontFamily: 'monospace' },
-  time: { fontSize: 13, color: '#94A3B8', marginLeft: spacing.sm },
+  time: { fontSize: typeScale.xs, lineHeight: 18, color: '#94A3B8', marginLeft: spacing.sm },
   empty: { textAlign: 'center', color: '#94A3B8', marginTop: 60 },
 });
 

@@ -12,7 +12,7 @@ import {
 } from '../../components/properties/LivePropertyCapture';
 import { propertyService } from '../../services/propertyService';
 import { getErrorMessage } from '../../utils/http';
-import { colors, radius, shadows, typography } from '../../theme';
+import { colors, radius, shadows, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const propertyTypes = ['apartment', 'house', 'duplex', 'studio', 'bungalow', 'flat', 'room'];
@@ -384,24 +384,24 @@ const styles = StyleSheet.create({
   backButton: { alignItems: 'center', backgroundColor: colors.white, borderColor: colors.border, borderRadius: 21, borderWidth: 1, height: 42, justifyContent: 'center', width: 42 },
   headerCopy: { alignItems: 'center', flex: 1 },
   headerSpacer: { width: 42 },
-  eyebrow: { color: colors.blue, fontFamily: typography.bold, fontSize: 13, letterSpacing: 1.25 },
-  headerTitle: { color: colors.ink, fontFamily: typography.bold, fontSize: 20, marginTop: 2 },
+  eyebrow: { color: colors.blue, fontFamily: typography.bold, fontSize: typeScale.xs, lineHeight: 18, letterSpacing: 0.8 },
+  headerTitle: { color: colors.ink, fontFamily: typography.semibold, fontSize: typeScale.lg, lineHeight: 28, marginTop: 2 },
   content: { padding: 18, paddingBottom: 30 },
   intro: { backgroundColor: colors.navy, borderRadius: radius.lg, marginBottom: 23, padding: 19 },
   introIcon: { alignItems: 'center', backgroundColor: 'rgba(255,201,40,0.14)', borderRadius: 20, height: 40, justifyContent: 'center', width: 40 },
-  title: { color: colors.white, fontFamily: typography.bold, fontSize: 24, marginTop: 14 },
-  subtitle: { color: '#AFC2DF', fontFamily: typography.regular, fontSize: 13, lineHeight: 18, marginTop: 6 },
-  sectionLabel: { color: colors.blue, fontFamily: typography.bold, fontSize: 13, letterSpacing: 1.25, marginBottom: 8, marginLeft: 2 },
+  title: { color: colors.white, fontFamily: typography.semibold, fontSize: typeScale.xl, lineHeight: 32, marginTop: 14 },
+  subtitle: { color: '#AFC2DF', fontFamily: typography.regular, fontSize: typeScale.reading, lineHeight: 22, marginTop: 6 },
+  sectionLabel: { color: colors.blue, fontFamily: typography.bold, fontSize: typeScale.xs, lineHeight: 18, letterSpacing: 0.8, marginBottom: 8, marginLeft: 2 },
   card: { backgroundColor: colors.white, borderColor: colors.border, borderRadius: radius.lg, borderWidth: 1, marginBottom: 20, padding: 17, ...shadows.soft },
-  fieldLabel: { color: colors.text, fontFamily: typography.semibold, fontSize: 14, marginBottom: 9 },
+  fieldLabel: { color: colors.text, fontFamily: typography.semibold, fontSize: typeScale.sm, lineHeight: 20, marginBottom: 9 },
   chipGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 7, marginBottom: 15 },
   chip: { backgroundColor: colors.surface, borderColor: colors.border, borderRadius: radius.pill, borderWidth: 1, paddingHorizontal: 10, paddingVertical: 7 },
   chipActive: { backgroundColor: colors.blue, borderColor: colors.blue },
-  chipText: { color: colors.text, fontFamily: typography.medium, fontSize: 13 },
+  chipText: { color: colors.text, fontFamily: typography.medium, fontSize: typeScale.xs, lineHeight: 18 },
   chipTextActive: { color: colors.white, fontFamily: typography.semibold },
   numberRow: { flexDirection: 'row', gap: 10 },
   numberField: { flex: 1 },
-  coordinateHint: { color: colors.muted, fontFamily: typography.regular, fontSize: 13, lineHeight: 15, marginBottom: 10 },
+  coordinateHint: { color: colors.muted, fontFamily: typography.regular, fontSize: typeScale.reading, lineHeight: 22, marginBottom: 10 },
   clipItem: {
     alignItems: 'center',
     backgroundColor: 'rgba(11,18,32,0.82)',
@@ -418,7 +418,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: 36,
   },
-  clipLabel: { color: colors.white, fontFamily: typography.semibold, fontSize: 9.5, marginTop: 3 },
+  clipLabel: { color: colors.white, fontFamily: typography.semibold, fontSize: typeScale.xs, lineHeight: 18, marginTop: 3 },
   photoGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 9, marginBottom: 13 },
   photoItem: { height: 74, width: 74 },
   photoThumb: { borderRadius: radius.md, height: '100%', width: '100%' },
@@ -442,14 +442,14 @@ const styles = StyleSheet.create({
     paddingVertical: 13,
   },
   captureButtonDisabled: { opacity: 0.55 },
-  captureButtonText: { color: colors.white, fontFamily: typography.semibold, fontSize: 14, marginLeft: 8 },
+  captureButtonText: { color: colors.white, fontFamily: typography.semibold, fontSize: typeScale.sm, lineHeight: 20, marginLeft: 8 },
   frequencyRow: { flexDirection: 'row', gap: 10 },
   frequency: { alignItems: 'center', backgroundColor: colors.surface, borderColor: colors.border, borderRadius: radius.md, borderWidth: 1, flex: 1, paddingVertical: 12 },
   frequencyActive: { backgroundColor: colors.surfaceBlue, borderColor: colors.blue },
-  frequencyText: { color: colors.text, fontFamily: typography.medium, fontSize: 13 },
+  frequencyText: { color: colors.text, fontFamily: typography.medium, fontSize: typeScale.xs, lineHeight: 18 },
   frequencyTextActive: { color: colors.blue, fontFamily: typography.semibold },
   reviewNote: { alignItems: 'flex-start', flexDirection: 'row', justifyContent: 'center', marginTop: 15, paddingHorizontal: 8 },
-  reviewText: { color: colors.muted, flex: 1, fontFamily: typography.medium, fontSize: 13, lineHeight: 15, marginLeft: 7 },
+  reviewText: { color: colors.muted, flex: 1, fontFamily: typography.medium, fontSize: typeScale.xs, lineHeight: 18, marginLeft: 7 },
 });
 
 export default AddPropertyScreen;

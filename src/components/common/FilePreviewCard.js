@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import {ActivityIndicator, Alert, Image, Linking, StyleSheet, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import { trackMobileEvent } from '../../services/mobileDiagnosticsService';
 
 import AppText from '../../components/common/AppText';
@@ -127,18 +127,21 @@ const styles = StyleSheet.create({
   title: {
     color: colors.ink,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   subtitle: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginTop: 2,
   },
   meta: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 3,
   },
   actions: {
@@ -155,7 +158,8 @@ const styles = StyleSheet.create({
   actionText: {
     color: colors.blue,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   retryButton: {
     alignItems: 'center',
@@ -165,7 +169,8 @@ const styles = StyleSheet.create({
   retryText: {
     color: colors.danger,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
 });
 

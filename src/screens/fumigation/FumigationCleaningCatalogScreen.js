@@ -2,7 +2,7 @@ import React from 'react';
 import {FlatList, StyleSheet, TouchableOpacity, View} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const SERVICE_CATEGORIES = [
@@ -105,13 +105,15 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 24,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.xl,
+    lineHeight: 32,
   },
   headerSubtitle: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginTop: 4,
   },
   list: {
@@ -142,13 +144,14 @@ const styles = StyleSheet.create({
   cardTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
   },
   cardDesc: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 19,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 6,
   },
   cardFooter: {
@@ -160,12 +163,14 @@ const styles = StyleSheet.create({
   priceLabel: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   priceValue: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
     marginTop: 2,
   },
 });

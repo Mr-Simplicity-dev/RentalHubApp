@@ -11,7 +11,7 @@ import {
 import TurnstileWidget from '../../components/common/TurnstileWidget';
 import { authService } from '../../services/authService';
 import { getErrorMessage } from '../../utils/http';
-import { colors, typography } from '../../theme';
+import { colors, typography, typeScale } from '../../theme';
 import AppText from '../../components/common/AppText';
 
 const ResetPasswordScreen = ({ navigation, route }) => {
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
   helper: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
     lineHeight: 18,
     marginTop: 14,
     textAlign: 'center',

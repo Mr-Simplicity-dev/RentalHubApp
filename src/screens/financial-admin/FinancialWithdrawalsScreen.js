@@ -12,7 +12,7 @@ import {
 } from '../../components/common/PremiumLayout';
 import { financialAdminService } from '../../services/financialAdminService';
 import { getErrorMessage, pickList } from '../../utils/http';
-import { colors, typography } from '../../theme';
+import { colors, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 import TourTarget from '../../components/tour/TourTarget';
@@ -148,12 +148,14 @@ const styles = StyleSheet.create({
   amount: {
     color: colors.navy,
     fontFamily: typography.bold,
-    fontSize: 24,
+    fontSize: typeScale.xl,
+    lineHeight: 32,
   },
   user: {
     color: colors.text,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 3,
   },
   actions: {

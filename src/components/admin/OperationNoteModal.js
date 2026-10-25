@@ -8,7 +8,7 @@ import {KeyboardAvoidingView,
 import Icon from 'react-native-vector-icons/Ionicons';
 import Input from '../common/Input';
 import { PremiumButton } from '../common/PremiumLayout';
-import { colors, radius, shadows, typography } from '../../theme';
+import { colors, radius, shadows, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const OperationNoteModal = ({
@@ -161,15 +161,15 @@ const styles = StyleSheet.create({
   },
   title: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 20,
-    lineHeight: 25,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
   },
   message: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 19,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginTop: 4,
   },
   closeButton: {
@@ -186,8 +186,8 @@ const styles = StyleSheet.create({
   auditHint: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 13,
-    lineHeight: 17,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginTop: 8,
   },
   actions: {

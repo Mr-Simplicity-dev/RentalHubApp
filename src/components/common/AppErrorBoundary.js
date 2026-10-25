@@ -1,7 +1,7 @@
 import React from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import { reportMobileCrash } from '../../services/mobileDiagnosticsService';
 import storageService from '../../services/storageService';
 
@@ -154,15 +154,16 @@ const styles = StyleSheet.create({
   },
   title: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 20,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
     textAlign: 'center',
   },
   subtitle: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 14,
-    lineHeight: 21,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginTop: 8,
     textAlign: 'center',
   },
@@ -183,7 +184,8 @@ const styles = StyleSheet.create({
   buttonText: {
     color: colors.white,
     fontFamily: typography.semibold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   secondaryButton: {
     backgroundColor: colors.surface,
@@ -193,7 +195,8 @@ const styles = StyleSheet.create({
   secondaryButtonText: {
     color: colors.ink,
     fontFamily: typography.semibold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   detailsToggle: {
     alignItems: 'center',
@@ -205,7 +208,8 @@ const styles = StyleSheet.create({
   detailsToggleText: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   detailsContainer: {
     backgroundColor: '#F8FAFC',
@@ -220,19 +224,21 @@ const styles = StyleSheet.create({
   errorTitle: {
     color: colors.danger,
     fontFamily: typography.bold,
-    fontSize: 12,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   errorText: {
     color: colors.ink,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 2,
   },
   stackText: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 10,
-    lineHeight: 14,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 2,
   },
 });

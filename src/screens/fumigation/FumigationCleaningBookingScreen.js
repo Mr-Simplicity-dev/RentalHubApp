@@ -1,15 +1,11 @@
 import React, { useState, useEffect, useCallback, useLayoutEffect } from 'react';
-import {View,
-  StyleSheet,
-  ScrollView,
-  TextInput,
-  TouchableOpacity,
-  ActivityIndicator,} from 'react-native';
+import { View, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
+import TextInput from '../../components/common/AppTextInput';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import { fumigationCleaningService } from '../../services/fumigationCleaningService';
-import { colors, radius, shadows, typography } from '../../theme';
+import { colors, radius, shadows, typography, typeScale } from '../../theme';
 import { getErrorMessage } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
@@ -343,9 +339,9 @@ const styles = StyleSheet.create({
   headerTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 },
   backButton: { width: 40, height: 40, borderRadius: 20, backgroundColor: colors.navySoft, alignItems: 'center', justifyContent: 'center' },
   headerIcon: { width: 42, height: 42, borderRadius: 14, backgroundColor: colors.navySoft, alignItems: 'center', justifyContent: 'center' },
-  headerEyebrow: { fontFamily: typography.semibold, fontSize: 13, letterSpacing: 1.25, color: colors.gold },
-  headerTitle: { marginTop: 7, color: colors.white, fontFamily: typography.bold, fontSize: 24 },
-  headerSub: { color: '#B9C9E5', fontFamily: typography.regular, fontSize: 14, lineHeight: 20, marginTop: 6 },
+  headerEyebrow: { fontFamily: typography.semibold, fontSize: typeScale.xs, lineHeight: 18, letterSpacing: 0.8, color: colors.gold },
+  headerTitle: { marginTop: 7, color: colors.white, fontFamily: typography.semibold, fontSize: typeScale.xl, lineHeight: 32 },
+  headerSub: { color: '#B9C9E5', fontFamily: typography.regular, fontSize: typeScale.sm, lineHeight: 20, marginTop: 6 },
   section: {
     marginBottom: 12,
     backgroundColor: colors.white,
@@ -355,8 +351,9 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
   },
   sectionTitle: {
-    fontSize: 18,
-    fontFamily: typography.bold,
+    fontSize: typeScale.md,
+    lineHeight: 26,
+    fontFamily: typography.semibold,
     color: colors.ink,
     marginBottom: 12,
   },
@@ -391,24 +388,26 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  serviceName: { fontSize: 16, fontFamily: typography.semibold, color: colors.ink },
-  serviceDesc: { color: '#475569', fontSize: 13, marginTop: 6 },
+  serviceName: { fontSize: typeScale.base, lineHeight: 24, fontFamily: typography.semibold, color: colors.ink },
+  serviceDesc: { color: '#475569', fontSize: typeScale.xs, lineHeight: 18, marginTop: 6 },
   servicePrice: {
-    fontSize: 18,
+    fontSize: typeScale.md,
+    lineHeight: 26,
     fontFamily: typography.bold,
     color: colors.blue,
     marginTop: 8,
   },
-  durationText: { color: '#94a3b8', fontSize: 13, marginTop: 4 },
+  durationText: { color: '#94a3b8', fontSize: typeScale.xs, lineHeight: 18, marginTop: 4 },
   inputGroup: { marginBottom: 14 },
-  label: { fontSize: 14, fontWeight: '600', color: '#334155', marginBottom: 6 },
+  label: { fontSize: typeScale.sm, lineHeight: 20, fontWeight: '600', color: '#334155', marginBottom: 6 },
   input: {
     borderWidth: 1,
     borderColor: '#cbd5e1',
     borderRadius: radius.sm,
     paddingHorizontal: 12,
     paddingVertical: 10,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
     color: '#0f172a',
     backgroundColor: '#f8fafc',
   },
@@ -421,7 +420,7 @@ const styles = StyleSheet.create({
     padding: 14,
     marginBottom: 14,
   },
-  priceTitle: { fontWeight: '700', color: '#166534', fontSize: 16, marginBottom: 8 },
+  priceTitle: { fontWeight: '700', color: '#166534', fontSize: typeScale.base, lineHeight: 24, marginBottom: 8 },
   priceRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -434,8 +433,8 @@ const styles = StyleSheet.create({
     paddingTop: 8,
     marginTop: 8,
   },
-  totalLabel: { fontSize: 16, fontFamily: typography.bold, color: '#166534' },
-  totalValue: { fontSize: 20, fontFamily: typography.bold, color: '#166534' },
+  totalLabel: { fontSize: typeScale.base, lineHeight: 24, fontFamily: typography.bold, color: '#166534' },
+  totalValue: { fontSize: typeScale.lg, lineHeight: 28, fontFamily: typography.bold, color: '#166534' },
   calculatingContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -450,7 +449,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   submitDisabled: { opacity: 0.6 },
-  submitButtonText: { color: colors.white, fontSize: 16, fontFamily: typography.semibold },
+  submitButtonText: { color: colors.white, fontSize: typeScale.base, lineHeight: 24, fontFamily: typography.semibold },
 });
 
 export default FumigationCleaningBookingScreen;

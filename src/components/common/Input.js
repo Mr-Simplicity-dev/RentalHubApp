@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import {View, TextInput, StyleSheet, TouchableOpacity} from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import TextInput from './AppTextInput';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const Input = ({
@@ -47,7 +48,7 @@ const Input = ({
           placeholder={placeholder}
           secureTextEntry={secureTextEntry && !passwordVisible}
           keyboardType={keyboardType}
-          placeholderTextColor="#96A2B8"
+          placeholderTextColor="#6B7890"
           multiline={multiline}
           numberOfLines={numberOfLines}
           onFocus={() => setFocused(true)}
@@ -79,8 +80,9 @@ const styles = StyleSheet.create({
   },
   label: {
     color: colors.text,
-    fontFamily: typography.semibold,
-    fontSize: 14,
+    fontFamily: typography.medium,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
     marginBottom: 8,
   },
   inputContainer: {
@@ -106,7 +108,8 @@ const styles = StyleSheet.create({
     color: colors.ink,
     flex: 1,
     fontFamily: typography.regular,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
     paddingHorizontal: 14,
     paddingVertical: 14,
   },
@@ -124,7 +127,8 @@ const styles = StyleSheet.create({
   errorText: {
     color: colors.danger,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 5,
   },
 });

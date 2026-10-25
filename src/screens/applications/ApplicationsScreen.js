@@ -11,7 +11,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import { AuthContext } from '../../context/AuthContext';
 import { applicationService } from '../../services/applicationService';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import { getErrorMessage, pickList } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
@@ -355,13 +355,15 @@ const styles = StyleSheet.create({
   eyebrow: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 13,
-    letterSpacing: 1.25,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
+    letterSpacing: 0.8,
   },
   title: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 24,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.xl,
+    lineHeight: 32,
     letterSpacing: -0.5,
     marginTop: 3,
   },
@@ -385,13 +387,14 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 13,
   },
-  summaryValue: { color: colors.ink, fontFamily: typography.bold, fontSize: 20 },
+  summaryValue: { color: colors.ink, fontFamily: typography.bold, fontSize: typeScale.lg, lineHeight: 28 },
   pendingValue: { color: '#B46B00' },
   approvedValue: { color: colors.success },
   summaryLabel: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 2,
   },
   filterRow: { flexDirection: 'row', gap: 8, marginBottom: 15 },
@@ -404,7 +407,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   filterChipActive: { backgroundColor: colors.blue, borderColor: colors.blue },
-  filterText: { color: colors.text, fontFamily: typography.medium, fontSize: 13 },
+  filterText: { color: colors.text, fontFamily: typography.medium, fontSize: typeScale.xs, lineHeight: 18 },
   filterTextActive: { color: colors.white, fontFamily: typography.semibold },
   card: {
     backgroundColor: colors.white,
@@ -426,19 +429,21 @@ const styles = StyleSheet.create({
   cardTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 16,
-    lineHeight: 20,
+    fontSize: typeScale.base,
+    lineHeight: 24,
   },
   cardMeta: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 4,
   },
   statusPill: { borderRadius: radius.pill, paddingHorizontal: 8, paddingVertical: 5 },
   statusText: {
     fontFamily: typography.bold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     textTransform: 'uppercase',
   },
   messageBox: {
@@ -453,15 +458,16 @@ const styles = StyleSheet.create({
     color: colors.text,
     flex: 1,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 17,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginLeft: 7,
   },
   detailRow: { alignItems: 'center', flexDirection: 'row', marginTop: 12 },
   detailText: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginLeft: 5,
   },
   actions: { flexDirection: 'row', gap: 9, marginTop: 14 },
@@ -484,9 +490,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     minHeight: 44,
   },
-  primaryActionText: { color: colors.white, fontFamily: typography.semibold, fontSize: 13 },
-  rejectText: { color: colors.danger, fontFamily: typography.semibold, fontSize: 13 },
-  withdrawText: { color: colors.danger, fontFamily: typography.semibold, fontSize: 13 },
+  primaryActionText: { color: colors.white, fontFamily: typography.semibold, fontSize: typeScale.xs, lineHeight: 18 },
+  rejectText: { color: colors.danger, fontFamily: typography.semibold, fontSize: typeScale.xs, lineHeight: 18 },
+  withdrawText: { color: colors.danger, fontFamily: typography.semibold, fontSize: typeScale.xs, lineHeight: 18 },
   center: {
     alignItems: 'center',
     flex: 1,
@@ -497,7 +503,8 @@ const styles = StyleSheet.create({
   loadingText: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 12,
   },
   emptyIcon: {
@@ -510,15 +517,16 @@ const styles = StyleSheet.create({
   },
   emptyTitle: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 20,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
     marginTop: 17,
   },
   emptyText: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 20,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 7,
     textAlign: 'center',
   },
@@ -532,7 +540,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 17,
     paddingVertical: 12,
   },
-  exploreText: { color: colors.white, fontFamily: typography.semibold, fontSize: 13 },
+  exploreText: { color: colors.white, fontFamily: typography.semibold, fontSize: typeScale.xs, lineHeight: 18 },
 });
 
 export default ApplicationsScreen;

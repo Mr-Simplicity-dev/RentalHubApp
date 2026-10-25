@@ -14,7 +14,7 @@ import {
 import WithdrawalFactorModal from '../../components/dashboard/WithdrawalFactorModal';
 import { stateAdminService } from '../../services/stateAdminService';
 import { getErrorMessage, pickList, pickObject } from '../../utils/http';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import AppText from '../../components/common/AppText';
 
 const formatNaira = (value) => `₦${Number(value || 0).toLocaleString()}`;
@@ -349,7 +349,8 @@ const styles = StyleSheet.create({
   tabText: {
     color: colors.text,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   tabTextActive: {
     color: colors.white,
@@ -364,30 +365,35 @@ const styles = StyleSheet.create({
   rowTitle: {
     color: colors.ink,
     fontFamily: typography.semibold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
     textTransform: 'capitalize',
   },
   rowMeta: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 2,
   },
   rowMetaDanger: {
     color: colors.danger,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 2,
   },
   rowAmount: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
   },
   empty: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   fieldGap: {
     marginTop: 12,
@@ -395,7 +401,8 @@ const styles = StyleSheet.create({
   error: {
     color: colors.danger,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 10,
   },
   submit: {
@@ -404,7 +411,8 @@ const styles = StyleSheet.create({
   hint: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginTop: 10,
   },
 });

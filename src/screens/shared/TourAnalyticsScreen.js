@@ -11,7 +11,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import { tourService } from '../../services/tourService';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import { getErrorMessage, pickObject } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
@@ -183,10 +183,10 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
     padding: 18,
   },
-  heroEyebrow: { color: '#FFE58A', fontFamily: typography.bold, fontSize: 11, letterSpacing: 1.1 },
-  heroTitle: { color: colors.white, fontFamily: typography.bold, fontSize: 22, marginTop: 6 },
-  heroSub: { color: '#DCE6F7', fontFamily: typography.regular, fontSize: 12, lineHeight: 18, marginTop: 8 },
-  filterLabel: { color: colors.text, fontFamily: typography.semibold, fontSize: 12, marginBottom: 6, marginTop: 14 },
+  heroEyebrow: { color: '#FFE58A', fontFamily: typography.bold, fontSize: typeScale.xs, lineHeight: 18, letterSpacing: 0.8 },
+  heroTitle: { color: colors.white, fontFamily: typography.semibold, fontSize: typeScale.lg, lineHeight: 28, marginTop: 6 },
+  heroSub: { color: '#DCE6F7', fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18, marginTop: 8 },
+  filterLabel: { color: colors.text, fontFamily: typography.semibold, fontSize: typeScale.xs, lineHeight: 18, marginBottom: 6, marginTop: 14 },
   chipWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   chip: {
     backgroundColor: colors.white,
@@ -197,10 +197,10 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   chipActive: { backgroundColor: colors.blue, borderColor: colors.blue },
-  chipText: { color: colors.text, fontFamily: typography.medium, fontSize: 12 },
+  chipText: { color: colors.text, fontFamily: typography.medium, fontSize: typeScale.xs, lineHeight: 18 },
   chipTextActive: { color: colors.white, fontFamily: typography.semibold },
   center: { alignItems: 'center', justifyContent: 'center', paddingVertical: 40 },
-  loadingText: { color: colors.muted, fontFamily: typography.medium, fontSize: 13, marginTop: 12 },
+  loadingText: { color: colors.muted, fontFamily: typography.medium, fontSize: typeScale.xs, lineHeight: 18, marginTop: 12 },
   metricGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginTop: 16 },
   metricCard: {
     alignItems: 'center',
@@ -212,8 +212,8 @@ const styles = StyleSheet.create({
     minWidth: '47%',
     paddingVertical: 16,
   },
-  metricValue: { color: colors.ink, fontFamily: typography.bold, fontSize: 22 },
-  metricLabel: { color: colors.muted, fontFamily: typography.medium, fontSize: 12, marginTop: 4 },
+  metricValue: { color: colors.ink, fontFamily: typography.bold, fontSize: typeScale.lg, lineHeight: 28 },
+  metricLabel: { color: colors.muted, fontFamily: typography.medium, fontSize: typeScale.xs, lineHeight: 18, marginTop: 4 },
   completionCard: {
     alignItems: 'center',
     backgroundColor: '#EEF5FF',
@@ -221,8 +221,8 @@ const styles = StyleSheet.create({
     marginTop: 12,
     padding: 16,
   },
-  completionLabel: { color: '#1D4ED8', fontFamily: typography.semibold, fontSize: 12 },
-  completionValue: { color: '#1D4ED8', fontFamily: typography.bold, fontSize: 28, marginTop: 4 },
+  completionLabel: { color: '#1D4ED8', fontFamily: typography.semibold, fontSize: typeScale.xs, lineHeight: 18 },
+  completionValue: { color: '#1D4ED8', fontFamily: typography.bold, fontSize: typeScale.xxl, lineHeight: 36, marginTop: 4 },
   card: {
     backgroundColor: colors.white,
     borderColor: colors.border,
@@ -231,14 +231,14 @@ const styles = StyleSheet.create({
     marginTop: 14,
     padding: 15,
   },
-  cardTitle: { color: colors.ink, fontFamily: typography.bold, fontSize: 15, marginBottom: 10 },
-  mutedText: { color: colors.muted, fontFamily: typography.regular, fontSize: 13 },
+  cardTitle: { color: colors.ink, fontFamily: typography.bold, fontSize: typeScale.reading, lineHeight: 22, marginBottom: 10 },
+  mutedText: { color: colors.muted, fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18 },
   listRow: { alignItems: 'center', borderTopColor: colors.border, borderTopWidth: 1, flexDirection: 'row', paddingVertical: 10 },
   issueRow: { alignItems: 'flex-start', borderTopColor: colors.border, borderTopWidth: 1, flexDirection: 'row', gap: 8, paddingVertical: 10 },
   listBody: { flex: 1 },
-  listTitle: { color: colors.ink, fontFamily: typography.semibold, fontSize: 13 },
-  listMeta: { color: colors.muted, fontFamily: typography.regular, fontSize: 12, marginTop: 3 },
-  listCount: { color: colors.ink, fontFamily: typography.bold, fontSize: 15, marginLeft: 10 },
+  listTitle: { color: colors.ink, fontFamily: typography.semibold, fontSize: typeScale.xs, lineHeight: 18 },
+  listMeta: { color: colors.muted, fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18, marginTop: 3 },
+  listCount: { color: colors.ink, fontFamily: typography.bold, fontSize: typeScale.reading, lineHeight: 22, marginLeft: 10 },
 });
 
 export default TourAnalyticsScreen;

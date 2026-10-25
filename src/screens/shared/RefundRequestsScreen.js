@@ -1,5 +1,6 @@
 import React, { useCallback, useContext, useState } from 'react';
-import { Modal, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import { Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
+import TextInput from '../../components/common/AppTextInput';
 import Toast from 'react-native-toast-message';
 import { useFocusEffect } from '@react-navigation/native';
 import {
@@ -13,7 +14,7 @@ import {
 import { AuthContext } from '../../context/AuthContext';
 import { tenancyAdjustmentService } from '../../services/tenancyAdjustmentService';
 import { getErrorMessage, pickList } from '../../utils/http';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import AppText from '../../components/common/AppText';
 
 const formatNaira = (value) => `₦${Number(value || 0).toLocaleString()}`;
@@ -288,31 +289,35 @@ const styles = StyleSheet.create({
   cardTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
   },
   cardMeta: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 2,
   },
   amount: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 20,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
     marginTop: 8,
   },
   reason: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 19,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 8,
   },
   meta: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 4,
   },
   rowBetween: {
@@ -324,7 +329,8 @@ const styles = StyleSheet.create({
   date: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   actions: {
     flexDirection: 'row',
@@ -337,7 +343,8 @@ const styles = StyleSheet.create({
   note: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 10,
   },
   modalOverlay: {
@@ -353,13 +360,15 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 18,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.md,
+    lineHeight: 26,
   },
   modalSubtitle: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginTop: 4,
   },
   noteInput: {
@@ -368,7 +377,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     color: colors.ink,
     fontFamily: typography.regular,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
     marginTop: 14,
     minHeight: 100,
     padding: 12,
@@ -377,7 +387,8 @@ const styles = StyleSheet.create({
   error: {
     color: colors.danger,
     fontFamily: typography.medium,
-    fontSize: 12,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 6,
   },
   modalActions: {
@@ -393,7 +404,8 @@ const styles = StyleSheet.create({
   cancelText: {
     color: colors.text,
     fontFamily: typography.semibold,
-    fontSize: 15,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
   },
   modalConfirm: {
     flex: 1,

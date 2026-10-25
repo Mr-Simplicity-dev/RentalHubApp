@@ -3,7 +3,7 @@ import {FlatList, StyleSheet, TouchableOpacity, View} from 'react-native';
 import Toast from 'react-native-toast-message';
 import { AuthContext } from '../../context/AuthContext';
 import { supportService } from '../../services/supportService';
-import { colors, spacing, typography } from '../../theme';
+import { colors, spacing, typography, typeScale } from '../../theme';
 import { getErrorMessage } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
@@ -104,20 +104,20 @@ const AdminPoolScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F8FAFC', padding: spacing.md },
-  title: { fontFamily: typography.bold, fontSize: 24, color: '#1E293B', marginBottom: spacing.sm },
+  title: { fontFamily: typography.semibold, fontSize: typeScale.xl, lineHeight: 32, color: '#1E293B', marginBottom: spacing.sm },
   refresh: { alignSelf: 'flex-end', marginBottom: spacing.sm },
-  refreshText: { color: colors.blue, fontFamily: typography.semibold, fontSize: 13 },
+  refreshText: { color: colors.blue, fontFamily: typography.semibold, fontSize: typeScale.xs, lineHeight: 18 },
   row: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF', borderRadius: 12, padding: spacing.md, marginBottom: spacing.sm, borderWidth: 1, borderColor: '#E2E8F0' },
   info: { flex: 1 },
-  name: { fontFamily: typography.semibold, fontSize: 16, color: '#1E293B' },
-  meta: { fontFamily: typography.regular, fontSize: 13, color: '#64748B', marginTop: 2 },
+  name: { fontFamily: typography.semibold, fontSize: typeScale.base, lineHeight: 24, color: '#1E293B' },
+  meta: { fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18, color: '#64748B', marginTop: 2 },
   stats: { alignItems: 'center', marginHorizontal: spacing.md },
-  count: { fontFamily: typography.bold, fontSize: 18, color: '#475569' },
-  label: { fontFamily: typography.regular, fontSize: 13, color: '#94A3B8' },
+  count: { fontFamily: typography.bold, fontSize: typeScale.md, lineHeight: 26, color: '#475569' },
+  label: { fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18, color: '#94A3B8' },
   leadBadge: { backgroundColor: '#FEF3C7', borderRadius: 12, paddingHorizontal: 12, paddingVertical: 6 },
-  leadText: { fontFamily: typography.semibold, fontSize: 13, color: '#92400E' },
+  leadText: { fontFamily: typography.semibold, fontSize: typeScale.xs, lineHeight: 18, color: '#92400E' },
   promoteBtn: { backgroundColor: '#EEF2FF', borderRadius: 12, paddingHorizontal: 12, paddingVertical: 6 },
-  promoteText: { fontFamily: typography.semibold, fontSize: 13, color: '#4338CA' },
+  promoteText: { fontFamily: typography.semibold, fontSize: typeScale.xs, lineHeight: 18, color: '#4338CA' },
   demoteBtn: { backgroundColor: '#FFF7ED' },
   demoteText: { color: '#C2410C' },
   empty: { fontFamily: typography.regular, textAlign: 'center', color: '#94A3B8', marginTop: 60 },

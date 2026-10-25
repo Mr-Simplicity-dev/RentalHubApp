@@ -13,7 +13,7 @@ import { paymentService } from '../../services/paymentService';
 import { recoverPayment, savePendingPayment } from '../../services/paymentRecoveryService';
 import useNativePaystackCheckout from '../../hooks/useNativePaystackCheckout';
 import { hasPaystackCheckout } from '../../services/nativePaymentService';
-import { colors, radius, shadows, typography } from '../../theme';
+import { colors, radius, shadows, typography, typeScale } from '../../theme';
 import { getErrorMessage, pickList, pickObject } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
@@ -308,13 +308,15 @@ const styles = StyleSheet.create({
   eyebrow: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 13,
-    letterSpacing: 1.25,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
+    letterSpacing: 0.8,
   },
   title: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 20,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
     marginTop: 2,
   },
   content: { padding: 18, paddingBottom: 32 },
@@ -322,7 +324,8 @@ const styles = StyleSheet.create({
   loadingText: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 12,
   },
   statusCard: {
@@ -343,22 +346,24 @@ const styles = StyleSheet.create({
   statusEyebrow: {
     color: '#9BC3F4',
     fontFamily: typography.bold,
-    fontSize: 13,
-    letterSpacing: 1.25,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
+    letterSpacing: 0.8,
     marginTop: 17,
   },
   statusTitle: {
     color: colors.white,
-    fontFamily: typography.bold,
-    fontSize: 24,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.xl,
+    lineHeight: 32,
     letterSpacing: -0.5,
     marginTop: 5,
   },
   statusText: {
     color: '#B7C8E2',
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 20,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 8,
   },
   benefits: { flexDirection: 'row', gap: 8, marginTop: 13 },
@@ -383,8 +388,8 @@ const styles = StyleSheet.create({
   benefitText: {
     color: colors.text,
     fontFamily: typography.medium,
-    fontSize: 13,
-    lineHeight: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 8,
     textAlign: 'center',
   },
@@ -392,13 +397,15 @@ const styles = StyleSheet.create({
   sectionEyebrow: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 13,
-    letterSpacing: 1.25,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
+    letterSpacing: 0.8,
   },
   sectionTitle: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 20,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
     marginTop: 4,
   },
   planCard: {
@@ -421,33 +428,36 @@ const styles = StyleSheet.create({
   recommendedText: {
     color: colors.navy,
     fontFamily: typography.bold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     letterSpacing: 0.5,
   },
   planName: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 18,
+    fontSize: typeScale.md,
+    lineHeight: 26,
     marginTop: 13,
   },
   priceRow: { alignItems: 'baseline', flexDirection: 'row', marginTop: 7 },
   planPrice: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 24,
+    fontSize: typeScale.xl,
+    lineHeight: 32,
     letterSpacing: -0.5,
   },
-  duration: { color: colors.muted, fontFamily: typography.regular, fontSize: 13 },
+  duration: { color: colors.muted, fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18 },
   planDesc: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
     lineHeight: 18,
     marginBottom: 13,
     marginTop: 7,
   },
   featureRow: { alignItems: 'center', flexDirection: 'row', gap: 8, marginTop: 7 },
-  featureText: { color: colors.text, fontFamily: typography.medium, fontSize: 13 },
+  featureText: { color: colors.text, fontFamily: typography.medium, fontSize: typeScale.xs, lineHeight: 18 },
   button: { marginTop: 17 },
   emptyCard: {
     alignItems: 'center',
@@ -460,7 +470,8 @@ const styles = StyleSheet.create({
   emptyTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
     marginTop: 10,
   },
   emptyText: { color: colors.muted, fontFamily: typography.regular, marginTop: 4 },
@@ -473,7 +484,8 @@ const styles = StyleSheet.create({
   safetyText: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginLeft: 6,
   },
 });

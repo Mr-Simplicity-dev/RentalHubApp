@@ -8,7 +8,7 @@ import {ActivityIndicator,
   View,} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { colors, radius, shadows, typography } from '../../theme';
+import { colors, radius, shadows, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 import { formatDisplayValue } from '../../utils/display';
@@ -232,15 +232,16 @@ const styles = StyleSheet.create({
   },
   centerTitle: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 24,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.xl,
+    lineHeight: 32,
     textAlign: 'center',
   },
   centerMessage: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 14,
-    lineHeight: 21,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginTop: 8,
     textAlign: 'center',
   },
@@ -269,22 +270,23 @@ const styles = StyleSheet.create({
   eyebrow: {
     color: colors.gold,
     fontFamily: typography.semibold,
-    fontSize: 13,
-    letterSpacing: 1.25,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
+    letterSpacing: 0.8,
     textTransform: 'uppercase',
   },
   heroTitle: {
     color: colors.white,
-    fontFamily: typography.bold,
-    fontSize: 24,
-    lineHeight: 33,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.xl,
+    lineHeight: 32,
     marginTop: 7,
   },
   heroSubtitle: {
     color: '#B9C9E5',
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 20,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginTop: 7,
   },
   card: {
@@ -302,14 +304,15 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 18,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.md,
+    lineHeight: 26,
   },
   sectionSubtitle: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 18,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginTop: 3,
   },
   infoRow: {
@@ -334,13 +337,14 @@ const styles = StyleSheet.create({
   infoLabel: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     textTransform: 'uppercase',
   },
   infoValue: {
     color: colors.ink,
     fontFamily: typography.semibold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
     lineHeight: 20,
     marginTop: 3,
   },
@@ -353,9 +357,11 @@ const styles = StyleSheet.create({
     paddingVertical: 13,
   },
   primaryButtonText: {
+    textAlign: 'center',
     color: colors.white,
-    fontFamily: typography.bold,
-    fontSize: 14,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   button: {
     alignItems: 'center',
@@ -385,9 +391,12 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   buttonText: {
+    flexShrink: 1,
+    textAlign: 'center',
     color: colors.white,
-    fontFamily: typography.bold,
-    fontSize: 16,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.base,
+    lineHeight: 24,
   },
   buttonTextDanger: {
     color: colors.danger,
@@ -404,7 +413,8 @@ const styles = StyleSheet.create({
   },
   statusText: {
     fontFamily: typography.bold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     letterSpacing: 0.5,
     textTransform: 'uppercase',
   },
@@ -424,14 +434,15 @@ const styles = StyleSheet.create({
   emptyTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
     textAlign: 'center',
   },
   emptyMessage: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 18,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginTop: 4,
     textAlign: 'center',
   },

@@ -11,7 +11,7 @@ import {
 } from '../../components/common/PremiumLayout';
 import { fumigationCleaningService } from '../../services/fumigationCleaningService';
 import { getErrorMessage } from '../../utils/http';
-import { colors, typography } from '../../theme';
+import { colors, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const STATUS_COLORS = {
@@ -170,12 +170,14 @@ const styles = StyleSheet.create({
   statNumber: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 20,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
   },
   statLabel: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 2,
     textTransform: 'uppercase',
   },
@@ -191,12 +193,13 @@ const styles = StyleSheet.create({
   serviceName: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
   },
   serviceMeta: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
     lineHeight: 18,
     marginTop: 4,
   },

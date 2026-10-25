@@ -9,7 +9,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
 import { AuthContext } from '../context/AuthContext';
 import BrandSplash from '../components/brand/BrandSplash';
-import { colors, typography } from '../theme';
+import { colors, typography, typeScale } from '../theme';
 import {
   getPendingPayment,
   isLikelyPaymentReturnUrl,
@@ -198,7 +198,8 @@ const screenOptions = {
   headerTintColor: colors.navy,
   headerTitleStyle: {
     fontFamily: typography.semibold,
-    fontSize: 18,
+    fontSize: typeScale.md,
+    lineHeight: 26,
   },
   contentStyle: {
     backgroundColor: colors.surface,
@@ -499,7 +500,8 @@ const MainTabs = () => (
       tabBarInactiveTintColor: colors.muted,
       tabBarLabelStyle: {
         fontFamily: typography.semibold,
-        fontSize: 13,
+        fontSize: typeScale.xs,
+        lineHeight: 18,
         marginBottom: Platform.OS === 'android' ? 7 : 1,
       },
       tabBarIconStyle: {

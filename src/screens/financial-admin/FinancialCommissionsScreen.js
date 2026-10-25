@@ -11,7 +11,7 @@ import {
 } from '../../components/common/PremiumLayout';
 import { financialAdminService } from '../../services/financialAdminService';
 import { getErrorMessage, pickObject } from '../../utils/http';
-import { colors, typography } from '../../theme';
+import { colors, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const getStatusColor = (status) => {
@@ -110,19 +110,21 @@ const styles = StyleSheet.create({
   agent: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
   },
   property: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
     lineHeight: 18,
     marginTop: 3,
   },
   amount: {
     color: colors.navy,
     fontFamily: typography.bold,
-    fontSize: 24,
+    fontSize: typeScale.xl,
+    lineHeight: 32,
     marginBottom: 6,
     marginTop: 14,
   },

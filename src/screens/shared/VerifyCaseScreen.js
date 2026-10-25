@@ -12,7 +12,7 @@ import {
 } from '../../components/common/PremiumLayout';
 import { evidenceService } from '../../services/evidenceService';
 import { getErrorMessage, pickObject } from '../../utils/http';
-import { colors, typography } from '../../theme';
+import { colors, typography, typeScale } from '../../theme';
 import TourTarget from '../../components/tour/TourTarget';
 
 import AppText from '../../components/common/AppText';
@@ -105,8 +105,9 @@ const VerifyCaseScreen = ({ route }) => {
 const styles = StyleSheet.create({
   sectionTitle: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 18,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.md,
+    lineHeight: 26,
     marginBottom: 8,
   },
   fileRow: {
@@ -122,7 +123,8 @@ const styles = StyleSheet.create({
     color: colors.ink,
     flex: 1,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     paddingRight: 8,
   },
 });

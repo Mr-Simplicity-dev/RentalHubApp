@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import BrandLogoMark from '../brand/BrandLogoMark';
-import { colors, typography } from '../../theme';
+import { colors, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const BrandImagePlaceholder = ({
@@ -27,7 +27,8 @@ const styles = StyleSheet.create({
   title: {
     color: 'rgba(255, 255, 255, 0.74)',
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     letterSpacing: 0,
     marginTop: 12,
   },

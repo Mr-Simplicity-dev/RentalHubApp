@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
-import { ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import TextInput from '../../components/common/AppTextInput';
 import { WebView } from 'react-native-webview';
 import Toast from 'react-native-toast-message';
 import Input from '../../components/common/Input';
@@ -10,7 +11,7 @@ import {
 } from '../../components/common/PremiumLayout';
 import { marketingOpsService } from '../../services/marketingOpsService';
 import { getErrorMessage } from '../../utils/http';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import AppText from '../../components/common/AppText';
 
 const EDITOR_HTML = `<!DOCTYPE html>
@@ -205,7 +206,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
   },
   tabActive: { backgroundColor: colors.blue, borderColor: colors.blue },
-  tabText: { color: colors.text, fontFamily: typography.semibold, fontSize: 13 },
+  tabText: { color: colors.text, fontFamily: typography.semibold, fontSize: typeScale.xs, lineHeight: 18 },
   tabTextActive: { color: colors.white },
   editorWrap: {
     borderColor: colors.border,
@@ -230,7 +231,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 6,
   },
-  toolText: { color: colors.ink, fontFamily: typography.bold, fontSize: 15 },
+  toolText: { color: colors.ink, fontFamily: typography.bold, fontSize: typeScale.reading, lineHeight: 22 },
   webview: { height: 340, backgroundColor: colors.white },
   source: {
     borderColor: colors.border,

@@ -1,16 +1,8 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import {View,
-  StyleSheet,
-  ScrollView,
-  TextInput,
-  TouchableOpacity,
-  KeyboardAvoidingView,
-  Platform,
-  SafeAreaView,
-  Linking,
-  ActivityIndicator,} from 'react-native';
+import { View, StyleSheet, ScrollView, TouchableOpacity, KeyboardAvoidingView, Platform, SafeAreaView, Linking, ActivityIndicator } from 'react-native';
+import TextInput from '../../components/common/AppTextInput';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const WHATSAPP_NUMBER = '2348030601238';
@@ -489,12 +481,14 @@ const styles = StyleSheet.create({
   headerTitle: {
     color: colors.white,
     fontFamily: typography.semibold,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
   },
   headerSubtitle: {
     color: '#E8FFF0',
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginTop: 1,
   },
   chatArea: {
@@ -550,13 +544,14 @@ const styles = StyleSheet.create({
   },
   botLabel: {
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     color: '#25D366',
     marginBottom: 3,
   },
   bubbleText: {
     fontFamily: typography.regular,
-    fontSize: 14,
+    fontSize: typeScale.sm,
     color: colors.ink,
     lineHeight: 20,
   },
@@ -565,7 +560,8 @@ const styles = StyleSheet.create({
   },
   bubbleTime: {
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     color: colors.muted,
     marginTop: 4,
     alignSelf: 'flex-end',
@@ -587,7 +583,8 @@ const styles = StyleSheet.create({
   },
   qrChipText: {
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     color: '#128C7E',
   },
   typingBubble: {
@@ -620,14 +617,16 @@ const styles = StyleSheet.create({
   },
   agentTitle: {
     fontFamily: typography.semibold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
     color: '#1B5E20',
     marginTop: 8,
     textAlign: 'center',
   },
   agentSub: {
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     color: '#4CAF50',
     marginTop: 4,
     textAlign: 'center',
@@ -646,7 +645,8 @@ const styles = StyleSheet.create({
   },
   menuBtnText: {
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     color: '#25D366',
     textDecorationLine: 'underline',
   },
@@ -669,7 +669,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 10,
     fontFamily: typography.regular,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
     color: colors.ink,
   },
   sendBtn: {

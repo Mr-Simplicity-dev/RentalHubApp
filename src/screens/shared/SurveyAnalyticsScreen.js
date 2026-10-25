@@ -12,7 +12,7 @@ import {
 import { surveyAnalyticsService } from '../../services/surveyAnalyticsService';
 import { getErrorMessage } from '../../utils/http';
 import { formatDisplayValue } from '../../utils/display';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import AppText from '../../components/common/AppText';
 
 const mmss = (seconds) => {
@@ -229,7 +229,8 @@ const styles = StyleSheet.create({
   tabText: {
     color: colors.text,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   tabTextActive: {
     color: colors.white,
@@ -255,18 +256,21 @@ const styles = StyleSheet.create({
   metricValue: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 22,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
   },
   metricLabel: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 11,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 2,
     textTransform: 'uppercase',
   },
   sectionTitle: {    color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 15,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginBottom: 8,
   },
   stateRow: {
@@ -279,7 +283,8 @@ const styles = StyleSheet.create({
   stateName: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   agentCopy: {
     flex: 1,
@@ -288,12 +293,14 @@ const styles = StyleSheet.create({
   stateCount: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   empty: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
 });
 

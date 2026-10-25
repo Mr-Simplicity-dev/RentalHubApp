@@ -1,3 +1,4 @@
+import { typeScale } from '../../theme';
 import React from 'react';
 import {View, StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -25,8 +26,8 @@ const styles = StyleSheet.create({
     padding: 40,
     gap: 8,
   },
-  title: { fontSize: 18, fontWeight: '700', color: '#64748b', textAlign: 'center' },
-  message: { fontSize: 14, color: '#94a3b8', textAlign: 'center', lineHeight: 20 },
+  title: { fontSize: typeScale.md, lineHeight: 26, fontWeight: '700', color: '#64748b', textAlign: 'center' },
+  message: { fontSize: typeScale.reading, color: '#94a3b8', textAlign: 'center', lineHeight: 22 },
 });
 
 export default EmptyState;

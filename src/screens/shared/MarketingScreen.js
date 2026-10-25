@@ -15,7 +15,7 @@ import {
 } from '../../components/common/PremiumLayout';
 import { marketingOpsService } from '../../services/marketingOpsService';
 import { getErrorMessage, pickList } from '../../utils/http';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import AppText from '../../components/common/AppText';
 
 const formatDate = (value) => {
@@ -657,11 +657,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   metricAccent: { backgroundColor: colors.surfaceBlue, borderColor: colors.blue },
-  metricValue: { color: colors.ink, fontFamily: typography.bold, fontSize: 20 },
+  metricValue: { color: colors.ink, fontFamily: typography.bold, fontSize: typeScale.lg, lineHeight: 28 },
   metricLabel: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 11,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 2,
     textTransform: 'uppercase',
   },
@@ -674,8 +675,8 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   cardCopy: { flex: 1 },
-  cardTitle: { color: colors.ink, fontFamily: typography.bold, fontSize: 16 },
-  cardMeta: { color: colors.muted, fontFamily: typography.regular, fontSize: 12, marginTop: 2 },
+  cardTitle: { color: colors.ink, fontFamily: typography.bold, fontSize: typeScale.base, lineHeight: 24 },
+  cardMeta: { color: colors.muted, fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18, marginTop: 2 },
   actions: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginTop: 12 },
   actionButton: { flexGrow: 1, minWidth: 120 },
   modalOverlay: {
@@ -689,10 +690,10 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
     padding: 18,
   },
-  modalTitle: { color: colors.ink, fontFamily: typography.bold, fontSize: 16 },
-  modalMeta: { color: colors.muted, fontFamily: typography.regular, fontSize: 12, marginTop: 3 },
-  modalError: { color: colors.danger, fontFamily: typography.regular, fontSize: 12, marginTop: 6 },
-  modalHint: { color: colors.muted, fontFamily: typography.regular, fontSize: 11, lineHeight: 16, marginTop: 10 },
+  modalTitle: { color: colors.ink, fontFamily: typography.bold, fontSize: typeScale.base, lineHeight: 24 },
+  modalMeta: { color: colors.muted, fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18, marginTop: 3 },
+  modalError: { color: colors.danger, fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18, marginTop: 6 },
+  modalHint: { color: colors.muted, fontFamily: typography.regular, fontSize: typeScale.reading, lineHeight: 22, marginTop: 10 },
   modalActions: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginTop: 16 },
   statsRow: { flexDirection: 'row', gap: 8, marginTop: 14 },
   statBox: {
@@ -704,8 +705,8 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     alignItems: 'center',
   },
-  statValue: { color: colors.ink, fontFamily: typography.bold, fontSize: 18 },
-  statLabel: { color: colors.muted, fontFamily: typography.regular, fontSize: 11, marginTop: 2 },
+  statValue: { color: colors.ink, fontFamily: typography.bold, fontSize: typeScale.md, lineHeight: 26 },
+  statLabel: { color: colors.muted, fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18, marginTop: 2 },
 });
 
 export default MarketingScreen;

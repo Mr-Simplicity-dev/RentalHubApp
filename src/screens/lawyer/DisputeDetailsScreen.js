@@ -1,17 +1,13 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react';
-import {ActivityIndicator,
-  ScrollView,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  View,} from 'react-native';
+import { ActivityIndicator, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import TextInput from '../../components/common/AppTextInput';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import Button from '../../components/common/Button';
 import FilePreviewCard from '../../components/common/FilePreviewCard';
 import { legalService } from '../../services/legalService';
-import { colors, radius, shadows, typography } from '../../theme';
+import { colors, radius, shadows, typography, typeScale } from '../../theme';
 import { buildUploadUrl, getErrorMessage, pickObject } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
@@ -309,7 +305,7 @@ const styles = StyleSheet.create({
   topBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 },
   backButton: { width: 42, height: 42, borderRadius: 21, backgroundColor: colors.white, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: colors.border },
   refreshButton: { width: 42, height: 42, borderRadius: 21, backgroundColor: colors.surfaceBlue, alignItems: 'center', justifyContent: 'center' },
-  topTitle: { fontFamily: typography.semibold, fontSize: 18, color: colors.ink },
+  topTitle: { fontFamily: typography.semibold, fontSize: typeScale.md, lineHeight: 26, color: colors.ink },
   headerCard: {
     backgroundColor: colors.navy,
     borderRadius: radius.lg,
@@ -320,13 +316,13 @@ const styles = StyleSheet.create({
   caseTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 },
   caseIcon: { width: 44, height: 44, borderRadius: 14, backgroundColor: colors.navySoft, alignItems: 'center', justifyContent: 'center' },
   statusPill: { paddingVertical: 6, paddingHorizontal: 11, borderRadius: radius.pill, backgroundColor: '#244572' },
-  statusText: { fontFamily: typography.semibold, fontSize: 13, color: colors.white, textTransform: 'capitalize' },
-  eyebrow: { fontFamily: typography.semibold, fontSize: 13, letterSpacing: 1.25, color: colors.gold },
-  title: { marginTop: 7, fontFamily: typography.bold, fontSize: 24, color: colors.white },
+  statusText: { fontFamily: typography.semibold, fontSize: typeScale.xs, lineHeight: 18, color: colors.white, textTransform: 'capitalize' },
+  eyebrow: { fontFamily: typography.semibold, fontSize: typeScale.xs, lineHeight: 18, letterSpacing: 0.8, color: colors.gold },
+  title: { marginTop: 7, fontFamily: typography.semibold, fontSize: typeScale.xl, lineHeight: 32, color: colors.white },
   partyBlock: { marginTop: 16, padding: 12, borderRadius: radius.md, backgroundColor: colors.navySoft },
   partyRow: { flexDirection: 'row', justifyContent: 'space-between', marginVertical: 4 },
-  partyLabel: { fontFamily: typography.regular, fontSize: 13, color: '#AFC3E6' },
-  partyValue: { maxWidth: '67%', textAlign: 'right', fontFamily: typography.medium, fontSize: 13, color: colors.white },
+  partyLabel: { fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18, color: '#AFC3E6' },
+  partyValue: { maxWidth: '67%', textAlign: 'right', fontFamily: typography.medium, fontSize: typeScale.xs, lineHeight: 18, color: colors.white },
   description: { marginTop: 14, fontFamily: typography.regular, color: '#D5E0F2', lineHeight: 20 },
   marginTop: { marginTop: 12 },
   card: {
@@ -338,8 +334,8 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   cardHeading: { flexDirection: 'row', alignItems: 'center', marginBottom: 10 },
-  cardTitle: { flex: 1, marginLeft: 8, fontFamily: typography.bold, fontSize: 16, color: colors.ink },
-  count: { minWidth: 25, textAlign: 'center', paddingVertical: 3, paddingHorizontal: 7, borderRadius: radius.pill, overflow: 'hidden', backgroundColor: colors.surfaceBlue, fontFamily: typography.semibold, fontSize: 13, color: colors.blue },
+  cardTitle: { flex: 1, marginLeft: 8, fontFamily: typography.bold, fontSize: typeScale.base, lineHeight: 24, color: colors.ink },
+  count: { minWidth: 25, textAlign: 'center', paddingVertical: 3, paddingHorizontal: 7, borderRadius: radius.pill, overflow: 'hidden', backgroundColor: colors.surfaceBlue, fontFamily: typography.semibold, fontSize: typeScale.xs, lineHeight: 18, color: colors.blue },
   emptyText: { fontFamily: typography.regular, color: colors.muted },
   composerRow: {
     alignItems: 'flex-end',
@@ -382,7 +378,8 @@ const styles = StyleSheet.create({
   uploadButtonText: {
     color: colors.white,
     fontFamily: typography.semibold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   listRow: {
     paddingVertical: 10,
@@ -400,7 +397,7 @@ const styles = StyleSheet.create({
   },
   timelineDot: { position: 'absolute', top: 15, left: 0, width: 8, height: 8, borderRadius: 4, backgroundColor: colors.blue },
   timelineTitle: { fontFamily: typography.semibold, color: colors.ink },
-  timelineMeta: { marginTop: 4, fontFamily: typography.regular, fontSize: 13, color: colors.muted },
+  timelineMeta: { marginTop: 4, fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18, color: colors.muted },
   timelineDetails: { marginTop: 6, fontFamily: typography.regular, color: colors.text, lineHeight: 18 },
 });
 

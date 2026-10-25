@@ -1,17 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import {Alert,
-  ActivityIndicator,
-  Modal,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  View,} from 'react-native';
+import { Alert, ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import TextInput from '../../components/common/AppTextInput';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
 import recruitmentService from '../../services/recruitmentService';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import { getErrorMessage, pickList, pickObject } from '../../utils/http';
 import {
   ActionRow,
@@ -457,14 +450,16 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     color: colors.ink,
     fontFamily: typography.medium,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
     paddingHorizontal: 14,
     paddingVertical: 12,
   },
   filterLabel: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 7,
   },
   chipRow: {
@@ -486,7 +481,8 @@ const styles = StyleSheet.create({
   chipText: {
     color: colors.text,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     textTransform: 'capitalize',
   },
   chipTextActive: {
@@ -508,13 +504,15 @@ const styles = StyleSheet.create({
   funnelLabel: {
     color: colors.muted,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     textTransform: 'capitalize',
   },
   funnelValue: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 24,
+    fontSize: typeScale.xl,
+    lineHeight: 32,
     marginTop: 4,
   },
   applicantCard: {
@@ -548,12 +546,14 @@ const styles = StyleSheet.create({
   applicantName: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
   },
   applicantMeta: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 2,
   },
   statusBadge: {
@@ -578,8 +578,8 @@ const styles = StyleSheet.create({
   detailText: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 17,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   actions: {
     flexDirection: 'row',
@@ -596,22 +596,26 @@ const styles = StyleSheet.create({
   actionText: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   approveText: {
     color: colors.success,
     fontFamily: typography.bold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   rejectText: {
     color: colors.danger,
     fontFamily: typography.bold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   reportText: {
     color: colors.navy,
     fontFamily: typography.bold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   emptyCard: {
     alignItems: 'center',
@@ -625,7 +629,8 @@ const styles = StyleSheet.create({
   emptyText: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     textAlign: 'center',
   },
   modalBackdrop: {
@@ -649,13 +654,15 @@ const styles = StyleSheet.create({
   modalEyebrow: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     letterSpacing: 0.5,
   },
   modalTitle: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 20,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
     marginTop: 3,
   },
   modalLoading: {
@@ -666,7 +673,8 @@ const styles = StyleSheet.create({
   modalMuted: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   detailList: {
     gap: 9,
@@ -689,14 +697,15 @@ const styles = StyleSheet.create({
   detailLabel: {
     color: colors.muted,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     textTransform: 'uppercase',
   },
   detailValue: {
     color: colors.ink,
     fontFamily: typography.medium,
-    fontSize: 13,
-    lineHeight: 19,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 3,
   },
 });

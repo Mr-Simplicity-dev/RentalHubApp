@@ -1,13 +1,6 @@
 import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import {ActivityIndicator,
-  Linking,
-  RefreshControl,
-  ScrollView,
-  Share,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  View,} from 'react-native';
+import { ActivityIndicator, Linking, RefreshControl, ScrollView, Share, StyleSheet, TouchableOpacity, View } from 'react-native';
+import TextInput from '../../components/common/AppTextInput';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
@@ -34,7 +27,7 @@ import useNativePaystackCheckout from '../../hooks/useNativePaystackCheckout';
 import { hasPaystackCheckout } from '../../services/nativePaymentService';
 import { getErrorMessage, getReviewStatus, pickList, pickObject } from '../../utils/http';
 import TenancyGracePanel from '../../components/dashboard/TenancyGracePanel';
-import { colors, radius, shadows, typography } from '../../theme';
+import { colors, radius, shadows, typography, typeScale } from '../../theme';
 import { useTourTarget } from '../../components/tour/TourTarget';
 import {
   TourScrollProvider,
@@ -1304,14 +1297,15 @@ const DashboardScreen = ({ navigation }) => {
             <Icon name="chatbubbles-outline" size={20} color="#fff" />
           </View>
           <View style={{ flex: 1 }}>
-            <AppText style={{ color: '#fff', fontFamily: typography.bold, fontSize: 15 }}>
+            <AppText style={{ color: '#fff', fontFamily: typography.bold, fontSize: typeScale.reading, lineHeight: 22 }}>
               {surveyStatus.part_a_done ? 'Continue survey' : 'Market research survey'}
             </AppText>
             <AppText
               style={{
                 color: 'rgba(255,255,255,0.88)',
                 fontFamily: typography.regular,
-                fontSize: 12,
+                fontSize: typeScale.xs,
+                lineHeight: 18,
                 marginTop: 2,
               }}
             >
@@ -1420,14 +1414,16 @@ const styles = StyleSheet.create({
   topEyebrow: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 13,
-    letterSpacing: 1.25,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
+    letterSpacing: 0.8,
   },
   topTitle: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 32,
-    letterSpacing: -1.25,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.xxl,
+    lineHeight: 36,
+    letterSpacing: -0.3,
     marginTop: 3,
   },
   topActions: {
@@ -1469,11 +1465,12 @@ const styles = StyleSheet.create({
     fontFamily: typography.bold,
     fontSize: 16,
   },
-  title: { fontSize: 24, fontFamily: typography.bold, color: colors.ink },
+  title: { fontSize: typeScale.xl, lineHeight: 32, fontFamily: typography.semibold, color: colors.ink },
   subtitle: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginBottom: 18,
     marginTop: 7,
   },
@@ -1486,9 +1483,9 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   bannerBody: { flex: 1 },
-  bannerTitle: { fontFamily: typography.bold, fontSize: 14 },
-  bannerText: { fontFamily: typography.regular, fontSize: 13, marginTop: 4, lineHeight: 18 },
-  bannerAction: { marginTop: 7, fontFamily: typography.semibold, fontSize: 13 },
+  bannerTitle: { fontFamily: typography.bold, fontSize: typeScale.sm, lineHeight: 20 },
+  bannerText: { fontFamily: typography.regular, fontSize: typeScale.xs, marginTop: 4, lineHeight: 18 },
+  bannerAction: { marginTop: 7, fontFamily: typography.semibold, fontSize: typeScale.xs, lineHeight: 18 },
   locationSection: {
     backgroundColor: '#ffffff',
     borderWidth: 1,
@@ -1499,7 +1496,7 @@ const styles = StyleSheet.create({
   },
   locationSectionLocked: { borderColor: '#e2e8f0' },
   locationHeader: { flexDirection: 'row', gap: 10, alignItems: 'flex-start', marginBottom: 10 },
-  locationTitle: { fontFamily: typography.bold, color: '#0f172a', fontSize: 16 },
+  locationTitle: { fontFamily: typography.bold, color: '#0f172a', fontSize: typeScale.base, lineHeight: 24 },
   locationHint: { color: '#475569', marginTop: 3, lineHeight: 18 },
   locationCard: {
     borderWidth: 1,
@@ -1568,8 +1565,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     ...shadows.soft,
   },
-  statTitle: { color: colors.muted, fontFamily: typography.medium, fontSize: 13 },
-  statValue: { fontSize: 20, fontFamily: typography.bold, color: colors.ink, marginTop: 5 },
+  statTitle: { color: colors.muted, fontFamily: typography.medium, fontSize: typeScale.xs, lineHeight: 18 },
+  statValue: { fontSize: typeScale.lg, lineHeight: 28, fontFamily: typography.bold, color: colors.ink, marginTop: 5 },
   quickActions: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -1585,13 +1582,14 @@ const styles = StyleSheet.create({
     padding: 13,
     width: '48%',
   },
-  quickTitle: { color: colors.navy, fontFamily: typography.bold, fontSize: 13 },
-  quickText: { marginTop: 5, color: colors.muted, fontFamily: typography.regular, fontSize: 13, lineHeight: 16 },
+  quickTitle: { color: colors.navy, fontFamily: typography.bold, fontSize: typeScale.xs, lineHeight: 18 },
+  quickText: { marginTop: 5, color: colors.muted, fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18 },
   sectionTitle: {
     marginTop: 24,
     marginBottom: 10,
-    fontSize: 20,
-    fontFamily: typography.bold,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
+    fontFamily: typography.semibold,
     color: colors.ink,
   },
   emptyText: { color: '#64748b' },
@@ -1603,9 +1601,9 @@ const styles = StyleSheet.create({
     padding: 12,
     marginBottom: 8,
   },
-  activityType: { color: '#0284c7', fontSize: 13, fontWeight: '700' },
+  activityType: { color: '#0284c7', fontSize: typeScale.xs, lineHeight: 18, fontWeight: '700' },
   activityText: { marginTop: 4, color: '#0f172a', fontWeight: '600' },
-  activityDate: { marginTop: 4, color: '#64748b', fontSize: 13 },
+  activityDate: { marginTop: 4, color: '#64748b', fontSize: typeScale.xs, lineHeight: 18 },
   referralCard: {
     backgroundColor: '#ffffff',
     borderWidth: 1,
@@ -1617,18 +1615,20 @@ const styles = StyleSheet.create({
   referralHeader: { flexDirection: 'row', gap: 10, alignItems: 'flex-start' },
   referralEyebrow: {
     color: '#059669',
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     fontFamily: typography.bold,
     textTransform: 'uppercase',
   },
-  referralTitle: { fontFamily: typography.bold, color: '#0f172a', fontSize: 18, marginTop: 2 },
+  referralTitle: { fontFamily: typography.semibold, color: '#0f172a', fontSize: typeScale.md, lineHeight: 26, marginTop: 2 },
   referralCode: {
     marginTop: 6,
     alignSelf: 'flex-start',
     backgroundColor: '#ecfdf5',
     color: '#047857',
     fontWeight: '700',
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 999,
@@ -1641,9 +1641,9 @@ const styles = StyleSheet.create({
     borderLeftColor: '#6ee7b7',
     paddingLeft: 8,
   },
-  referralStatLabel: { color: '#64748b', fontSize: 13, fontWeight: '600' },
-  referralStatValue: { fontFamily: typography.bold, color: '#0f172a', fontSize: 16, marginTop: 2 },
-  referralLinkLabel: { marginTop: 12, color: '#334155', fontWeight: '700', fontSize: 13 },
+  referralStatLabel: { color: '#64748b', fontSize: typeScale.xs, lineHeight: 18, fontWeight: '600' },
+  referralStatValue: { fontFamily: typography.bold, color: '#0f172a', fontSize: typeScale.base, lineHeight: 24, marginTop: 2 },
+  referralLinkLabel: { marginTop: 12, color: '#334155', fontWeight: '700', fontSize: typeScale.xs, lineHeight: 18 },
   referralLinkInput: {
     marginTop: 6,
     borderWidth: 1,
@@ -1653,7 +1653,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 10,
     color: '#0f172a',
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   referralActions: { flexDirection: 'row', gap: 10, marginTop: 12 },
   referralBtnPrimary: {

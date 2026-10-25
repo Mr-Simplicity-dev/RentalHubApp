@@ -17,7 +17,7 @@ import Toast from 'react-native-toast-message';
 import TurnstileWidget from '../../components/common/TurnstileWidget';
 import { biometricService } from '../../services/biometricService';
 import { reportMobileCrash } from '../../services/mobileDiagnosticsService';
-import { colors, radius, shadows, typography } from '../../theme';
+import { colors, radius, shadows, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const LoginScreen = ({ navigation }) => {
@@ -335,21 +335,22 @@ const styles = StyleSheet.create({
   eyebrow: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 13,
-    letterSpacing: 1.25,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
+    letterSpacing: 0.8,
     marginBottom: 10,
   },
   title: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 32,
-    letterSpacing: -1.25,
-    lineHeight: 39,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.xxl,
+    letterSpacing: -0.3,
+    lineHeight: 36,
   },
   subtitle: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 16,
+    fontSize: typeScale.base,
     lineHeight: 24,
     marginTop: 10,
   },
@@ -369,7 +370,8 @@ const styles = StyleSheet.create({
   forgotPasswordText: {
     color: colors.blue,
     fontFamily: typography.semibold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   loginButton: {
     marginBottom: 0,
@@ -386,12 +388,14 @@ const styles = StyleSheet.create({
   footerText: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   signUpText: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   inviteLink: {
     alignItems: 'center',
@@ -404,7 +408,8 @@ const styles = StyleSheet.create({
   inviteText: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
 });
 

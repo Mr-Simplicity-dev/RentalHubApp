@@ -8,7 +8,7 @@ import {
   DashboardSection,
 } from '../../components/dashboard/DashboardKit';
 import BrandMark from '../../components/brand/BrandMark';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 import { AuthContext } from '../../context/AuthContext';
@@ -134,12 +134,13 @@ const styles = StyleSheet.create({
   contactTitle: {
     color: colors.white,
     fontFamily: typography.bold,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
   },
   contactText: {
     color: '#B9C9E5',
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
     lineHeight: 18,
     marginTop: 4,
   },
@@ -156,15 +157,15 @@ const styles = StyleSheet.create({
   bullet: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 18,
-    lineHeight: 22,
+    fontSize: typeScale.md,
+    lineHeight: 26,
   },
   infoText: {
     color: colors.text,
     flex: 1,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 20,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
 });
 

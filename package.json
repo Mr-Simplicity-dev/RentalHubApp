@@ -14,7 +14,8 @@
     "build:ios": "cd ios && xcodebuild -workspace RentalHubMobile.xcworkspace -scheme RentalHubMobile -configuration Release",
     "build:app": "node scripts/build-all.js",
     "sync:version": "node scripts/sync-app-version.cjs",
-    "test:tour": "node scripts/verify-tour-system.cjs"
+    "test:tour": "node scripts/verify-tour-system.cjs",
+    "test:typography": "node scripts/verify-typography.cjs"
   },
   "dependencies": {
     "@expo-google-fonts/inter": "^0.4.2",

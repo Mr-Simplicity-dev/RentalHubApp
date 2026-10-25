@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useVideoPlayer, VideoView } from 'expo-video';
-import { colors, radius, shadows, typography } from '../../theme';
+import { colors, radius, shadows, typography, typeScale } from '../../theme';
 
 import AppText from '../common/AppText';
 
@@ -83,8 +83,8 @@ const styles = StyleSheet.create({
     width: 38,
   },
   textWrap: { flex: 1, marginLeft: 11 },
-  title: { color: colors.ink, fontFamily: typography.semibold, fontSize: 14 },
-  subtitle: { color: colors.muted, fontFamily: typography.regular, fontSize: 12, marginTop: 2 },
+  title: { color: colors.ink, fontFamily: typography.semibold, fontSize: typeScale.sm, lineHeight: 20 },
+  subtitle: { color: colors.muted, fontFamily: typography.regular, fontSize: typeScale.reading, lineHeight: 22, marginTop: 2 },
   playButton: {
     alignItems: 'center',
     backgroundColor: colors.blue,
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 9,
   },
-  playText: { color: colors.white, fontFamily: typography.semibold, fontSize: 13, marginLeft: 5 },
+  playText: { color: colors.white, fontFamily: typography.semibold, fontSize: typeScale.xs, lineHeight: 18, marginLeft: 5 },
   playerCard: {
     backgroundColor: '#000',
     borderRadius: radius.lg,

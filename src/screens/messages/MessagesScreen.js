@@ -6,15 +6,8 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import {ActivityIndicator,
-  FlatList,
-  KeyboardAvoidingView,
-  Platform,
-  RefreshControl,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  View,} from 'react-native';
+import { ActivityIndicator, FlatList, KeyboardAvoidingView, Platform, RefreshControl, StyleSheet, TouchableOpacity, View } from 'react-native';
+import TextInput from '../../components/common/AppTextInput';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
@@ -22,7 +15,7 @@ import OptionPickerModal from '../../components/common/OptionPickerModal';
 import { AuthContext } from '../../context/AuthContext';
 import { useRealtime } from '../../context/RealtimeContext';
 import { messageService } from '../../services/messageService';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import { getErrorMessage, pickList } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
@@ -765,7 +758,8 @@ const styles = StyleSheet.create({
   loadingText: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 12,
   },
   header: {
@@ -780,13 +774,15 @@ const styles = StyleSheet.create({
   eyebrow: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 13,
-    letterSpacing: 1.25,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
+    letterSpacing: 0.8,
   },
   title: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 24,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.xl,
+    lineHeight: 32,
     letterSpacing: -0.5,
     marginTop: 3,
   },
@@ -822,13 +818,15 @@ const styles = StyleSheet.create({
     color: colors.ink,
     flex: 1,
     fontFamily: typography.regular,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
     paddingHorizontal: 10,
   },
   summary: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginBottom: 12,
     marginTop: 13,
   },
@@ -857,19 +855,22 @@ const styles = StyleSheet.create({
     color: colors.ink,
     flex: 1,
     fontFamily: typography.semibold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   conversationTime: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   conversationPreview: { alignItems: 'center', flexDirection: 'row', marginTop: 4 },
   conversationMessage: {
     color: colors.muted,
     flex: 1,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
   },
   conversationMessageUnread: { color: colors.ink, fontFamily: typography.semibold },
   unreadBadge: {
@@ -882,11 +883,12 @@ const styles = StyleSheet.create({
     minWidth: 18,
     paddingHorizontal: 4,
   },
-  unreadText: { color: colors.white, fontFamily: typography.bold, fontSize: 13 },
+  unreadText: { color: colors.white, fontFamily: typography.bold, fontSize: typeScale.xs, lineHeight: 18 },
   conversationRole: {
     color: colors.blue,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 5,
     textTransform: 'capitalize',
   },
@@ -907,15 +909,16 @@ const styles = StyleSheet.create({
   },
   emptyTitle: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 20,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.lg,
+    lineHeight: 28,
     marginTop: 17,
   },
   emptyText: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 20,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 7,
     textAlign: 'center',
   },
@@ -929,7 +932,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 17,
     paddingVertical: 12,
   },
-  startButtonText: { color: colors.white, fontFamily: typography.semibold, fontSize: 13 },
+  startButtonText: { color: colors.white, fontFamily: typography.semibold, fontSize: typeScale.xs, lineHeight: 18 },
   threadHeader: {
     alignItems: 'center',
     borderBottomColor: colors.border,
@@ -955,11 +958,12 @@ const styles = StyleSheet.create({
   },
   smallAvatarText: { color: colors.white, fontFamily: typography.bold, fontSize: 13 },
   threadHeaderCopy: { flex: 1, marginLeft: 10 },
-  threadName: { color: colors.ink, fontFamily: typography.semibold, fontSize: 14 },
+  threadName: { color: colors.ink, fontFamily: typography.semibold, fontSize: typeScale.sm, lineHeight: 20 },
   threadRole: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 2,
     textTransform: 'capitalize',
   },
@@ -982,7 +986,8 @@ const styles = StyleSheet.create({
     color: colors.blue,
     flex: 1,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginHorizontal: 7,
   },
   threadList: { flexGrow: 1, padding: 14, paddingBottom: 18 },
@@ -1004,14 +1009,15 @@ const styles = StyleSheet.create({
   emptyThreadTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
     marginTop: 14,
   },
   emptyThreadText: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 17,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 5,
     textAlign: 'center',
   },
@@ -1019,7 +1025,8 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginBottom: 10,
     marginTop: 5,
   },
@@ -1045,18 +1052,19 @@ const styles = StyleSheet.create({
   messageSubject: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 13,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginBottom: 4,
   },
   messageText: {
     color: colors.ink,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 19,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
   },
   myMessageText: { color: colors.white },
   messageMeta: { alignItems: 'center', alignSelf: 'flex-end', flexDirection: 'row', gap: 4, marginTop: 5 },
-  messageTime: { color: colors.muted, fontFamily: typography.regular, fontSize: 13 },
+  messageTime: { color: colors.muted, fontFamily: typography.regular, fontSize: typeScale.reading, lineHeight: 22 },
   myMessageMeta: { color: '#DCE9FA' },
   composer: {
     alignItems: 'flex-end',
@@ -1075,7 +1083,8 @@ const styles = StyleSheet.create({
     color: colors.ink,
     flex: 1,
     fontFamily: typography.regular,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     maxHeight: 110,
     minHeight: 44,
     paddingHorizontal: 15,
@@ -1103,7 +1112,8 @@ const styles = StyleSheet.create({
   readOnlyText: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginLeft: 7,
   },
 });

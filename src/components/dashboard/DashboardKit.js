@@ -6,7 +6,7 @@ import {RefreshControl,
   View,} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { colors, radius, shadows, typography } from '../../theme';
+import { colors, radius, shadows, typography, typeScale } from '../../theme';
 import { useAccessibilityPreferences } from '../../hooks/useAccessibilityPreferences';
 import { useTourTarget } from '../tour/TourTarget';
 import {
@@ -276,21 +276,22 @@ const styles = StyleSheet.create({
   eyebrow: {
     color: colors.gold,
     fontFamily: typography.semibold,
-    fontSize: 13,
-    letterSpacing: 1.25,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
+    letterSpacing: 0.8,
   },
   heroTitle: {
     color: colors.white,
-    fontFamily: typography.bold,
-    fontSize: 24,
-    lineHeight: 33,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.xl,
+    lineHeight: 32,
     marginTop: 7,
   },
   heroSubtitle: {
     color: '#B9C9E5',
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 20,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginTop: 7,
   },
   metricGrid: {
@@ -319,12 +320,14 @@ const styles = StyleSheet.create({
   metricLabel: {
     color: colors.muted,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   metricValue: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 24,
+    fontSize: typeScale.xl,
+    lineHeight: 32,
     marginTop: 5,
   },
   section: {
@@ -332,14 +335,15 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 18,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.md,
+    lineHeight: 26,
   },
   sectionSubtitle: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 18,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginTop: 4,
   },
   sectionBody: {
@@ -377,13 +381,14 @@ const styles = StyleSheet.create({
     color: colors.ink,
     flexShrink: 1,
     fontFamily: typography.semibold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   actionSubtitle: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 16,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginTop: 3,
   },
   actionBadge: {
@@ -417,7 +422,8 @@ const styles = StyleSheet.create({
   noticeTitle: {
     color: colors.blue,
     fontFamily: typography.bold,
-    fontSize: 13,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
   },
   noticeTitleWarning: {
     color: '#92400E',
@@ -425,8 +431,8 @@ const styles = StyleSheet.create({
   noticeMessage: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 18,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginTop: 4,
   },
   noticeMessageWarning: {

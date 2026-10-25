@@ -12,7 +12,7 @@ import {
 } from '../../components/common/PremiumLayout';
 import { surveyService } from '../../services/surveyService';
 import { getErrorMessage } from '../../utils/http';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import AppText from '../../components/common/AppText';
 
 const SurveyScreen = ({ navigation }) => {
@@ -417,14 +417,15 @@ const styles = StyleSheet.create({
   sectionLabel: {
     color: colors.muted,
     fontFamily: typography.semibold,
-    fontSize: 12,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     textTransform: 'uppercase',
     letterSpacing: 0.6,
   },
   prompt: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 17,
+    fontSize: typeScale.base,
     lineHeight: 24,
     marginTop: 8,
     marginBottom: 14,
@@ -471,7 +472,7 @@ const styles = StyleSheet.create({
     color: colors.text,
     flex: 1,
     fontFamily: typography.regular,
-    fontSize: 14,
+    fontSize: typeScale.sm,
     lineHeight: 20,
   },
   optionTextSelected: {
@@ -494,7 +495,8 @@ const styles = StyleSheet.create({
   likertValue: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
   },
   likertValueSelected: {
     color: colors.blue,
@@ -502,20 +504,23 @@ const styles = StyleSheet.create({
   likertLabel: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 11,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 2,
     textAlign: 'center',
   },
   hint: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 12,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginTop: 4,
   },
   screenedOut: {
     color: colors.warning || '#B46B00',
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 12,
   },
   nextBtn: {

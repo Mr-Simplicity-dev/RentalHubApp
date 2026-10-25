@@ -11,7 +11,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import { rentHelpService } from '../../services/rentHelpService';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import { getErrorMessage, pickObject } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   headerBack: { alignItems: 'center', height: 36, justifyContent: 'center', width: 36 },
-  headerTitle: { color: colors.ink, flex: 1, fontFamily: typography.bold, fontSize: 17, textAlign: 'center' },
+  headerTitle: { color: colors.ink, flex: 1, fontFamily: typography.bold, fontSize: typeScale.base, lineHeight: 24, textAlign: 'center' },
   headerSpacer: { height: 36, width: 36 },
   content: { padding: 18, paddingBottom: 32 },
   heroIcon: {
@@ -200,10 +200,10 @@ const styles = StyleSheet.create({
     width: 60,
   },
   center: { alignItems: 'center', justifyContent: 'center', paddingVertical: 40 },
-  loadingText: { color: colors.muted, fontFamily: typography.medium, fontSize: 13, marginTop: 12 },
-  errorText: { color: colors.danger, fontFamily: typography.regular, fontSize: 14, marginTop: 12, textAlign: 'center' },
-  lead: { color: colors.text, fontFamily: typography.regular, fontSize: 14, lineHeight: 20, marginTop: 18, textAlign: 'center' },
-  leadStrong: { color: colors.ink, fontFamily: typography.bold },
+  loadingText: { color: colors.muted, fontFamily: typography.medium, fontSize: typeScale.xs, lineHeight: 18, marginTop: 12 },
+  errorText: { color: colors.danger, fontFamily: typography.regular, fontSize: typeScale.sm, lineHeight: 20, marginTop: 12, textAlign: 'center' },
+  lead: { color: colors.text, fontFamily: typography.regular, fontSize: typeScale.sm, lineHeight: 20, marginTop: 18, textAlign: 'center' },
+  leadStrong: { fontSize: typeScale.sm, lineHeight: 20, color: colors.ink, fontFamily: typography.bold },
   amountCard: {
     backgroundColor: colors.white,
     borderColor: colors.border,
@@ -212,11 +212,11 @@ const styles = StyleSheet.create({
     marginTop: 16,
     padding: 16,
   },
-  amountLabel: { color: colors.muted, fontFamily: typography.regular, fontSize: 12 },
-  amountValue: { color: colors.ink, fontFamily: typography.bold, fontSize: 26, marginTop: 4 },
-  expiresText: { color: colors.muted, fontFamily: typography.regular, fontSize: 12, marginTop: 6 },
+  amountLabel: { color: colors.muted, fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18 },
+  amountValue: { color: colors.ink, fontFamily: typography.bold, fontSize: typeScale.xl, lineHeight: 32, marginTop: 4 },
+  expiresText: { color: colors.muted, fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18, marginTop: 6 },
   noteBox: { backgroundColor: '#F0FDFA', borderRadius: radius.sm, marginTop: 12, padding: 10 },
-  noteText: { color: '#0F766E', fontFamily: typography.regular, fontSize: 12, lineHeight: 17 },
+  noteText: { color: '#0F766E', fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18 },
   consentRow: {
     alignItems: 'flex-start',
     backgroundColor: colors.white,
@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     padding: 13,
   },
-  consentText: { color: colors.text, flex: 1, fontFamily: typography.regular, fontSize: 12, lineHeight: 18 },
+  consentText: { color: colors.text, flex: 1, fontFamily: typography.regular, fontSize: typeScale.reading, lineHeight: 22 },
   cardButton: {
     alignItems: 'center',
     backgroundColor: '#0F766E',
@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     minHeight: 48,
   },
-  cardButtonText: { color: colors.white, fontFamily: typography.semibold, fontSize: 14 },
+  cardButtonText: { color: colors.white, fontFamily: typography.semibold, fontSize: typeScale.sm, lineHeight: 20 },
   bankButton: {
     alignItems: 'center',
     backgroundColor: colors.white,
@@ -252,7 +252,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     minHeight: 48,
   },
-  bankButtonText: { color: colors.ink, fontFamily: typography.semibold, fontSize: 14 },
+  bankButtonText: { color: colors.ink, fontFamily: typography.semibold, fontSize: typeScale.sm, lineHeight: 20 },
   buttonDisabled: { opacity: 0.5 },
   bankCard: {
     backgroundColor: '#ECFDF5',
@@ -262,10 +262,10 @@ const styles = StyleSheet.create({
     marginTop: 14,
     padding: 14,
   },
-  bankCardLabel: { color: '#047857', fontFamily: typography.bold, fontSize: 11, letterSpacing: 0.6 },
-  bankLine: { color: colors.ink, fontFamily: typography.semibold, fontSize: 14, marginTop: 7 },
-  bankAmount: { color: colors.text, fontFamily: typography.regular, fontSize: 13, marginTop: 8 },
-  bankReference: { color: colors.muted, fontFamily: typography.regular, fontSize: 12, marginTop: 6 },
+  bankCardLabel: { color: '#047857', fontFamily: typography.bold, fontSize: typeScale.xs, lineHeight: 18, letterSpacing: 0.6 },
+  bankLine: { color: colors.ink, fontFamily: typography.semibold, fontSize: typeScale.sm, lineHeight: 20, marginTop: 7 },
+  bankAmount: { color: colors.text, fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18, marginTop: 8 },
+  bankReference: { color: colors.muted, fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18, marginTop: 6 },
 });
 
 export default PayRentOnBehalfScreen;

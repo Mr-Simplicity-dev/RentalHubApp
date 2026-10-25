@@ -5,7 +5,7 @@ import Input from '../common/Input';
 import Button from '../common/Button';
 import { authService } from '../../services/authService';
 import { getErrorMessage } from '../../utils/http';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import AppText from '../common/AppText';
 
 const WithdrawalFactorModal = ({ method, onVerified, onCancel }) => {
@@ -123,28 +123,30 @@ const styles = StyleSheet.create({
   },
   title: {
     color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: 18,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.md,
+    lineHeight: 26,
   },
   subtitle: {
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 19,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginTop: 4,
   },
   body: {
     color: colors.text,
     fontFamily: typography.regular,
-    fontSize: 14,
-    lineHeight: 20,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginBottom: 12,
     marginTop: 4,
   },
   error: {
     color: colors.danger,
     fontFamily: typography.medium,
-    fontSize: 12,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 8,
   },
   resend: {

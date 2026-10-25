@@ -14,7 +14,7 @@ import BrandImagePlaceholder from '../../components/common/BrandImagePlaceholder
 import DamageReportCapture from '../../components/properties/DamageReportCapture';
 import { AuthContext } from '../../context/AuthContext';
 import { propertyService } from '../../services/propertyService';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import { getErrorMessage, pickList } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
@@ -299,8 +299,8 @@ const styles = StyleSheet.create({
     width: 42,
   },
   headerCopy: { alignItems: 'center', flex: 1 },
-  eyebrow: { color: colors.blue, fontFamily: typography.bold, fontSize: 13, letterSpacing: 1.25 },
-  title: { color: colors.ink, fontFamily: typography.bold, fontSize: 20, marginTop: 2 },
+  eyebrow: { color: colors.blue, fontFamily: typography.bold, fontSize: typeScale.xs, lineHeight: 18, letterSpacing: 0.8 },
+  title: { color: colors.ink, fontFamily: typography.semibold, fontSize: typeScale.lg, lineHeight: 28, marginTop: 2 },
   addButton: {
     alignItems: 'center',
     backgroundColor: colors.blue,
@@ -320,8 +320,8 @@ const styles = StyleSheet.create({
     marginBottom: 13,
     padding: 19,
   },
-  summaryLabel: { color: '#9BC3F4', fontFamily: typography.bold, fontSize: 13, letterSpacing: 1.25 },
-  summaryValue: { color: colors.white, fontFamily: typography.bold, fontSize: 24, marginTop: 4 },
+  summaryLabel: { color: '#9BC3F4', fontFamily: typography.bold, fontSize: typeScale.xs, lineHeight: 18, letterSpacing: 0.8 },
+  summaryValue: { color: colors.white, fontFamily: typography.bold, fontSize: typeScale.xl, lineHeight: 32, marginTop: 4 },
   summaryIcon: {
     alignItems: 'center',
     backgroundColor: 'rgba(255,201,40,0.14)',
@@ -340,7 +340,7 @@ const styles = StyleSheet.create({
     paddingVertical: 7,
   },
   filterChipActive: { backgroundColor: colors.blue, borderColor: colors.blue },
-  filterText: { color: colors.text, fontFamily: typography.medium, fontSize: 13 },
+  filterText: { color: colors.text, fontFamily: typography.medium, fontSize: typeScale.xs, lineHeight: 18 },
   filterTextActive: { color: colors.white, fontFamily: typography.semibold },
   card: {
     backgroundColor: colors.white,
@@ -359,11 +359,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 12,
   },
-  statusText: { fontFamily: typography.bold, fontSize: 13, textTransform: 'uppercase' },
+  statusText: { fontFamily: typography.bold, fontSize: typeScale.xs, lineHeight: 18, textTransform: 'uppercase' },
   cardBody: { padding: 14 },
-  cardTitle: { color: colors.ink, fontFamily: typography.bold, fontSize: 16 },
-  cardMeta: { color: colors.muted, fontFamily: typography.regular, fontSize: 13, marginTop: 4 },
-  price: { color: colors.blue, fontFamily: typography.bold, fontSize: 18, marginTop: 8 },
+  cardTitle: { color: colors.ink, fontFamily: typography.bold, fontSize: typeScale.base, lineHeight: 24 },
+  cardMeta: { color: colors.muted, fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18, marginTop: 4 },
+  price: { color: colors.blue, fontFamily: typography.bold, fontSize: typeScale.md, lineHeight: 26, marginTop: 8 },
   actions: { borderTopColor: colors.border, borderTopWidth: 1, flexDirection: 'row' },
   action: {
     alignItems: 'center',
@@ -373,8 +373,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     minHeight: 45,
   },
-  actionText: { color: colors.blue, fontFamily: typography.semibold, fontSize: 13 },
-  dangerText: { color: colors.danger, fontFamily: typography.semibold, fontSize: 13 },
+  actionText: { color: colors.blue, fontFamily: typography.semibold, fontSize: typeScale.xs, lineHeight: 18 },
+  dangerText: { color: colors.danger, fontFamily: typography.semibold, fontSize: typeScale.xs, lineHeight: 18 },
   center: {
     alignItems: 'center',
     backgroundColor: colors.surface,
@@ -391,8 +391,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: 68,
   },
-  emptyTitle: { color: colors.ink, fontFamily: typography.bold, fontSize: 20, marginTop: 17, textAlign: 'center' },
-  emptyText: { color: colors.muted, fontFamily: typography.regular, fontSize: 13, lineHeight: 20, marginTop: 7, textAlign: 'center' },
+  emptyTitle: { color: colors.ink, fontFamily: typography.semibold, fontSize: typeScale.lg, lineHeight: 28, marginTop: 17, textAlign: 'center' },
+  emptyText: { color: colors.muted, fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18, marginTop: 7, textAlign: 'center' },
   emptyAction: {
     alignItems: 'center',
     backgroundColor: colors.blue,
@@ -403,7 +403,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 17,
     paddingVertical: 12,
   },
-  emptyActionText: { color: colors.white, fontFamily: typography.semibold, fontSize: 13 },
+  emptyActionText: { color: colors.white, fontFamily: typography.semibold, fontSize: typeScale.xs, lineHeight: 18 },
 });
 
 export default MyPropertiesScreen;

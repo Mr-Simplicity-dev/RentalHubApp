@@ -7,7 +7,7 @@ import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
 import { AuthContext } from '../../context/AuthContext';
 import { agentService } from '../../services/agentService';
-import { colors, radius, shadows, typography } from '../../theme';
+import { colors, radius, shadows, typography, typeScale } from '../../theme';
 import { getErrorMessage, pickList, pickObject } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
@@ -210,10 +210,10 @@ const styles = StyleSheet.create({
   topBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 },
   backButton: { width: 42, height: 42, borderRadius: 21, backgroundColor: colors.white, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: colors.border },
   topSpacer: { width: 42 },
-  topTitle: { fontFamily: typography.semibold, fontSize: 18, color: colors.ink },
+  topTitle: { fontFamily: typography.semibold, fontSize: typeScale.md, lineHeight: 26, color: colors.ink },
   hero: { backgroundColor: colors.navy, borderRadius: radius.lg, padding: 22, marginBottom: 12, ...shadows.soft },
-  heroEyebrow: { fontFamily: typography.semibold, fontSize: 13, letterSpacing: 1.25, color: colors.gold },
-  title: { marginTop: 8, fontFamily: typography.bold, fontSize: 24, color: colors.white },
+  heroEyebrow: { fontFamily: typography.semibold, fontSize: typeScale.xs, lineHeight: 18, letterSpacing: 0.8, color: colors.gold },
+  title: { marginTop: 8, fontFamily: typography.semibold, fontSize: typeScale.xl, lineHeight: 32, color: colors.white },
   subtitle: { marginTop: 7, fontFamily: typography.regular, lineHeight: 20, color: '#B9C9E5' },
   summaryCard: {
     flexDirection: 'row',
@@ -225,28 +225,28 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   summaryItem: { flex: 1, alignItems: 'center', paddingHorizontal: 4, borderRightWidth: 1, borderRightColor: colors.border },
-  summaryLabel: { marginTop: 5, fontFamily: typography.regular, fontSize: 13, color: colors.muted },
-  summaryValue: { marginTop: 3, fontFamily: typography.bold, fontSize: 13, color: colors.ink },
+  summaryLabel: { marginTop: 5, fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18, color: colors.muted },
+  summaryValue: { marginTop: 3, fontFamily: typography.bold, fontSize: typeScale.xs, lineHeight: 18, color: colors.ink },
   formCard: { backgroundColor: colors.white, borderRadius: radius.md, borderWidth: 1, borderColor: colors.border, padding: 14 },
   formHeading: { flexDirection: 'row', alignItems: 'center', marginBottom: 13 },
   formIcon: { width: 40, height: 40, borderRadius: 12, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.surfaceBlue, marginRight: 10 },
   formTitle: { fontFamily: typography.semibold, color: colors.ink },
-  formSubtitle: { marginTop: 3, fontFamily: typography.regular, fontSize: 13, color: colors.muted },
+  formSubtitle: { marginTop: 3, fontFamily: typography.regular, fontSize: typeScale.reading, lineHeight: 22, color: colors.muted },
   sectionHeader: { marginTop: 23, marginBottom: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  sectionTitle: { fontFamily: typography.bold, fontSize: 18, color: colors.ink },
-  sectionCount: { fontFamily: typography.medium, fontSize: 13, color: colors.muted },
+  sectionTitle: { fontFamily: typography.semibold, fontSize: typeScale.md, lineHeight: 26, color: colors.ink },
+  sectionCount: { fontFamily: typography.medium, fontSize: typeScale.xs, lineHeight: 18, color: colors.muted },
   emptyCard: { backgroundColor: colors.white, borderRadius: radius.md, borderWidth: 1, borderColor: colors.border, padding: 18, alignItems: 'center' },
   empty: { fontFamily: typography.regular, color: colors.muted },
   row: { backgroundColor: colors.white, borderWidth: 1, borderColor: colors.border, borderRadius: radius.md, padding: 14, marginBottom: 9 },
   rowTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  amount: { fontFamily: typography.bold, fontSize: 18, color: colors.ink },
-  meta: { marginTop: 4, fontFamily: typography.regular, fontSize: 13, color: colors.muted },
+  amount: { fontFamily: typography.bold, fontSize: typeScale.md, lineHeight: 26, color: colors.ink },
+  meta: { marginTop: 4, fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18, color: colors.muted },
   statusPill: { backgroundColor: '#FFF7DF', borderRadius: radius.pill, paddingHorizontal: 10, paddingVertical: 6 },
-  statusText: { fontFamily: typography.semibold, fontSize: 13, textTransform: 'capitalize', color: '#805800' },
+  statusText: { fontFamily: typography.semibold, fontSize: typeScale.xs, lineHeight: 18, textTransform: 'capitalize', color: '#805800' },
   reject: { marginTop: 10, paddingTop: 10, borderTopWidth: 1, borderTopColor: colors.border, fontFamily: typography.regular, color: colors.danger },
   warningCard: { borderWidth: 1, borderColor: '#F2D58A', backgroundColor: '#FFF9E8', borderRadius: radius.lg, padding: 22, alignItems: 'center' },
   warningIcon: { width: 48, height: 48, borderRadius: 16, backgroundColor: '#FFF1C2', alignItems: 'center', justifyContent: 'center', marginBottom: 12 },
-  warningTitle: { color: colors.ink, fontFamily: typography.bold, fontSize: 18 },
+  warningTitle: { color: colors.ink, fontFamily: typography.semibold, fontSize: typeScale.md, lineHeight: 26 },
   warningText: { color: colors.text, fontFamily: typography.regular, textAlign: 'center', lineHeight: 20, marginTop: 6 },
 });
 

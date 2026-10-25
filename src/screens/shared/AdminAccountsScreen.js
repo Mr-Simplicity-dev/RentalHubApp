@@ -10,7 +10,7 @@ import {
 } from '../../components/common/PremiumLayout';
 import { adminAccountsService } from '../../services/adminAccountsService';
 import { getErrorMessage } from '../../utils/http';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import AppText from '../../components/common/AppText';
 
 const ADMIN_ROLE_OPTIONS = [
@@ -256,7 +256,8 @@ const styles = StyleSheet.create({
   chipText: {
     color: colors.text,
     fontFamily: typography.medium,
-    fontSize: 12,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   chipTextSelected: {
     color: colors.white,
@@ -264,7 +265,8 @@ const styles = StyleSheet.create({
   error: {
     color: colors.danger,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 10,
   },
   submit: {

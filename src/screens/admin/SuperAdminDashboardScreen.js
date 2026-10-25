@@ -1,14 +1,6 @@
 import React, { useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import {Alert,
-  FlatList,
-  Image,
-  Modal,
-  ScrollView,
-  StyleSheet,
-  Switch,
-  TextInput,
-  TouchableOpacity,
-  View,} from 'react-native';
+import { Alert, FlatList, Image, Modal, ScrollView, StyleSheet, Switch, TouchableOpacity, View } from 'react-native';
+import TextInput from '../../components/common/AppTextInput';
 import Toast from 'react-native-toast-message';
 import * as Notifications from 'expo-notifications';
 import Input from '../../components/common/Input';
@@ -37,7 +29,7 @@ import {
 } from '../../components/dashboard/DashboardKit';
 import WorkspaceBoard from '../../components/dashboard/WorkspaceBoard';
 import { AuthContext } from '../../context/AuthContext';
-import { colors, typography, radius } from '../../theme';
+import { colors, typography, radius, typeScale } from '../../theme';
 import TourTarget from '../../components/tour/TourTarget';
 import {
   TourScrollProvider,
@@ -3519,7 +3511,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: '#f8fafc' },
   content: { padding: 16, paddingBottom: 24 },
-  title: { fontFamily: typography.bold, fontSize: 32, color: colors.ink, marginBottom: 12 },
+  title: { fontFamily: typography.semibold, fontSize: typeScale.xxl, lineHeight: 36, color: colors.ink, marginBottom: 12 },
   tabRow: { marginBottom: 12 },
   tabBtn: {
     marginRight: 8,
@@ -3541,8 +3533,8 @@ const styles = StyleSheet.create({
     padding: 12,
     marginBottom: 10,
   },
-  cardTitle: { fontSize: 16, fontWeight: '700', color: '#0f172a', marginBottom: 4 },
-  sectionTitle: { fontFamily: typography.bold, fontSize: 18, color: colors.ink, marginBottom: 8 },
+  cardTitle: { fontSize: typeScale.base, lineHeight: 24, fontWeight: '700', color: '#0f172a', marginBottom: 4 },
+  sectionTitle: { fontFamily: typography.semibold, fontSize: typeScale.md, lineHeight: 26, color: colors.ink, marginBottom: 8 },
   meta: { marginTop: 4, color: '#475569' },
   tourSectionAnchor: {
     alignItems: 'center',
@@ -3558,7 +3550,8 @@ const styles = StyleSheet.create({
   tourSectionAnchorText: {
     color: colors.white,
     fontFamily: typography.semibold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
     marginLeft: 9,
   },
   row: { flexDirection: 'row', gap: 16, marginTop: 10, flexWrap: 'wrap' },
@@ -3585,7 +3578,8 @@ const styles = StyleSheet.create({
   photoModalTitle: {
     color: colors.ink,
     fontFamily: typography.bold,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
     flex: 1,
     marginRight: 10,
   },
@@ -3731,26 +3725,30 @@ const styles = StyleSheet.create({
   headerBellLabel: {
     color: '#64748b',
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     flex: 1,
   },
   summaryCardLabel: {
     color: '#64748b',
     flex: 1,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginRight: 6,
   },
   summaryCardValue: {
     color: '#0f172a',
     fontFamily: typography.bold,
-    fontSize: 24,
+    fontSize: typeScale.xl,
+    lineHeight: 32,
     marginTop: 8,
   },
   summaryCardHint: {
     color: colors.blue,
     fontFamily: typography.semibold,
-    fontSize: 11,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginTop: 4,
   },
   headerBack: {
@@ -3768,7 +3766,8 @@ const styles = StyleSheet.create({
   backToOverviewText: {
     color: colors.blue,
     fontFamily: typography.semibold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   workspaceGroup: {
     marginBottom: 14,
@@ -3781,7 +3780,8 @@ const styles = StyleSheet.create({
   workspaceGroupTitle: {
     color: '#0f172a',
     fontFamily: typography.bold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   workspaceGrid: {
     flexDirection: 'row',
@@ -3804,7 +3804,8 @@ const styles = StyleSheet.create({
   workspaceCardLabel: {
     color: '#334155',
     fontFamily: typography.medium,
-    fontSize: 11,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     textAlign: 'center',
   },
   analyticsGrid: {
@@ -3840,22 +3841,26 @@ const styles = StyleSheet.create({
     color: '#334155',
     flex: 1,
     fontFamily: typography.medium,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginRight: 10,
     textTransform: 'capitalize',
   },
   breakdownValue: {
     color: '#0f172a',
     fontFamily: typography.bold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   analyticsValue: {
-    fontSize: 24,
+    fontSize: typeScale.xl,
+    lineHeight: 32,
     fontFamily: typography.bold,
     color: '#0f172a',
   },
   analyticsLabel: {
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     fontWeight: '600',
     color: '#64748b',
     marginTop: 4,
@@ -3876,7 +3881,8 @@ const styles = StyleSheet.create({
   smallBtnText: {
     color: '#ffffff',
     fontWeight: '700',
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   checkbox: {
     width: 22,
@@ -3895,7 +3901,8 @@ const styles = StyleSheet.create({
   checkmark: {
     color: '#ffffff',
     fontFamily: typography.bold,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   checkboxRow: {
     flexDirection: 'row',
@@ -3978,7 +3985,8 @@ const styles = StyleSheet.create({
     borderColor: '#cbd5e1',
     borderRadius: 8,
     padding: 12,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
     color: '#0f172a',
     backgroundColor: '#ffffff',
     textAlignVertical: 'top',

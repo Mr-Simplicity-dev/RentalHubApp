@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {StyleSheet, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { colors, typography } from '../../theme';
+import { colors, typography, typeScale } from '../../theme';
 import {
   getNetworkSnapshot,
   subscribeNetworkStatus,
@@ -65,8 +65,8 @@ const styles = StyleSheet.create({
     color: '#78350F',
     flex: 1,
     fontFamily: typography.semibold,
-    fontSize: 13,
-    lineHeight: 17,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
 });
 

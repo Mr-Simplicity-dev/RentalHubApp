@@ -5,7 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import { AuthContext } from '../../context/AuthContext';
 import { agentService } from '../../services/agentService';
-import { colors, radius, shadows, typography } from '../../theme';
+import { colors, radius, shadows, typography, typeScale } from '../../theme';
 import { getErrorMessage, pickList } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
@@ -156,11 +156,11 @@ const styles = StyleSheet.create({
   topBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 },
   backButton: { width: 42, height: 42, borderRadius: 21, backgroundColor: colors.white, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: colors.border },
   refreshButton: { width: 42, height: 42, borderRadius: 21, backgroundColor: colors.surfaceBlue, alignItems: 'center', justifyContent: 'center' },
-  topTitle: { fontFamily: typography.semibold, fontSize: 18, color: colors.ink },
+  topTitle: { fontFamily: typography.semibold, fontSize: typeScale.md, lineHeight: 26, color: colors.ink },
   hero: { backgroundColor: colors.navy, borderRadius: radius.lg, padding: 22, marginBottom: 14, ...shadows.soft },
   heroIcon: { width: 42, height: 42, borderRadius: 14, backgroundColor: colors.navySoft, alignItems: 'center', justifyContent: 'center', marginBottom: 20 },
-  heroLabel: { fontFamily: typography.semibold, fontSize: 13, letterSpacing: 1.25, color: '#AFC3E6' },
-  heroAmount: { marginTop: 7, fontFamily: typography.bold, fontSize: 36, color: colors.white },
+  heroLabel: { fontFamily: typography.semibold, fontSize: typeScale.xs, lineHeight: 18, letterSpacing: 0.8, color: '#AFC3E6' },
+  heroAmount: { marginTop: 7, fontFamily: typography.bold, fontSize: typeScale.hero, lineHeight: 40, color: colors.white },
   heroCaption: { marginTop: 8, fontFamily: typography.regular, lineHeight: 20, color: '#B9C9E5' },
   metrics: { flexDirection: 'row', gap: 9, marginBottom: 14 },
   statCard: {
@@ -175,8 +175,8 @@ const styles = StyleSheet.create({
   paidIcon: { backgroundColor: '#E9F8F1' },
   pendingIcon: { backgroundColor: '#FFF7DF' },
   countIcon: { backgroundColor: colors.surfaceBlue },
-  statLabel: { fontFamily: typography.regular, fontSize: 13, color: colors.muted },
-  statValue: { marginTop: 4, fontFamily: typography.bold, fontSize: 14, color: colors.ink },
+  statLabel: { fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18, color: colors.muted },
+  statValue: { marginTop: 4, fontFamily: typography.bold, fontSize: typeScale.sm, lineHeight: 20, color: colors.ink },
   primaryBtn: {
     backgroundColor: colors.blue,
     borderRadius: radius.md,
@@ -188,8 +188,8 @@ const styles = StyleSheet.create({
   },
   primaryBtnText: { flex: 1, marginLeft: 10, color: colors.white, fontFamily: typography.semibold },
   sectionHeader: { marginTop: 24, marginBottom: 11, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  sectionTitle: { fontFamily: typography.bold, fontSize: 18, color: colors.ink },
-  sectionCount: { fontFamily: typography.medium, fontSize: 13, color: colors.muted },
+  sectionTitle: { fontFamily: typography.semibold, fontSize: typeScale.md, lineHeight: 26, color: colors.ink },
+  sectionCount: { fontFamily: typography.medium, fontSize: typeScale.xs, lineHeight: 18, color: colors.muted },
   muted: { marginTop: 7, textAlign: 'center', fontFamily: typography.regular, color: colors.muted },
   emptyCard: { alignItems: 'center', backgroundColor: colors.white, borderWidth: 1, borderColor: colors.border, borderRadius: radius.md, padding: 24 },
   emptyTitle: { marginTop: 10, fontFamily: typography.semibold, color: colors.ink },
@@ -206,14 +206,14 @@ const styles = StyleSheet.create({
   entryCopy: { flex: 1, marginHorizontal: 10 },
   entryType: { fontFamily: typography.semibold, textTransform: 'capitalize', color: colors.ink },
   entryAmount: { fontFamily: typography.bold, color: colors.success },
-  entryMeta: { marginTop: 4, fontFamily: typography.regular, color: colors.muted, fontSize: 13 },
+  entryMeta: { marginTop: 4, fontFamily: typography.regular, color: colors.muted, fontSize: typeScale.xs, lineHeight: 18 },
   statusRow: { marginTop: 12, paddingTop: 10, borderTopWidth: 1, borderTopColor: colors.border, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   statusPill: { paddingVertical: 5, paddingHorizontal: 9, borderRadius: radius.pill },
   statusSuccess: { backgroundColor: '#E9F8F1' },
   statusDanger: { backgroundColor: '#FDECEA' },
   statusPending: { backgroundColor: '#FFF7DF' },
-  statusText: { fontFamily: typography.semibold, fontSize: 13, textTransform: 'capitalize', color: colors.text },
-  paymentText: { fontFamily: typography.regular, fontSize: 13, color: colors.muted },
+  statusText: { fontFamily: typography.semibold, fontSize: typeScale.xs, lineHeight: 18, textTransform: 'capitalize', color: colors.text },
+  paymentText: { fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18, color: colors.muted },
 });
 
 export default AgentEarningsScreen;

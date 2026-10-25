@@ -10,7 +10,7 @@ import {
 } from '../../components/common/PremiumLayout';
 import { authService } from '../../services/authService';
 import { getErrorMessage } from '../../utils/http';
-import { colors, typography } from '../../theme';
+import { colors, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const VerifyEmailScreen = ({ navigation, route }) => {
@@ -92,8 +92,8 @@ const styles = StyleSheet.create({
   message: {
     color: colors.text,
     fontFamily: typography.medium,
-    fontSize: 13,
-    lineHeight: 19,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
     marginBottom: 14,
   },
   marginTop: {

@@ -1,20 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import {
-  ActivityIndicator,
-  Alert,
-  ScrollView,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { ActivityIndicator, Alert, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import TextInput from '../../components/common/AppTextInput';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import { rentCalculatorService } from '../../services/rentCalculatorService';
 import { propertyService } from '../../services/propertyService';
 import { recruitmentService } from '../../services/recruitmentService';
-import { colors, radius, typography } from '../../theme';
+import { colors, radius, typography, typeScale } from '../../theme';
 import { getErrorMessage } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
@@ -272,8 +265,8 @@ const styles = StyleSheet.create({
   content: { padding: 16, paddingBottom: 32 },
   headerRow: { alignItems: 'flex-start', flexDirection: 'row' },
   headerBody: { flex: 1, marginRight: 12 },
-  title: { color: colors.ink, fontFamily: typography.bold, fontSize: 19 },
-  subtitle: { color: colors.muted, fontFamily: typography.regular, fontSize: 12, lineHeight: 18, marginTop: 5 },
+  title: { color: colors.ink, fontFamily: typography.semibold, fontSize: typeScale.md, lineHeight: 26 },
+  subtitle: { color: colors.muted, fontFamily: typography.regular, fontSize: typeScale.reading, lineHeight: 22, marginTop: 5 },
   addButton: {
     alignItems: 'center',
     backgroundColor: colors.blue,
@@ -290,8 +283,8 @@ const styles = StyleSheet.create({
     marginTop: 14,
     padding: 15,
   },
-  cardTitle: { color: colors.ink, fontFamily: typography.bold, fontSize: 15, marginBottom: 8 },
-  label: { color: colors.text, fontFamily: typography.semibold, fontSize: 12, marginBottom: 6, marginTop: 12 },
+  cardTitle: { color: colors.ink, fontFamily: typography.bold, fontSize: typeScale.reading, lineHeight: 22, marginBottom: 8 },
+  label: { color: colors.text, fontFamily: typography.semibold, fontSize: typeScale.xs, lineHeight: 18, marginBottom: 6, marginTop: 12 },
   chipWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   chip: {
     backgroundColor: colors.white,
@@ -302,7 +295,7 @@ const styles = StyleSheet.create({
     paddingVertical: 7,
   },
   chipActive: { backgroundColor: colors.blue, borderColor: colors.blue },
-  chipText: { color: colors.text, fontFamily: typography.medium, fontSize: 12 },
+  chipText: { color: colors.text, fontFamily: typography.medium, fontSize: typeScale.xs, lineHeight: 18 },
   chipTextActive: { color: colors.white, fontFamily: typography.semibold },
   input: {
     backgroundColor: colors.white,
@@ -311,7 +304,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     color: colors.ink,
     fontFamily: typography.regular,
-    fontSize: 14,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
     paddingHorizontal: 12,
     paddingVertical: 11,
   },
@@ -324,12 +318,12 @@ const styles = StyleSheet.create({
     marginTop: 16,
     minHeight: 46,
   },
-  primaryButtonText: { color: colors.white, fontFamily: typography.semibold, fontSize: 14 },
+  primaryButtonText: { color: colors.white, fontFamily: typography.semibold, fontSize: typeScale.sm, lineHeight: 20 },
   center: { alignItems: 'center', justifyContent: 'center', paddingVertical: 40 },
-  loadingText: { color: colors.muted, fontFamily: typography.medium, fontSize: 13, marginTop: 12 },
+  loadingText: { color: colors.muted, fontFamily: typography.medium, fontSize: typeScale.xs, lineHeight: 18, marginTop: 12 },
   empty: { alignItems: 'center', paddingVertical: 40 },
-  emptyTitle: { color: colors.ink, fontFamily: typography.bold, fontSize: 17, marginTop: 12 },
-  emptyText: { color: colors.muted, fontFamily: typography.regular, fontSize: 13, marginTop: 6, textAlign: 'center' },
+  emptyTitle: { color: colors.ink, fontFamily: typography.bold, fontSize: typeScale.base, lineHeight: 24, marginTop: 12 },
+  emptyText: { color: colors.muted, fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18, marginTop: 6, textAlign: 'center' },
   feeCard: {
     alignItems: 'center',
     backgroundColor: colors.white,
@@ -341,8 +335,8 @@ const styles = StyleSheet.create({
     padding: 14,
   },
   feeBody: { flex: 1 },
-  feeTitle: { color: colors.ink, fontFamily: typography.semibold, fontSize: 14 },
-  feeMeta: { color: colors.muted, fontFamily: typography.regular, fontSize: 12, marginTop: 3 },
+  feeTitle: { color: colors.ink, fontFamily: typography.semibold, fontSize: typeScale.sm, lineHeight: 20 },
+  feeMeta: { color: colors.muted, fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18, marginTop: 3 },
   deleteButton: { alignItems: 'center', height: 36, justifyContent: 'center', width: 36 },
 });
 

@@ -14,7 +14,7 @@ import {
 } from '../../services/appUpdateService';
 import { subscribeAppSettings } from '../../services/appSettingsService';
 import { trackMobileEvent } from '../../services/mobileDiagnosticsService';
-import { colors, shadows, typography } from '../../theme';
+import { colors, shadows, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const CHECK_DELAY_MS = 4200;
@@ -245,20 +245,22 @@ const styles = StyleSheet.create({
   bannerEyebrow: {
     color: colors.gold,
     fontFamily: typography.bold,
-    fontSize: 13,
-    letterSpacing: 1.25,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
+    letterSpacing: 0.8,
   },
   bannerTitle: {
     color: colors.white,
     fontFamily: typography.bold,
-    fontSize: 16,
+    fontSize: typeScale.base,
+    lineHeight: 24,
     marginTop: 3,
   },
   bannerText: {
     color: 'rgba(255, 255, 255, 0.75)',
     fontFamily: typography.regular,
-    fontSize: 13,
-    lineHeight: 17,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 5,
   },
   bannerActions: {
@@ -284,7 +286,8 @@ const styles = StyleSheet.create({
   progressText: {
     color: 'rgba(255, 255, 255, 0.85)',
     fontFamily: typography.semibold,
-    fontSize: 12,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     marginTop: 6,
   },
   primaryButton: {
@@ -298,8 +301,9 @@ const styles = StyleSheet.create({
   },
   primaryButtonText: {
     color: colors.navy,
-    fontFamily: typography.bold,
-    fontSize: 13,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   secondaryButton: {
     alignItems: 'center',
@@ -316,7 +320,8 @@ const styles = StyleSheet.create({
   secondaryButtonText: {
     color: colors.white,
     fontFamily: typography.semibold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
   dotContainer: {
     alignItems: 'center',
@@ -357,7 +362,8 @@ const styles = StyleSheet.create({
   dotLabel: {
     color: colors.white,
     fontFamily: typography.bold,
-    fontSize: 13,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
     letterSpacing: 0,
   },
   disabled: {
