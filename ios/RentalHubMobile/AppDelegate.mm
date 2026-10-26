@@ -2,11 +2,15 @@
 
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTLinkingManager.h>
+#import <React/RCTI18nUtil.h>
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  [[RCTI18nUtil sharedInstance] allowRTL:NO];
+  [[RCTI18nUtil sharedInstance] forceRTL:NO];
+  [[RCTI18nUtil sharedInstance] swapLeftAndRightInRTL:NO];
   self.moduleName = @"RentalHubMobile";
   // You can add your custom initial props in the dictionary below.
   // They will be passed down to the ViewController used by React Native.

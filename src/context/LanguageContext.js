@@ -4,10 +4,11 @@ import React, {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { I18nManager } from 'react-native';
+import { I18nManager, View } from 'react-native';
 
 const {
   DEFAULT_LANGUAGE,
@@ -41,7 +42,8 @@ export const LanguageContext = createContext(null);
 export const LanguageProvider = ({ children }) => {
   const [language, setLanguageState] = useState(detectDeviceLanguage);
   const [ready, setReady] = useState(false);
-  const [rtlRestartRequired, setRtlRestartRequired] = useState(false);
+  const languageWrites = useRef(Promise.resolve());
+
 
   const languageDefinition = SUPPORTED_LANGUAGES.find(
     ({ code }) => code === language
@@ -56,6 +58,7 @@ export const LanguageProvider = ({ children }) => {
           setLanguageState(normalizeLanguage(storedLanguage));
         }
       })
+      .catch(() => {})
       .finally(() => {
         if (active) setReady(true);
       });
@@ -65,33 +68,20 @@ export const LanguageProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    if (!ready) return;
-    I18nManager.allowRTL(true);
-    I18nManager.swapLeftAndRightInRTL(true);
-    const directionChanged = I18nManager.isRTL !== isRTL;
-    setRtlRestartRequired(directionChanged);
-    if (directionChanged) {
-      I18nManager.forceRTL(isRTL);
-    }
-  }, [isRTL, ready]);
+    I18nManager.allowRTL(false);
+    I18nManager.forceRTL(false);
+    I18nManager.swapLeftAndRightInRTL(false);
+  }, []);
 
   const setLanguage = useCallback(async (nextLanguage) => {
     const normalized = normalizeLanguage(nextLanguage);
-    const nextIsRTL = Boolean(
-      SUPPORTED_LANGUAGES.find(({ code }) => code === normalized)?.rtl
-    );
-    const restartRequired = I18nManager.isRTL !== nextIsRTL;
-    // Copy and direction update first: awaiting storage here delayed the
-    // re-render of every label, so a slow device looked stuck on the old
-    // language after tapping a new one.
     setLanguageState(normalized);
-    setRtlRestartRequired(restartRequired);
     try {
-      await AsyncStorage.setItem(LANGUAGE_STORAGE_KEY, normalized);
+      languageWrites.current = languageWrites.current.catch(() => {}).then(() => AsyncStorage.setItem(LANGUAGE_STORAGE_KEY, normalized));
+      await languageWrites.current;
     } catch {
-      // The choice still applies for the current session.
     }
-    return { language: normalized, restartRequired };
+    return { language: normalized, restartRequired: false };
   }, []);
 
   const t = useCallback((key, variables) => {
@@ -101,12 +91,13 @@ export const LanguageProvider = ({ children }) => {
   }, [language]);
 
   const value = useMemo(() => ({
-    direction: isRTL ? 'rtl' : 'ltr',
+    direction: 'ltr',
+    textDirection: isRTL ? 'rtl' : 'ltr',
     isRTL,
     language,
     languages: SUPPORTED_LANGUAGES,
     ready,
-    rtlRestartRequired,
+    rtlRestartRequired: false,
     setLanguage,
     t,
     textAlign: isRTL ? 'right' : 'left',
@@ -114,7 +105,6 @@ export const LanguageProvider = ({ children }) => {
     isRTL,
     language,
     ready,
-    rtlRestartRequired,
     setLanguage,
     t,
   ]);
@@ -123,7 +113,7 @@ export const LanguageProvider = ({ children }) => {
 
   return (
     <LanguageContext.Provider value={value}>
-      {children}
+      <View style={{ flex: 1, direction: 'ltr' }}>{children}</View>
     </LanguageContext.Provider>
   );
 };

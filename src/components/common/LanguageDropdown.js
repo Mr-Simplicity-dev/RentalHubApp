@@ -18,7 +18,6 @@ import AppText from './AppText';
 const LanguageDropdown = ({ tone = 'light', fullWidth = false }) => {
   const { language, languages, setLanguage, t } = useLanguage();
   const [open, setOpen] = useState(false);
-  const [restartNeeded, setRestartNeeded] = useState(false);
   const [switching, setSwitching] = useState(false);
 
   const current = useMemo(
@@ -32,10 +31,7 @@ const LanguageDropdown = ({ tone = 'light', fullWidth = false }) => {
     if (code === language) return;
     setSwitching(true);
     try {
-      const result = await setLanguage(code);
-      // Switching between left-to-right and right-to-left only takes full effect
-      // after the app is reopened, so say so instead of leaving it looking broken.
-      setRestartNeeded(Boolean(result?.restartRequired));
+      await setLanguage(code);
     } catch {
       // Keep the previous language if the switch could not be applied.
     } finally {
@@ -70,13 +66,7 @@ const LanguageDropdown = ({ tone = 'light', fullWidth = false }) => {
         <Icon name="chevron-down" size={18} color={chevronColor} />
       </TouchableOpacity>
 
-      {restartNeeded ? (
-        <AppText style={[styles.restartNote, onDark && styles.restartNoteOnDark]}>
-          {t('settings.languageRestart')}
-        </AppText>
-      ) : null}
-
-      <Modal
+<Modal
         visible={open}
         transparent
         animationType="fade"

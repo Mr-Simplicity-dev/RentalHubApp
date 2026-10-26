@@ -25,8 +25,6 @@ const WelcomeScreen = ({ navigation }) => {
   const { isRTL, t, textAlign, language } = useLanguage();
   const careersCopy=recruitmentCopy[language]||recruitmentCopy.en;
   const compact = height < 720 || width < 360;
-  const nativeRTL = Boolean(I18nManager.isRTL);
-  const directionOverride = nativeRTL !== isRTL ? (isRTL ? 'rtl' : 'ltr') : null;
   const textDirection = isRTL ? 'rtl' : 'ltr';
   const contentY = useRef(new Animated.Value(22)).current;
   const contentOpacity = useRef(new Animated.Value(0)).current;
@@ -81,7 +79,7 @@ const WelcomeScreen = ({ navigation }) => {
   }, [hintBounce]);
 
   return (
-    <SafeAreaView style={[styles.safeArea, directionOverride ? { direction: directionOverride } : null]}>
+    <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="light-content" backgroundColor={colors.navy} />
       <Image source={logo} style={styles.watermark} resizeMode="contain" pointerEvents="none" />
       <View style={styles.orbTop} pointerEvents="none" />
@@ -95,7 +93,7 @@ const WelcomeScreen = ({ navigation }) => {
           onPress={() => navigateOnce('Home')}
           style={styles.exploreButton}>
           <AppText style={[styles.exploreText, { textAlign, writingDirection: textDirection }]}>{t('welcome.explore')}</AppText>
-          <Icon name={isRTL ? 'arrow-back' : 'arrow-forward'} size={17} color={colors.white} />
+          <Icon name="arrow-forward" size={17} color={colors.white} />
         </TouchableOpacity>
       </View>
 
@@ -137,7 +135,7 @@ const WelcomeScreen = ({ navigation }) => {
             style={styles.primaryButton}>
             <AppText style={[styles.primaryText, { textAlign, writingDirection: textDirection }]}>{t('welcome.createAccount')}</AppText>
             <View style={styles.primaryIcon}>
-              <Icon name={isRTL ? 'arrow-back' : 'arrow-forward'} size={19} color={colors.navy} />
+              <Icon name="arrow-forward" size={19} color={colors.navy} />
             </View>
           </TouchableOpacity>
 
@@ -173,6 +171,7 @@ const WelcomeScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   careersButton: {backgroundColor:colors.navySoft,borderWidth:1,borderColor:'#446494',borderRadius:radius.md,padding:16,minHeight:68,flexDirection:'row',alignItems:'center',gap:12,marginTop:16},
   safeArea: {
+    direction: 'ltr',
     backgroundColor: colors.navy,
     flex: 1,
     overflow: 'hidden',
@@ -208,6 +207,7 @@ const styles = StyleSheet.create({
     width: 340,
   },
   top: {
+    direction: 'ltr',
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -221,18 +221,22 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   exploreButton: {
+    flexShrink: 1,
+    maxWidth: '48%',
     alignItems: 'center',
     flexDirection: 'row',
     gap: 7,
     paddingVertical: 10,
   },
   exploreText: {
+    flexShrink: 1,
     color: '#DDEBFF',
     fontFamily: typography.semibold,
     fontSize: typeScale.xs,
     lineHeight: 18,
   },
   exploreHintWrap: {
+    direction: 'ltr',
     alignItems: 'flex-end',
     marginTop: 4,
     marginBottom: 2,
@@ -250,6 +254,8 @@ const styles = StyleSheet.create({
     width: 0,
   },
   exploreHint: {
+    direction: 'ltr',
+    maxWidth: '100%',
     alignItems: 'center',
     backgroundColor: colors.gold,
     borderRadius: radius.pill,
@@ -260,6 +266,7 @@ const styles = StyleSheet.create({
     ...shadows.soft,
   },
   exploreHintText: {
+    flexShrink: 1,
     color: colors.navy,
     fontFamily: typography.bold,
     fontSize: typeScale.reading,

@@ -684,6 +684,91 @@ const zonalRefreshCopy = {
   ]
 };
 for(const [locale, rows] of Object.entries(zonalRefreshCopy)){["zonal_overview","zonal_workspaces","zonal_scope"].forEach((id,index)=>{TOUR_STEP_COPY[locale][id]=rows[index];});}
+const marketingTourCopy = {
+  "en": [
+    [
+      "Capture a survey",
+      "Open Conduct Survey to record a respondent using the existing survey flow."
+    ],
+    [
+      "Review captured responses",
+      "Check captured and in-progress survey counts before following up."
+    ]
+  ],
+  "fr": [
+    [
+      "Saisir une enquête",
+      "Ouvrez le formulaire pour enregistrer un répondant dans le parcours existant."
+    ],
+    [
+      "Examiner les réponses",
+      "Vérifiez les enquêtes saisies et en cours avant le suivi."
+    ]
+  ],
+  "ar": [
+    [
+      "تسجيل استبيان",
+      "افتح إجراء استبيان لتسجيل إجابات المشارك عبر النموذج الحالي."
+    ],
+    [
+      "مراجعة الإجابات",
+      "تحقق من الاستبيانات المسجلة وقيد التنفيذ قبل المتابعة."
+    ]
+  ],
+  "ru": [
+    [
+      "Записать опрос",
+      "Откройте форму опроса для записи ответов участника."
+    ],
+    [
+      "Проверить ответы",
+      "Проверьте завершённые и текущие опросы перед дальнейшей работой."
+    ]
+  ],
+  "zh": [
+    [
+      "录入问卷",
+      "打开问卷表单，通过现有流程记录受访者回答。"
+    ],
+    [
+      "查看问卷记录",
+      "跟进前请核对已录入和进行中的问卷数量。"
+    ]
+  ],
+  "ha": [
+    [
+      "Cika bincike",
+      "Buɗe Conduct Survey don rubuta amsoshin mutum a tsarin binciken da ake da shi."
+    ],
+    [
+      "Duba amsoshin bincike",
+      "Duba adadin binciken da aka cika da waɗanda ke gudana kafin bibiyar aiki."
+    ]
+  ],
+  "yo": [
+    [
+      "Ṣe ìwádìí",
+      "Ṣí Conduct Survey láti gba ìdáhùn ẹni nínú ìlànà ìwádìí tó wà."
+    ],
+    [
+      "Ṣàyẹ̀wò àwọn ìdáhùn",
+      "Ṣàyẹ̀wò iye ìwádìí tí a gba àti èyí tí ń lọ kí o tó tẹ̀lé e."
+    ]
+  ],
+  "ig": [
+    [
+      "Dee nyocha",
+      "Mepee Conduct Survey ka ị dekọọ azịza mmadụ site n’usoro nyocha dị."
+    ],
+    [
+      "Lelee azịza",
+      "Lelee ọnụọgụ nyocha e dekọrọ na ndị ka na-aga tupu nsonye."
+    ]
+  ]
+};
+for(const [locale, rows] of Object.entries(marketingTourCopy)){["marketing_capture","marketing_metrics"].forEach((id,index)=>{TOUR_STEP_COPY[locale][id]=rows[index];});}
+const clientAssignmentCopy = {"en":"Review the properties and clients you are authorized to represent, then open a property to inspect its disputes.","fr":"Examinez les biens et clients autorisés, puis ouvrez un bien pour consulter ses litiges.","ar":"راجع العقارات والعملاء المصرح لك بتمثيلهم ثم افتح العقار للاطلاع على نزاعاته.","ru":"Просмотрите разрешённые вам объекты и клиентов, затем откройте объект для проверки споров.","zh":"查看有权代理的房源与客户，然后打开房源查看相关争议。","ha":"Duba gidaje da abokan ciniki da aka ba ka izinin wakilta, sannan buɗe gida don duba rikicinsa.","yo":"Ṣàyẹ̀wò àwọn ilé àti oníbàárà tí o ní àṣẹ láti ṣojú, lẹ́yìn náà ṣí ilé láti wo ọ̀ràn rẹ̀.","ig":"Lelee ụlọ na ndị ahịa e nyere gị ikike ịnọchite, wee mepee ụlọ ka ị lelee esemokwu ya."};
+for(const [locale, description] of Object.entries(clientAssignmentCopy)){TOUR_STEP_COPY[locale].lawyer_clients[1]=description;}
 const TOUR_STEP_IDS = Object.freeze(Object.keys(TOUR_STEP_COPY.en));
 
 module.exports = { TOUR_STEP_COPY, TOUR_STEP_IDS };

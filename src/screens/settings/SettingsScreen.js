@@ -198,13 +198,7 @@ const SettingsScreen = ({ navigation }) => {
     setSettings(nextSettings);
     await saveAppSettings(nextSettings);
     Toast.show({ type: 'success', text1: t('settings.languageSaved') });
-    if (result.restartRequired) {
-      Alert.alert(
-        t('settings.languageRestartTitle'),
-        t('settings.languageRestart'),
-        [{ text: t('settings.ok') }]
-      );
-    }
+
   };
 
   const closeDeleteModal = () => {

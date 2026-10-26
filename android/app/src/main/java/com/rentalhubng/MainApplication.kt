@@ -4,6 +4,7 @@ import expo.modules.ApplicationLifecycleDispatcher
 import expo.modules.ExpoModulesPackage
 import expo.modules.ExpoReactHostFactory
 
+import com.facebook.react.modules.i18nmanager.I18nUtil
 import android.app.Application
 import com.facebook.react.PackageList
 import com.facebook.react.ReactApplication
@@ -42,6 +43,11 @@ class MainApplication : Application(), ReactApplication {
 
   override fun onCreate() {
     super.onCreate()
+    I18nUtil.instance.apply {
+      allowRTL(this@MainApplication, false)
+      forceRTL(this@MainApplication, false)
+      swapLeftAndRightInRTL(this@MainApplication, false)
+    }
     SoLoader.init(this, OpenSourceMergedSoMapping)
     try {
       Paystack.builder()

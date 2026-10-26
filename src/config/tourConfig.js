@@ -4,7 +4,8 @@ export const TOUR_VERSION = '7';
 export const TOUR_PROMPT_INTERVAL_DAYS = 7;
 
 const destination = (name, params) => ({ name, ...(params ? { params } : {}) });
-const workflow = (name, params) => ({
+const workflow = (name, params, prepareAtDestination = false) => ({
+  prepareAtDestination,
   destination: destination(name, params),
   action: true,
 });
@@ -12,7 +13,7 @@ const step = (id, icon, options = {}) => ({ id, icon, ...options });
 const settingsStep = step(
   'tour_settings',
   'settings-outline',
-  workflow('Settings')
+  workflow('Settings', undefined, true)
 );
 
 const tabExploreStep = step('tab_explore', 'compass-outline');
@@ -25,12 +26,12 @@ const tabBarSteps = [tabExploreStep, tabDashboardStep, tabApplicationsStep, tabM
 const commonPreSteps = [headerNotifStep, ...tabBarSteps];
 
 const settingsIconSteps = [
-  step('settings_profile_biometric', 'finger-print-outline', workflow('Settings')),
-  step('settings_privacy', 'lock-closed-outline', workflow('Settings')),
-  step('settings_terms', 'document-text-outline', workflow('Settings')),
-  step('settings_replay', 'map-outline', workflow('Settings')),
-  step('settings_reset', 'refresh-outline', workflow('Settings')),
-  step('settings_account', 'trash-outline', workflow('Settings')),
+  step('settings_profile_biometric', 'finger-print-outline', workflow('Settings', undefined, true)),
+  step('settings_privacy', 'lock-closed-outline', workflow('Settings', undefined, true)),
+  step('settings_terms', 'document-text-outline', workflow('Settings', undefined, true)),
+  step('settings_replay', 'map-outline', workflow('Settings', undefined, true)),
+  step('settings_reset', 'refresh-outline', workflow('Settings', undefined, true)),
+  step('settings_account', 'trash-outline', workflow('Settings', undefined, true)),
 ];
 
 const tenantSteps = [
@@ -41,11 +42,11 @@ const tenantSteps = [
   step('tenant_disputes','shield-half-outline'),
   step('tenant_reports','home-outline'),
   step('tenant_wallet', 'wallet-outline'),
-  step('tenant_applications', 'documents-outline', workflow('MainTabs', { screen: 'Applications' })),
+  step('tenant_applications', 'documents-outline', workflow('MainTabs', { screen: 'Applications' }, true)),
   step('tenant_services', 'sparkles-outline', workflow('TransportationBookings')),
   step('tenant_messages', 'chatbubbles-outline', workflow('MainTabs', { screen: 'Messages' })),
-  step('tenant_payments', 'receipt-outline', workflow('PaymentHistory')),
-  step('tenant_support', 'headset-outline', workflow('Support')),
+  step('tenant_payments', 'receipt-outline', workflow('PaymentHistory', undefined, true)),
+  step('tenant_support', 'headset-outline', workflow('Support', undefined, true)),
   step('public_careers','briefcase-outline',{destination:destination('Careers')}),
   step('public_cases','scale-outline',{destination:destination('Cases')}),
   step('tenant_assistance','shield-checkmark-outline',{destination:destination('Support')}),
@@ -61,7 +62,7 @@ const landlordSteps = [
   step('landlord_disputes','shield-half-outline'),
   step('landlord_reports','home-outline'),
   step('landlord_wallet', 'wallet-outline'),
-  step('landlord_support', 'headset-outline', workflow('Support')),
+  step('landlord_support', 'headset-outline', workflow('Support', undefined, true)),
   step('public_careers','briefcase-outline',{destination:destination('Careers')}),
   step('public_cases','scale-outline',{destination:destination('Cases')}),
   step('landlord_assistance','shield-checkmark-outline',{destination:destination('Support')}),
@@ -79,7 +80,7 @@ const lawyerSteps = [
   step('lawyer_cases', 'briefcase-outline'),
   step('lawyer_evidence', 'document-attach-outline'),
   step('lawyer_clients', 'people-outline'),
-  step('lawyer_verification', 'shield-checkmark-outline', workflow('VerifyCase')),
+  step('lawyer_verification', 'shield-checkmark-outline', workflow('VerifyCase', undefined, true)),
 ];
 
 const zonalAdminSteps = [
@@ -256,10 +257,12 @@ export const getTourStepsForRole = (role, language = 'en') => {
     'transportation_admin',
     'lga_transportation_admin',
     'state_transportation_admin',
+    'zonal_transportation_admin',
     'super_transportation_admin',
     'fumigation_admin',
     'lga_fumigation_admin',
     'state_fumigation_admin',
+    'zonal_fumigation_admin',
     'super_fumigation_admin',
   ].includes(role)) return localizeSteps(serviceAdminSteps, language);
   return localizeSteps(adminSteps, language);
@@ -302,6 +305,11 @@ export const getTourDashboardType = (role) => {
     tenant: 'tenant_dashboard',
     landlord: 'landlord_dashboard',
     agent: 'agent_dashboard',
+    marketing_agent: 'marketing_agent_dashboard',
+    zonal_financial_admin: 'zonal_financial_admin_dashboard',
+    zonal_transportation_admin: 'zonal_transportation_admin_dashboard',
+    zonal_fumigation_admin: 'zonal_fumigation_admin_dashboard',
+    zonal_lawyer: 'zonal_lawyer_dashboard',
     lawyer: 'lawyer_dashboard',
     state_lawyer: 'state_lawyer_dashboard',
     super_lawyer: 'super_lawyer_dashboard',
@@ -375,7 +383,8 @@ export const getTourDestinationForRole = (role, stepDefinition = {}) => {
 };
 
 export const getTourPreparationDestinationForRole = (role, definition = {}) => {
-  if (definition.action && definition.id !== 'tour_settings' && !definition.id?.startsWith('settings_') && definition.id !== 'lawyer_verification') {
+  if (definition.id === 'header_notifications') return destination('MainTabs', { screen: 'HomeTab' });
+  if (definition.action && !definition.prepareAtDestination) {
     return getTourDestinationForRole(role, { id: definition.id });
   }
   return getTourDestinationForRole(role, definition);

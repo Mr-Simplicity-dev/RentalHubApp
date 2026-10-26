@@ -508,7 +508,7 @@ const WelcomeModal = ({
               ? t('tour.resumeText')
               : t('tour.welcomeText')}
           </AppText>
-          <View style={[styles.durationRow, isRTL && styles.rtlRow]}>
+          <View style={styles.durationRow}>
             <View style={styles.durationIcon}>
               <Icon name="time-outline" size={17} color={colors.gold} />
             </View>
@@ -997,7 +997,6 @@ const CoachMarkOverlay = ({
         <View
           style={[
             styles.coachHeader,
-            isRTL && styles.rtlRow,
             { top: Math.max(insets.top, 8) + 4 },
           ]}
         >
@@ -1091,7 +1090,7 @@ const CoachMarkOverlay = ({
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
           >
-            <View style={[styles.coachTitleRow, isRTL && styles.rtlRow]}>
+            <View style={[styles.coachTitleRow]}>
               <View style={styles.coachIcon}>
                 <Icon
                   name={step.icon || 'sparkles-outline'}
@@ -1185,7 +1184,7 @@ const CoachMarkOverlay = ({
               ))}
             </View>
 
-            <View style={[styles.walkthroughFooter, isRTL && styles.rtlRow]}>
+            <View style={[styles.walkthroughFooter]}>
               {stepIndex > 0 ? (
                 <Button
                   accessibilityHint={t('tour.backHint', { step: stepIndex })}
@@ -1298,10 +1297,7 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     writingDirection: 'rtl',
   },
-  rtlRow: {
-    flexDirection: 'row-reverse',
-  },
-  backdrop: {
+backdrop: {
     alignItems: 'center',
     backgroundColor: 'rgba(3, 14, 35, 0.86)',
     flex: 1,

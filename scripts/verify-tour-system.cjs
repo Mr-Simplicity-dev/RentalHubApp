@@ -223,3 +223,53 @@ for (const [id,panel] of Object.entries({super_users:'users',super_requests:'pro
 assert.equal(tourModule.exports.getTourDestinationForRole('zonal_admin').name,'ZonalDashboard');
 assert.ok(tourModule.exports.getTourStepsForRole('super_admin').some(step=>step.id==='recruitment_opportunities' && step.destination.name==='RecruitmentAdmin'));
 console.log('All 21 administrative roles verified across 8 locales, including Super Admin workspace routing and zonal scope.');
+
+const parser = require('@babel/parser');
+const navigationAst = parser.parse(navigatorSource,{sourceType:'module',plugins:['jsx']});
+const declarations = new Map();
+const screenImports = new Map();
+const walkNode = (node,visit) => { if(!node || typeof node!=='object')return; if(node.type)visit(node); for(const value of Object.values(node)){ if(Array.isArray(value))value.forEach(child=>walkNode(child,visit)); else if(value && typeof value==='object')walkNode(value,visit); } };
+walkNode(navigationAst,node=>{
+ if(node.type==='VariableDeclarator' && node.id.type==='Identifier') declarations.set(node.id.name,node.init);
+ if(node.type==='ImportDeclaration' && node.source.value.startsWith('.')) for(const specifier of node.specifiers) screenImports.set(specifier.local.name,path.resolve(root,'src/navigation',node.source.value));
+});
+const rootByRole = new Map();
+walkNode(declarations.get('RoleRouter'),node=>{if(node.type!=='SwitchStatement')return;let pending=[];for(const branch of node.cases){if(branch.test?.type==='StringLiteral')pending.push(branch.test.value);const result=branch.consequent.find(item=>item.type==='ReturnStatement')?.argument;if(result?.type==='JSXElement'){const name=result.openingElement.name.name;for(const role of pending)rootByRole.set(role,name);pending=[];}}});
+const routeComponents = name => {
+ const routes=new Map(),seen=new Set();
+ const collect = symbol => { if(seen.has(symbol))return; seen.add(symbol);walkNode(declarations.get(symbol),node=>{
+  if(node.type==='CallExpression' && node.callee.type==='Identifier' && /^common.*Screens$/.test(node.callee.name))collect(node.callee.name);
+  if(node.type!=='JSXOpeningElement' || node.name.type!=='JSXMemberExpression' || node.name.property.name!=='Screen')return;
+  const name=node.attributes.find(attr=>attr.name?.name==='name')?.value?.value;
+  const component=node.attributes.find(attr=>attr.name?.name==='component')?.value?.expression?.name;
+  if(name)routes.set(name,component);
+ });};collect(name);return routes;
+};
+const screenCorpus = (component,seen=new Set()) => {
+ if(seen.has(component))return '';seen.add(component);
+ if(declarations.has(component))return navigatorSource;
+ const imported=screenImports.get(component);if(!imported)return '';
+ const file=['.js','.jsx','/index.js'].map(ext=>imported+ext).find(file=>fs.existsSync(file));
+ if(!file)return '';let source=fs.readFileSync(file,'utf8');
+ const collectLocal=(file,visited=new Set())=>{if(visited.has(file))return '';visited.add(file);const content=fs.readFileSync(file,'utf8');let result=content;for(const match of content.matchAll(/from\s+['"]([^'"]+)['"]/g)){if(!match[1].startsWith('.')||!match[1].includes('components'))continue;const prefix=path.resolve(path.dirname(file),match[1]);const child=['.js','.jsx','/index.js'].map(ext=>prefix+ext).find(p=>fs.existsSync(p));if(child)result+='\n'+collectLocal(child,visited);}return result;};return collectLocal(file);
+};
+const mismatches=[];
+for(const [role,rootName] of rootByRole){
+ if(role==='user')continue;
+ const routes=routeComponents(rootName);
+ const steps=tourModule.exports.getTourStepsForRole(role);
+ for(const step of steps){
+  const preparation=tourModule.exports.getTourPreparationDestinationForRole(role,step);
+  if(!routes.has(preparation.name)){mismatches.push(role+': '+step.id+' prepares unavailable '+preparation.name);continue;}
+  let component = routes.get(preparation.name);
+  let corpus;
+  if (declarations.has(component) && preparation.params?.screen) {
+    const nestedComponent = routeComponents(component).get(preparation.params.screen);
+    corpus = step.id.startsWith('tab_') ? navigatorSource : screenCorpus(nestedComponent);
+  } else { corpus=screenCorpus(component); }
+  if(!corpus.includes(step.id))mismatches.push(role+': '+step.id+' is absent from '+preparation.name);
+ }
+}
+assert.deepEqual(mismatches,[],'tour targets must exist on the screen reachable by the signed-in role');
+for(const role of ['agent','lawyer','state_lawyer','zonal_lawyer','super_lawyer'])assert.ok(!tourModule.exports.getTourStepsForRole(role).some(step=>step.id.startsWith('tab_')),'non-tab role must not receive tenant tab steps');
+console.log('Role navigation and target-screen audit passed for '+rootByRole.size+' roles.');
