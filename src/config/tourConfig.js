@@ -1,6 +1,6 @@
 const { TOUR_STEP_COPY } = require('../i18n/tourStepCatalog.cjs');
 
-export const TOUR_VERSION = '5';
+export const TOUR_VERSION = '6';
 export const TOUR_PROMPT_INTERVAL_DAYS = 7;
 
 const destination = (name, params) => ({ name, ...(params ? { params } : {}) });
@@ -84,10 +84,16 @@ const lawyerSteps = [
   step('lawyer_verification', 'shield-checkmark-outline', workflow('VerifyCase')),
 ];
 
+const zonalAdminSteps = [
+  step('zonal_overview', 'stats-chart-outline'),
+  step('zonal_workspaces', 'apps-outline'),
+  step('zonal_scope', 'map-outline'),
+];
+
 const adminSteps = [
   step('admin_metrics', 'stats-chart-outline'),
   step('admin_workspaces', 'apps-outline'),
-  step('admin_compliance', 'shield-outline', workflow('AdminEvidenceVerifications')),
+  step('admin_compliance', 'shield-outline', workflow('AdminCompliance')),
   step('admin_workflows', 'git-branch-outline'),
 ];
 
@@ -121,6 +127,12 @@ const lgaFinancialSteps = [
 const superAdminSteps = [
   step('super_overview', 'shield-checkmark-outline'),
   step('super_workspace', 'apps-outline'),
+  step('super_users', 'people-outline'),
+  step('super_requests', 'home-outline'),
+  step('super_pricing', 'pricetags-outline'),
+  step('super_approvals', 'checkmark-circle-outline'),
+  step('super_access', 'key-outline'),
+  step('recruitment_opportunities', 'briefcase-outline', { destination: destination('RecruitmentAdmin') }),
   step('super_trust', 'finger-print-outline'),
   step('super_analytics', 'bar-chart-outline'),
 ];
@@ -138,6 +150,7 @@ const supportSteps = [
 ];
 
 const recruitmentSteps = [
+  step('recruitment_opportunities', 'briefcase-outline'),
   step('recruitment_overview', 'analytics-outline'),
   step('recruitment_filters', 'funnel-outline'),
   step('recruitment_candidates', 'people-outline'),
@@ -174,8 +187,10 @@ const getWorkflowGroupsForRole = (role) => {
     return [
       ['property_access', ['tenant_properties', 'tenant_location']],
       ['applications_messages', ['tenant_applications', 'tenant_messages']],
-      ['wallet_payments', ['tenant_wallet', 'tenant_payments']],
-      ['bookings_support', ['tenant_services', 'tenant_support']],
+      ['wallet_payments', ['tenant_more','tenant_wallet', 'tenant_payments']],
+      ['bookings_support', ['tenant_services', 'tenant_support','tenant_assistance']],
+      ['disputes_reports',['tenant_more','tenant_disputes','tenant_reports']],
+      ['public_opportunities_cases',['public_careers','public_cases']],
       ['tour_preferences', ['tour_settings']],
     ];
   }
@@ -183,7 +198,9 @@ const getWorkflowGroupsForRole = (role) => {
     return [
       ['listing_management', ['landlord_listings']],
       ['applications_messages', ['landlord_applications', 'landlord_messages']],
-      ['payments_support', ['landlord_wallet', 'landlord_support']],
+      ['payments_support', ['landlord_more','landlord_wallet', 'landlord_support','landlord_assistance']],
+      ['disputes_reports',['landlord_more','landlord_disputes','landlord_reports']],
+      ['public_opportunities_cases',['public_careers','public_cases']],
       ['tour_preferences', ['tour_settings']],
     ];
   }
@@ -228,6 +245,7 @@ export const getTourStepsForRole = (role, language = 'en') => {
   if (role === 'super_admin') return localizeSteps(superAdminSteps, language);
   if (['lga_support_admin', 'state_support_admin', 'super_support_admin'].includes(role)) return localizeSteps(supportSteps, language);
   if (role === 'recruitment_admin') return localizeSteps(recruitmentSteps, language);
+  if (role === 'zonal_admin') return localizeSteps(zonalAdminSteps, language);
   if (role === 'lga_admin') return localizeSteps(lgaAdminSteps, language);
   if ([
     'transportation_admin',
@@ -284,6 +302,7 @@ export const getTourDashboardType = (role) => {
     super_lawyer: 'super_lawyer_dashboard',
     admin: 'admin_dashboard',
     lga_admin: 'lga_admin_dashboard',
+    zonal_admin: 'zonal_admin_dashboard',
     state_admin: 'state_admin_dashboard',
     financial_admin: 'financial_admin_dashboard',
     lga_financial_admin: 'lga_financial_admin_dashboard',
@@ -323,14 +342,15 @@ export const getTourDestinationForRole = (role, stepDefinition = {}) => {
   if (['tenant', 'user', 'landlord'].includes(normalizedRole)) {
     return destination('MainTabs', { screen: 'DashboardTab' });
   }
+  if (normalizedRole === 'zonal_admin') return destination('ZonalDashboard');
   if (normalizedRole === 'agent') return destination('AgentDashboard');
   if (['lawyer', 'state_lawyer', 'super_lawyer'].includes(normalizedRole)) return destination('LawyerDashboard');
   if (normalizedRole === 'super_admin') return destination('SuperAdminDashboard', {
-    initialPanel: stepDefinition.id === 'super_trust'
+    initialPanel: ({ super_users: 'users', super_requests: 'property_requests', super_pricing: 'pricing', super_approvals: 'pending_approvals', super_access: 'registration_access' })[stepDefinition.id] || (stepDefinition.id === 'super_trust'
       ? 'verifications'
       : stepDefinition.id === 'super_analytics'
         ? 'analytics'
-        : 'overview',
+        : 'overview'),
   });
   if (normalizedRole === 'lga_financial_admin') return destination('LgaFinancialAdminDashboard');
   if (normalizedRole === 'super_financial_admin') return destination('SuperFinancialAdminDashboard');

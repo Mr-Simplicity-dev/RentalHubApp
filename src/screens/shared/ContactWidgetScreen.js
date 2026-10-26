@@ -424,7 +424,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
       setConversation([]);
       setView(isAuthenticated ? 'tickets' : 'menu');
     } else if (view === 'check-status') {
-      setView('menu');
+      setView('assistant');
     } else if (view === 'contact-conv') {
       setViewingContactTicket(null);
       setContactConv([]);

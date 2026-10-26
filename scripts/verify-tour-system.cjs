@@ -197,3 +197,29 @@ process.stdout.write(
   `Tour contract verified: ${TOUR_STEP_IDS.length} steps, ${languageCodes.length} locales, ` +
   `${new Set(actionableRoutes).size} actionable routes, ${babelFiles.length} source files${babel ? ' (Babel verified)' : ''}.\n`
 );
+
+const vmTour=require('node:vm');const tourModule={exports:{}};
+const compiledTour=require('@babel/core').transformSync(configSource,{configFile:false,babelrc:false,plugins:['@babel/plugin-transform-modules-commonjs']}).code;
+vmTour.runInNewContext(compiledTour,{module:tourModule,exports:tourModule.exports,require:()=>require('../src/i18n/tourStepCatalog.cjs')});
+for(const role of ['tenant','landlord']){const ids=tourModule.exports.getTourWorkflowCatalog(role).flatMap(w=>w.stepIds);for(const id of [role+'_more',role+'_wallet',role+'_disputes',role+'_reports',role+'_assistance','public_careers','public_cases'])assert.ok(ids.includes(id),role+' selectable workflows must expose '+id);}
+console.log('Updated workflow groups expose Wallet, Disputes, Property Reports, coverage, Careers and Cases.');
+
+const adminRoles = ['admin','lga_admin','zonal_admin','state_admin','financial_admin','lga_financial_admin','state_financial_admin','super_financial_admin','lga_support_admin','state_support_admin','super_support_admin','transportation_admin','lga_transportation_admin','state_transportation_admin','super_transportation_admin','fumigation_admin','lga_fumigation_admin','state_fumigation_admin','super_fumigation_admin','recruitment_admin','super_admin'];
+for (const role of adminRoles) {
+  for (const locale of languageCodes) {
+    const steps = tourModule.exports.getTourStepsForRole(role,locale);
+    assert.equal(new Set(steps.map(step=>step.id)).size, steps.length, role+' tour must not repeat steps');
+    const availableIds = tourModule.exports.getTourWorkflowCatalog(role,locale).flatMap(item=>item.stepIds);
+    for (const step of steps) {
+      assert.ok(availableIds.includes(step.id), role+' must expose '+step.id+' in selectable workflows');
+      const destination = tourModule.exports.getTourDestinationForRole(role,step);
+      assert.ok(registeredRoutes.has(destination.name), role+' has an unregistered tour destination '+destination.name);
+    }
+  }
+}
+for (const [id,panel] of Object.entries({super_users:'users',super_requests:'property_requests',super_pricing:'pricing',super_approvals:'pending_approvals',super_access:'registration_access'})) {
+  assert.equal(tourModule.exports.getTourDestinationForRole('super_admin',{id}).params.initialPanel,panel);
+}
+assert.equal(tourModule.exports.getTourDestinationForRole('zonal_admin').name,'ZonalDashboard');
+assert.ok(tourModule.exports.getTourStepsForRole('super_admin').some(step=>step.id==='recruitment_opportunities' && step.destination.name==='RecruitmentAdmin'));
+console.log('All 21 administrative roles verified across 8 locales, including Super Admin workspace routing and zonal scope.');

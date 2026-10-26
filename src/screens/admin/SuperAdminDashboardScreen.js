@@ -3414,16 +3414,10 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
 
 
       <TourTarget
-        id={
-          ['verifications', 'fraud'].includes(section)
-            ? 'super_trust'
-            : section === 'analytics'
-              ? 'super_analytics'
-              : undefined
-        }
+        id={({ users: 'super_users', property_requests: 'super_requests', pricing: 'super_pricing', pending_approvals: 'super_approvals', registration_access: 'super_access', verifications: 'super_trust', fraud: 'super_trust', analytics: 'super_analytics' })[section]}
         label={selectedSection?.label}
         disabled={
-          loading || !['verifications', 'fraud', 'analytics'].includes(section)
+          loading || !['verifications', 'fraud', 'analytics', 'users', 'property_requests', 'pricing', 'pending_approvals', 'registration_access'].includes(section)
         }
       >
         <View style={styles.tourSectionAnchor}>

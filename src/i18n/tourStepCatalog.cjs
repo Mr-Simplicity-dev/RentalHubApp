@@ -53,11 +53,11 @@ const TOUR_STEP_COPY = {
     service_bookings: ['Manage bookings', 'Review assignments, customer details, payments, and status changes.'],
     service_payments: ['Track service payments', 'Follow revenue, commissions, and payment status.'],
     support_tickets: ['Resolve support requests', 'Open user tickets, take ownership, and follow them to resolution.'],
-    support_operations: ['Coordinate operations', 'Handle migration, property, and tenancy requests.'],
+    support_operations: ['Coordinate the support team', 'Open Admin Pool to review available support administrators and authorized assignment capacity.'],
     support_audit: ['Keep an audit trail', 'Review history and escalation context before sensitive actions.'],
     recruitment_overview: ['See the hiring picture', 'Review applicant volume, fees, interviews, and assessment scores.'],
-    recruitment_filters: ['Find the right candidates', 'Filter by status, payment, cycle, role, name, or reference.'],
-    recruitment_candidates: ['Review candidate records', 'Continue shortlist, approval, rejection, and reporting decisions.'],
+    recruitment_filters: ['Find the right candidates', 'Filter Employment and Volunteer separately, then narrow by status, cycle, role or reference. Volunteer payment is Not Applicable.'],
+    recruitment_candidates: ['Review candidate records', 'Review answers and shortlist or reject with the existing controls. Volunteers start with manual follow-up, without automatic interviews, employment or privileged accounts.'],
     recruitment_reports: ['Export hiring reports', 'Send a filtered candidate report through the secure workflow.'],
     tour_settings: ['Personalise and replay tours', 'Choose language and accessibility preferences, then replay this guide whenever you need it.'],
     tab_explore: ['Explore properties', 'Browse and search available rental properties around your preferred locations.'],
@@ -353,6 +353,337 @@ const currentWorkflowCopy={"en":[["More dashboard tools","Open More to find Wall
 for(const [locale,entries] of Object.entries(currentWorkflowCopy)){if(!TOUR_STEP_COPY[locale])continue;for(const role of ['tenant','landlord'])for(const [i,id]of ['more','disputes','reports','assistance'].entries())TOUR_STEP_COPY[locale][role+'_'+id]=entries[i];}
 const publicCareerNames={"en":"Careers and volunteering","fr":"Carrières et bénévolat","ar":"الوظائف والتطوع","ru":"Карьера и волонтёрство","zh":"招聘与志愿服务","ha":"Aiki da sa kai","yo":"Iṣẹ́ àti iṣẹ́ àtinúwá","ig":"Ọrụ na ọrụ afọ ofufo"}, publicCareerDescriptions={"en":"Careers is public. Volunteer applications are free when enabled and do not automatically create staff accounts.","fr":"Le portail est public. Les candidatures bénévoles sont gratuites lorsqu’elles sont ouvertes et ne créent pas de compte employé.","ar":"البوابة عامة. طلبات التطوع مجانية عند فتحها ولا تُنشئ حسابات موظفين تلقائيًا.","ru":"Портал общедоступен. Заявки волонтёров бесплатны при открытом приёме и не создают учётные записи сотрудников.","zh":"招聘门户公开开放。志愿申请开放时免费，且不会自动创建员工账户。","ha":"Shafin aiki na kowa ne. Neman aikin sa kai kyauta ne idan an buɗe shi; ba ya ƙirƙirar asusun ma’aikaci kai tsaye.","yo":"Ojú iṣẹ́ wà fún gbogbo ènìyàn. Ìbéèrè iṣẹ́ àtinúwá jẹ́ ọ̀fẹ́ nígbà tí ó ṣí; kò dá àkọọ́lẹ̀ òṣìṣẹ́ sílẹ̀ fúnra rẹ̀.","ig":"Portal ọrụ bụ nke ọha. Arịrịọ ọrụ afọ ofufo bụ n’efu mgbe emepere ya; ọ naghị emepụta akaụntụ onye ọrụ ozugbo."},publicCasesCopy={"en":["Resolved dispute cases","Only anonymized case information is shown. Names, contact details and private case records are not published."],"fr":["Litiges résolus","Seules des informations anonymisées sont affichées. Les noms, coordonnées et dossiers privés ne sont pas publiés."],"ar":["قضايا النزاعات المحلولة","تُعرض معلومات مجهولة الهوية فقط، ولا تُنشر الأسماء أو بيانات الاتصال أو سجلات القضايا الخاصة."],"ru":["Разрешённые споры","Показаны только обезличенные сведения. Имена, контакты и частные материалы дел не публикуются."],"zh":["已解决的纠纷案例","仅展示匿名案例信息，不公开姓名、联系方式或私人案件记录。"],"ha":["Shari’o’in rikicin da aka warware","Bayanan da ba su bayyana mutum kawai ake nunawa. Ba a wallafa sunaye, lambobin tuntuɓa ko bayanan sirri."],"yo":["Àwọn ẹjọ́ àríyànjiyàn tí a yanjú","Àlàyé tí kò fi ẹni hàn nìkan la ń fi hàn. A kì í tẹ orúkọ, àlàyé ìbánisọ̀rọ̀ tàbí àkọsílẹ̀ ẹjọ́ àṣírí jáde."],"ig":["Ikpe esemokwu a doziri","A na-egosi naanị nkọwa na-enweghị njirimara. A naghị ebipụta aha, ozi kọntaktị ma ọ bụ ndekọ ikpe nzuzo."]};
 for(const locale of Object.keys(TOUR_STEP_COPY)){TOUR_STEP_COPY[locale].public_careers=[publicCareerNames[locale],publicCareerDescriptions[locale]];TOUR_STEP_COPY[locale].public_cases=publicCasesCopy[locale];}
+const walletWorkflowCopy={"en":["Wallet","Open More, then Wallet to fund it or withdraw available funds. Rent Savings and Payment History are separate tools."],"fr":["Portefeuille","Ouvrez Plus puis Portefeuille pour ajouter ou retirer des fonds disponibles. L’épargne-loyer et l’historique sont séparés."],"ar":["المحفظة","افتح المزيد ثم المحفظة للإيداع أو سحب الرصيد المتاح. ادخار الإيجار وسجل المدفوعات أداتان منفصلتان."],"ru":["Кошелёк","Откройте Ещё, затем Кошелёк для пополнения или вывода доступных средств. Накопления и история платежей находятся отдельно."],"zh":["钱包","打开更多，再选择钱包进行充值或提取可用余额。租金储蓄和付款记录为独立工具。"],"ha":["Walat","Buɗe Ƙari sannan Walat don saka kuɗi ko cire kuɗin da ake da su. Ajiyar haya da tarihin biyan kuɗi suna da nasu kayan aiki."],"yo":["Àpamọ́ owó","Ṣí Síi, lẹ́yìn náà Àpamọ́ owó láti fi owó kún un tàbí yọ owó tó wà. Àfiṣowó ilé àti ìtàn ìsanwó yàtọ̀ sí i."],"ig":["Akpa ego","Mepee More, wee Wallet ka ị tinye ego ma ọ bụ wepụ ego dị. Nchekwa ego mgbazinye na akụkọ ịkwụ ụgwọ bụ ngwa dị iche."]};
+for(const [locale,copy]of Object.entries(walletWorkflowCopy)){TOUR_STEP_COPY[locale].tenant_wallet=copy;TOUR_STEP_COPY[locale].landlord_wallet=copy;}
+const adminRefreshCopy = {
+  "en": [
+    [
+      "Manage platform users",
+      "Review user records and roles before changing account access."
+    ],
+    [
+      "Review property requests",
+      "Review incoming tenant requests before state assignment; check payment, follow-up and matching progress."
+    ],
+    [
+      "Manage pricing",
+      "Review location-based pricing rules before saving any change."
+    ],
+    [
+      "Review administrator approvals",
+      "Check the requested role and jurisdiction before granting administrative access."
+    ],
+    [
+      "Control registration access",
+      "Manage registration availability by State and LGA; this is separate from recruitment intake."
+    ],
+    [
+      "Employment and volunteer opportunities",
+      "Manage opportunity type and cycle. Volunteer intake is independent, free, and reviewed manually without automatic staff accounts."
+    ]
+  ],
+  "fr": [
+    [
+      "Gérer les utilisateurs",
+      "Vérifiez les dossiers et les rôles avant de modifier les accès."
+    ],
+    [
+      "Examiner les demandes de logement",
+      "Examinez les demandes avant leur affectation à un État ; vérifiez paiement, suivi et correspondances."
+    ],
+    [
+      "Gérer les tarifs",
+      "Vérifiez les tarifs par zone avant toute modification."
+    ],
+    [
+      "Approuver les administrateurs",
+      "Vérifiez rôle et juridiction avant d’accorder un accès administratif."
+    ],
+    [
+      "Contrôler les inscriptions",
+      "Gérez les inscriptions par État et zone locale, séparément du recrutement."
+    ],
+    [
+      "Emploi et bénévolat",
+      "Gérez type et cycle. Le bénévolat possède son propre accès gratuit et une revue manuelle sans compte de personnel automatique."
+    ]
+  ],
+  "ar": [
+    [
+      "إدارة المستخدمين",
+      "راجع سجلات المستخدمين وأدوارهم قبل تعديل صلاحيات الحساب."
+    ],
+    [
+      "مراجعة طلبات العقارات",
+      "راجع طلبات المستأجرين قبل إسنادها إلى فريق الولاية وتحقق من الدفع والمتابعة والمطابقة."
+    ],
+    [
+      "إدارة الأسعار",
+      "راجع قواعد الأسعار حسب الموقع قبل حفظ أي تغيير."
+    ],
+    [
+      "مراجعة موافقات المسؤولين",
+      "تحقق من الدور والنطاق قبل منح صلاحيات إدارية."
+    ],
+    [
+      "إدارة التسجيل",
+      "تحكم في التسجيل حسب الولاية والمنطقة المحلية بصورة مستقلة عن التوظيف."
+    ],
+    [
+      "فرص العمل والتطوع",
+      "حدد النوع والدورة. التطوع مجاني وله تحكم مستقل ومراجعة يدوية دون إنشاء حساب موظف تلقائياً."
+    ]
+  ],
+  "ru": [
+    [
+      "Управление пользователями",
+      "Проверьте записи и роли перед изменением доступа."
+    ],
+    [
+      "Заявки на поиск жилья",
+      "Проверяйте заявки арендаторов до передачи команде штата, включая оплату, сопровождение и подбор."
+    ],
+    [
+      "Управление ценами",
+      "Проверяйте тарифы по местоположению перед сохранением изменений."
+    ],
+    [
+      "Одобрение администраторов",
+      "Проверьте роль и территорию перед предоставлением доступа."
+    ],
+    [
+      "Доступ к регистрации",
+      "Управляйте регистрацией по штату и району отдельно от набора кандидатов."
+    ],
+    [
+      "Работа и волонтёрство",
+      "Укажите тип и цикл. Волонтёрство бесплатно, включается отдельно и требует ручной проверки без автоматического создания учётной записи сотрудника."
+    ]
+  ],
+  "zh": [
+    [
+      "管理平台用户",
+      "更改账户权限前，请核对用户记录和角色。"
+    ],
+    [
+      "审核找房申请",
+      "分配到州团队前审核租客申请，检查付款、跟进和房源匹配进度。"
+    ],
+    [
+      "管理价格",
+      "保存更改前，请审核各地区的定价规则。"
+    ],
+    [
+      "审核管理员申请",
+      "授予管理权限前，请核对所申请的角色和辖区。"
+    ],
+    [
+      "管理注册权限",
+      "按州和地方辖区管理注册开放情况，与招聘开关相互独立。"
+    ],
+    [
+      "就业与志愿者机会",
+      "管理机会类型和招聘周期。志愿者申请独立开放、免费、人工审核，不会自动建立员工账户。"
+    ]
+  ],
+  "ha": [
+    [
+      "Gudanar da masu amfani",
+      "Duba bayanai da matsayin mai amfani kafin canza damar asusu."
+    ],
+    [
+      "Duba buƙatun gidaje",
+      "Duba buƙatun masu haya kafin tura wa jihar; tabbatar da biyan kuɗi, bibiyar aiki da daidaita gida."
+    ],
+    [
+      "Gudanar da farashi",
+      "Duba farashin kowane yanki kafin adana canji."
+    ],
+    [
+      "Amincewa da masu gudanarwa",
+      "Tabbatar da matsayi da yankin aiki kafin ba da damar gudanarwa."
+    ],
+    [
+      "Sarrafa rajista",
+      "Sarrafa rajista ta jiha da ƙaramar hukuma dabam da ɗaukar ma’aikata."
+    ],
+    [
+      "Aiki da sa kai",
+      "Saita nau’i da zagaye. Aikin sa kai kyauta ne, yana da nasa kunnawa kuma ana duba shi da hannu ba tare da ƙirƙirar asusun ma’aikaci kai tsaye ba."
+    ]
+  ],
+  "yo": [
+    [
+      "Ṣàkóso àwọn olùlò",
+      "Ṣàyẹ̀wò àkọsílẹ̀ àti ipò olùlò kí o tó yí àṣẹ àkọọ́lẹ̀ padà."
+    ],
+    [
+      "Ṣàyẹ̀wò ìbéèrè ilé",
+      "Ṣàyẹ̀wò ìbéèrè ayálégbé kí o tó fi rán ẹgbẹ́ ìpínlẹ̀; ṣàyẹ̀wò ìsanwó, ìtẹ̀lé àti ilé tó bá mu."
+    ],
+    [
+      "Ṣàkóso iye owó",
+      "Ṣàyẹ̀wò iye owó agbègbè kí o tó fi àyípadà pamọ́."
+    ],
+    [
+      "Fọwọ́sí alábòójútó",
+      "Ṣàyẹ̀wò ipò àti agbègbè iṣẹ́ kí o tó fúnni ní àṣẹ."
+    ],
+    [
+      "Ṣàkóso ìforúkọsílẹ̀",
+      "Ṣàkóso ìforúkọsílẹ̀ ní ìpínlẹ̀ àti ìjọba ìbílẹ̀ lọ́tọ̀ sí gbígba òṣìṣẹ́."
+    ],
+    [
+      "Iṣẹ́ àti ìyọ̀ǹda",
+      "Yan irú àti àsìkò. Ìyọ̀ǹda jẹ́ ọ̀fẹ́, ó ní ètò tirẹ̀ àti àyẹ̀wò ènìyàn láì dá àkọọ́lẹ̀ òṣìṣẹ́ sílẹ̀ fúnra rẹ̀."
+    ]
+  ],
+  "ig": [
+    [
+      "Jikwaa ndị ọrụ",
+      "Lelee ndekọ na ọrụ onye ọrụ tupu ịgbanwe ikike akaụntụ."
+    ],
+    [
+      "Nyochaa arịrịọ ụlọ",
+      "Nyochaa arịrịọ ndị bi n’ụlọ tupu ikenye ha otu steeti; lelee ịkwụ ụgwọ, nsonye na ịchọta ụlọ dabara."
+    ],
+    [
+      "Jikwaa ọnụahịa",
+      "Lelee ọnụahịa mpaghara tupu ịchekwa mgbanwe."
+    ],
+    [
+      "Kwado ndị nchịkwa",
+      "Lelee ọrụ na mpaghara tupu inye ikike nchịkwa."
+    ],
+    [
+      "Jikwaa ndebanye aha",
+      "Jikwaa ndebanye aha site na steeti na mpaghara gọọmenti, iche na nnabata ọrụ."
+    ],
+    [
+      "Ọrụ na afọ ofufo",
+      "Họrọ ụdị na oge. Afọ ofufo bụ n’efu, nwere njikwa nke ya na nyocha mmadụ, ọ naghị emepụta akaụntụ onye ọrụ ozugbo."
+    ]
+  ]
+};
+const adminRefreshIds = ["super_users","super_requests","super_pricing","super_approvals","super_access","recruitment_opportunities"];
+for (const [locale, rows] of Object.entries(adminRefreshCopy)) {
+  adminRefreshIds.forEach((id, index) => { TOUR_STEP_COPY[locale][id] = rows[index]; });
+}
+const zonalRefreshCopy = {
+  "en": [
+    [
+      "Zone overview",
+      "Review users, properties, applications and escalations in your assigned zone."
+    ],
+    [
+      "Zonal workspaces",
+      "Open zone records, administrators and service operations within your authorized scope."
+    ],
+    [
+      "States in your zone",
+      "Compare state activity and confirm your assigned territory before taking action."
+    ]
+  ],
+  "fr": [
+    [
+      "Aperçu de la zone",
+      "Examinez utilisateurs, biens, candidatures et escalades de votre zone."
+    ],
+    [
+      "Espaces de la zone",
+      "Ouvrez les dossiers, administrateurs et services dans votre périmètre autorisé."
+    ],
+    [
+      "États de votre zone",
+      "Comparez les États et vérifiez votre territoire avant toute action."
+    ]
+  ],
+  "ar": [
+    [
+      "نظرة عامة على المنطقة",
+      "راجع المستخدمين والعقارات والطلبات والتصعيدات ضمن منطقتك."
+    ],
+    [
+      "مساحات عمل المنطقة",
+      "افتح سجلات المنطقة والمسؤولين والخدمات ضمن صلاحياتك."
+    ],
+    [
+      "ولايات منطقتك",
+      "قارن نشاط الولايات وتأكد من نطاقك قبل اتخاذ إجراء."
+    ]
+  ],
+  "ru": [
+    [
+      "Обзор зоны",
+      "Просматривайте пользователей, объекты, заявки и эскалации своей зоны."
+    ],
+    [
+      "Рабочие разделы зоны",
+      "Открывайте записи, администраторов и услуги в пределах своих полномочий."
+    ],
+    [
+      "Штаты вашей зоны",
+      "Сравните активность штатов и проверьте территорию перед действием."
+    ]
+  ],
+  "zh": [
+    [
+      "区域概览",
+      "查看负责区域内的用户、房源、申请和升级处理。"
+    ],
+    [
+      "区域工作区",
+      "在授权范围内打开区域记录、管理员和服务运营。"
+    ],
+    [
+      "区域内的州",
+      "比较各州活动，并在操作前确认负责范围。"
+    ]
+  ],
+  "ha": [
+    [
+      "Taƙaitaccen yankin",
+      "Duba masu amfani, gidaje, aikace-aikace da buƙatun da aka ɗaga a yankinka."
+    ],
+    [
+      "Wuraren aikin yanki",
+      "Buɗe bayanai, masu gudanarwa da ayyukan yankinka cikin ikon da aka ba ka."
+    ],
+    [
+      "Jihohin yankinka",
+      "Kwatanta ayyukan jihohi kuma tabbatar da yankinka kafin ɗaukar mataki."
+    ]
+  ],
+  "yo": [
+    [
+      "Àkótán agbègbè",
+      "Ṣàyẹ̀wò àwọn olùlò, ilé, ìbéèrè àti ọ̀ràn tí a gbé sókè ní agbègbè rẹ."
+    ],
+    [
+      "Àwọn ibi iṣẹ́ agbègbè",
+      "Ṣí àkọsílẹ̀, alábòójútó àti iṣẹ́ ní agbègbè tí o ní àṣẹ sí."
+    ],
+    [
+      "Àwọn ìpínlẹ̀ agbègbè rẹ",
+      "Fi iṣẹ́ àwọn ìpínlẹ̀ wé ara wọn, kí o sì jẹ́rìí sí agbègbè rẹ kí o tó ṣe ìgbésẹ̀."
+    ]
+  ],
+  "ig": [
+    [
+      "Nchịkọta mpaghara",
+      "Lelee ndị ọrụ, ụlọ, arịrịọ na okwu e buliri elu n’ime mpaghara gị."
+    ],
+    [
+      "Ebe ọrụ mpaghara",
+      "Mepee ndekọ, ndị nchịkwa na ọrụ n’ime ikike e nyere gị."
+    ],
+    [
+      "Steeti mpaghara gị",
+      "Tụlee ọrụ steeti ma gosi mpaghara gị tupu ime ihe."
+    ]
+  ]
+};
+for(const [locale, rows] of Object.entries(zonalRefreshCopy)){["zonal_overview","zonal_workspaces","zonal_scope"].forEach((id,index)=>{TOUR_STEP_COPY[locale][id]=rows[index];});}
 const TOUR_STEP_IDS = Object.freeze(Object.keys(TOUR_STEP_COPY.en));
 
 module.exports = { TOUR_STEP_COPY, TOUR_STEP_IDS };

@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { useFocusEffect } from '@react-navigation/native';
 import {
@@ -12,6 +12,8 @@ import { zonalAdminService } from '../../services/zonalAdminService';
 import { getErrorMessage } from '../../utils/http';
 import { colors, radius, typography, typeScale } from '../../theme';
 import AppText from '../../components/common/AppText';
+import TourTarget from '../../components/tour/TourTarget';
+import { DashboardScreen } from '../../components/dashboard/DashboardKit';
 
 const ZonalAdminScreen = ({ navigation }) => {
   const [data, setData] = useState(null);
@@ -56,11 +58,7 @@ const ZonalAdminScreen = ({ navigation }) => {
   const perf = Array.isArray(data?.statePerformance) ? data.statePerformance : [];
 
   return (
-    <ScrollView
-      style={styles.screen}
-      contentContainerStyle={styles.content}
-      showsVerticalScrollIndicator={false}
-    >
+    <DashboardScreen refreshing={loading} onRefresh={load} contentContainerStyle={styles.content}>
       <PremiumHero
         eyebrow="Zonal admin"
         title="Zone overview"
@@ -68,17 +66,17 @@ const ZonalAdminScreen = ({ navigation }) => {
         icon="business-outline"
       />
 
-      <View style={styles.metricRow}>
+      <TourTarget id="zonal_overview" label="Zone metrics"><View style={styles.metricRow}>
         {metric('Users', data?.totalUsers ?? 0)}
         {metric('Properties', data?.totalProperties ?? 0)}
         {metric('Applications', data?.applications ?? 0)}
-      </View>
+      </View></TourTarget>
       <View style={styles.metricRow}>
         {metric('Pending verif.', data?.pendingVerifications ?? 0)}
         {metric('Open escalations', data?.openEscalations ?? 0)}
       </View>
 
-      <View style={styles.quickRow}>
+      <TourTarget id="zonal_workspaces" label="Zonal workspaces"><View style={styles.quickRow}>
         {[
           { key: 'admins', label: 'Admins' },
           { key: 'users', label: 'Users' },
@@ -97,9 +95,9 @@ const ZonalAdminScreen = ({ navigation }) => {
             <AppText style={styles.quickText}>{item.label}</AppText>
           </TouchableOpacity>
         ))}
-      </View>
+      </View></TourTarget>
 
-      <PremiumCard>
+      <TourTarget id="zonal_scope" label="States in your assigned zone"><PremiumCard>
         <AppText style={styles.sectionTitle}>States in zone</AppText>
         {perf.length === 0 ? (
           <AppText style={styles.empty}>No state data available.</AppText>
@@ -113,7 +111,7 @@ const ZonalAdminScreen = ({ navigation }) => {
             </View>
           ))
         )}
-      </PremiumCard>
+      </PremiumCard></TourTarget>
 
       <PremiumCard>
         <InfoRow
@@ -122,7 +120,7 @@ const ZonalAdminScreen = ({ navigation }) => {
           value={states.join(', ') || scope.assignedZone || '—'}
         />
       </PremiumCard>
-    </ScrollView>
+    </DashboardScreen>
   );
 };
 

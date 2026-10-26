@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { colors, typography, typeScale } from '../../theme';
 import { useTourTarget } from '../tour/TourTarget';
 import AppText from '../common/AppText';
+import { useTour } from '../../context/TourContext';
 
 const WorkspaceCard = ({ item, groupTitle }) => {
   const tourTargetProps = useTourTarget(item.tourTarget, {
@@ -43,11 +44,14 @@ const WorkspaceBoard = ({
 }) => {
   const [expanded, setExpanded] = useState(false);
 
+  const { walkthroughVisible, steps, currentStep } = useTour();
+  const tourTarget = walkthroughVisible ? steps[currentStep]?.targetId : null;
+  const revealTourTarget = Boolean(tourTarget && groups.some(group => group.items.some(item => item.tourTarget === tourTarget)));
   const totalCards = groups.reduce((sum, group) => sum + group.items.length, 0);
   const shouldCollapse = collapsible && totalCards > maxVisibleCards;
 
   const shown =
-    shouldCollapse && !expanded ? groups.slice(0, Math.max(1, visibleGroups)) : groups;
+    shouldCollapse && !expanded && !revealTourTarget ? groups.slice(0, Math.max(1, visibleGroups)) : groups;
 
   return (
     <View>
