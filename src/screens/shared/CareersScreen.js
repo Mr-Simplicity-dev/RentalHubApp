@@ -1,3 +1,4 @@
+import {useTourTarget} from '../../components/tour/TourTarget';
 import {useLanguage} from '../../context/LanguageContext';
 const recruitmentCopy = require('../../i18n/recruitmentCopy.cjs');
 import React, { useEffect, useMemo, useRef, useState } from 'react';
@@ -32,6 +33,7 @@ const emptyForm = {
 
 const CareersScreen = ({ navigation, route }) => {
   const {language}=useLanguage();
+  const careerTourProps=useTourTarget('public_careers',{label:'Careers and volunteering'});
   const copy=recruitmentCopy[language]||recruitmentCopy.en;
   const [opportunityFilter,setOpportunityFilter]=useState(['employment','volunteer'].includes(route?.params?.type)?route.params.type:'all');
   const [loading, setLoading] = useState(true);
@@ -189,7 +191,7 @@ const CareersScreen = ({ navigation, route }) => {
 
   if (loading) {
     return (
-      <SafeAreaView edges={['top']} style={styles.safeArea}>
+      <SafeAreaView {...careerTourProps} edges={['top']} style={styles.safeArea}>
         <StatusBar barStyle="dark-content" backgroundColor={colors.surface} />
         <View style={styles.centered}>
         <ActivityIndicator size="large" color={colors.blue} />
@@ -200,7 +202,7 @@ const CareersScreen = ({ navigation, route }) => {
   }
 
   return (
-    <SafeAreaView edges={['top']} style={styles.safeArea}>
+    <SafeAreaView {...careerTourProps} edges={['top']} style={styles.safeArea}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.surface} />
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
       <PremiumHero

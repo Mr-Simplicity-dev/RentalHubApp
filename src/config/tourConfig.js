@@ -46,6 +46,8 @@ const tenantSteps = [
   step('tenant_messages', 'chatbubbles-outline', workflow('MainTabs', { screen: 'Messages' })),
   step('tenant_payments', 'receipt-outline', workflow('PaymentHistory')),
   step('tenant_support', 'headset-outline', workflow('Support')),
+  step('public_careers','briefcase-outline',{destination:destination('Careers')}),
+  step('public_cases','scale-outline',{destination:destination('Cases')}),
   step('tenant_assistance','shield-checkmark-outline',{destination:destination('Support')}),
   ...settingsIconSteps,
 ];
@@ -60,6 +62,8 @@ const landlordSteps = [
   step('landlord_reports','home-outline'),
   step('landlord_wallet', 'wallet-outline'),
   step('landlord_support', 'headset-outline', workflow('Support')),
+  step('public_careers','briefcase-outline',{destination:destination('Careers')}),
+  step('public_cases','scale-outline',{destination:destination('Cases')}),
   step('landlord_assistance','shield-checkmark-outline',{destination:destination('Support')}),
   ...settingsIconSteps,
 ];
