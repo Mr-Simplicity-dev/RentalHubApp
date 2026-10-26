@@ -252,6 +252,7 @@ const DashboardScreen = ({ navigation }) => {
   const [showWithdrawModal, setShowWithdrawModal] = useState(false);
   const [showAllCards, setShowAllCards] = useState(false);
   const tourTargetId=tourSteps?.[tourStepIndex]?.id;
+  useEffect(()=>{if(walkthroughVisible && !/_wallet$/.test(tourTargetId || ''))setShowWallet(false);},[walkthroughVisible,tourTargetId]);
   useEffect(()=>{if(walkthroughVisible && /^(tenant|landlord)_(wallet|disputes|reports)$/.test(tourTargetId || ''))setShowAllCards(true);},[walkthroughVisible,tourTargetId]);
   const [fundLoading, setFundLoading] = useState(false);
   const [withdrawLoading, setWithdrawLoading] = useState(false);

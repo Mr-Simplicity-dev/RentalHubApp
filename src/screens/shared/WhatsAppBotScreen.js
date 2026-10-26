@@ -270,9 +270,10 @@ const WhatsAppBotScreen = ({ navigation, embedded=false, onHumanRequest }) => {
     finally {requestBusy.current=false;if(mountedRef.current)setRequestPending(false);}
   },[isAuthenticated,addBotMessage]);
   const openCard = link => {
+    if(link==='/careers?type=volunteer')return navigation.navigate('Careers',{type:'volunteer'});
     if(link==='/dashboard')return navigation.navigate('MainTabs',{screen:'DashboardTab'});
     if(link==='/applications')return navigation.navigate('MainTabs',{screen:'Applications'});
-    const screens={'/refund-requests':'RefundRequests','/login':'Login','/register':'Register','/properties':'PropertyList','/my-properties':'MyProperties','/profile':'Profile','/subscribe':'Subscribe','/payment-history':'PaymentHistory','/support':'Support','/assistance':'Assistance','/rent-savings':'RentSavingsDashboard','/my-disputes':'MyDisputes','/transportation/bookings':'TransportationBookings','/fumigation-cleaning/bookings':'FumigationCleaningBookings'};
+    const screens={'/careers':'Careers','/cases':'Cases','/forgot-password':'ForgotPassword','/refund-requests':'RefundRequests','/login':'Login','/register':'Register','/properties':'PropertyList','/my-properties':'MyProperties','/profile':'Profile','/subscribe':'Subscribe','/payment-history':'PaymentHistory','/support':'Support','/assistance':'Assistance','/rent-savings':'RentSavingsDashboard','/my-disputes':'MyDisputes','/transportation/bookings':'TransportationBookings','/fumigation-cleaning/bookings':'FumigationCleaningBookings'};
     if(screens[link])navigation.navigate(screens[link]);
   };
   const handleSend = useCallback(

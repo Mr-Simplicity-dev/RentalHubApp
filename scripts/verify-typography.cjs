@@ -76,6 +76,7 @@ const onChangeText = () => {};
 const input = inputModule.exports.default.render({value:'Existing text',onChangeText,secureTextEntry:true,multiline:true,style:[{fontSize:14},{fontWeight:'600'}]},ref);
 assert.equal(input.props.style.fontFamily,'Inter-SemiBold');
 assert.equal(input.props.style.fontSize,16);
+assert.equal(input.props.style.minHeight,44);
 assert.ok(input.props.style.lineHeight>=23);
 assert.equal(input.props.value,'Existing text');
 assert.equal(input.props.onChangeText,onChangeText);
