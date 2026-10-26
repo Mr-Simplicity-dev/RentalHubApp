@@ -1,3 +1,4 @@
+import AssistedPasswordForm from '../../components/common/AssistedPasswordForm';
 import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import {Platform, View, StyleSheet, ScrollView, Image, TouchableOpacity, Switch} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -402,7 +403,7 @@ const ProfileScreen = ({ navigation }) => {
           </View>
         </View>
         <AppText style={styles.statusText}>
-          Email: {status?.email ? 'Verified' : 'Pending'} | Phone: {status?.phone ? 'Verified' : 'Pending'}
+          Email: {status?.email_required===false ? 'Not required' : status?.email ? 'Verified' : 'Pending'} | Phone: {status?.phone ? 'Verified' : 'Pending'}
         </AppText>
         <AppText style={styles.statusText}>
           Identity: {status?.identity ? 'Verified' : 'Pending'} | Document: {status?.identity_document_type || '-'}
@@ -663,6 +664,7 @@ const ProfileScreen = ({ navigation }) => {
           style={styles.marginTop}
         />
       </View>
+    <AssistedPasswordForm />
     </ScrollView>
     </SafeAreaView>
   );

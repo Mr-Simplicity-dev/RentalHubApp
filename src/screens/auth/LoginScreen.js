@@ -20,8 +20,11 @@ import { reportMobileCrash } from '../../services/mobileDiagnosticsService';
 import { colors, radius, shadows, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
+import {useLanguage} from '../../context/LanguageContext';
+import assistedCopy from '../../i18n/assistedRegistration.json';
 import PhoneAccountAccess from '../../components/common/PhoneAccountAccess';
 const LoginScreen = ({ navigation }) => {
+  const {language}=useLanguage();const identityLabel=(assistedCopy[language]||assistedCopy.en).identity;
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -222,10 +225,10 @@ const LoginScreen = ({ navigation }) => {
 
           <View style={styles.formCard}>
             <Input
-              label="Email or verified phone number"
+              label={identityLabel}
               value={email}
               onChangeText={setEmail}
-              placeholder="Email or phone number"
+              placeholder={identityLabel}
               keyboardType="default"
               icon="mail-outline"
               autoCapitalize="none"

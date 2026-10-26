@@ -66,6 +66,8 @@ const VerificationStatusScreen = ({ navigation }) => {
     [revalidationRequests]
   );
 
+  const emailRequired=status?.email_required!==false;
+  const requiredCount=emailRequired?3:2;
   const emailVerified = Boolean(status?.email || status?.email_verified);
   const phoneVerified = Boolean(status?.phone || status?.phone_verified);
   const identityVerified = Boolean(status?.identity || status?.identity_verified);
@@ -74,8 +76,8 @@ const VerificationStatusScreen = ({ navigation }) => {
   const identityPending = reviewStatus === 'pending' || reviewStatus === 'provider_pending';
   const identityRejected = reviewStatus === 'rejected';
   const identityInProgress = reviewStatus === 'provider_pending';
-  const completedCount = [emailVerified, phoneVerified, identityVerified].filter(Boolean).length;
-  const progress = useMemo(() => `${Math.round((completedCount / 3) * 100)}%`, [completedCount]);
+  const completedCount = [...(emailRequired?[emailVerified]:[]), phoneVerified, identityVerified].filter(Boolean).length;
+  const progress = useMemo(() => `${Math.round((completedCount / requiredCount) * 100)}%`, [completedCount,requiredCount]);
 
   const steps = [
     {
@@ -113,7 +115,7 @@ const VerificationStatusScreen = ({ navigation }) => {
       action: !identityVerified ? () => navigation.navigate('Profile') : null,
       actionLabel: identityRejected ? 'Replace photo' : identityPending ? 'View profile' : 'Start verification',
     },
-  ];
+  ].filter(step=>emailRequired||step.key!=='email');
 
   const requestedFields = activeRevalidation?.requested_fields || [];
   const hasIdentityFields = requestedFields.some((f) => ['nin', 'international_passport'].includes(f));
@@ -203,22 +205,22 @@ const VerificationStatusScreen = ({ navigation }) => {
           </View>
         ) : (
           <>
-            <View style={[styles.hero, completedCount === 3 && styles.heroComplete]}>
+            <View style={[styles.hero, completedCount === requiredCount && styles.heroComplete]}>
               <View style={styles.heroIcon}>
                 <Icon
-                  name={completedCount === 3 ? 'shield-checkmark' : 'shield-outline'}
+                  name={completedCount === requiredCount ? 'shield-checkmark' : 'shield-outline'}
                   size={27}
                   color={colors.gold}
                 />
               </View>
               <AppText style={styles.heroEyebrow}>
-                {completedCount === 3 ? 'FULLY VERIFIED' : 'ACCOUNT PROGRESS'}
+                {completedCount === requiredCount ? 'FULLY VERIFIED' : 'ACCOUNT PROGRESS'}
               </AppText>
               <AppText style={styles.heroTitle}>
-                {completedCount === 3 ? 'Your identity is verified' : `${completedCount} of 3 steps complete`}
+                {completedCount === requiredCount ? 'Your identity is verified' : `${completedCount} of ${requiredCount} steps complete`}
               </AppText>
               <AppText style={styles.heroText}>
-                {completedCount === 3
+                {completedCount === requiredCount
                   ? 'Your verified profile helps create a safer RentalHub community.'
                   : 'Complete verification to unlock the full RentalHub workflow.'}
               </AppText>

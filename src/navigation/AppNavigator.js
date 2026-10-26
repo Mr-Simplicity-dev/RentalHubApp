@@ -398,6 +398,7 @@ const commonTenancyScreens = () => (
 
 const commonInfoScreens = () => (
   <>
+    <Stack.Screen name="AssistedRegistration" component={AssistedRegistrationScreen} options={{title:"Assisted registration"}} />
     <Stack.Screen name="PublicInfo" component={PublicInfoScreen} options={{ title: 'Information' }} />
     <Stack.Screen name="LocationInfoLga" component={LocationInfoScreen} options={{ title: 'Location' }} />
     <Stack.Screen name="AreaInfo" component={LocationInfoScreen} options={{ title: 'Location' }} />
