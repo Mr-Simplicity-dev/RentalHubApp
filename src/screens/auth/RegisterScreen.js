@@ -888,7 +888,7 @@ const RegisterScreen = ({ navigation, route }) => {
           </AppText>
           <AppText style={styles.priceAmount}>
             {requiresPayment
-              ? `â‚¦${Number(displayedRegistrationAmount || 0).toLocaleString()}`
+              ? `₦${Number(displayedRegistrationAmount || 0).toLocaleString()}`
               : 'No payment required'}
           </AppText>
           <AppText style={styles.priceMeta}>
@@ -902,7 +902,7 @@ const RegisterScreen = ({ navigation, route }) => {
           {isForeigner && registrationFlags.diaspora_registration_payment ? (
             <AppText style={styles.priceMeta}>
               Diaspora rate: USD {Number(registrationFlags.diaspora_base_fee_usd || 0).toFixed(2)}
-              {diasporaNgnEstimate > 0 ? ` (about â‚¦${diasporaNgnEstimate.toLocaleString()})` : ''}
+              {diasporaNgnEstimate > 0 ? ` (about ₦${diasporaNgnEstimate.toLocaleString()})` : ''}
             </AppText>
           ) : null}
           {requiresRegistrationPayment && form.state_id && form.lga_name && !registrationPricing.location_complete ? (
@@ -955,8 +955,8 @@ const RegisterScreen = ({ navigation, route }) => {
         >
           <AppText style={styles.agentToggleLabel}>
             {form.use_rentalhub_lawyers
-              ? 'Using Amana RentalHub NG lawyers (â‚¦2,000)'
-              : 'Use Amana RentalHub NG lawyers instead (â‚¦2,000)'}
+              ? 'Using Amana RentalHub NG lawyers (₦2,000)'
+              : 'Use Amana RentalHub NG lawyers instead (₦2,000)'}
           </AppText>
         </TouchableOpacity>
 
@@ -983,8 +983,8 @@ const RegisterScreen = ({ navigation, route }) => {
           >
             <AppText style={styles.agentToggleLabel}>
               {form.use_rentalhub_agents
-                ? 'Using Amana RentalHub NG agents (â‚¦5,000)'
-                : 'Use Amana RentalHub NG agents instead (â‚¦5,000)'}
+                ? 'Using Amana RentalHub NG agents (₦5,000)'
+                : 'Use Amana RentalHub NG agents instead (₦5,000)'}
             </AppText>
           </TouchableOpacity>
         ) : null}
@@ -1385,7 +1385,7 @@ const RegisterScreen = ({ navigation, route }) => {
               </AppText>
               {Number(foreignCardAdjustment.amount || 0) > 0 ? (
                 <AppText style={styles.adjustAmount}>
-                  Additional amount: â‚¦{Number(foreignCardAdjustment.amount).toLocaleString()}
+                  Additional amount: ₦{Number(foreignCardAdjustment.amount).toLocaleString()}
                 </AppText>
               ) : null}
 
@@ -1407,7 +1407,7 @@ const RegisterScreen = ({ navigation, route }) => {
                 style={[styles.adjustGhost, adjustmentBusy && styles.adjustDisabled]}
               >
                 <AppText style={styles.adjustGhostText}>
-                  I have finished paying â€” finish registration
+                  I have finished paying — finish registration
                 </AppText>
               </TouchableOpacity>
 

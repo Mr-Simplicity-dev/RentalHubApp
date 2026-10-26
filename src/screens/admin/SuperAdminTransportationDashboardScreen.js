@@ -66,7 +66,7 @@ const SuperAdminTransportationDashboardScreen = ({ navigation }) => {
         onRefresh={loadDashboard}
       />
 
-      <MetricGrid>
+      <MetricGrid tourTarget="service_dashboard" tourLabel="National service overview">
         {summaryCards.map((card) => (
           <MetricCard key={card.label} {...card} />
         ))}
@@ -82,6 +82,7 @@ const SuperAdminTransportationDashboardScreen = ({ navigation }) => {
               items: [
                 {
                   label: 'Booking Queue',
+                  tourTarget: 'service_bookings',
                   icon: 'car-outline',
                   onPress: () =>
                     navigation.navigate('ServiceBookings', { type: 'transportation_super' }),

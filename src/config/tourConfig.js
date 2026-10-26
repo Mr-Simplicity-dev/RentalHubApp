@@ -1,6 +1,6 @@
 const { TOUR_STEP_COPY } = require('../i18n/tourStepCatalog.cjs');
 
-export const TOUR_VERSION = '6';
+export const TOUR_VERSION = '7';
 export const TOUR_PROMPT_INTERVAL_DAYS = 7;
 
 const destination = (name, params) => ({ name, ...(params ? { params } : {}) });
@@ -69,7 +69,6 @@ const landlordSteps = [
 ];
 
 const agentSteps = [
-  ...commonPreSteps,
   step('agent_assignment', 'person-circle-outline'),
   step('agent_properties', 'business-outline', workflow('MyProperties')),
   step('agent_commissions', 'trending-up-outline', workflow('AgentEarnings')),
@@ -77,10 +76,9 @@ const agentSteps = [
 ];
 
 const lawyerSteps = [
-  ...commonPreSteps,
   step('lawyer_cases', 'briefcase-outline'),
   step('lawyer_evidence', 'document-attach-outline'),
-  step('lawyer_clients', 'people-outline', workflow('Messages')),
+  step('lawyer_clients', 'people-outline'),
   step('lawyer_verification', 'shield-checkmark-outline', workflow('VerifyCase')),
 ];
 
@@ -88,6 +86,11 @@ const zonalAdminSteps = [
   step('zonal_overview', 'stats-chart-outline'),
   step('zonal_workspaces', 'apps-outline'),
   step('zonal_scope', 'map-outline'),
+];
+
+const marketingSteps = [
+  step('marketing_capture', 'clipboard-outline'),
+  step('marketing_metrics', 'stats-chart-outline'),
 ];
 
 const adminSteps = [
@@ -114,7 +117,7 @@ const stateAdminSteps = [
 const financialSteps = [
   step('financial_overview', 'analytics-outline'),
   step('financial_transactions', 'swap-horizontal-outline', workflow('FinancialTransactions')),
-  step('financial_settlements', 'cash-outline', workflow('FinancialWithdrawals')),
+  step('financial_settlements', 'cash-outline', workflow('FinancialControls')),
   step('financial_reports', 'document-text-outline', workflow('FinancialRevenueReport')),
 ];
 
@@ -211,7 +214,7 @@ const getWorkflowGroupsForRole = (role) => {
       ['tour_preferences', ['tour_settings']],
     ];
   }
-  if (['lawyer', 'state_lawyer', 'super_lawyer'].includes(normalizedRole)) {
+  if (['lawyer', 'state_lawyer', 'zonal_lawyer', 'super_lawyer'].includes(normalizedRole)) {
     return [
       ['legal_casework', ['lawyer_cases', 'lawyer_evidence', 'lawyer_clients', 'lawyer_verification']],
       ['tour_preferences', ['tour_settings']],
@@ -238,10 +241,12 @@ export const getTourStepsForRole = (role, language = 'en') => {
   if (role === 'tenant' || role === 'user') return localizeSteps(tenantSteps, language);
   if (role === 'landlord') return localizeSteps(landlordSteps, language);
   if (role === 'agent') return localizeSteps(agentSteps, language);
-  if (['lawyer', 'state_lawyer', 'super_lawyer'].includes(role)) return localizeSteps(lawyerSteps, language);
-  if (role === 'lga_financial_admin') return localizeSteps(lgaFinancialSteps, language);
+  if (['lawyer', 'state_lawyer', 'zonal_lawyer', 'super_lawyer'].includes(role)) return localizeSteps(lawyerSteps, language);
+  if (role === 'lga_financial_admin' || role === 'zonal_financial_admin') return localizeSteps(lgaFinancialSteps, language);
   if (role === 'state_financial_admin' || role === 'state_admin') return localizeSteps(stateAdminSteps, language);
   if (['financial_admin', 'super_financial_admin'].includes(role)) return localizeSteps(financialSteps, language);
+  if (['super_transportation_admin','super_fumigation_admin'].includes(role)) return localizeSteps(serviceAdminSteps.filter(step => step.id !== 'service_payments'), language);
+  if (role === 'marketing_agent') return localizeSteps(marketingSteps, language);
   if (role === 'super_admin') return localizeSteps(superAdminSteps, language);
   if (['lga_support_admin', 'state_support_admin', 'super_support_admin'].includes(role)) return localizeSteps(supportSteps, language);
   if (role === 'recruitment_admin') return localizeSteps(recruitmentSteps, language);
@@ -343,8 +348,12 @@ export const getTourDestinationForRole = (role, stepDefinition = {}) => {
     return destination('MainTabs', { screen: 'DashboardTab' });
   }
   if (normalizedRole === 'zonal_admin') return destination('ZonalDashboard');
+  if (normalizedRole === 'marketing_agent') return destination('MarketingAgentDashboard');
+  if (normalizedRole === 'zonal_financial_admin') return destination('ZonalFinancialAdminDashboard');
+  if (normalizedRole === 'super_transportation_admin') return destination('SuperAdminTransportationDashboard');
+  if (normalizedRole === 'super_fumigation_admin') return destination('SuperAdminFumigationDashboard');
   if (normalizedRole === 'agent') return destination('AgentDashboard');
-  if (['lawyer', 'state_lawyer', 'super_lawyer'].includes(normalizedRole)) return destination('LawyerDashboard');
+  if (['lawyer', 'state_lawyer', 'zonal_lawyer', 'super_lawyer'].includes(normalizedRole)) return destination('LawyerDashboard');
   if (normalizedRole === 'super_admin') return destination('SuperAdminDashboard', {
     initialPanel: ({ super_users: 'users', super_requests: 'property_requests', super_pricing: 'pricing', super_approvals: 'pending_approvals', super_access: 'registration_access' })[stepDefinition.id] || (stepDefinition.id === 'super_trust'
       ? 'verifications'
@@ -363,4 +372,11 @@ export const getTourDestinationForRole = (role, stepDefinition = {}) => {
     normalizedRole.includes('fumigation')
   ) return destination('ServiceOperationsDashboard');
   return destination('AdminDashboard');
+};
+
+export const getTourPreparationDestinationForRole = (role, definition = {}) => {
+  if (definition.action && definition.id !== 'tour_settings' && !definition.id?.startsWith('settings_') && definition.id !== 'lawyer_verification') {
+    return getTourDestinationForRole(role, { id: definition.id });
+  }
+  return getTourDestinationForRole(role, definition);
 };

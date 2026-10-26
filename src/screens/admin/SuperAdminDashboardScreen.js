@@ -1512,7 +1512,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
             <View key={target.key} style={styles.targetCard}>
               <AppText style={styles.listTitle}>{target.label}</AppText>
               <AppText style={styles.meta}>
-                Base fee: N{Number(target.base_amount || 0).toLocaleString()}
+                Base fee: ₦{Number(target.base_amount || 0).toLocaleString()}
               </AppText>
             </View>
           ))}
@@ -1594,7 +1594,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
             <AppText style={styles.meta}>State: {rule.state_name}</AppText>
             <AppText style={styles.meta}>LGA: {rule.lga_name || 'Whole state'}</AppText>
             <AppText style={styles.meta}>
-              Amount: N{Number(rule.amount || 0).toLocaleString()}
+              Amount: ₦{Number(rule.amount || 0).toLocaleString()}
             </AppText>
             <AppText style={styles.meta}>Status: {rule.is_active ? 'Active' : 'Inactive'}</AppText>
             <View style={styles.row}>
@@ -1744,7 +1744,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
             <AppText style={styles.meta}>{item.landlord_name || 'No landlord'}</AppText>
             {item.state_name ? <AppText style={styles.meta}>State: {item.state_name}</AppText> : null}
             {item.city ? <AppText style={styles.meta}>City: {item.city}</AppText> : null}
-            {item.price ? <AppText style={styles.meta}>Price: N{Number(item.price).toLocaleString()}</AppText> : null}
+            {item.price ? <AppText style={styles.meta}>Price: ₦{Number(item.price).toLocaleString()}</AppText> : null}
             <StatusBadge status={item.status || 'active'} />
             <View style={styles.row}>
               <TouchableOpacity

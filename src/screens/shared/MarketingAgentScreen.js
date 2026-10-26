@@ -16,6 +16,7 @@ import WalletWithdrawModal from '../../components/dashboard/WalletWithdrawModal'
 import { getErrorMessage, pickList } from '../../utils/http';
 import { colors, radius, typography, typeScale } from '../../theme';
 import AppText from '../../components/common/AppText';
+import TourTarget from '../../components/tour/TourTarget';
 
 const formatDate = (value) => {
   if (!value) return '';
@@ -153,7 +154,7 @@ const MarketingAgentScreen = ({ navigation }) => {
             icon="people-outline"
           />
 
-          <TouchableOpacity
+          <TourTarget id="marketing_capture" label="Conduct a survey"><TouchableOpacity
             accessibilityRole="button"
             accessibilityLabel="Conduct a survey for someone"
             activeOpacity={0.88}
@@ -162,11 +163,11 @@ const MarketingAgentScreen = ({ navigation }) => {
           >
             <Icon name="add-circle-outline" size={18} color={colors.white} />
             <AppText style={styles.conductButtonText}>Conduct Survey</AppText>
-          </TouchableOpacity>
-          <View style={styles.metricRow}>
+          </TouchableOpacity></TourTarget>
+          <TourTarget id="marketing_metrics" label="Captured survey summary"><View style={styles.metricRow}>
             {metric('Captured', summary?.stats?.captured ?? responses.length)}
             {metric('In progress', summary?.stats?.in_progress ?? 0)}
-          </View>
+          </View></TourTarget>
           <View style={styles.metricRow}>
             {metric('With email', summary?.stats?.with_email ?? 0)}
             {metric('With phone', summary?.stats?.with_phone ?? 0)}

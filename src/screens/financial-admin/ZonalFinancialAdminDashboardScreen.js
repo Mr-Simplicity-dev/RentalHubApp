@@ -167,7 +167,7 @@ const ZonalFinancialAdminDashboardScreen = ({ navigation }) => {
       ) : null}
 
       <View style={styles.metricsSpacing}>
-        <MetricGrid tourTarget="zonal_financial_overview" tourLabel="Zonal finance overview">
+        <MetricGrid tourTarget="lga_financial_overview" tourLabel="Zonal finance overview">
           <MetricCard color={colors.success} icon="wallet-outline" label="Withdrawable" value={formatCurrency(withdrawable)} />
           <MetricCard color={colors.blue} icon="trending-up-outline" label="Total earned" value={formatCurrency(totalEarned)} />
           <MetricCard color={colors.navy} icon="receipt-outline" label="Requests" value={String(withdrawals.length)} />
@@ -196,11 +196,12 @@ const ZonalFinancialAdminDashboardScreen = ({ navigation }) => {
           icon="cash-outline"
           onPress={() => setWithdrawalModalVisible(true)}
           subtitle={`Current withdrawable balance: ${formatCurrency(withdrawable)}`}
+          tourTarget="lga_financial_withdrawal"
           title="Request personal withdrawal"
         />
       </DashboardSection>
 
-      <DashboardSection subtitle={`Total requested: ${formatCurrency(totalRequested)}`} title="Withdrawal history">
+      <DashboardSection subtitle={`Total requested: ${formatCurrency(totalRequested)}`} title="Withdrawal history" tourTarget="lga_financial_history">
         {withdrawals.length === 0 ? (
           <PremiumCard style={styles.emptyCard}>
             <View style={styles.emptyIcon}>

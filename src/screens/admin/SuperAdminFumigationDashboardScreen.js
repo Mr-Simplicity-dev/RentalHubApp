@@ -66,7 +66,7 @@ const SuperAdminFumigationDashboardScreen = ({ navigation }) => {
         onRefresh={loadStats}
       />
 
-      <MetricGrid>
+      <MetricGrid tourTarget="service_dashboard" tourLabel="National service overview">
         {summaryCards.map((card) => (
           <MetricCard key={card.label} {...card} />
         ))}
@@ -82,6 +82,7 @@ const SuperAdminFumigationDashboardScreen = ({ navigation }) => {
               items: [
                 {
                   label: 'Booking Queue',
+                  tourTarget: 'service_bookings',
                   icon: 'sparkles-outline',
                   onPress: () =>
                     navigation.navigate('ServiceBookings', { type: 'fumigation' }),

@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import {
   getEffectiveTourRole,
-  getTourDestinationForRole,
+  getTourPreparationDestinationForRole,
 } from '../../config/tourConfig';
 import { navigationRef } from '../../navigation/navigationRef';
 import { useTourStepOrchestrator } from './TourTarget';
@@ -44,7 +44,7 @@ const TourNavigationBridge = () => {
       return { status: 'unavailable', reason: 'navigator_not_ready' };
     }
 
-    const destination = getTourDestinationForRole(getEffectiveTourRole(user), step);
+    const destination = getTourPreparationDestinationForRole(getEffectiveTourRole(user), step);
     if (!destination?.name) {
       return { status: 'unavailable', reason: 'destination_missing' };
     }
