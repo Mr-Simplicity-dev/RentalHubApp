@@ -17,6 +17,8 @@ import {
 } from '../services/paymentRecoveryService';
 
 import WelcomeScreen from '../screens/auth/WelcomeScreen';
+import AssistedRegistrationScreen from '../screens/admin/AssistedRegistrationScreen';
+import RegistrationPaymentScreen from '../screens/auth/RegistrationPaymentScreen';
 import LoginScreen from '../screens/auth/LoginScreen';
 import RegisterScreen from '../screens/auth/RegisterScreen';
 import ForgotPasswordScreen from '../screens/auth/ForgotPasswordScreen';
@@ -1177,7 +1179,7 @@ const AppNavigator = () => {
       ref={navigationRef}
       linking={linkingConfig}
       fallback={<ActivityIndicator />}>
-      {isAuthenticated ? <RoleRouter userType={user?.user_type} /> : <GuestStack />}
+      {isAuthenticated ? user?.registration_payment_required ? <Stack.Navigator screenOptions={{headerShown:false}}><Stack.Screen name="RegistrationPayment" component={RegistrationPaymentScreen}/></Stack.Navigator> : <RoleRouter userType={user?.user_type} /> : <GuestStack />}
     </NavigationContainer>
   );
 };

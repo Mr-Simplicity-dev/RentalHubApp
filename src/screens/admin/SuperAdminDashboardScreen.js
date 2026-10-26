@@ -76,6 +76,7 @@ const WORKSPACE_GROUPS = [
       { label: 'Lawyer Invites', section: 'lawyer_invites', icon: 'mail-outline' },
       { label: 'Admin Management', section: 'admin_management', icon: 'construct-outline' },
       { label: 'Pending Approvals', section: 'pending_approvals', icon: 'hourglass-outline' },
+      { label: 'Assisted registration', route: 'AssistedRegistration', icon: 'person-add-outline' },
       { label: 'Admin Accounts & Reminders', route: 'AdminAccounts', icon: 'person-add-outline' },
     ],
   },

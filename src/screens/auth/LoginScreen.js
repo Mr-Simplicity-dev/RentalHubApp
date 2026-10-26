@@ -20,6 +20,7 @@ import { reportMobileCrash } from '../../services/mobileDiagnosticsService';
 import { colors, radius, shadows, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
+import PhoneAccountAccess from '../../components/common/PhoneAccountAccess';
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -221,11 +222,11 @@ const LoginScreen = ({ navigation }) => {
 
           <View style={styles.formCard}>
             <Input
-              label="Email address"
+              label="Email or verified phone number"
               value={email}
               onChangeText={setEmail}
-              placeholder="you@example.com"
-              keyboardType="email-address"
+              placeholder="Email or phone number"
+              keyboardType="default"
               icon="mail-outline"
               autoCapitalize="none"
               autoCorrect={false}
@@ -290,6 +291,7 @@ const LoginScreen = ({ navigation }) => {
             <Icon name="briefcase-outline" size={16} color={colors.muted} />
             <AppText style={styles.inviteText}>I received a lawyer invitation</AppText>
           </TouchableOpacity>
+          <PhoneAccountAccess />
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>

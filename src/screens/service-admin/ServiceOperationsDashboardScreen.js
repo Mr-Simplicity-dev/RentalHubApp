@@ -161,6 +161,7 @@ const ServiceOperationsDashboardScreen = ({ navigation }) => {
               title: 'Daily queue',
               icon: profile.icon,
               items: [
+                ...(profile.family==='support'?[{label:'Assisted registration',icon:'person-add-outline',onPress:()=>navigation.navigate('AssistedRegistration')}]:[]),
                 profile.family === 'support'
                   ? {
                       label: 'Support Tickets',

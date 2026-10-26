@@ -11,6 +11,7 @@ import {
 import { zonalAdminService } from '../../services/zonalAdminService';
 import { getErrorMessage } from '../../utils/http';
 import { colors, radius, typography, typeScale } from '../../theme';
+import Button from '../../components/common/Button';
 import AppText from '../../components/common/AppText';
 import TourTarget from '../../components/tour/TourTarget';
 import { DashboardScreen } from '../../components/dashboard/DashboardKit';
@@ -66,6 +67,7 @@ const ZonalAdminScreen = ({ navigation }) => {
         icon="business-outline"
       />
 
+      <Button title="Assisted registration & receipts" onPress={()=>navigation.navigate('AssistedRegistration')} variant="outline" />
       <TourTarget id="zonal_overview" label="Zone metrics"><View style={styles.metricRow}>
         {metric('Users', data?.totalUsers ?? 0)}
         {metric('Properties', data?.totalProperties ?? 0)}
