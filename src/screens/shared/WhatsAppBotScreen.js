@@ -188,6 +188,7 @@ const WhatsAppBotScreen = ({ navigation, embedded=false, onHumanRequest }) => {
         owner: authKeyRef.current,
         text,
         created_at: new Date().toISOString(),
+        engine:faq?.engine || 'guided',
         ticketDraft: faq?.ticketDraft || null,
         link: faq?.link || null,
         linkText: faq?.linkText || null,
@@ -358,7 +359,7 @@ const WhatsAppBotScreen = ({ navigation, embedded=false, onHumanRequest }) => {
         )}
         <View style={[styles.bubble, isUser ? styles.bubbleUser : styles.bubbleBot]}>
           {!isUser && (
-            <AppText style={styles.botLabel}>RentalHub</AppText>
+            <AppText style={styles.botLabel}>RentalHub{msg.engine==='ai'?' · AI guidance':msg.engine==='verified'?' · Account record':''}</AppText>
           )}
           <AppText style={[styles.bubbleText, isUser && styles.bubbleTextUser]}>
             {msg.text}

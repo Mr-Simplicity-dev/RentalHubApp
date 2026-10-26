@@ -90,7 +90,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
   const { user, isAuthenticated } = useContext(AuthContext);
   const identityKey=isAuthenticated?String(user?.id || ''):'guest';
   const identityRef=useRef(identityKey);identityRef.current=identityKey;
-  useEffect(()=>{setTickets([]);setActiveTicket(null);setConversation([]);setReplyText('');setContactConv([]);setViewingContactTicket(null);setView('assistant');},[identityKey]);
+  useEffect(()=>{setTickets([]);setActiveTicket(null);setConversation([]);setReplyText('');setForm({name:'',email:'',subject:'',message:'',state:'',lga:'',priority:'medium'});setContactConv([]);setViewingContactTicket(null);setView('assistant');},[identityKey]);
   const { inviteSupportCall, connected } = useRealtime();
 
   const [view, setView] = useState('assistant');
