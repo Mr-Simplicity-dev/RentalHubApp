@@ -3368,28 +3368,25 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
         icon="shield-checkmark-outline"
         onRefresh={() => loadSection(section, true)}
         tourTarget="super_overview"
+        headerRight={(
+          <TouchableOpacity
+            accessibilityRole="button"
+            accessibilityLabel={`Notifications${unreadCount ? `, ${unreadCount} unread` : ''}`}
+            activeOpacity={0.85}
+            onPress={() => navigation.navigate('Notifications')}
+            style={styles.headerBell}
+          >
+            <Icon name="notifications-outline" size={20} color={colors.white} />
+            {unreadCount > 0 ? (
+              <View style={styles.headerBellBadge}>
+                <AppText style={styles.headerBellBadgeText}>
+                  {unreadCount > 99 ? '99+' : unreadCount}
+                </AppText>
+              </View>
+            ) : null}
+          </TouchableOpacity>
+        )}
       />
-      <View style={styles.headerBellRow}>
-        <TouchableOpacity
-          accessibilityRole="button"
-          accessibilityLabel={`Notifications${unreadCount ? `, ${unreadCount} unread` : ''}`}
-          activeOpacity={0.85}
-          onPress={() => navigation.navigate('Notifications')}
-          style={styles.headerBell}
-        >
-          <Icon name="notifications-outline" size={22} color={colors.navy} />
-          {unreadCount > 0 ? (
-            <View style={styles.headerBellBadge}>
-              <AppText style={styles.headerBellBadgeText}>
-                {unreadCount > 99 ? '99+' : unreadCount}
-              </AppText>
-            </View>
-          ) : null}
-        </TouchableOpacity>
-        <AppText style={styles.headerBellLabel}>
-          {unreadCount > 0 ? `${unreadCount} unread notification${unreadCount === 1 ? '' : 's'}` : 'No new notifications'}
-        </AppText>
-      </View>
       <AdminAccountActions navigation={navigation} />
       <ActionRow
         title={selectedSection?.label || 'Choose workspace'}
@@ -3683,22 +3680,13 @@ const styles = StyleSheet.create({
     fontFamily: typography.bold,
     fontSize: 11,
   },
-  headerBellRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-    marginBottom: 10,
-    marginTop: -2,
-  },
   headerBell: {
     alignItems: 'center',
-    backgroundColor: '#ffffff',
-    borderColor: '#e2e8f0',
-    borderRadius: 22,
-    borderWidth: 1,
-    height: 44,
+    backgroundColor: colors.navySoft,
+    borderRadius: 19,
+    height: 38,
     justifyContent: 'center',
-    width: 44,
+    width: 38,
   },
   headerBellBadge: {
     position: 'absolute',
@@ -3716,13 +3704,6 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontFamily: typography.bold,
     fontSize: 11,
-  },
-  headerBellLabel: {
-    color: '#64748b',
-    fontFamily: typography.medium,
-    fontSize: typeScale.xs,
-    lineHeight: 18,
-    flex: 1,
   },
   summaryCardLabel: {
     color: '#64748b',

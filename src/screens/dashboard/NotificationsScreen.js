@@ -9,6 +9,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import { notificationService } from '../../services/notificationService';
+import { syncAppIconBadge } from '../../services/appBadgeService';
 import { colors, radius, typography, typeScale } from '../../theme';
 import { getErrorMessage, pickList } from '../../utils/http';
 
@@ -66,6 +67,7 @@ const NotificationsScreen = ({ navigation }) => {
     );
     try {
       await notificationService.markAsRead(item.id);
+      void syncAppIconBadge('notification_marked_read').catch(() => {});
     } catch (error) {
       setItems((current) =>
         current.map((entry) => entry.id === item.id ? { ...entry, is_read: false } : entry)
@@ -86,6 +88,7 @@ const NotificationsScreen = ({ navigation }) => {
     setItems((current) => current.map((item) => ({ ...item, is_read: true })));
     try {
       await notificationService.markAllAsRead();
+      void syncAppIconBadge('notifications_marked_all_read').catch(() => {});
       Toast.show({ type: 'success', text1: 'You’re all caught up' });
     } catch (error) {
       setItems(previous);
@@ -102,6 +105,7 @@ const NotificationsScreen = ({ navigation }) => {
     setItems((current) => current.filter((item) => item.id !== id));
     try {
       await notificationService.deleteNotification(id);
+      void syncAppIconBadge('notification_deleted').catch(() => {});
     } catch (error) {
       setItems(previous);
       Toast.show({

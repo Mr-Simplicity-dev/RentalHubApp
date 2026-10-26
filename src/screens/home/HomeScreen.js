@@ -9,7 +9,7 @@ import BrandMark from '../../components/brand/BrandMark';
 import PropertyCard from '../../components/properties/PropertyCard';
 import { useTourTarget } from '../../components/tour/TourTarget';
 import { AuthContext } from '../../context/AuthContext';
-import { fetchUnreadActivityCount } from '../../services/appBadgeService';
+import { fetchUnreadActivityCount, setAppIconBadgeCount } from '../../services/appBadgeService';
 import { propertyService } from '../../services/propertyService';
 import { colors, radius, shadows, typography, typeScale } from '../../theme';
 import { getErrorMessage, pickList } from '../../utils/http';
@@ -79,7 +79,10 @@ const HomeScreen = ({ navigation }) => {
     const refreshUnread = async () => {
       try {
         const counts = await fetchUnreadActivityCount();
-        if (!cancelled) setUnreadTotal(Number(counts?.total || 0));
+        if (!cancelled) {
+          setUnreadTotal(Number(counts?.total || 0));
+          void setAppIconBadgeCount(counts?.total || 0);
+        }
       } catch {
         // Leave the previous number in place on a transient failure.
       }

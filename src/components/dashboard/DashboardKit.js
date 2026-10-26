@@ -58,6 +58,7 @@ export const DashboardHero = ({
   subtitle,
   icon = 'grid-outline',
   onRefresh,
+  headerRight,
   tourTarget,
 }) => {
   const { scaleFont, hitSlop } = useAccessibilityPreferences();
@@ -73,17 +74,20 @@ export const DashboardHero = ({
         <View style={styles.heroIcon}>
           <Icon name={icon} size={23} color={colors.gold} />
         </View>
-        {onRefresh ? (
-          <TouchableOpacity
-            accessibilityLabel="Refresh dashboard"
-            accessibilityRole="button"
-            hitSlop={hitSlop}
-            style={styles.refreshButton}
-            onPress={onRefresh}
-          >
-            <Icon name="refresh" size={19} color={colors.white} />
-          </TouchableOpacity>
-        ) : null}
+        <View style={styles.heroActions}>
+          {headerRight}
+          {onRefresh ? (
+            <TouchableOpacity
+              accessibilityLabel="Refresh dashboard"
+              accessibilityRole="button"
+              hitSlop={hitSlop}
+              style={styles.refreshButton}
+              onPress={onRefresh}
+            >
+              <Icon name="refresh" size={19} color={colors.white} />
+            </TouchableOpacity>
+          ) : null}
+        </View>
       </View>
       <AppText style={[styles.eyebrow, { fontSize: scaleFont(10) }]}>{eyebrow}</AppText>
       <AppText style={[styles.heroTitle, { fontSize: scaleFont(27), lineHeight: scaleFont(33) }]}>{title}</AppText>
@@ -256,6 +260,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 18,
+  },
+  heroActions: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 8,
   },
   heroIcon: {
     alignItems: 'center',

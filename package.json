@@ -1,7 +1,7 @@
 {
   "name": "rentalhubmobile",
   "private": true,
-  "version": "1.0.45",
+  "version": "1.0.46",
   "main": "index.js",
   "scripts": {
     "android": "react-native run-android",
