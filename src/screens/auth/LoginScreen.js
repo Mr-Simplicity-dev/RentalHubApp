@@ -22,7 +22,6 @@ import { colors, radius, shadows, typography, typeScale } from '../../theme';
 import AppText from '../../components/common/AppText';
 import {useLanguage} from '../../context/LanguageContext';
 import assistedCopy from '../../i18n/assistedRegistration.json';
-import PhoneAccountAccess from '../../components/common/PhoneAccountAccess';
 const LoginScreen = ({ navigation }) => {
   const {language}=useLanguage();const identityLabel=(assistedCopy[language]||assistedCopy.en).identity;
   const [email, setEmail] = useState('');
@@ -230,10 +229,10 @@ const LoginScreen = ({ navigation }) => {
               onChangeText={setEmail}
               placeholder={identityLabel}
               keyboardType="default"
-              icon="mail-outline"
+              icon="person-outline"
               autoCapitalize="none"
               autoCorrect={false}
-              autoComplete="email"
+              autoComplete="username"
             />
 
             <Input
@@ -294,7 +293,6 @@ const LoginScreen = ({ navigation }) => {
             <Icon name="briefcase-outline" size={16} color={colors.muted} />
             <AppText style={styles.inviteText}>I received a lawyer invitation</AppText>
           </TouchableOpacity>
-          <PhoneAccountAccess />
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
