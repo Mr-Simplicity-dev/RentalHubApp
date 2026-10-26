@@ -45,7 +45,7 @@ const SupportScreen = ({ navigation }) => {
         {isAuthenticated ? <ActionRow title="My support tickets" subtitle="Check progress, read replies and continue your conversations." icon="document-text-outline" onPress={() => navigation.navigate('ContactWidget', {initialView:'tickets'})} /> : null}
         <ActionRow title="Live support and in-app calls" subtitle="Open the support conversation and calling options." icon="headset-outline" onPress={() => navigation.navigate('ContactWidget')} />
         {isAuthenticated && ['tenant','landlord'].includes(user?.user_type) ? <>
-          <ActionRow title="Coverage assistance" subtitle="Check paid coverage and request private assistance." icon="shield-checkmark-outline" onPress={() => navigation.navigate('Assistance')} />
+          <ActionRow title="Coverage assistance" tourTarget={user?.user_type==='landlord'?'landlord_assistance':'tenant_assistance'} subtitle="Check paid coverage and request private assistance." icon="shield-checkmark-outline" onPress={() => navigation.navigate('Assistance')} />
         </> : null}
       </DashboardSection>
 

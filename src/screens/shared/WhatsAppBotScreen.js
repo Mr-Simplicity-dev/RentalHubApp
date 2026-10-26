@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { colors, radius, typography, typeScale } from '../../theme';
 
 import {AuthContext} from '../../context/AuthContext';
-import {askAccountAssistant,submitAssistantTicket,needsAccount} from '../../services/accountAssistantService';
+import {askAccountAssistant,askPublicAssistant,submitAssistantTicket,needsAccount} from '../../services/accountAssistantService';
 import AppText from '../../components/common/AppText';
 const WHATSAPP_NUMBER = '2348030601238';
 const BOT_DELAY = 1000;
@@ -121,7 +121,7 @@ const QUICK_REPLIES = [
   'How does payment work?',
 ];
 
-const WhatsAppBotScreen = ({ navigation }) => {
+const WhatsAppBotScreen = ({ navigation, embedded=false, onHumanRequest }) => {
   const {user,isAuthenticated}=useContext(AuthContext);
   const authKey=isAuthenticated?String(user?.id || '')+':'+user?.user_type:'guest';
   const authKeyRef=useRef(authKey);authKeyRef.current=authKey;
@@ -237,12 +237,13 @@ const WhatsAppBotScreen = ({ navigation }) => {
   }, [addBotMessage]);
 
   const handleTalkToAgent = useCallback(() => {
+    if(onHumanRequest){onHumanRequest({summary:messages.filter(m=>m.type==='user' && (!m.owner || m.owner===authKeyRef.current)).slice(-3).map(m=>m.text).join('\n')});return;}
     setConnectedToAgent(true);
     setAwaitingResponse(null);
     const waMsg = 'Hello Amana RentalHub NG, I need help finding a home.';
     const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(waMsg)}`;
     Linking.openURL(url).catch(() => {});
-  }, []);
+  }, [onHumanRequest,messages]);
 
   const tryAccountReply = useCallback(async msg => {
     if(!isAuthenticated || !['tenant','landlord'].includes(user?.user_type)) {
@@ -250,7 +251,7 @@ const WhatsAppBotScreen = ({ navigation }) => {
     }
     const key=authKeyRef.current;requestBusy.current=true;setRequestPending(true);setIsBotTyping(true);
     try {
-      const answer=await askAccountAssistant(msg,{...(awaitingRef.current==='ticket_details'?{mode:'ticket'}:{}),...(topicRef.current?{previousTopic:topicRef.current}:{})});
+      const answer=await askAccountAssistant(msg,{history:messages.filter(m=>m.type==='user').slice(-4).map(m=>({role:'user',content:m.text.slice(0,1000)})),...(awaitingRef.current==='ticket_details'?{mode:'ticket'}:{}),...(topicRef.current?{previousTopic:topicRef.current}:{})});
       if(!mountedRef.current || key!==authKeyRef.current)return true;
       if(!answer || typeof answer.handled!=='boolean')throw new Error('Invalid assistant response');
       if(!answer.handled)return false;
@@ -258,7 +259,7 @@ const WhatsAppBotScreen = ({ navigation }) => {
       setAwaitingResponse(answer.needsDetails?'ticket_details':null);addBotMessage(answer.text,answer);return true;
     } catch {if(!needsAccount(msg) && findBestMatch(msg) && awaitingRef.current!=='ticket_details' && !/^(why|when|what about)\b/i.test(msg))return false;if(mountedRef.current && key===authKeyRef.current)addBotMessage('I could not verify your account records. Please try again or open support. No ticket has been submitted by this question.',{link:'/support',linkText:'Open support'});return true;}
     finally {requestBusy.current=false;if(mountedRef.current){setRequestPending(false);setIsBotTyping(false);}}
-  },[isAuthenticated,user?.user_type,addBotMessage]);
+  },[isAuthenticated,user?.user_type,addBotMessage,messages]);
   const submitTicket = useCallback(async message => {
     if(requestBusy.current || !message.ticketDraft || (message.owner && message.owner!==authKeyRef.current) || !isAuthenticated)return;
     const key=authKeyRef.current;requestBusy.current=true;setRequestPending(true);
@@ -280,6 +281,7 @@ const WhatsAppBotScreen = ({ navigation }) => {
       if (!msg) return;
       setInput('');
       addUserMessage(msg);
+      if(/\b(human|person|agent|representative)\b/i.test(msg) && /\b(talk|speak|connect|want|need)\b/i.test(msg)){handleTalkToAgent();return;}
 
       const currentAwaiting = awaitingRef.current;
 
@@ -333,15 +335,13 @@ const WhatsAppBotScreen = ({ navigation }) => {
           askAnythingElse();
         });
       } else {
-        setAwaitingResponse('handoff');
-        botReplyWithTyping(() => {
-          addBotMessage(
-            "I'm not sure I have the answer to that. Would you like to speak with a human agent? Just say yes."
-          );
-        });
+        const key=authKeyRef.current;requestBusy.current=true;setRequestPending(true);setIsBotTyping(true);
+        try {const answer=await askPublicAssistant(msg,{history:messages.filter(m=>m.type==='user').slice(-4).map(m=>({role:'user',content:m.text.slice(0,1000)}))});if(mountedRef.current && key===authKeyRef.current)addBotMessage(answer.text,answer);}
+        catch {if(mountedRef.current && key===authKeyRef.current)addBotMessage('Tell me the screen and error shown. Check Payment History before retrying a payment. If the problem continues, I can help prepare a ticket.',{link:'/support',linkText:'Support options'});}
+        finally {requestBusy.current=false;if(mountedRef.current){setRequestPending(false);setIsBotTyping(false);}}
       }
     },
-    [input, addUserMessage, addBotMessage, botReplyWithTyping, askAnythingElse, handleTalkToAgent, tryAccountReply, isAuthenticated]
+    [input, addUserMessage, addBotMessage, botReplyWithTyping, askAnythingElse, handleTalkToAgent, tryAccountReply, isAuthenticated,messages]
   );
 
   const handleQuickReply = question => handleSend(question);
@@ -396,7 +396,7 @@ const WhatsAppBotScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.root}>
-      <View style={styles.header}>
+      {!embedded && <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.headerBack}>
           <Icon name="arrow-back" size={22} color={colors.white} />
         </TouchableOpacity>
@@ -407,7 +407,7 @@ const WhatsAppBotScreen = ({ navigation }) => {
           <AppText style={styles.headerTitle}>Amana RentalHub Assistant</AppText>
           <AppText style={styles.headerSubtitle}>Need help? Chat with us!</AppText>
         </View>
-      </View>
+      </View>}
 
       <View style={styles.chatArea}>
         <ScrollView
@@ -440,6 +440,7 @@ const WhatsAppBotScreen = ({ navigation }) => {
               <AppText style={styles.agentSub}>Continue with support there. Your account session is not transferred.</AppText>
             </View>
           )}
+          <TouchableOpacity style={styles.qrChip} onPress={handleTalkToAgent}><AppText style={styles.qrChipText}>Talk to a person</AppText></TouchableOpacity>
         </ScrollView>
 
         {!connectedToAgent && (
@@ -463,14 +464,14 @@ const WhatsAppBotScreen = ({ navigation }) => {
               onChangeText={setInput}
               placeholder="Type your question..."
               placeholderTextColor={colors.muted}
-              editable={!connectedToAgent && !requestPending}
+              editable={!requestPending}
               onSubmitEditing={() => handleSend()}
               returnKeyType="send"
             />
             <TouchableOpacity
               style={[styles.sendBtn, (!input.trim() || connectedToAgent) && styles.sendBtnDisabled]}
               onPress={() => handleSend()}
-              disabled={!input.trim() || connectedToAgent || requestPending}
+              disabled={!input.trim() || requestPending}
               activeOpacity={0.7}
             >
               <Icon name="paper-plane" size={18} color={colors.white} />
@@ -582,9 +583,9 @@ const styles = StyleSheet.create({
   },
   bubbleText: {
     fontFamily: typography.regular,
-    fontSize: typeScale.sm,
+    fontSize: typeScale.reading,
     color: colors.ink,
-    lineHeight: 20,
+    lineHeight: 24,
   },
   bubbleTextUser: {
     color: colors.ink,

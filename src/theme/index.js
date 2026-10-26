@@ -29,7 +29,7 @@ export const typography = {
 };
 
 export const typeScale = {
-  compact: 12,
+  compact: 13,
   xs: 13,
   sm: 14,
   reading: 15,
@@ -113,7 +113,8 @@ export const resolveTextStyle = (style = {}, variant) => {
   if (style.fontSize != null && style.lineHeight == null) {
     result.lineHeight = Math.round(style.fontSize * (style.fontSize >= 24 ? 1.25 : 1.45));
   }
-  result.lineHeight = Math.max(result.lineHeight, Math.ceil(result.fontSize * 1.2));
+  result.fontSize=Math.max(typeScale.xs,Number(result.fontSize) || typeScale.base);
+  result.lineHeight = Math.max(result.lineHeight, Math.ceil(result.fontSize * (result.fontSize>=24?1.25:1.45)));
   const isInter = !style.fontFamily || Object.values(typography).includes(style.fontFamily);
   if (isInter) {
     if (style.fontWeight != null) {

@@ -7,7 +7,7 @@ const AppTextInput = forwardRef(({ style, placeholderTextColor = colors.muted, .
     {...props}
     ref={ref}
     placeholderTextColor={placeholderTextColor}
-    style={resolveTextStyle(StyleSheet.flatten(style) || {})}
+    style={resolveTextStyle({...StyleSheet.flatten(style),fontSize:Math.max(16,Number(StyleSheet.flatten(style)?.fontSize) || 16)})}
   />
 ));
 

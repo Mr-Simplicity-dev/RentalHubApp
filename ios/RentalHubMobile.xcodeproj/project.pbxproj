@@ -247,6 +247,9 @@
 				ar,
 				ru,
 				zh,
+				ha,
+				yo,
+				ig,
 				Base,
 			);
 			mainGroup = 83CBB9F61A601CBA00E9B192;

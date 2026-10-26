@@ -11,6 +11,9 @@
 		<string>ar</string>
 		<string>ru</string>
 		<string>zh</string>
+		<string>ha</string>
+		<string>yo</string>
+		<string>ig</string>
 	</array>
 	<key>CFBundleDisplayName</key>
 	<string>Amana RentalHub NG</string>

@@ -1,3 +1,4 @@
+import WhatsAppBotScreen from './WhatsAppBotScreen';
 import React, { useState, useEffect, useRef, useContext, useCallback } from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, KeyboardAvoidingView, Platform, Linking, RefreshControl } from 'react-native';
 import TextInput from '../../components/common/AppTextInput';
@@ -87,9 +88,12 @@ const STATUS_COLORS = {
 
 const ContactWidgetScreen = ({ navigation, route }) => {
   const { user, isAuthenticated } = useContext(AuthContext);
+  const identityKey=isAuthenticated?String(user?.id || ''):'guest';
+  const identityRef=useRef(identityKey);identityRef.current=identityKey;
+  useEffect(()=>{setTickets([]);setActiveTicket(null);setConversation([]);setReplyText('');setContactConv([]);setViewingContactTicket(null);setView('assistant');},[identityKey]);
   const { inviteSupportCall, connected } = useRealtime();
 
-  const [view, setView] = useState('menu');
+  const [view, setView] = useState('assistant');
   useEffect(() => {
     const initialView=route?.params?.initialView;
     if (!['form','tickets'].includes(initialView)) return;
@@ -143,10 +147,11 @@ const ContactWidgetScreen = ({ navigation, route }) => {
 
   const fetchMyTickets = useCallback(async () => {
     if (!isAuthenticated) return;
+    const identity=identityRef.current;
     setLoadingTickets(true);
     try {
       const res = await supportService.getMyTickets();
-      setTickets(getResponseData(res) || []);
+      if(identity===identityRef.current)setTickets(getResponseData(res) || []);
     } catch {} finally { setLoadingTickets(false); }
   }, [isAuthenticated]);
 
@@ -161,10 +166,11 @@ const ContactWidgetScreen = ({ navigation, route }) => {
   }, [fetchMyTickets]);
 
   const loadConversation = useCallback(async (ticketId) => {
+    const identity=identityRef.current;
     setLoadingConv(true);
     try {
       const res = await supportService.getTicketConversation(ticketId, { limit: 200 });
-      setConversation(getResponseData(res) || []);
+      if(identity===identityRef.current)setConversation(getResponseData(res) || []);
     } catch { setConversation([]); } finally { setLoadingConv(false); }
   }, []);
 
@@ -446,7 +452,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
       <Icon name="headset-outline" size={20} color={colors.gold} />
       <View style={styles.headerText}>
         <AppText style={styles.headerTitle}>RentalHub Support</AppText>
-        <AppText style={styles.headerSubtitle}>We typically reply within minutes</AppText>
+        <AppText style={styles.headerSubtitle}>Assistant first. Human support when needed.</AppText>
       </View>
     </View>
   );
@@ -1088,8 +1094,9 @@ const ContactWidgetScreen = ({ navigation, route }) => {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       {renderHeader()}
+      {view==='assistant' ? <><WhatsAppBotScreen embedded navigation={navigation} onHumanRequest={({summary})=>{setForm(prev=>({...prev,subject:'Support follow-up',message:summary || ''}));setView(isAuthenticated?'auth-form':'form');}}/><View style={{flexDirection:'row',gap:12,padding:12}}><TouchableOpacity onPress={()=>setView('menu')}><AppText style={{color:colors.blue}}>Support options</AppText></TouchableOpacity><TouchableOpacity onPress={()=>setView(isAuthenticated?'tickets':'check-status')}><AppText style={{color:colors.blue}}>My tickets</AppText></TouchableOpacity></View></> : null}
 
-      <ScrollView style={styles.body} contentContainerStyle={styles.bodyContent}>
+      {view!=='assistant' && <ScrollView style={styles.body} contentContainerStyle={styles.bodyContent}>
         {view === 'menu' && renderMenu()}
         {view === 'form' && renderContactForm()}
         {view === 'auth-form' && renderAuthForm()}
@@ -1097,7 +1104,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
         {view === 'tickets' && renderTicketList()}
         {view === 'conversation' && renderConversation()}
         {view === 'check-status' && renderCheckStatus()}
-      </ScrollView>
+      </ScrollView>}
     </KeyboardAvoidingView>
   );
 };

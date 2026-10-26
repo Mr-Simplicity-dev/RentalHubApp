@@ -1,6 +1,6 @@
 const { TOUR_STEP_COPY } = require('../i18n/tourStepCatalog.cjs');
 
-export const TOUR_VERSION = '4';
+export const TOUR_VERSION = '5';
 export const TOUR_PROMPT_INTERVAL_DAYS = 7;
 
 const destination = (name, params) => ({ name, ...(params ? { params } : {}) });
@@ -37,12 +37,16 @@ const tenantSteps = [
   ...commonPreSteps,
   step('tenant_properties', 'heart-outline'),
   step('tenant_location', 'map-outline'),
+  step('tenant_more','apps-outline'),
+  step('tenant_disputes','shield-half-outline'),
+  step('tenant_reports','home-outline'),
   step('tenant_wallet', 'wallet-outline'),
   step('tenant_applications', 'documents-outline', workflow('MainTabs', { screen: 'Applications' })),
   step('tenant_services', 'sparkles-outline', workflow('TransportationBookings')),
   step('tenant_messages', 'chatbubbles-outline', workflow('MainTabs', { screen: 'Messages' })),
   step('tenant_payments', 'receipt-outline', workflow('PaymentHistory')),
   step('tenant_support', 'headset-outline', workflow('Support')),
+  step('tenant_assistance','shield-checkmark-outline',{destination:destination('Support')}),
   ...settingsIconSteps,
 ];
 
@@ -51,8 +55,12 @@ const landlordSteps = [
   step('landlord_listings', 'business-outline'),
   step('landlord_applications', 'documents-outline', workflow('MainTabs', { screen: 'Applications' })),
   step('landlord_messages', 'chatbubbles-outline', workflow('MainTabs', { screen: 'Messages' })),
-  step('landlord_wallet', 'wallet-outline', workflow('PaymentHistory')),
+  step('landlord_more','apps-outline'),
+  step('landlord_disputes','shield-half-outline'),
+  step('landlord_reports','home-outline'),
+  step('landlord_wallet', 'wallet-outline'),
   step('landlord_support', 'headset-outline', workflow('Support')),
+  step('landlord_assistance','shield-checkmark-outline',{destination:destination('Support')}),
   ...settingsIconSteps,
 ];
 

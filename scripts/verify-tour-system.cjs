@@ -19,7 +19,7 @@ const {
 } = require('../src/services/tourPolicy.cjs');
 
 const languageCodes = SUPPORTED_LANGUAGES.map(({ code }) => code);
-assert.deepEqual(languageCodes, ['en', 'fr', 'ar', 'ru', 'zh']);
+assert.deepEqual(languageCodes, ['en', 'fr', 'ar', 'ru', 'zh', 'ha', 'yo', 'ig']);
 assert.equal(SUPPORTED_LANGUAGES.find(({ code }) => code === 'ar').rtl, true);
 
 const englishUiKeys = Object.keys(UI_COPY.en).sort();

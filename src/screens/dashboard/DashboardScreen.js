@@ -1,3 +1,4 @@
+import {useTour} from '../../context/TourContext';
 import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Linking, Modal, RefreshControl, ScrollView, Share, StyleSheet, TouchableOpacity, View } from 'react-native';
 import TextInput from '../../components/common/AppTextInput';
@@ -229,6 +230,7 @@ const getTenantSubscriptionValue = (stats = {}) => {
 
 const DashboardScreen = ({ navigation }) => {
   const { user } = useContext(AuthContext);
+  const {walkthroughVisible,steps:tourSteps,currentStep:tourStepIndex}=useTour();
   const { reduceMotion } = useAccessibilityPreferences();
   const tourScroll = useTourScrollController({ animated: !reduceMotion });
   const [loading, setLoading] = useState(true);
@@ -249,6 +251,8 @@ const DashboardScreen = ({ navigation }) => {
   const [walletBankTransfer, setWalletBankTransfer] = useState(null);
   const [showWithdrawModal, setShowWithdrawModal] = useState(false);
   const [showAllCards, setShowAllCards] = useState(false);
+  const tourTargetId=tourSteps?.[tourStepIndex]?.id;
+  useEffect(()=>{if(walkthroughVisible && /^(tenant|landlord)_(wallet|disputes|reports)$/.test(tourTargetId || ''))setShowAllCards(true);},[walkthroughVisible,tourTargetId]);
   const [fundLoading, setFundLoading] = useState(false);
   const [withdrawLoading, setWithdrawLoading] = useState(false);
   const [withdrawTwoFactor, setWithdrawTwoFactor] = useState(null);
@@ -967,12 +971,13 @@ const DashboardScreen = ({ navigation }) => {
                   tourTarget="tenant_wallet"
                   onPress={() => setShowWallet(true)}
                 />
-                <StatCard title="Disputes" value="Track cases" icon="shield-half-outline" onPress={() => navigation.navigate('MyDisputes')} />
-                <StatCard title="Property Reports" value="Report an issue" icon="home-outline" onPress={() => navigation.navigate('MyDamageReports')} />
+                <StatCard title="Disputes" tourTarget={isTenant?'tenant_disputes':'landlord_disputes'} value="Track cases" icon="shield-half-outline" onPress={() => navigation.navigate('MyDisputes')} />
+                <StatCard title="Property Reports" tourTarget={isTenant?'tenant_reports':'landlord_reports'} value="Report an issue" icon="home-outline" onPress={() => navigation.navigate('MyDamageReports')} />
                 <StatCard title="Support" value="Get help" icon="headset-outline" onPress={() => navigation.navigate('Support')} />
               </>
             ) : null}
             <StatCard
+              tourTarget={isTenant?'tenant_more':'landlord_more'}
               title={showAllCards ? 'Show less' : 'More'}
               value=""
               icon={showAllCards ? 'chevron-up-circle-outline' : 'ellipsis-horizontal-circle-outline'}
