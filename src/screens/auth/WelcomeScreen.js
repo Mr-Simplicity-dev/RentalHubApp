@@ -20,6 +20,7 @@ import { colors, radius, shadows, typography, typeScale } from '../../theme';
 import AppText from '../../components/common/AppText';
 
 const logo = require('../../../assets/rentalhub-app-icon.png');
+const CAREER_GLOW_DURATION = 7200;
 
 const WelcomeScreen = ({ navigation }) => {
   const { height, width } = useWindowDimensions();
@@ -31,8 +32,10 @@ const WelcomeScreen = ({ navigation }) => {
   const contentOpacity = useRef(new Animated.Value(0)).current;
   const hintBounce = useRef(new Animated.Value(0)).current;
   const careerGlow = useRef(new Animated.Value(0)).current;
+  const careerPulse = useRef(new Animated.Value(0)).current;
   const [reduceMotion, setReduceMotion] = useState(true);
-  const [careerWidth, setCareerWidth] = useState(width - 48);
+  const [careerWidth, setCareerWidth] = useState(Math.max(width - 48, 0));
+  const [careerHeight, setCareerHeight] = useState(108);
   const navigatingRef = useRef(false);
   const navigateTimerRef = useRef(null);
 
@@ -64,11 +67,38 @@ const WelcomeScreen = ({ navigation }) => {
   }, []);
   useEffect(() => {
     careerGlow.setValue(0);
-    if (reduceMotion) return;
-    const loop = Animated.loop(Animated.timing(careerGlow, { toValue: 1, duration: 3200, easing: Easing.linear, useNativeDriver: true }));
+    if (reduceMotion) return undefined;
+    const loop = Animated.loop(Animated.timing(careerGlow, {
+      toValue: 1,
+      duration: CAREER_GLOW_DURATION,
+      easing: Easing.linear,
+      useNativeDriver: true,
+    }));
     loop.start();
     return () => loop.stop();
   }, [careerGlow, reduceMotion]);
+  useEffect(() => {
+    careerPulse.setValue(0);
+    if (reduceMotion) return undefined;
+    const loop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(careerPulse, {
+          toValue: 1,
+          duration: 1800,
+          easing: Easing.inOut(Easing.quad),
+          useNativeDriver: true,
+        }),
+        Animated.timing(careerPulse, {
+          toValue: 0,
+          duration: 1800,
+          easing: Easing.inOut(Easing.quad),
+          useNativeDriver: true,
+        }),
+      ])
+    );
+    loop.start();
+    return () => loop.stop();
+  }, [careerPulse, reduceMotion]);
   useEffect(() => {
     Animated.parallel([
       Animated.timing(contentY, {
@@ -95,6 +125,23 @@ const WelcomeScreen = ({ navigation }) => {
     loop.start();
     return () => loop.stop();
   }, [hintBounce, reduceMotion]);
+
+  const careerGlowX = careerGlow.interpolate({
+    inputRange: [0, 0.25, 0.5, 0.75, 1],
+    outputRange: [0, careerWidth, careerWidth, 0, 0],
+  });
+  const careerGlowY = careerGlow.interpolate({
+    inputRange: [0, 0.25, 0.5, 0.75, 1],
+    outputRange: [0, 0, careerHeight, careerHeight, 0],
+  });
+  const careerPulseOpacity = careerPulse.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0.26, 0.9],
+  });
+  const careerPulseScale = careerPulse.interpolate({
+    inputRange: [0, 1],
+    outputRange: [1, 1.035],
+  });
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -167,11 +214,40 @@ const WelcomeScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity accessibilityRole="button" accessibilityLabel={careersCopy.opportunities_title + '. ' + careersCopy.apply_here} onPress={() => navigateOnce('Careers')} activeOpacity={0.88} onLayout={event => setCareerWidth(event.nativeEvent.layout.width)} style={styles.careersButton}>
-          {!reduceMotion && <Animated.View pointerEvents="none" accessible={false} style={[styles.careerGlow, { transform: [{ translateX: careerGlow.interpolate({ inputRange: [0, 1], outputRange: [-120, careerWidth + 120] }) }, { skewX: '-20deg' }] }]}><View style={styles.careerGlowCore} /></Animated.View>}
-          <AppText style={[styles.careerTitle, { writingDirection: textDirection }]}>{careersCopy.opportunities_title}</AppText>
-          <View style={styles.careerApply}><AppText style={[styles.careerApplyText, { writingDirection: textDirection }]}>{careersCopy.apply_here}</AppText></View>
-        </TouchableOpacity>
+        <View style={styles.careersGlowWrap}>
+          {!reduceMotion && (
+            <Animated.View
+              pointerEvents="none"
+              style={[
+                styles.careerPulseRing,
+                { opacity: careerPulseOpacity, transform: [{ scale: careerPulseScale }] },
+              ]}
+            />
+          )}
+          <TouchableOpacity
+            accessibilityRole="button"
+            accessibilityLabel={careersCopy.opportunities_title + '. ' + careersCopy.apply}
+            activeOpacity={0.88}
+            onLayout={event => {
+              const layout = event.nativeEvent.layout;
+              setCareerWidth(Math.max(layout.width, 0));
+              setCareerHeight(Math.max(layout.height, 0));
+            }}
+            onPress={() => navigateOnce('Careers')}
+            style={styles.careersButton}>
+            {!reduceMotion && (
+              <>
+                <Animated.View pointerEvents="none" style={[styles.careerGlowAura, { transform: [{ translateX: careerGlowX }, { translateY: careerGlowY }] }]} />
+                <Animated.View pointerEvents="none" style={[styles.careerGlowHalo, { transform: [{ translateX: careerGlowX }, { translateY: careerGlowY }] }]} />
+                <Animated.View pointerEvents="none" style={[styles.careerGlowDot, { transform: [{ translateX: careerGlowX }, { translateY: careerGlowY }] }]} />
+              </>
+            )}
+            <AppText style={[styles.careerTitle, { writingDirection: textDirection }]}>{careersCopy.opportunities_title}</AppText>
+            <View style={styles.careerApply}>
+              <AppText style={[styles.careerApplyText, { writingDirection: textDirection }]}>{careersCopy.apply}</AppText>
+            </View>
+          </TouchableOpacity>
+        </View>
 
         <View style={styles.trustRow}>
           <Icon name="shield-checkmark" size={17} color="#8DB9F2" />
@@ -188,12 +264,96 @@ const WelcomeScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  careersButton: { direction: 'ltr', position: 'relative', overflow: 'hidden', backgroundColor: '#102C60', borderWidth: 1, borderColor: '#4A9EFF', borderRadius: radius.md, padding: 20, minHeight: 112, alignItems: 'center', justifyContent: 'center', gap: 12, marginTop: 16 },
-  careerGlow: { position: 'absolute', left: 0, top: -60, bottom: -60, width: 100, backgroundColor: 'rgba(54,153,255,0.16)', alignItems: 'center', justifyContent: 'center' },
-  careerGlowCore: { width: 8, height: '100%', backgroundColor: 'rgba(152,219,255,0.48)', borderLeftWidth: 2, borderRightWidth: 2, borderColor: '#5EBEFF' },
-  careerTitle: { width: '100%', textAlign: 'center', color: colors.white, fontFamily: typography.semibold, fontSize: typeScale.base, lineHeight: 24 },
-  careerApply: { borderRadius: radius.pill, backgroundColor: '#2270CF', paddingHorizontal: 24, paddingVertical: 9, maxWidth: '100%' },
-  careerApplyText: { textAlign: 'center', color: colors.white, fontFamily: typography.bold, fontSize: typeScale.reading, lineHeight: 22 },
+  careersGlowWrap: {
+    backgroundColor: 'rgba(79,195,255,0.22)',
+    borderColor: 'rgba(127,227,255,0.82)',
+    borderRadius: radius.md + 4,
+    borderWidth: 1.5,
+    marginTop: 16,
+    padding: 2,
+    position: 'relative',
+    shadowColor: '#7FE3FF',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.85,
+    shadowRadius: 24,
+    elevation: 12,
+  },
+  careerPulseRing: {
+    ...StyleSheet.absoluteFillObject,
+    borderColor: 'rgba(170,239,255,0.95)',
+    borderRadius: radius.md + 4,
+    borderWidth: 2,
+  },
+  careersButton: {
+    alignItems: 'center',
+    backgroundColor: '#0D2A63',
+    borderColor: '#7FE3FF',
+    borderRadius: radius.md,
+    borderWidth: 1.5,
+    gap: 12,
+    justifyContent: 'center',
+    minHeight: 108,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    position: 'relative',
+  },
+  careerGlowAura: {
+    backgroundColor: 'rgba(127,227,255,0.24)',
+    borderRadius: 27,
+    height: 54,
+    left: -27,
+    position: 'absolute',
+    top: -27,
+    width: 54,
+  },
+  careerGlowHalo: {
+    backgroundColor: 'rgba(127,227,255,0.5)',
+    borderColor: 'rgba(225,250,255,0.8)',
+    borderRadius: 15,
+    borderWidth: 1,
+    height: 30,
+    left: -15,
+    position: 'absolute',
+    top: -15,
+    width: 30,
+  },
+  careerGlowDot: {
+    backgroundColor: '#FFFFFF',
+    borderColor: '#CFF8FF',
+    borderRadius: 5,
+    borderWidth: 1,
+    height: 10,
+    left: -5,
+    position: 'absolute',
+    shadowColor: '#7FE3FF',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 1,
+    shadowRadius: 12,
+    top: -5,
+    width: 10,
+  },
+  careerTitle: {
+    color: colors.white,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.base,
+    lineHeight: 24,
+    textAlign: 'center',
+    width: '100%',
+  },
+  careerApply: {
+    backgroundColor: '#2270CF',
+    borderRadius: radius.pill,
+    maxWidth: '100%',
+    paddingHorizontal: 26,
+    paddingVertical: 8,
+  },
+  careerApplyText: {
+    color: colors.white,
+    fontFamily: typography.bold,
+    fontSize: typeScale.reading,
+    lineHeight: 22,
+    textAlign: 'center',
+  },
   safeArea: {
     direction: 'ltr',
     backgroundColor: colors.navy,
@@ -388,6 +548,7 @@ const styles = StyleSheet.create({
   primaryIcon: {
     position: 'absolute',
     right: 10,
+    top: 10,
     alignItems: 'center',
     backgroundColor: colors.gold,
     borderRadius: 19,

@@ -22,7 +22,7 @@ function providerHarness({nativeRTL=false,stored='en',failRead=false,failWrite=f
 const visit=(node,fn)=>{if(!node||typeof node!=='object')return;if(Array.isArray(node))return node.forEach(child=>visit(child,fn));if(!node.props)return;fn(node);visit(node.props.children,fn);};
 function welcome(language,width=375){
  const isRTL=language==='ar';const t=key=>catalog.UI_COPY[language]?.[key]||catalog.UI_COPY.en[key]||key;
- const native={Animated:{Value:class{constructor(value){this.value=value;}},View:'AnimatedView'},StyleSheet:{create:styles=>styles},useWindowDimensions:()=>({width,height:812})};
+ const native={Animated:{Value:class{constructor(value){this.value=value;}interpolate(){return this.value;}},View:'AnimatedView'},StyleSheet:{create:styles=>styles},useWindowDimensions:()=>({width,height:812})};
  for(const name of ['Image','StatusBar','ScrollView','TouchableOpacity','View'])native[name]=name;
  const react={...React,useEffect:()=>{},useCallback:fn=>fn,useRef:value=>({current:value}),useState:value=>[value,()=>{}]};
  const module={exports:{}};vm.runInNewContext(compile('src/screens/auth/WelcomeScreen.js'),{exports:module.exports,module,setTimeout,clearTimeout,require:name=>{
@@ -43,7 +43,7 @@ function welcome(language,width=375){
  const title=nodes.find(node=>node.props.children===t('welcome.title'));
  const create=nodes.find(node=>node.props.children===t('welcome.createAccount'));
  const careerTitle=nodes.find(node=>node.props.children===copy.opportunities_title);
- const apply=nodes.find(node=>node.props.children===copy.apply_here);
+ const apply=nodes.find(node=>node.props.children===copy.apply);
  for(const node of [title,create,careerTitle,apply])assert.equal(flatten(node.props.style).textAlign,'center');
  const createButton=nodes.find(node=>node.props.accessibilityLabel===t('welcome.createAccount'));
  assert.equal(flatten(createButton.props.style).justifyContent,'center');

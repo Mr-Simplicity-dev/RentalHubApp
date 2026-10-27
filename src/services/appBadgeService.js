@@ -61,8 +61,20 @@ export const fetchUnreadActivityCount = async () => {
 };
 
 const SUMMARY_ID = 'rentalhub-unread-summary';
+const SUMMARY_CHANNEL_ID = 'unread-activity';
 let sessionVersion = 0;
 let badgeQueue = Promise.resolve();
+
+const ensureSummaryChannel = async () => {
+  await Notifications.setNotificationChannelAsync(SUMMARY_CHANNEL_ID, {
+    name: ui('Unread activity'),
+    importance: Notifications.AndroidImportance.LOW,
+    showBadge: true,
+    sound: null,
+    enableVibrate: false,
+  });
+};
+
 export const resetBadgeSession = () => { sessionVersion += 1; return clearAppIconBadge(); };
 export const setAppIconBadgeCount = (count) => {
   const version = sessionVersion;
@@ -72,21 +84,60 @@ export const setAppIconBadgeCount = (count) => {
     const settings = await getAppSettings();
     if (version !== sessionVersion) return;
     const value = settings.notificationBadges === false ? 0 : total;
+
+    // Android launchers only show an app badge while the app owns an active
+    // notification (or exposes a launcher-specific badge provider). A silent,
+    // low-priority summary keeps the unread number visible after the app is
+    // minimised; setBadgeCountAsync handles launchers that support ShortcutBadger.
     if (Platform.OS === 'android') {
-      if (value === 0) await Notifications.dismissNotificationAsync(SUMMARY_ID);
-      else {
-        const permission = await Notifications.getPermissionsAsync();
+      if (value === 0) {
+        await Promise.allSettled([
+          Notifications.dismissNotificationAsync?.(SUMMARY_ID),
+          Notifications.cancelScheduledNotificationAsync?.(SUMMARY_ID),
+        ]);
+      } else {
+        let canPostSummary = false;
+        try {
+          const permission = await Notifications.getPermissionsAsync();
+          canPostSummary = permission.granted || permission.status === 'granted';
+        } catch {
+          canPostSummary = false;
+        }
+
         if (version !== sessionVersion) return;
-        if (permission.granted || permission.status === 'granted') {
-          await Notifications.setNotificationChannelAsync('unread-activity', { name: ui('Unread activity'), importance: Notifications.AndroidImportance.LOW, showBadge: true, sound: null, enableVibrate: false });
-          if (version !== sessionVersion) return;
-          await Notifications.scheduleNotificationAsync({ identifier: SUMMARY_ID, content: { title: ui("Amana RentalHub NG"), body: ui('{count} unread updates', {count: value}), badge: value, sound: false, autoDismiss: false, data: { screen: 'Notifications', badgeSummary: true } }, trigger: { channelId: 'unread-activity' } });
+        if (canPostSummary) {
+          try {
+            await ensureSummaryChannel();
+            if (version !== sessionVersion) return;
+            await Notifications.scheduleNotificationAsync({
+              identifier: SUMMARY_ID,
+              content: {
+                title: ui('Amana RentalHub NG'),
+                body: ui('{count} unread updates', { count: value }),
+                badge: value,
+                sound: false,
+                autoDismiss: false,
+                data: { screen: 'Notifications', badgeSummary: true },
+              },
+              trigger: { channelId: SUMMARY_CHANNEL_ID },
+            });
+          } catch (error) {
+            trackMobileEvent('app_icon_badge_summary_failed', {
+              message: String(error?.message || error),
+            });
+          }
         }
       }
     }
+
     if (version !== sessionVersion) return;
-    const supported = await Notifications.setBadgeCountAsync(value);
-    return { supported, total: value };
+    try {
+      const supported = await Notifications.setBadgeCountAsync(value);
+      return { supported, total: value };
+    } catch {
+      // Badge support varies by Android launcher; failure should never affect the app.
+      return { supported: false, total: value };
+    }
   });
   return badgeQueue;
 };

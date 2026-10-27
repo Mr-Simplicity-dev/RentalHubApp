@@ -17,6 +17,7 @@ import OptionPickerModal from '../../components/common/OptionPickerModal';
 import { AuthContext } from '../../context/AuthContext';
 import { useRealtime } from '../../context/RealtimeContext';
 import { messageService } from '../../services/messageService';
+import { syncAppIconBadge } from '../../services/appBadgeService';
 import { colors, radius, typography, typeScale } from '../../theme';
 import { getErrorMessage, pickList } from '../../utils/http';
 
@@ -88,6 +89,7 @@ const MessagesScreen = ({ navigation, route }) => {
       const response = await messageService.getConversationWithUser(userId, { limit: 100 });
       setMessages(pickList(response, ['data', 'messages']));
       await messageService.markConversationAsRead(userId);
+      void syncAppIconBadge('message_read').catch(() => {});
       setConversations((current) =>
         current.map((conversation) =>
           Number(conversation.other_user_id) === Number(userId)
@@ -189,7 +191,10 @@ const MessagesScreen = ({ navigation, route }) => {
       if (activeThread) {
         appendMessage(message);
         if (!mine) {
-          void messageService.markConversationAsRead(otherUserId).catch(() => {});
+          void messageService
+            .markConversationAsRead(otherUserId)
+            .then(() => syncAppIconBadge('message_read'))
+            .catch(() => {});
         }
       } else if (!mine) {
         Toast.show({
