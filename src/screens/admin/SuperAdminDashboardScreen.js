@@ -350,8 +350,8 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
 
   const loadUnreadCount = async () => {
     try {
-      const response = await notificationService.getUnreadCount();
-      setUnreadCount(Number(response?.data?.unread_count || 0));
+      const response = await notificationService.getUnreadActivity();
+      setUnreadCount(Number(response?.data?.total || 0));
     } catch (error) {
       // keep the previous count
     }
