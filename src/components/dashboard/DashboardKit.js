@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React from 'react';
 import {RefreshControl,
   ScrollView,
@@ -21,6 +23,7 @@ export const DashboardScreen = ({
   onRefresh,
   contentContainerStyle,
 }) => {
+  useInterfaceLanguage();
   const { reduceMotion } = useAccessibilityPreferences();
   const tourScroll = useTourScrollController({ animated: !reduceMotion });
 
@@ -61,6 +64,7 @@ export const DashboardHero = ({
   headerRight,
   tourTarget,
 }) => {
+  useInterfaceLanguage();
   const { scaleFont, hitSlop } = useAccessibilityPreferences();
   const tourTargetProps = useTourTarget(tourTarget, {
     label: title,
@@ -78,7 +82,7 @@ export const DashboardHero = ({
           {headerRight}
           {onRefresh ? (
             <TouchableOpacity
-              accessibilityLabel="Refresh dashboard"
+              accessibilityLabel={ui("Refresh dashboard")}
               accessibilityRole="button"
               hitSlop={hitSlop}
               style={styles.refreshButton}
@@ -97,6 +101,7 @@ export const DashboardHero = ({
 };
 
 export const MetricGrid = ({ children, tourTarget, tourLabel = 'Dashboard metrics' }) => {
+  useInterfaceLanguage();
   const tourTargetProps = useTourTarget(tourTarget, {
     label: tourLabel,
     padding: 8,
@@ -114,6 +119,7 @@ export const MetricCard = ({
   onPress,
   tourTarget,
 }) => {
+  useInterfaceLanguage();
   const Container = onPress ? TouchableOpacity : View;
   const { scaleFont, hitSlop } = useAccessibilityPreferences();
   const tourTargetProps = useTourTarget(tourTarget, {
@@ -141,6 +147,7 @@ export const MetricCard = ({
 };
 
 export const DashboardSection = ({ title, subtitle, children, tourTarget }) => {
+  useInterfaceLanguage();
   const { scaleFont } = useAccessibilityPreferences();
   const tourTargetProps = useTourTarget(tourTarget, {
     label: title,
@@ -166,18 +173,17 @@ export const ActionRow = ({
   onPress,
   badge,
   tourTarget,
-}) => (
-  <ActionRowInner
+}) => { useInterfaceLanguage(); return (<ActionRowInner
     title={title}
     subtitle={subtitle}
     icon={icon}
     onPress={onPress}
     badge={badge}
     tourTarget={tourTarget}
-  />
-);
+  />); };
 
 const ActionRowInner = ({ title, subtitle, icon, onPress, badge, tourTarget }) => {
+  useInterfaceLanguage();
   const { scaleFont, hitSlop } = useAccessibilityPreferences();
   const tourTargetProps = useTourTarget(tourTarget, {
     label: title,
@@ -189,7 +195,7 @@ const ActionRowInner = ({ title, subtitle, icon, onPress, badge, tourTarget }) =
   return (
     <TouchableOpacity
       {...tourTargetProps}
-      accessibilityLabel={`${title}${subtitle ? `. ${subtitle}` : ''}`}
+      accessibilityLabel={ui("{value0}{value1}", {value0: (title), value1: (subtitle ? `. ${subtitle}` : '')})}
       accessibilityRole="button"
       hitSlop={hitSlop}
       style={styles.actionRow}
@@ -211,6 +217,7 @@ const ActionRowInner = ({ title, subtitle, icon, onPress, badge, tourTarget }) =
 };
 
 export const DashboardNotice = ({ title, message, variant = 'info', tourTarget }) => {
+  useInterfaceLanguage();
   const warning = variant === 'warning';
   const { scaleFont } = useAccessibilityPreferences();
   const tourTargetProps = useTourTarget(tourTarget, {

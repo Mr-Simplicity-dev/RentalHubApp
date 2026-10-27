@@ -1,3 +1,4 @@
+import { translateUi as ui } from '../i18n/interfaceRuntime.cjs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { jwtDecode } from 'jwt-decode';
 import api from './api';
@@ -136,7 +137,7 @@ export const enqueueOfflineAction = async ({ method, path, data, params, label }
       path,
       data: data || null,
       params: params || null,
-      label: label || 'Pending action',
+      label: label || ui("Pending action"),
       attempts: 0,
       createdAt: new Date().toISOString(),
     };

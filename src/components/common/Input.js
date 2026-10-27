@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useState } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import TextInput from './AppTextInput';
@@ -19,6 +21,7 @@ const Input = ({
   containerStyle,
   ...rest
 }) => {
+  useInterfaceLanguage();
   const [focused, setFocused] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
 
@@ -58,7 +61,7 @@ const Input = ({
         />
         {secureTextEntry ? (
           <TouchableOpacity
-            accessibilityLabel={passwordVisible ? 'Hide password' : 'Show password'}
+            accessibilityLabel={passwordVisible ? ui("Hide password") : ui("Show password")}
             onPress={() => setPasswordVisible((visible) => !visible)}
             style={styles.visibilityButton}>
             <Icon
@@ -69,7 +72,7 @@ const Input = ({
           </TouchableOpacity>
         ) : null}
       </View>
-      {error && <AppText accessibilityLiveRegion="polite" style={styles.errorText}>{error}</AppText>}
+      {error && <AppText accessibilityLiveRegion="polite" style={styles.errorText}>{ui(error)}</AppText>}
     </View>
   );
 };

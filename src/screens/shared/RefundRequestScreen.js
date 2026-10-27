@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -31,11 +33,12 @@ const formatDate = (value) => {
 };
 
 const CATEGORIES = [
-  { key: 'standard', label: 'Standard refund', icon: 'cash-outline', hint: 'Overpayment or an error on your completed rent payment.' },
-  { key: 'relocation', label: 'Relocation (moving out early)', icon: 'airplane-outline', hint: 'You are moving out before your paid rent period ends.' },
+  { key: 'standard', get "label"() { return ui("Standard refund"); }, icon: 'cash-outline', get "hint"() { return ui("Overpayment or an error on your completed rent payment."); } },
+  { key: 'relocation', get "label"() { return ui("Relocation (moving out early)"); }, icon: 'airplane-outline', get "hint"() { return ui("You are moving out before your paid rent period ends."); } },
 ];
 
 const RefundRequestScreen = ({ navigation }) => {
+  useInterfaceLanguage();
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedPaymentId, setSelectedPaymentId] = useState(null);
@@ -56,7 +59,7 @@ const RefundRequestScreen = ({ navigation }) => {
       } catch (err) {
         Toast.show({
           type: 'error',
-          text1: 'Failed',
+          text1: ui("Failed"),
           text2: getErrorMessage(err, 'Could not load eligible payments'),
         });
       } finally {
@@ -118,7 +121,7 @@ const RefundRequestScreen = ({ navigation }) => {
       if (response?.success) {
         Toast.show({
           type: 'success',
-          text1: 'Refund request submitted',
+          text1: ui("Refund request submitted"),
           text2: response.message,
         });
         navigation.goBack();
@@ -135,29 +138,27 @@ const RefundRequestScreen = ({ navigation }) => {
   const canSubmit = Boolean(selectedPaymentId) && Boolean(category) && reason.trim().length > 0;
 
   if (loading) {
-    return <PremiumCenter loading title="Checking your payments" />;
+    return <PremiumCenter loading title={ui("Checking your payments")} />;
   }
 
   return (
     <PremiumScreen>
       <PremiumHero
-        eyebrow="Tenancy"
-        title="Request a rent refund"
-        subtitle="Ask for a refund on a completed rent payment — standard or relocation (early exit)."
+        eyebrow={ui("Tenancy")}
+        title={ui("Request a rent refund")}
+        subtitle={ui("Ask for a refund on a completed rent payment — standard or relocation (early exit).")}
         icon="cash-outline"
       />
 
       {payments.length === 0 ? (
         <PremiumCard>
-          <AppText style={styles.note}>
-            You have no completed rent payments eligible for a refund right now.
-          </AppText>
+          <AppText style={styles.note}>{ui("You have no completed rent payments eligible for a refund right now.")}</AppText>
         </PremiumCard>
       ) : (
         <>
           <PremiumSectionTitle
-            title="Rent payment"
-            subtitle="Choose the completed rent payment this request is about."
+            title={ui("Rent payment")}
+            subtitle={ui("Choose the completed rent payment this request is about.")}
           />
           {payments.map((payment) => {
             const selected = String(payment.payment_id) === String(selectedPaymentId);
@@ -175,16 +176,16 @@ const RefundRequestScreen = ({ navigation }) => {
                         {[payment.property_address, payment.landlord_name].filter(Boolean).join(' · ') || 'Rental payment'}
                       </AppText>
                     </View>
-                    {selected ? <StatusPill label="Selected" color={colors.blue} /> : null}
+                    {selected ? <StatusPill label={ui("Selected")} color={colors.blue} /> : null}
                   </View>
                   <AppText style={styles.paymentAmount}>{formatNaira(payment.amount)}</AppText>
-                  <AppText style={styles.paymentDate}>Paid {formatDate(payment.paid_at)}</AppText>
+                  <AppText style={styles.paymentDate}>{ui("Paid ")}{formatDate(payment.paid_at)}</AppText>
                 </PremiumCard>
               </TouchableOpacity>
             );
           })}
 
-          <PremiumSectionTitle title="Refund type" />
+          <PremiumSectionTitle title={ui("Refund type")} />
           {CATEGORIES.map((option) => {
             const selected = category === option.key;
             return (
@@ -199,18 +200,18 @@ const RefundRequestScreen = ({ navigation }) => {
 
           <PremiumCard>
             <Input
-              label="Reason"
+              label={ui("Reason")}
               value={reason}
               onChangeText={setReason}
-              placeholder="Explain why you are requesting this refund"
+              placeholder={ui("Explain why you are requesting this refund")}
               multiline
               numberOfLines={3}
             />
             <Input
-              label="Details (optional)"
+              label={ui("Details (optional)")}
               value={details}
               onChangeText={setDetails}
-              placeholder="Any supporting context"
+              placeholder={ui("Any supporting context")}
               multiline
               numberOfLines={2}
               containerStyle={styles.fieldGap}
@@ -219,14 +220,14 @@ const RefundRequestScreen = ({ navigation }) => {
             {category === 'relocation' ? (
               <>
                 <Input
-                  label="Move-out date (YYYY-MM-DD)"
+                  label={ui("Move-out date (YYYY-MM-DD)")}
                   value={moveOutDate}
                   onChangeText={setMoveOutDate}
                   placeholder="e.g. 2026-12-15"
                   containerStyle={styles.fieldGap}
                 />
                 <Input
-                  label="Days you will wait for the refund"
+                  label={ui("Days you will wait for the refund")}
                   value={dueDays}
                   onChangeText={setDueDays}
                   placeholder="e.g. 30"
@@ -239,7 +240,7 @@ const RefundRequestScreen = ({ navigation }) => {
             {error ? <AppText style={styles.error}>{error}</AppText> : null}
 
             <PremiumButton
-              title="Submit refund request"
+              title={ui("Submit refund request")}
               onPress={handleSubmit}
               loading={submitting}
               disabled={!canSubmit}

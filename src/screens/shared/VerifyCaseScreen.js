@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useState } from 'react';
 import {StyleSheet, View} from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -17,6 +19,7 @@ import TourTarget from '../../components/tour/TourTarget';
 
 import AppText from '../../components/common/AppText';
 const VerifyCaseScreen = ({ route }) => {
+  useInterfaceLanguage();
   const [disputeId, setDisputeId] = useState(String(route?.params?.disputeId || ''));
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
@@ -31,7 +34,7 @@ const VerifyCaseScreen = ({ route }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Verification failed',
+        text1: ui("Verification failed"),
         text2: getErrorMessage(error, 'Could not verify evidence'),
       });
       setResult(null);
@@ -49,26 +52,26 @@ const VerifyCaseScreen = ({ route }) => {
   return (
     <PremiumScreen>
       <PremiumHero
-        eyebrow="Evidence integrity"
-        title="Digital evidence verification"
-        subtitle="Verify dispute files and Merkle root integrity before legal or admin action."
+        eyebrow={ui("Evidence integrity")}
+        title={ui("Digital evidence verification")}
+        subtitle={ui("Verify dispute files and Merkle root integrity before legal or admin action.")}
         icon="finger-print-outline"
       />
 
-      <TourTarget id="lawyer_verification" label="Case verification form" padding={8}>
+      <TourTarget id="lawyer_verification" label={ui("Case verification form")} padding={8}>
         <View>
           <PremiumCard>
             <Input
-              label="Dispute ID"
+              label={ui("Dispute ID")}
               value={disputeId}
               onChangeText={setDisputeId}
-              placeholder="Enter dispute id"
+              placeholder={ui("Enter dispute id")}
               keyboardType="number-pad"
               icon="folder-open-outline"
             />
 
             <PremiumButton
-              title="Verify evidence"
+              title={ui("Verify evidence")}
               onPress={() => verifyCase()}
               loading={loading}
               icon="shield-checkmark-outline"
@@ -79,11 +82,11 @@ const VerifyCaseScreen = ({ route }) => {
 
       {result ? (
         <PremiumCard>
-          <AppText style={styles.sectionTitle}>Verification result</AppText>
-          <InfoRow icon="git-branch-outline" label="Merkle root" value={result.merkleRoot || 'N/A'} />
+          <AppText style={styles.sectionTitle}>{ui("Verification result")}</AppText>
+          <InfoRow icon="git-branch-outline" label={ui("Merkle root")} value={result.merkleRoot || 'N/A'} />
           <InfoRow
             icon="shield-outline"
-            label="Root integrity"
+            label={ui("Root integrity")}
             value={result.merkleValid ? 'Valid' : 'Invalid'}
             valueStyle={{ color: result.merkleValid ? colors.success : colors.danger }}
           />
@@ -91,7 +94,7 @@ const VerifyCaseScreen = ({ route }) => {
             <View key={`${file.file}-${index}`} style={styles.fileRow}>
               <AppText style={styles.fileName}>{file.file}</AppText>
               <StatusPill
-                label={file.valid ? 'Verified' : 'Tampered'}
+                label={file.valid ? ui("Verified") : ui("Tampered")}
                 color={file.valid ? colors.success : colors.danger}
               />
             </View>

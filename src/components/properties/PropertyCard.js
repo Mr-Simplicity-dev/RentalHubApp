@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React from 'react';
 import {View, Image, TouchableOpacity, StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -11,6 +13,7 @@ const formatCurrency = (value) => {
 };
 
 const PropertyCard = ({ property, onPress, onSave, isSaved = false }) => {
+  useInterfaceLanguage();
   const cover =
     property?.primary_photo ||
     property?.photo_url ||
@@ -26,12 +29,12 @@ const PropertyCard = ({ property, onPress, onSave, isSaved = false }) => {
         )}
         {Boolean(property?.featured) && (
           <View style={styles.badge}>
-            <AppText style={styles.badgeText}>Featured</AppText>
+            <AppText style={styles.badgeText}>{ui("Featured")}</AppText>
           </View>
         )}
         {onSave && (
           <TouchableOpacity
-            accessibilityLabel={isSaved ? 'Remove saved property' : 'Save property'}
+            accessibilityLabel={isSaved ? 'Remove saved property' : ui("Save property")}
             style={styles.saveButton}
             onPress={(event) => {
               event.stopPropagation();
@@ -54,21 +57,21 @@ const PropertyCard = ({ property, onPress, onSave, isSaved = false }) => {
         <View style={styles.row}>
           <Icon name="location-outline" size={15} color={colors.muted} />
           <AppText style={styles.meta} numberOfLines={1}>
-            {[property?.area, property?.city, property?.state_name].filter(Boolean).join(', ') || 'Location unavailable'}
+            {[property?.area, property?.city, property?.state_name].filter(Boolean).join(', ') || ui("Location unavailable")}
           </AppText>
         </View>
 
         <View style={styles.row}>
           <Icon name="bed-outline" size={15} color={colors.muted} />
-          <AppText style={styles.meta}>{Number(property?.bedrooms || 0)} bed</AppText>
+          <AppText style={styles.meta}>{Number(property?.bedrooms || 0)}{ui(" bed")}</AppText>
           <Icon name="water-outline" size={15} color={colors.muted} style={styles.gap} />
-          <AppText style={styles.meta}>{Number(property?.bathrooms || 0)} bath</AppText>
+          <AppText style={styles.meta}>{Number(property?.bathrooms || 0)}{ui(" bath")}</AppText>
         </View>
 
         <View style={styles.footer}>
           <AppText style={styles.price}>{formatCurrency(property?.rent_amount)}</AppText>
           <AppText style={styles.frequency}>
-            / {property?.payment_frequency === 'yearly' ? 'year' : 'month'}
+            / {property?.payment_frequency === "yearly" ? ui("year") : ui("month")}
           </AppText>
         </View>
       </View>

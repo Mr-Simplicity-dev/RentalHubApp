@@ -15,17 +15,19 @@ function providerHarness({nativeRTL=false,stored='en',failRead=false,failWrite=f
  react.useRef=initial=>{const index=cursor++;if(!(index in slots))slots[index]={current:initial};return slots[index];};
  const storage={getItem:async()=>{if(failRead)throw Error('read');return stored;},setItem:async(key,value)=>{await flush();if(failWrite)throw Error('write');stored=value;writes.push(value);}};
  const manager={isRTL:nativeRTL,allowRTL:value=>calls.push(['allowRTL',value]),forceRTL:value=>calls.push(['forceRTL',value]),swapLeftAndRightInRTL:value=>calls.push(['swap',value])};
- const module={exports:{}};vm.runInNewContext(compile('src/context/LanguageContext.js'),{exports:module.exports,module,require:name=>name==='react'?react:name==='react-native'?{I18nManager:manager,View:'View'}:name.includes('async-storage')?{__esModule:true,default:storage}:catalog});
+ const module={exports:{}};vm.runInNewContext(compile('src/context/LanguageContext.js'),{exports:module.exports,module,require:name=>name.includes('interfaceRuntime')?require('../src/i18n/interfaceRuntime.cjs'):name==='react'?react:name==='react-native'?{I18nManager:manager,View:'View'}:name.includes('async-storage')?{__esModule:true,default:storage}:catalog});
  const render=()=>{cursor=0;effects=[];const tree=module.exports.LanguageProvider({children:React.createElement('Form',{value:'preserved'})});effects.forEach(fn=>fn());return tree;};
  return{render,calls,writes,getStored:()=>stored};
 }
 const visit=(node,fn)=>{if(!node||typeof node!=='object')return;if(Array.isArray(node))return node.forEach(child=>visit(child,fn));if(!node.props)return;fn(node);visit(node.props.children,fn);};
-function welcome(language){
+function welcome(language,width=375){
  const isRTL=language==='ar';const t=key=>catalog.UI_COPY[language]?.[key]||catalog.UI_COPY.en[key]||key;
- const native={Animated:{Value:class{constructor(value){this.value=value;}},View:'AnimatedView'},StyleSheet:{create:styles=>styles},useWindowDimensions:()=>({width:375,height:812})};
+ const native={Animated:{Value:class{constructor(value){this.value=value;}},View:'AnimatedView'},StyleSheet:{create:styles=>styles},useWindowDimensions:()=>({width,height:812})};
  for(const name of ['Image','StatusBar','ScrollView','TouchableOpacity','View'])native[name]=name;
- const react={...React,useEffect:()=>{},useCallback:fn=>fn,useRef:value=>({current:value})};
+ const react={...React,useEffect:()=>{},useCallback:fn=>fn,useRef:value=>({current:value}),useState:value=>[value,()=>{}]};
  const module={exports:{}};vm.runInNewContext(compile('src/screens/auth/WelcomeScreen.js'),{exports:module.exports,module,setTimeout,clearTimeout,require:name=>{
+  if(name.includes('useInterfaceLanguage'))return {__esModule:true,default:()=>{}};
+  if(name.includes('interfaceRuntime'))return require('../src/i18n/interfaceRuntime.cjs');
   if(name==='react')return react;if(name==='react-native')return native;if(name==='react-native-safe-area-context')return{SafeAreaView:'SafeAreaView'};
   if(name.includes('LanguageContext'))return{useLanguage:()=>({isRTL,language,t,textAlign:isRTL?'right':'left'})};
   if(name.includes('recruitmentCopy'))return require('../src/i18n/recruitmentCopy.cjs');
@@ -37,6 +39,15 @@ function welcome(language){
  const hints=nodes.filter(node=>flatten(node.props.style).backgroundColor==='#FFC928');
  const icons=nodes.filter(node=>node.props.name).map(node=>node.props.name);
  assert.ok(icons.includes('arrow-up'));assert.equal(icons.filter(name=>name==='arrow-forward').length,2);assert.ok(!icons.includes('arrow-back'));
+ const copy=require('../src/i18n/recruitmentCopy.cjs')[language];
+ const title=nodes.find(node=>node.props.children===t('welcome.title'));
+ const create=nodes.find(node=>node.props.children===t('welcome.createAccount'));
+ const careerTitle=nodes.find(node=>node.props.children===copy.opportunities_title);
+ const apply=nodes.find(node=>node.props.children===copy.apply_here);
+ for(const node of [title,create,careerTitle,apply])assert.equal(flatten(node.props.style).textAlign,'center');
+ const createButton=nodes.find(node=>node.props.accessibilityLabel===t('welcome.createAccount'));
+ assert.equal(flatten(createButton.props.style).justifyContent,'center');
+ assert.equal(flatten(createButton.props.style).minHeight,58);
  assert.equal(flatten(tree.props.style).direction,'ltr');
  assert.equal(flatten(explore.props.style).flexDirection,'row');
  assert.ok(nodes.some(node=>node.props.children===t('welcome.exploreHint')));
@@ -51,6 +62,7 @@ function welcome(language){
   const pending=['ar','fr','en'].map(code=>tree.props.value.setLanguage(code));tree=harness.render();assert.equal(tree.props.value.language,'en');await Promise.all(pending);assert.equal(harness.getStored(),'en');assert.deepEqual(harness.calls,[['allowRTL',false],['forceRTL',false],['swap',false]]);
  }
  for(const options of [{failRead:true},{failWrite:true}]){const harness=providerHarness(options);harness.render();await flush();let tree=harness.render();await tree.props.value.setLanguage('ar');tree=harness.render();assert.equal(tree.props.value.language,'ar');}
+ for(const width of [320,375,390,768])for(const {code}of catalog.SUPPORTED_LANGUAGES)welcome(code,width);
  assert.equal(JSON.stringify(welcome('en')),JSON.stringify(welcome('ar')));assert.equal(JSON.stringify(welcome('ar')),JSON.stringify(welcome('en')));
  const android=fs.readFileSync(path.join(root,'android/app/src/main/java/com/rentalhubng/MainApplication.kt'),'utf8');const ios=fs.readFileSync(path.join(root,'ios/RentalHubMobile/AppDelegate.mm'),'utf8');
  assert.ok(android.indexOf('forceRTL(this@MainApplication, false)')<android.indexOf('SoLoader.init'));assert.ok(ios.indexOf('forceRTL:NO')<ios.indexOf('return [super application:'));

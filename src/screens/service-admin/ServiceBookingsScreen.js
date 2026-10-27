@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import {ActivityIndicator, Alert, StyleSheet, TouchableOpacity, View} from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -16,58 +18,58 @@ DashboardHero,
 
 const TYPE_CONFIG = {
   transportation: {
-    title: 'Transportation bookings',
-    eyebrow: 'TRANSPORT OPS',
+    get "title"() { return ui("Transportation bookings"); },
+    get "eyebrow"() { return ui("TRANSPORT OPS"); },
     icon: 'car-outline',
   },
   transportation_state: {
-    title: 'State transport bookings',
-    eyebrow: 'STATE TRANSPORT OPS',
+    get "title"() { return ui("State transport bookings"); },
+    get "eyebrow"() { return ui("STATE TRANSPORT OPS"); },
     icon: 'car-sport-outline',
   },
   transportation_super: {
-    title: 'System transport bookings',
-    eyebrow: 'SUPER TRANSPORT OPS',
+    get "title"() { return ui("System transport bookings"); },
+    get "eyebrow"() { return ui("SUPER TRANSPORT OPS"); },
     icon: 'bus-outline',
   },
   fumigation: {
-    title: 'Fumigation & cleaning bookings',
-    eyebrow: 'SERVICE OPS',
+    get "title"() { return ui("Fumigation & cleaning bookings"); },
+    get "eyebrow"() { return ui("SERVICE OPS"); },
     icon: 'sparkles-outline',
   },
 };
 
 const TRANSPORT_STATUS_ACTIONS = [
-  { label: 'Confirm', value: 'confirmed', icon: 'checkmark-circle-outline' },
-  { label: 'Start', value: 'in_progress', icon: 'play-circle-outline' },
-  { label: 'Complete', value: 'completed', icon: 'flag-outline' },
-  { label: 'Cancel', value: 'cancelled', icon: 'close-circle-outline', danger: true },
+  { get "label"() { return ui("Confirm"); }, value: 'confirmed', icon: 'checkmark-circle-outline' },
+  { get "label"() { return ui("Start"); }, value: 'in_progress', icon: 'play-circle-outline' },
+  { get "label"() { return ui("Complete"); }, value: 'completed', icon: 'flag-outline' },
+  { get "label"() { return ui("Cancel"); }, value: 'cancelled', icon: 'close-circle-outline', danger: true },
 ];
 
 const FUMIGATION_STATUS_ACTIONS = [
-  { label: 'Confirm', value: 'confirmed', icon: 'checkmark-circle-outline' },
-  { label: 'Schedule', value: 'scheduled', icon: 'calendar-outline' },
-  { label: 'Start', value: 'in_progress', icon: 'play-circle-outline' },
-  { label: 'Complete', value: 'completed', icon: 'flag-outline' },
-  { label: 'Cancel', value: 'cancelled', icon: 'close-circle-outline', danger: true },
+  { get "label"() { return ui("Confirm"); }, value: 'confirmed', icon: 'checkmark-circle-outline' },
+  { get "label"() { return ui("Schedule"); }, value: 'scheduled', icon: 'calendar-outline' },
+  { get "label"() { return ui("Start"); }, value: 'in_progress', icon: 'play-circle-outline' },
+  { get "label"() { return ui("Complete"); }, value: 'completed', icon: 'flag-outline' },
+  { get "label"() { return ui("Cancel"); }, value: 'cancelled', icon: 'close-circle-outline', danger: true },
 ];
 
 const PAYMENT_STATUS_ACTIONS = [
-  { label: 'Mark paid', value: 'completed', icon: 'card-outline' },
-  { label: 'Failed', value: 'failed', icon: 'alert-circle-outline', danger: true },
-  { label: 'Refunded', value: 'refunded', icon: 'return-down-back-outline' },
+  { get "label"() { return ui("Mark paid"); }, value: 'completed', icon: 'card-outline' },
+  { get "label"() { return ui("Failed"); }, value: 'failed', icon: 'alert-circle-outline', danger: true },
+  { get "label"() { return ui("Refunded"); }, value: 'refunded', icon: 'return-down-back-outline' },
 ];
 
 const FUMIGATION_LIFECYCLE_ACTIONS = [
-  { label: 'Accepted', value: 'accepted', icon: 'person-add-outline' },
-  { label: 'On site', value: 'in_progress', icon: 'walk-outline' },
-  { label: 'Done', value: 'completed', icon: 'shield-checkmark-outline' },
+  { get "label"() { return ui("Accepted"); }, value: 'accepted', icon: 'person-add-outline' },
+  { get "label"() { return ui("On site"); }, value: 'in_progress', icon: 'walk-outline' },
+  { get "label"() { return ui("Done"); }, value: 'completed', icon: 'shield-checkmark-outline' },
 ];
 
 const TRANSPORT_DISPATCH_ACTIONS = [
-  { label: 'Pickup done', value: 'pickup_confirmed', icon: 'navigate-outline' },
-  { label: 'Dropoff done', value: 'dropoff_confirmed', icon: 'checkmark-done-outline' },
-  { label: 'Cancel trip', value: 'cancelled', icon: 'close-circle-outline', danger: true },
+  { get "label"() { return ui("Pickup done"); }, value: 'pickup_confirmed', icon: 'navigate-outline' },
+  { get "label"() { return ui("Dropoff done"); }, value: 'dropoff_confirmed', icon: 'checkmark-done-outline' },
+  { get "label"() { return ui("Cancel trip"); }, value: 'cancelled', icon: 'close-circle-outline', danger: true },
 ];
 
 const statusColor = (status) => {
@@ -92,6 +94,7 @@ const pickOperations = (response) => {
 const pickAssignment = (response) => response?.data?.assignment || response?.assignment || null;
 
 const ServiceBookingsScreen = ({ navigation, route }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const type = route?.params?.type || 'transportation';
   const config = TYPE_CONFIG[type] || TYPE_CONFIG.transportation;
   const [bookings, setBookings] = useState([]);
@@ -102,7 +105,7 @@ const ServiceBookingsScreen = ({ navigation, route }) => {
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: navigation.canGoBack() });
-  }, [navigation]);
+  }, [navigation, interfaceLanguage]);
 
   const loadBookings = async () => {
     setLoading(true);
@@ -130,7 +133,7 @@ const ServiceBookingsScreen = ({ navigation, route }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Bookings unavailable',
+        text1: ui("Bookings unavailable"),
         text2: getErrorMessage(error, 'Could not load bookings'),
       });
     } finally {
@@ -183,13 +186,13 @@ const ServiceBookingsScreen = ({ navigation, route }) => {
       mergeBooking(bookingId, response);
       Toast.show({
         type: 'success',
-        text1: 'Booking updated',
-        text2: `Booking #${bookingId} is now ${nextStatus.replace(/_/g, ' ')}.`,
+        text1: ui("Booking updated"),
+        text2: ui("Booking #{value0} is now {value1}.", {value0: (bookingId), value1: (nextStatus.replace(/_/g, ' '))}),
       });
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Update failed',
+        text1: ui("Update failed"),
         text2: getErrorMessage(error, 'Could not update this booking'),
       });
     } finally {
@@ -209,13 +212,13 @@ const ServiceBookingsScreen = ({ navigation, route }) => {
       mergeBooking(bookingId, response);
       Toast.show({
         type: 'success',
-        text1: 'Payment updated',
-        text2: `Payment for booking #${bookingId} is now ${nextStatus}.`,
+        text1: ui("Payment updated"),
+        text2: ui("Payment for booking #{value0} is now {value1}.", {value0: (bookingId), value1: (nextStatus)}),
       });
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Payment update failed',
+        text1: ui("Payment update failed"),
         text2: getErrorMessage(error, 'Could not update payment status'),
       });
     } finally {
@@ -243,7 +246,7 @@ const ServiceBookingsScreen = ({ navigation, route }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Timeline unavailable',
+        text1: ui("Timeline unavailable"),
         text2: getErrorMessage(error, 'Could not load booking operations'),
       });
     } finally {
@@ -264,13 +267,13 @@ const ServiceBookingsScreen = ({ navigation, route }) => {
       await loadOperations(booking);
       Toast.show({
         type: 'success',
-        text1: 'Provider assigned',
-        text2: provider.company_name || provider.contact_person || 'Provider assigned to booking.',
+        text1: ui("Provider assigned"),
+        text2: provider.company_name || provider.contact_person || ui("Provider assigned to booking."),
       });
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Assignment failed',
+        text1: ui("Assignment failed"),
         text2: getErrorMessage(error, 'Could not assign provider'),
       });
     } finally {
@@ -288,17 +291,17 @@ const ServiceBookingsScreen = ({ navigation, route }) => {
       if (!providers.length) {
         Toast.show({
           type: 'info',
-          text1: 'No provider available',
-          text2: 'No active provider was returned for this service area.',
+          text1: ui("No provider available"),
+          text2: ui("No active provider was returned for this service area."),
         });
         return;
       }
 
       Alert.alert(
-        'Assign provider',
-        'Choose a provider for this booking.',
+        ui("Assign provider"),
+        ui("Choose a provider for this booking."),
         [
-          { text: 'Cancel', style: 'cancel' },
+          { text: ui("Cancel"), style: 'cancel' },
           ...providers.slice(0, 5).map((provider) => ({
             text: provider.company_name || provider.contact_person || `Provider #${provider.id}`,
             onPress: () => assignProvider(booking, provider),
@@ -308,7 +311,7 @@ const ServiceBookingsScreen = ({ navigation, route }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Providers unavailable',
+        text1: ui("Providers unavailable"),
         text2: getErrorMessage(error, 'Could not load available providers'),
       });
     } finally {
@@ -327,11 +330,11 @@ const ServiceBookingsScreen = ({ navigation, route }) => {
       });
       mergeBooking(bookingId, response?.data?.booking || response);
       await loadOperations(booking);
-      Toast.show({ type: 'success', text1: 'Provider operation updated' });
+      Toast.show({ type: 'success', text1: ui("Provider operation updated") });
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Provider update failed',
+        text1: ui("Provider update failed"),
         text2: getErrorMessage(error, 'Could not update provider operation'),
       });
     } finally {
@@ -350,11 +353,11 @@ const ServiceBookingsScreen = ({ navigation, route }) => {
       });
       mergeBooking(bookingId, response);
       await loadOperations(booking);
-      Toast.show({ type: 'success', text1: 'Dispatch operation updated' });
+      Toast.show({ type: 'success', text1: ui("Dispatch operation updated") });
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Dispatch update failed',
+        text1: ui("Dispatch update failed"),
         text2: getErrorMessage(error, 'Could not update dispatch operation'),
       });
     } finally {
@@ -365,20 +368,20 @@ const ServiceBookingsScreen = ({ navigation, route }) => {
   const confirmStatusUpdate = (booking, nextStatus) => {
     const bookingId = booking.id || booking.booking_id;
     Alert.alert(
-      'Update booking?',
+      ui("Update booking?"),
       `Change booking #${bookingId} to ${nextStatus.replace(/_/g, ' ')}?`,
       [
-        { text: 'Not now', style: 'cancel' },
-        { text: 'Update', onPress: () => updateBookingStatus(booking, nextStatus) },
+        { text: ui("Not now"), style: 'cancel' },
+        { text: ui("Update"), onPress: () => updateBookingStatus(booking, nextStatus) },
       ]
     );
   };
 
   const confirmPaymentUpdate = (booking, nextStatus) => {
     const bookingId = booking.id || booking.booking_id;
-    Alert.alert('Update payment?', `Mark payment for booking #${bookingId} as ${nextStatus}?`, [
-      { text: 'Not now', style: 'cancel' },
-      { text: 'Update', onPress: () => updatePaymentStatus(booking, nextStatus) },
+    Alert.alert(ui("Update payment?"), `Mark payment for booking #${bookingId} as ${nextStatus}?`, [
+      { text: ui("Not now"), style: 'cancel' },
+      { text: ui("Update"), onPress: () => updatePaymentStatus(booking, nextStatus) },
     ]);
   };
 
@@ -392,7 +395,7 @@ const ServiceBookingsScreen = ({ navigation, route }) => {
     return (
       <TouchableOpacity
         key={action.value}
-        accessibilityLabel={`${action.label} booking ${bookingId}`}
+        accessibilityLabel={ui("{value0} booking {value1}", {value0: (action.label), value1: (bookingId)})}
         accessibilityRole="button"
         disabled={disabled || Boolean(actioning)}
         onPress={() =>
@@ -418,7 +421,7 @@ const ServiceBookingsScreen = ({ navigation, route }) => {
     return (
       <TouchableOpacity
         key={action.value}
-        accessibilityLabel={`${action.label} operation for booking ${bookingId}`}
+        accessibilityLabel={ui("{value0} operation for booking {value1}", {value0: (action.label), value1: (bookingId)})}
         accessibilityRole="button"
         disabled={Boolean(actioning)}
         onPress={() =>
@@ -448,36 +451,36 @@ const ServiceBookingsScreen = ({ navigation, route }) => {
       <View style={styles.operationsBox}>
         <View style={styles.operationsHeader}>
           <View>
-            <AppText style={styles.operationsTitle}>Operations</AppText>
+            <AppText style={styles.operationsTitle}>{ui("Operations")}</AppText>
             <AppText style={styles.operationsSubtitle}>
               {assignment
-                ? `Assigned: ${assignment.company_name || assignment.provider_name || assignment.contact_person || 'Provider'}`
+                ? ui("Assigned: {value0}", {value0: (assignment.company_name || assignment.provider_name || assignment.contact_person || ui("Provider"))})
                 : 'Load timeline and assignment details.'}
             </AppText>
           </View>
           <TouchableOpacity
-            accessibilityLabel={`Load operations for booking ${bookingId}`}
+            accessibilityLabel={ui("Load operations for booking {value0}", {value0: (bookingId)})}
             accessibilityRole="button"
             disabled={Boolean(actioning)}
             onPress={() => loadOperations(booking)}
             style={styles.timelineButton}
           >
             {loadingOperations ? <ActivityIndicator color={colors.blue} size="small" /> : <Icon name="time-outline" size={14} color={colors.blue} />}
-            <AppText style={styles.timelineButtonText}>Timeline</AppText>
+            <AppText style={styles.timelineButtonText}>{ui("Timeline")}</AppText>
           </TouchableOpacity>
         </View>
 
-        {type === 'fumigation' ? (
+        {type === "fumigation" ? (
           <View style={styles.actionGroup}>
             <TouchableOpacity
-              accessibilityLabel={`Assign provider for booking ${bookingId}`}
+              accessibilityLabel={ui("Assign provider for booking {value0}", {value0: (bookingId)})}
               accessibilityRole="button"
               disabled={Boolean(actioning)}
               onPress={() => chooseProvider(booking)}
               style={styles.lifecycleChip}
             >
               <Icon name="people-outline" size={14} color={colors.blue} />
-              <AppText style={styles.actionChipText}>Assign provider</AppText>
+              <AppText style={styles.actionChipText}>{ui("Assign provider")}</AppText>
             </TouchableOpacity>
             {FUMIGATION_LIFECYCLE_ACTIONS.map((action) => renderLifecycleButton(booking, action, 'provider'))}
           </View>
@@ -495,14 +498,14 @@ const ServiceBookingsScreen = ({ navigation, route }) => {
                 {String(operation.event_type || operation.action || 'operation').replace(/_/g, ' ')}
               </AppText>
               <AppText style={styles.operationMeta}>
-                {operation.actor_name || operation.provider_name || 'System'} · {operation.created_at || operation.updated_at || ''}
+                {operation.actor_name || operation.provider_name || ui("System")} · {operation.created_at || operation.updated_at || ''}
               </AppText>
               {operation.note ? <AppText style={styles.operationNote}>{operation.note}</AppText> : null}
             </View>
           </View>
         ))}
         {!operations.length && !loadingOperations ? (
-          <AppText style={styles.operationsEmpty}>No operation timeline loaded yet.</AppText>
+          <AppText style={styles.operationsEmpty}>{ui("No operation timeline loaded yet.")}</AppText>
         ) : null}
       </View>
     );
@@ -514,21 +517,21 @@ const ServiceBookingsScreen = ({ navigation, route }) => {
         <DashboardHero
           eyebrow={config.eyebrow}
           title={config.title}
-          subtitle="A native mobile queue for reviewing bookings, updating core statuses and managing service operations inside the app."
+          subtitle={ui("A native mobile queue for reviewing bookings, updating core statuses and managing service operations inside the app.")}
           icon={config.icon}
           onRefresh={loadBookings}
         />
       </TourTarget>
 
       <DashboardNotice
-        title="Native actions enabled"
-        message="Core booking, payment, provider/dispatch lifecycle, compliance and recent operation timelines now run inside the app."
+        title={ui("Native actions enabled")}
+        message={ui("Core booking, payment, provider/dispatch lifecycle, compliance and recent operation timelines now run inside the app.")}
       />
 
-      <DashboardSection title="Recent bookings">
+      <DashboardSection title={ui("Recent bookings")}>
         {loading && !bookings.length ? <ActivityIndicator color={colors.blue} /> : null}
         {!loading && !bookings.length ? (
-          <AppText style={styles.empty}>No bookings found for this workspace.</AppText>
+          <AppText style={styles.empty}>{ui("No bookings found for this workspace.")}</AppText>
         ) : null}
         {bookings.map((booking) => {
           const bookingId = booking.id || booking.booking_id;
@@ -544,10 +547,10 @@ const ServiceBookingsScreen = ({ navigation, route }) => {
                 </View>
                 <View style={styles.copy}>
                   <AppText numberOfLines={1} style={styles.title}>
-                    {booking.service_name || booking.service_type || booking.property_title || `Booking #${bookingId}`}
+                    {booking.service_name || booking.service_type || booking.property_title || ui("Booking #{value0}", {value0: (bookingId)})}
                   </AppText>
                   <AppText numberOfLines={1} style={styles.meta}>
-                    {booking.tenant_name || booking.customer_name || booking.user_name || 'Customer'} · {getBookingDate(booking)}
+                    {booking.tenant_name || booking.customer_name || booking.user_name || ui("Customer")} · {getBookingDate(booking)}
                   </AppText>
                 </View>
                 <View style={[styles.badge, { backgroundColor: statusColor(status) }]}>
@@ -556,26 +559,23 @@ const ServiceBookingsScreen = ({ navigation, route }) => {
               </View>
               <AppText numberOfLines={3} style={styles.detail}>
                 {booking.pickup_address && booking.destination_address
-                  ? `${booking.pickup_address} → ${booking.destination_address}`
+                  ? ui("{value0} → {value1}", {value0: (booking.pickup_address), value1: (booking.destination_address)})
                   : booking.property_address || booking.address || booking.admin_notes || 'Review the full service record.'}
               </AppText>
 
               <View style={styles.recordGrid}>
-                <AppText style={styles.recordText}>
-                  Reference: {booking.reference || booking.booking_reference || booking.payment_reference || `#${bookingId}`}
+                <AppText style={styles.recordText}>{ui("Reference:")}{booking.reference || booking.booking_reference || booking.payment_reference || ui("#{value0}", {value0: (bookingId)})}
                 </AppText>
-                <AppText style={styles.recordText}>
-                  Amount: ₦{Number(booking.total_amount || booking.amount || booking.estimated_cost || 0).toLocaleString()}
+                <AppText style={styles.recordText}>{ui("Amount: ₦")}{Number(booking.total_amount || booking.amount || booking.estimated_cost || 0).toLocaleString()}
                 </AppText>
-                <AppText style={styles.recordText}>
-                  Contact: {booking.phone || booking.customer_phone || booking.user_phone || booking.email || 'Not supplied'}
+                <AppText style={styles.recordText}>{ui("Contact:")}{booking.phone || booking.customer_phone || booking.user_phone || booking.email || 'Not supplied'}
                 </AppText>
               </View>
 
               {paymentStatus ? (
                 <View style={styles.paymentRow}>
                   <Icon name="wallet-outline" size={14} color={statusColor(paymentStatus)} />
-                  <AppText style={styles.paymentText}>Payment: {String(paymentStatus).replace(/_/g, ' ')}</AppText>
+                  <AppText style={styles.paymentText}>{ui("Payment: ")}{String(paymentStatus).replace(/_/g, ' ')}</AppText>
                 </View>
               ) : null}
 
@@ -583,7 +583,7 @@ const ServiceBookingsScreen = ({ navigation, route }) => {
                 {statusActions.map((action) => renderActionButton(booking, action, 'status'))}
               </View>
 
-              {type !== 'fumigation' && paymentStatus ? (
+              {type !== "fumigation" && paymentStatus ? (
                 <View style={styles.actionGroup}>
                   {PAYMENT_STATUS_ACTIONS.map((action) => renderActionButton(booking, action, 'payment'))}
                 </View>
@@ -591,9 +591,9 @@ const ServiceBookingsScreen = ({ navigation, route }) => {
 
               {renderOperations(booking)}
 
-              {type === 'fumigation' ? (
+              {type === "fumigation" ? (
                 <TouchableOpacity
-                  accessibilityLabel={`Open safety compliance for booking ${bookingId}`}
+                  accessibilityLabel={ui("Open safety compliance for booking {value0}", {value0: (bookingId)})}
                   accessibilityRole="button"
                   onPress={() =>
                     navigation.navigate('FumigationCompliance', {
@@ -615,7 +615,7 @@ const ServiceBookingsScreen = ({ navigation, route }) => {
                   style={styles.complianceButton}
                 >
                   <Icon name="shield-checkmark-outline" size={15} color={colors.success} />
-                  <AppText style={styles.complianceText}>Safety compliance</AppText>
+                  <AppText style={styles.complianceText}>{ui("Safety compliance")}</AppText>
                 </TouchableOpacity>
               ) : null}
 

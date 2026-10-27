@@ -1,7 +1,8 @@
 const recruitmentCopy = require('../../i18n/recruitmentCopy.cjs');
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {Animated,
-  I18nManager,
+  AccessibilityInfo,
+  Easing,
   Image,
   StatusBar,
   StyleSheet,
@@ -29,6 +30,9 @@ const WelcomeScreen = ({ navigation }) => {
   const contentY = useRef(new Animated.Value(22)).current;
   const contentOpacity = useRef(new Animated.Value(0)).current;
   const hintBounce = useRef(new Animated.Value(0)).current;
+  const careerGlow = useRef(new Animated.Value(0)).current;
+  const [reduceMotion, setReduceMotion] = useState(true);
+  const [careerWidth, setCareerWidth] = useState(width - 48);
   const navigatingRef = useRef(false);
   const navigateTimerRef = useRef(null);
 
@@ -53,6 +57,19 @@ const WelcomeScreen = ({ navigation }) => {
   }, []);
 
   useEffect(() => {
+    let active = true;
+    AccessibilityInfo.isReduceMotionEnabled().then(value => { if (active) setReduceMotion(value); }).catch(() => {});
+    const subscription = AccessibilityInfo.addEventListener('reduceMotionChanged', setReduceMotion);
+    return () => { active = false; subscription.remove(); };
+  }, []);
+  useEffect(() => {
+    careerGlow.setValue(0);
+    if (reduceMotion) return;
+    const loop = Animated.loop(Animated.timing(careerGlow, { toValue: 1, duration: 3200, easing: Easing.linear, useNativeDriver: true }));
+    loop.start();
+    return () => loop.stop();
+  }, [careerGlow, reduceMotion]);
+  useEffect(() => {
     Animated.parallel([
       Animated.timing(contentY, {
         toValue: 0,
@@ -68,6 +85,7 @@ const WelcomeScreen = ({ navigation }) => {
   }, [contentOpacity, contentY]);
 
   useEffect(() => {
+    if (reduceMotion) { hintBounce.setValue(0); return; }
     const loop = Animated.loop(
       Animated.sequence([
         Animated.timing(hintBounce, { toValue: -7, duration: 520, useNativeDriver: true }),
@@ -76,7 +94,7 @@ const WelcomeScreen = ({ navigation }) => {
     );
     loop.start();
     return () => loop.stop();
-  }, [hintBounce]);
+  }, [hintBounce, reduceMotion]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -121,8 +139,8 @@ const WelcomeScreen = ({ navigation }) => {
           <View style={styles.eyebrowDot} />
           <AppText style={[styles.eyebrowText, isRTL && styles.eyebrowTextRTL, { textAlign, writingDirection: textDirection }]}>{t('welcome.eyebrow')}</AppText>
         </View>
-        <AppText accessibilityRole="header" style={[styles.title, compact && styles.titleCompact, isRTL && styles.titleRTL, { textAlign, writingDirection: textDirection }]}>{t('welcome.title')}</AppText>
-        <AppText style={[styles.subtitle, { textAlign, writingDirection: textDirection }]}>
+        <AppText accessibilityRole="header" style={[styles.title, compact && styles.titleCompact, isRTL && styles.titleRTL, { textAlign: 'center', writingDirection: textDirection }]}>{t('welcome.title')}</AppText>
+        <AppText style={[styles.subtitle, { textAlign: 'center', writingDirection: textDirection }]}>
           {t('welcome.subtitle')}
         </AppText>
 
@@ -133,7 +151,7 @@ const WelcomeScreen = ({ navigation }) => {
             activeOpacity={0.86}
             onPress={() => navigateOnce('Register')}
             style={styles.primaryButton}>
-            <AppText style={[styles.primaryText, { textAlign, writingDirection: textDirection }]}>{t('welcome.createAccount')}</AppText>
+            <AppText style={[styles.primaryText, { textAlign: 'center', writingDirection: textDirection }]}>{t('welcome.createAccount')}</AppText>
             <View style={styles.primaryIcon}>
               <Icon name="arrow-forward" size={19} color={colors.navy} />
             </View>
@@ -145,13 +163,14 @@ const WelcomeScreen = ({ navigation }) => {
             activeOpacity={0.82}
             onPress={() => navigateOnce('Login')}
             style={styles.secondaryButton}>
-            <AppText style={[styles.secondaryText, { textAlign, writingDirection: textDirection }]}>{t('welcome.signIn')}</AppText>
+            <AppText style={[styles.secondaryText, { textAlign: 'center', writingDirection: textDirection }]}>{t('welcome.signIn')}</AppText>
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity accessibilityRole="button" accessibilityLabel={careersCopy.opportunities_title} onPress={()=>navigateOnce('Careers')} style={styles.careersButton}>
-          <View style={{flex:1}}><AppText style={[styles.secondaryText,{textAlign}]}>{careersCopy.opportunities_title}</AppText><AppText variant="caption" color="#C7D6EF" style={{marginTop:4,textAlign}}>{careersCopy.no_account_required}</AppText></View>
-          <Icon name="heart-outline" size={23} color={colors.gold}/>
+        <TouchableOpacity accessibilityRole="button" accessibilityLabel={careersCopy.opportunities_title + '. ' + careersCopy.apply_here} onPress={() => navigateOnce('Careers')} activeOpacity={0.88} onLayout={event => setCareerWidth(event.nativeEvent.layout.width)} style={styles.careersButton}>
+          {!reduceMotion && <Animated.View pointerEvents="none" accessible={false} style={[styles.careerGlow, { transform: [{ translateX: careerGlow.interpolate({ inputRange: [0, 1], outputRange: [-120, careerWidth + 120] }) }, { skewX: '-20deg' }] }]}><View style={styles.careerGlowCore} /></Animated.View>}
+          <AppText style={[styles.careerTitle, { writingDirection: textDirection }]}>{careersCopy.opportunities_title}</AppText>
+          <View style={styles.careerApply}><AppText style={[styles.careerApplyText, { writingDirection: textDirection }]}>{careersCopy.apply_here}</AppText></View>
         </TouchableOpacity>
 
         <View style={styles.trustRow}>
@@ -169,7 +188,12 @@ const WelcomeScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  careersButton: {backgroundColor:colors.navySoft,borderWidth:1,borderColor:'#446494',borderRadius:radius.md,padding:16,minHeight:68,flexDirection:'row',alignItems:'center',gap:12,marginTop:16},
+  careersButton: { direction: 'ltr', position: 'relative', overflow: 'hidden', backgroundColor: '#102C60', borderWidth: 1, borderColor: '#4A9EFF', borderRadius: radius.md, padding: 20, minHeight: 112, alignItems: 'center', justifyContent: 'center', gap: 12, marginTop: 16 },
+  careerGlow: { position: 'absolute', left: 0, top: -60, bottom: -60, width: 100, backgroundColor: 'rgba(54,153,255,0.16)', alignItems: 'center', justifyContent: 'center' },
+  careerGlowCore: { width: 8, height: '100%', backgroundColor: 'rgba(152,219,255,0.48)', borderLeftWidth: 2, borderRightWidth: 2, borderColor: '#5EBEFF' },
+  careerTitle: { width: '100%', textAlign: 'center', color: colors.white, fontFamily: typography.semibold, fontSize: typeScale.base, lineHeight: 24 },
+  careerApply: { borderRadius: radius.pill, backgroundColor: '#2270CF', paddingHorizontal: 24, paddingVertical: 9, maxWidth: '100%' },
+  careerApplyText: { textAlign: 'center', color: colors.white, fontFamily: typography.bold, fontSize: typeScale.reading, lineHeight: 22 },
   safeArea: {
     direction: 'ltr',
     backgroundColor: colors.navy,
@@ -208,6 +232,7 @@ const styles = StyleSheet.create({
   },
   top: {
     direction: 'ltr',
+    direction: 'ltr',
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -240,7 +265,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     marginTop: 4,
     marginBottom: 2,
-    paddingEnd: 6,
+    paddingRight: 6,
   },
   exploreArrow: {
     borderBottomColor: colors.gold,
@@ -250,7 +275,7 @@ const styles = StyleSheet.create({
     borderRightColor: 'transparent',
     borderRightWidth: 8,
     height: 0,
-    marginEnd: 18,
+    marginRight: 18,
     width: 0,
   },
   exploreHint: {
@@ -286,6 +311,7 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
   eyebrow: {
+    justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
     marginBottom: 18,
@@ -298,6 +324,8 @@ const styles = StyleSheet.create({
     width: 7,
   },
   eyebrowText: {
+    flexShrink: 1,
+    textAlign: 'center',
     color: '#A9C9F7',
     fontFamily: typography.bold,
     fontSize: typeScale.xs,
@@ -308,6 +336,8 @@ const styles = StyleSheet.create({
     letterSpacing: 0,
   },
   title: {
+    width: '100%',
+    textAlign: 'center',
     color: colors.white,
     fontFamily: typography.semibold,
     fontSize: typeScale.xxl,
@@ -322,6 +352,9 @@ const styles = StyleSheet.create({
     lineHeight: 36,
   },
   subtitle: {
+    alignSelf: 'center',
+    width: '100%',
+    textAlign: 'center',
     color: '#B7C8E2',
     fontFamily: typography.regular,
     fontSize: typeScale.base,
@@ -338,19 +371,23 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderRadius: radius.md,
     flexDirection: 'row',
-    height: 58,
-    justifyContent: 'space-between',
-    paddingStart: 20,
-    paddingEnd: 10,
+    minHeight: 58,
+    justifyContent: 'center',
+    paddingHorizontal: 54,
+    paddingVertical: 14,
     ...shadows.soft,
   },
   primaryText: {
+    width: '100%',
+    textAlign: 'center',
     color: colors.navy,
     fontFamily: typography.bold,
     fontSize: typeScale.base,
     lineHeight: 24,
   },
   primaryIcon: {
+    position: 'absolute',
+    right: 10,
     alignItems: 'center',
     backgroundColor: colors.gold,
     borderRadius: 19,
@@ -363,10 +400,13 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255,255,255,0.28)',
     borderRadius: radius.md,
     borderWidth: 1,
-    height: 56,
+    minHeight: 56,
+    paddingHorizontal: 20,
+    paddingVertical: 14,
     justifyContent: 'center',
   },
   secondaryText: {
+    textAlign: 'center',
     color: colors.white,
     fontFamily: typography.semibold,
     fontSize: typeScale.base,
@@ -379,6 +419,7 @@ const styles = StyleSheet.create({
     marginTop: 22,
   },
   trustText: {
+    flexShrink: 1,
     color: '#8FA8CA',
     fontFamily: typography.medium,
     fontSize: typeScale.xs,

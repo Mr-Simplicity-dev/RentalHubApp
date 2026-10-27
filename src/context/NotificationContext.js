@@ -11,7 +11,7 @@ import {
   registerForPushNotifications,
 } from '../services/pushNotificationService';
 import {
-  clearAppIconBadge,
+  resetBadgeSession,
   subscribeBadgeSettings,
   syncAppIconBadge,
 } from '../services/appBadgeService';
@@ -38,24 +38,29 @@ export const NotificationProvider = ({ children }) => {
 
   useEffect(() => {
     if (!isAuthenticated) {
-      void clearAppIconBadge().catch(() => {});
+      void resetBadgeSession().catch(() => {});
     }
   }, [isAuthenticated]);
 
   useEffect(() => {
     if (!isAuthenticated || !user?.id) return undefined;
-    void registerForPushNotifications().catch((error) => {
+    let active = true;
+    const timers = new Set();
+    void resetBadgeSession().then(() => active ? registerForPushNotifications() : undefined).catch((error) => {
       console.warn('Push notification registration failed:', error.message);
-    });
-    void syncAppIconBadge('notification_provider_mounted').catch(() => {});
+    }).finally(() => { if (active) void syncAppIconBadge('notification_permission_ready').catch(() => {}); });
+    const refreshTimer = setInterval(() => { if (active && AppState.currentState === 'active') void syncAppIconBadge('foreground_poll').catch(() => {}); }, 30000);
 
     const responseSubscription =
       Notifications.addNotificationResponseReceivedListener(openResponse);
     const receivedSubscription =
-      Notifications.addNotificationReceivedListener(() => {
-        setTimeout(() => {
-          void syncAppIconBadge('push_received').catch(() => {});
+      Notifications.addNotificationReceivedListener(notification => {
+        if (notification.request.content.data?.badgeSummary) return;
+        const timer = setTimeout(() => {
+          timers.delete(timer);
+          if (active) void syncAppIconBadge('push_received').catch(() => {});
         }, 900);
+        timers.add(timer);
       });
     const appStateSubscription = AppState.addEventListener('change', (state) => {
       if (state === 'active') {
@@ -65,7 +70,7 @@ export const NotificationProvider = ({ children }) => {
     const badgeSettingsSubscription = subscribeBadgeSettings();
 
     void Notifications.getLastNotificationResponseAsync().then((response) => {
-      if (response) {
+      if (active && response) {
         openResponse(response);
         void syncAppIconBadge('notification_opened').catch(() => {});
         void Notifications.clearLastNotificationResponseAsync?.();
@@ -73,6 +78,10 @@ export const NotificationProvider = ({ children }) => {
     });
 
     return () => {
+      active = false;
+      clearInterval(refreshTimer);
+      timers.forEach(clearTimeout);
+      void resetBadgeSession().catch(() => {});
       responseSubscription.remove();
       receivedSubscription.remove();
       appStateSubscription.remove();

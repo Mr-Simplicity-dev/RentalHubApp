@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useContext } from 'react';
 import {Linking, StyleSheet, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -17,6 +19,7 @@ import TourTarget from '../../components/tour/TourTarget';
 const WHATSAPP_NUMBER = '2348030601238';
 
 const SupportScreen = ({ navigation }) => {
+  useInterfaceLanguage();
   const { user, isAuthenticated } = useContext(AuthContext);
   const tourId = user?.user_type === 'landlord' ? 'landlord_support' : 'tenant_support';
 
@@ -32,72 +35,66 @@ const SupportScreen = ({ navigation }) => {
           <BrandMark compact />
         </View>
         <DashboardHero
-          eyebrow="SUPPORT"
-          title="Support centre"
-          subtitle="Reach the Amana RentalHub support team for help with your account, properties, payments or anything else."
+          eyebrow={ui("SUPPORT")}
+          title={ui("Support centre")}
+          subtitle={ui("Reach the Amana RentalHub support team for help with your account, properties, payments or anything else.")}
           icon="headset-outline"
         />
       </TourTarget>
 
-      <DashboardSection title="Help and support">
-        <ActionRow title="Chat assistant" subtitle="Ask questions about RentalHub or your signed-in account." icon="chatbubbles-outline" onPress={() => navigation.navigate('WhatsAppBot')} />
-        <ActionRow title="Submit a support ticket" subtitle="Describe a problem and send it to our support team." icon="create-outline" onPress={() => navigation.navigate('ContactWidget', {initialView:'form'})} />
-        {isAuthenticated ? <ActionRow title="My support tickets" subtitle="Check progress, read replies and continue your conversations." icon="document-text-outline" onPress={() => navigation.navigate('ContactWidget', {initialView:'tickets'})} /> : null}
-        <ActionRow title="Live support and in-app calls" subtitle="Open the support conversation and calling options." icon="headset-outline" onPress={() => navigation.navigate('ContactWidget')} />
+      <DashboardSection title={ui("Help and support")}>
+        <ActionRow title={ui("Chat assistant")} subtitle={ui("Ask questions about RentalHub or your signed-in account.")} icon="chatbubbles-outline" onPress={() => navigation.navigate('WhatsAppBot')} />
+        <ActionRow title={ui("Submit a support ticket")} subtitle={ui("Describe a problem and send it to our support team.")} icon="create-outline" onPress={() => navigation.navigate('ContactWidget', {initialView:'form'})} />
+        {isAuthenticated ? <ActionRow title={ui("My support tickets")} subtitle={ui("Check progress, read replies and continue your conversations.")} icon="document-text-outline" onPress={() => navigation.navigate('ContactWidget', {initialView:'tickets'})} /> : null}
+        <ActionRow title={ui("Live support and in-app calls")} subtitle={ui("Open the support conversation and calling options.")} icon="headset-outline" onPress={() => navigation.navigate('ContactWidget')} />
         {isAuthenticated && ['tenant','landlord'].includes(user?.user_type) ? <>
-          <ActionRow title="Coverage assistance" tourTarget={user?.user_type==='landlord'?'landlord_assistance':'tenant_assistance'} subtitle="Check paid coverage and request private assistance." icon="shield-checkmark-outline" onPress={() => navigation.navigate('Assistance')} />
+          <ActionRow title={ui("Coverage assistance")} tourTarget={user?.user_type==='landlord'?'landlord_assistance':'tenant_assistance'} subtitle={ui("Check paid coverage and request private assistance.")} icon="shield-checkmark-outline" onPress={() => navigation.navigate('Assistance')} />
         </> : null}
       </DashboardSection>
 
-      <DashboardSection title="Get in touch">
+      <DashboardSection title={ui("Get in touch")}>
         <View style={styles.contactCard}>
           <View style={styles.contactHeader}>
             <View style={styles.contactIcon}>
               <Icon name="headset-outline" size={23} color={colors.gold} />
             </View>
             <View style={styles.contactCopy}>
-              <AppText style={styles.contactTitle}>We are here to help</AppText>
-              <AppText style={styles.contactText}>
-                Choose the support option that fits your issue. You can follow ticket replies in the app.
-              </AppText>
+              <AppText style={styles.contactTitle}>{ui("We are here to help")}</AppText>
+              <AppText style={styles.contactText}>{ui("Choose the support option that fits your issue. You can follow ticket replies in the app.")}</AppText>
             </View>
           </View>
         </View>
 
         <ActionRow
-          title="WhatsApp us"
-          subtitle="Chat with us on WhatsApp for a quick response."
+          title={ui("WhatsApp us")}
+          subtitle={ui("Chat with us on WhatsApp for a quick response.")}
           icon="logo-whatsapp"
           onPress={openWhatsApp}
         />
 
         <ActionRow
-          title="Email support"
-          subtitle="Reach us by email for detailed assistance."
+          title={ui("Email support")}
+          subtitle={ui("Reach us by email for detailed assistance.")}
           icon="mail-unread-outline"
           onPress={() => Linking.openURL('mailto:support@rentalhub.com.ng')}
         />
 
         <ActionRow
-          title="Frequently asked questions"
-          subtitle="Find quick answers to common questions."
+          title={ui("Frequently asked questions")}
+          subtitle={ui("Find quick answers to common questions.")}
           icon="help-circle-outline"
           onPress={() => navigation.navigate('Faq')}
         />
       </DashboardSection>
 
-      <DashboardSection title="Report an issue">
+      <DashboardSection title={ui("Report an issue")}>
         <View style={styles.infoCard}>
           <AppText style={styles.bullet}>•</AppText>
-          <AppText style={styles.infoText}>
-            If you are experiencing a problem with a property, payment or another user, you can file a dispute or property report from the relevant screen.
-          </AppText>
+          <AppText style={styles.infoText}>{ui("If you are experiencing a problem with a property, payment or another user, you can file a dispute or property report from the relevant screen.")}</AppText>
         </View>
         <View style={styles.infoCard}>
           <AppText style={styles.bullet}>•</AppText>
-          <AppText style={styles.infoText}>
-            For urgent safety concerns, please contact local authorities and then reach out to support so we can take appropriate action on the platform.
-          </AppText>
+          <AppText style={styles.infoText}>{ui("For urgent safety concerns, please contact local authorities and then reach out to support so we can take appropriate action on the platform.")}</AppText>
         </View>
       </DashboardSection>
     </DashboardScreen>

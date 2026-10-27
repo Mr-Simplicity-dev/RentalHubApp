@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import {KeyboardAvoidingView,
   Modal,
@@ -49,6 +51,7 @@ const defaultFlags = {
 const referralCodePattern = /^[A-Za-z0-9_-]+$/;
 
 const RegisterScreen = ({ navigation, route }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const { register, establishSession } = useContext(AuthContext);
   const scrollRef = useRef(null);
   const initialReferralCode = String(
@@ -114,7 +117,7 @@ const RegisterScreen = ({ navigation, route }) => {
 
   const selectedState = useMemo(
     () => locationOptions.find((item) => String(item.id) === String(form.state_id)),
-    [form.state_id, locationOptions]
+    [form.state_id, locationOptions, interfaceLanguage]
   );
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const passportPattern = /^[A-Za-z0-9]{6,20}$/;
@@ -123,10 +126,10 @@ const RegisterScreen = ({ navigation, route }) => {
 
   const availableLgas = selectedState?.lgas || [];
   const steps = [
-    { title: 'About you', short: 'Account' },
-    { title: 'Your support', short: 'Support' },
-    { title: 'Identity and location', short: 'Identity' },
-    { title: 'Secure and review', short: 'Review' },
+    { title: ui("About you"), short: 'Account' },
+    { title: ui("Your support"), short: 'Support' },
+    { title: ui("Identity and location"), short: 'Identity' },
+    { title: ui("Secure and review"), short: 'Review' },
   ];
   const requiresRegistrationPayment =
     (userType === 'tenant' && registrationFlags.tenant_registration_payment) ||
@@ -329,49 +332,49 @@ const RegisterScreen = ({ navigation, route }) => {
     const required = [form.full_name, form.email, form.phone, form.password];
 
     if (required.some((entry) => !entry?.trim())) {
-      return 'Full name, email, phone, and password are required.';
+      return ui('Full name, email, phone, and password are required.');
     }
 
     if (!form.lawyer_email?.trim()) {
-      return 'Enter the lawyer email to use for registration.';
+      return ui('Enter the lawyer email to use for registration.');
     }
 
     if (!emailPattern.test(form.email || '')) {
-      return 'Enter a valid email address.';
+      return ui('Enter a valid email address.');
     }
 
     if (form.password !== form.confirm_password) {
-      return 'Passwords do not match.';
+      return ui('Passwords do not match.');
     }
 
     if (!passwordPattern.test(form.password)) {
-      return passwordRequirement;
+      return ui(passwordRequirement);
     }
 
     if (!acceptedTerms) {
-      return 'Accept the Terms and Privacy Policy to continue.';
+      return ui('Accept the Terms and Privacy Policy to continue.');
     }
 
     if (!emailPattern.test(form.lawyer_email.trim())) {
-      return 'Enter a valid lawyer email.';
+      return ui('Enter a valid lawyer email.');
     }
 
     if (userType === 'landlord' && form.add_agent && !form.use_rentalhub_agents) {
       if (!form.agent_full_name.trim()) {
-        return 'Agent full name is required when adding an agent.';
+        return ui('Agent full name is required when adding an agent.');
       }
 
       if (!emailPattern.test(form.agent_email || '')) {
-        return 'Enter a valid agent email.';
+        return ui('Enter a valid agent email.');
       }
 
       if (!form.agent_phone.trim()) {
-        return 'Agent phone is required when adding an agent.';
+        return ui('Agent phone is required when adding an agent.');
       }
     }
 
     if (!isForeigner && registrationFlags.nin_number && !/^\d{11}$/.test(form.nin || '')) {
-      return 'Local users must provide exactly 11 digits NIN.';
+      return ui('Local users must provide exactly 11 digits NIN.');
     }
 
     if (
@@ -379,24 +382,24 @@ const RegisterScreen = ({ navigation, route }) => {
       registrationFlags.passport_number &&
       !/^[A-Za-z0-9]{6,20}$/.test(form.international_passport_number || '')
     ) {
-      return 'Enter a valid international passport number.';
+      return ui('Enter a valid international passport number.');
     }
 
     if (isForeigner && registrationFlags.passport_number && !form.nationality.trim()) {
-      return 'Nationality is required for foreign registrations.';
+      return ui('Nationality is required for foreign registrations.');
     }
 
     if (requiresRegistrationPayment && !form.state_id) {
-      return 'Select your state to calculate the registration fee.';
+      return ui('Select your state to calculate the registration fee.');
     }
 
     if (requiresRegistrationPayment && !form.lga_name.trim()) {
-      return 'Select your local government area to calculate the registration fee.';
+      return ui('Select your local government area to calculate the registration fee.');
     }
 
     const referralCode = String(form.referral_code || '').trim();
     if (referralCode && !referralCodePattern.test(referralCode)) {
-      return 'Referral code can only contain letters, numbers, - or _';
+      return ui('Referral code can only contain letters, numbers, - or _');
     }
 
     return null;
@@ -405,52 +408,52 @@ const RegisterScreen = ({ navigation, route }) => {
   const validateStep = (step) => {
     if (step === 0) {
       if (!form.full_name.trim() || !form.email.trim() || !form.phone.trim()) {
-        return 'Enter your full name, email address and phone number.';
+        return ui('Enter your full name, email address and phone number.');
       }
       if (!emailPattern.test(form.email.trim())) {
-        return 'Enter a valid email address.';
+        return ui('Enter a valid email address.');
       }
       const referralCode = String(form.referral_code || '').trim();
       if (referralCode && !referralCodePattern.test(referralCode)) {
-        return 'Referral code can only contain letters, numbers, - or _.';
+        return ui('Referral code can only contain letters, numbers, - or _.');
       }
     }
 
     if (step === 1) {
       if (!emailPattern.test(form.lawyer_email.trim())) {
-        return 'Enter a valid lawyer email.';
+        return ui('Enter a valid lawyer email.');
       }
       if (userType === 'landlord' && form.add_agent && !form.use_rentalhub_agents) {
-        if (!form.agent_full_name.trim()) return 'Enter the agentâ€™s full name.';
-        if (!emailPattern.test(form.agent_email.trim())) return 'Enter a valid agent email.';
-        if (!form.agent_phone.trim()) return 'Enter the agentâ€™s phone number.';
+        if (!form.agent_full_name.trim()) return ui('Enter the agentâ€™s full name.');
+        if (!emailPattern.test(form.agent_email.trim())) return ui('Enter a valid agent email.');
+        if (!form.agent_phone.trim()) return ui('Enter the agentâ€™s phone number.');
       }
     }
 
     if (step === 2) {
       const locationRequired =
         requiresRegistrationPayment || registrationFlags.registration_location_restricted;
-      if (locationRequired && !form.state_id) return 'Select your state.';
-      if (locationRequired && !form.lga_name.trim()) return 'Select your local government area.';
+      if (locationRequired && !form.state_id) return ui('Select your state.');
+      if (locationRequired && !form.lga_name.trim()) return ui('Select your local government area.');
       if (!isForeigner && registrationFlags.nin_number && !/^\d{11}$/.test(form.nin)) {
-        return 'Enter your 11-digit NIN.';
+        return ui('Enter your 11-digit NIN.');
       }
       if (
         isForeigner &&
         registrationFlags.passport_number &&
         !passportPattern.test(form.international_passport_number.trim())
       ) {
-        return 'Enter a valid international passport number.';
+        return ui('Enter a valid international passport number.');
       }
       if (isForeigner && registrationFlags.passport_number && !form.nationality.trim()) {
-        return 'Enter your nationality.';
+        return ui('Enter your nationality.');
       }
     }
 
     if (step === 3) {
-      if (!passwordPattern.test(form.password)) return passwordRequirement;
-      if (form.password !== form.confirm_password) return 'Passwords do not match.';
-      if (!acceptedTerms) return 'Accept the Terms and Privacy Policy to continue.';
+      if (!passwordPattern.test(form.password)) return ui(passwordRequirement);
+      if (form.password !== form.confirm_password) return ui('Passwords do not match.');
+      if (!acceptedTerms) return ui('Accept the Terms and Privacy Policy to continue.');
     }
 
     return null;
@@ -465,14 +468,14 @@ const RegisterScreen = ({ navigation, route }) => {
     if (!registrationFlags.loaded) {
       Toast.show({
         type: 'info',
-        text1: 'Checking registration',
-        text2: 'Please wait while we load the current registration rules.',
+        text1: ui("Checking registration"),
+        text2: ui("Please wait while we load the current registration rules."),
       });
       return;
     }
     const error = validateStep(currentStep);
     if (error) {
-      Toast.show({ type: 'error', text1: 'Complete this step', text2: error });
+      Toast.show({ type: 'error', text1: ui("Complete this step"), text2: error });
       return;
     }
     changeStep(currentStep + 1);
@@ -490,8 +493,8 @@ const RegisterScreen = ({ navigation, route }) => {
     if (value && registrationFlags.loaded && registrationFlags.diaspora_registration === false) {
       Toast.show({
         type: 'error',
-        text1: 'Unavailable',
-        text2: 'Diaspora registration is currently disabled on Amana RentalHub NG.',
+        text1: ui("Unavailable"),
+        text2: ui("Diaspora registration is currently disabled on Amana RentalHub NG."),
       });
       return;
     }
@@ -502,8 +505,8 @@ const RegisterScreen = ({ navigation, route }) => {
     if (!registrationFlags.registration_master_enabled) {
       Toast.show({
         type: 'error',
-        text1: 'Registration disabled',
-        text2: 'Registration is currently disabled.',
+        text1: ui("Registration disabled"),
+        text2: ui("Registration is currently disabled."),
       });
       return;
     }
@@ -511,11 +514,11 @@ const RegisterScreen = ({ navigation, route }) => {
     if (!registrationFlags.registration_global_allowed) {
       Toast.show({
         type: 'error',
-        text1: 'Registration disabled',
+        text1: ui("Registration disabled"),
         text2:
-          userType === 'landlord'
-            ? 'Landlord registration is currently disabled.'
-            : 'Tenant registration is currently disabled.',
+          userType === "landlord"
+            ? ui("Landlord registration is currently disabled.")
+            : ui("Tenant registration is currently disabled."),
       });
       return;
     }
@@ -523,10 +526,10 @@ const RegisterScreen = ({ navigation, route }) => {
     if (!registrationFlags.registration_allowed) {
       Toast.show({
         type: 'error',
-        text1: 'Registration unavailable',
+        text1: ui("Registration unavailable"),
         text2:
           registrationFlags.registration_access_message ||
-          'Registration is not available for the selected location.',
+          ui("Registration is not available for the selected location."),
       });
       return;
     }
@@ -535,7 +538,7 @@ const RegisterScreen = ({ navigation, route }) => {
     if (validationError) {
       Toast.show({
         type: 'error',
-        text1: 'Registration failed',
+        text1: ui("Registration failed"),
         text2: validationError,
       });
       return;
@@ -547,8 +550,8 @@ const RegisterScreen = ({ navigation, route }) => {
     if (!turnstileToken) {
       Toast.show({
         type: 'error',
-        text1: 'Security Check',
-        text2: 'Please complete the security check below.',
+        text1: ui("Security Check"),
+        text2: ui("Please complete the security check below."),
       });
       return;
     }
@@ -598,13 +601,13 @@ const RegisterScreen = ({ navigation, route }) => {
 
         Toast.show({
           type: 'success',
-          text1: 'Payment started',
-          text2: 'Complete the payment, return to the app, then tap "Complete Registration".',
+          text1: ui("Payment started"),
+          text2: ui("Complete the payment, return to the app, then tap \"Complete Registration\"."),
         });
       } catch (error) {
         Toast.show({
           type: 'error',
-          text1: 'Payment failed',
+          text1: ui("Payment failed"),
           text2: getErrorMessage(error, 'Could not initialize registration payment'),
         });
         turnstileRef.current?.reset();
@@ -621,14 +624,14 @@ const RegisterScreen = ({ navigation, route }) => {
       if (response.success) {
         Toast.show({
           type: 'success',
-          text1: 'Registration complete',
-          text2: 'Your account has been created.',
+          text1: ui("Registration complete"),
+          text2: ui("Your account has been created."),
         });
       } else {
         Toast.show({
           type: 'error',
-          text1: 'Registration failed',
-          text2: response.message || 'Please try again.',
+          text1: ui("Registration failed"),
+          text2: response.message || ui("Please try again."),
         });
         turnstileRef.current?.reset();
         turnstileTokenRef.current = null;
@@ -636,8 +639,8 @@ const RegisterScreen = ({ navigation, route }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Registration failed',
-        text2: getErrorMessage(error, 'Please try again.'),
+        text1: ui("Registration failed"),
+        text2: getErrorMessage(error, ui("Please try again.")),
       });
       turnstileRef.current?.reset();
       turnstileTokenRef.current = null;
@@ -666,8 +669,8 @@ const RegisterScreen = ({ navigation, route }) => {
     setPaymentMethod(null);
     Toast.show({
       type: 'success',
-      text1: 'Registration payment confirmed',
-      text2: 'Your account has been created. Sign in with the password you chose.',
+      text1: ui("Registration payment confirmed"),
+      text2: ui("Your account has been created. Sign in with the password you chose."),
     });
     navigation.navigate('Login');
   };
@@ -694,8 +697,8 @@ const RegisterScreen = ({ navigation, route }) => {
 
       Toast.show({
         type: 'success',
-        text1: 'Registration complete',
-        text2: 'Your paid registration has been completed.',
+        text1: ui("Registration complete"),
+        text2: ui("Your paid registration has been completed."),
       });
     } catch (error) {
       const serverError = error?.response?.data;
@@ -707,14 +710,14 @@ const RegisterScreen = ({ navigation, route }) => {
         setForeignCardAdjustment({ reference, ...(serverError.data || {}) });
         Toast.show({
           type: 'info',
-          text1: 'Additional payment required',
-          text2: 'Your card was issued outside Nigeria. Pay the FX adjustment to finish registration.',
+          text1: ui("Additional payment required"),
+          text2: ui("Your card was issued outside Nigeria. Pay the FX adjustment to finish registration."),
         });
         return;
       }
       Toast.show({
         type: 'error',
-        text1: 'Completion failed',
+        text1: ui("Completion failed"),
         text2: getErrorMessage(error, 'Could not complete paid registration'),
       });
     } finally {
@@ -738,20 +741,20 @@ const RegisterScreen = ({ navigation, route }) => {
         }));
         Toast.show({
           type: 'info',
-          text1: 'Payment started',
-          text2: 'After paying, return to the app and tap "Finish registration".',
+          text1: ui("Payment started"),
+          text2: ui("After paying, return to the app and tap \"Finish registration\"."),
         });
       } else {
         Toast.show({
           type: 'error',
-          text1: 'Could not start payment',
-          text2: data.message || 'Please try again.',
+          text1: ui("Could not start payment"),
+          text2: data.message || ui("Please try again."),
         });
       }
     } catch (adjustError) {
       Toast.show({
         type: 'error',
-        text1: 'Payment failed',
+        text1: ui("Payment failed"),
         text2: getErrorMessage(adjustError, 'Could not start the foreign-card payment'),
       });
     } finally {
@@ -773,7 +776,7 @@ const RegisterScreen = ({ navigation, route }) => {
     >
       <View style={styles.topBar}>
         <TouchableOpacity
-          accessibilityLabel="Go back"
+          accessibilityLabel={ui("Go back")}
           accessibilityRole="button"
           onPress={handleRegistrationBack}
           style={styles.backButton}>
@@ -788,7 +791,7 @@ const RegisterScreen = ({ navigation, route }) => {
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}>
         <View style={styles.progressHeader}>
-          <AppText style={styles.stepCount}>STEP {currentStep + 1} OF {steps.length}</AppText>
+          <AppText style={styles.stepCount}>{ui("STEP ")}{currentStep + 1}{ui(" OF ")}{steps.length}</AppText>
           <AppText style={styles.stepPercent}>{Math.round(((currentStep + 1) / steps.length) * 100)}%</AppText>
         </View>
         <View style={styles.progressTrack}>
@@ -813,19 +816,15 @@ const RegisterScreen = ({ navigation, route }) => {
 
         {!registrationFlags.loaded ? (
           <View style={styles.noticeCard}>
-            <AppText style={styles.noticeTitle}>Loading registration settings</AppText>
-            <AppText style={styles.noticeText}>
-              We are checking the current registration and payment rules for this role.
-            </AppText>
+            <AppText style={styles.noticeTitle}>{ui("Loading registration settings")}</AppText>
+            <AppText style={styles.noticeText}>{ui("We are checking the current registration and payment rules for this role.")}</AppText>
           </View>
         ) : null}
 
         {registrationFlags.loaded && !registrationFlags.registration_master_enabled ? (
           <View style={styles.warningCard}>
-            <AppText style={styles.warningTitle}>Registration is currently disabled</AppText>
-            <AppText style={styles.warningText}>
-              Please try again later or contact support if this should already be open.
-            </AppText>
+            <AppText style={styles.warningTitle}>{ui("Registration is currently disabled")}</AppText>
+            <AppText style={styles.warningText}>{ui("Please try again later or contact support if this should already be open.")}</AppText>
           </View>
         ) : null}
 
@@ -834,7 +833,7 @@ const RegisterScreen = ({ navigation, route }) => {
         !registrationFlags.registration_global_allowed ? (
           <View style={styles.warningCard}>
             <AppText style={styles.warningTitle}>
-              {userType === 'landlord' ? 'Landlord registration disabled' : 'Tenant registration disabled'}
+              {userType === "landlord" ? 'Landlord registration disabled' : 'Tenant registration disabled'}
             </AppText>
           </View>
         ) : null}
@@ -849,7 +848,7 @@ const RegisterScreen = ({ navigation, route }) => {
 
         {currentStep === 0 ? (
           <>
-        <AppText style={styles.choiceLabel}>Iâ€™m registering as</AppText>
+        <AppText style={styles.choiceLabel}>{ui("Iâ€™m registering as")}</AppText>
         <View style={styles.toggleRow}>
           {['tenant', 'landlord'].map((role) => (
             <TouchableOpacity
@@ -858,13 +857,13 @@ const RegisterScreen = ({ navigation, route }) => {
               style={[styles.toggleBtn, userType === role && styles.toggleBtnActive]}
             >
               <AppText style={[styles.toggleText, userType === role && styles.toggleTextActive]}>
-                {role === 'tenant' ? 'Tenant' : 'Landlord'}
+                {role === "tenant" ? ui("Tenant") : ui("Landlord")}
               </AppText>
             </TouchableOpacity>
           ))}
         </View>
 
-        <AppText style={styles.choiceLabel}>Citizenship</AppText>
+        <AppText style={styles.choiceLabel}>{ui("Citizenship")}</AppText>
         <View style={styles.toggleRow}>
           {[false, true].map((value) => (
             <TouchableOpacity
@@ -873,7 +872,7 @@ const RegisterScreen = ({ navigation, route }) => {
               style={[styles.toggleBtn, isForeigner === value && styles.toggleBtnActive]}
             >
               <AppText style={[styles.toggleText, isForeigner === value && styles.toggleTextActive]}>
-                {value ? 'Foreigner' : 'Nigerian'}
+                {value ? ui("Foreigner") : ui("Nigerian")}
               </AppText>
             </TouchableOpacity>
           ))}
@@ -883,32 +882,26 @@ const RegisterScreen = ({ navigation, route }) => {
 
         {currentStep === 3 ? (
         <View style={styles.priceCard}>
-          <AppText style={styles.priceLabel}>
-            AMOUNT DUE TODAY
-          </AppText>
+          <AppText style={styles.priceLabel}>{ui("AMOUNT DUE TODAY")}</AppText>
           <AppText style={styles.priceAmount}>
             {requiresPayment
-              ? `₦${Number(displayedRegistrationAmount || 0).toLocaleString()}`
+              ? ui("₦{value0}", {value0: (Number(displayedRegistrationAmount || 0).toLocaleString())})
               : 'No payment required'}
           </AppText>
           <AppText style={styles.priceMeta}>
             {requiresPayment
               ? 'Includes registration and any selected Amana RentalHub NG lawyer or agent access fees.'
-              : `No payment required for ${userType} registration right now.`}
+              : ui("No payment required for {value0} registration right now.", {value0: (ui(userType))})}
           </AppText>
-          <AppText style={styles.priceMeta}>
-            Pricing scope: {String(registrationPricing.rule_scope || 'base').replace(/_/g, ' ')}
+          <AppText style={styles.priceMeta}>{ui("Pricing scope:")}{String(registrationPricing.rule_scope || 'base').replace(/_/g, ' ')}
           </AppText>
           {isForeigner && registrationFlags.diaspora_registration_payment ? (
-            <AppText style={styles.priceMeta}>
-              Diaspora rate: USD {Number(registrationFlags.diaspora_base_fee_usd || 0).toFixed(2)}
-              {diasporaNgnEstimate > 0 ? ` (about ₦${diasporaNgnEstimate.toLocaleString()})` : ''}
+            <AppText style={styles.priceMeta}>{ui("Diaspora rate: USD")}{Number(registrationFlags.diaspora_base_fee_usd || 0).toFixed(2)}
+              {diasporaNgnEstimate > 0 ? ui(" (about ₦{value0})", {value0: (diasporaNgnEstimate.toLocaleString())}) : ''}
             </AppText>
           ) : null}
           {requiresRegistrationPayment && form.state_id && form.lga_name && !registrationPricing.location_complete ? (
-            <AppText style={styles.pendingMeta}>
-              Confirming your exact state and LGA pricing. Please wait a moment before continuing.
-            </AppText>
+            <AppText style={styles.pendingMeta}>{ui("Confirming your exact state and LGA pricing. Please wait a moment before continuing.")}</AppText>
           ) : null}
         </View>
         ) : null}
@@ -916,14 +909,14 @@ const RegisterScreen = ({ navigation, route }) => {
         {currentStep === 0 ? (
           <View style={styles.stepCard}>
         <Input
-          label="Full Name"
+          label={ui("Full Name")}
           value={form.full_name}
           onChangeText={(value) => onChange('full_name', value)}
           placeholder="John Doe"
           icon="person-outline"
         />
         <Input
-          label="Email"
+          label={ui("Email")}
           value={form.email}
           onChangeText={(value) => onChange('email', value)}
           placeholder="john@email.com"
@@ -932,7 +925,7 @@ const RegisterScreen = ({ navigation, route }) => {
           icon="mail-outline"
         />
         <Input
-          label="Phone"
+          label={ui("Phone")}
           value={form.phone}
           onChangeText={(value) => onChange('phone', value)}
           placeholder="+2348012345678"
@@ -961,7 +954,7 @@ const RegisterScreen = ({ navigation, route }) => {
         </TouchableOpacity>
 
         <Input
-            label="Lawyer Email"
+            label={ui("Lawyer Email")}
             value={form.lawyer_email}
             onChangeText={(value) => onChange('lawyer_email', value)}
             placeholder="lawyer@email.com"
@@ -970,7 +963,7 @@ const RegisterScreen = ({ navigation, route }) => {
             icon="briefcase-outline"
           />
 
-        {userType === 'landlord' ? (
+        {userType === "landlord" ? (
           <TouchableOpacity
             style={styles.agentToggle}
             onPress={() =>
@@ -994,23 +987,21 @@ const RegisterScreen = ({ navigation, route }) => {
         {currentStep === 0 ? (
           <View style={styles.stepCard}>
         <Input
-          label="Referral Code (optional)"
+          label={ui("Referral Code (optional)")}
           value={form.referral_code}
           onChangeText={(value) => onChange('referral_code', value)}
-          placeholder="Enter invite code if you have one"
+          placeholder={ui("Enter invite code if you have one")}
           autoCapitalize="none"
           icon="gift-outline"
         />
 
         {initialReferralCode && form.referral_code ? (
-          <AppText style={styles.helperBlock}>
-            Referral code applied from your invite link.
-          </AppText>
+          <AppText style={styles.helperBlock}>{ui("Referral code applied from your invite link.")}</AppText>
         ) : null}
           </View>
         ) : null}
 
-        {currentStep === 1 && userType === 'landlord' && !form.use_rentalhub_agents ? (
+        {currentStep === 1 && userType === "landlord" && !form.use_rentalhub_agents ? (
           <View style={styles.agentBlock}>
             <TouchableOpacity
               style={styles.agentToggle}
@@ -1024,14 +1015,14 @@ const RegisterScreen = ({ navigation, route }) => {
             {form.add_agent ? (
               <>
                 <Input
-                  label="Agent Full Name"
+                  label={ui("Agent Full Name")}
                   value={form.agent_full_name}
                   onChangeText={(value) => onChange('agent_full_name', value)}
-                  placeholder="Assigned agent full name"
+                  placeholder={ui("Assigned agent full name")}
                   icon="person-outline"
                 />
                 <Input
-                  label="Agent Email"
+                  label={ui("Agent Email")}
                   value={form.agent_email}
                   onChangeText={(value) => onChange('agent_email', value)}
                   placeholder="agent@email.com"
@@ -1040,7 +1031,7 @@ const RegisterScreen = ({ navigation, route }) => {
                   icon="mail-outline"
                 />
                 <Input
-                  label="Agent Phone"
+                  label={ui("Agent Phone")}
                   value={form.agent_phone}
                   onChangeText={(value) => onChange('agent_phone', value)}
                   placeholder="+2348012345678"
@@ -1055,17 +1046,17 @@ const RegisterScreen = ({ navigation, route }) => {
         {currentStep === 2 ? (
           <View style={styles.stepCard}>
         <SelectField
-          label="State"
+          label={ui("State")}
           value={selectedState?.state_name}
-          placeholder="Select state"
+          placeholder={ui("Select state")}
           onPress={() => setShowStatePicker(true)}
           helperText={requiresRegistrationPayment ? 'Required for registration pricing.' : ''}
         />
 
         <SelectField
-          label="Local Government Area"
+          label={ui("Local Government Area")}
           value={form.lga_name}
-          placeholder={selectedState ? 'Select LGA' : 'Choose state first'}
+          placeholder={selectedState ? ui("Select LGA") : 'Choose state first'}
           onPress={() => setShowLgaPicker(true)}
           disabled={!selectedState}
           helperText={requiresRegistrationPayment ? 'Required for registration pricing.' : ''}
@@ -1074,37 +1065,37 @@ const RegisterScreen = ({ navigation, route }) => {
         {!isForeigner ? (
           registrationFlags.nin_number ? (
             <Input
-              label="NIN"
+              label={ui("NIN")}
               value={form.nin}
               onChangeText={(value) => onChange('nin', value)}
-              placeholder="11-digit NIN"
+              placeholder={ui("11-digit NIN")}
               keyboardType="number-pad"
               icon="card-outline"
               maxLength={11}
             />
           ) : (
-            <AppText style={styles.helperBlock}>NIN collection is currently disabled.</AppText>
+            <AppText style={styles.helperBlock}>{ui("NIN collection is currently disabled.")}</AppText>
           )
         ) : registrationFlags.passport_number ? (
           <>
             <Input
-              label="International Passport Number"
+              label={ui("International Passport Number")}
               value={form.international_passport_number}
               onChangeText={(value) => onChange('international_passport_number', value)}
-              placeholder="Passport number"
+              placeholder={ui("Passport number")}
               autoCapitalize="characters"
               icon="document-outline"
             />
             <Input
-              label="Nationality"
+              label={ui("Nationality")}
               value={form.nationality}
               onChangeText={(value) => onChange('nationality', value)}
-              placeholder="Country"
+              placeholder={ui("Country")}
               icon="globe-outline"
             />
           </>
         ) : (
-          <AppText style={styles.helperBlock}>Passport collection is currently disabled.</AppText>
+          <AppText style={styles.helperBlock}>{ui("Passport collection is currently disabled.")}</AppText>
         )}
           </View>
         ) : null}
@@ -1114,7 +1105,7 @@ const RegisterScreen = ({ navigation, route }) => {
           <View style={styles.reviewCard}>
             <View style={styles.reviewHeading}>
               <View>
-                <AppText style={styles.reviewEyebrow}>ACCOUNT SUMMARY</AppText>
+                <AppText style={styles.reviewEyebrow}>{ui("ACCOUNT SUMMARY")}</AppText>
                 <AppText style={styles.reviewTitle}>
                   {form.full_name || 'Your RentalHub account'}
                 </AppText>
@@ -1126,7 +1117,7 @@ const RegisterScreen = ({ navigation, route }) => {
             <View style={styles.reviewRow}>
               <Icon name="person-outline" size={17} color={colors.muted} />
               <AppText style={styles.reviewText}>
-                {userType === 'landlord' ? 'Landlord' : 'Tenant'} Â· {isForeigner ? 'International' : 'Nigerian'}
+                {userType === "landlord" ? ui("Landlord") : ui("Tenant")} Â· {isForeigner ? ui("International") : ui("Nigerian")}
               </AppText>
             </View>
             <View style={styles.reviewRow}>
@@ -1142,8 +1133,8 @@ const RegisterScreen = ({ navigation, route }) => {
             <TouchableOpacity onPress={() => changeStep(1)} style={styles.reviewSupport}>
               <AppText style={styles.reviewSupportText}>
                 {form.use_rentalhub_lawyers
-                  ? `RentalHub lawyer support selected: ${form.lawyer_email}`
-                  : `Personal lawyer: ${form.lawyer_email || 'not entered'}`}
+                  ? ui("RentalHub lawyer support selected: {value0}", {value0: (form.lawyer_email)})
+                  : ui("Personal lawyer: {value0}", {value0: (form.lawyer_email || ui("not entered"))})}
               </AppText>
               <Icon name="chevron-forward" size={16} color={colors.blue} />
             </TouchableOpacity>
@@ -1151,29 +1142,24 @@ const RegisterScreen = ({ navigation, route }) => {
 
           <View style={styles.stepCard}>
         <Input
-          label="Password"
+          label={ui("Password")}
           value={form.password}
           onChangeText={(value) => onChange('password', value)}
-          placeholder="Minimum 10 characters"
+          placeholder={ui("Minimum 10 characters")}
           secureTextEntry
           icon="lock-closed-outline"
         />
-        <AppText style={styles.identityPaymentNotice}>{passwordRequirement}</AppText>
+        <AppText style={styles.identityPaymentNotice}>{ui(passwordRequirement)}</AppText>
         <Input
-          label="Confirm Password"
+          label={ui("Confirm Password")}
           value={form.confirm_password}
           onChangeText={(value) => onChange('confirm_password', value)}
-          placeholder="Repeat password"
+          placeholder={ui("Repeat password")}
           secureTextEntry
           icon="lock-closed-outline"
         />
           {requiresPayment ? (
-            <AppText style={styles.identityPaymentNotice}>
-              If you choose bank transfer, a collection account may be opened in your name by our
-              regulated banking partner. For that purpose only, it receives the name and, where the
-              partner bank requires it, the NIN from your verified identity record. It does not hold
-              your wallet balance.
-            </AppText>
+            <AppText style={styles.identityPaymentNotice}>{ui("If you choose bank transfer, a collection account may be opened in your name by our regulated banking partner. For that purpose only, it receives the name and, where the partner bank requires it, the NIN from your verified identity record. It does not hold your wallet balance.")}</AppText>
           ) : null}
 
           <TouchableOpacity
@@ -1185,32 +1171,26 @@ const RegisterScreen = ({ navigation, route }) => {
             <View style={[styles.checkbox, acceptedTerms && styles.checkboxChecked]}>
               {acceptedTerms ? <Icon name="checkmark" size={15} color={colors.white} /> : null}
             </View>
-            <AppText style={styles.termsText}>
-              I agree to RentalHubâ€™s{' '}
-              <AppText 
+            <AppText style={styles.termsText}>{ui("I agree to RentalHubâ€™s")}{' '}
+              <AppText
                 onPress={(event) => {
                   event.stopPropagation();
                   Linking.openURL('https://rentalhub.com.ng/terms');
                 }}
-                style={styles.termsLink}>
-                Terms
-              </AppText>{' '}
-              and{' '}
-              <AppText 
+                style={styles.termsLink}>{ui("Terms")}</AppText>{' '}{ui("and")}{' '}
+              <AppText
                 onPress={(event) => {
                   event.stopPropagation();
                   Linking.openURL('https://rentalhub.com.ng/privacy');
                 }}
-                style={styles.termsLink}>
-                Privacy Policy
-              </AppText>
+                style={styles.termsLink}>{ui("Privacy Policy")}</AppText>
               .
             </AppText>
           </TouchableOpacity>
           </View>
 
         <Button
-          title={requiresPayment ? 'Proceed to Payment' : 'Create Account'}
+          title={requiresPayment ? ui("Proceed to Payment") : ui("Create Account")}
           onPress={() => handleRegister()}
           loading={loading || paymentLoading}
           style={styles.cta}
@@ -1227,19 +1207,17 @@ const RegisterScreen = ({ navigation, route }) => {
 
         {paymentState.reference ? (
           <View style={styles.paymentCard}>
-            <AppText style={styles.paymentTitle}>Payment Pending</AppText>
-            <AppText style={styles.paymentText}>Reference: {paymentState.reference}</AppText>
-            <AppText style={styles.paymentText}>
-              Finish the Paystack flow in your browser, then return here.
-            </AppText>
+            <AppText style={styles.paymentTitle}>{ui("Payment Pending")}</AppText>
+            <AppText style={styles.paymentText}>{ui("Reference: ")}{paymentState.reference}</AppText>
+            <AppText style={styles.paymentText}>{ui("Finish the Paystack flow in your browser, then return here.")}</AppText>
             <Button
-              title="Complete Registration"
+              title={ui("Complete Registration")}
               onPress={completePaidRegistration}
               loading={loading}
               style={styles.marginTop}
             />
             <Button
-              title="Reopen Payment Page"
+              title={ui("Reopen Payment Page")}
               variant="outline"
               onPress={() => Linking.openURL(paymentState.authorizationUrl)}
               style={styles.marginTop}
@@ -1253,7 +1231,7 @@ const RegisterScreen = ({ navigation, route }) => {
         <View style={styles.stepNavigation}>
           {currentStep > 0 ? (
             <Button
-              title="Back"
+              title={ui("Back")}
               variant="outline"
               onPress={() => changeStep(currentStep - 1)}
               style={styles.stepNavButton}
@@ -1261,7 +1239,7 @@ const RegisterScreen = ({ navigation, route }) => {
           ) : null}
           {currentStep < steps.length - 1 ? (
             <Button
-              title="Continue"
+              title={ui("Continue")}
               onPress={continueRegistration}
               style={styles.stepNavButton}
               disabled={!registrationFlags.loaded}
@@ -1270,20 +1248,20 @@ const RegisterScreen = ({ navigation, route }) => {
         </View>
 
         <View style={styles.footer}>
-          <AppText style={styles.footerText}>Already have an account?</AppText>
+          <AppText style={styles.footerText}>{ui("Already have an account?")}</AppText>
           <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-            <AppText style={styles.footerLink}> Sign in</AppText>
+            <AppText style={styles.footerLink}>{ui(" Sign in")}</AppText>
           </TouchableOpacity>
         </View>
       </ScrollView>
 
       <OptionPickerModal
         visible={showStatePicker}
-        title="Select State"
+        title={ui("Select State")}
         options={locationOptions}
         selectedValue={form.state_id}
         searchable
-        searchPlaceholder="Search states"
+        searchPlaceholder={ui("Search states")}
         getOptionLabel={(item) => item.state_name}
         getOptionValue={(item) => item.id}
         onClose={() => setShowStatePicker(false)}
@@ -1292,11 +1270,11 @@ const RegisterScreen = ({ navigation, route }) => {
 
       <OptionPickerModal
         visible={showLgaPicker}
-        title="Select Local Government Area"
+        title={ui("Select Local Government Area")}
         options={availableLgas}
         selectedValue={form.lga_name}
         searchable
-        searchPlaceholder="Search LGAs"
+        searchPlaceholder={ui("Search LGAs")}
         getOptionLabel={(item) => String(item)}
         getOptionValue={(item) => String(item)}
         onClose={() => setShowLgaPicker(false)}
@@ -1311,7 +1289,7 @@ const RegisterScreen = ({ navigation, route }) => {
       >
         <View style={styles.chooserOverlay}>
           <View style={styles.chooserCard}>
-            <AppText style={styles.chooserTitle}>Choose how to pay</AppText>
+            <AppText style={styles.chooserTitle}>{ui("Choose how to pay")}</AppText>
             <AppText style={styles.chooserAmount}>
               ₦{Number(displayedRegistrationAmount || 0).toLocaleString()}
             </AppText>
@@ -1325,8 +1303,8 @@ const RegisterScreen = ({ navigation, route }) => {
                 <Icon name="card-outline" size={22} color="#0d9488" />
               </View>
               <View style={styles.chooserCopy}>
-                <AppText style={styles.chooserOptionTitle}>Pay with card</AppText>
-                <AppText style={styles.chooserOptionText}>Card, bank account or USSD via Paystack</AppText>
+                <AppText style={styles.chooserOptionTitle}>{ui("Pay with card")}</AppText>
+                <AppText style={styles.chooserOptionText}>{ui("Card, bank account or USSD via Paystack")}</AppText>
               </View>
               <Icon name="chevron-forward" size={20} color="#94a3b8" />
             </TouchableOpacity>
@@ -1340,8 +1318,8 @@ const RegisterScreen = ({ navigation, route }) => {
                 <Icon name="business-outline" size={22} color="#0d9488" />
               </View>
               <View style={styles.chooserCopy}>
-                <AppText style={styles.chooserOptionTitle}>Pay by bank transfer</AppText>
-                <AppText style={styles.chooserOptionText}>Transfer to the account shown, then upload your screenshot</AppText>
+                <AppText style={styles.chooserOptionTitle}>{ui("Pay by bank transfer")}</AppText>
+                <AppText style={styles.chooserOptionText}>{ui("Transfer to the account shown, then upload your screenshot")}</AppText>
               </View>
               <Icon name="chevron-forward" size={20} color="#94a3b8" />
             </TouchableOpacity>
@@ -1350,7 +1328,7 @@ const RegisterScreen = ({ navigation, route }) => {
               onPress={() => setShowPaymentMethodChooser(false)}
               style={styles.chooserCancel}
             >
-              <AppText style={styles.chooserCancelText}>Cancel</AppText>
+              <AppText style={styles.chooserCancelText}>{ui("Cancel")}</AppText>
             </TouchableOpacity>
           </View>
         </View>
@@ -1377,15 +1355,10 @@ const RegisterScreen = ({ navigation, route }) => {
         <Modal transparent visible animationType="fade" onRequestClose={() => setForeignCardAdjustment(null)}>
           <View style={styles.adjustOverlay}>
             <View style={styles.adjustCard}>
-              <AppText style={styles.adjustTitle}>Foreign-card adjustment</AppText>
-              <AppText style={styles.adjustText}>
-                Your registration was paid at the Nigerian local rate, but your card was issued
-                outside Nigeria. A second payment covering the black-market FX difference plus the
-                foreign-card fee is required before your account is activated.
-              </AppText>
+              <AppText style={styles.adjustTitle}>{ui("Foreign-card adjustment")}</AppText>
+              <AppText style={styles.adjustText}>{ui("Your registration was paid at the Nigerian local rate, but your card was issued outside Nigeria. A second payment covering the black-market FX difference plus the foreign-card fee is required before your account is activated.")}</AppText>
               {Number(foreignCardAdjustment.amount || 0) > 0 ? (
-                <AppText style={styles.adjustAmount}>
-                  Additional amount: ₦{Number(foreignCardAdjustment.amount).toLocaleString()}
+                <AppText style={styles.adjustAmount}>{ui("Additional amount: ₦")}{Number(foreignCardAdjustment.amount).toLocaleString()}
                 </AppText>
               ) : null}
 
@@ -1406,9 +1379,7 @@ const RegisterScreen = ({ navigation, route }) => {
                 onPress={finishAfterForeignCardAdjustment}
                 style={[styles.adjustGhost, adjustmentBusy && styles.adjustDisabled]}
               >
-                <AppText style={styles.adjustGhostText}>
-                  I have finished paying — finish registration
-                </AppText>
+                <AppText style={styles.adjustGhostText}>{ui("I have finished paying — finish registration")}</AppText>
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -1416,7 +1387,7 @@ const RegisterScreen = ({ navigation, route }) => {
                 onPress={() => setForeignCardAdjustment(null)}
                 style={styles.adjustGhost}
               >
-                <AppText style={styles.adjustCancel}>Not now</AppText>
+                <AppText style={styles.adjustCancel}>{ui("Not now")}</AppText>
               </TouchableOpacity>
             </View>
           </View>

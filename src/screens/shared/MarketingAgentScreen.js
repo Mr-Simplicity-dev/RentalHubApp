@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useCallback, useState } from 'react';
 import { Share, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -32,6 +34,7 @@ const formatDate = (value) => {
 };
 
 const MarketingAgentScreen = ({ navigation }) => {
+  useInterfaceLanguage();
   const [responses, setResponses] = useState([]);
   const [summary, setSummary] = useState(null);
   const [invite, setInvite] = useState(null);
@@ -63,7 +66,7 @@ const MarketingAgentScreen = ({ navigation }) => {
     } catch (err) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(err, 'Could not load your captured respondents'),
       });
       setResponses([]);
@@ -97,14 +100,14 @@ const MarketingAgentScreen = ({ navigation }) => {
         account_number: withdrawForm.account_number,
         account_name: withdrawForm.account_name,
       });
-      Toast.show({ type: 'success', text1: 'Withdrawal requested' });
+      Toast.show({ type: 'success', text1: ui("Withdrawal requested") });
       setWithdrawOpen(false);
       setWithdrawForm({ amount: '', bank_name: '', account_number: '', account_name: '' });
       load();
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Withdrawal failed',
+        text1: ui("Withdrawal failed"),
         text2: getErrorMessage(error, 'Could not request this withdrawal'),
       });
     } finally {
@@ -115,20 +118,20 @@ const MarketingAgentScreen = ({ navigation }) => {
   const shareInvite = async () => {    if (!invite?.invite_url) return;
     try {
       await Share.share({
-        message: `Open your RentalHub account here: ${invite.invite_url}`,
+        message: ui("Open your RentalHub account here: {value0}", {value0: (invite.invite_url)}),
         url: invite.invite_url,
       });
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Could not share',
+        text1: ui("Could not share"),
         text2: getErrorMessage(error, 'Try copying the link instead.'),
       });
     }
   };
 
   if (loading) {
-    return <PremiumCenter loading title="Loading respondents" />;
+    return <PremiumCenter loading title={ui("Loading respondents")} />;
   }
 
   const metric = (label, value) => (
@@ -148,23 +151,23 @@ const MarketingAgentScreen = ({ navigation }) => {
       header={
         <>
           <PremiumHero
-            eyebrow="Marketing"
-            title="Survey respondents"
-            subtitle="People you have captured for the market-research survey."
+            eyebrow={ui("Marketing")}
+            title={ui("Survey respondents")}
+            subtitle={ui("People you have captured for the market-research survey.")}
             icon="people-outline"
           />
 
-          <TourTarget id="marketing_capture" label="Conduct a survey"><TouchableOpacity
+          <TourTarget id="marketing_capture" label={ui("Conduct a survey")}><TouchableOpacity
             accessibilityRole="button"
-            accessibilityLabel="Conduct a survey for someone"
+            accessibilityLabel={ui("Conduct a survey for someone")}
             activeOpacity={0.88}
             onPress={() => navigation.navigate('PublicSurvey')}
             style={styles.conductButton}
           >
             <Icon name="add-circle-outline" size={18} color={colors.white} />
-            <AppText style={styles.conductButtonText}>Conduct Survey</AppText>
+            <AppText style={styles.conductButtonText}>{ui("Conduct Survey")}</AppText>
           </TouchableOpacity></TourTarget>
-          <TourTarget id="marketing_metrics" label="Captured survey summary"><View style={styles.metricRow}>
+          <TourTarget id="marketing_metrics" label={ui("Captured survey summary")}><View style={styles.metricRow}>
             {metric('Captured', summary?.stats?.captured ?? responses.length)}
             {metric('In progress', summary?.stats?.in_progress ?? 0)}
           </View></TourTarget>
@@ -194,15 +197,12 @@ const MarketingAgentScreen = ({ navigation }) => {
 
           {invite?.invite_url ? (
             <PremiumCard>
-              <AppText style={styles.cardTitle}>Open an account for someone</AppText>
-              <AppText style={styles.code}>
-                Share this link — they register themselves, set their own password and
-                choose their lawyer. You earn when they verify and when they pay.
-              </AppText>
+              <AppText style={styles.cardTitle}>{ui("Open an account for someone")}</AppText>
+              <AppText style={styles.code}>{ui("Share this link — they register themselves, set their own password and choose their lawyer. You earn when they verify and when they pay.")}</AppText>
               <AppText style={styles.inviteCode}>{invite.referral_code}</AppText>
               <TouchableOpacity onPress={shareInvite} style={styles.shareButton}>
                 <Icon name="share-social-outline" size={16} color={colors.white} />
-                <AppText style={styles.shareButtonText}>Share signup link</AppText>
+                <AppText style={styles.shareButtonText}>{ui("Share signup link")}</AppText>
               </TouchableOpacity>
               {Number(summary?.commissions?.wallet_balance || 0) > 0 ? (
                 <TouchableOpacity
@@ -210,7 +210,7 @@ const MarketingAgentScreen = ({ navigation }) => {
                   style={styles.withdrawButton}
                 >
                   <Icon name="cash-outline" size={16} color={colors.blue} />
-                  <AppText style={styles.withdrawButtonText}>Withdraw commission</AppText>
+                  <AppText style={styles.withdrawButtonText}>{ui("Withdraw commission")}</AppText>
                 </TouchableOpacity>
               ) : null}
             </PremiumCard>
@@ -219,16 +219,16 @@ const MarketingAgentScreen = ({ navigation }) => {
           {Array.isArray(summary?.commissions?.commissions) &&
           summary.commissions.commissions.length > 0 ? (
             <PremiumCard>
-              <AppText style={styles.cardTitle}>Commission history</AppText>
+              <AppText style={styles.cardTitle}>{ui("Commission history")}</AppText>
               {summary.commissions.commissions.slice(0, 15).map((row) => (
                 <View key={String(row.id)} style={styles.breakdownRow}>
                   <View style={styles.agentCopy}>
                     <AppText style={styles.breakdownLabel} numberOfLines={1}>
-                      {row.new_user_name || row.new_user_email || 'Account'}
+                      {row.new_user_name || row.new_user_email || ui("Account")}
                     </AppText>
                     <AppText style={styles.code}>
                       {row.account_type} ·{' '}
-                      {row.stage === 'verified' ? 'verified' : 'registration paid'} ·{' '}
+                      {row.stage === "verified" ? ui("verified") : 'registration paid'} ·{' '}
                       {row.status}
                     </AppText>
                   </View>
@@ -242,7 +242,7 @@ const MarketingAgentScreen = ({ navigation }) => {
 
           {Array.isArray(summary?.by_lga) && summary.by_lga.length > 0 ? (
             <PremiumCard>
-              <AppText style={styles.cardTitle}>Captured by LGA</AppText>
+              <AppText style={styles.cardTitle}>{ui("Captured by LGA")}</AppText>
               {summary.by_lga.slice(0, 15).map((row) => (
                 <View key={String(row.lga)} style={styles.breakdownRow}>
                   <AppText style={styles.breakdownLabel} numberOfLines={1}>
@@ -255,15 +255,15 @@ const MarketingAgentScreen = ({ navigation }) => {
           ) : null}
         </>
       }
-      emptyTitle="No respondents yet"
-      emptyMessage="Respondents you capture for the survey will appear here."
+      emptyTitle={ui("No respondents yet")}
+      emptyMessage={ui("Respondents you capture for the survey will appear here.")}
       emptyIcon="people-outline"
       renderItem={({ item }) => (
         <PremiumCard>
           <View style={styles.cardTop}>
             <View style={styles.cardCopy}>
               <AppText style={styles.cardTitle}>
-                {item.respondent_name || item.name || `Respondent #${item.id || ''}`}
+                {item.respondent_name || item.name || ui("Respondent #{value0}", {value0: (item.id || '')})}
               </AppText>
               {item.respondent_code ? (
                 <AppText style={styles.code}>{item.respondent_code}</AppText>
@@ -272,17 +272,17 @@ const MarketingAgentScreen = ({ navigation }) => {
             {item.status ? <StatusPillShort status={item.status} /> : null}
           </View>
           {item.respondent_phone ? (
-            <InfoRow icon="call-outline" label="Phone" value={item.respondent_phone} />
+            <InfoRow icon="call-outline" label={ui("Phone")} value={item.respondent_phone} />
           ) : null}
           {item.state_name || item.lga_name ? (
             <InfoRow
               icon="location-outline"
-              label="Location"
+              label={ui("Location")}
               value={[item.state_name, item.lga_name].filter(Boolean).join(', ')}
             />
           ) : null}
           {item.created_at ? (
-            <InfoRow icon="time-outline" label="Captured" value={formatDate(item.created_at)} />
+            <InfoRow icon="time-outline" label={ui("Captured")} value={formatDate(item.created_at)} />
           ) : null}
         </PremiumCard>
       )}
@@ -302,6 +302,7 @@ const MarketingAgentScreen = ({ navigation }) => {
 };
 
 const StatusPillShort = ({ status }) => {
+  useInterfaceLanguage();
   const label = String(status || 'pending').replace(/_/g, ' ');
   return (
     <View style={styles.pill}>

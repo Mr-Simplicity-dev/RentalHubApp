@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, FlatList, Modal, Pressable, RefreshControl, StyleSheet, TouchableOpacity, View } from 'react-native';
 import TextInput from '../../components/common/AppTextInput';
@@ -24,9 +26,9 @@ const CONTEXT_LABELS = {
 };
 
 const DISPLAY_NAME_OPTIONS = [
-  { value: 'first_name', label: 'First Name Only' },
-  { value: 'initials', label: 'Initials Only' },
-  { value: 'role_location', label: 'Role & Location' },
+  { value: 'first_name', get "label"() { return ui("First Name Only"); } },
+  { value: 'initials', get "label"() { return ui("Initials Only"); } },
+  { value: 'role_location', get "label"() { return ui("Role & Location"); } },
 ];
 
 const timeAgo = (dateString) => {
@@ -43,8 +45,7 @@ const timeAgo = (dateString) => {
   return `${months}mo ago`;
 };
 
-const StarDisplay = ({ stars, size = 14 }) => (
-  <View style={styles.starRow}>
+const StarDisplay = ({ stars, size = 14 }) => { useInterfaceLanguage(); return (<View style={styles.starRow}>
     {[1, 2, 3, 4, 5].map((i) => (
       <Icon
         key={i}
@@ -53,15 +54,13 @@ const StarDisplay = ({ stars, size = 14 }) => (
         color={i <= stars ? '#FFC928' : colors.border}
       />
     ))}
-  </View>
-);
+  </View>); };
 
-const StarPicker = ({ value, onChange, size = 32 }) => (
-  <View style={styles.starPickerRow}>
+const StarPicker = ({ value, onChange, size = 32 }) => { useInterfaceLanguage(); return (<View style={styles.starPickerRow}>
     {[1, 2, 3, 4, 5].map((star) => (
       <TouchableOpacity
         key={star}
-        accessibilityLabel={`${star} star${star > 1 ? 's' : ''}`}
+        accessibilityLabel={ui("{value0} star{value1}", {value0: (star), value1: (star > 1 ? ui("s") : '')})}
         accessibilityRole="button"
         activeOpacity={0.7}
         style={styles.starPickerButton}
@@ -74,10 +73,10 @@ const StarPicker = ({ value, onChange, size = 32 }) => (
         />
       </TouchableOpacity>
     ))}
-  </View>
-);
+  </View>); };
 
 const RatingModal = ({ visible, opportunity, onClose, onSubmit }) => {
+  useInterfaceLanguage();
   const [stars, setStars] = useState(0);
   const [comment, setComment] = useState('');
   const [displayNameMode, setDisplayNameMode] = useState('first_name');
@@ -97,7 +96,7 @@ const RatingModal = ({ visible, opportunity, onClose, onSubmit }) => {
 
   const handleSubmit = async () => {
     if (!stars) {
-      Toast.show({ type: 'info', text1: 'Please select a star rating' });
+      Toast.show({ type: 'info', text1: ui("Please select a star rating") });
       return;
     }
     setSubmitting(true);
@@ -110,12 +109,12 @@ const RatingModal = ({ visible, opportunity, onClose, onSubmit }) => {
         source_ref: opportunity.source_ref,
         display_name_mode: displayNameMode,
       });
-      Toast.show({ type: 'success', text1: 'Rating submitted', text2: 'Thank you for your feedback!' });
+      Toast.show({ type: 'success', text1: ui("Rating submitted"), text2: ui("Thank you for your feedback!") });
       onClose();
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Submission failed',
+        text1: ui("Submission failed"),
         text2: getErrorMessage(error, 'Could not submit rating'),
       });
     } finally {
@@ -131,8 +130,8 @@ const RatingModal = ({ visible, opportunity, onClose, onSubmit }) => {
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
       <SafeAreaView edges={['top', 'bottom']} style={styles.modalSafe}>
         <View style={styles.modalHeader}>
-          <AppText style={styles.modalTitle}>Rate Your Experience</AppText>
-          <TouchableOpacity accessibilityLabel="Close" style={styles.modalCloseBtn} onPress={onClose}>
+          <AppText style={styles.modalTitle}>{ui("Rate Your Experience")}</AppText>
+          <TouchableOpacity accessibilityLabel={ui("Close")} style={styles.modalCloseBtn} onPress={onClose}>
             <Icon name="close" size={24} color={colors.navy} />
           </TouchableOpacity>
         </View>
@@ -145,17 +144,17 @@ const RatingModal = ({ visible, opportunity, onClose, onSubmit }) => {
           <AppText style={styles.modalSource}>{opportunity.source_title || opportunity.detail}</AppText>
 
           <View style={styles.modalSection}>
-            <AppText style={styles.modalLabel}>Your Rating</AppText>
+            <AppText style={styles.modalLabel}>{ui("Your Rating")}</AppText>
             <StarPicker value={stars} onChange={setStars} />
           </View>
 
           <View style={styles.modalSection}>
-            <AppText style={styles.modalLabel}>Comment (optional)</AppText>
+            <AppText style={styles.modalLabel}>{ui("Comment (optional)")}</AppText>
             <TextInput
               style={styles.commentInput}
               value={comment}
               onChangeText={setComment}
-              placeholder="Share details about your experience..."
+              placeholder={ui("Share details about your experience...")}
               placeholderTextColor={colors.muted}
               multiline
               maxLength={800}
@@ -164,7 +163,7 @@ const RatingModal = ({ visible, opportunity, onClose, onSubmit }) => {
           </View>
 
           <View style={styles.modalSection}>
-            <AppText style={styles.modalLabel}>Public Display Name</AppText>
+            <AppText style={styles.modalLabel}>{ui("Public Display Name")}</AppText>
             <TouchableOpacity
               style={styles.pickerButton}
               activeOpacity={0.7}
@@ -188,7 +187,7 @@ const RatingModal = ({ visible, opportunity, onClose, onSubmit }) => {
                       setPickerVisible(false);
                     }}
                   >
-                    <AppText 
+                    <AppText
                       style={[
                         styles.pickerOptionText,
                         displayNameMode === option.value && styles.pickerOptionTextActive,
@@ -207,16 +206,14 @@ const RatingModal = ({ visible, opportunity, onClose, onSubmit }) => {
 
           <View style={styles.privacyNote}>
             <Icon name="lock-closed-outline" size={13} color={colors.muted} />
-            <AppText style={styles.privacyNoteText}>
-              Your rating will be reviewed before going public. Your identity stays protected.
-            </AppText>
+            <AppText style={styles.privacyNoteText}>{ui("Your rating will be reviewed before going public. Your identity stays protected.")}</AppText>
           </View>
         </View>
 
         <View style={styles.modalFooter}>
-          <Button title="Cancel" variant="outline" onPress={onClose} style={styles.modalFooterBtn} />
+          <Button title={ui("Cancel")} variant="outline" onPress={onClose} style={styles.modalFooterBtn} />
           <Button
-            title={submitting ? 'Submitting...' : 'Submit Rating'}
+            title={submitting ? ui("Submitting...") : ui("Submit Rating")}
             onPress={handleSubmit}
             loading={submitting}
             disabled={submitting}
@@ -229,6 +226,7 @@ const RatingModal = ({ visible, opportunity, onClose, onSubmit }) => {
 };
 
 const OpportunityCard = ({ item, onPress }) => {
+  useInterfaceLanguage();
   const contextLabel = CONTEXT_LABELS[item.rating_context] || item.rating_context;
 
   return (
@@ -250,8 +248,7 @@ const OpportunityCard = ({ item, onPress }) => {
   );
 };
 
-const PublicRatingCard = ({ item }) => (
-  <View style={styles.publicCard}>
+const PublicRatingCard = ({ item }) => { useInterfaceLanguage(); return (<View style={styles.publicCard}>
     <View style={styles.publicCardTop}>
       <View style={styles.publicAvatar}>
         {item.image_url ? (
@@ -264,7 +261,7 @@ const PublicRatingCard = ({ item }) => (
         <AppText style={styles.publicName}>{item.display_name}</AppText>
         <View style={styles.publicVerifiedRow}>
           <Icon name="checkmark-circle" size={13} color={colors.success} />
-          <AppText style={styles.publicVerifiedText}>Verified</AppText>
+          <AppText style={styles.publicVerifiedText}>{ui("Verified")}</AppText>
         </View>
       </View>
       <AppText style={styles.publicTime}>{timeAgo(item.created_at)}</AppText>
@@ -278,15 +275,15 @@ const PublicRatingCard = ({ item }) => (
     {item.context_label ? (
       <AppText style={styles.publicContext}>{item.context_label}</AppText>
     ) : null}
-  </View>
-);
+  </View>); };
 
 const TABS = [
-  { key: 'opportunities', label: 'Rate Now', icon: 'star-outline' },
-  { key: 'feed', label: 'Recent Ratings', icon: 'chatbubbles-outline' },
+  { key: 'opportunities', get "label"() { return ui("Rate Now"); }, icon: 'star-outline' },
+  { key: 'feed', get "label"() { return ui("Recent Ratings"); }, icon: 'chatbubbles-outline' },
 ];
 
 const PlatformRatingsScreen = () => {
+  useInterfaceLanguage();
   const [activeTab, setActiveTab] = useState('opportunities');
   const [opportunities, setOpportunities] = useState([]);
   const [oppLoading, setOppLoading] = useState(true);
@@ -398,8 +395,8 @@ const PlatformRatingsScreen = () => {
     return (
       <View style={styles.emptyState}>
         <Icon name="chatbubbles-outline" size={48} color={colors.border} />
-        <AppText style={styles.emptyTitle}>No ratings yet</AppText>
-        <AppText style={styles.emptySubtitle}>Public ratings will appear here once submitted and approved.</AppText>
+        <AppText style={styles.emptyTitle}>{ui("No ratings yet")}</AppText>
+        <AppText style={styles.emptySubtitle}>{ui("Public ratings will appear here once submitted and approved.")}</AppText>
       </View>
     );
   };
@@ -451,10 +448,8 @@ const PlatformRatingsScreen = () => {
               ListEmptyComponent={
                 <View style={styles.emptyState}>
                   <Icon name="checkmark-done-circle-outline" size={48} color={colors.success} />
-                  <AppText style={styles.emptyTitle}>All caught up!</AppText>
-                  <AppText style={styles.emptySubtitle}>
-                    No pending rating opportunities right now. We'll prompt you after your next service.
-                  </AppText>
+                  <AppText style={styles.emptyTitle}>{ui("All caught up!")}</AppText>
+                  <AppText style={styles.emptySubtitle}>{ui("No pending rating opportunities right now. We'll prompt you after your next service.")}</AppText>
                 </View>
               }
             />

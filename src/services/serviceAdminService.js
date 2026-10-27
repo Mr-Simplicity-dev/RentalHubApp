@@ -1,3 +1,4 @@
+import { translateUi as ui } from '../i18n/interfaceRuntime.cjs';
 import api from './api';
 import { requestWithOfflineQueue } from './offlineActionQueueService';
 
@@ -22,7 +23,7 @@ export const serviceAdminService = {
       method: 'patch',
       path: `/transportation-admin/bookings/${bookingId}/status`,
       data: payload,
-      label: `Transportation booking #${bookingId} status update`,
+      label: ui("Transportation booking #{value0} status update", {value0: (bookingId)}),
     });
   },
 
@@ -31,7 +32,7 @@ export const serviceAdminService = {
       method: 'patch',
       path: `/transportation-admin/bookings/${bookingId}/payment-status`,
       data: payload,
-      label: `Transportation booking #${bookingId} payment update`,
+      label: ui("Transportation booking #{value0} payment update", {value0: (bookingId)}),
     });
   },
 
@@ -45,7 +46,7 @@ export const serviceAdminService = {
       method: 'patch',
       path: `/transportation-admin/bookings/${bookingId}/dispatch`,
       data: payload,
-      label: `Transportation booking #${bookingId} dispatch update`,
+      label: ui("Transportation booking #{value0} dispatch update", {value0: (bookingId)}),
     });
   },
 
@@ -79,7 +80,7 @@ export const serviceAdminService = {
       method: 'put',
       path: `/fumigation-cleaning/admin/bookings/${bookingId}/status`,
       data: payload,
-      label: `Fumigation booking #${bookingId} status update`,
+      label: ui("Fumigation booking #{value0} status update", {value0: (bookingId)}),
     });
   },
 
@@ -98,7 +99,7 @@ export const serviceAdminService = {
       method: 'post',
       path: `/fumigation-cleaning/admin/bookings/${bookingId}/assign-provider`,
       data: { provider_id: providerId },
-      label: `Fumigation booking #${bookingId} provider assignment`,
+      label: ui("Fumigation booking #{value0} provider assignment", {value0: (bookingId)}),
     });
   },
 
@@ -107,7 +108,7 @@ export const serviceAdminService = {
       method: 'patch',
       path: `/fumigation-cleaning/admin/bookings/${bookingId}/provider-lifecycle`,
       data: payload,
-      label: `Fumigation booking #${bookingId} provider lifecycle update`,
+      label: ui("Fumigation booking #{value0} provider lifecycle update", {value0: (bookingId)}),
     });
   },
 
@@ -121,7 +122,7 @@ export const serviceAdminService = {
       method: 'post',
       path: `/fumigation-cleaning/admin/compliance/${bookingId}`,
       data: payload,
-      label: `Fumigation booking #${bookingId} safety compliance`,
+      label: ui("Fumigation booking #{value0} safety compliance", {value0: (bookingId)}),
     });
   },
 };

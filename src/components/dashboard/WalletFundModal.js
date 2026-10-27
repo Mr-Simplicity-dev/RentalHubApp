@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useMemo, useState } from 'react';
 import {Modal,
   View,
@@ -22,13 +24,14 @@ const WalletFundModal = ({
   landlordWallet,
   onSwitchToWithdraw,
 }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const [amount, setAmount] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('paystack');
 
   const selectedBalance = useMemo(() => {
     if (userType === 'tenant') return walletBalance;
     return landlordWallet?.available_to_withdraw || 0;
-  }, [userType, walletBalance, landlordWallet]);
+  }, [userType, walletBalance, landlordWallet, interfaceLanguage]);
 
   const handleClose = () => {
     setAmount('');
@@ -43,7 +46,7 @@ const WalletFundModal = ({
           <View style={styles.header}>
             <View style={styles.headerTitle}>
               <Icon name="wallet-outline" size={22} color="#0d9488" />
-              <AppText style={styles.title}>Fund Wallet</AppText>
+              <AppText style={styles.title}>{ui("Fund Wallet")}</AppText>
             </View>
             <TouchableOpacity onPress={handleClose}>
               <Icon name="close" size={24} color="#64748b" />
@@ -53,14 +56,14 @@ const WalletFundModal = ({
           <ScrollView contentContainerStyle={styles.body}>
             {selectedBalance !== null && selectedBalance !== undefined ? (
               <View style={styles.balanceCard}>
-                <AppText style={styles.balanceLabel}>Current Balance</AppText>
+                <AppText style={styles.balanceLabel}>{ui("Current Balance")}</AppText>
                 <AppText style={styles.balanceValue}>
                   ₦{Number(selectedBalance || 0).toLocaleString()}
                 </AppText>
               </View>
             ) : null}
 
-            <AppText style={styles.sectionLabel}>Select or enter amount</AppText>
+            <AppText style={styles.sectionLabel}>{ui("Select or enter amount")}</AppText>
             <View style={styles.presetGrid}>
               {PRESET_AMOUNTS.map((preset) => (
                 <TouchableOpacity
@@ -71,27 +74,27 @@ const WalletFundModal = ({
                   ]}
                   onPress={() => setAmount(String(preset))}
                 >
-                  <AppText 
+                  <AppText
                     style={[
                       styles.presetText,
                       Number(amount) === preset && styles.presetTextActive,
                     ]}
                   >
-                    ₦{preset >= 1000 ? `${preset / 1000}k` : preset}
+                    ₦{preset >= 1000 ? ui("{value0}k", {value0: (preset / 1000)}) : preset}
                   </AppText>
                 </TouchableOpacity>
               ))}
             </View>
 
             <Input
-              label="Custom Amount (₦)"
+              label={ui("Custom Amount (₦)")}
               value={amount}
               onChangeText={setAmount}
-              placeholder="Enter amount e.g. 15000"
+              placeholder={ui("Enter amount e.g. 15000")}
               keyboardType="number-pad"
             />
 
-            <AppText style={styles.sectionLabel}>Choose how to pay</AppText>
+            <AppText style={styles.sectionLabel}>{ui("Choose how to pay")}</AppText>
             <TouchableOpacity
               activeOpacity={0.86}
               onPress={() => setPaymentMethod('paystack')}
@@ -99,8 +102,8 @@ const WalletFundModal = ({
             >
               <Icon name="card-outline" size={20} color="#0d9488" />
               <View style={styles.methodCopy}>
-                <AppText style={styles.methodTitle}>Pay with card</AppText>
-                <AppText style={styles.methodText}>Card, bank account or USSD</AppText>
+                <AppText style={styles.methodTitle}>{ui("Pay with card")}</AppText>
+                <AppText style={styles.methodText}>{ui("Card, bank account or USSD")}</AppText>
               </View>
               <Icon
                 name={paymentMethod === 'paystack' ? 'radio-button-on' : 'radio-button-off'}
@@ -116,8 +119,8 @@ const WalletFundModal = ({
             >
               <Icon name="business-outline" size={20} color="#0d9488" />
               <View style={styles.methodCopy}>
-                <AppText style={styles.methodTitle}>Pay by bank transfer</AppText>
-                <AppText style={styles.methodText}>Transfer to your account and upload a screenshot</AppText>
+                <AppText style={styles.methodTitle}>{ui("Pay by bank transfer")}</AppText>
+                <AppText style={styles.methodText}>{ui("Transfer to your account and upload a screenshot")}</AppText>
               </View>
               <Icon
                 name={paymentMethod === 'bank_transfer' ? 'radio-button-on' : 'radio-button-off'}
@@ -136,14 +139,14 @@ const WalletFundModal = ({
             </View>
 
             <Button
-              title={loading ? 'Preparing payment...' : `Pay ₦${amount ? Number(amount).toLocaleString() : '0'}`}
+              title={loading ? 'Preparing payment...' : ui("Pay ₦{value0}", {value0: (amount ? Number(amount).toLocaleString() : '0')})}
               onPress={() => onSubmit?.(amount, paymentMethod)}
               loading={loading}
               disabled={loading || !amount || Number(amount) < 100}
             />
 
             <TouchableOpacity style={styles.switchLink} onPress={onSwitchToWithdraw}>
-              <AppText style={styles.switchText}>Need to withdraw instead? Open Withdraw Funds</AppText>
+              <AppText style={styles.switchText}>{ui("Need to withdraw instead? Open Withdraw Funds")}</AppText>
             </TouchableOpacity>
           </ScrollView>
         </View>

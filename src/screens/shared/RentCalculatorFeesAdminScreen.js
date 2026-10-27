@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import TextInput from '../../components/common/AppTextInput';
@@ -31,6 +33,7 @@ const scopeLabel = (fee) => {
 };
 
 const RentCalculatorFeesAdminScreen = () => {
+  useInterfaceLanguage();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [fees, setFees] = useState([]);
@@ -49,7 +52,7 @@ const RentCalculatorFeesAdminScreen = () => {
       setFees(Array.isArray(feesRes?.data) ? feesRes.data : []);
       setStates(Array.isArray(statesRes?.data) ? statesRes.data : []);
     } catch (error) {
-      Toast.show({ type: 'error', text1: 'Could not load calculator fees', text2: getErrorMessage(error, 'Please try again.') });
+      Toast.show({ type: 'error', text1: ui("Could not load calculator fees"), text2: getErrorMessage(error, ui("Please try again.")) });
     } finally {
       setLoading(false);
     }
@@ -84,11 +87,11 @@ const RentCalculatorFeesAdminScreen = () => {
 
   const submit = async () => {
     if (!form.agent_fee_pct || !form.legal_fee_pct || !form.caution_months || !form.agreement_fee) {
-      Toast.show({ type: 'error', text1: 'Agent %, legal %, caution months and agreement fee are required' });
+      Toast.show({ type: 'error', text1: ui("Agent %, legal %, caution months and agreement fee are required") });
       return;
     }
     if (!form.governance_note.trim()) {
-      Toast.show({ type: 'error', text1: 'A governance note is required' });
+      Toast.show({ type: 'error', text1: ui("A governance note is required") });
       return;
     }
     setSaving(true);
@@ -105,30 +108,30 @@ const RentCalculatorFeesAdminScreen = () => {
         service_charge: parseFloat(form.service_charge || '0'),
         governance_note: form.governance_note.trim(),
       });
-      Toast.show({ type: 'success', text1: 'Calculator fees saved' });
+      Toast.show({ type: 'success', text1: ui("Calculator fees saved") });
       setShowForm(false);
       setForm(EMPTY);
       await load();
     } catch (error) {
-      Toast.show({ type: 'error', text1: 'Could not save fees', text2: getErrorMessage(error, 'Please try again.') });
+      Toast.show({ type: 'error', text1: ui("Could not save fees"), text2: getErrorMessage(error, ui("Please try again.")) });
     } finally {
       setSaving(false);
     }
   };
 
   const remove = (fee) => {
-    Alert.alert('Delete calculator fees?', 'Removes this location rule. The global default remains.', [
-      { text: 'Cancel', style: 'cancel' },
+    Alert.alert(ui("Delete calculator fees?"), ui("Removes this location rule. The global default remains."), [
+      { text: ui("Cancel"), style: 'cancel' },
       {
-        text: 'Delete',
+        text: ui("Delete"),
         style: 'destructive',
         onPress: async () => {
           try {
             await rentCalculatorService.adminDeleteFee(fee.id, 'Removed from mobile admin');
-            Toast.show({ type: 'success', text1: 'Fee rule deleted' });
+            Toast.show({ type: 'success', text1: ui("Fee rule deleted") });
             await load();
           } catch (error) {
-            Toast.show({ type: 'error', text1: 'Could not delete', text2: getErrorMessage(error, 'Please try again.') });
+            Toast.show({ type: 'error', text1: ui("Could not delete"), text2: getErrorMessage(error, ui("Please try again.")) });
           }
         },
       },
@@ -154,10 +157,8 @@ const RentCalculatorFeesAdminScreen = () => {
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.headerRow}>
           <View style={styles.headerBody}>
-            <AppText style={styles.title}>Rent Calculator Fees</AppText>
-            <AppText style={styles.subtitle}>
-              Location-based agent/legal/caution fee rates used by the rent calculator. A global default applies where no state rule exists.
-            </AppText>
+            <AppText style={styles.title}>{ui("Rent Calculator Fees")}</AppText>
+            <AppText style={styles.subtitle}>{ui("Location-based agent/legal/caution fee rates used by the rent calculator. A global default applies where no state rule exists.")}</AppText>
           </View>
           <TouchableOpacity onPress={() => { setShowForm((v) => !v); setForm(EMPTY); }} style={styles.addButton}>
             <Icon name={showForm ? 'close' : 'add'} size={20} color={colors.white} />
@@ -166,9 +167,9 @@ const RentCalculatorFeesAdminScreen = () => {
 
         {showForm ? (
           <View style={styles.card}>
-            <AppText style={styles.cardTitle}>New / update fee rule</AppText>
+            <AppText style={styles.cardTitle}>{ui("New / update fee rule")}</AppText>
 
-            <AppText style={styles.label}>State (optional — leave empty for global)</AppText>
+            <AppText style={styles.label}>{ui("State (optional — leave empty for global)")}</AppText>
             <View style={styles.chipWrap}>
               {states.map((state) => {
                 const selected = String(state.id) === String(form.state_id);
@@ -186,7 +187,7 @@ const RentCalculatorFeesAdminScreen = () => {
 
             {lgas.length > 0 ? (
               <>
-                <AppText style={styles.label}>LGA (optional — state-wide if none)</AppText>
+                <AppText style={styles.label}>{ui("LGA (optional — state-wide if none)")}</AppText>
                 <View style={styles.chipWrap}>
                   {lgas.map((lga) => {
                     const selected = String(lga.id) === String(form.lga_id);
@@ -210,11 +211,11 @@ const RentCalculatorFeesAdminScreen = () => {
             {field('agreement_fee', 'Agreement fee (₦) *')}
             {field('service_charge', 'Service charge (₦)')}
 
-            <AppText style={styles.label}>Governance note *</AppText>
+            <AppText style={styles.label}>{ui("Governance note *")}</AppText>
             <TextInput
               value={form.governance_note}
               onChangeText={(value) => setForm((prev) => ({ ...prev, governance_note: value }))}
-              placeholder="Why this rate changed"
+              placeholder={ui("Why this rate changed")}
               placeholderTextColor={colors.muted}
               multiline
               style={[styles.input, styles.textarea]}
@@ -222,7 +223,7 @@ const RentCalculatorFeesAdminScreen = () => {
 
             <TouchableOpacity disabled={saving} onPress={submit} style={styles.primaryButton}>
               {saving ? <ActivityIndicator color={colors.white} size="small" /> : (
-                <AppText style={styles.primaryButtonText}>Save fee rule</AppText>
+                <AppText style={styles.primaryButtonText}>{ui("Save fee rule")}</AppText>
               )}
             </TouchableOpacity>
           </View>
@@ -231,23 +232,20 @@ const RentCalculatorFeesAdminScreen = () => {
         {loading ? (
           <View style={styles.center}>
             <ActivityIndicator color={colors.blue} size="large" />
-            <AppText style={styles.loadingText}>Loading calculator fees…</AppText>
+            <AppText style={styles.loadingText}>{ui("Loading calculator fees…")}</AppText>
           </View>
         ) : fees.length === 0 ? (
           <View style={styles.empty}>
             <Icon name="calculator-outline" size={30} color={colors.muted} />
-            <AppText style={styles.emptyTitle}>No fee rules configured</AppText>
-            <AppText style={styles.emptyText}>The calculator uses platform defaults until a rule is added.</AppText>
+            <AppText style={styles.emptyTitle}>{ui("No fee rules configured")}</AppText>
+            <AppText style={styles.emptyText}>{ui("The calculator uses platform defaults until a rule is added.")}</AppText>
           </View>
         ) : fees.map((fee) => (
           <View key={fee.id} style={styles.feeCard}>
             <View style={styles.feeBody}>
               <AppText style={styles.feeTitle}>{scopeLabel(fee)}</AppText>
-              <AppText style={styles.feeMeta}>
-                Agent {fee.agent_fee_pct}% · Legal {fee.legal_fee_pct}% · Caution {fee.caution_months}mo
-              </AppText>
-              <AppText style={styles.feeMeta}>
-                Agreement ₦{Number(fee.agreement_fee || 0).toLocaleString()} · Service ₦{Number(fee.service_charge || 0).toLocaleString()}
+              <AppText style={styles.feeMeta}>{ui("Agent")}{fee.agent_fee_pct}{ui("% · Legal ")}{fee.legal_fee_pct}{ui("% · Caution ")}{fee.caution_months}{ui("mo")}</AppText>
+              <AppText style={styles.feeMeta}>{ui("Agreement ₦")}{Number(fee.agreement_fee || 0).toLocaleString()}{ui(" · Service ₦")}{Number(fee.service_charge || 0).toLocaleString()}
               </AppText>
             </View>
             <TouchableOpacity onPress={() => remove(fee)} style={styles.deleteButton}>

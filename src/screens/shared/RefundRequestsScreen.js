@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useCallback, useContext, useState } from 'react';
 import { Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
 import TextInput from '../../components/common/AppTextInput';
@@ -42,6 +44,7 @@ const categoryLabel = (category) =>
   category === 'early_exit_refund' ? 'Relocation refund' : 'Standard refund';
 
 const RefundRequestsScreen = ({ navigation }) => {
+  useInterfaceLanguage();
   const { user } = useContext(AuthContext);
   const isLandlord = user?.user_type === 'landlord';
 
@@ -61,7 +64,7 @@ const RefundRequestsScreen = ({ navigation }) => {
     } catch (err) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(err, 'Could not load refund requests'),
       });
     } finally {
@@ -97,10 +100,10 @@ const RefundRequestsScreen = ({ navigation }) => {
         await tenancyAdjustmentService.approveRefundRequest(decision.item.id, {
           landlord_note: decision.note.trim(),
         });
-        Toast.show({ type: 'success', text1: 'Refund approved' });
+        Toast.show({ type: 'success', text1: ui("Refund approved") });
       } else {
         await tenancyAdjustmentService.rejectRefundRequest(decision.item.id, decision.note.trim());
-        Toast.show({ type: 'success', text1: 'Refund rejected' });
+        Toast.show({ type: 'success', text1: ui("Refund rejected") });
       }
       setDecision(null);
       setNoteError('');
@@ -108,7 +111,7 @@ const RefundRequestsScreen = ({ navigation }) => {
     } catch (err) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(err, 'Could not update the request'),
       });
     } finally {
@@ -118,8 +121,8 @@ const RefundRequestsScreen = ({ navigation }) => {
 
   const header = (
     <PremiumHero
-      eyebrow="Tenancy"
-      title={isLandlord ? 'Refund requests' : 'My refund requests'}
+      eyebrow={ui("Tenancy")}
+      title={isLandlord ? ui("Refund requests") : 'My refund requests'}
       subtitle={
         isLandlord
           ? 'Approve or reject refund requests from your tenants.'
@@ -130,7 +133,7 @@ const RefundRequestsScreen = ({ navigation }) => {
   );
 
   if (loading && items.length === 0) {
-    return <PremiumCenter loading title="Loading refund requests" />;
+    return <PremiumCenter loading title={ui("Loading refund requests")} />;
   }
 
   return (
@@ -151,7 +154,7 @@ const RefundRequestsScreen = ({ navigation }) => {
         ListFooterComponent={
           !isLandlord ? (
             <PremiumButton
-              title="Request a refund"
+              title={ui("Request a refund")}
               onPress={() => navigation.navigate('RefundRequest')}
               icon="add-circle-outline"
               style={styles.footerBtn}
@@ -169,8 +172,8 @@ const RefundRequestsScreen = ({ navigation }) => {
                   </AppText>
                   {isLandlord ? (
                     <AppText style={styles.cardMeta}>
-                      {item.tenant_name || 'Tenant'}
-                      {item.tenant_phone ? ` · ${item.tenant_phone}` : ''}
+                      {item.tenant_name || ui("Tenant")}
+                      {item.tenant_phone ? ui(" · {value0}", {value0: (item.tenant_phone)}) : ''}
                     </AppText>
                   ) : item.landlord_name ? (
                     <AppText style={styles.cardMeta}>{item.landlord_name}</AppText>
@@ -183,12 +186,11 @@ const RefundRequestsScreen = ({ navigation }) => {
               <AppText style={styles.reason}>{item.reason}</AppText>
 
               {item.requested_move_out_date ? (
-                <AppText style={styles.meta}>
-                  Move-out {formatDate(item.requested_move_out_date)}
+                <AppText style={styles.meta}>{ui("Move-out")}{formatDate(item.requested_move_out_date)}
                 </AppText>
               ) : null}
               {item.refund_due_at ? (
-                <AppText style={styles.meta}>Due by {formatDate(item.refund_due_at)}</AppText>
+                <AppText style={styles.meta}>{ui("Due by ")}{formatDate(item.refund_due_at)}</AppText>
               ) : null}
 
               <View style={styles.rowBetween}>
@@ -196,16 +198,16 @@ const RefundRequestsScreen = ({ navigation }) => {
                 <AppText style={styles.date}>{formatDate(item.requested_at)}</AppText>
               </View>
 
-              {isLandlord && String(item.status) === 'pending' ? (
+              {isLandlord && String(item.status) === "pending" ? (
                 <View style={styles.actions}>
                   <PremiumButton
-                    title="Approve"
+                    title={ui("Approve")}
                     onPress={() => openDecision(item, 'approve')}
                     icon="checkmark-circle-outline"
                     style={styles.actionButton}
                   />
                   <PremiumButton
-                    title="Reject"
+                    title={ui("Reject")}
                     variant="ghost"
                     onPress={() => openDecision(item, 'reject')}
                     icon="close-circle-outline"
@@ -215,7 +217,7 @@ const RefundRequestsScreen = ({ navigation }) => {
               ) : null}
 
               {item.landlord_note ? (
-                <AppText style={styles.note}>Landlord: {item.landlord_note}</AppText>
+                <AppText style={styles.note}>{ui("Landlord: ")}{item.landlord_note}</AppText>
               ) : null}
             </PremiumCard>
           );
@@ -227,10 +229,10 @@ const RefundRequestsScreen = ({ navigation }) => {
           <View style={styles.modalOverlay}>
             <View style={styles.modalCard}>
               <AppText style={styles.modalTitle}>
-                {decision.action === 'approve' ? 'Approve full refund' : 'Reject refund'}
+                {decision.action === "approve" ? 'Approve full refund' : 'Reject refund'}
               </AppText>
               <AppText style={styles.modalSubtitle}>
-                {decision.item.property_title || 'Property'} · {formatNaira(decision.item.amount)}
+                {decision.item.property_title || ui("Property")} · {formatNaira(decision.item.amount)}
               </AppText>
 
               <TextInput
@@ -243,7 +245,7 @@ const RefundRequestsScreen = ({ navigation }) => {
                   setNoteError('');
                 }}
                 placeholder={
-                  decision.action === 'approve'
+                  decision.action === "approve"
                     ? 'Add a note for the tenant (optional but recommended)'
                     : 'Explain why you are rejecting this refund'
                 }
@@ -255,10 +257,10 @@ const RefundRequestsScreen = ({ navigation }) => {
                   style={styles.cancelButton}
                   onPress={() => setDecision(null)}
                 >
-                  <AppText style={styles.cancelText}>Cancel</AppText>
+                  <AppText style={styles.cancelText}>{ui("Cancel")}</AppText>
                 </TouchableOpacity>
                 <PremiumButton
-                  title={decision.busy ? 'Working…' : decision.action === 'approve' ? 'Approve' : 'Reject'}
+                  title={decision.busy ? 'Working…' : decision.action === "approve" ? ui("Approve") : ui("Reject")}
                   onPress={submitDecision}
                   loading={decision.busy}
                   variant={decision.action === 'approve' ? 'primary' : 'danger'}

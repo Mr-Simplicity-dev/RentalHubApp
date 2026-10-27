@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import { typeScale } from '../../theme';
 import React, { useCallback, useEffect, useState } from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
@@ -30,6 +32,7 @@ const PropertyRequestWorkflowSection = ({
   mode = 'support',
   title = 'Tenant Property Requests',
 }) => {
+  useInterfaceLanguage();
   const [loading, setLoading] = useState(false);
   const [requests, setRequests] = useState([]);
   const [status, setStatus] = useState(
@@ -47,7 +50,7 @@ const PropertyRequestWorkflowSection = ({
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Load failed',
+        text1: ui("Load failed"),
         text2: getErrorMessage(error, 'Could not load property requests'),
       });
     } finally {
@@ -83,13 +86,13 @@ const PropertyRequestWorkflowSection = ({
           note: note || undefined,
         });
       }
-      Toast.show({ type: 'success', text1: 'Request updated' });
+      Toast.show({ type: 'success', text1: ui("Request updated") });
       setPendingAction(null);
       await loadRequests();
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(error, 'Could not update request'),
       });
     } finally {
@@ -113,40 +116,39 @@ const PropertyRequestWorkflowSection = ({
           </TouchableOpacity>
         ))}
       </View>
-      <Button title="Refresh" onPress={loadRequests} loading={loading} />
+      <Button title={ui("Refresh")} onPress={loadRequests} loading={loading} />
 
       {requests.length === 0 ? (
-        <AppText style={styles.meta}>No requests for this filter.</AppText>
+        <AppText style={styles.meta}>{ui("No requests for this filter.")}</AppText>
       ) : (
         requests.map((item) => (
           <View key={item.id} style={styles.card}>
             <AppText style={styles.cardTitle}>
-              {item.tenant_name || 'Tenant'} · {item.state_name || 'State'}
-              {item.lga_name ? ` · ${item.lga_name}` : ''}
+              {item.tenant_name || ui("Tenant")} · {item.state_name || ui("State")}
+              {item.lga_name ? ui(" · {value0}", {value0: (item.lga_name)}) : ''}
             </AppText>
-            <AppText style={styles.meta}>Status: {item.status}</AppText>
+            <AppText style={styles.meta}>{ui("Status: ")}{item.status}</AppText>
             {item.budget_min || item.budget_max ? (
-              <AppText style={styles.meta}>
-                Budget: ₦{Number(item.budget_min || 0).toLocaleString()} - ₦
+              <AppText style={styles.meta}>{ui("Budget: ₦")}{Number(item.budget_min || 0).toLocaleString()} - ₦
                 {Number(item.budget_max || 0).toLocaleString()}
               </AppText>
             ) : null}
-            {mode === 'support' ? (
+            {mode === "support" ? (
               <View style={styles.row}>
                 <TouchableOpacity onPress={() => supportReview(item, 'approved')}>
-                  <AppText style={styles.link}>Approve</AppText>
+                  <AppText style={styles.link}>{ui("Approve")}</AppText>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => supportReview(item, 'rejected')}>
-                  <AppText style={styles.danger}>Reject</AppText>
+                  <AppText style={styles.danger}>{ui("Reject")}</AppText>
                 </TouchableOpacity>
               </View>
             ) : (
               <View style={styles.row}>
                 <TouchableOpacity onPress={() => stateAction(item, 'sourcing')}>
-                  <AppText style={styles.link}>Sourcing</AppText>
+                  <AppText style={styles.link}>{ui("Sourcing")}</AppText>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => stateAction(item, 'fulfilled')}>
-                  <AppText style={styles.link}>Fulfilled</AppText>
+                  <AppText style={styles.link}>{ui("Fulfilled")}</AppText>
                 </TouchableOpacity>
               </View>
             )}
@@ -157,23 +159,23 @@ const PropertyRequestWorkflowSection = ({
       <OperationNoteModal
         visible={Boolean(pendingAction)}
         title={
-          pendingAction?.kind === 'support'
-            ? pendingAction?.action === 'approved'
+          pendingAction?.kind === "support"
+            ? pendingAction?.action === "approved"
               ? 'Approve property request'
               : 'Reject property request'
-            : pendingAction?.action === 'fulfilled'
+            : pendingAction?.action === "fulfilled"
               ? 'Mark request fulfilled'
               : 'Start property sourcing'
         }
-        message="Add context for the audit history, or continue without a note."
-        label="Review note"
-        placeholder="Optional context for this decision"
+        message={ui("Add context for the audit history, or continue without a note.")}
+        label={ui("Review note")}
+        placeholder={ui("Optional context for this decision")}
         confirmText={
-          pendingAction?.action === 'approved'
-            ? 'Approve'
-            : pendingAction?.action === 'rejected'
-              ? 'Reject'
-              : pendingAction?.action === 'fulfilled'
+          pendingAction?.action === "approved"
+            ? ui("Approve")
+            : pendingAction?.action === "rejected"
+              ? ui("Reject")
+              : pendingAction?.action === "fulfilled"
                 ? 'Mark fulfilled'
                 : 'Start sourcing'
         }

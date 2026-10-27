@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useState } from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -17,6 +19,7 @@ import { colors, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const AdminUsersScreen = ({ navigation }) => {
+  useInterfaceLanguage();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -30,7 +33,7 @@ const AdminUsersScreen = ({ navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(error, 'Could not load users'),
       });
     } finally {
@@ -50,11 +53,11 @@ const AdminUsersScreen = ({ navigation }) => {
       await adminService.deleteUser(selectedUser.id, reason);
       setSelectedUser(null);
       await loadUsers();
-      Toast.show({ type: 'success', text1: 'User disabled' });
+      Toast.show({ type: 'success', text1: ui("User disabled") });
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(error, 'Could not disable user'),
       });
     } finally {
@@ -69,23 +72,23 @@ const AdminUsersScreen = ({ navigation }) => {
         refreshing={loading}
         onRefresh={loadUsers}
         keyExtractor={(item) => String(item.id)}
-        emptyTitle="No users found"
-        emptyMessage="Users will appear here when they register or are added."
+        emptyTitle={ui("No users found")}
+        emptyMessage={ui("Users will appear here when they register or are added.")}
         emptyIcon="people-outline"
         header={
           <PremiumHero
-            eyebrow="Administration"
-            title="Users"
-            subtitle="Manage user identities, roles and account access from a mobile-first view."
+            eyebrow={ui("Administration")}
+            title={ui("Users")}
+            subtitle={ui("Manage user identities, roles and account access from a mobile-first view.")}
             icon="people-outline"
-            right={<StatusPill label={`${users.length} records`} color={colors.blue} />}
+            right={<StatusPill label={ui("{value0} records", {value0: (users.length)})} color={colors.blue} />}
           />
         }
         renderItem={({ item }) => (
           <PremiumCard>
             <TouchableOpacity
               accessibilityRole="button"
-              accessibilityLabel={`Open ${item.full_name || 'user'} details`}
+              accessibilityLabel={ui("Open {value0} details", {value0: (item.full_name || ui("user"))})}
               activeOpacity={0.85}
               onPress={() => navigation.navigate('AdminUserDetail', { id: item.id })}
             >
@@ -100,11 +103,11 @@ const AdminUsersScreen = ({ navigation }) => {
                 <Icon name="chevron-forward" size={20} color={colors.muted} />
               </View>
             </TouchableOpacity>
-            <InfoRow icon="shield-outline" label="Role" value={item.user_type || '—'} />
-            <InfoRow icon="call-outline" label="Phone" value={item.phone || item.phone_number || '—'} />
+            <InfoRow icon="shield-outline" label={ui("Role")} value={item.user_type || '—'} />
+            <InfoRow icon="call-outline" label={ui("Phone")} value={item.phone || item.phone_number || '—'} />
             {['tenant', 'landlord'].includes(item.user_type) ? (
               <PremiumButton
-                title="Disable user"
+                title={ui("Disable user")}
                 variant="ghost"
                 icon="ban-outline"
                 onPress={() => setSelectedUser(item)}
@@ -115,11 +118,11 @@ const AdminUsersScreen = ({ navigation }) => {
       />
       <OperationNoteModal
         visible={Boolean(selectedUser)}
-        title="Disable user account"
-        message={`${selectedUser?.full_name || selectedUser?.email || 'This user'} will lose access until the account is restored by an administrator.`}
-        label="Disable reason"
-        placeholder="Explain why this account must be disabled"
-        confirmText="Disable account"
+        title={ui("Disable user account")}
+        message={ui("{value0} will lose access until the account is restored by an administrator.", {value0: (selectedUser?.full_name || selectedUser?.email || ui("This user"))})}
+        label={ui("Disable reason")}
+        placeholder={ui("Explain why this account must be disabled")}
+        confirmText={ui("Disable account")}
         icon="ban-outline"
         variant="danger"
         loading={disabling}

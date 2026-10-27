@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../i18n/useInterfaceLanguage';
 import React, { createContext, useState, useEffect, useRef } from 'react';
 import { authService } from '../services/authService';
 import { biometricService } from '../services/biometricService';
@@ -8,6 +10,7 @@ import { setOnUnauthorized } from '../services/api';
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  useInterfaceLanguage();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -307,8 +310,8 @@ export const AuthProvider = ({ children }) => {
         success: false,
         message:
           error?.response?.status === 401
-            ? 'Saved biometric login is no longer valid. Please sign in with your password again.'
-            : error?.response?.data?.message || 'Biometric login failed. Please try again.',
+            ? ui("Saved biometric login is no longer valid. Please sign in with your password again.")
+            : error?.response?.data?.message || ui("Biometric login failed. Please try again."),
       };
     }
   };

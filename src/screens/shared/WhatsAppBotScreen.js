@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useContext, useState, useRef, useEffect, useCallback } from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity, KeyboardAvoidingView, Platform, SafeAreaView, Linking, ActivityIndicator } from 'react-native';
 import TextInput from '../../components/common/AppTextInput';
@@ -122,6 +124,7 @@ const QUICK_REPLIES = [
 ];
 
 const WhatsAppBotScreen = ({ navigation, embedded=false, onHumanRequest }) => {
+  useInterfaceLanguage();
   const {user,isAuthenticated}=useContext(AuthContext);
   const authKey=isAuthenticated?String(user?.id || '')+':'+user?.user_type:'guest';
   const authKeyRef=useRef(authKey);authKeyRef.current=authKey;
@@ -360,7 +363,7 @@ const WhatsAppBotScreen = ({ navigation, embedded=false, onHumanRequest }) => {
         )}
         <View style={[styles.bubble, isUser ? styles.bubbleUser : styles.bubbleBot]}>
           {!isUser && (
-            <AppText style={styles.botLabel}>RentalHub{msg.engine==='ai'?' · AI guidance':msg.engine==='verified'?' · Account record':''}</AppText>
+            <AppText style={styles.botLabel}>RentalHub{msg.engine==='ai'?' · AI guidance':msg.engine==="verified"?' · Account record':''}</AppText>
           )}
           <AppText style={[styles.bubbleText, isUser && styles.bubbleTextUser]}>
             {msg.text}
@@ -370,7 +373,7 @@ const WhatsAppBotScreen = ({ navigation, embedded=false, onHumanRequest }) => {
               {formatTime(msg.created_at)}
             </AppText>
           )}
-          {msg.ticketDraft && <TouchableOpacity disabled={requestPending} style={styles.qrChip} onPress={()=>submitTicket(msg)}><AppText style={styles.qrChipText}>Submit ticket</AppText></TouchableOpacity>}
+          {msg.ticketDraft && <TouchableOpacity disabled={requestPending} style={styles.qrChip} onPress={()=>submitTicket(msg)}><AppText style={styles.qrChipText}>{ui("Submit ticket")}</AppText></TouchableOpacity>}
           {msg.link && <TouchableOpacity style={styles.qrChip} onPress={()=>openCard(msg.link)}><AppText style={styles.qrChipText}>{msg.linkText || 'Open page'}</AppText></TouchableOpacity>}
           {msg.showQuickReplies && (
             <View style={styles.quickRepliesWrap}>
@@ -406,8 +409,8 @@ const WhatsAppBotScreen = ({ navigation, embedded=false, onHumanRequest }) => {
           <Icon name="logo-whatsapp" size={18} color={colors.white} />
         </View>
         <View style={styles.headerText}>
-          <AppText style={styles.headerTitle}>Amana RentalHub Assistant</AppText>
-          <AppText style={styles.headerSubtitle}>Need help? Chat with us!</AppText>
+          <AppText style={styles.headerTitle}>{ui("Amana RentalHub Assistant")}</AppText>
+          <AppText style={styles.headerSubtitle}>{ui("Need help? Chat with us!")}</AppText>
         </View>
       </View>}
 
@@ -438,18 +441,18 @@ const WhatsAppBotScreen = ({ navigation, embedded=false, onHumanRequest }) => {
           {connectedToAgent && (
             <View style={styles.agentCard}>
               <Icon name="headset-outline" size={24} color={colors.success} />
-              <AppText style={styles.agentTitle}>WhatsApp opened</AppText>
-              <AppText style={styles.agentSub}>Continue with support there. Your account session is not transferred.</AppText>
+              <AppText style={styles.agentTitle}>{ui("WhatsApp opened")}</AppText>
+              <AppText style={styles.agentSub}>{ui("Continue with support there. Your account session is not transferred.")}</AppText>
             </View>
           )}
-          <TouchableOpacity style={styles.qrChip} onPress={handleTalkToAgent}><AppText style={styles.qrChipText}>Talk to a person</AppText></TouchableOpacity>
+          <TouchableOpacity style={styles.qrChip} onPress={handleTalkToAgent}><AppText style={styles.qrChipText}>{ui("Talk to a person")}</AppText></TouchableOpacity>
         </ScrollView>
 
         {!connectedToAgent && (
           <View style={styles.menuBtnWrap}>
             <TouchableOpacity style={styles.menuBtn} onPress={showMenu} activeOpacity={0.7}>
               <Icon name="list" size={14} color={colors.success} />
-              <AppText style={styles.menuBtnText}>Menu</AppText>
+              <AppText style={styles.menuBtnText}>{ui("Menu")}</AppText>
             </TouchableOpacity>
           </View>
         )}
@@ -464,7 +467,7 @@ const WhatsAppBotScreen = ({ navigation, embedded=false, onHumanRequest }) => {
               style={styles.textInput}
               value={input}
               onChangeText={setInput}
-              placeholder="Type your question..."
+              placeholder={ui("Type your question...")}
               placeholderTextColor={colors.muted}
               editable={!requestPending}
               onSubmitEditing={() => handleSend()}

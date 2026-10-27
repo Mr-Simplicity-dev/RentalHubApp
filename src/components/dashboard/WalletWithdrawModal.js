@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useState } from 'react';
 import {Modal,
   View,
@@ -42,6 +44,7 @@ const WalletWithdrawModal = ({
   withdrawHistory = [],
   onSwitchToFund,
 }) => {
+  useInterfaceLanguage();
   const [banks, setBanks] = useState([]);
   const [banksLoading, setBanksLoading] = useState(false);
   const [accountNameLoading, setAccountNameLoading] = useState(false);
@@ -198,7 +201,7 @@ const WalletWithdrawModal = ({
           <View style={styles.header}>
             <View style={styles.headerTitle}>
               <Icon name="cash-outline" size={22} color="#4f46e5" />
-              <AppText style={styles.title}>Withdraw Funds</AppText>
+              <AppText style={styles.title}>{ui("Withdraw Funds")}</AppText>
             </View>
             <TouchableOpacity onPress={handleClose}>
               <Icon name="close" size={24} color="#64748b" />
@@ -206,25 +209,25 @@ const WalletWithdrawModal = ({
           </View>
 
           <ScrollView contentContainerStyle={styles.body}>
-            {userType === 'tenant' ? (
+            {userType === "tenant" ? (
               <View style={styles.balanceCard}>
-                <AppText style={styles.balanceLabel}>Available Wallet Balance</AppText>
+                <AppText style={styles.balanceLabel}>{ui("Available Wallet Balance")}</AppText>
                 <AppText style={styles.balanceValue}>
                   {walletBalance !== null && walletBalance !== undefined
-                    ? `₦${Number(walletBalance).toLocaleString()}`
+                    ? ui("₦{value0}", {value0: (Number(walletBalance).toLocaleString())})
                     : '—'}
                 </AppText>
               </View>
             ) : landlordWallet ? (
               <View style={styles.landlordGrid}>
                 <View style={[styles.balanceCard, styles.balanceCardGreen]}>
-                  <AppText style={styles.balanceLabel}>Available to Withdraw</AppText>
+                  <AppText style={styles.balanceLabel}>{ui("Available to Withdraw")}</AppText>
                   <AppText style={styles.balanceValue}>
                     ₦{Number(landlordWallet.available_to_withdraw || 0).toLocaleString()}
                   </AppText>
                 </View>
                 <View style={[styles.balanceCard, styles.balanceCardAmber]}>
-                  <AppText style={styles.balanceLabel}>Pending (14-day hold)</AppText>
+                  <AppText style={styles.balanceLabel}>{ui("Pending (14-day hold)")}</AppText>
                   <AppText style={styles.balanceValue}>
                     ₦{Number(landlordWallet.pending_balance || 0).toLocaleString()}
                   </AppText>
@@ -239,36 +242,35 @@ const WalletWithdrawModal = ({
               <View style={styles.warningCard}>
                 <Icon name="warning-outline" size={18} color="#b45309" />
                 <AppText style={styles.warningText}>
-                  {(propertyFeeReserve.fee_label || 'Landlord Property Charges')} reserve: ₦
-                  {Number(propertyFeeReserve.amount_due || 0).toLocaleString()} is due on{' '}
+                  {(propertyFeeReserve.fee_label || ui("Landlord Property Charges"))}{ui("reserve: ₦")}{Number(propertyFeeReserve.amount_due || 0).toLocaleString()}{ui(" is due on")}{' '}
                   {new Date(propertyFeeReserve.due_at).toLocaleDateString()}.
                 </AppText>
               </View>
             ) : null}
 
             <Input
-              label="Amount (₦)"
+              label={ui("Amount (₦)")}
               value={withdrawForm.amount}
               onChangeText={(value) =>
                 setWithdrawForm((prev) => ({ ...prev, amount: value }))
               }
-              placeholder="Enter amount to withdraw"
+              placeholder={ui("Enter amount to withdraw")}
               keyboardType="number-pad"
             />
 
             <SelectField
-              label="Bank"
+              label={ui("Bank")}
               value={withdrawForm.bank_name}
-              placeholder={banksLoading ? 'Loading banks...' : 'Select bank'}
+              placeholder={banksLoading ? ui("Loading banks...") : ui("Select bank")}
               onPress={() => setShowBankPicker(true)}
               disabled={banksLoading}
             />
 
             <Input
-              label="Account Number"
+              label={ui("Account Number")}
               value={withdrawForm.account_number}
               onChangeText={handleAccountNumberChange}
-              placeholder="10-digit account number"
+              placeholder={ui("10-digit account number")}
               keyboardType="number-pad"
               maxLength={10}
             />
@@ -279,10 +281,7 @@ const WalletWithdrawModal = ({
 
             {bankSuggestions.length > 0 ? (
               <View style={styles.suggestionBox}>
-                <AppText style={styles.suggestionTitle}>
-                  This number matches {bankSuggestions.length} bank
-                  {bankSuggestions.length === 1 ? '' : 's'} — pick the one you use:
-                </AppText>
+                <AppText style={styles.suggestionTitle}>{ui("This number matches")}{bankSuggestions.length}{ui("bank")}{bankSuggestions.length === 1 ? '' : ui("s")}{ui("— pick the one you use:")}</AppText>
                 {bankSuggestions.map((match) => (
                   <TouchableOpacity
                     key={match.bank_code}
@@ -305,12 +304,12 @@ const WalletWithdrawModal = ({
             ) : null}
 
             <Input
-              label="Account Name"
+              label={ui("Account Name")}
               value={withdrawForm.account_name}
               onChangeText={(value) =>
                 setWithdrawForm((prev) => ({ ...prev, account_name: value }))
               }
-              placeholder="Account holder name"
+              placeholder={ui("Account holder name")}
             />
 
             <TouchableOpacity
@@ -322,13 +321,11 @@ const WalletWithdrawModal = ({
                 size={22}
                 color={consentChecked ? '#0284c7' : '#94a3b8'}
               />
-              <AppText style={styles.consentText}>
-                I confirm that my bank details are correct.
-              </AppText>
+              <AppText style={styles.consentText}>{ui("I confirm that my bank details are correct.")}</AppText>
             </TouchableOpacity>
 
             <Button
-              title="Submit Withdrawal"
+              title={ui("Submit Withdrawal")}
               onPress={() => onSubmit?.(consentChecked)}
               loading={loading}
               disabled={
@@ -342,23 +339,22 @@ const WalletWithdrawModal = ({
             />
 
             <TouchableOpacity style={styles.switchLink} onPress={onSwitchToFund}>
-              <AppText style={styles.switchText}>Need to fund wallet first? Open Fund Wallet</AppText>
+              <AppText style={styles.switchText}>{ui("Need to fund wallet first? Open Fund Wallet")}</AppText>
             </TouchableOpacity>
 
             {withdrawHistory.length > 0 ? (
               <View style={styles.historySection}>
-                <AppText style={styles.historyTitle}>Recent Withdrawals</AppText>
+                <AppText style={styles.historyTitle}>{ui("Recent Withdrawals")}</AppText>
                 {withdrawHistory.slice(0, 5).map((item) => (
                   <View key={String(item.id)} style={styles.historyItem}>
                     <AppText style={styles.historyAmount}>
                       ₦{Number(item.amount || 0).toLocaleString()}
                     </AppText>
                     <AppText style={styles.historyMeta}>
-                      {item.status || 'pending'} · {item.bank_name || 'Bank'}
+                      {item.status || ui("pending")} · {item.bank_name || ui("Bank")}
                     </AppText>
                     {item.rejection_reason || item.payout_failed_reason ? (
-                      <AppText style={{ color: '#dc2626', fontSize: typeScale.xs, lineHeight: 18, marginTop: 4 }}>
-                        Reason: {item.rejection_reason || item.payout_failed_reason}
+                      <AppText style={{ color: '#dc2626', fontSize: typeScale.xs, lineHeight: 18, marginTop: 4 }}>{ui("Reason:")}{item.rejection_reason || item.payout_failed_reason}
                       </AppText>
                     ) : null}
                   </View>
@@ -371,12 +367,12 @@ const WalletWithdrawModal = ({
 
       <OptionPickerModal
         visible={showBankPicker}
-        title="Select Bank"
+        title={ui("Select Bank")}
         options={bankOptions}
         onSelect={(option) => handleBankSelect(option.value)}
         onClose={() => setShowBankPicker(false)}
         searchable
-        searchPlaceholder="Search banks"
+        searchPlaceholder={ui("Search banks")}
         emptyText="No matching bank"
       />
     </Modal>

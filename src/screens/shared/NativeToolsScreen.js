@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useContext, useMemo } from 'react';
 import Toast from 'react-native-toast-message';
 import { AuthContext } from '../../context/AuthContext';
@@ -9,25 +11,25 @@ import {
 } from '../../components/dashboard/DashboardKit';
 
 const makePublicFeatures = () => [
-  { label: 'Home', path: '/' },
-  { label: 'Properties', path: '/properties' },
-  { label: 'Transportation Booking', path: '/transportation/book' },
-  { label: 'Fumigation & Cleaning Booking', path: '/fumigation-cleaning/booking' },
-  { label: 'Fumigation & Cleaning Catalog', path: '/fumigation-cleaning/catalog' },
-  { label: 'About RentalHub', path: '/about' },
-  { label: 'Resolved dispute cases', path: '/cases' },
-  { label: 'Support Centre', path: '/support' },
-  { label: 'Verify Email', path: '/verify-email' },
-  { label: 'Verify Phone', path: '/verify-phone' },
-  { label: 'Forgot Password', path: '/forgot-password' },
-  { label: 'FAQ', path: '/faq' },
-  { label: 'How It Works', path: '/how-it-works' },
-  { label: 'Pricing', path: '/pricing' },
-  { label: 'Landlord Guide', path: '/landlord-guide' },
-  { label: 'Privacy', path: '/privacy' },
-  { label: 'Terms', path: '/terms' },
-  { label: 'Nigeria Page', path: '/nigeria' },
-  { label: 'Careers', path: '/careers' },
+  { label: ui("Home"), path: '/' },
+  { label: ui("Properties"), path: '/properties' },
+  { label: ui("Transportation Booking"), path: '/transportation/book' },
+  { label: ui("Fumigation & Cleaning Booking"), path: '/fumigation-cleaning/booking' },
+  { label: ui("Fumigation & Cleaning Catalog"), path: '/fumigation-cleaning/catalog' },
+  { label: ui("About RentalHub"), path: '/about' },
+  { label: ui("Resolved dispute cases"), path: '/cases' },
+  { label: ui("Support Centre"), path: '/support' },
+  { label: ui("Verify Email"), path: '/verify-email' },
+  { label: ui("Verify Phone"), path: '/verify-phone' },
+  { label: ui("Forgot Password"), path: '/forgot-password' },
+  { label: ui("FAQ"), path: '/faq' },
+  { label: ui("How It Works"), path: '/how-it-works' },
+  { label: ui("Pricing"), path: '/pricing' },
+  { label: ui("Landlord Guide"), path: '/landlord-guide' },
+  { label: ui("Privacy"), path: '/privacy' },
+  { label: ui("Terms"), path: '/terms' },
+  { label: ui("Nigeria Page"), path: '/nigeria' },
+  { label: ui("Careers"), path: '/careers' },
 ];
 
 const makeProtectedFeatures = (
@@ -36,48 +38,48 @@ const makeProtectedFeatures = (
   hasLgaJurisdiction = false
 ) => {
   const base = [
-    { label: 'Request assistance', path: '/assistance' },
-    { label: 'Profile', path: '/profile' },
-    { label: 'Payment History', path: '/payment-history' },
-    { label: 'Saved Properties', path: '/saved-properties' },
-    { label: 'Applications', path: '/applications' },
-    { label: 'Messages', path: '/messages' },
-    { label: 'Subscribe', path: '/subscribe' },
-    { label: 'Settings', path: '/settings' },
-    { label: 'Dashboard', path: '/dashboard' },
-    { label: 'Support Centre', path: '/support' },
-    { label: 'Transport Bookings', path: '/transportation/bookings' },
-    { label: 'Fumigation Bookings', path: '/fumigation-cleaning/bookings' },
-    { label: 'My Disputes', path: '/my-disputes' },
-    { label: 'Property Reports', path: '/my-damage-reports' },
-    { label: 'Subscribed Properties', path: '/subscribed-properties' },
-    { label: 'Platform Ratings', path: '/platform-ratings' },
-    { label: 'Verification Status', path: '/verification-status' },
+    { label: ui("Request assistance"), path: '/assistance' },
+    { label: ui("Profile"), path: '/profile' },
+    { label: ui("Payment History"), path: '/payment-history' },
+    { label: ui("Saved Properties"), path: '/saved-properties' },
+    { label: ui("Applications"), path: '/applications' },
+    { label: ui("Messages"), path: '/messages' },
+    { label: ui("Subscribe"), path: '/subscribe' },
+    { label: ui("Settings"), path: '/settings' },
+    { label: ui("Dashboard"), path: '/dashboard' },
+    { label: ui("Support Centre"), path: '/support' },
+    { label: ui("Transport Bookings"), path: '/transportation/bookings' },
+    { label: ui("Fumigation Bookings"), path: '/fumigation-cleaning/bookings' },
+    { label: ui("My Disputes"), path: '/my-disputes' },
+    { label: ui("Property Reports"), path: '/my-damage-reports' },
+    { label: ui("Subscribed Properties"), path: '/subscribed-properties' },
+    { label: ui("Platform Ratings"), path: '/platform-ratings' },
+    { label: ui("Verification Status"), path: '/verification-status' },
   ];
 
   if (userType === 'admin') {
     return [
       ...base,
-      { label: 'Admin Dashboard', path: '/admin' },
+      { label: ui("Admin Dashboard"), path: '/admin' },
       ...(hasRecruitmentAccess
-        ? [{ label: 'Recruitment Admin', path: '/admin/recruitment' }]
+        ? [{ label: ui("Recruitment Admin"), path: '/admin/recruitment' }]
         : []),
-      { label: 'Admin Lawyer Invites', path: '/admin/lawyer-invites' },
-      { label: 'Admin Users', path: '/admin/users' },
-      { label: 'Admin Properties', path: '/admin/properties' },
-      { label: 'Admin Applications', path: '/admin/applications' },
-      { label: 'Admin Verifications', path: '/admin/verifications' },
-      { label: 'Admin Compliance', path: '/admin/compliance' },
-      { label: 'Inspections', path: '/admin/inspections' },
-      { label: 'Evidence Verifications', path: '/admin/evidence-verifications' },
-      { label: 'Ledger', path: '/admin/ledger' },
-      { label: 'Admin Agent Management', path: '/admin/agents' },
-      { label: 'Admin Financial Dashboard', path: '/admin/financial-dashboard' },
-      { label: 'Admin State Dashboard', path: '/admin/state-dashboard' },
+      { label: ui("Admin Lawyer Invites"), path: '/admin/lawyer-invites' },
+      { label: ui("Admin Users"), path: '/admin/users' },
+      { label: ui("Admin Properties"), path: '/admin/properties' },
+      { label: ui("Admin Applications"), path: '/admin/applications' },
+      { label: ui("Admin Verifications"), path: '/admin/verifications' },
+      { label: ui("Admin Compliance"), path: '/admin/compliance' },
+      { label: ui("Inspections"), path: '/admin/inspections' },
+      { label: ui("Evidence Verifications"), path: '/admin/evidence-verifications' },
+      { label: ui("Ledger"), path: '/admin/ledger' },
+      { label: ui("Admin Agent Management"), path: '/admin/agents' },
+      { label: ui("Admin Financial Dashboard"), path: '/admin/financial-dashboard' },
+      { label: ui("Admin State Dashboard"), path: '/admin/state-dashboard' },
       ...(hasLgaJurisdiction
         ? [
-            { label: 'LGA Transportation Dashboard', path: '/admin/transportation' },
-            { label: 'LGA Fumigation Dashboard', path: '/admin/fumigation-cleaning' },
+            { label: ui("LGA Transportation Dashboard"), path: '/admin/transportation' },
+            { label: ui("LGA Fumigation Dashboard"), path: '/admin/fumigation-cleaning' },
           ]
         : []),
     ];
@@ -85,198 +87,198 @@ const makeProtectedFeatures = (
 
   if (userType === 'recruitment_admin') {
     return [
-      { label: 'Profile', path: '/profile' },
-      { label: 'Messages', path: '/messages' },
-      { label: 'Settings', path: '/settings' },
-      { label: 'Recruitment Dashboard', path: '/dashboard' },
-      { label: 'Recruitment Workspace', path: '/admin/recruitment' },
+      { label: ui("Profile"), path: '/profile' },
+      { label: ui("Messages"), path: '/messages' },
+      { label: ui("Settings"), path: '/settings' },
+      { label: ui("Recruitment Dashboard"), path: '/dashboard' },
+      { label: ui("Recruitment Workspace"), path: '/admin/recruitment' },
     ];
   }
 
   if (userType === 'financial_admin') {
     return [
       ...base,
-      { label: 'Financial Dashboard', path: '/admin/financial-dashboard' },
+      { label: ui("Financial Dashboard"), path: '/admin/financial-dashboard' },
     ];
   }
 
   if (userType === 'lga_financial_admin') {
     return [
       ...base,
-      { label: 'LGA Financial Dashboard', path: '/admin/financial-dashboard' },
+      { label: ui("LGA Financial Dashboard"), path: '/admin/financial-dashboard' },
     ];
   }
 
   if (userType === 'super_financial_admin') {
     return [
       ...base,
-      { label: 'Super Financial Dashboard', path: '/admin/super-financial-dashboard' },
+      { label: ui("Super Financial Dashboard"), path: '/admin/super-financial-dashboard' },
     ];
   }
 
   if (userType === 'state_admin') {
     return [
       ...base,
-      { label: 'State Dashboard', path: '/admin/state-dashboard' },
-      { label: 'Admin Dashboard', path: '/admin' },
-      { label: 'Appeals', path: '/admin/appeals' },
-      { label: 'State Transportation Dashboard', path: '/admin/transportation/state' },
-      { label: 'State Fumigation Dashboard', path: '/admin/fumigation-cleaning/state' },
+      { label: ui("State Dashboard"), path: '/admin/state-dashboard' },
+      { label: ui("Admin Dashboard"), path: '/admin' },
+      { label: ui("Appeals"), path: '/admin/appeals' },
+      { label: ui("State Transportation Dashboard"), path: '/admin/transportation/state' },
+      { label: ui("State Fumigation Dashboard"), path: '/admin/fumigation-cleaning/state' },
     ];
   }
 
   if (userType === 'state_financial_admin') {
     return [
       ...base,
-      { label: 'State Dashboard', path: '/admin/state-dashboard' },
-      { label: 'Admin Dashboard', path: '/admin' },
-      { label: 'State Transportation Dashboard', path: '/admin/transportation/state' },
-      { label: 'State Fumigation Dashboard', path: '/admin/fumigation-cleaning/state' },
+      { label: ui("State Dashboard"), path: '/admin/state-dashboard' },
+      { label: ui("Admin Dashboard"), path: '/admin' },
+      { label: ui("State Transportation Dashboard"), path: '/admin/transportation/state' },
+      { label: ui("State Fumigation Dashboard"), path: '/admin/fumigation-cleaning/state' },
     ];
   }
 
   if (userType === 'super_admin') {
     return [
       ...base,
-      { label: 'Super Admin Dashboard', path: '/super-admin' },
+      { label: ui("Super Admin Dashboard"), path: '/super-admin' },
       ...(hasRecruitmentAccess
-        ? [{ label: 'Recruitment Admin', path: '/admin/recruitment' }]
+        ? [{ label: ui("Recruitment Admin"), path: '/admin/recruitment' }]
         : []),
-      { label: 'Admin Dashboard', path: '/admin' },
-      { label: 'Admin Users', path: '/admin/users' },
-      { label: 'Admin Properties', path: '/admin/properties' },
-      { label: 'Admin Applications', path: '/admin/applications' },
-      { label: 'Admin Verifications', path: '/admin/verifications' },
-      { label: 'Admin Compliance', path: '/admin/compliance' },
-      { label: 'Admin Agent Management', path: '/admin/agents' },
-      { label: 'SEO Dashboard', path: '/admin/seo' },
-      { label: 'Support Governance', path: '/super-admin/support-governance' },
-      { label: 'Inspections', path: '/admin/inspections' },
-      { label: 'Evidence Verifications', path: '/admin/evidence-verifications' },
-      { label: 'Ledger', path: '/admin/ledger' },
-      { label: 'Withdrawals', path: '/admin/withdrawals' },
-      { label: 'Admin Monitor', path: '/admin/monitor' },
-      { label: 'Live Moderation', path: '/admin/live-moderation' },
-      { label: 'Broadcast (SMS/Email)', path: '/super-admin?tab=broadcast' },
-      { label: 'Appeals', path: '/admin/appeals' },
-      { label: 'Super Transportation Dashboard', path: '/super-admin/transportation' },
-      { label: 'Super Fumigation Dashboard', path: '/super-admin/fumigation-cleaning' },
+      { label: ui("Admin Dashboard"), path: '/admin' },
+      { label: ui("Admin Users"), path: '/admin/users' },
+      { label: ui("Admin Properties"), path: '/admin/properties' },
+      { label: ui("Admin Applications"), path: '/admin/applications' },
+      { label: ui("Admin Verifications"), path: '/admin/verifications' },
+      { label: ui("Admin Compliance"), path: '/admin/compliance' },
+      { label: ui("Admin Agent Management"), path: '/admin/agents' },
+      { label: ui("SEO Dashboard"), path: '/admin/seo' },
+      { label: ui("Support Governance"), path: '/super-admin/support-governance' },
+      { label: ui("Inspections"), path: '/admin/inspections' },
+      { label: ui("Evidence Verifications"), path: '/admin/evidence-verifications' },
+      { label: ui("Ledger"), path: '/admin/ledger' },
+      { label: ui("Withdrawals"), path: '/admin/withdrawals' },
+      { label: ui("Admin Monitor"), path: '/admin/monitor' },
+      { label: ui("Live Moderation"), path: '/admin/live-moderation' },
+      { label: ui("Broadcast (SMS/Email)"), path: '/super-admin?tab=broadcast' },
+      { label: ui("Appeals"), path: '/admin/appeals' },
+      { label: ui("Super Transportation Dashboard"), path: '/super-admin/transportation' },
+      { label: ui("Super Fumigation Dashboard"), path: '/super-admin/fumigation-cleaning' },
     ];
   }
 
   if (userType === 'lga_support_admin') {
     return [
       ...base,
-      { label: 'LGA Support Dashboard', path: '/admin/lga-support-dashboard' },
-      { label: 'Support Tickets', path: '/admin/lga-support-dashboard?tab=tickets' },
+      { label: ui("LGA Support Dashboard"), path: '/admin/lga-support-dashboard' },
+      { label: ui("Support Tickets"), path: '/admin/lga-support-dashboard?tab=tickets' },
     ];
   }
 
   if (userType === 'state_support_admin') {
     return [
       ...base,
-      { label: 'State Support Dashboard', path: '/admin/state-support-dashboard' },
-      { label: 'Support Tickets', path: '/admin/state-support-dashboard?tab=tickets' },
+      { label: ui("State Support Dashboard"), path: '/admin/state-support-dashboard' },
+      { label: ui("Support Tickets"), path: '/admin/state-support-dashboard?tab=tickets' },
     ];
   }
 
   if (userType === 'super_support_admin') {
     return [
       ...base,
-      { label: 'Super Support Dashboard', path: '/admin/super-support-dashboard' },
-      { label: 'Support Tickets', path: '/admin/super-support-dashboard?tab=tickets' },
+      { label: ui("Super Support Dashboard"), path: '/admin/super-support-dashboard' },
+      { label: ui("Support Tickets"), path: '/admin/super-support-dashboard?tab=tickets' },
     ];
   }
 
   if (userType === 'transportation_admin' || userType === 'lga_transportation_admin') {
     return [
       ...base,
-      { label: 'LGA Transportation Dashboard', path: '/admin/transportation' },
-      { label: 'Transportation Bookings', path: '/admin/transportation?tab=bookings' },
+      { label: ui("LGA Transportation Dashboard"), path: '/admin/transportation' },
+      { label: ui("Transportation Bookings"), path: '/admin/transportation?tab=bookings' },
     ];
   }
 
   if (userType === 'state_transportation_admin') {
     return [
       ...base,
-      { label: 'State Transportation Dashboard', path: '/admin/transportation/state' },
-      { label: 'State Transportation Bookings', path: '/admin/transportation/state?tab=bookings' },
+      { label: ui("State Transportation Dashboard"), path: '/admin/transportation/state' },
+      { label: ui("State Transportation Bookings"), path: '/admin/transportation/state?tab=bookings' },
     ];
   }
 
   if (userType === 'super_transportation_admin') {
     return [
       ...base,
-      { label: 'Super Transportation Dashboard', path: '/admin/transportation/super' },
-      { label: 'Super Transportation Bookings', path: '/admin/transportation/super?tab=bookings' },
+      { label: ui("Super Transportation Dashboard"), path: '/admin/transportation/super' },
+      { label: ui("Super Transportation Bookings"), path: '/admin/transportation/super?tab=bookings' },
     ];
   }
 
   if (userType === 'fumigation_admin' || userType === 'lga_fumigation_admin') {
     return [
       ...base,
-      { label: 'LGA Fumigation Dashboard', path: '/admin/fumigation-cleaning' },
-      { label: 'Fumigation Bookings', path: '/admin/fumigation-cleaning#fumigation-bookings' },
+      { label: ui("LGA Fumigation Dashboard"), path: '/admin/fumigation-cleaning' },
+      { label: ui("Fumigation Bookings"), path: '/admin/fumigation-cleaning#fumigation-bookings' },
     ];
   }
 
   if (userType === 'state_fumigation_admin') {
     return [
       ...base,
-      { label: 'State Fumigation Dashboard', path: '/admin/fumigation-cleaning/state' },
-      { label: 'State Fumigation Bookings', path: '/admin/fumigation-cleaning/state#fumigation-bookings' },
+      { label: ui("State Fumigation Dashboard"), path: '/admin/fumigation-cleaning/state' },
+      { label: ui("State Fumigation Bookings"), path: '/admin/fumigation-cleaning/state#fumigation-bookings' },
     ];
   }
 
   if (userType === 'super_fumigation_admin') {
     return [
       ...base,
-      { label: 'Super Fumigation Dashboard', path: '/admin/fumigation-cleaning/super' },
-      { label: 'Super Fumigation Bookings', path: '/admin/fumigation-cleaning/super#fumigation-bookings' },
+      { label: ui("Super Fumigation Dashboard"), path: '/admin/fumigation-cleaning/super' },
+      { label: ui("Super Fumigation Bookings"), path: '/admin/fumigation-cleaning/super#fumigation-bookings' },
     ];
   }
 
   if (userType === 'agent') {
     return [
       ...base,
-      { label: 'Agent Dashboard', path: '/agent/dashboard' },
-      { label: 'Agent Earnings', path: '/agent/earnings' },
-      { label: 'Agent Withdrawals', path: '/agent/withdrawals' },
-      { label: 'My Properties', path: '/my-properties' },
-      { label: 'Add Property', path: '/add-property' },
+      { label: ui("Agent Dashboard"), path: '/agent/dashboard' },
+      { label: ui("Agent Earnings"), path: '/agent/earnings' },
+      { label: ui("Agent Withdrawals"), path: '/agent/withdrawals' },
+      { label: ui("My Properties"), path: '/my-properties' },
+      { label: ui("Add Property"), path: '/add-property' },
     ];
   }
 
   if (userType === 'lawyer') {
     return [
       ...base,
-      { label: 'Lawyer Dashboard', path: '/lawyer' },
-      { label: 'Case Verification', path: '/verify-case' },
+      { label: ui("Lawyer Dashboard"), path: '/lawyer' },
+      { label: ui("Case Verification"), path: '/verify-case' },
     ];
   }
 
   if (userType === 'state_lawyer') {
     return [
       ...base,
-      { label: 'State Lawyer Dashboard', path: '/lawyer/state' },
-      { label: 'Case Verification', path: '/verify-case' },
+      { label: ui("State Lawyer Dashboard"), path: '/lawyer/state' },
+      { label: ui("Case Verification"), path: '/verify-case' },
     ];
   }
 
   if (userType === 'super_lawyer') {
     return [
       ...base,
-      { label: 'Super Lawyer Dashboard', path: '/lawyer/super' },
-      { label: 'Case Verification', path: '/verify-case' },
+      { label: ui("Super Lawyer Dashboard"), path: '/lawyer/super' },
+      { label: ui("Case Verification"), path: '/verify-case' },
     ];
   }
 
   if (userType === 'landlord') {
     return [
       ...base,
-      { label: 'Landlord Dashboard', path: '/dashboard' },
-      { label: 'My Properties', path: '/my-properties' },
-      { label: 'Add Property', path: '/add-property' },
+      { label: ui("Landlord Dashboard"), path: '/dashboard' },
+      { label: ui("My Properties"), path: '/my-properties' },
+      { label: ui("Add Property"), path: '/add-property' },
     ];
   }
 
@@ -288,9 +290,10 @@ const makeProtectedFeatures = (
 };
 
 const NativeToolsScreen = ({ navigation }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const { user, isAuthenticated } = useContext(AuthContext);
 
-  const publicFeatures = useMemo(() => makePublicFeatures(), []);
+  const publicFeatures = useMemo(() => makePublicFeatures(), [interfaceLanguage]);
   const protectedFeatures = useMemo(
     () =>
       makeProtectedFeatures(
@@ -303,7 +306,7 @@ const NativeToolsScreen = ({ navigation }) => {
       user?.assigned_state,
       user?.is_recruitment_admin,
       user?.user_type,
-    ]
+    , interfaceLanguage]
   );
 
   const dashboardTarget = {
@@ -493,8 +496,8 @@ const NativeToolsScreen = ({ navigation }) => {
     }
     Toast.show({
       type: 'info',
-      text1: 'Native screen unavailable here',
-      text2: 'This tool is not registered for your current app role.',
+      text1: ui("Native screen unavailable here"),
+      text2: ui("This tool is not registered for your current app role."),
     });
   };
 
@@ -516,18 +519,18 @@ const NativeToolsScreen = ({ navigation }) => {
   return (
     <DashboardScreen>
       <DashboardHero
-        eyebrow="ADDITIONAL TOOLS"
-        title="Everything in one place"
-        subtitle="Native experiences open in the app with role-aware routing, so users stay in the APK."
+        eyebrow={ui("ADDITIONAL TOOLS")}
+        title={ui("Everything in one place")}
+        subtitle={ui("Native experiences open in the app with role-aware routing, so users stay in the APK.")}
         icon="apps-outline"
       />
 
-      <DashboardSection title="Public information">
+      <DashboardSection title={ui("Public information")}>
         {publicFeatures.map((item) => renderFeature(item, 'public'))}
       </DashboardSection>
 
       {isAuthenticated ? (
-        <DashboardSection title="Account and role tools">
+        <DashboardSection title={ui("Account and role tools")}>
           {protectedFeatures.map((item) => renderFeature(item, 'protected'))}
         </DashboardSection>
       ) : null}

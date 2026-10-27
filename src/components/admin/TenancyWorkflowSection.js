@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import { typeScale } from '../../theme';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -9,6 +11,7 @@ import { getErrorMessage, pickList } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
 const TenancyWorkflowSection = ({ title = 'Tenancy Grace and Refund Enablement' }) => {
+  useInterfaceLanguage();
   const [loading, setLoading] = useState(false);
   const [graceRequests, setGraceRequests] = useState([]);
   const [relocationRefunds, setRelocationRefunds] = useState([]);
@@ -35,7 +38,7 @@ const TenancyWorkflowSection = ({ title = 'Tenancy Grace and Refund Enablement' 
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Load failed',
+        text1: ui("Load failed"),
         text2: getErrorMessage(error, 'Could not load tenancy workflow'),
       });
     } finally {
@@ -55,12 +58,12 @@ const TenancyWorkflowSection = ({ title = 'Tenancy Grace and Refund Enablement' 
         action,
         admin_note: notes[key] || undefined,
       });
-      Toast.show({ type: 'success', text1: action === 'enable' ? 'Grace enabled' : 'Grace rejected' });
+      Toast.show({ type: 'success', text1: action === "enable" ? ui("Grace enabled") : ui("Grace rejected") });
       await loadRequests();
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Action failed',
+        text1: ui("Action failed"),
         text2: getErrorMessage(error, 'Could not review grace request'),
       });
     } finally {
@@ -78,13 +81,13 @@ const TenancyWorkflowSection = ({ title = 'Tenancy Grace and Refund Enablement' 
       });
       Toast.show({
         type: 'success',
-        text1: action === 'enable' ? 'Refund enabled' : 'Refund rejected',
+        text1: action === "enable" ? ui("Refund enabled") : ui("Refund rejected"),
       });
       await loadRequests();
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Action failed',
+        text1: ui("Action failed"),
         text2: getErrorMessage(error, 'Could not review refund'),
       });
     } finally {
@@ -95,36 +98,35 @@ const TenancyWorkflowSection = ({ title = 'Tenancy Grace and Refund Enablement' 
   return (
     <View style={styles.wrap}>
       <AppText style={styles.heading}>{title}</AppText>
-      <AppText style={styles.subheading}>
-        Pending grace: {graceRequests.length} · Pending relocation refunds:{' '}
+      <AppText style={styles.subheading}>{ui("Pending grace:")}{graceRequests.length}{ui(" · Pending relocation refunds:")}{' '}
         {relocationRefunds.length}
       </AppText>
-      <Button title="Refresh" onPress={loadRequests} loading={loading} />
+      <Button title={ui("Refresh")} onPress={loadRequests} loading={loading} />
 
-      <AppText style={styles.sectionTitle}>Grace Period Requests</AppText>
+      <AppText style={styles.sectionTitle}>{ui("Grace Period Requests")}</AppText>
       {graceRequests.length === 0 ? (
-        <AppText style={styles.meta}>No pending grace requests.</AppText>
+        <AppText style={styles.meta}>{ui("No pending grace requests.")}</AppText>
       ) : (
         graceRequests.map((item) => {
           const key = `grace_${item.id}`;
           return (
             <View key={item.id} style={styles.card}>
               <AppText style={styles.cardTitle}>
-                {item.tenant_name || 'Tenant'} · {item.property_title || 'Property'}
+                {item.tenant_name || ui("Tenant")} · {item.property_title || ui("Property")}
               </AppText>
-              <AppText style={styles.meta}>Status: {item.status}</AppText>
+              <AppText style={styles.meta}>{ui("Status: ")}{item.status}</AppText>
               <TextInput
                 style={styles.input}
-                placeholder="Admin note (optional)"
+                placeholder={ui("Admin note (optional)")}
                 value={notes[key] || ''}
                 onChangeText={(value) => setNotes((prev) => ({ ...prev, [key]: value }))}
               />
               <View style={styles.row}>
                 <TouchableOpacity onPress={() => reviewGrace(item.id, 'enable')}>
-                  <AppText style={styles.link}>Enable</AppText>
+                  <AppText style={styles.link}>{ui("Enable")}</AppText>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => reviewGrace(item.id, 'reject')}>
-                  <AppText style={styles.danger}>Reject</AppText>
+                  <AppText style={styles.danger}>{ui("Reject")}</AppText>
                 </TouchableOpacity>
               </View>
             </View>
@@ -132,30 +134,30 @@ const TenancyWorkflowSection = ({ title = 'Tenancy Grace and Refund Enablement' 
         })
       )}
 
-      <AppText style={styles.sectionTitle}>Relocation Refunds</AppText>
+      <AppText style={styles.sectionTitle}>{ui("Relocation Refunds")}</AppText>
       {relocationRefunds.length === 0 ? (
-        <AppText style={styles.meta}>No pending relocation refunds.</AppText>
+        <AppText style={styles.meta}>{ui("No pending relocation refunds.")}</AppText>
       ) : (
         relocationRefunds.map((item) => {
           const key = `refund_${item.id}`;
           return (
             <View key={item.id} style={styles.card}>
               <AppText style={styles.cardTitle}>
-                {item.tenant_name || 'Tenant'} · ₦{Number(item.amount || 0).toLocaleString()}
+                {item.tenant_name || ui("Tenant")} · ₦{Number(item.amount || 0).toLocaleString()}
               </AppText>
-              <AppText style={styles.meta}>Status: {item.status}</AppText>
+              <AppText style={styles.meta}>{ui("Status: ")}{item.status}</AppText>
               <TextInput
                 style={styles.input}
-                placeholder="Admin note (optional)"
+                placeholder={ui("Admin note (optional)")}
                 value={notes[key] || ''}
                 onChangeText={(value) => setNotes((prev) => ({ ...prev, [key]: value }))}
               />
               <View style={styles.row}>
                 <TouchableOpacity onPress={() => reviewRefund(item.id, 'enable')}>
-                  <AppText style={styles.link}>Enable</AppText>
+                  <AppText style={styles.link}>{ui("Enable")}</AppText>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => reviewRefund(item.id, 'reject')}>
-                  <AppText style={styles.danger}>Reject</AppText>
+                  <AppText style={styles.danger}>{ui("Reject")}</AppText>
                 </TouchableOpacity>
               </View>
             </View>

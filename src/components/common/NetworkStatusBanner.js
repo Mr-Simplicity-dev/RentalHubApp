@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useState } from 'react';
 import {StyleSheet, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -17,6 +19,7 @@ import {
 } from '../../services/offlineActionQueueService';
 
 const NetworkStatusBanner = () => {
+  useInterfaceLanguage();
   const [status, setStatus] = useState(getNetworkSnapshot());
   const [settings, setSettings] = useState(DEFAULT_APP_SETTINGS);
   const [queue, setQueue] = useState(getOfflineQueueSnapshot());
@@ -41,7 +44,7 @@ const NetworkStatusBanner = () => {
         {queue.flushing
           ? 'Connection restored. Replaying saved actions now.'
           : queue.pendingCount
-            ? `${queue.pendingCount} action${queue.pendingCount === 1 ? '' : 's'} saved for retry when connection returns.`
+            ? ui("{value0} action{value1} saved for retry when connection returns.", {value0: (queue.pendingCount), value1: (queue.pendingCount === 1 ? '' : ui("s"))})
             : status.weak
               ? 'Network is weak. Some updates may take longer.'
               : 'You appear offline. We will retry when connection returns.'}

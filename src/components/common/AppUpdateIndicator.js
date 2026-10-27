@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useState } from 'react';
 import {ActivityIndicator,
   DeviceEventEmitter,
@@ -22,6 +24,7 @@ const CHECK_INTERVAL_MS = 4 * 60 * 60 * 1000;
 const UPDATE_PROGRESS_EVENT = 'rentalHubUpdateProgress';
 
 const AppUpdateIndicator = ({ variant = 'floating' }) => {
+  useInterfaceLanguage();
   const insets = useSafeAreaInsets();
   const isInline = variant === 'inline' || variant === 'overlay';
   const isOverlay = variant === 'overlay';
@@ -97,7 +100,7 @@ const AppUpdateIndicator = ({ variant = 'floating' }) => {
       trackMobileEvent('app_update_start_failed', {
         latest_version: versionState.latest_version,
         source,
-        message: error?.message || 'Unknown update error',
+        message: error?.message || ui("Unknown update error"),
       });
     } finally {
       setUpdating(false);
@@ -119,7 +122,7 @@ const AppUpdateIndicator = ({ variant = 'floating' }) => {
   if (dismissed) {
     return (
       <TouchableOpacity
-        accessibilityLabel="App update available"
+        accessibilityLabel={ui("App update available")}
         accessibilityRole="button"
         activeOpacity={0.86}
         onPress={() => setDismissed(false)}
@@ -137,7 +140,7 @@ const AppUpdateIndicator = ({ variant = 'floating' }) => {
           <View style={styles.dot} />
         </View>
         <Icon name="sparkles-outline" size={14} color={colors.white} />
-        <AppText style={styles.dotLabel}>Update</AppText>
+        <AppText style={styles.dotLabel}>{ui("Update")}</AppText>
       </TouchableOpacity>
     );
   }
@@ -154,14 +157,14 @@ const AppUpdateIndicator = ({ variant = 'floating' }) => {
         <AppText style={[styles.bannerTitle, isInline ? styles.textCenter : null]}>{title}</AppText>
         <AppText style={[styles.bannerText, isInline ? styles.textCenter : null]}>
           {message}
-          {versionState.latest_version ? ` Latest: ${versionState.latest_version}.` : ''}
+          {versionState.latest_version ? ui(" Latest: {value0}.", {value0: (versionState.latest_version)}) : ''}
         </AppText>
         {downloadComplete ? (
           <View style={[styles.progressWrap, isInline ? styles.progressWrapInline : null]}>
             <View style={styles.progressTrack}>
               <View style={[styles.progressFill, { width: '100%' }]} />
             </View>
-            <AppText style={[styles.progressText, isInline ? styles.textCenter : null]}>Download complete — opening installer…</AppText>
+            <AppText style={[styles.progressText, isInline ? styles.textCenter : null]}>{ui("Download complete — opening installer…")}</AppText>
           </View>
         ) : updating && downloadProgress ? (
           <View style={[styles.progressWrap, isInline ? styles.progressWrapInline : null]}>
@@ -171,7 +174,7 @@ const AppUpdateIndicator = ({ variant = 'floating' }) => {
             <AppText style={[styles.progressText, isInline ? styles.textCenter : null]}>
               {downloadProgress.indeterminate
                 ? 'Downloading update…'
-                : `Downloading update… ${downloadProgress.progress || 0}%`}
+                : ui("Downloading update… {value0}%", {value0: (downloadProgress.progress || 0)})}
             </AppText>
           </View>
         ) : null}
@@ -188,7 +191,7 @@ const AppUpdateIndicator = ({ variant = 'floating' }) => {
               <Icon name="download-outline" size={15} color={colors.navy} />
             )}
             <AppText style={styles.primaryButtonText}>
-              {updating ? 'Starting...' : directApkAvailable ? 'Install update' : 'Update now'}
+              {updating ? ui("Starting...") : directApkAvailable ? 'Install update' : 'Update now'}
             </AppText>
           </TouchableOpacity>
           <TouchableOpacity
@@ -207,7 +210,7 @@ const AppUpdateIndicator = ({ variant = 'floating' }) => {
             ]}
           >
             <AppText style={styles.secondaryButtonText}>
-              {versionState.update_required ? 'Required' : 'Later'}
+              {versionState.update_required ? ui("Required") : ui("Later")}
             </AppText>
           </TouchableOpacity>
         </View>

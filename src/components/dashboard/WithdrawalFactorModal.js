@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useState } from 'react';
 import { Modal, StyleSheet, View } from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -9,6 +11,7 @@ import { colors, radius, typography, typeScale } from '../../theme';
 import AppText from '../common/AppText';
 
 const WithdrawalFactorModal = ({ method, onVerified, onCancel }) => {
+  useInterfaceLanguage();
   const [code, setCode] = useState('');
   const [sending, setSending] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -19,9 +22,9 @@ const WithdrawalFactorModal = ({ method, onVerified, onCancel }) => {
     setError('');
     try {
       await authService.sendWithdrawalOtp();
-      Toast.show({ type: 'success', text1: 'Code sent', text2: 'A verification code was sent to your phone.' });
+      Toast.show({ type: 'success', text1: ui("Code sent"), text2: ui("A verification code was sent to your phone.") });
     } catch (sendError) {
-      setError(getErrorMessage(sendError, 'Could not send the code. Please try again.'));
+      setError(getErrorMessage(sendError, ui("Could not send the code. Please try again.")));
     } finally {
       setSending(false);
     }
@@ -44,7 +47,7 @@ const WithdrawalFactorModal = ({ method, onVerified, onCancel }) => {
     try {
       await onVerified(code.trim());
     } catch (verifyError) {
-      setError(getErrorMessage(verifyError, 'Verification failed. Please try again.'));
+      setError(getErrorMessage(verifyError, ui("Verification failed. Please try again.")));
       setCode('');
     } finally {
       setBusy(false);
@@ -56,16 +59,14 @@ const WithdrawalFactorModal = ({ method, onVerified, onCancel }) => {
       <View style={styles.overlay}>
         <View style={styles.card}>
           <View style={styles.header}>
-            <AppText style={styles.title}>Security Check</AppText>
-            <AppText style={styles.subtitle}>
-              Two-factor authentication is required to continue this withdrawal.
-            </AppText>
+            <AppText style={styles.title}>{ui("Security Check")}</AppText>
+            <AppText style={styles.subtitle}>{ui("Two-factor authentication is required to continue this withdrawal.")}</AppText>
           </View>
 
           <AppText style={styles.body}>
             {method === 'totp'
-              ? 'Enter the 6-digit code from your authenticator app (e.g. Google Authenticator).'
-              : 'We sent a verification code to your phone. Enter it below to continue.'}
+              ? ui("Enter the 6-digit code from your authenticator app (e.g. Google Authenticator).")
+              : ui("We sent a verification code to your phone. Enter it below to continue.")}
           </AppText>
 
           <Input
@@ -81,9 +82,9 @@ const WithdrawalFactorModal = ({ method, onVerified, onCancel }) => {
 
           {error ? <AppText style={styles.error}>{error}</AppText> : null}
 
-          {method === 'sms' ? (
+          {method === "sms" ? (
             <Button
-              title={sending ? 'Sending code…' : 'Resend code'}
+              title={sending ? ui("Sending code…") : ui("Resend code")}
               variant="outline"
               disabled={sending}
               style={styles.resend}
@@ -92,9 +93,9 @@ const WithdrawalFactorModal = ({ method, onVerified, onCancel }) => {
           ) : null}
 
           <View style={styles.actions}>
-            <Button title="Cancel" variant="outline" onPress={onCancel} disabled={busy} style={styles.action} />
+            <Button title={ui("Cancel")} variant="outline" onPress={onCancel} disabled={busy} style={styles.action} />
             <Button
-              title={busy ? 'Verifying…' : 'Verify & Continue'}
+              title={busy ? ui("Verifying…") : ui("Verify & Continue")}
               onPress={handleVerify}
               loading={busy}
               style={styles.action}

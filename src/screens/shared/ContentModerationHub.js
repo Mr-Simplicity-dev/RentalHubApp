@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useCallback, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -25,6 +27,7 @@ const conditionTypeLabel = (value) => {
 };
 
 const ContentModerationHub = () => {
+  useInterfaceLanguage();
   const [tab, setTab] = useState('flagged');
   const [flagged, setFlagged] = useState([]);
   const [damage, setDamage] = useState([]);
@@ -38,7 +41,7 @@ const ContentModerationHub = () => {
     } catch (err) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(err, 'Could not load flagged messages'),
       });
     }
@@ -52,8 +55,8 @@ const ContentModerationHub = () => {
     } catch (err) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
-        text2: getErrorMessage(err, 'Could not load property reports'),
+        text1: ui("Failed"),
+        text2: getErrorMessage(err, ui("Could not load property reports")),
       });
       setDamage([]);
     } finally {
@@ -73,13 +76,13 @@ const ContentModerationHub = () => {
     try {
       const res = await contentModerationService.clearFlaggedMessage(id);
       if (res?.success) {
-        Toast.show({ type: 'success', text1: 'Flag cleared' });
+        Toast.show({ type: 'success', text1: ui("Flag cleared") });
         await loadFlagged();
       }
     } catch (err) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(err, 'Could not clear the flag'),
       });
     } finally {
@@ -95,13 +98,13 @@ const ContentModerationHub = () => {
           ? await contentModerationService.publishDamageReport(report.id)
           : await contentModerationService.unpublishDamageReport(report.id);
       if (res?.success) {
-        Toast.show({ type: 'success', text1: `Report ${action}d` });
+        Toast.show({ type: 'success', text1: ui("Report {value0}d", {value0: (ui(action))}) });
         await loadDamage();
       }
     } catch (err) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(err, `Could not ${action} the report`),
       });
     } finally {
@@ -117,19 +120,19 @@ const ContentModerationHub = () => {
         refreshing={false}
         onRefresh={loadFlagged}
         header={moderationHeader(tab, setTab)}
-        emptyTitle="No flagged messages"
-        emptyMessage="Messages flagged for review will appear here."
+        emptyTitle={ui("No flagged messages")}
+        emptyMessage={ui("Messages flagged for review will appear here.")}
         emptyIcon="flag-outline"
         renderItem={({ item }) => (
           <PremiumCard>
-            <AppText style={styles.cardTitle}>{item.subject || 'Message'}</AppText>
+            <AppText style={styles.cardTitle}>{item.subject || ui("Message")}</AppText>
             <AppText style={styles.cardText}>{item.message_text || ''}</AppText>
-            <InfoRow icon="person-outline" label="Sender" value={item.sender_name || `User #${item.sender_id}`} />
+            <InfoRow icon="person-outline" label={ui("Sender")} value={item.sender_name || `User #${item.sender_id}`} />
             {item.flagged_reason ? (
-              <InfoRow icon="warning-outline" label="Reason" value={item.flagged_reason} />
+              <InfoRow icon="warning-outline" label={ui("Reason")} value={item.flagged_reason} />
             ) : null}
             <PremiumButton
-              title="Clear flag"
+              title={ui("Clear flag")}
               onPress={() => clearFlag(item.id)}
               loading={busyKey === `flag-${item.id}`}
               variant="secondary"
@@ -143,7 +146,7 @@ const ContentModerationHub = () => {
   }
 
   if (loading && damage.length === 0) {
-    return <PremiumCenter loading title="Loading property reports" />;
+    return <PremiumCenter loading title={ui("Loading property reports")} />;
   }
 
   return (
@@ -153,27 +156,27 @@ const ContentModerationHub = () => {
       refreshing={loading}
       onRefresh={loadDamage}
       header={moderationHeader(tab, setTab)}
-      emptyTitle="No property reports"
-      emptyMessage="Property reports across the platform will appear here."
+      emptyTitle={ui("No property reports")}
+      emptyMessage={ui("Property reports across the platform will appear here.")}
       emptyIcon="warning-outline"
       renderItem={({ item }) => (
         <PremiumCard>
           <View style={styles.rowBetween}>
             <View style={{ flex: 1 }}>
-              <AppText style={styles.cardTitle}>{item.property_title || `Property #${item.property_id}`}</AppText>
-              {item.reporter_name ? <AppText style={styles.cardMeta}>Reported by {item.reporter_name}</AppText> : null}
+              <AppText style={styles.cardTitle}>{item.property_title || ui("Property #{value0}", {value0: (item.property_id)})}</AppText>
+              {item.reporter_name ? <AppText style={styles.cardMeta}>{ui("Reported by ")}{item.reporter_name}</AppText> : null}
             </View>
             <StatusPill label={item.status || 'draft'} color={item.status === 'published' ? colors.success : colors.blue} />
           </View>
           <AppText style={styles.cardText}>
-            {[item.report_title, conditionTypeLabel(item.damage_type)].filter(Boolean).join(' · ') || `Report #${item.id}`}
+            {[item.report_title, conditionTypeLabel(item.damage_type)].filter(Boolean).join(' · ') || ui("Report #{value0}", {value0: (item.id)})}
           </AppText>
           {item.description ? <AppText style={styles.cardMeta}>{item.description}</AppText> : null}
-          {item.severity ? <InfoRow icon="warning-outline" label="Severity" value={item.severity} /> : null}
+          {item.severity ? <InfoRow icon="warning-outline" label={ui("Severity")} value={item.severity} /> : null}
           <View style={styles.actions}>
             {item.status !== 'published' ? (
               <PremiumButton
-                title="Publish"
+                title={ui("Publish")}
                 onPress={() => toggleDamage(item, 'publish')}
                 loading={busyKey === `${item.id}-publish`}
                 icon="eye-outline"
@@ -181,7 +184,7 @@ const ContentModerationHub = () => {
               />
             ) : (
               <PremiumButton
-                title="Unpublish"
+                title={ui("Unpublish")}
                 variant="secondary"
                 onPress={() => toggleDamage(item, 'unpublish')}
                 loading={busyKey === `${item.id}-unpublish`}
@@ -199,9 +202,9 @@ const ContentModerationHub = () => {
 const moderationHeader = (tab, setTab) => (
   <>
     <PremiumHero
-      eyebrow="Moderation"
-      title="Content moderation"
-      subtitle="Clear flagged messages and publish or unpublish property reports."
+      eyebrow={ui("Moderation")}
+      title={ui("Content moderation")}
+      subtitle={ui("Clear flagged messages and publish or unpublish property reports.")}
       icon="shield-checkmark-outline"
     />
     <View style={styles.tabRow}>
@@ -215,7 +218,7 @@ const moderationHeader = (tab, setTab) => (
             style={[styles.tab, active && styles.tabActive]}
           >
             <AppText style={[styles.tabText, active && styles.tabTextActive]}>
-              {key === 'flagged' ? 'Flagged messages' : 'Property reports'}
+              {key === 'flagged' ? 'Flagged messages' : ui("Property reports")}
             </AppText>
           </TouchableOpacity>
         );

@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import Toast from 'react-native-toast-message';
 import { agentService } from '../../services/agentService';
@@ -11,11 +13,12 @@ import {
 } from '../../components/dashboard/DashboardKit';
 
 const AgentDashboardScreen = ({ navigation }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const [profile, setProfile] = useState(null);
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: navigation.canGoBack() });
-  }, [navigation]);
+  }, [navigation, interfaceLanguage]);
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -25,7 +28,7 @@ const AgentDashboardScreen = ({ navigation }) => {
       } catch (error) {
         Toast.show({
           type: 'error',
-          text1: 'Failed',
+          text1: ui("Failed"),
           text2: getErrorMessage(error, 'Could not load agent profile'),
         });
       }
@@ -39,66 +42,66 @@ const AgentDashboardScreen = ({ navigation }) => {
   return (
     <DashboardScreen>
       <DashboardHero
-        eyebrow="AGENT WORKSPACE"
-        title="Your operations hub"
-        subtitle="Manage delegated properties, commissions and payouts."
+        eyebrow={ui("AGENT WORKSPACE")}
+        title={ui("Your operations hub")}
+        subtitle={ui("Manage delegated properties, commissions and payouts.")}
         icon="briefcase-outline"
       />
 
       {!assignment ? (
         <DashboardNotice
           variant="warning"
-          title="No active assignment yet"
-          message="Your account is active but not yet linked to a landlord profile."
+          title={ui("No active assignment yet")}
+          message={ui("Your account is active but not yet linked to a landlord profile.")}
           tourTarget="agent_assignment"
         />
       ) : (
         <DashboardNotice
-          title={`Assigned to ${assignment.landlord_name || 'your landlord'}`}
+          title={ui("Assigned to {value0}", {value0: (assignment.landlord_name || ui("your landlord"))})}
           tourTarget="agent_assignment"
           message={[assignment.landlord_email, assignment.landlord_phone].filter(Boolean).join(' • ') || 'Contact details are not available.'}
         />
       )}
 
       <DashboardSection
-        title="Daily operations"
-        subtitle="The tools you are most likely to need while managing listings."
+        title={ui("Daily operations")}
+        subtitle={ui("The tools you are most likely to need while managing listings.")}
         tourTarget="agent_properties"
       >
         <ActionRow
-          title="Manage Properties"
-          subtitle="Create and update landlord listings"
+          title={ui("Manage Properties")}
+          subtitle={ui("Create and update landlord listings")}
           icon="business-outline"
           onPress={() => navigation.navigate('MyProperties')}
         />
         <ActionRow
-          title="Add Property"
-          subtitle="Publish a new listing"
+          title={ui("Add Property")}
+          subtitle={ui("Publish a new listing")}
           icon="add-circle-outline"
           onPress={() => navigation.navigate('AddProperty')}
         />
         <ActionRow
-          title="Messages & Disputes"
-          subtitle="Handle routine coordination tasks"
+          title={ui("Messages & Disputes")}
+          subtitle={ui("Handle routine coordination tasks")}
           icon="chatbubbles-outline"
           onPress={() => navigation.navigate('Messages')}
         />
       </DashboardSection>
 
       <DashboardSection
-        title="Earnings"
-        subtitle="Review commission activity and request payouts."
+        title={ui("Earnings")}
+        subtitle={ui("Review commission activity and request payouts.")}
       >
         <ActionRow
-          title="Commission Ledger"
-          subtitle="View earnings and transaction history"
+          title={ui("Commission Ledger")}
+          subtitle={ui("View earnings and transaction history")}
           icon="trending-up-outline"
           tourTarget="agent_commissions"
           onPress={() => navigation.navigate('AgentEarnings')}
         />
         <ActionRow
-          title="Withdrawal Requests"
-          subtitle="Request payout from earned commissions"
+          title={ui("Withdrawal Requests")}
+          subtitle={ui("Request payout from earned commissions")}
           icon="wallet-outline"
           tourTarget="agent_withdrawals"
           onPress={() => navigation.navigate('AgentWithdrawals')}
@@ -106,12 +109,12 @@ const AgentDashboardScreen = ({ navigation }) => {
       </DashboardSection>
 
       <DashboardSection
-        title="Account"
-        subtitle="Manage your agent profile and assigned location."
+        title={ui("Account")}
+        subtitle={ui("Manage your agent profile and assigned location.")}
       >
         <ActionRow
-          title="State Migration"
-          subtitle="Request a move to a new assigned state"
+          title={ui("State Migration")}
+          subtitle={ui("Request a move to a new assigned state")}
           icon="swap-horizontal-outline"
           onPress={() => navigation.navigate('StateMigration')}
         />

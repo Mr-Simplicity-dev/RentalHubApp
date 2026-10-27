@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import {ActivityIndicator,
   FlatList,
@@ -24,6 +26,7 @@ const notificationVisual = (type = '') => {
 };
 
 const NotificationsScreen = ({ navigation }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -31,11 +34,11 @@ const NotificationsScreen = ({ navigation }) => {
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
-  }, [navigation]);
+  }, [navigation, interfaceLanguage]);
 
   const unreadCount = useMemo(
     () => items.filter((item) => !item.is_read).length,
-    [items]
+    [items, interfaceLanguage]
   );
 
   const loadNotifications = async ({ refresh = false } = {}) => {
@@ -46,8 +49,8 @@ const NotificationsScreen = ({ navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Could not load notifications',
-        text2: getErrorMessage(error, 'Please try again.'),
+        text1: ui("Could not load notifications"),
+        text2: getErrorMessage(error, ui("Please try again.")),
       });
     } finally {
       setLoading(false);
@@ -74,8 +77,8 @@ const NotificationsScreen = ({ navigation }) => {
       );
       Toast.show({
         type: 'error',
-        text1: 'Could not mark notification',
-        text2: getErrorMessage(error, 'Please try again.'),
+        text1: ui("Could not mark notification"),
+        text2: getErrorMessage(error, ui("Please try again.")),
       });
     } finally {
       setBusyId(null);
@@ -89,13 +92,13 @@ const NotificationsScreen = ({ navigation }) => {
     try {
       await notificationService.markAllAsRead();
       void syncAppIconBadge('notifications_marked_all_read').catch(() => {});
-      Toast.show({ type: 'success', text1: 'You’re all caught up' });
+      Toast.show({ type: 'success', text1: ui("You’re all caught up") });
     } catch (error) {
       setItems(previous);
       Toast.show({
         type: 'error',
-        text1: 'Could not update notifications',
-        text2: getErrorMessage(error, 'Please try again.'),
+        text1: ui("Could not update notifications"),
+        text2: getErrorMessage(error, ui("Please try again.")),
       });
     }
   };
@@ -110,8 +113,8 @@ const NotificationsScreen = ({ navigation }) => {
       setItems(previous);
       Toast.show({
         type: 'error',
-        text1: 'Could not delete notification',
-        text2: getErrorMessage(error, 'Please try again.'),
+        text1: ui("Could not delete notification"),
+        text2: getErrorMessage(error, ui("Please try again.")),
       });
     }
   };
@@ -120,14 +123,14 @@ const NotificationsScreen = ({ navigation }) => {
     <SafeAreaView edges={['top']} style={styles.safeArea}>
       <View style={styles.header}>
         <TouchableOpacity
-          accessibilityLabel="Go back"
+          accessibilityLabel={ui("Go back")}
           onPress={() => navigation.goBack()}
           style={styles.backButton}>
           <Icon name="arrow-back" size={22} color={colors.navy} />
         </TouchableOpacity>
         <View style={styles.headerCopy}>
-          <AppText style={styles.eyebrow}>UPDATES</AppText>
-          <AppText style={styles.title}>Notifications</AppText>
+          <AppText style={styles.eyebrow}>{ui("UPDATES")}</AppText>
+          <AppText style={styles.title}>{ui("Notifications")}</AppText>
         </View>
         <TouchableOpacity
           disabled={!unreadCount}
@@ -144,7 +147,7 @@ const NotificationsScreen = ({ navigation }) => {
         ListHeaderComponent={
           !loading && items.length ? (
             <AppText style={styles.summary}>
-              {unreadCount ? `${unreadCount} unread update${unreadCount === 1 ? '' : 's'}` : 'You’re all caught up'}
+              {unreadCount ? ui("{value0} unread update{value1}", {value0: (unreadCount), value1: (unreadCount === 1 ? '' : ui("s"))}) : ui("You’re all caught up")}
             </AppText>
           ) : null
         }
@@ -152,17 +155,15 @@ const NotificationsScreen = ({ navigation }) => {
           loading ? (
             <View style={styles.center}>
               <ActivityIndicator color={colors.blue} size="large" />
-              <AppText style={styles.loadingText}>Loading updates…</AppText>
+              <AppText style={styles.loadingText}>{ui("Loading updates…")}</AppText>
             </View>
           ) : (
             <View style={styles.center}>
               <View style={styles.emptyIcon}>
                 <Icon name="notifications-off-outline" size={31} color={colors.blue} />
               </View>
-              <AppText style={styles.emptyTitle}>Quiet for now</AppText>
-              <AppText style={styles.emptyText}>
-                Important property, payment and account updates will appear here.
-              </AppText>
+              <AppText style={styles.emptyTitle}>{ui("Quiet for now")}</AppText>
+              <AppText style={styles.emptyText}>{ui("Important property, payment and account updates will appear here.")}</AppText>
             </View>
           )
         }
@@ -187,7 +188,7 @@ const NotificationsScreen = ({ navigation }) => {
               <View style={styles.cardBody}>
                 <View style={styles.cardHeading}>
                   <AppText style={styles.cardTitle} numberOfLines={1}>
-                    {item.title || item.notification_type || 'Update'}
+                    {item.title || item.notification_type || ui("Update")}
                   </AppText>
                   {!item.is_read ? <View style={styles.unreadDot} /> : null}
                 </View>
@@ -197,7 +198,7 @@ const NotificationsScreen = ({ navigation }) => {
                 </AppText>
               </View>
               <TouchableOpacity
-                accessibilityLabel="Delete notification"
+                accessibilityLabel={ui("Delete notification")}
                 onPress={(event) => {
                   event.stopPropagation();
                   removeOne(item.id);

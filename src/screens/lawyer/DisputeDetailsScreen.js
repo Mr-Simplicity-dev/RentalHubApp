@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import TextInput from '../../components/common/AppTextInput';
@@ -12,13 +14,14 @@ import { buildUploadUrl, getErrorMessage, pickObject } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
 const DisputeDetailsScreen = ({ navigation, route }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const disputeId = route?.params?.disputeId;
   const [loading, setLoading] = useState(true);
   const [payload, setPayload] = useState(null);
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
-  }, [navigation]);
+  }, [navigation, interfaceLanguage]);
 
   const loadDispute = async () => {
     if (!disputeId) {
@@ -33,7 +36,7 @@ const DisputeDetailsScreen = ({ navigation, route }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(error, 'Could not load dispute details'),
       });
     } finally {
@@ -60,7 +63,7 @@ const DisputeDetailsScreen = ({ navigation, route }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Could not send',
+        text1: ui("Could not send"),
         text2: getErrorMessage(error, 'Your message was not sent'),
       });
     } finally {
@@ -77,12 +80,12 @@ const DisputeDetailsScreen = ({ navigation, route }) => {
 
       setUploadingEvidence(true);
       await legalService.uploadDisputeEvidence(disputeId, result.assets[0]);
-      Toast.show({ type: 'success', text1: 'Evidence uploaded' });
+      Toast.show({ type: 'success', text1: ui("Evidence uploaded") });
       await loadDispute();
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Upload failed',
+        text1: ui("Upload failed"),
         text2: getErrorMessage(error, 'Could not upload this file'),
       });
     } finally {
@@ -101,7 +104,7 @@ const DisputeDetailsScreen = ({ navigation, route }) => {
   if (!payload?.dispute) {
     return (
       <View style={styles.center}>
-        <AppText style={styles.emptyText}>Dispute details are unavailable.</AppText>
+        <AppText style={styles.emptyText}>{ui("Dispute details are unavailable.")}</AppText>
       </View>
     );
   }
@@ -116,7 +119,7 @@ const DisputeDetailsScreen = ({ navigation, route }) => {
         <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
           <Icon name="arrow-back" size={21} color={colors.ink} />
         </TouchableOpacity>
-        <AppText style={styles.topTitle}>Case file</AppText>
+        <AppText style={styles.topTitle}>{ui("Case file")}</AppText>
         <TouchableOpacity style={styles.refreshButton} onPress={loadDispute}>
           <Icon name="refresh" size={20} color={colors.blue} />
         </TouchableOpacity>
@@ -124,17 +127,17 @@ const DisputeDetailsScreen = ({ navigation, route }) => {
       <View style={styles.headerCard}>
         <View style={styles.caseTop}>
           <View style={styles.caseIcon}><Icon name="shield-checkmark-outline" size={23} color={colors.gold} /></View>
-          <View style={styles.statusPill}><AppText style={styles.statusText}>{dispute.status || 'open'}</AppText></View>
+          <View style={styles.statusPill}><AppText style={styles.statusText}>{dispute.status || ui("open")}</AppText></View>
         </View>
-        <AppText style={styles.eyebrow}>DISPUTE #{dispute.id}</AppText>
+        <AppText style={styles.eyebrow}>{ui("DISPUTE #")}{dispute.id}</AppText>
         <AppText style={styles.title}>{dispute.property_title || 'Property dispute'}</AppText>
         <View style={styles.partyBlock}>
-          <View style={styles.partyRow}><AppText style={styles.partyLabel}>Opened by</AppText><AppText style={styles.partyValue}>{dispute.opened_by_name || 'Unknown'}</AppText></View>
-          <View style={styles.partyRow}><AppText style={styles.partyLabel}>Against</AppText><AppText style={styles.partyValue}>{dispute.against_name || dispute.against_email || 'Unknown'}</AppText></View>
+          <View style={styles.partyRow}><AppText style={styles.partyLabel}>{ui("Opened by")}</AppText><AppText style={styles.partyValue}>{dispute.opened_by_name || ui("Unknown")}</AppText></View>
+          <View style={styles.partyRow}><AppText style={styles.partyLabel}>{ui("Against")}</AppText><AppText style={styles.partyValue}>{dispute.against_name || dispute.against_email || ui("Unknown")}</AppText></View>
         </View>
         {dispute.description ? <AppText style={styles.description}>{dispute.description}</AppText> : null}
         <Button
-          title="Verify Evidence Integrity"
+          title={ui("Verify Evidence Integrity")}
           variant="outline"
           onPress={() => navigation.navigate('VerifyCase', { disputeId: dispute.id })}
           style={styles.marginTop}
@@ -142,17 +145,16 @@ const DisputeDetailsScreen = ({ navigation, route }) => {
       </View>
 
       <View style={styles.card}>
-        <View style={styles.cardHeading}><Icon name="people-outline" size={20} color={colors.blue} /><AppText style={styles.cardTitle}>Assigned lawyers</AppText><AppText style={styles.count}>{authorized_lawyers.length}</AppText></View>
+        <View style={styles.cardHeading}><Icon name="people-outline" size={20} color={colors.blue} /><AppText style={styles.cardTitle}>{ui("Assigned lawyers")}</AppText><AppText style={styles.count}>{authorized_lawyers.length}</AppText></View>
         {authorized_lawyers.length === 0 ? (
-          <AppText style={styles.emptyText}>No authorized lawyers linked to this dispute.</AppText>
+          <AppText style={styles.emptyText}>{ui("No authorized lawyers linked to this dispute.")}</AppText>
         ) : (
           authorized_lawyers.map((lawyer) => (
             <View key={lawyer.id} style={styles.listRow}>
               <AppText style={styles.listTitle}>{lawyer.full_name}</AppText>
               <AppText style={styles.listMeta}>{lawyer.email}</AppText>
-              <AppText style={styles.listMeta}>
-                Assigned by {lawyer.assigned_by_name || lawyer.client_name || 'Unknown'}
-                {lawyer.client_name ? ` for ${lawyer.client_name}` : ''}
+              <AppText style={styles.listMeta}>{ui("Assigned by")}{lawyer.assigned_by_name || lawyer.client_name || ui("Unknown")}
+                {lawyer.client_name ? ui(" for {value0}", {value0: (lawyer.client_name)}) : ''}
               </AppText>
             </View>
           ))
@@ -160,16 +162,16 @@ const DisputeDetailsScreen = ({ navigation, route }) => {
       </View>
 
       <View style={styles.card}>
-        <View style={styles.cardHeading}><Icon name="git-branch-outline" size={20} color={colors.blue} /><AppText style={styles.cardTitle}>Dispute timeline</AppText><AppText style={styles.count}>{timeline.length}</AppText></View>
+        <View style={styles.cardHeading}><Icon name="git-branch-outline" size={20} color={colors.blue} /><AppText style={styles.cardTitle}>{ui("Dispute timeline")}</AppText><AppText style={styles.count}>{timeline.length}</AppText></View>
         {timeline.length === 0 ? (
-          <AppText style={styles.emptyText}>No timeline entries available.</AppText>
+          <AppText style={styles.emptyText}>{ui("No timeline entries available.")}</AppText>
         ) : (
           timeline.map((item, index) => (
             <View key={`${item.type}-${index}`} style={styles.timelineRow}>
               <View style={styles.timelineDot} />
               <AppText style={styles.timelineTitle}>{item.summary || item.type}</AppText>
               <AppText style={styles.timelineMeta}>
-                {item.actor_name || 'System'} {item.actor_role ? `(${item.actor_role})` : ''}
+                {item.actor_name || ui("System")} {item.actor_role ? ui("({value0})", {value0: (item.actor_role)}) : ''}
               </AppText>
               <AppText style={styles.timelineMeta}>
                 {item.happened_at ? new Date(item.happened_at).toLocaleString() : ''}
@@ -185,11 +187,11 @@ const DisputeDetailsScreen = ({ navigation, route }) => {
       </View>
 
       <View style={styles.card}>
-        <View style={styles.cardHeading}><Icon name="folder-open-outline" size={20} color={colors.blue} /><AppText style={styles.cardTitle}>Evidence</AppText><AppText style={styles.count}>{evidence.length}</AppText></View>
+        <View style={styles.cardHeading}><Icon name="folder-open-outline" size={20} color={colors.blue} /><AppText style={styles.cardTitle}>{ui("Evidence")}</AppText><AppText style={styles.count}>{evidence.length}</AppText></View>
         {!dispute.is_legally_sealed ? (
           <TouchableOpacity
             accessibilityRole="button"
-            accessibilityLabel="Upload evidence"
+            accessibilityLabel={ui("Upload evidence")}
             disabled={uploadingEvidence}
             onPress={pickAndUploadEvidence}
             style={[styles.uploadButton, uploadingEvidence && styles.composerSendDisabled]}
@@ -200,25 +202,25 @@ const DisputeDetailsScreen = ({ navigation, route }) => {
               <Icon name="cloud-upload-outline" size={16} color={colors.white} />
             )}
             <AppText style={styles.uploadButtonText}>
-              {uploadingEvidence ? 'Uploading…' : 'Upload evidence'}
+              {uploadingEvidence ? 'Uploading…' : ui("Upload evidence")}
             </AppText>
           </TouchableOpacity>
         ) : null}
         {evidence.length === 0 ? (
-          <AppText style={styles.emptyText}>No evidence uploaded.</AppText>
+          <AppText style={styles.emptyText}>{ui("No evidence uploaded.")}</AppText>
         ) : (
           evidence.map((item) => {
             const evidenceUrl = buildUploadUrl(item.file_path || item.file_url || item.file_name);
             return (
               <View key={item.id} style={styles.listRow}>
                 <FilePreviewCard
-                  title={item.file_name || `Evidence #${item.id}`}
-                  subtitle={`Uploaded by ${item.uploaded_by_name || 'Unknown'}`}
+                  title={item.file_name || ui("Evidence #{value0}", {value0: (item.id)})}
+                  subtitle={ui("Uploaded by {value0}", {value0: (item.uploaded_by_name || ui("Unknown"))})}
                   uri={evidenceUrl}
                   fileName={item.file_name || item.file_path || item.file_url}
                   fileSize={item.file_size}
                   mimeType={item.mime_type || item.file_type}
-                  actionLabel="Open evidence"
+                  actionLabel={ui("Open evidence")}
                 />
               </View>
             );
@@ -227,13 +229,13 @@ const DisputeDetailsScreen = ({ navigation, route }) => {
       </View>
 
       <View style={styles.card}>
-        <View style={styles.cardHeading}><Icon name="chatbubbles-outline" size={20} color={colors.blue} /><AppText style={styles.cardTitle}>Case messages</AppText><AppText style={styles.count}>{messages.length}</AppText></View>
+        <View style={styles.cardHeading}><Icon name="chatbubbles-outline" size={20} color={colors.blue} /><AppText style={styles.cardTitle}>{ui("Case messages")}</AppText><AppText style={styles.count}>{messages.length}</AppText></View>
         {!dispute.is_legally_sealed ? (
           <View style={styles.composerRow}>
             <TextInput
               value={newMessage}
               onChangeText={setNewMessage}
-              placeholder="Write a message…"
+              placeholder={ui("Write a message…")}
               placeholderTextColor={colors.muted}
               style={styles.composerInput}
               multiline
@@ -241,7 +243,7 @@ const DisputeDetailsScreen = ({ navigation, route }) => {
             />
             <TouchableOpacity
               accessibilityRole="button"
-              accessibilityLabel="Send message"
+              accessibilityLabel={ui("Send message")}
               disabled={sendingMessage || !newMessage.trim()}
               onPress={sendMessage}
               style={[
@@ -257,12 +259,10 @@ const DisputeDetailsScreen = ({ navigation, route }) => {
             </TouchableOpacity>
           </View>
         ) : (
-          <AppText style={styles.emptyText}>
-            This dispute is legally sealed — no further messages can be added.
-          </AppText>
+          <AppText style={styles.emptyText}>{ui("This dispute is legally sealed — no further messages can be added.")}</AppText>
         )}
         {messages.length === 0 ? (
-          <AppText style={styles.emptyText}>No messages yet.</AppText>
+          <AppText style={styles.emptyText}>{ui("No messages yet.")}</AppText>
         ) : (
           messages.map((item) => (
             <View key={item.id} style={styles.listRow}>
@@ -277,14 +277,14 @@ const DisputeDetailsScreen = ({ navigation, route }) => {
       </View>
 
       <View style={styles.card}>
-        <View style={styles.cardHeading}><Icon name="finger-print-outline" size={20} color={colors.blue} /><AppText style={styles.cardTitle}>Legal audit trail</AppText><AppText style={styles.count}>{audit_logs.length}</AppText></View>
+        <View style={styles.cardHeading}><Icon name="finger-print-outline" size={20} color={colors.blue} /><AppText style={styles.cardTitle}>{ui("Legal audit trail")}</AppText><AppText style={styles.count}>{audit_logs.length}</AppText></View>
         {audit_logs.length === 0 ? (
-          <AppText style={styles.emptyText}>No legal audit logs found.</AppText>
+          <AppText style={styles.emptyText}>{ui("No legal audit logs found.")}</AppText>
         ) : (
           audit_logs.map((item) => (
             <View key={item.id} style={styles.listRow}>
               <AppText style={styles.listTitle}>{item.action || 'Audit log'}</AppText>
-              <AppText style={styles.listMeta}>{item.actor_name || 'System'}</AppText>
+              <AppText style={styles.listMeta}>{item.actor_name || ui("System")}</AppText>
               <AppText style={styles.listMeta}>
                 {item.created_at ? new Date(item.created_at).toLocaleString() : ''}
               </AppText>

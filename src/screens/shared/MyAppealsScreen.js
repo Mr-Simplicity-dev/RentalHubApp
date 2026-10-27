@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useCallback, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -16,10 +18,10 @@ import { colors, radius, typography, typeScale } from '../../theme';
 import AppText from '../../components/common/AppText';
 
 const STATUS_CONFIG = {
-  pending: { color: colors.blue, label: 'Pending' },
-  under_review: { color: '#B46B00', label: 'Under review' },
-  upheld: { color: colors.success, label: 'Upheld' },
-  dismissed: { color: colors.danger, label: 'Dismissed' },
+  pending: { color: colors.blue, get "label"() { return ui("Pending"); } },
+  under_review: { color: '#B46B00', get "label"() { return ui("Under review"); } },
+  upheld: { color: colors.success, get "label"() { return ui("Upheld"); } },
+  dismissed: { color: colors.danger, get "label"() { return ui("Dismissed"); } },
 };
 
 const getStatus = (status) => STATUS_CONFIG[String(status || 'pending')] || STATUS_CONFIG.pending;
@@ -38,6 +40,7 @@ const formatDate = (value) => {
 };
 
 const MyAppealsScreen = ({ navigation }) => {
+  useInterfaceLanguage();
   const [appeals, setAppeals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -50,7 +53,7 @@ const MyAppealsScreen = ({ navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(error, 'Could not load your appeals'),
       });
     } finally {
@@ -68,13 +71,13 @@ const MyAppealsScreen = ({ navigation }) => {
   const header = (
     <>
       <PremiumHero
-        eyebrow="Appeals"
-        title="My appeals"
-        subtitle="Track appeals you have submitted against a rejected property or verification."
+        eyebrow={ui("Appeals")}
+        title={ui("My appeals")}
+        subtitle={ui("Track appeals you have submitted against a rejected property or verification.")}
         icon="megaphone-outline"
       />
       <PremiumButton
-        title="Submit an appeal"
+        title={ui("Submit an appeal")}
         onPress={() => navigation.navigate('AppealCreate')}
         icon="add-circle-outline"
         style={styles.newButton}
@@ -83,7 +86,7 @@ const MyAppealsScreen = ({ navigation }) => {
   );
 
   return loading && appeals.length === 0 ? (
-    <PremiumCenter loading title="Loading appeals" />
+    <PremiumCenter loading title={ui("Loading appeals")} />
   ) : (
     <PremiumListScreen
       data={appeals}
@@ -91,8 +94,8 @@ const MyAppealsScreen = ({ navigation }) => {
       refreshing={refreshing}
       onRefresh={() => loadAppeals({ refresh: true })}
       header={header}
-      emptyTitle="No appeals yet"
-      emptyMessage="Appeal a rejected property or identity-verification decision from here."
+      emptyTitle={ui("No appeals yet")}
+      emptyMessage={ui("Appeal a rejected property or identity-verification decision from here.")}
       emptyIcon="megaphone-outline"
       renderItem={({ item }) => {
         const status = getStatus(item.status);
@@ -101,7 +104,7 @@ const MyAppealsScreen = ({ navigation }) => {
             <View style={styles.cardHeader}>
               <View style={styles.titleBlock}>
                 <AppText style={styles.cardTitle}>
-                  {item.appeal_type === 'property' ? 'Property appeal' : 'Verification appeal'}
+                  {item.appeal_type === "property" ? 'Property appeal' : 'Verification appeal'}
                 </AppText>
                 {item.property_title ? (
                   <AppText style={styles.propertyTitle}>{item.property_title}</AppText>
@@ -118,7 +121,7 @@ const MyAppealsScreen = ({ navigation }) => {
 
             {item.review_note ? (
               <View style={styles.reviewBox}>
-                <AppText style={styles.reviewLabel}>Reviewer note</AppText>
+                <AppText style={styles.reviewLabel}>{ui("Reviewer note")}</AppText>
                 <AppText style={styles.reviewText}>{item.review_note}</AppText>
               </View>
             ) : null}

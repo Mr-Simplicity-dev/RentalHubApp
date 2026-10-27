@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useCallback, useMemo, useState } from 'react';
 import { Modal, StyleSheet, View } from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -31,6 +33,7 @@ const formatDate = (value) => {
 };
 
 const DiasporaDeskScreen = () => {
+  const interfaceLanguage = useInterfaceLanguage();
   const [stats, setStats] = useState({});
   const [users, setUsers] = useState([]);
   const [tab, setTab] = useState('flag');
@@ -50,7 +53,7 @@ const DiasporaDeskScreen = () => {
     } catch (err) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(err, 'Could not load the diaspora overview'),
       });
     } finally {
@@ -68,7 +71,7 @@ const DiasporaDeskScreen = () => {
     if (tab === 'flag') return users.filter((u) => u.review_flag);
     if (tab === 'reviewed') return users.filter((u) => u.reviewed);
     return users;
-  }, [tab, users]);
+  }, [tab, users, interfaceLanguage]);
 
   const dismiss = async () => {
     if (!modalUser) return;
@@ -77,7 +80,7 @@ const DiasporaDeskScreen = () => {
     try {
       const response = await marketingOpsService.dismissDiasporaFlag(modalUser.id, notes.trim());
       if (response?.success) {
-        Toast.show({ type: 'success', text1: 'Flag dismissed' });
+        Toast.show({ type: 'success', text1: ui("Flag dismissed") });
         setModalUser(null);
         setNotes('');
         await load();
@@ -92,7 +95,7 @@ const DiasporaDeskScreen = () => {
   };
 
   if (loading) {
-    return <PremiumCenter loading title="Loading diaspora overview" />;
+    return <PremiumCenter loading title={ui("Loading diaspora overview")} />;
   }
 
   const pending = Number(stats.nigerian_funded_pending || 0);
@@ -108,32 +111,32 @@ const DiasporaDeskScreen = () => {
         header={
           <>
             <PremiumHero
-              eyebrow="Super admin"
-              title="Diaspora desk"
-              subtitle="Review diaspora-registered users funded with Nigerian cards."
+              eyebrow={ui("Super admin")}
+              title={ui("Diaspora desk")}
+              subtitle={ui("Review diaspora-registered users funded with Nigerian cards.")}
               icon="globe-outline"
             />
 
             <View style={styles.metricRow}>
               <View style={[styles.metric, styles.metricAccent]}>
                 <AppText style={styles.metricValue}>{pending}</AppText>
-                <AppText style={styles.metricLabel}>Pending flag</AppText>
+                <AppText style={styles.metricLabel}>{ui("Pending flag")}</AppText>
               </View>
               <View style={styles.metric}>
                 <AppText style={styles.metricValue}>{total}</AppText>
-                <AppText style={styles.metricLabel}>Diaspora total</AppText>
+                <AppText style={styles.metricLabel}>{ui("Diaspora total")}</AppText>
               </View>
               <View style={styles.metric}>
                 <AppText style={styles.metricValue}>{Number(stats.nigerian_funded_total || 0)}</AppText>
-                <AppText style={styles.metricLabel}>NG-funded</AppText>
+                <AppText style={styles.metricLabel}>{ui("NG-funded")}</AppText>
               </View>
             </View>
 
             <View style={styles.tabRow}>
               {[
-                { key: 'flag', label: 'Needs review' },
-                { key: 'reviewed', label: 'Reviewed' },
-                { key: 'all', label: 'All' },
+                { key: 'flag', label: ui("Needs review") },
+                { key: 'reviewed', label: ui("Reviewed") },
+                { key: 'all', label: ui("All") },
               ].map((t) => {
                 const active = tab === t.key;
                 return (
@@ -149,37 +152,37 @@ const DiasporaDeskScreen = () => {
             </View>
           </>
         }
-        emptyTitle="Nothing to review"
-        emptyMessage="No diaspora users match this filter."
+        emptyTitle={ui("Nothing to review")}
+        emptyMessage={ui("No diaspora users match this filter.")}
         emptyIcon="globe-outline"
         renderItem={({ item }) => (
           <PremiumCard>
             <View style={styles.cardTop}>
               <View style={styles.cardCopy}>
-                <AppText style={styles.cardTitle}>{item.full_name || `User #${item.id}`}</AppText>
-                <AppText style={styles.cardMeta}>{item.email || ''}{item.phone ? ` · ${item.phone}` : ''}</AppText>
+                <AppText style={styles.cardTitle}>{item.full_name || ui("User #{value0}", {value0: (item.id)})}</AppText>
+                <AppText style={styles.cardMeta}>{item.email || ''}{item.phone ? ui(" · {value0}", {value0: (item.phone)}) : ''}</AppText>
               </View>
               {item.review_flag ? (
-                <StatusPill label="Review" color={colors.danger} />
+                <StatusPill label={ui("Review")} color={colors.danger} />
               ) : item.reviewed ? (
-                <StatusPill label="Reviewed" color={colors.success} />
+                <StatusPill label={ui("Reviewed")} color={colors.success} />
               ) : null}
             </View>
-            <InfoRow icon="airplane-outline" label="Diaspora country" value={item.diaspora_country || '—'} />
-            <InfoRow icon="card-outline" label="Billing country" value={item.billing_country || '—'} />
+            <InfoRow icon="airplane-outline" label={ui("Diaspora country")} value={item.diaspora_country || '—'} />
+            <InfoRow icon="card-outline" label={ui("Billing country")} value={item.billing_country || '—'} />
             {item.card_brand ? (
-              <InfoRow icon="card-outline" label="Card brand" value={item.card_brand} />
+              <InfoRow icon="card-outline" label={ui("Card brand")} value={item.card_brand} />
             ) : null}
             {item.diaspora_review_notes ? (
-              <InfoRow icon="document-text-outline" label="Review notes" value={item.diaspora_review_notes} />
+              <InfoRow icon="document-text-outline" label={ui("Review notes")} value={item.diaspora_review_notes} />
             ) : null}
             {item.created_at ? (
-              <InfoRow icon="time-outline" label="Registered" value={formatDate(item.created_at)} />
+              <InfoRow icon="time-outline" label={ui("Registered")} value={formatDate(item.created_at)} />
             ) : null}
 
             {item.review_flag ? (
               <PremiumButton
-                title="Dismiss flag"
+                title={ui("Dismiss flag")}
                 onPress={() => {
                   setModalUser(item);
                   setNotes('');
@@ -197,15 +200,15 @@ const DiasporaDeskScreen = () => {
         <Modal transparent visible animationType="fade" onRequestClose={() => setModalUser(null)}>
           <View style={styles.overlay}>
             <View style={styles.modalCard}>
-              <AppText style={styles.modalTitle}>Dismiss review flag</AppText>
+              <AppText style={styles.modalTitle}>{ui("Dismiss review flag")}</AppText>
               <AppText style={styles.modalSubtitle}>
-                {modalUser.full_name || `User #${modalUser.id}`} · {modalUser.diaspora_country || '—'}
+                {modalUser.full_name || ui("User #{value0}", {value0: (modalUser.id)})} · {modalUser.diaspora_country || '—'}
               </AppText>
               <Input
-                label="Notes (optional)"
+                label={ui("Notes (optional)")}
                 value={notes}
                 onChangeText={setNotes}
-                placeholder="Why is this flag being dismissed?"
+                placeholder={ui("Why is this flag being dismissed?")}
                 multiline
                 numberOfLines={3}
                 containerStyle={styles.fieldGap}
@@ -213,14 +216,14 @@ const DiasporaDeskScreen = () => {
               {error ? <AppText style={styles.error}>{error}</AppText> : null}
               <View style={styles.modalActions}>
                 <PremiumButton
-                  title="Cancel"
+                  title={ui("Cancel")}
                   variant="ghost"
                   onPress={() => setModalUser(null)}
                   disabled={busy}
                   style={styles.actionButton}
                 />
                 <PremiumButton
-                  title={busy ? 'Working…' : 'Dismiss'}
+                  title={busy ? 'Working…' : ui("Dismiss")}
                   onPress={dismiss}
                   loading={busy}
                   style={styles.actionButton}

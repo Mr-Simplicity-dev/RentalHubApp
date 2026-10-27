@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useState, useEffect, useCallback, useLayoutEffect } from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import TextInput from '../../components/common/AppTextInput';
@@ -10,6 +12,7 @@ import { getErrorMessage } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
 const FumigationCleaningBookingScreen = ({ route, navigation }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const { propertyId } = route.params || {};
 
   const [loading, setLoading] = useState(true);
@@ -31,7 +34,7 @@ const FumigationCleaningBookingScreen = ({ route, navigation }) => {
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
-  }, [navigation]);
+  }, [navigation, interfaceLanguage]);
 
   const today = new Date().toISOString().split('T')[0];
 
@@ -46,8 +49,8 @@ const FumigationCleaningBookingScreen = ({ route, navigation }) => {
           if (!eligibilityRes?.data?.can_book) {
             Toast.show({
               type: 'error',
-              text1: 'Cannot Book',
-              text2: eligibilityRes?.data?.reason || 'Not eligible',
+              text1: ui("Cannot Book"),
+              text2: eligibilityRes?.data?.reason || ui("Not eligible"),
             });
             navigation.goBack();
             return;
@@ -68,7 +71,7 @@ const FumigationCleaningBookingScreen = ({ route, navigation }) => {
       } catch (error) {
         Toast.show({
           type: 'error',
-          text1: 'Load Failed',
+          text1: ui("Load Failed"),
           text2: getErrorMessage(error, 'Could not load services'),
         });
       } finally {
@@ -117,12 +120,12 @@ const FumigationCleaningBookingScreen = ({ route, navigation }) => {
 
   const handleSubmit = async () => {
     if (!selectedService) {
-      Toast.show({ type: 'error', text1: 'Please select a service' });
+      Toast.show({ type: 'error', text1: ui("Please select a service") });
       return;
     }
 
     if (!formData.booking_date) {
-      Toast.show({ type: 'error', text1: 'Please select a date' });
+      Toast.show({ type: 'error', text1: ui("Please select a date") });
       return;
     }
 
@@ -138,16 +141,16 @@ const FumigationCleaningBookingScreen = ({ route, navigation }) => {
       const response = await fumigationCleaningService.createBooking(bookingData);
 
       if (response?.success) {
-        Toast.show({ type: 'success', text1: 'Booking created!' });
+        Toast.show({ type: 'success', text1: ui("Booking created!") });
         navigation.navigate('FumigationCleaningPayment', { bookingId: response.data.id });
       } else {
-        Toast.show({ type: 'error', text1: response?.message || 'Failed to create booking' });
+        Toast.show({ type: 'error', text1: response?.message || ui("Failed to create booking") });
       }
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Error',
-        text2: getErrorMessage(error, 'Failed to create booking'),
+        text1: ui("Error"),
+        text2: getErrorMessage(error, ui("Failed to create booking")),
       });
     } finally {
       setCreatingBooking(false);
@@ -172,16 +175,14 @@ const FumigationCleaningBookingScreen = ({ route, navigation }) => {
           </TouchableOpacity>
           <View style={styles.headerIcon}><Icon name="sparkles-outline" size={23} color={colors.gold} /></View>
         </View>
-        <AppText style={styles.headerEyebrow}>HOME CARE</AppText>
-        <AppText style={styles.headerTitle}>Fumigation & cleaning</AppText>
-        <AppText style={styles.headerSub}>
-          Professional fumigation and cleaning services
-        </AppText>
+        <AppText style={styles.headerEyebrow}>{ui("HOME CARE")}</AppText>
+        <AppText style={styles.headerTitle}>{ui("Fumigation & cleaning")}</AppText>
+        <AppText style={styles.headerSub}>{ui("Professional fumigation and cleaning services")}</AppText>
       </View>
 
       {/* Category Selection */}
       <View style={styles.section}>
-        <AppText style={styles.sectionTitle}>Service Type</AppText>
+        <AppText style={styles.sectionTitle}>{ui("Service Type")}</AppText>
         <View style={styles.categoryRow}>
           {categories.map((cat) => (
             <TouchableOpacity
@@ -192,7 +193,7 @@ const FumigationCleaningBookingScreen = ({ route, navigation }) => {
               ]}
               onPress={() => setSelectedCategory(cat)}
             >
-              <AppText 
+              <AppText
                 style={[
                   styles.categoryChipText,
                   selectedCategory?.id === cat.id && styles.categoryChipTextSelected,
@@ -207,7 +208,7 @@ const FumigationCleaningBookingScreen = ({ route, navigation }) => {
 
       {/* Service Selection */}
       <View style={styles.section}>
-        <AppText style={styles.sectionTitle}>Select Service Package</AppText>
+        <AppText style={styles.sectionTitle}>{ui("Select Service Package")}</AppText>
         {filteredServices.map((service) => (
           <TouchableOpacity
             key={service.id}
@@ -228,9 +229,7 @@ const FumigationCleaningBookingScreen = ({ route, navigation }) => {
               ₦{service.base_price?.toLocaleString()}
             </AppText>
             {service.estimated_duration && (
-              <AppText style={styles.durationText}>
-                Duration: ~{service.estimated_duration} mins
-              </AppText>
+              <AppText style={styles.durationText}>{ui("Duration: ~")}{service.estimated_duration}{ui("mins")}</AppText>
             )}
           </TouchableOpacity>
         ))}
@@ -238,36 +237,36 @@ const FumigationCleaningBookingScreen = ({ route, navigation }) => {
 
       {/* Booking Form */}
       <View style={styles.section}>
-        <AppText style={styles.sectionTitle}>Booking Details</AppText>
+        <AppText style={styles.sectionTitle}>{ui("Booking Details")}</AppText>
 
         <View style={styles.inputGroup}>
-          <AppText style={styles.label}>Preferred Date *</AppText>
+          <AppText style={styles.label}>{ui("Preferred Date *")}</AppText>
           <TextInput
             style={styles.input}
             value={formData.booking_date}
             onChangeText={(v) => handleInputChange('booking_date', v)}
-            placeholder="YYYY-MM-DD"
+            placeholder={ui("YYYY-MM-DD")}
             keyboardType="numbers-and-punctuation"
           />
         </View>
 
         <View style={styles.inputGroup}>
-          <AppText style={styles.label}>Preferred Time</AppText>
+          <AppText style={styles.label}>{ui("Preferred Time")}</AppText>
           <TextInput
             style={styles.input}
             value={formData.booking_time}
             onChangeText={(v) => handleInputChange('booking_time', v)}
-            placeholder="HH:MM"
+            placeholder={ui("HH:MM")}
           />
         </View>
 
         <View style={styles.inputGroup}>
-          <AppText style={styles.label}>Special Requirements</AppText>
+          <AppText style={styles.label}>{ui("Special Requirements")}</AppText>
           <TextInput
             style={[styles.input, styles.textArea]}
             value={formData.special_requirements}
             onChangeText={(v) => handleInputChange('special_requirements', v)}
-            placeholder="Any specific instructions..."
+            placeholder={ui("Any specific instructions...")}
             multiline
             numberOfLines={3}
           />
@@ -276,23 +275,23 @@ const FumigationCleaningBookingScreen = ({ route, navigation }) => {
         {/* Price Summary */}
         {priceCalculation && (
           <View style={styles.priceCard}>
-            <AppText style={styles.priceTitle}>Price Summary</AppText>
+            <AppText style={styles.priceTitle}>{ui("Price Summary")}</AppText>
             <View style={styles.priceRow}>
-              <AppText>Service Price:</AppText>
+              <AppText>{ui("Service Price:")}</AppText>
               <AppText style={styles.priceValue}>
                 ₦{priceCalculation.service_price?.toLocaleString()}
               </AppText>
             </View>
             {priceCalculation.addons_price > 0 && (
               <View style={styles.priceRow}>
-                <AppText>Add-ons:</AppText>
+                <AppText>{ui("Add-ons:")}</AppText>
                 <AppText style={styles.priceValue}>
                   ₦{priceCalculation.addons_price?.toLocaleString()}
                 </AppText>
               </View>
             )}
             <View style={[styles.priceRow, styles.totalRow]}>
-              <AppText style={styles.totalLabel}>Total:</AppText>
+              <AppText style={styles.totalLabel}>{ui("Total:")}</AppText>
               <AppText style={styles.totalValue}>
                 ₦{priceCalculation.total_price?.toLocaleString()}
               </AppText>
@@ -303,7 +302,7 @@ const FumigationCleaningBookingScreen = ({ route, navigation }) => {
         {calculatingPrice && (
           <View style={styles.calculatingContainer}>
             <ActivityIndicator size="small" color="#0284c7" />
-            <AppText style={styles.calculatingText}>Calculating...</AppText>
+            <AppText style={styles.calculatingText}>{ui("Calculating...")}</AppText>
           </View>
         )}
 
@@ -315,7 +314,7 @@ const FumigationCleaningBookingScreen = ({ route, navigation }) => {
           {creatingBooking ? (
             <ActivityIndicator color="#ffffff" />
           ) : (
-            <AppText style={styles.submitButtonText}>Proceed to Payment</AppText>
+            <AppText style={styles.submitButtonText}>{ui("Proceed to Payment")}</AppText>
           )}
         </TouchableOpacity>
       </View>

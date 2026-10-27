@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import { typeScale } from '../../theme';
 import React, { useMemo } from 'react';
 import {StyleSheet, Switch, View} from 'react-native';
@@ -8,82 +10,82 @@ import AppText from '../../components/common/AppText';
 // so both surfaces list and describe the same switches.
 const FLAG_LABELS = {
   allow_registration: {
-    label: 'Allow Registration',
-    description: 'Master switch. When off, tenant and landlord registration are disabled.',
+    get "label"() { return ui("Allow Registration"); },
+    get "description"() { return ui("Master switch. When off, tenant and landlord registration are disabled."); },
   },
   allow_tenant_registration: {
-    label: 'Tenant Registration',
-    description: 'Applies when Allow Registration is on.',
+    get "label"() { return ui("Tenant Registration"); },
+    get "description"() { return ui("Applies when Allow Registration is on."); },
   },
   allow_landlord_registration: {
-    label: 'Landlord Registration',
-    description: 'Applies when Allow Registration is on.',
+    get "label"() { return ui("Landlord Registration"); },
+    get "description"() { return ui("Applies when Allow Registration is on."); },
   },
   tenant_registration_payment: {
-    label: 'Tenant Registration Payment',
-    description: 'Require payment before tenant account creation.',
+    get "label"() { return ui("Tenant Registration Payment"); },
+    get "description"() { return ui("Require payment before tenant account creation."); },
   },
   landlord_registration_payment: {
-    label: 'Landlord Registration Payment',
-    description: 'Require payment before landlord account creation.',
+    get "label"() { return ui("Landlord Registration Payment"); },
+    get "description"() { return ui("Require payment before landlord account creation."); },
   },
   diaspora_registration: {
-    label: 'Diaspora Registration',
-    description: 'Allow foreign registrations with international passport verification and USD pricing.',
+    get "label"() { return ui("Diaspora Registration"); },
+    get "description"() { return ui("Allow foreign registrations with international passport verification and USD pricing."); },
   },
   diaspora_registration_payment: {
-    label: 'Diaspora Registration Payment',
-    description: 'Require a USD-quoted registration payment before a diaspora account is created.',
+    get "label"() { return ui("Diaspora Registration Payment"); },
+    get "description"() { return ui("Require a USD-quoted registration payment before a diaspora account is created."); },
   },
   diaspora_require_foreign_card: {
-    label: 'Diaspora Foreign Card Required',
-    description: 'Reject diaspora payments funded by Nigerian-issued cards.',
+    get "label"() { return ui("Diaspora Foreign Card Required"); },
+    get "description"() { return ui("Reject diaspora payments funded by Nigerian-issued cards."); },
   },
-  nin_number: { label: 'NIN Requirement', description: 'Require NIN for local registrations.' },
+  nin_number: { get "label"() { return ui("NIN Requirement"); }, get "description"() { return ui("Require NIN for local registrations."); } },
   passport_number: {
-    label: 'Passport Requirement',
-    description: 'Require passport for foreign registrations.',
+    get "label"() { return ui("Passport Requirement"); },
+    get "description"() { return ui("Require passport for foreign registrations."); },
   },
   property_alert_payment: {
-    label: 'Property Alert Payment',
-    description: 'Require payment before processing "Notify me when available" requests.',
+    get "label"() { return ui("Property Alert Payment"); },
+    get "description"() { return ui("Require payment before processing \"Notify me when available\" requests."); },
   },
-  ads_enabled: { label: 'Ad Spaces', description: 'Show managed ads on key pages.' },
+  ads_enabled: { get "label"() { return ui("Ad Spaces"); }, get "description"() { return ui("Show managed ads on key pages."); } },
   tenant_landlord_referrals: {
-    label: 'Tenant & Landlord Referrals',
-    description: 'Allow referral invite links and credits.',
+    get "label"() { return ui("Tenant & Landlord Referrals"); },
+    get "description"() { return ui("Allow referral invite links and credits."); },
   },
   allow_applications: {
-    label: 'Agent Applications',
-    description: 'Allow users to submit rental agent applications.',
+    get "label"() { return ui("Agent Applications"); },
+    get "description"() { return ui("Allow users to submit rental agent applications."); },
   },
   allow_property_posting: {
-    label: 'Property Posting',
-    description: 'Allow landlords and agents to post new properties.',
+    get "label"() { return ui("Property Posting"); },
+    get "description"() { return ui("Allow landlords and agents to post new properties."); },
   },
   require_property_ownership_verification: {
-    label: 'Ownership Verification',
-    description: 'Show only ownership-verified listings publicly. Existing listings stay visible.',
+    get "label"() { return ui("Ownership Verification"); },
+    get "description"() { return ui("Show only ownership-verified listings publicly. Existing listings stay visible."); },
   },
   maintenance_mode: {
-    label: 'Maintenance Mode',
-    description: 'Block non-admin activity while maintenance is in progress.',
+    get "label"() { return ui("Maintenance Mode"); },
+    get "description"() { return ui("Block non-admin activity while maintenance is in progress."); },
   },
   survey_public_enabled: {
-    label: 'Public Survey Link',
-    description: 'Show the market-research survey link in the site footer.',
+    get "label"() { return ui("Public Survey Link"); },
+    get "description"() { return ui("Show the market-research survey link in the site footer."); },
   },
   survey_location_gate: {
-    label: 'Survey Location Gate',
-    description: 'Require respondents to be inside the allowed survey area and block VPN connections.',
+    get "label"() { return ui("Survey Location Gate"); },
+    get "description"() { return ui("Require respondents to be inside the allowed survey area and block VPN connections."); },
   },
   local_rate_ip_check: {
-    label: 'Local Rate IP Check',
-    description: 'Block the local (₦) registration rate for foreign IPs and VPN connections.',
+    get "label"() { return ui("Local Rate IP Check"); },
+    get "description"() { return ui("Block the local (₦) registration rate for foreign IPs and VPN connections."); },
   },
   voice_geo_routing: {
-    label: 'Voice Geo Routing',
-    description: 'Route inbound voice calls by the caller’s state/LGA.',
+    get "label"() { return ui("Voice Geo Routing"); },
+    get "description"() { return ui("Route inbound voice calls by the caller’s state/LGA."); },
   },
 };
 
@@ -110,6 +112,7 @@ const HIDDEN_KEYS = new Set([
 ]);
 
 const FlagsSection = ({ flags = [], onToggle }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   // Merge what the API returned with every known label: a flag that is missing
   // from the response still renders (off) instead of silently disappearing.
   const mergedFlags = useMemo(() => {
@@ -122,11 +125,11 @@ const FlagsSection = ({ flags = [], onToggle }) => {
     });
 
     return Array.from(map.values());
-  }, [flags]);
+  }, [flags, interfaceLanguage]);
 
   const flagMap = useMemo(
     () => new Map(mergedFlags.map((flag) => [flag.key, flag])),
-    [mergedFlags]
+    [mergedFlags, interfaceLanguage]
   );
 
   const masterEnabled = flagMap.get(REGISTRATION_PARENT_KEY)?.enabled === true;
@@ -150,7 +153,7 @@ const FlagsSection = ({ flags = [], onToggle }) => {
 
         return aWeight !== bWeight ? aWeight - bWeight : a.key.localeCompare(b.key);
       });
-  }, [mergedFlags]);
+  }, [mergedFlags, interfaceLanguage]);
 
   const renderRow = (key, { nested = false, forceInactive = false } = {}) => {
     const flag = flagMap.get(key);
@@ -169,13 +172,13 @@ const FlagsSection = ({ flags = [], onToggle }) => {
           <AppText style={styles.cardTitle}>{meta.label || key}</AppText>
           {description ? <AppText style={styles.meta}>{description}</AppText> : null}
           {forceInactive && flag.enabled ? (
-            <AppText style={styles.hint}>Saved on, inactive while master registration is off.</AppText>
+            <AppText style={styles.hint}>{ui("Saved on, inactive while master registration is off.")}</AppText>
           ) : null}
           <AppText style={styles.keyText}>{key}</AppText>
         </View>
         <View style={styles.switchWrap}>
           <AppText style={[styles.status, effective ? styles.on : styles.off]}>
-            {effective ? 'On' : 'Off'}
+            {effective ? ui("On") : ui("Off")}
           </AppText>
           <Switch value={flag.enabled === true} onValueChange={(value) => onToggle(key, value)} />
         </View>
@@ -185,19 +188,15 @@ const FlagsSection = ({ flags = [], onToggle }) => {
 
   return (
     <View style={styles.wrap}>
-      <AppText style={styles.heading}>Registration Controls</AppText>
-      <AppText style={styles.subheading}>
-        Master switch plus per-role registration. Location rules are under Registration Access.
-      </AppText>
+      <AppText style={styles.heading}>{ui("Registration Controls")}</AppText>
+      <AppText style={styles.subheading}>{ui("Master switch plus per-role registration. Location rules are under Registration Access.")}</AppText>
       {renderRow(REGISTRATION_PARENT_KEY)}
       {REGISTRATION_CHILD_KEYS.map((key) =>
         renderRow(key, { nested: true, forceInactive: !masterEnabled })
       )}
       {REGISTRATION_OTHER_KEYS.map((key) => renderRow(key))}
-      <AppText style={[styles.heading, styles.sectionGap]}>Platform &amp; Survey Flags</AppText>
-      <AppText style={styles.subheading}>
-        Every other platform switch on this account. New server flags appear here automatically.
-      </AppText>
+      <AppText style={[styles.heading, styles.sectionGap]}>{ui("Platform & Survey Flags")}</AppText>
+      <AppText style={styles.subheading}>{ui("Every other platform switch on this account. New server flags appear here automatically.")}</AppText>
       {platformFlags.map((flag) => renderRow(flag.key))}
     </View>
   );

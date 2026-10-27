@@ -20,7 +20,8 @@ module.exports = {
     "optional_cv": "CV / document (optional)",
     "upload_documents": "Upload document",
     "no_account_required": "No account needed — apply as a volunteer",
-    "portal_intro": "Choose an opportunity, submit your details, and follow your application. Volunteer applications are free."
+    "portal_intro": "Choose an opportunity, submit your details, and follow your application. Volunteer applications are free.",
+    "apply_here": "Apply here"
   },
   "fr": {
     "opportunities_title": "Opportunités de carrière",
@@ -43,7 +44,8 @@ module.exports = {
     "optional_cv": "CV / document (facultatif)",
     "upload_documents": "Téléverser le document",
     "no_account_required": "Aucun compte nécessaire — postulez comme bénévole",
-    "portal_intro": "Choisissez une opportunité, envoyez vos informations et suivez votre candidature. Les candidatures bénévoles sont gratuites."
+    "portal_intro": "Choisissez une opportunité, envoyez vos informations et suivez votre candidature. Les candidatures bénévoles sont gratuites.",
+    "apply_here": "Postulez ici"
   },
   "ar": {
     "opportunities_title": "فرص مهنية",
@@ -66,7 +68,8 @@ module.exports = {
     "optional_cv": "السيرة الذاتية / مستند (اختياري)",
     "upload_documents": "رفع المستند",
     "no_account_required": "لا يلزم حساب — قدّم طلب تطوع",
-    "portal_intro": "اختر فرصة وقدّم بياناتك وتابع طلبك. طلبات التطوع مجانية."
+    "portal_intro": "اختر فرصة وقدّم بياناتك وتابع طلبك. طلبات التطوع مجانية.",
+    "apply_here": "قدّم طلبك هنا"
   },
   "ru": {
     "opportunities_title": "Карьерные возможности",
@@ -89,7 +92,8 @@ module.exports = {
     "optional_cv": "Резюме / документ (необязательно)",
     "upload_documents": "Загрузить документ",
     "no_account_required": "Аккаунт не нужен — подайте заявку волонтёра",
-    "portal_intro": "Выберите возможность, отправьте данные и отслеживайте заявку. Волонтёрские заявки бесплатны."
+    "portal_intro": "Выберите возможность, отправьте данные и отслеживайте заявку. Волонтёрские заявки бесплатны.",
+    "apply_here": "Подать заявку"
   },
   "zh": {
     "opportunities_title": "职业机会",
@@ -112,7 +116,8 @@ module.exports = {
     "optional_cv": "简历／文档（可选）",
     "upload_documents": "上传文档",
     "no_account_required": "无需账户 — 申请成为志愿者",
-    "portal_intro": "选择机会、提交信息并查看申请进度。志愿服务申请免费。"
+    "portal_intro": "选择机会、提交信息并查看申请进度。志愿服务申请免费。",
+    "apply_here": "在此申请"
   },
   "ha": {
     "opportunities_title": "Damar aiki",
@@ -135,7 +140,8 @@ module.exports = {
     "optional_cv": "CV / takarda (ba dole ba)",
     "upload_documents": "Loda takarda",
     "no_account_required": "Ba a buƙatar asusu — nemi aikin sa kai",
-    "portal_intro": "Zaɓi dama, aika bayananka, kuma bi diddigin buƙatarka. Neman aikin sa kai kyauta ne."
+    "portal_intro": "Zaɓi dama, aika bayananka, kuma bi diddigin buƙatarka. Neman aikin sa kai kyauta ne.",
+    "apply_here": "Nema a nan"
   },
   "yo": {
     "opportunities_title": "Àwọn àǹfààní iṣẹ́",
@@ -158,7 +164,8 @@ module.exports = {
     "optional_cv": "CV / ìwé (kì í ṣe dandan)",
     "upload_documents": "Gbé ìwé sókè",
     "no_account_required": "Kò nílò àkọọ́lẹ̀ — forúkọ sílẹ̀ gẹ́gẹ́ bí olùyọ̀ǹda",
-    "portal_intro": "Yan àǹfààní, fi àlàyé rẹ sílẹ̀, kí o sì tọpinpin ìbéèrè rẹ. Ìbéèrè iṣẹ́ ìyọ̀ǹda jẹ́ ọ̀fẹ́."
+    "portal_intro": "Yan àǹfààní, fi àlàyé rẹ sílẹ̀, kí o sì tọpinpin ìbéèrè rẹ. Ìbéèrè iṣẹ́ ìyọ̀ǹda jẹ́ ọ̀fẹ́.",
+    "apply_here": "Fi ìbéèrè sílẹ̀ níbí"
   },
   "ig": {
     "opportunities_title": "Ohere ọrụ",
@@ -181,6 +188,7 @@ module.exports = {
     "optional_cv": "CV / akwụkwọ (ọ bụghị iwu)",
     "upload_documents": "Bulite akwụkwọ",
     "no_account_required": "Achọghị akaụntụ — tinye akwụkwọ ọrụ afọ ofufo",
-    "portal_intro": "Họrọ ohere, zipu nkọwa gị ma soro akwụkwọ gị. Itinye akwụkwọ ọrụ afọ ofufo bụ n’efu."
+    "portal_intro": "Họrọ ohere, zipu nkọwa gị ma soro akwụkwọ gị. Itinye akwụkwọ ọrụ afọ ofufo bụ n’efu.",
+    "apply_here": "Tinye akwụkwọ ebe a"
   }
 };

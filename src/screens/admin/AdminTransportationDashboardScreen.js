@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import Toast from 'react-native-toast-message';
 import { serviceAdminService } from '../../services/serviceAdminService';
@@ -14,12 +16,13 @@ import {
 import WorkspaceBoard from '../../components/dashboard/WorkspaceBoard';
 
 const AdminTransportationDashboardScreen = ({ navigation }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const [stats, setStats] = useState({});
   const [loading, setLoading] = useState(true);
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: navigation.canGoBack() });
-  }, [navigation]);
+  }, [navigation, interfaceLanguage]);
 
   const loadStats = async () => {
     setLoading(true);
@@ -30,7 +33,7 @@ const AdminTransportationDashboardScreen = ({ navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(error, 'Could not load transportation dashboard'),
       });
     } finally {
@@ -43,23 +46,23 @@ const AdminTransportationDashboardScreen = ({ navigation }) => {
   }, []);
 
   const cards = [
-    { label: 'Total Bookings', value: stats.total_bookings ?? stats.totalBookings ?? '-', icon: 'calendar-outline', color: colors.blue },
+    { label: ui("Total Bookings"), value: stats.total_bookings ?? stats.totalBookings ?? '-', icon: 'calendar-outline', color: colors.blue },
     {
-      label: 'Active Trips',
+      label: ui("Active Trips"),
       value: Number(stats.confirmed_bookings || 0) + Number(stats.in_progress_bookings || 0),
       icon: 'car-outline',
       color: colors.success,
     },
-    { label: 'Pending', value: stats.pending_bookings ?? '-', icon: 'time-outline', color: '#A66B00' },
-    { label: 'Revenue', value: `₦${Number(stats.total_revenue ?? stats.totalRevenue ?? 0).toLocaleString()}`, icon: 'cash-outline', color: '#7C3AED' },
+    { label: ui("Pending"), value: stats.pending_bookings ?? '-', icon: 'time-outline', color: '#A66B00' },
+    { label: ui("Revenue"), value: `₦${Number(stats.total_revenue ?? stats.totalRevenue ?? 0).toLocaleString()}`, icon: 'cash-outline', color: '#7C3AED' },
   ];
 
   return (
     <DashboardScreen refreshing={loading} onRefresh={loadStats}>
       <DashboardHero
-        eyebrow="TRANSPORT OPERATIONS"
-        title="Transportation desk"
-        subtitle="Monitor bookings, trips, dispatches and revenue."
+        eyebrow={ui("TRANSPORT OPERATIONS")}
+        title={ui("Transportation desk")}
+        subtitle={ui("Monitor bookings, trips, dispatches and revenue.")}
         icon="car-outline"
         onRefresh={loadStats}
       />
@@ -70,16 +73,16 @@ const AdminTransportationDashboardScreen = ({ navigation }) => {
         ))}
       </MetricGrid>
 
-      <DashboardSection title="Mobile workspaces">
+      <DashboardSection title={ui("Mobile workspaces")}>
         <WorkspaceBoard
           collapsible
           groups={[
             {
-              title: 'Transportation',
+              title: ui("Transportation"),
               icon: 'car-outline',
               items: [
                 {
-                  label: 'Booking Queue',
+                  label: ui("Booking Queue"),
                   icon: 'car-outline',
                   onPress: () =>
                     navigation.navigate('ServiceBookings', { type: 'transportation' }),

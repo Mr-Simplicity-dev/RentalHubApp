@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useCallback, useEffect, useState } from 'react';
 import {StyleSheet, View} from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -21,6 +23,7 @@ const getStatusColor = (status) => {
 };
 
 const FinancialCommissionsScreen = () => {
+  useInterfaceLanguage();
   const [commissions, setCommissions] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -32,7 +35,7 @@ const FinancialCommissionsScreen = () => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(error, 'Could not load commissions'),
       });
     } finally {
@@ -46,11 +49,11 @@ const FinancialCommissionsScreen = () => {
 
   const header = (
     <PremiumHero
-      eyebrow="Financial admin"
-      title="Commission reports"
-      subtitle="Track agent payouts, property-linked commissions and payment status in one clean mobile view."
+      eyebrow={ui("Financial admin")}
+      title={ui("Commission reports")}
+      subtitle={ui("Track agent payouts, property-linked commissions and payment status in one clean mobile view.")}
       icon="ribbon-outline"
-      right={<StatusPill label={`${commissions.length} groups`} color={colors.blue} />}
+      right={<StatusPill label={ui("{value0} groups", {value0: (commissions.length)})} color={colors.blue} />}
     />
   );
 
@@ -64,8 +67,8 @@ const FinancialCommissionsScreen = () => {
         loadCommissions();
       }}
       header={header}
-      emptyTitle="No commission records"
-      emptyMessage="Commission activity will appear here once agents start earning from property work."
+      emptyTitle={ui("No commission records")}
+      emptyMessage={ui("Commission activity will appear here once agents start earning from property work.")}
       emptyIcon="wallet-outline"
       renderItem={({ item }) => {
         const status = item.status || 'pending';
@@ -77,8 +80,7 @@ const FinancialCommissionsScreen = () => {
                   {String(item.source || 'Commission').replace(/_/g, ' ')}
                 </AppText>
                 <AppText style={styles.property}>
-                  {Number(item.transaction_count || 0).toLocaleString()} transactions
-                </AppText>
+                  {Number(item.transaction_count || 0).toLocaleString()}{ui("transactions")}</AppText>
               </View>
               <StatusPill label={status} color={getStatusColor(status)} />
             </View>
@@ -87,7 +89,7 @@ const FinancialCommissionsScreen = () => {
 
             <InfoRow
               icon="stats-chart-outline"
-              label="Average rate"
+              label={ui("Average rate")}
               value={`${Number(item.avg_rate || 0).toFixed(2)}%`}
             />
           </PremiumCard>

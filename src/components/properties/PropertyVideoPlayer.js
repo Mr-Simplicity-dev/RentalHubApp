@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -18,6 +20,7 @@ import AppText from '../common/AppText';
  */
 
 const PropertyVideoPlayer = ({ uri, title = 'Property tour' }) => {
+  useInterfaceLanguage();
   const [started, setStarted] = useState(false);
 
   const player = useVideoPlayer(started ? uri : null, (instance) => {
@@ -35,15 +38,15 @@ const PropertyVideoPlayer = ({ uri, title = 'Property tour' }) => {
           </View>
           <View style={styles.textWrap}>
             <AppText style={styles.title}>{title}</AppText>
-            <AppText style={styles.subtitle}>Tap to play the walkthrough clip</AppText>
+            <AppText style={styles.subtitle}>{ui("Tap to play the walkthrough clip")}</AppText>
           </View>
         </View>
         <TouchableOpacity
-          accessibilityLabel="Play property video"
+          accessibilityLabel={ui("Play property video")}
           onPress={() => setStarted(true)}
           style={styles.playButton}>
           <Icon name="play" size={17} color={colors.white} />
-          <AppText style={styles.playText}>Play</AppText>
+          <AppText style={styles.playText}>{ui("Play")}</AppText>
         </TouchableOpacity>
       </View>
     );

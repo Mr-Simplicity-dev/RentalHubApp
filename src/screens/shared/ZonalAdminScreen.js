@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useCallback, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -17,6 +19,7 @@ import TourTarget from '../../components/tour/TourTarget';
 import { DashboardScreen } from '../../components/dashboard/DashboardKit';
 
 const ZonalAdminScreen = ({ navigation }) => {
+  useInterfaceLanguage();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -28,7 +31,7 @@ const ZonalAdminScreen = ({ navigation }) => {
     } catch (err) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(err, 'Could not load your zonal dashboard'),
       });
       setData(null);
@@ -44,7 +47,7 @@ const ZonalAdminScreen = ({ navigation }) => {
   );
 
   if (loading) {
-    return <PremiumCenter loading title="Loading zonal overview" />;
+    return <PremiumCenter loading title={ui("Loading zonal overview")} />;
   }
 
   const metric = (label, value) => (
@@ -61,14 +64,14 @@ const ZonalAdminScreen = ({ navigation }) => {
   return (
     <DashboardScreen refreshing={loading} onRefresh={load} contentContainerStyle={styles.content}>
       <PremiumHero
-        eyebrow="Zonal admin"
-        title="Zone overview"
-        subtitle={`${scope.assignedZone || 'Your zone'}${states.length ? ` · ${states.length} states` : ''}`}
+        eyebrow={ui("Zonal admin")}
+        title={ui("Zone overview")}
+        subtitle={ui("{value0}{value1}", {value0: (scope.assignedZone || ui("Your zone")), value1: (states.length ? ` · ${states.length} states` : '')})}
         icon="business-outline"
       />
 
-      <Button title="Assisted registration & receipts" onPress={()=>navigation.navigate('AssistedRegistration')} variant="outline" />
-      <TourTarget id="zonal_overview" label="Zone metrics"><View style={styles.metricRow}>
+      <Button title={ui("Assisted registration & receipts")} onPress={()=>navigation.navigate('AssistedRegistration')} variant="outline" />
+      <TourTarget id="zonal_overview" label={ui("Zone metrics")}><View style={styles.metricRow}>
         {metric('Users', data?.totalUsers ?? 0)}
         {metric('Properties', data?.totalProperties ?? 0)}
         {metric('Applications', data?.applications ?? 0)}
@@ -78,15 +81,15 @@ const ZonalAdminScreen = ({ navigation }) => {
         {metric('Open escalations', data?.openEscalations ?? 0)}
       </View>
 
-      <TourTarget id="zonal_workspaces" label="Zonal workspaces"><View style={styles.quickRow}>
+      <TourTarget id="zonal_workspaces" label={ui("Zonal workspaces")}><View style={styles.quickRow}>
         {[
-          { key: 'admins', label: 'Admins' },
-          { key: 'users', label: 'Users' },
-          { key: 'properties', label: 'Properties' },
-          { key: 'applications', label: 'Applications' },
-          { key: 'verifications', label: 'Verifications' },
-          { key: 'escalations', label: 'Escalations' },
-          { key: 'service-operations', label: 'Service ops' },
+          { key: 'admins', label: ui("Admins") },
+          { key: 'users', label: ui("Users") },
+          { key: 'properties', label: ui("Properties") },
+          { key: 'applications', label: ui("Applications") },
+          { key: 'verifications', label: ui("Verifications") },
+          { key: 'escalations', label: ui("Escalations") },
+          { key: 'service-operations', label: ui("Service ops") },
         ].map((item) => (
           <TouchableOpacity
             key={item.key}
@@ -99,17 +102,16 @@ const ZonalAdminScreen = ({ navigation }) => {
         ))}
       </View></TourTarget>
 
-      <TourTarget id="zonal_scope" label="States in your assigned zone"><PremiumCard>
-        <AppText style={styles.sectionTitle}>States in zone</AppText>
+      <TourTarget id="zonal_scope" label={ui("States in your assigned zone")}><PremiumCard>
+        <AppText style={styles.sectionTitle}>{ui("States in zone")}</AppText>
         {perf.length === 0 ? (
-          <AppText style={styles.empty}>No state data available.</AppText>
+          <AppText style={styles.empty}>{ui("No state data available.")}</AppText>
         ) : (
           perf.map((row) => (
             <View key={row.state_name} style={styles.stateRow}>
               <AppText style={styles.stateName}>{row.state_name}</AppText>
               <AppText style={styles.stateMeta}>
-                {row.properties} properties · {row.applications} applications
-              </AppText>
+                {row.properties}{ui(" properties · ")}{row.applications}{ui("applications")}</AppText>
             </View>
           ))
         )}
@@ -118,7 +120,7 @@ const ZonalAdminScreen = ({ navigation }) => {
       <PremiumCard>
         <InfoRow
           icon="information-circle-outline"
-          label="Scope"
+          label={ui("Scope")}
           value={states.join(', ') || scope.assignedZone || '—'}
         />
       </PremiumCard>

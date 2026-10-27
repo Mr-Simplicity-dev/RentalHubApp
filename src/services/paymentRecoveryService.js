@@ -1,3 +1,4 @@
+import { translateUi as ui } from '../i18n/interfaceRuntime.cjs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { paymentService } from './paymentService';
 import { transportationService } from './transportationService';
@@ -93,7 +94,7 @@ const destinationForPayment = (payment = {}) => {
 export const verifyPaymentForFlow = async (payment = {}) => {
   const reference = payment.reference;
   if (!reference) {
-    return { success: false, message: 'Payment reference missing' };
+    return { success: false, message: ui("Payment reference missing") };
   }
 
   switch (payment.flow) {
@@ -137,7 +138,7 @@ export const recoverPayment = async ({ url, reference, fallbackFlow } = {}) => {
     return {
       handled: false,
       success: false,
-      message: 'No payment reference found',
+      message: ui("No payment reference found"),
       destination: destinationForPayment(payment),
     };
   }

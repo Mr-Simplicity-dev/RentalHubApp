@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useRef, useState } from 'react';
 import {StyleSheet} from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -15,6 +17,7 @@ import { colors, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const ForgotPasswordScreen = ({ navigation }) => {
+  useInterfaceLanguage();
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const turnstileTokenRef = useRef(null);
@@ -24,14 +27,14 @@ const ForgotPasswordScreen = ({ navigation }) => {
     if (!email.trim()) {
       Toast.show({
         type: 'error',
-        text1: 'Email required',
+        text1: ui("Email required"),
       });
       return;
     }
 
     const turnstileToken = turnstileTokenRef.current;
     if (!turnstileToken) {
-      Toast.show({ type: 'error', text1: 'Security Check', text2: 'Please complete the security check below.' });
+      Toast.show({ type: 'error', text1: ui("Security Check"), text2: ui("Please complete the security check below.") });
       return;
     }
 
@@ -40,15 +43,15 @@ const ForgotPasswordScreen = ({ navigation }) => {
       await authService.forgotPassword(email.trim(), turnstileToken);
       Toast.show({
         type: 'success',
-        text1: 'Request sent',
-        text2: 'Check your email for reset instructions.',
+        text1: ui("Request sent"),
+        text2: ui("Check your email for reset instructions."),
       });
       navigation.goBack();
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
-        text2: getErrorMessage(error, 'Could not request password reset'),
+        text1: ui("Failed"),
+        text2: getErrorMessage(error, ui("Could not request password reset")),
       });
       turnstileRef.current?.reset();
       turnstileTokenRef.current = null;
@@ -60,15 +63,15 @@ const ForgotPasswordScreen = ({ navigation }) => {
   return (
     <PremiumScreen>
       <PremiumHero
-        eyebrow="Account recovery"
-        title="Reset your password securely"
-        subtitle="Enter the email linked to your RentalHub account and we will send you the next step."
+        eyebrow={ui("Account recovery")}
+        title={ui("Reset your password securely")}
+        subtitle={ui("Enter the email linked to your RentalHub account and we will send you the next step.")}
         icon="shield-checkmark-outline"
       />
 
       <PremiumCard>
         <Input
-          label="Email address"
+          label={ui("Email address")}
           value={email}
           onChangeText={setEmail}
           placeholder="you@email.com"
@@ -78,7 +81,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
         />
 
         <PremiumButton
-          title="Send reset link"
+          title={ui("Send reset link")}
           onPress={handleSubmit}
           loading={loading}
           icon="send-outline"
@@ -92,9 +95,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
           onError={() => { turnstileTokenRef.current = null; }}
         />
 
-        <AppText style={styles.helper}>
-          For your security, reset links are time-sensitive. Use the latest email if you request more than one.
-        </AppText>
+        <AppText style={styles.helper}>{ui("For your security, reset links are time-sensitive. Use the latest email if you request more than one.")}</AppText>
       </PremiumCard>
     </PremiumScreen>
   );

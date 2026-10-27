@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -20,6 +22,7 @@ import AppText from '../../components/common/AppText';
 const newClientId = () => `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
 
 const PublicSurveyScreen = ({ navigation }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const [step, setStep] = useState('flags'); // flags|closed|gate|details|questions|verify|done
   const [error, setError] = useState('');
   const [gateToken, setGateToken] = useState('');
@@ -71,7 +74,7 @@ const PublicSurveyScreen = ({ navigation }) => {
   }, []);
 
   if (step === 'flags') {
-    return <PremiumCenter loading title="Checking survey" />;
+    return <PremiumCenter loading title={ui("Checking survey")} />;
   }
 
   const onGateToken = async (token) => {
@@ -131,7 +134,7 @@ const PublicSurveyScreen = ({ navigation }) => {
       return Array.from(seen.values());
     }
     return [];
-  }, [current, questions]);
+  }, [current, questions, interfaceLanguage]);
 
   const setValue = (key, value) => {
     setAnswers((prev) => ({ ...prev, [key]: value }));
@@ -146,7 +149,7 @@ const PublicSurveyScreen = ({ navigation }) => {
     const list = Array.isArray(answerValue) ? answerValue : [];
     const next = list.includes(optionV) ? list.filter((v) => v !== optionV) : [...list, optionV];
     if (current.maxPicks && next.length > current.maxPicks) {
-      Toast.show({ type: 'info', text1: `Pick up to ${current.maxPicks} options` });
+      Toast.show({ type: 'info', text1: ui("Pick up to {value0} options", {value0: (current.maxPicks)}) });
       return;
     }
     setValue(current.key, next);
@@ -155,7 +158,7 @@ const PublicSurveyScreen = ({ navigation }) => {
   const next = () => {
     if (!current) return;
     if (current.required !== false && !answered) {
-      Toast.show({ type: 'info', text1: 'Please answer this question to continue.' });
+      Toast.show({ type: 'info', text1: ui("Please answer this question to continue.") });
       return;
     }
     if (index < queue.length - 1) {
@@ -212,7 +215,7 @@ const PublicSurveyScreen = ({ navigation }) => {
     return (
       <PremiumCenter
         icon="alert-circle-outline"
-        title="Survey unavailable"
+        title={ui("Survey unavailable")}
         message={error || 'The public survey is not open right now.'}
       />
     );
@@ -222,9 +225,9 @@ const PublicSurveyScreen = ({ navigation }) => {
     return (
       <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
         <PremiumHero
-          eyebrow="Market research"
-          title="Take the survey"
-          subtitle="Complete the security check to begin."
+          eyebrow={ui("Market research")}
+          title={ui("Take the survey")}
+          subtitle={ui("Complete the security check to begin.")}
           icon="shield-checkmark-outline"
         />
         <PremiumCard>
@@ -238,9 +241,9 @@ const PublicSurveyScreen = ({ navigation }) => {
   if (step === 'details') {
     return (
       <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
-        <PremiumHero eyebrow="Market research" title="About you" subtitle="Tell us who you are and how to reach you." icon="person-outline" />
+        <PremiumHero eyebrow={ui("Market research")} title={ui("About you")} subtitle={ui("Tell us who you are and how to reach you.")} icon="person-outline" />
         <PremiumCard>
-          <AppText style={styles.fieldLabel}>I am a</AppText>
+          <AppText style={styles.fieldLabel}>{ui("I am a")}</AppText>
           <View style={styles.typeRow}>
             {['tenant', 'landlord'].map((t) => (
               <TouchableOpacity
@@ -255,29 +258,29 @@ const PublicSurveyScreen = ({ navigation }) => {
               </TouchableOpacity>
             ))}
           </View>
-          <Input label="Full name" value={contact.name} onChangeText={(v) => setContact((p) => ({ ...p, name: v }))} />
-          <Input label="Phone" value={contact.phone} onChangeText={(v) => setContact((p) => ({ ...p, phone: v }))} keyboardType="phone-pad" containerStyle={styles.fieldGap} />
-          <Input label="Email" value={contact.email} onChangeText={(v) => setContact((p) => ({ ...p, email: v }))} keyboardType="email-address" autoCapitalize="none" containerStyle={styles.fieldGap} />
-          <AppText style={[styles.fieldLabel, styles.fieldGap]}>Your location (optional but recommended)</AppText>
+          <Input label={ui("Full name")} value={contact.name} onChangeText={(v) => setContact((p) => ({ ...p, name: v }))} />
+          <Input label={ui("Phone")} value={contact.phone} onChangeText={(v) => setContact((p) => ({ ...p, phone: v }))} keyboardType="phone-pad" containerStyle={styles.fieldGap} />
+          <Input label={ui("Email")} value={contact.email} onChangeText={(v) => setContact((p) => ({ ...p, email: v }))} keyboardType="email-address" autoCapitalize="none" containerStyle={styles.fieldGap} />
+          <AppText style={[styles.fieldLabel, styles.fieldGap]}>{ui("Your location (optional but recommended)")}</AppText>
           <TouchableOpacity activeOpacity={0.85} style={styles.pickerRow} onPress={() => setShowStatePicker(true)}>
-            <AppText style={styles.pickerRowText}>{stateName || 'Select state'}</AppText>
+            <AppText style={styles.pickerRowText}>{stateName || ui("Select state")}</AppText>
           </TouchableOpacity>
           <TouchableOpacity activeOpacity={0.85} style={styles.pickerRow} disabled={!stateName} onPress={() => setShowLgaPicker(true)}>
             <AppText style={styles.pickerRowText}>
-              {lgaName || (stateName ? 'Select local government area' : 'Select a state first')}
+              {lgaName || (stateName ? ui("Select local government area") : 'Select a state first')}
             </AppText>
           </TouchableOpacity>
           {error ? <AppText style={styles.error}>{error}</AppText> : null}
-          <PremiumButton title="Start survey" onPress={start} icon="arrow-forward-outline" style={styles.submit} />
+          <PremiumButton title={ui("Start survey")} onPress={start} icon="arrow-forward-outline" style={styles.submit} />
         </PremiumCard>
 
         <OptionPickerModal
           visible={showStatePicker}
-          title="Select state"
+          title={ui("Select state")}
           options={states}
           selectedValue={states.find((s) => String(s.state_name) === stateName)?.id ?? null}
           searchable
-          searchPlaceholder="Search states"
+          searchPlaceholder={ui("Search states")}
           getOptionLabel={(item) => item.state_name || item.name}
           getOptionValue={(item) => item.id}
           onClose={() => setShowStatePicker(false)}
@@ -289,11 +292,11 @@ const PublicSurveyScreen = ({ navigation }) => {
         />
         <OptionPickerModal
           visible={showLgaPicker}
-          title="Select local government area"
+          title={ui("Select local government area")}
           options={availableLgas}
           selectedValue={availableLgas.includes(lgaName) ? lgaName : null}
           searchable
-          searchPlaceholder="Search LGAs"
+          searchPlaceholder={ui("Search LGAs")}
           getOptionLabel={(item) => String(item)}
           getOptionValue={(item) => String(item)}
           onClose={() => setShowLgaPicker(false)}
@@ -309,11 +312,11 @@ const PublicSurveyScreen = ({ navigation }) => {
   if (step === 'verify') {
     return (
       <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
-        <PremiumHero eyebrow="Market research" title="Almost done" subtitle="Complete one final security check to submit." icon="shield-checkmark-outline" />
+        <PremiumHero eyebrow={ui("Market research")} title={ui("Almost done")} subtitle={ui("Complete one final security check to submit.")} icon="shield-checkmark-outline" />
         <PremiumCard>
           <TurnstileWidget action="rentalhub_survey" onToken={onSubmitToken} onExpire={() => setError('Check expired — please try again.')} onError={() => setError('Check failed — please try again.')} />
           {error ? <AppText style={styles.error}>{error}</AppText> : null}
-          {submitting ? <PremiumCenter loading title="Submitting" /> : null}
+          {submitting ? <PremiumCenter loading title={ui("Submitting")} /> : null}
         </PremiumCard>
       </ScrollView>
     );
@@ -328,10 +331,10 @@ const PublicSurveyScreen = ({ navigation }) => {
           screenedOut
             ? 'Based on your answers you do not need to continue.'
             : respondentCode
-              ? `Your response was recorded. Reference: ${respondentCode}`
+              ? ui("Your response was recorded. Reference: {value0}", {value0: (respondentCode)})
               : 'Your response was recorded. Thank you!'
         }
-        actionLabel="Close"
+        actionLabel={ui("Close")}
         onAction={() => navigation.goBack()}
       />
     );
@@ -340,9 +343,9 @@ const PublicSurveyScreen = ({ navigation }) => {
   // questions
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
-      <PremiumHero eyebrow="Market research" title="Survey" subtitle={`Question ${index + 1} of ${queue.length}`} icon="chatbubbles-outline" />
+      <PremiumHero eyebrow={ui("Market research")} title={ui("Survey")} subtitle={ui("Question {value0} of {value1}", {value0: (index + 1), value1: (queue.length)})} icon="chatbubbles-outline" />
       <View style={styles.progressRow}>
-        <StatusPill label={`${index + 1}/${queue.length}`} color={colors.blue} />
+        <StatusPill label={ui("{value0}/{value1}", {value0: (index + 1), value1: (queue.length)})} color={colors.blue} />
         <View style={styles.progressTrack}>
           <View style={[styles.progressFill, { width: `${queue.length ? ((index + 1) / queue.length) * 100 : 0}%` }]} />
         </View>
@@ -352,7 +355,7 @@ const PublicSurveyScreen = ({ navigation }) => {
         <AppText style={styles.prompt}>{current?.prompt || current?.key}</AppText>
 
         {current?.type === 'text' ? (
-          <Input value={typeof answerValue === 'string' ? answerValue : ''} onChangeText={(text) => setValue(current.key, text)} placeholder="Type your answer…" multiline numberOfLines={4} />
+          <Input value={typeof answerValue === 'string' ? answerValue : ''} onChangeText={(text) => setValue(current.key, text)} placeholder={ui("Type your answer…")} multiline numberOfLines={4} />
         ) : (
           <View style={styles.options}>
             {optionList.map((opt) => {
@@ -361,7 +364,7 @@ const PublicSurveyScreen = ({ navigation }) => {
                 return (
                   <TouchableOpacity key={opt.v} activeOpacity={0.85} onPress={() => setValue(current.key, Number(opt.v))} style={[styles.optionButton, selected && styles.optionSelected]}>
                     <AppText style={[styles.optionText, selected && styles.optionTextSelected]}>
-                      {opt.v}{current?.labels && current.labels[opt.v] ? ` · ${current.labels[opt.v]}` : ''}
+                      {opt.v}{current?.labels && current.labels[opt.v] ? ui(" · {value0}", {value0: (current.labels[opt.v])}) : ''}
                     </AppText>
                   </TouchableOpacity>
                 );
@@ -378,10 +381,10 @@ const PublicSurveyScreen = ({ navigation }) => {
         )}
 
         {screenedOut && current?.analysis === 'consent' ? (
-          <AppText style={styles.note}>Based on your answer, the survey ends here after this section.</AppText>
+          <AppText style={styles.note}>{ui("Based on your answer, the survey ends here after this section.")}</AppText>
         ) : null}
 
-        <PremiumButton title={index === queue.length - 1 ? 'Finish' : 'Next'} onPress={next} icon="arrow-forward-outline" style={styles.submit} />
+        <PremiumButton title={index === queue.length - 1 ? ui("Finish") : ui("Next")} onPress={next} icon="arrow-forward-outline" style={styles.submit} />
       </PremiumCard>
     </ScrollView>
   );

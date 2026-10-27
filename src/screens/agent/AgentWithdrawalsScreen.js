@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import {View, StyleSheet, ScrollView, ActivityIndicator, RefreshControl, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -13,6 +15,7 @@ import { getErrorMessage, pickList, pickObject } from '../../utils/http';
 import AppText from '../../components/common/AppText';
 import { useTourTarget } from '../../components/tour/TourTarget';
 const AgentWithdrawalsScreen = ({ navigation }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const { user } = useContext(AuthContext);
   const withdrawalsTourTarget = useTourTarget('agent_withdrawals', { padding: 6, radius: 18 });
   const [loading, setLoading] = useState(true);
@@ -26,7 +29,7 @@ const AgentWithdrawalsScreen = ({ navigation }) => {
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
-  }, [navigation]);
+  }, [navigation, interfaceLanguage]);
 
   const loadData = async () => {
     setLoading(true);
@@ -52,7 +55,7 @@ const AgentWithdrawalsScreen = ({ navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(error, 'Could not load withdrawals'),
       });
     } finally {
@@ -67,11 +70,11 @@ const AgentWithdrawalsScreen = ({ navigation }) => {
   const submitRequest = async () => {
     const amount = Number(form.amount || 0);
     if (!landlordId) {
-      Toast.show({ type: 'error', text1: 'No landlord assignment found' });
+      Toast.show({ type: 'error', text1: ui("No landlord assignment found") });
       return;
     }
     if (amount <= 0) {
-      Toast.show({ type: 'error', text1: 'Enter a valid amount' });
+      Toast.show({ type: 'error', text1: ui("Enter a valid amount") });
       return;
     }
 
@@ -84,13 +87,13 @@ const AgentWithdrawalsScreen = ({ navigation }) => {
         requestReason: form.requestReason,
       });
 
-      Toast.show({ type: 'success', text1: 'Withdrawal request submitted' });
+      Toast.show({ type: 'success', text1: ui("Withdrawal request submitted") });
       setForm({ amount: '', requestReason: '' });
       await loadData();
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Request failed',
+        text1: ui("Request failed"),
         text2: getErrorMessage(error, 'Could not submit withdrawal request'),
       });
     } finally {
@@ -117,22 +120,22 @@ const AgentWithdrawalsScreen = ({ navigation }) => {
         <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
           <Icon name="arrow-back" size={21} color={colors.ink} />
         </TouchableOpacity>
-        <AppText style={styles.topTitle}>Withdraw funds</AppText>
+        <AppText style={styles.topTitle}>{ui("Withdraw funds")}</AppText>
         <View style={styles.topSpacer} />
       </View>
 
       {!landlordId ? (
         <View style={styles.warningCard}>
           <View style={styles.warningIcon}><Icon name="alert-circle-outline" size={24} color="#A66B00" /></View>
-          <AppText style={styles.warningTitle}>No assigned landlord</AppText>
-          <AppText style={styles.warningText}>You need an active assignment before withdrawals can be requested.</AppText>
+          <AppText style={styles.warningTitle}>{ui("No assigned landlord")}</AppText>
+          <AppText style={styles.warningText}>{ui("You need an active assignment before withdrawals can be requested.")}</AppText>
         </View>
       ) : (
         <>
           <View {...withdrawalsTourTarget} style={styles.hero}>
-            <AppText style={styles.heroEyebrow}>PAYOUT CENTRE</AppText>
-            <AppText style={styles.title}>Move your earnings</AppText>
-            <AppText style={styles.subtitle}>Request a secure bank transfer from your commission balance.</AppText>
+            <AppText style={styles.heroEyebrow}>{ui("PAYOUT CENTRE")}</AppText>
+            <AppText style={styles.title}>{ui("Move your earnings")}</AppText>
+            <AppText style={styles.subtitle}>{ui("Request a secure bank transfer from your commission balance.")}</AppText>
           </View>
 
           <View style={styles.summaryCard}>
@@ -153,32 +156,32 @@ const AgentWithdrawalsScreen = ({ navigation }) => {
             <View style={styles.formHeading}>
               <View style={styles.formIcon}><Icon name="cash-outline" size={20} color={colors.blue} /></View>
               <View>
-                <AppText style={styles.formTitle}>New request</AppText>
-                <AppText style={styles.formSubtitle}>Funds are sent by bank transfer.</AppText>
+                <AppText style={styles.formTitle}>{ui("New request")}</AppText>
+                <AppText style={styles.formSubtitle}>{ui("Funds are sent by bank transfer.")}</AppText>
               </View>
             </View>
             <Input
-              label="Amount (NGN)"
+              label={ui("Amount (NGN)")}
               value={form.amount}
               keyboardType="number-pad"
               onChangeText={(value) => setForm((prev) => ({ ...prev, amount: value }))}
               placeholder="50000"
             />
             <Input
-              label="Reason (optional)"
+              label={ui("Reason (optional)")}
               value={form.requestReason}
               onChangeText={(value) => setForm((prev) => ({ ...prev, requestReason: value }))}
-              placeholder="Monthly payout"
+              placeholder={ui("Monthly payout")}
             />
-            <Button title="Submit Withdrawal Request" onPress={submitRequest} loading={submitting} />
+            <Button title={ui("Submit Withdrawal Request")} onPress={submitRequest} loading={submitting} />
           </View>
 
           <View style={styles.sectionHeader}>
-            <AppText style={styles.sectionTitle}>Request history</AppText>
-            <AppText style={styles.sectionCount}>{requests.length} requests</AppText>
+            <AppText style={styles.sectionTitle}>{ui("Request history")}</AppText>
+            <AppText style={styles.sectionCount}>{requests.length}{ui(" requests")}</AppText>
           </View>
           {requests.length === 0 ? (
-            <View style={styles.emptyCard}><AppText style={styles.empty}>No withdrawal requests yet.</AppText></View>
+            <View style={styles.emptyCard}><AppText style={styles.empty}>{ui("No withdrawal requests yet.")}</AppText></View>
           ) : null}
 
           {requests.map((item) => (
@@ -188,10 +191,10 @@ const AgentWithdrawalsScreen = ({ navigation }) => {
                   <AppText style={styles.amount}>₦{Number(item.amount || 0).toLocaleString()}</AppText>
                   <AppText style={styles.meta}>{new Date(item.created_at).toLocaleDateString()}</AppText>
                 </View>
-                <View style={styles.statusPill}><AppText style={styles.statusText}>{item.status || 'pending'}</AppText></View>
+                <View style={styles.statusPill}><AppText style={styles.statusText}>{item.status || ui("pending")}</AppText></View>
               </View>
               {item.reason_for_rejection || item.payout_failed_reason ? (
-                <AppText style={styles.reject}>Reason: {item.reason_for_rejection || item.payout_failed_reason}</AppText>
+                <AppText style={styles.reject}>{ui("Reason: ")}{item.reason_for_rejection || item.payout_failed_reason}</AppText>
               ) : null}
             </View>
           ))}

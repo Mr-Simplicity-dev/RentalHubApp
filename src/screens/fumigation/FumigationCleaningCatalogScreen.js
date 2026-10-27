@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React from 'react';
 import {FlatList, StyleSheet, TouchableOpacity, View} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -9,7 +11,7 @@ const SERVICE_CATEGORIES = [
   {
     id: 'fumigation',
     name: 'Fumigation Services',
-    description: 'Professional pest control and fumigation for residential and commercial properties.',
+    get "description"() { return ui("Professional pest control and fumigation for residential and commercial properties."); },
     priceRange: '₦15,000 - ₦150,000',
     icon: 'bug-outline',
     color: '#7C3AED',
@@ -17,7 +19,7 @@ const SERVICE_CATEGORIES = [
   {
     id: 'cleaning',
     name: 'Cleaning Services',
-    description: 'Deep cleaning, move-in/move-out cleaning, and regular maintenance cleaning.',
+    get "description"() { return ui("Deep cleaning, move-in/move-out cleaning, and regular maintenance cleaning."); },
     priceRange: '₦10,000 - ₦80,000',
     icon: 'sparkles-outline',
     color: colors.blue,
@@ -25,7 +27,7 @@ const SERVICE_CATEGORIES = [
   {
     id: 'sanitation',
     name: 'Sanitation Services',
-    description: 'Waste disposal, drainage cleaning, and environmental sanitation.',
+    get "description"() { return ui("Waste disposal, drainage cleaning, and environmental sanitation."); },
     priceRange: '₦8,000 - ₦60,000',
     icon: 'water-outline',
     color: colors.success,
@@ -33,7 +35,7 @@ const SERVICE_CATEGORIES = [
   {
     id: 'disinfection',
     name: 'Disinfection & Sterilization',
-    description: 'Hospital-grade disinfection for offices, homes, and commercial spaces.',
+    get "description"() { return ui("Hospital-grade disinfection for offices, homes, and commercial spaces."); },
     priceRange: '₦20,000 - ₦200,000',
     icon: 'flask-outline',
     color: '#A66B00',
@@ -41,7 +43,7 @@ const SERVICE_CATEGORIES = [
   {
     id: 'carpet_upholstery',
     name: 'Carpet & Upholstery Care',
-    description: 'Professional steam cleaning for carpets, rugs, sofas and upholstery.',
+    get "description"() { return ui("Professional steam cleaning for carpets, rugs, sofas and upholstery."); },
     priceRange: '₦12,000 - ₦90,000',
     icon: 'shirt-outline',
     color: '#0891B2',
@@ -49,7 +51,7 @@ const SERVICE_CATEGORIES = [
   {
     id: 'water_treatment',
     name: 'Water Treatment',
-    description: 'Water purification, tank cleaning, and borehole treatment services.',
+    get "description"() { return ui("Water purification, tank cleaning, and borehole treatment services."); },
     priceRange: '₦25,000 - ₦180,000',
     icon: 'water-outline',
     color: '#2563EB',
@@ -57,6 +59,7 @@ const SERVICE_CATEGORIES = [
 ];
 
 const FumigationCleaningCatalogScreen = ({ navigation }) => {
+  useInterfaceLanguage();
   const handleSelectService = (service) => {
     navigation.navigate('FumigationCleaningBooking', { category: service.id, serviceName: service.name });
   };
@@ -64,8 +67,8 @@ const FumigationCleaningCatalogScreen = ({ navigation }) => {
   return (
     <SafeAreaView edges={['top']} style={styles.safeArea}>
       <View style={styles.header}>
-        <AppText style={styles.headerTitle}>Fumigation & Cleaning</AppText>
-        <AppText style={styles.headerSubtitle}>Choose a service category to book</AppText>
+        <AppText style={styles.headerTitle}>{ui("Fumigation & Cleaning")}</AppText>
+        <AppText style={styles.headerSubtitle}>{ui("Choose a service category to book")}</AppText>
       </View>
 
       <FlatList
@@ -83,7 +86,7 @@ const FumigationCleaningCatalogScreen = ({ navigation }) => {
             <AppText style={styles.cardTitle}>{item.name}</AppText>
             <AppText style={styles.cardDesc}>{item.description}</AppText>
             <View style={styles.cardFooter}>
-              <AppText style={styles.priceLabel}>Estimated price range</AppText>
+              <AppText style={styles.priceLabel}>{ui("Estimated price range")}</AppText>
               <AppText style={styles.priceValue}>{item.priceRange}</AppText>
             </View>
           </TouchableOpacity>

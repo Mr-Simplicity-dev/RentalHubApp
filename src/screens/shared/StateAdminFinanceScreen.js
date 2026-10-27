@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useCallback, useState } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -32,10 +34,10 @@ const formatDate = (value) => {
 };
 
 const TAB = [
-  { key: 'summary', label: 'Commissions' },
-  { key: 'transactions', label: 'Transactions' },
-  { key: 'withdrawals', label: 'Withdrawals' },
-  { key: 'withdraw', label: 'Request' },
+  { key: 'summary', get "label"() { return ui("Commissions"); } },
+  { key: 'transactions', get "label"() { return ui("Transactions"); } },
+  { key: 'withdrawals', get "label"() { return ui("Withdrawals"); } },
+  { key: 'withdraw', get "label"() { return ui("Request"); } },
 ];
 
 const STATUS_COLORS = {
@@ -47,6 +49,7 @@ const STATUS_COLORS = {
 };
 
 const StateAdminFinanceScreen = () => {
+  useInterfaceLanguage();
   const [tab, setTab] = useState('summary');
   const [commissions, setCommissions] = useState([]);
   const [transactions, setTransactions] = useState([]);
@@ -78,7 +81,7 @@ const StateAdminFinanceScreen = () => {
     } catch (err) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(err, 'Could not load finance data'),
       });
     } finally {
@@ -117,7 +120,7 @@ const StateAdminFinanceScreen = () => {
       };
       const response = await stateAdminService.requestWithdrawal(body);
       if (response?.success) {
-        Toast.show({ type: 'success', text1: 'Withdrawal requested' });
+        Toast.show({ type: 'success', text1: ui("Withdrawal requested") });
         setWithdrawForm({ amount: '', bank_name: '', account_number: '', account_name: '' });
         await load();
       } else {
@@ -143,7 +146,7 @@ const StateAdminFinanceScreen = () => {
   };
 
   if (loading) {
-    return <PremiumCenter loading title="Loading finance" />;
+    return <PremiumCenter loading title={ui("Loading finance")} />;
   }
 
   return (
@@ -154,9 +157,9 @@ const StateAdminFinanceScreen = () => {
         showsVerticalScrollIndicator={false}
       >
         <PremiumHero
-          eyebrow="State finance"
-          title="Commissions & withdrawals"
-          subtitle="Review commission earnings, state transactions and payout requests."
+          eyebrow={ui("State finance")}
+          title={ui("Commissions & withdrawals")}
+          subtitle={ui("Review commission earnings, state transactions and payout requests.")}
           icon="wallet-outline"
         />
 
@@ -178,10 +181,10 @@ const StateAdminFinanceScreen = () => {
           })}
         </View>
 
-        {tab === 'summary' ? (
+        {tab === "summary" ? (
           <PremiumCard>
             {commissions.length === 0 ? (
-              <AppText style={styles.empty}>No commission records yet.</AppText>
+              <AppText style={styles.empty}>{ui("No commission records yet.")}</AppText>
             ) : (
               commissions.map((row, index) => {
                 const color = STATUS_COLORS[row.status] || colors.blue;
@@ -190,8 +193,7 @@ const StateAdminFinanceScreen = () => {
                     <View style={{ flex: 1 }}>
                       <AppText style={styles.rowTitle}>{String(row.source || '—').replace(/_/g, ' ')}</AppText>
                       <AppText style={styles.rowMeta}>
-                        {formatDate(row.date)} · {row.transaction_count} txns
-                      </AppText>
+                        {formatDate(row.date)} · {row.transaction_count}{ui("txns")}</AppText>
                     </View>
                     <View style={{ alignItems: 'flex-end', gap: 4 }}>
                       <AppText style={styles.rowAmount}>{formatNaira(row.total_amount)}</AppText>
@@ -204,10 +206,10 @@ const StateAdminFinanceScreen = () => {
           </PremiumCard>
         ) : null}
 
-        {tab === 'transactions' ? (
+        {tab === "transactions" ? (
           <PremiumCard>
             {transactions.length === 0 ? (
-              <AppText style={styles.empty}>No transactions in your state yet.</AppText>
+              <AppText style={styles.empty}>{ui("No transactions in your state yet.")}</AppText>
             ) : (
               transactions.map((txn, index) => (
                 <View key={`${txn.id}-${index}`} style={styles.listRow}>
@@ -216,7 +218,7 @@ const StateAdminFinanceScreen = () => {
                       {txn.property_title || txn.user_name || String(txn.payment_type || 'Payment').replace(/_/g, ' ')}
                     </AppText>
                     <AppText style={styles.rowMeta}>
-                      {txn.user_name ? `${txn.user_name} · ` : ''}
+                      {txn.user_name ? ui("{value0} · ", {value0: (txn.user_name)}) : ''}
                       {txn.payment_type} · {formatDate(txn.created_at || txn.completed_at)}
                     </AppText>
                   </View>
@@ -227,10 +229,10 @@ const StateAdminFinanceScreen = () => {
           </PremiumCard>
         ) : null}
 
-        {tab === 'withdrawals' ? (
+        {tab === "withdrawals" ? (
           <PremiumCard>
             {withdrawals.length === 0 ? (
-              <AppText style={styles.empty}>No withdrawal requests yet.</AppText>
+              <AppText style={styles.empty}>{ui("No withdrawal requests yet.")}</AppText>
             ) : (
               withdrawals.map((item, index) => {
                 const color = STATUS_COLORS[item.status] || colors.blue;
@@ -239,7 +241,7 @@ const StateAdminFinanceScreen = () => {
                     <View style={{ flex: 1 }}>
                       <AppText style={styles.rowTitle}>{item.bank_name} · {item.account_number}</AppText>
                       <AppText style={styles.rowMeta}>{formatDate(item.requested_at)}</AppText>
-                      {item.admin_note ? <AppText style={styles.rowMeta}>Note: {item.admin_note}</AppText> : null}
+                      {item.admin_note ? <AppText style={styles.rowMeta}>{ui("Note: ")}{item.admin_note}</AppText> : null}
                       {item.payout_failed_reason ? (
                         <AppText style={styles.rowMetaDanger}>{item.payout_failed_reason}</AppText>
                       ) : null}
@@ -255,56 +257,54 @@ const StateAdminFinanceScreen = () => {
           </PremiumCard>
         ) : null}
 
-        {tab === 'withdraw' ? (
+        {tab === "withdraw" ? (
           <PremiumCard>
             <Input
-              label="Amount (₦)"
+              label={ui("Amount (₦)")}
               value={withdrawForm.amount}
               onChangeText={setField('amount')}
-              placeholder="Minimum ₦1,000"
+              placeholder={ui("Minimum ₦1,000")}
               keyboardType="numeric"
             />
             <Input
-              label="Bank name"
+              label={ui("Bank name")}
               value={withdrawForm.bank_name}
               onChangeText={setField('bank_name')}
-              placeholder="e.g. Access Bank"
+              placeholder={ui("e.g. Access Bank")}
               containerStyle={styles.fieldGap}
             />
             <Input
-              label="Account number"
+              label={ui("Account number")}
               value={withdrawForm.account_number}
               onChangeText={setField('account_number')}
-              placeholder="10-digit account number"
+              placeholder={ui("10-digit account number")}
               keyboardType="number-pad"
               maxLength={10}
               containerStyle={styles.fieldGap}
             />
             <Input
-              label="Account name"
+              label={ui("Account name")}
               value={withdrawForm.account_name}
               onChangeText={setField('account_name')}
-              placeholder="Exact name on the account"
+              placeholder={ui("Exact name on the account")}
               containerStyle={styles.fieldGap}
             />
 
             {error ? <AppText style={styles.error}>{error}</AppText> : null}
 
             <PremiumButton
-              title="Request withdrawal"
+              title={ui("Request withdrawal")}
               onPress={() => submitWithdraw()}
               loading={submitting}
               icon="paper-plane-outline"
               style={styles.submit}
             />
-            <AppText style={styles.hint}>
-              Two-factor verification (authenticator or SMS code) is required to request a payout.
-            </AppText>
+            <AppText style={styles.hint}>{ui("Two-factor verification (authenticator or SMS code) is required to request a payout.")}</AppText>
           </PremiumCard>
         ) : null}
 
-        {tab === 'summary' || tab === 'transactions' ? (
-          <InfoRow icon="shield-checkmark-outline" label="Scope" value="Your assigned state only" />
+        {tab === "summary" || tab === "transactions" ? (
+          <InfoRow icon="shield-checkmark-outline" label={ui("Scope")} value="Your assigned state only" />
         ) : null}
       </ScrollView>
 

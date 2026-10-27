@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useMemo, useState } from 'react';
 import {ActivityIndicator,
   Modal,
@@ -28,10 +30,11 @@ const NativePaystackCardModal = ({
   onBrowserFallback,
   onSuccess,
 }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const [launching, setLaunching] = useState(false);
   const [fallbackLoading, setFallbackLoading] = useState(false);
 
-  const nativeStatus = useMemo(() => describeNativePaystackStatus(transaction), [transaction]);
+  const nativeStatus = useMemo(() => describeNativePaystackStatus(transaction), [transaction, interfaceLanguage]);
   const browserUrl = getPaystackAuthorizationUrl(transaction);
   const nativeAvailable = canUseNativePaystackCard(transaction);
 
@@ -43,7 +46,7 @@ const NativePaystackCardModal = ({
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Payment not completed',
+        text1: ui("Payment not completed"),
         text2: getErrorMessage(error, 'Could not complete Paystack payment.'),
       });
     } finally {
@@ -59,7 +62,7 @@ const NativePaystackCardModal = ({
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Checkout unavailable',
+        text1: ui("Checkout unavailable"),
         text2: getErrorMessage(error, 'Could not open Paystack checkout.'),
       });
     } finally {
@@ -79,14 +82,14 @@ const NativePaystackCardModal = ({
               <AppText style={styles.title}>{title}</AppText>
               <AppText style={styles.subtitle}>{subtitle}</AppText>
             </View>
-            <TouchableOpacity accessibilityLabel="Close payment" onPress={onCancel} style={styles.closeButton}>
+            <TouchableOpacity accessibilityLabel={ui("Close payment")} onPress={onCancel} style={styles.closeButton}>
               <Icon name="close" size={22} color="#64748b" />
             </TouchableOpacity>
           </View>
 
           {amountLabel ? (
             <View style={styles.amountCard}>
-              <AppText style={styles.amountLabel}>Amount</AppText>
+              <AppText style={styles.amountLabel}>{ui("Amount")}</AppText>
               <AppText style={styles.amountValue}>{amountLabel}</AppText>
             </View>
           ) : null}
@@ -94,10 +97,8 @@ const NativePaystackCardModal = ({
           {nativeAvailable ? (
             <View style={styles.nativeCard}>
               <Icon name="phone-portrait-outline" size={26} color="#0A66C2" />
-              <AppText style={styles.nativeTitle}>Use native Paystack checkout</AppText>
-              <AppText style={styles.nativeText}>
-                Paystack will open a secure in-app payment sheet. RentalHub does not collect or store your card details.
-              </AppText>
+              <AppText style={styles.nativeTitle}>{ui("Use native Paystack checkout")}</AppText>
+              <AppText style={styles.nativeText}>{ui("Paystack will open a secure in-app payment sheet. RentalHub does not collect or store your card details.")}</AppText>
               <TouchableOpacity
                 disabled={launching || fallbackLoading}
                 onPress={handleNativeCheckout}
@@ -105,14 +106,14 @@ const NativePaystackCardModal = ({
                 {launching ? (
                   <ActivityIndicator color="#ffffff" />
                 ) : (
-                  <AppText style={styles.primaryText}>Continue securely</AppText>
+                  <AppText style={styles.primaryText}>{ui("Continue securely")}</AppText>
                 )}
               </TouchableOpacity>
             </View>
           ) : (
             <View style={styles.fallbackCard}>
               <Icon name="information-circle-outline" size={22} color="#0A66C2" />
-              <AppText style={styles.fallbackTitle}>Native Paystack sheet is not active here</AppText>
+              <AppText style={styles.fallbackTitle}>{ui("Native Paystack sheet is not active here")}</AppText>
               <AppText style={styles.fallbackText}>
                 {nativeStatus.reason || 'Use Paystack checkout to complete this payment.'}
               </AppText>
@@ -127,15 +128,13 @@ const NativePaystackCardModal = ({
               {fallbackLoading ? (
                 <ActivityIndicator color="#0A66C2" />
               ) : (
-                <AppText style={styles.secondaryText}>Open Paystack checkout</AppText>
+                <AppText style={styles.secondaryText}>{ui("Open Paystack checkout")}</AppText>
               )}
             </TouchableOpacity>
           ) : null}
 
           {Platform.OS === 'ios' ? (
-            <AppText style={styles.platformNote}>
-              iOS will use the standard Paystack checkout until the iOS native Paystack bridge is added.
-            </AppText>
+            <AppText style={styles.platformNote}>{ui("iOS will use the standard Paystack checkout until the iOS native Paystack bridge is added.")}</AppText>
           ) : null}
         </View>
       </View>

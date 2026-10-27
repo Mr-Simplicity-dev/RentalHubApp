@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import {useTour} from '../../context/TourContext';
 import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Linking, Modal, RefreshControl, ScrollView, Share, StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -38,6 +40,7 @@ import { useAccessibilityPreferences } from '../../hooks/useAccessibilityPrefere
 
 import AppText from '../../components/common/AppText';
 const StatCard = ({ title, value, icon, onPress, tourTarget }) => {
+  useInterfaceLanguage();
   const tourTargetProps = useTourTarget(tourTarget, {
     label: title,
     onAction: onPress,
@@ -65,6 +68,7 @@ const defaultBannerColors = {
 };
 
 const StatusBanner = ({ icon, title, description, colors: bannerColors, onPress, actionLabel }) => {
+  useInterfaceLanguage();
   const palette = bannerColors || defaultBannerColors;
   return (
     <TouchableOpacity
@@ -133,14 +137,12 @@ const getLawyerInviteSummary = (stats = {}) => {
   if (status === 'accepted') {
     return {
       icon: 'checkmark-circle-outline',
-      title: 'Lawyer invitation accepted',
+      title: ui("Lawyer invitation accepted"),
       description: lawyerEmail
-        ? `${lawyerEmail} accepted the invitation${
-            acceptedAt && !Number.isNaN(acceptedAt.getTime())
+        ? ui("{value0} accepted the invitation{value1}.", {value0: (lawyerEmail), value1: (acceptedAt && !Number.isNaN(acceptedAt.getTime())
               ? ` on ${acceptedAt.toLocaleDateString()}`
-              : ''
-          }.`
-        : 'Your lawyer has accepted the invitation.',
+              : '')})
+        : ui("Your lawyer has accepted the invitation."),
       colors: {
         background: '#f0fdf4',
         border: '#bbf7d0',
@@ -154,14 +156,12 @@ const getLawyerInviteSummary = (stats = {}) => {
   if (status === 'pending') {
     return {
       icon: 'time-outline',
-      title: 'Lawyer invitation pending',
+      title: ui("Lawyer invitation pending"),
       description: lawyerEmail
-        ? `${lawyerEmail} has not accepted the invitation yet${
-            expiresAt && !Number.isNaN(expiresAt.getTime())
+        ? ui("{value0} has not accepted the invitation yet{value1}", {value0: (lawyerEmail), value1: (expiresAt && !Number.isNaN(expiresAt.getTime())
               ? `. It expires on ${expiresAt.toLocaleDateString()}`
-              : '.'
-          }`
-        : 'The invited lawyer has not accepted the invitation yet.',
+              : '.')})
+        : ui("The invited lawyer has not accepted the invitation yet."),
       colors: {
         background: '#fffbeb',
         border: '#fde68a',
@@ -175,10 +175,10 @@ const getLawyerInviteSummary = (stats = {}) => {
   if (status === 'not_accepted') {
     return {
       icon: 'close-circle-outline',
-      title: 'Lawyer invitation not accepted',
+      title: ui("Lawyer invitation not accepted"),
       description: lawyerEmail
-        ? `${lawyerEmail} did not accept the invitation before it expired.`
-        : 'The lawyer invitation expired without being accepted.',
+        ? ui("{value0} did not accept the invitation before it expired.", {value0: (lawyerEmail)})
+        : ui("The lawyer invitation expired without being accepted."),
       colors: {
         background: '#fef2f2',
         border: '#fecaca',
@@ -191,8 +191,8 @@ const getLawyerInviteSummary = (stats = {}) => {
 
   return {
     icon: 'document-text-outline',
-    title: 'Lawyer invitation unavailable',
-    description: 'No lawyer invitation record is available for this account yet.',
+    title: ui("Lawyer invitation unavailable"),
+    description: ui("No lawyer invitation record is available for this account yet."),
     colors: {
       background: '#f8fafc',
       border: '#e2e8f0',
@@ -229,6 +229,7 @@ const getTenantSubscriptionValue = (stats = {}) => {
 };
 
 const DashboardScreen = ({ navigation }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const { user } = useContext(AuthContext);
   const {walkthroughVisible,steps:tourSteps,currentStep:tourStepIndex}=useTour();
   const { reduceMotion } = useAccessibilityPreferences();
@@ -300,7 +301,7 @@ const DashboardScreen = ({ navigation }) => {
   const locationTourTargetProps = useTourTarget(
     isTenant ? 'tenant_location' : undefined,
     {
-      label: 'Property location',
+      label: ui("Property location"),
       onReveal: tourScroll.reveal,
       padding: 8,
       radius: radius.md,
@@ -308,12 +309,12 @@ const DashboardScreen = ({ navigation }) => {
   );
 
   const reviewStatus = getReviewStatus(user);
-  const lawyerInviteSummary = useMemo(() => getLawyerInviteSummary(stats), [stats]);
+  const lawyerInviteSummary = useMemo(() => getLawyerInviteSummary(stats), [stats, interfaceLanguage]);
   const propertyLocationCards = paidPropertyLocations.length
     ? paidPropertyLocations
     : [{
         property_id: 'pending-rent-location-card',
-        title: 'Property location',
+        title: ui("Property location"),
         payment_type: 'rent_required',
         rent_paid: false,
       }];
@@ -404,7 +405,7 @@ const DashboardScreen = ({ navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(error, 'Could not load dashboard'),
       });
     } finally {
@@ -450,8 +451,8 @@ const DashboardScreen = ({ navigation }) => {
     if (!amountInput || Number(amountInput) < 100) {
       Toast.show({
         type: 'error',
-        text1: 'Invalid amount',
-        text2: 'Minimum funding amount is ₦100',
+        text1: ui("Invalid amount"),
+        text2: ui("Minimum funding amount is ₦100"),
       });
       return;
     }
@@ -485,8 +486,8 @@ const DashboardScreen = ({ navigation }) => {
       } catch (error) {
         Toast.show({
           type: 'error',
-          text1: 'Could not load transfer details',
-          text2: getErrorMessage(error, 'Please try again.'),
+          text1: ui("Could not load transfer details"),
+          text2: getErrorMessage(error, ui("Please try again.")),
         });
       } finally {
         setFundLoading(false);
@@ -511,16 +512,16 @@ const DashboardScreen = ({ navigation }) => {
         setShowFundModal(false);
         openNativeCheckout({
           transaction: response.data,
-          title: 'Fund wallet',
-          subtitle: 'Top up your RentalHub wallet securely with your card.',
-          amountLabel: `₦${Number(amountInput).toLocaleString()}`,
+          title: ui("Fund wallet"),
+          subtitle: ui("Top up your RentalHub wallet securely with your card."),
+          amountLabel: ui("₦{value0}", {value0: (Number(amountInput).toLocaleString())}),
           onSuccess: (paymentResponse) =>
             completeWalletFunding(paymentResponse?.reference || reference),
           onBrowserFallback: () => {
             Toast.show({
               type: 'info',
-              text1: 'Paystack checkout opened',
-              text2: 'Complete payment securely, then return to refresh your wallet.',
+              text1: ui("Paystack checkout opened"),
+              text2: ui("Complete payment securely, then return to refresh your wallet."),
             });
           },
         });
@@ -530,15 +531,15 @@ const DashboardScreen = ({ navigation }) => {
       } else {
         Toast.show({
           type: 'error',
-          text1: 'Payment failed',
-          text2: response?.message || 'Could not initialize wallet funding',
+          text1: ui("Payment failed"),
+          text2: response?.message || ui("Could not initialize wallet funding"),
         });
       }
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Payment failed',
-        text2: getErrorMessage(error, 'Could not initialize wallet funding'),
+        text1: ui("Payment failed"),
+        text2: getErrorMessage(error, ui("Could not initialize wallet funding")),
       });
     } finally {
       setFundLoading(false);
@@ -554,20 +555,20 @@ const DashboardScreen = ({ navigation }) => {
         fallbackFlow: 'wallet',
       });
       if (response?.success) {
-        Toast.show({ type: 'success', text1: 'Wallet funded' });
+        Toast.show({ type: 'success', text1: ui("Wallet funded") });
         await Promise.all([loadWalletData(), loadDashboard({ refresh: true })]);
       } else {
         Toast.show({
           type: 'error',
-          text1: 'Verification failed',
-          text2: response?.message || 'Could not verify wallet funding.',
+          text1: ui("Verification failed"),
+          text2: response?.message || ui("Could not verify wallet funding."),
         });
       }
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Verification failed',
-        text2: getErrorMessage(error, 'Could not verify wallet funding.'),
+        text1: ui("Verification failed"),
+        text2: getErrorMessage(error, ui("Could not verify wallet funding.")),
       });
     }
   };
@@ -576,8 +577,8 @@ const DashboardScreen = ({ navigation }) => {
     if (!consentChecked) {
       Toast.show({
         type: 'error',
-        text1: 'Confirmation required',
-        text2: 'Confirm your bank details before submitting.',
+        text1: ui("Confirmation required"),
+        text2: ui("Confirm your bank details before submitting."),
       });
       return;
     }
@@ -590,8 +591,8 @@ const DashboardScreen = ({ navigation }) => {
     ) {
       Toast.show({
         type: 'error',
-        text1: 'Incomplete form',
-        text2: 'All withdrawal fields are required.',
+        text1: ui("Incomplete form"),
+        text2: ui("All withdrawal fields are required."),
       });
       return;
     }
@@ -602,16 +603,16 @@ const DashboardScreen = ({ navigation }) => {
       if (response?.success) {
         Toast.show({
           type: 'success',
-          text1: 'Withdrawal submitted',
-          text2: 'Your withdrawal request was submitted successfully.',
+          text1: ui("Withdrawal submitted"),
+          text2: ui("Your withdrawal request was submitted successfully."),
         });
         setShowWithdrawModal(false);
         await loadDashboard();
       } else {
         Toast.show({
           type: 'error',
-          text1: 'Withdrawal failed',
-          text2: response?.message || 'Could not submit withdrawal',
+          text1: ui("Withdrawal failed"),
+          text2: response?.message || ui("Could not submit withdrawal"),
         });
       }
     } catch (error) {
@@ -624,8 +625,8 @@ const DashboardScreen = ({ navigation }) => {
       } else {
         Toast.show({
           type: 'error',
-          text1: 'Withdrawal failed',
-          text2: getErrorMessage(error, 'Could not submit withdrawal'),
+          text1: ui("Withdrawal failed"),
+          text2: getErrorMessage(error, ui("Could not submit withdrawal")),
         });
       }
     } finally {
@@ -646,8 +647,8 @@ const DashboardScreen = ({ navigation }) => {
       setShowWithdrawModal(false);
       Toast.show({
         type: 'success',
-        text1: 'Withdrawal submitted',
-        text2: 'Your withdrawal request was submitted successfully.',
+        text1: ui("Withdrawal submitted"),
+        text2: ui("Your withdrawal request was submitted successfully."),
       });
       await loadDashboard();
       return;
@@ -664,16 +665,16 @@ const DashboardScreen = ({ navigation }) => {
 
     try {
       await Share.share({
-        title: 'Amana RentalHub NG invite',
-        message: `${shareText}\n${referralInfo.invite_url}`,
+        title: ui("Amana RentalHub NG invite"),
+        message: ui("{value0}\n{value1}", {value0: (shareText), value1: (referralInfo.invite_url)}),
         url: referralInfo.invite_url,
       });
     } catch (error) {
       if (error?.message !== 'User did not share') {
         Toast.show({
           type: 'error',
-          text1: 'Share failed',
-          text2: 'Could not open share sheet',
+          text1: ui("Share failed"),
+          text2: ui("Could not open share sheet"),
         });
       }
     }
@@ -690,8 +691,8 @@ const DashboardScreen = ({ navigation }) => {
     if (!canOpenPropertyMap(property)) {
       Toast.show({
         type: 'info',
-        text1: 'Location locked',
-        text2: 'This card becomes active after rent payment is confirmed.',
+        text1: ui("Location locked"),
+        text2: ui("This card becomes active after rent payment is confirmed."),
       });
       return;
     }
@@ -701,8 +702,8 @@ const DashboardScreen = ({ navigation }) => {
     if (!mapsUrl) {
       Toast.show({
         type: 'info',
-        text1: 'Location unavailable',
-        text2: 'No map location is available for this property yet.',
+        text1: ui("Location unavailable"),
+        text2: ui("No map location is available for this property yet."),
       });
       return;
     }
@@ -712,8 +713,8 @@ const DashboardScreen = ({ navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Could not open Google Maps',
-        text2: 'Please try again from your phone.',
+        text1: ui("Could not open Google Maps"),
+        text2: ui("Please try again from your phone."),
       });
     }
   };
@@ -722,9 +723,9 @@ const DashboardScreen = ({ navigation }) => {
     reviewStatus === 'pending'
       ? {
           icon: 'time-outline',
-          title: 'Verification submitted',
-          description: 'Your passport was submitted and is waiting for review.',
-          actionLabel: 'View verification status',
+          title: ui("Verification submitted"),
+          description: ui("Your passport was submitted and is waiting for review."),
+          actionLabel: ui("View verification status"),
           colors: {
             background: '#eff6ff',
             border: '#bfdbfe',
@@ -736,9 +737,9 @@ const DashboardScreen = ({ navigation }) => {
       : reviewStatus === 'rejected'
         ? {
             icon: 'close-circle-outline',
-            title: 'Verification rejected',
-            description: 'Your verification was rejected. Review your details and upload a new live passport photo.',
-            actionLabel: 'Fix verification',
+            title: ui("Verification rejected"),
+            description: ui("Your verification was rejected. Review your details and upload a new live passport photo."),
+            actionLabel: ui("Fix verification"),
             colors: {
               background: '#fef2f2',
               border: '#fecaca',
@@ -750,9 +751,9 @@ const DashboardScreen = ({ navigation }) => {
         : !user?.identity_verified
           ? {
               icon: 'alert-circle-outline',
-              title: 'Complete identity verification',
-              description: 'Upload your live passport photo to unlock the full platform workflow.',
-              actionLabel: 'Open profile',
+              title: ui("Complete identity verification"),
+              description: ui("Upload your live passport photo to unlock the full platform workflow."),
+              actionLabel: ui("Open profile"),
               colors: {
                 background: '#fefce8',
                 border: '#fde68a',
@@ -791,12 +792,12 @@ const DashboardScreen = ({ navigation }) => {
       }>
       <View style={styles.topBar}>
         <View>
-          <AppText style={styles.topEyebrow}>MY HUB</AppText>
-          <AppText style={styles.topTitle}>Hello, {String(user?.full_name || 'there').split(' ')[0]}</AppText>
+          <AppText style={styles.topEyebrow}>{ui("MY HUB")}</AppText>
+          <AppText style={styles.topTitle}>{ui("Hello, ")}{String(user?.full_name || 'there').split(' ')[0]}</AppText>
         </View>
         <View style={styles.topActions}>
           <TouchableOpacity
-            accessibilityLabel="Open notifications"
+            accessibilityLabel={ui("Open notifications")}
             onPress={() => navigation.navigate('Notifications')}
             style={styles.topButton}>
             <Icon name="notifications-outline" size={21} color={colors.navy} />
@@ -805,7 +806,7 @@ const DashboardScreen = ({ navigation }) => {
             ) : null}
           </TouchableOpacity>
           <TouchableOpacity
-            accessibilityLabel="Open profile"
+            accessibilityLabel={ui("Open profile")}
             onPress={() => navigation.navigate('Profile')}
             style={styles.avatar}>
             <AppText style={styles.avatarText}>
@@ -814,7 +815,7 @@ const DashboardScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       </View>
-      <AppText style={styles.subtitle}>Everything about your rental journey, in one place.</AppText>
+      <AppText style={styles.subtitle}>{ui("Everything about your rental journey, in one place.")}</AppText>
 
       {verificationBanner ? (
         <StatusBanner
@@ -831,9 +832,9 @@ const DashboardScreen = ({ navigation }) => {
       {isTenant ? (
         <StatusBanner
           icon="checkmark-circle-outline"
-          title="Pay per property details"
-          description="Save properties first, then pay to unlock each property's full details and landlord contact."
-          actionLabel="Browse properties"
+          title={ui("Pay per property details")}
+          description={ui("Save properties first, then pay to unlock each property's full details and landlord contact.")}
+          actionLabel={ui("Browse properties")}
           colors={{
             background: '#eff6ff',
             border: '#bfdbfe',
@@ -860,7 +861,7 @@ const DashboardScreen = ({ navigation }) => {
               color={hasActivePropertyLocation ? '#047857' : '#64748b'}
             />
             <View style={{ flex: 1 }}>
-              <AppText style={styles.locationTitle}>Property Location</AppText>
+              <AppText style={styles.locationTitle}>{ui("Property Location")}</AppText>
               <AppText style={styles.locationHint}>
                 {hasActivePropertyLocation
                   ? 'Tap any active property card to open its location in Google Maps.'
@@ -882,7 +883,7 @@ const DashboardScreen = ({ navigation }) => {
               >
                 <View style={{ flex: 1 }}>
                   <AppText style={[styles.locationCardTitle, !isActive && styles.locationCardTitleLocked]}>
-                    {property.title || 'Property location'}
+                    {property.title || ui("Property location")}
                   </AppText>
                   <AppText style={styles.locationAddress}>
                     {getPropertyMapAddress(property) ||
@@ -897,7 +898,7 @@ const DashboardScreen = ({ navigation }) => {
                         {property.latitude && property.longitude ? 'Map pin ready' : 'Address search'}
                       </AppText>
                     ) : (
-                      <AppText style={styles.locationBadgeWarning}>Locked until confirmed</AppText>
+                      <AppText style={styles.locationBadgeWarning}>{ui("Locked until confirmed")}</AppText>
                     )}
                   </View>
                 </View>
@@ -916,27 +917,27 @@ const DashboardScreen = ({ navigation }) => {
         {isTenant ? (
           <>
             <StatCard
-              title="Saved Properties"
+              title={ui("Saved Properties")}
               value={stats.saved_properties_count}
               icon="heart-outline"
               tourTarget="tenant_properties"
               onPress={() => navigation.navigate('SavedProperties')}
             />
             <StatCard
-              title="Unlocked Details"
+              title={ui("Unlocked Details")}
               value={stats.unlocked_properties_count}
               icon="lock-open-outline"
               onPress={() => navigation.navigate('PropertyList')}
             />
             <StatCard
-              title="Unread Messages"
+              title={ui("Unread Messages")}
               value={stats.unread_messages}
               icon="mail-unread-outline"
               tourTarget="tenant_messages"
               onPress={() => navigation.navigate('Messages')}
             />
             <StatCard
-              title="Subscription"
+              title={ui("Subscription")}
               value={getTenantSubscriptionValue(stats)}
               icon="card-outline"
               onPress={() => navigation.navigate('Subscribe')}
@@ -944,25 +945,25 @@ const DashboardScreen = ({ navigation }) => {
             {showAllCards ? (
               <>
                 <StatCard
-                  title="Transport Bookings"
+                  title={ui("Transport Bookings")}
                   value={transportStats?.total_bookings || 0}
                   icon="bus-outline"
                   onPress={() => navigation.navigate('TransportationBookings')}
                 />
                 <StatCard
-                  title="Rent Savings"
+                  title={ui("Rent Savings")}
                   value={getRentSavingsValue()}
                   icon="cash-outline"
                   onPress={() => navigation.navigate('RentSavingsDashboard')}
                 />
                 <StatCard
-                  title="Rent Calculator"
+                  title={ui("Rent Calculator")}
                   value="Plan your rent"
                   icon="calculator-outline"
                   onPress={() => navigation.navigate('RentCalculator')}
                 />
                 <StatCard
-                  title="Wallet"
+                  title={ui("Wallet")}
                   value={
                     walletBalance !== null && walletBalance !== undefined
                       ? `₦${Number(walletBalance).toLocaleString()}`
@@ -972,14 +973,14 @@ const DashboardScreen = ({ navigation }) => {
                   tourTarget="tenant_wallet"
                   onPress={() => setShowWallet(true)}
                 />
-                <StatCard title="Disputes" tourTarget={isTenant?'tenant_disputes':'landlord_disputes'} value="Track cases" icon="shield-half-outline" onPress={() => navigation.navigate('MyDisputes')} />
-                <StatCard title="Property Reports" tourTarget={isTenant?'tenant_reports':'landlord_reports'} value="Report an issue" icon="home-outline" onPress={() => navigation.navigate('MyDamageReports')} />
-                <StatCard title="Support" value="Get help" icon="headset-outline" onPress={() => navigation.navigate('Support')} />
+                <StatCard title={ui("Disputes")} tourTarget={isTenant?'tenant_disputes':'landlord_disputes'} value="Track cases" icon="shield-half-outline" onPress={() => navigation.navigate('MyDisputes')} />
+                <StatCard title={ui("Property Reports")} tourTarget={isTenant?'tenant_reports':'landlord_reports'} value="Report an issue" icon="home-outline" onPress={() => navigation.navigate('MyDamageReports')} />
+                <StatCard title={ui("Support")} value="Get help" icon="headset-outline" onPress={() => navigation.navigate('Support')} />
               </>
             ) : null}
             <StatCard
               tourTarget={isTenant?'tenant_more':'landlord_more'}
-              title={showAllCards ? 'Show less' : 'More'}
+              title={showAllCards ? ui("Show less") : ui("More")}
               value=""
               icon={showAllCards ? 'chevron-up-circle-outline' : 'ellipsis-horizontal-circle-outline'}
               onPress={() => setShowAllCards((prev) => !prev)}
@@ -988,27 +989,27 @@ const DashboardScreen = ({ navigation }) => {
         ) : (
           <>
             <StatCard
-              title="Total Properties"
+              title={ui("Total Properties")}
               value={stats.total_properties}
               icon="home-outline"
               tourTarget="landlord_listings"
               onPress={() => navigation.navigate('MyProperties')}
             />
             <StatCard
-              title="Available"
+              title={ui("Available")}
               value={stats.available_properties}
               icon="checkmark-circle-outline"
               onPress={() => navigation.navigate('MyProperties')}
             />
             <StatCard
-              title="Pending Applications"
+              title={ui("Pending Applications")}
               value={stats.pending_applications}
               icon="documents-outline"
               tourTarget="landlord_applications"
               onPress={() => navigation.navigate('Applications')}
             />
             <StatCard
-              title="Unread Messages"
+              title={ui("Unread Messages")}
               value={stats.unread_messages}
               icon="mail-unread-outline"
               tourTarget="landlord_messages"
@@ -1017,7 +1018,7 @@ const DashboardScreen = ({ navigation }) => {
             {showAllCards ? (
               <>
                 <StatCard
-                  title="Available to Withdraw"
+                  title={ui("Available to Withdraw")}
                   value={
                     landlordWallet
                       ? `₦${Number(landlordWallet.available_to_withdraw || 0).toLocaleString()}`
@@ -1028,18 +1029,18 @@ const DashboardScreen = ({ navigation }) => {
                   onPress={() => setShowWallet(true)}
                 />
                 <StatCard
-                  title="Subscription"
+                  title={ui("Subscription")}
                   value={getTenantSubscriptionValue(stats)}
                   icon="card-outline"
                   onPress={() => navigation.navigate('Subscribe')}
                 />
-                <StatCard title="Disputes" value="Track cases" icon="shield-half-outline" onPress={() => navigation.navigate('MyDisputes')} />
-                <StatCard title="Property Reports" value="Report an issue" icon="home-outline" onPress={() => navigation.navigate('MyDamageReports')} />
-                <StatCard title="Support" value="Get help" icon="headset-outline" onPress={() => navigation.navigate('Support')} />
+                <StatCard title={ui("Disputes")} value="Track cases" icon="shield-half-outline" onPress={() => navigation.navigate('MyDisputes')} />
+                <StatCard title={ui("Property Reports")} value="Report an issue" icon="home-outline" onPress={() => navigation.navigate('MyDamageReports')} />
+                <StatCard title={ui("Support")} value="Get help" icon="headset-outline" onPress={() => navigation.navigate('Support')} />
               </>
             ) : null}
             <StatCard
-              title={showAllCards ? 'Show less' : 'More'}
+              title={showAllCards ? ui("Show less") : ui("More")}
               value=""
               icon={showAllCards ? 'chevron-up-circle-outline' : 'ellipsis-horizontal-circle-outline'}
               onPress={() => setShowAllCards((prev) => !prev)}
@@ -1052,10 +1053,10 @@ const DashboardScreen = ({ navigation }) => {
       Number(landlordPropertyFee?.amount_due || 0) > 0 ? (
         <StatusBanner
           icon="warning-outline"
-          title="Property charges reserve active"
-          description={`${landlordPropertyFee.fee_label || 'Landlord Property Charges'} reserve of ₦${Number(
+          title={ui("Property charges reserve active")}
+          description={ui("{value0} reserve of ₦{value1} is due on {value2}.", {value0: (landlordPropertyFee.fee_label || ui("Landlord Property Charges")), value1: (Number(
             landlordPropertyFee.amount_due || 0
-          ).toLocaleString()} is due on ${new Date(landlordPropertyFee.due_at).toLocaleDateString()}.`}
+          ).toLocaleString()), value2: (new Date(landlordPropertyFee.due_at).toLocaleDateString())})}
           colors={{
             background: '#fffbeb',
             border: '#fde68a',
@@ -1071,10 +1072,8 @@ const DashboardScreen = ({ navigation }) => {
           <View style={styles.referralHeader}>
             <Icon name="gift-outline" size={24} color="#059669" />
             <View style={{ flex: 1 }}>
-              <AppText style={styles.referralEyebrow}>Invite & Earn</AppText>
-              <AppText style={styles.referralTitle}>
-                Earn ₦{Number(referralInfo.reward_amount || 1000).toLocaleString()} per successful invite
-              </AppText>
+              <AppText style={styles.referralEyebrow}>{ui("Invite & Earn")}</AppText>
+              <AppText style={styles.referralTitle}>{ui("Earn ₦")}{Number(referralInfo.reward_amount || 1000).toLocaleString()}{ui("per successful invite")}</AppText>
               {referralInfo.referral_code ? (
                 <AppText style={styles.referralCode}>{referralInfo.referral_code}</AppText>
               ) : null}
@@ -1083,26 +1082,26 @@ const DashboardScreen = ({ navigation }) => {
 
           <View style={styles.referralStatsRow}>
             <View style={styles.referralStat}>
-              <AppText style={styles.referralStatLabel}>Referrals</AppText>
+              <AppText style={styles.referralStatLabel}>{ui("Referrals")}</AppText>
               <AppText style={styles.referralStatValue}>
                 {Number(referralInfo.total_referrals || 0).toLocaleString()}
               </AppText>
             </View>
             <View style={styles.referralStat}>
-              <AppText style={styles.referralStatLabel}>Earned</AppText>
+              <AppText style={styles.referralStatLabel}>{ui("Earned")}</AppText>
               <AppText style={styles.referralStatValue}>
                 ₦{Number(referralInfo.total_earned || 0).toLocaleString()}
               </AppText>
             </View>
             <View style={styles.referralStat}>
-              <AppText style={styles.referralStatLabel}>Credit</AppText>
+              <AppText style={styles.referralStatLabel}>{ui("Credit")}</AppText>
               <AppText style={styles.referralStatValue}>
                 ₦{Number(referralInfo.subscription_credit_balance || 0).toLocaleString()}
               </AppText>
             </View>
           </View>
 
-          <AppText style={styles.referralLinkLabel}>Invite link</AppText>
+          <AppText style={styles.referralLinkLabel}>{ui("Invite link")}</AppText>
           <TextInput
             style={styles.referralLinkInput}
             value={referralInfo.invite_url}
@@ -1112,43 +1111,43 @@ const DashboardScreen = ({ navigation }) => {
 
           <View style={styles.referralActions}>
             <TouchableOpacity style={styles.referralBtnPrimary} onPress={shareReferralInvite}>
-              <AppText style={styles.referralBtnPrimaryText}>Share</AppText>
+              <AppText style={styles.referralBtnPrimaryText}>{ui("Share")}</AppText>
             </TouchableOpacity>
             <TouchableOpacity style={styles.referralBtnSecondary} onPress={openWhatsappReferralShare}>
-              <AppText style={styles.referralBtnSecondaryText}>WhatsApp</AppText>
+              <AppText style={styles.referralBtnSecondaryText}>{ui("WhatsApp")}</AppText>
             </TouchableOpacity>
           </View>
         </View>
       ) : referralLoading ? (
-        <AppText style={styles.referralLoading}>Loading invite link...</AppText>
+        <AppText style={styles.referralLoading}>{ui("Loading invite link...")}</AppText>
       ) : null}
 
-      <DashboardSection title="Property tools">
+      <DashboardSection title={ui("Property tools")}>
         <ActionRow
-          title="Browse Properties"
-          subtitle="Find listings and review property details."
+          title={ui("Browse Properties")}
+          subtitle={ui("Find listings and review property details.")}
           icon="search-outline"
           onPress={() => navigation.navigate('PropertyList')}
         />
         {isTenant ? (
           <ActionRow
-            title="Saved Properties"
-            subtitle="Return to your shortlist."
+            title={ui("Saved Properties")}
+            subtitle={ui("Return to your shortlist.")}
             icon="heart-outline"
             onPress={() => navigation.navigate('SavedProperties')}
           />
         ) : (
           <ActionRow
-            title="Add Property"
-            subtitle="Create and publish a new listing."
+            title={ui("Add Property")}
+            subtitle={ui("Create and publish a new listing.")}
             icon="add-circle-outline"
             onPress={() => navigation.navigate('AddProperty')}
           />
         )}
         {(isTenant || isLandlord) ? (
           <ActionRow
-            title="Tenancy Agreements"
-            subtitle="Review and electronically sign your tenancy agreements."
+            title={ui("Tenancy Agreements")}
+            subtitle={ui("Review and electronically sign your tenancy agreements.")}
             icon="document-text-outline"
             onPress={() => navigation.navigate('TenancyAgreements')}
           />
@@ -1156,107 +1155,107 @@ const DashboardScreen = ({ navigation }) => {
       </DashboardSection>
 
       {isTenant ? (
-        <DashboardSection title="Home services" tourTarget="tenant_services">
+        <DashboardSection title={ui("Home services")} tourTarget="tenant_services">
           <ActionRow
-            title="Rent Savings"
-            subtitle="Create goals and track your rent plan."
+            title={ui("Rent Savings")}
+            subtitle={ui("Create goals and track your rent plan.")}
             icon="cash-outline"
             onPress={() => navigation.navigate('RentSavingsDashboard')}
           />
           <ActionRow
-            title="Rent Calculator"
-            subtitle="See your real monthly rent and move-in cost."
+            title={ui("Rent Calculator")}
+            subtitle={ui("See your real monthly rent and move-in cost.")}
             icon="calculator-outline"
             onPress={() => navigation.navigate('RentCalculator')}
           />
           <ActionRow
-            title="Book Transportation"
-            subtitle="Schedule moving and logistics services."
+            title={ui("Book Transportation")}
+            subtitle={ui("Schedule moving and logistics services.")}
             icon="bus-outline"
             onPress={() => navigation.navigate('TransportationBooking')}
           />
           <ActionRow
-            title="Fumigation & Cleaning"
-            subtitle="Book trusted property care services."
+            title={ui("Fumigation & Cleaning")}
+            subtitle={ui("Book trusted property care services.")}
             icon="sparkles-outline"
             onPress={() => navigation.navigate('FumigationCleaningBooking')}
           />
         </DashboardSection>
       ) : null}
 
-      <DashboardSection title="Money">
+      <DashboardSection title={ui("Money")}>
         <ActionRow
-          title="Payment History"
-          subtitle="Review payments and transaction references."
+          title={ui("Payment History")}
+          subtitle={ui("Review payments and transaction references.")}
           icon="receipt-outline"
           onPress={() => navigation.navigate('PaymentHistory')}
         />
         {(isTenant || isLandlord) ? (
           <ActionRow
-            title="Refund Requests"
-            subtitle="Tenant refunds and relocation requests"
+            title={ui("Refund Requests")}
+            subtitle={ui("Tenant refunds and relocation requests")}
             icon="cash-outline"
             onPress={() => navigation.navigate('RefundRequests')}
           />
         ) : null}
         {isTenant ? (
           <ActionRow
-            title="Ask for rent help"
-            subtitle="Create a secure link so someone can pay your rent."
+            title={ui("Ask for rent help")}
+            subtitle={ui("Create a secure link so someone can pay your rent.")}
             icon="hand-left-outline"
             onPress={() => navigation.navigate('RequestRentHelp')}
           />
         ) : null}
-        {(isTenant || isLandlord) ? <ActionRow title="Wallet" subtitle="View your balance, fund your wallet or withdraw funds." icon="wallet-outline" onPress={() => setShowWallet(true)} /> : null}
+        {(isTenant || isLandlord) ? <ActionRow title={ui("Wallet")} subtitle={ui("View your balance, fund your wallet or withdraw funds.")} icon="wallet-outline" onPress={() => setShowWallet(true)} /> : null}
       </DashboardSection>
 
-      <DashboardSection title="Support">
+      <DashboardSection title={ui("Support")}>
         <ActionRow
-          title="Contact support"
-          subtitle="Chat, email or call our support team."
+          title={ui("Contact support")}
+          subtitle={ui("Chat, email or call our support team.")}
           icon="headset-outline"
           onPress={() => navigation.navigate('Support')}
         />
       </DashboardSection>
 
-      <DashboardSection title="More">
+      <DashboardSection title={ui("More")}>
         {/* These four had no in-app entry point at all — reachable only by deep link
             or the hidden NativeTools hub. Surfaced here so they are actually findable. */}
         <ActionRow
-          title="My Disputes"
-          subtitle="Track disputes you have opened and their progress."
+          title={ui("My Disputes")}
+          subtitle={ui("Track disputes you have opened and their progress.")}
           icon="shield-half-outline"
           onPress={() => navigation.navigate('MyDisputes')}
         />
         <ActionRow
-          title="Property Reports"
-          subtitle="Report property situation and track their outcomes."
+          title={ui("Property Reports")}
+          subtitle={ui("Report property situation and track their outcomes.")}
           icon="alert-circle-outline"
           onPress={() => navigation.navigate('MyDamageReports')}
         />
         {isTenant ? (
           <ActionRow
-            title="My Subscriptions"
-            subtitle="Properties you have unlocked access to."
+            title={ui("My Subscriptions")}
+            subtitle={ui("Properties you have unlocked access to.")}
             icon="key-outline"
             onPress={() => navigation.navigate('SubscribedProperties')}
           />
         ) : null}
         <ActionRow
-          title="Rate RentalHub"
-          subtitle="Tell us how the platform is working for you."
+          title={ui("Rate RentalHub")}
+          subtitle={ui("Tell us how the platform is working for you.")}
           icon="star-outline"
           onPress={() => navigation.navigate('PlatformRatings')}
         />
         <ActionRow
-          title="Careers"
-          subtitle="View openings and submit applications."
+          title={ui("Careers")}
+          subtitle={ui("View openings and submit applications.")}
           icon="briefcase-outline"
           onPress={() => navigation.navigate('Careers')}
         />
         <ActionRow
-          title="More app tools"
-          subtitle="Open role-aware RentalHub tools from one native shortcut list."
+          title={ui("More app tools")}
+          subtitle={ui("Open role-aware RentalHub tools from one native shortcut list.")}
           icon="apps-outline"
           badge="Native"
           onPress={() => navigation.navigate('NativeTools')}
@@ -1296,7 +1295,7 @@ const DashboardScreen = ({ navigation }) => {
           </View>
           <View style={{ flex: 1 }}>
             <AppText style={{ color: '#fff', fontFamily: typography.bold, fontSize: typeScale.reading, lineHeight: 22 }}>
-              {surveyStatus.part_a_done ? 'Continue survey' : 'Market research survey'}
+              {surveyStatus.part_a_done ? ui("Continue survey") : 'Market research survey'}
             </AppText>
             <AppText
               style={{
@@ -1320,9 +1319,9 @@ const DashboardScreen = ({ navigation }) => {
         <TenancyGracePanel userType={user?.user_type} />
       ) : null}
 
-      <AppText style={styles.sectionTitle}>Recent Activities</AppText>
+      <AppText style={styles.sectionTitle}>{ui("Recent Activities")}</AppText>
       {activities.length === 0 ? (
-        <AppText style={styles.emptyText}>No recent activities.</AppText>
+        <AppText style={styles.emptyText}>{ui("No recent activities.")}</AppText>
       ) : (
         activities.map((item) => (
           <View key={`${item.type}-${item.id}`} style={styles.activityItem}>
@@ -1342,11 +1341,11 @@ const DashboardScreen = ({ navigation }) => {
       <Modal visible={showWallet} transparent animationType="fade" onRequestClose={() => setShowWallet(false)}>
         <View style={{flex:1,justifyContent:'center',backgroundColor:'rgba(15,23,42,0.55)',padding:20}}>
           <View style={{backgroundColor:colors.white,borderRadius:radius.lg,padding:20,gap:16}}>
-            <AppText accessibilityRole="header" style={{fontFamily:typography.bold,fontSize:typeScale.xl,color:colors.ink}}>Wallet</AppText>
-            <AppText style={{color:colors.text}}>Available balance: {walletBalance == null ? '—' : '₦'+Number(walletBalance).toLocaleString()}</AppText>
-            <ActionRow title="Fund Wallet" subtitle="Add money securely to your wallet." icon="add-circle-outline" onPress={() => {setShowWallet(false);openFundModal();}} />
-            <ActionRow title="Withdraw Funds" subtitle="Transfer your available balance." icon="wallet-outline" onPress={() => {setShowWallet(false);openWithdrawModal();}} />
-            <ActionRow title="Close" icon="close-outline" onPress={() => setShowWallet(false)} />
+            <AppText accessibilityRole="header" style={{fontFamily:typography.bold,fontSize:typeScale.xl,color:colors.ink}}>{ui("Wallet")}</AppText>
+            <AppText style={{color:colors.text}}>{ui("Available balance: ")}{walletBalance == null ? '—' : '₦'+Number(walletBalance).toLocaleString()}</AppText>
+            <ActionRow title={ui("Fund Wallet")} subtitle={ui("Add money securely to your wallet.")} icon="add-circle-outline" onPress={() => {setShowWallet(false);openFundModal();}} />
+            <ActionRow title={ui("Withdraw Funds")} subtitle={ui("Transfer your available balance.")} icon="wallet-outline" onPress={() => {setShowWallet(false);openWithdrawModal();}} />
+            <ActionRow title={ui("Close")} icon="close-outline" onPress={() => setShowWallet(false)} />
           </View>
         </View>
       </Modal>
@@ -1373,7 +1372,7 @@ const DashboardScreen = ({ navigation }) => {
         virtualAccount={walletBankTransfer?.virtual_account || null}
         onWalletCredited={async () => {
           setWalletBankTransfer(null);
-          Toast.show({ type: 'success', text1: 'Wallet funded' });
+          Toast.show({ type: 'success', text1: ui("Wallet funded") });
           await Promise.all([loadWalletData(), loadDashboard({ refresh: true })]);
         }}
       />

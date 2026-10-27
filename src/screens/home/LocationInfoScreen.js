@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import {ActivityIndicator, StyleSheet, View} from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -21,6 +23,7 @@ const normalizeSlug = (value = '') =>
     .replace(/^-+|-+$/g, '');
 
 const LocationInfoScreen = ({ navigation, route }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const { stateSlug, citySlug, areaSlug } = route?.params || {};
   const [locations, setLocations] = useState([]);
   const [popular, setPopular] = useState([]);
@@ -28,7 +31,7 @@ const LocationInfoScreen = ({ navigation, route }) => {
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: navigation.canGoBack() });
-  }, [navigation]);
+  }, [navigation, interfaceLanguage]);
 
   const loadLocations = async () => {
     setLoading(true);
@@ -42,7 +45,7 @@ const LocationInfoScreen = ({ navigation, route }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Locations unavailable',
+        text1: ui("Locations unavailable"),
         text2: getErrorMessage(error, 'Could not load location information'),
       });
     } finally {
@@ -59,7 +62,7 @@ const LocationInfoScreen = ({ navigation, route }) => {
     return locations.find((state) =>
       normalizeSlug(state.slug || state.state_name || state.name) === normalizeSlug(stateSlug)
     );
-  }, [locations, stateSlug]);
+  }, [locations, stateSlug, interfaceLanguage]);
 
   const stateName = selectedState?.state_name || selectedState?.name || stateSlug || 'Nigeria';
   const lgas = selectedState?.lgas || selectedState?.cities || [];
@@ -72,32 +75,32 @@ const LocationInfoScreen = ({ navigation, route }) => {
   return (
     <DashboardScreen refreshing={loading} onRefresh={loadLocations}>
       <DashboardHero
-        eyebrow="LOCATION GUIDE"
+        eyebrow={ui("LOCATION GUIDE")}
         title={locationTitle}
-        subtitle="Explore RentalHub coverage, property search shortcuts and popular rental areas from the app."
+        subtitle={ui("Explore RentalHub coverage, property search shortcuts and popular rental areas from the app.")}
         icon="location-outline"
         onRefresh={loadLocations}
       />
 
       <MetricGrid>
         <MetricCard
-          label="States"
+          label={ui("States")}
           value={locations.length || '-'}
           icon="map-outline"
           color={colors.blue}
         />
         <MetricCard
-          label="Local areas"
+          label={ui("Local areas")}
           value={lgas.length || popular.length || '-'}
           icon="navigate-outline"
           color="#7C3AED"
         />
       </MetricGrid>
 
-      <DashboardSection title="Search this location">
+      <DashboardSection title={ui("Search this location")}>
         <ActionRow
-          title={`Browse properties in ${locationTitle}`}
-          subtitle="Open native property search and apply filters from there."
+          title={ui("Browse properties in {value0}", {value0: (locationTitle)})}
+          subtitle={ui("Open native property search and apply filters from there.")}
           icon="business-outline"
           onPress={() => navigation.navigate('PropertyList', {
             state: stateName,
@@ -106,14 +109,14 @@ const LocationInfoScreen = ({ navigation, route }) => {
           })}
         />
         <ActionRow
-          title="Submit property request"
-          subtitle="Tell RentalHub what you want in this area."
+          title={ui("Submit property request")}
+          subtitle={ui("Tell RentalHub what you want in this area.")}
           icon="megaphone-outline"
           onPress={() => navigation.navigate('PropertyAlertRequest')}
         />
       </DashboardSection>
 
-      <DashboardSection title={selectedState ? `Areas in ${stateName}` : 'Popular locations'}>
+      <DashboardSection title={selectedState ? ui("Areas in {value0}", {value0: (stateName)}) : ui("Popular locations")}>
         {loading && !locations.length ? <ActivityIndicator color={colors.blue} /> : null}
         {(selectedState ? lgas : popular).slice(0, 12).map((item, index) => {
           const label =
@@ -129,13 +132,13 @@ const LocationInfoScreen = ({ navigation, route }) => {
             <View key={`${label}-${index}`} style={styles.locationCard}>
               <AppText style={styles.locationName}>{label}</AppText>
               <AppText style={styles.locationMeta}>
-                {count ? `${count} listed properties` : 'Tap property search to browse availability'}
+                {count ? ui("{value0} listed properties", {value0: (count)}) : 'Tap property search to browse availability'}
               </AppText>
             </View>
           );
         })}
         {!loading && !(selectedState ? lgas : popular).length ? (
-          <AppText style={styles.empty}>No detailed areas are available yet.</AppText>
+          <AppText style={styles.empty}>{ui("No detailed areas are available yet.")}</AppText>
         ) : null}
       </DashboardSection>
     </DashboardScreen>

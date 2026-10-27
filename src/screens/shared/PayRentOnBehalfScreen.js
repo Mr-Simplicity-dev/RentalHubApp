@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
@@ -26,6 +28,7 @@ const formatDateTime = (value) => {
 };
 
 const PayRentOnBehalfScreen = ({ route, navigation }) => {
+  useInterfaceLanguage();
   const token = route?.params?.token;
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState('');
@@ -53,7 +56,7 @@ const PayRentOnBehalfScreen = ({ route, navigation }) => {
 
   const pay = async (method) => {
     if (!confirmed) {
-      Toast.show({ type: 'error', text1: 'Please confirm who you are paying for' });
+      Toast.show({ type: 'error', text1: ui("Please confirm who you are paying for") });
       return;
     }
     setBusy(method);
@@ -66,10 +69,10 @@ const PayRentOnBehalfScreen = ({ route, navigation }) => {
       } else if (data.authorization_url) {
         await Linking.openURL(data.authorization_url);
       } else {
-        Toast.show({ type: 'error', text1: 'Payment could not be started. Please try again.' });
+        Toast.show({ type: 'error', text1: ui("Payment could not be started. Please try again.") });
       }
     } catch (err) {
-      Toast.show({ type: 'error', text1: 'Payment failed', text2: getErrorMessage(err, 'Please try again.') });
+      Toast.show({ type: 'error', text1: ui("Payment failed"), text2: getErrorMessage(err, ui("Please try again.")) });
     } finally {
       setBusy('');
     }
@@ -81,7 +84,7 @@ const PayRentOnBehalfScreen = ({ route, navigation }) => {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.headerBack}>
           <Icon name="chevron-back" size={22} color={colors.ink} />
         </TouchableOpacity>
-        <AppText style={styles.headerTitle}>Pay someone's rent</AppText>
+        <AppText style={styles.headerTitle}>{ui("Pay someone's rent")}</AppText>
         <View style={styles.headerSpacer} />
       </View>
 
@@ -93,7 +96,7 @@ const PayRentOnBehalfScreen = ({ route, navigation }) => {
         {loading ? (
           <View style={styles.center}>
             <ActivityIndicator color={colors.blue} size="large" />
-            <AppText style={styles.loadingText}>Loading payment link…</AppText>
+            <AppText style={styles.loadingText}>{ui("Loading payment link…")}</AppText>
           </View>
         ) : error ? (
           <View style={styles.center}>
@@ -102,18 +105,15 @@ const PayRentOnBehalfScreen = ({ route, navigation }) => {
           </View>
         ) : (
           <>
-            <AppText style={styles.lead}>
-              You are about to pay rent on behalf of <AppText style={styles.leadStrong}>{info?.tenant_name || 'a tenant'}</AppText>.
+            <AppText style={styles.lead}>{ui("You are about to pay rent on behalf of")}<AppText style={styles.leadStrong}>{info?.tenant_name || 'a tenant'}</AppText>.
             </AppText>
 
             <View style={styles.amountCard}>
-              <AppText style={styles.amountLabel}>Amount due (server-confirmed)</AppText>
+              <AppText style={styles.amountLabel}>{ui("Amount due (server-confirmed)")}</AppText>
               <AppText style={styles.amountValue}>{money(info?.amount)}</AppText>
-              <AppText style={styles.expiresText}>Link expires {formatDateTime(info?.expires_at)}</AppText>
+              <AppText style={styles.expiresText}>{ui("Link expires ")}{formatDateTime(info?.expires_at)}</AppText>
               <View style={styles.noteBox}>
-                <AppText style={styles.noteText}>
-                  The rent is credited to the tenant's property. You will get a receipt and the tenant will be notified.
-                </AppText>
+                <AppText style={styles.noteText}>{ui("The rent is credited to the tenant's property. You will get a receipt and the tenant will be notified.")}</AppText>
               </View>
             </View>
 
@@ -124,9 +124,7 @@ const PayRentOnBehalfScreen = ({ route, navigation }) => {
               style={styles.consentRow}
             >
               <Icon name={confirmed ? 'checkbox' : 'square-outline'} size={22} color={confirmed ? '#0F766E' : colors.muted} />
-              <AppText style={styles.consentText}>
-                I confirm I am paying {money(info?.amount)} for {info?.tenant_name || 'this tenant'}. I understand this payment is credited to them and cannot be reversed.
-              </AppText>
+              <AppText style={styles.consentText}>{ui("I confirm I am paying")}{money(info?.amount)}{ui(" for ")}{info?.tenant_name || ui("this tenant")}{ui(". I understand this payment is credited to them and cannot be reversed.")}</AppText>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -139,7 +137,7 @@ const PayRentOnBehalfScreen = ({ route, navigation }) => {
               ) : (
                 <>
                   <Icon name="card-outline" size={18} color={colors.white} />
-                  <AppText style={styles.cardButtonText}>Pay now with card</AppText>
+                  <AppText style={styles.cardButtonText}>{ui("Pay now with card")}</AppText>
                 </>
               )}
             </TouchableOpacity>
@@ -154,18 +152,18 @@ const PayRentOnBehalfScreen = ({ route, navigation }) => {
               ) : (
                 <>
                   <Icon name="business-outline" size={18} color={colors.ink} />
-                  <AppText style={styles.bankButtonText}>Pay by bank transfer</AppText>
+                  <AppText style={styles.bankButtonText}>{ui("Pay by bank transfer")}</AppText>
                 </>
               )}
             </TouchableOpacity>
 
             {bankDetails ? (
               <View style={styles.bankCard}>
-                <AppText style={styles.bankCardLabel}>TRANSFER TO THIS ACCOUNT</AppText>
+                <AppText style={styles.bankCardLabel}>{ui("TRANSFER TO THIS ACCOUNT")}</AppText>
                 <AppText style={styles.bankLine}>{bankDetails.bank_name} · {bankDetails.account_number}</AppText>
                 <AppText style={styles.bankLine}>{bankDetails.account_name}</AppText>
-                <AppText style={styles.bankAmount}>Amount: {money(bankDetails.amount)}</AppText>
-                <AppText style={styles.bankReference}>Use reference {bankDetails.reference} so we can match the payment.</AppText>
+                <AppText style={styles.bankAmount}>{ui("Amount: ")}{money(bankDetails.amount)}</AppText>
+                <AppText style={styles.bankReference}>{ui("Use reference ")}{bankDetails.reference}{ui(" so we can match the payment.")}</AppText>
               </View>
             ) : null}
           </>

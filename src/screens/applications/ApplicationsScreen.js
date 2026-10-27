@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import {ActivityIndicator,
   Alert,
@@ -31,6 +33,7 @@ const statusVisual = (status = 'pending') => {
 };
 
 const ApplicationsScreen = ({ navigation }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const { user } = useContext(AuthContext);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -54,8 +57,8 @@ const ApplicationsScreen = ({ navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Could not load applications',
-        text2: getErrorMessage(error, 'Please try again.'),
+        text1: ui("Could not load applications"),
+        text2: getErrorMessage(error, ui("Please try again.")),
       });
     } finally {
       setLoading(false);
@@ -77,7 +80,7 @@ const ApplicationsScreen = ({ navigation }) => {
         },
         { pending: 0, approved: 0, rejected: 0, withdrawn: 0 }
       ),
-    [items]
+    [items, interfaceLanguage]
   );
 
   const visibleItems = useMemo(
@@ -85,7 +88,7 @@ const ApplicationsScreen = ({ navigation }) => {
       filter === 'all'
         ? items
         : items.filter((item) => String(item.status || 'pending').toLowerCase() === filter),
-    [filter, items]
+    [filter, items, interfaceLanguage]
   );
 
   const runAction = async (id, action) => {
@@ -116,17 +119,17 @@ const ApplicationsScreen = ({ navigation }) => {
       Toast.show({
         type: 'success',
         text1:
-          action === 'withdraw'
-            ? 'Application withdrawn'
-            : action === 'approve'
-              ? 'Application approved'
-              : 'Application rejected',
+          action === "withdraw"
+            ? ui("Application withdrawn")
+            : action === "approve"
+              ? ui("Application approved")
+              : ui("Application rejected"),
       });
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Could not update application',
-        text2: getErrorMessage(error, 'Please try again.'),
+        text1: ui("Could not update application"),
+        text2: getErrorMessage(error, ui("Please try again.")),
       });
     } finally {
       setBusyId(null);
@@ -137,24 +140,24 @@ const ApplicationsScreen = ({ navigation }) => {
     const copy =
       action === 'withdraw'
         ? {
-            title: 'Withdraw application?',
-            message: 'You will need to apply again if you change your mind.',
+            title: ui("Withdraw application?"),
+            message: ui("You will need to apply again if you change your mind."),
             confirm: 'Withdraw',
           }
         : action === 'approve'
           ? {
-              title: 'Approve this application?',
-              message: `Approve ${item.tenant_name || 'this tenant'} for ${item.property_title || 'the property'}?`,
+              title: ui("Approve this application?"),
+              message: ui("Approve {value0} for {value1}?", {value0: (item.tenant_name || ui("this tenant")), value1: (item.property_title || ui("the property"))}),
               confirm: 'Approve',
             }
           : {
-              title: 'Reject this application?',
-              message: 'This decision will be shown to the applicant.',
+              title: ui("Reject this application?"),
+              message: ui("This decision will be shown to the applicant."),
               confirm: 'Reject',
             };
 
     Alert.alert(copy.title, copy.message, [
-      { text: 'Cancel', style: 'cancel' },
+      { text: ui("Cancel"), style: 'cancel' },
       {
         text: copy.confirm,
         style: action === 'approve' ? 'default' : 'destructive',
@@ -169,8 +172,8 @@ const ApplicationsScreen = ({ navigation }) => {
     <SafeAreaView edges={['top']} style={styles.safeArea}>
       <View {...tourTarget} style={styles.header}>
         <View>
-          <AppText style={styles.eyebrow}>RENTAL WORKFLOW</AppText>
-          <AppText style={styles.title}>{isTenant ? 'My applications' : 'Applications'}</AppText>
+          <AppText style={styles.eyebrow}>{ui("RENTAL WORKFLOW")}</AppText>
+          <AppText style={styles.title}>{isTenant ? ui("My applications") : ui("Applications")}</AppText>
         </View>
         <View style={styles.headerIcon}>
           <Icon name="documents-outline" size={22} color={colors.blue} />
@@ -186,15 +189,15 @@ const ApplicationsScreen = ({ navigation }) => {
             <View style={styles.summaryRow}>
               <View style={styles.summaryCard}>
                 <AppText style={styles.summaryValue}>{items.length}</AppText>
-                <AppText style={styles.summaryLabel}>{isTenant ? 'Submitted' : 'Received'}</AppText>
+                <AppText style={styles.summaryLabel}>{isTenant ? ui("Submitted") : 'Received'}</AppText>
               </View>
               <View style={styles.summaryCard}>
                 <AppText style={[styles.summaryValue, styles.pendingValue]}>{counts.pending || 0}</AppText>
-                <AppText style={styles.summaryLabel}>Pending</AppText>
+                <AppText style={styles.summaryLabel}>{ui("Pending")}</AppText>
               </View>
               <View style={styles.summaryCard}>
                 <AppText style={[styles.summaryValue, styles.approvedValue]}>{counts.approved || 0}</AppText>
-                <AppText style={styles.summaryLabel}>Approved</AppText>
+                <AppText style={styles.summaryLabel}>{ui("Approved")}</AppText>
               </View>
             </View>
             <View style={styles.filterRow}>
@@ -215,7 +218,7 @@ const ApplicationsScreen = ({ navigation }) => {
           loading ? (
             <View style={styles.center}>
               <ActivityIndicator color={colors.blue} size="large" />
-              <AppText style={styles.loadingText}>Loading applications…</AppText>
+              <AppText style={styles.loadingText}>{ui("Loading applications…")}</AppText>
             </View>
           ) : (
             <View style={styles.center}>
@@ -223,18 +226,18 @@ const ApplicationsScreen = ({ navigation }) => {
                 <Icon name="document-text-outline" size={31} color={colors.blue} />
               </View>
               <AppText style={styles.emptyTitle}>
-                {filter === 'all' ? 'No applications yet' : `No ${filter} applications`}
+                {filter === "all" ? ui("No applications yet") : ui("No {value0} applications", {value0: (filter)})}
               </AppText>
               <AppText style={styles.emptyText}>
                 {isTenant
                   ? 'When you apply for a verified home, its progress will appear here.'
                   : 'Applications from prospective tenants will appear here.'}
               </AppText>
-              {isTenant && filter === 'all' ? (
+              {isTenant && filter === "all" ? (
                 <TouchableOpacity
                   onPress={() => navigation.navigate('PropertyList')}
                   style={styles.exploreButton}>
-                  <AppText style={styles.exploreText}>Explore verified homes</AppText>
+                  <AppText style={styles.exploreText}>{ui("Explore verified homes")}</AppText>
                   <Icon name="arrow-forward" size={17} color={colors.white} />
                 </TouchableOpacity>
               ) : null}
@@ -268,8 +271,8 @@ const ApplicationsScreen = ({ navigation }) => {
                     </AppText>
                     <AppText style={styles.cardMeta}>
                       {isTenant
-                        ? `Landlord: ${item.landlord_name || 'RentalHub landlord'}`
-                        : `Applicant: ${item.tenant_name || 'RentalHub tenant'}`}
+                        ? ui("Landlord: {value0}", {value0: (item.landlord_name || ui("RentalHub landlord"))})
+                        : ui("Applicant: {value0}", {value0: (item.tenant_name || ui("RentalHub tenant"))})}
                     </AppText>
                   </View>
                   <View style={[styles.statusPill, { backgroundColor: visual.bg }]}>
@@ -289,7 +292,7 @@ const ApplicationsScreen = ({ navigation }) => {
                 <Icon name="calendar-outline" size={14} color={colors.muted} />
                 <AppText style={styles.detailText}>
                   {item.created_at
-                    ? `Submitted ${new Date(item.created_at).toLocaleDateString()}`
+                    ? ui("Submitted {value0}", {value0: (new Date(item.created_at).toLocaleDateString())})
                     : 'Submission date unavailable'}
                 </AppText>
               </View>
@@ -304,7 +307,7 @@ const ApplicationsScreen = ({ navigation }) => {
                       {busyId === item.id ? (
                         <ActivityIndicator color={colors.danger} size="small" />
                       ) : (
-                        <AppText style={styles.withdrawText}>Withdraw</AppText>
+                        <AppText style={styles.withdrawText}>{ui("Withdraw")}</AppText>
                       )}
                     </TouchableOpacity>
                   ) : (
@@ -313,7 +316,7 @@ const ApplicationsScreen = ({ navigation }) => {
                         disabled={busyId === item.id}
                         onPress={() => confirmAction(item, 'reject')}
                         style={styles.secondaryAction}>
-                        <AppText style={styles.rejectText}>Reject</AppText>
+                        <AppText style={styles.rejectText}>{ui("Reject")}</AppText>
                       </TouchableOpacity>
                       <TouchableOpacity
                         disabled={busyId === item.id}
@@ -323,7 +326,7 @@ const ApplicationsScreen = ({ navigation }) => {
                           <ActivityIndicator color={colors.white} size="small" />
                         ) : (
                           <>
-                            <AppText style={styles.primaryActionText}>Approve</AppText>
+                            <AppText style={styles.primaryActionText}>{ui("Approve")}</AppText>
                             <Icon name="checkmark" size={17} color={colors.white} />
                           </>
                         )}

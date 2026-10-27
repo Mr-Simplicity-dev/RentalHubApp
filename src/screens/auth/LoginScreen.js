@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useState, useContext, useEffect, useRef } from 'react';
 import {View,
   StyleSheet,
@@ -23,6 +25,7 @@ import AppText from '../../components/common/AppText';
 import {useLanguage} from '../../context/LanguageContext';
 import assistedCopy from '../../i18n/assistedRegistration.json';
 const LoginScreen = ({ navigation }) => {
+  useInterfaceLanguage();
   const {language}=useLanguage();const identityLabel=(assistedCopy[language]||assistedCopy.en).identity;
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -31,7 +34,7 @@ const LoginScreen = ({ navigation }) => {
   const [biometricStatus, setBiometricStatus] = useState({
     available: false,
     enabled: false,
-    label: 'Biometrics',
+    label: ui("Biometrics"),
   });
   const { login, loginWithBiometrics } = useContext(AuthContext);
   const turnstileTokenRef = useRef(null);
@@ -61,16 +64,16 @@ const LoginScreen = ({ navigation }) => {
       };
 
       Alert.alert(
-        `Enable ${label}`,
-        `Would you like to use ${label.toLowerCase()} for faster sign-in on this device?`,
+        ui('Enable biometric sign-in'),
+        ui('Use your fingerprint or face to sign in faster on this device.'),
         [
           {
-            text: 'Not now',
+            text: ui('Not now'),
             style: 'cancel',
             onPress: () => finish(false),
           },
           {
-            text: 'Enable',
+            text: ui('Enable'),
             onPress: () => finish(true),
           },
         ],
@@ -85,8 +88,8 @@ const LoginScreen = ({ navigation }) => {
     if (!email || !password) {
       Toast.show({
         type: 'error',
-        text1: 'Error',
-        text2: 'Please fill in all fields',
+        text1: ui("Error"),
+        text2: ui("Please fill in all fields"),
       });
       return;
     }
@@ -95,8 +98,8 @@ const LoginScreen = ({ navigation }) => {
     if (!turnstileToken) {
       Toast.show({
         type: 'error',
-        text1: 'Security Check',
-        text2: 'Please complete the security check below.',
+        text1: ui("Security Check"),
+        text2: ui("Please complete the security check below."),
       });
       return;
     }
@@ -126,8 +129,8 @@ const LoginScreen = ({ navigation }) => {
             } else if (!/cancel/i.test(biometricResult.message || '')) {
               Toast.show({
                 type: 'error',
-                text1: 'Biometric Login',
-                text2: biometricResult.message || 'Unable to enable biometric login right now.',
+                text1: ui("Biometric Login"),
+                text2: ui(biometricResult.message || "Unable to enable biometric login right now."),
               });
             }
           }
@@ -135,14 +138,14 @@ const LoginScreen = ({ navigation }) => {
 
         Toast.show({
           type: 'success',
-          text1: 'Success',
-          text2: 'Login successful!',
+          text1: ui("Success"),
+          text2: ui("Login successful!"),
         });
       } else {
         Toast.show({
           type: 'error',
-          text1: 'Error',
-          text2: response.message || 'Login failed',
+          text1: ui("Error"),
+          text2: ui(response.message || "Login failed"),
         });
         turnstileRef.current?.reset();
         turnstileTokenRef.current = null;
@@ -150,8 +153,8 @@ const LoginScreen = ({ navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Error',
-        text2: error?.response?.data?.message || error?.message || 'Login failed',
+        text1: ui("Error"),
+        text2: ui(error?.response?.data?.message || error?.message || "Login failed"),
       });
       reportMobileCrash(error, {}, { fatal: false, source: 'login_handler' });
       turnstileRef.current?.reset();
@@ -169,21 +172,21 @@ const LoginScreen = ({ navigation }) => {
       if (response.success) {
         Toast.show({
           type: 'success',
-          text1: 'Success',
-          text2: `${response.label || 'Biometric'} login successful!`,
+          text1: ui("Success"),
+          text2: ui('Biometric login successful!'),
         });
       } else if (!response.cancelled) {
         Toast.show({
           type: 'error',
-          text1: 'Biometric Login',
-          text2: response.message || 'Biometric login failed.',
+          text1: ui("Biometric Login"),
+          text2: ui(response.message || 'Biometric login failed.'),
         });
       }
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Biometric Login',
-        text2: 'Biometric login failed.',
+        text1: ui("Biometric Login"),
+        text2: ui("Biometric login failed."),
       });
     } finally {
       setBiometricLoading(false);
@@ -204,7 +207,7 @@ const LoginScreen = ({ navigation }) => {
           showsVerticalScrollIndicator={false}>
           <View style={styles.topBar}>
             <TouchableOpacity
-              accessibilityLabel="Go back"
+              accessibilityLabel={ui("Go back")}
               accessibilityRole="button"
               onPress={() => navigation.goBack()}
               style={styles.backButton}>
@@ -215,11 +218,9 @@ const LoginScreen = ({ navigation }) => {
           </View>
 
           <View style={styles.header}>
-            <AppText style={styles.eyebrow}>WELCOME BACK</AppText>
-            <AppText style={styles.title}>Good to see you again.</AppText>
-            <AppText style={styles.subtitle}>
-              Sign in to continue managing your RentalHub experience.
-            </AppText>
+            <AppText style={styles.eyebrow}>{ui("WELCOME BACK")}</AppText>
+            <AppText style={styles.title}>{ui("Good to see you again.")}</AppText>
+            <AppText style={styles.subtitle}>{ui("Sign in to continue managing your RentalHub experience.")}</AppText>
           </View>
 
           <View style={styles.formCard}>
@@ -236,10 +237,10 @@ const LoginScreen = ({ navigation }) => {
             />
 
             <Input
-              label="Password"
+              label={ui("Password")}
               value={password}
               onChangeText={setPassword}
-              placeholder="Enter your password"
+              placeholder={ui("Enter your password")}
               secureTextEntry
               icon="lock-closed-outline"
               autoCapitalize="none"
@@ -250,11 +251,11 @@ const LoginScreen = ({ navigation }) => {
             <TouchableOpacity
               onPress={() => navigation.navigate('ForgotPassword')}
               style={styles.forgotPassword}>
-              <AppText style={styles.forgotPasswordText}>Forgot password?</AppText>
+              <AppText style={styles.forgotPasswordText}>{ui("Forgot password?")}</AppText>
             </TouchableOpacity>
 
             <Button
-              title="Sign in"
+              title={ui("Sign in")}
               onPress={handleLogin}
               loading={loading}
               size="lg"
@@ -271,7 +272,7 @@ const LoginScreen = ({ navigation }) => {
 
             {biometricStatus.enabled ? (
               <Button
-                title={`Use ${biometricStatus.label}`}
+                title={ui('Use biometric sign-in')}
                 onPress={handleBiometricLogin}
                 loading={biometricLoading}
                 variant="outline"
@@ -281,9 +282,9 @@ const LoginScreen = ({ navigation }) => {
           </View>
 
           <View style={styles.footer}>
-            <AppText style={styles.footerText}>New to RentalHub?</AppText>
+            <AppText style={styles.footerText}>{ui("New to RentalHub?")}</AppText>
             <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-              <AppText style={styles.signUpText}> Create an account</AppText>
+              <AppText style={styles.signUpText}>{ui(" Create an account")}</AppText>
             </TouchableOpacity>
           </View>
 
@@ -291,7 +292,7 @@ const LoginScreen = ({ navigation }) => {
             onPress={() => navigation.navigate('AcceptLawyerInvite')}
             style={styles.inviteLink}>
             <Icon name="briefcase-outline" size={16} color={colors.muted} />
-            <AppText style={styles.inviteText}>I received a lawyer invitation</AppText>
+            <AppText style={styles.inviteText}>{ui("I received a lawyer invitation")}</AppText>
           </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>

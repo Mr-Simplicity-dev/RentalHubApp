@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useContext, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import {ActivityIndicator,
   FlatList,
@@ -68,6 +70,7 @@ const statusVisual = (status) => {
 };
 
 const PaymentHistoryScreen = ({ navigation }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const { user } = useContext(AuthContext);
   const paymentTourTarget = useTourTarget(
     user?.user_type === 'landlord' ? 'landlord_wallet' : 'tenant_payments',
@@ -84,7 +87,7 @@ const PaymentHistoryScreen = ({ navigation }) => {
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
-  }, [navigation]);
+  }, [navigation, interfaceLanguage]);
 
   const loadPayments = async ({ refresh = false } = {}) => {
     refresh ? setRefreshing(true) : setLoading(true);
@@ -94,8 +97,8 @@ const PaymentHistoryScreen = ({ navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Could not load payments',
-        text2: getErrorMessage(error, 'Please try again.'),
+        text1: ui("Could not load payments"),
+        text2: getErrorMessage(error, ui("Please try again.")),
       });
     } finally {
       setLoading(false);
@@ -112,11 +115,11 @@ const PaymentHistoryScreen = ({ navigation }) => {
       payments.filter((payment) =>
         ['completed', 'successful', 'success'].includes(payment.payment_status)
       ),
-    [payments]
+    [payments, interfaceLanguage]
   );
   const completedTotal = useMemo(
     () => completedPayments.reduce((sum, payment) => sum + Number(payment.amount || 0), 0),
-    [completedPayments]
+    [completedPayments, interfaceLanguage]
   );
   const visiblePayments = useMemo(
     () =>
@@ -127,7 +130,7 @@ const PaymentHistoryScreen = ({ navigation }) => {
               ? ['completed', 'successful', 'success'].includes(payment.payment_status)
               : payment.payment_status === filter
           ),
-    [filter, payments]
+    [filter, payments, interfaceLanguage]
   );
 
   const isCompletedPayment = (payment) =>
@@ -174,13 +177,13 @@ const PaymentHistoryScreen = ({ navigation }) => {
         await Sharing.shareAsync(file.uri, {
           mimeType: 'application/pdf',
           UTI: 'com.adobe.pdf',
-          dialogTitle: 'Receipt',
+          dialogTitle: ui("Receipt"),
         });
       } else {
-        Toast.show({ type: 'info', text1: 'Saved', text2: `Receipt saved to ${file.uri}` });
+        Toast.show({ type: 'info', text1: ui("Saved"), text2: ui("Receipt saved to {value0}", {value0: (file.uri)}) });
       }
     } catch (error) {
-      Toast.show({ type: 'error', text1: 'Could not share receipt', text2: getErrorMessage(error, 'Please try again.') });
+      Toast.show({ type: 'error', text1: ui("Could not share receipt"), text2: getErrorMessage(error, ui("Please try again.")) });
     } finally {
       setReceiptBusy(false);
     }
@@ -191,9 +194,9 @@ const PaymentHistoryScreen = ({ navigation }) => {
     setReceiptBusy(true);
     try {
       const file = await saveReceiptPdf(selectedReceipt);
-      Toast.show({ type: 'success', text1: 'Receipt saved', text2: `Saved to ${file.uri}` });
+      Toast.show({ type: 'success', text1: ui("Receipt saved"), text2: ui("Saved to {value0}", {value0: (file.uri)}) });
     } catch (error) {
-      Toast.show({ type: 'error', text1: 'Could not download receipt', text2: getErrorMessage(error, 'Please try again.') });
+      Toast.show({ type: 'error', text1: ui("Could not download receipt"), text2: getErrorMessage(error, ui("Please try again.")) });
     } finally {
       setReceiptBusy(false);
     }
@@ -203,14 +206,14 @@ const PaymentHistoryScreen = ({ navigation }) => {
     <SafeAreaView edges={['top']} style={styles.safeArea}>
       <View {...paymentTourTarget} style={styles.header}>
         <TouchableOpacity
-          accessibilityLabel="Go back"
+          accessibilityLabel={ui("Go back")}
           onPress={() => navigation.goBack()}
           style={styles.backButton}>
           <Icon name="arrow-back" size={22} color={colors.navy} />
         </TouchableOpacity>
         <View style={styles.headerCopy}>
-          <AppText style={styles.eyebrow}>TRANSACTIONS</AppText>
-          <AppText style={styles.title}>Payment history</AppText>
+          <AppText style={styles.eyebrow}>{ui("TRANSACTIONS")}</AppText>
+          <AppText style={styles.title}>{ui("Payment history")}</AppText>
         </View>
         <View style={styles.headerSpacer} />
       </View>
@@ -225,11 +228,10 @@ const PaymentHistoryScreen = ({ navigation }) => {
               <View style={styles.summaryIcon}>
                 <Icon name="wallet-outline" size={23} color={colors.gold} />
               </View>
-              <AppText style={styles.summaryLabel}>Completed transaction value</AppText>
+              <AppText style={styles.summaryLabel}>{ui("Completed transaction value")}</AppText>
               <AppText style={styles.summaryAmount}>{formatAmount(completedTotal)}</AppText>
               <AppText style={styles.summaryMeta}>
-                {completedPayments.length} completed · {payments.length} total transactions
-              </AppText>
+                {completedPayments.length}{ui(" completed · ")}{payments.length}{ui("total transactions")}</AppText>
             </View>
             <View style={styles.filterRow}>
               {['all', 'completed', 'pending', 'failed'].map((value) => (
@@ -249,18 +251,18 @@ const PaymentHistoryScreen = ({ navigation }) => {
           loading ? (
             <View style={styles.center}>
               <ActivityIndicator color={colors.blue} size="large" />
-              <AppText style={styles.loadingText}>Loading transactions…</AppText>
+              <AppText style={styles.loadingText}>{ui("Loading transactions…")}</AppText>
             </View>
           ) : (
             <View style={styles.center}>
               <View style={styles.emptyIcon}>
                 <Icon name="receipt-outline" size={31} color={colors.blue} />
               </View>
-              <AppText style={styles.emptyTitle}>No transactions here</AppText>
+              <AppText style={styles.emptyTitle}>{ui("No transactions here")}</AppText>
               <AppText style={styles.emptyText}>
-                {filter === 'all'
+                {filter === "all"
                   ? 'Your RentalHub payments will appear here.'
-                  : `You don’t have any ${filter} transactions.`}
+                  : ui("You don’t have any {value0} transactions.", {value0: (filter)})}
               </AppText>
             </View>
           )
@@ -293,19 +295,18 @@ const PaymentHistoryScreen = ({ navigation }) => {
                   {item.created_at ? new Date(item.created_at).toLocaleString() : ''}
                 </AppText>
                 {item.transaction_reference ? (
-                  <AppText style={styles.reference} numberOfLines={1}>
-                    Ref: {item.transaction_reference}
+                  <AppText style={styles.reference} numberOfLines={1}>{ui("Ref:")}{item.transaction_reference}
                   </AppText>
                 ) : null}
                 {completed ? (
-                  <AppText style={styles.viewReceipt}>Tap to view receipt</AppText>
+                  <AppText style={styles.viewReceipt}>{ui("Tap to view receipt")}</AppText>
                 ) : null}
               </View>
               <View style={styles.paymentRight}>
                 <AppText style={styles.amount}>{formatAmount(item.amount)}</AppText>
                 <View style={[styles.statusPill, { backgroundColor: visual.background }]}>
                   <AppText style={[styles.statusText, { color: visual.color }]}>
-                    {item.payment_status || 'unknown'}
+                    {item.payment_status || ui("unknown")}
                   </AppText>
                 </View>
               </View>
@@ -324,7 +325,7 @@ const PaymentHistoryScreen = ({ navigation }) => {
         <View style={styles.modalOverlay}>
           <View style={styles.receiptSheet}>
             <View style={styles.receiptHeader}>
-              <AppText style={styles.receiptEyebrow}>RECEIPT</AppText>
+              <AppText style={styles.receiptEyebrow}>{ui("RECEIPT")}</AppText>
               <TouchableOpacity onPress={closeReceipt}>
                 <Icon name="close" size={22} color={colors.muted} />
               </TouchableOpacity>
@@ -340,13 +341,13 @@ const PaymentHistoryScreen = ({ navigation }) => {
                   {receiptLoading ? (
                     <View style={styles.receiptLoading}>
                       <ActivityIndicator color={colors.blue} size="small" />
-                      <AppText style={styles.receiptLoadingText}>Preparing receipt…</AppText>
+                      <AppText style={styles.receiptLoadingText}>{ui("Preparing receipt…")}</AppText>
                     </View>
                   ) : (
                     <>
                       <AppText style={styles.receiptNumber}>
                         {receiptData?.receiptNumber
-                          || `ARH-RCPT-${String(selectedReceipt.id || 0).padStart(6, '0')}`}
+                          || ui("ARH-RCPT-{value0}", {value0: (String(selectedReceipt.id || 0).padStart(6, '0'))})}
                       </AppText>
                       <AppText style={styles.receiptDocType}>
                         {receiptData?.documentType || 'OFFICIAL PAYMENT RECEIPT'}
@@ -359,7 +360,7 @@ const PaymentHistoryScreen = ({ navigation }) => {
                       </AppText>
 
                       <View style={styles.receiptRow}>
-                        <AppText style={styles.receiptLabel}>Date</AppText>
+                        <AppText style={styles.receiptLabel}>{ui("Date")}</AppText>
                         <AppText style={styles.receiptValue}>
                           {receiptData?.date
                             || (selectedReceipt.created_at
@@ -368,29 +369,29 @@ const PaymentHistoryScreen = ({ navigation }) => {
                         </AppText>
                       </View>
                       <View style={styles.receiptRow}>
-                        <AppText style={styles.receiptLabel}>Reference</AppText>
+                        <AppText style={styles.receiptLabel}>{ui("Reference")}</AppText>
                         <AppText style={styles.receiptValue}>
                           {receiptData?.reference || selectedReceipt.transaction_reference || '-'}
                         </AppText>
                       </View>
                       <View style={styles.receiptRow}>
-                        <AppText style={styles.receiptLabel}>Status</AppText>
+                        <AppText style={styles.receiptLabel}>{ui("Status")}</AppText>
                         <AppText style={[styles.receiptValue, styles.receiptStatus]}>
                           {receiptData?.status || selectedReceipt.payment_status}
                         </AppText>
                       </View>
                       <View style={styles.receiptRow}>
-                        <AppText style={styles.receiptLabel}>Payment method</AppText>
+                        <AppText style={styles.receiptLabel}>{ui("Payment method")}</AppText>
                         <AppText style={styles.receiptValue}>
                           {receiptData?.methodLine
                             || (selectedReceipt.payment_channel
-                              ? `${selectedReceipt.payment_method || 'Paystack'} — ${humanizeChannel(selectedReceipt.payment_channel)}`
+                              ? ui("{value0} — {value1}", {value0: (selectedReceipt.payment_method || 'Paystack'), value1: (humanizeChannel(selectedReceipt.payment_channel))})
                               : selectedReceipt.payment_method || 'Paystack')}
                         </AppText>
                       </View>
                       {receiptData?.currency ? (
                         <View style={styles.receiptRow}>
-                          <AppText style={styles.receiptLabel}>Currency</AppText>
+                          <AppText style={styles.receiptLabel}>{ui("Currency")}</AppText>
                           <AppText style={styles.receiptValue}>{receiptData.currency}</AppText>
                         </View>
                       ) : null}
@@ -431,7 +432,7 @@ const PaymentHistoryScreen = ({ navigation }) => {
                             </View>
                           ))}
                           <View style={[styles.receiptRow, styles.receiptTotalRow]}>
-                            <AppText style={styles.receiptTotalLabel}>Total Paid</AppText>
+                            <AppText style={styles.receiptTotalLabel}>{ui("Total Paid")}</AppText>
                             <AppText style={styles.receiptTotalAmount}>{receiptData.total}</AppText>
                           </View>
                         </View>
@@ -439,13 +440,11 @@ const PaymentHistoryScreen = ({ navigation }) => {
 
                       {Number(receiptData?.rent?.platformFee) > 0 ? (
                         <AppText style={styles.receiptFeeNote}>
-                          {`Platform/Service Fee: ₦${Number(receiptData.rent.platformFee).toLocaleString()} (deducted from the landlord's payout - not charged to you)`}
+                          {ui("Platform/Service Fee: ₦{value0} (deducted from the landlord's payout - not charged to you)", {value0: (Number(receiptData.rent.platformFee).toLocaleString())})}
                         </AppText>
                       ) : null}
 
-                      <AppText style={styles.receiptNotice}>
-                        This is a computer-generated receipt and does not require a signature.
-                      </AppText>
+                      <AppText style={styles.receiptNotice}>{ui("This is a computer-generated receipt and does not require a signature.")}</AppText>
                     </>
                   )}
                 </View>
@@ -460,16 +459,14 @@ const PaymentHistoryScreen = ({ navigation }) => {
                     ) : (
                       <Icon name="share-social-outline" size={18} color={colors.white} />
                     )}
-                    <AppText style={styles.receiptButtonText}>Share</AppText>
+                    <AppText style={styles.receiptButtonText}>{ui("Share")}</AppText>
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={handleDownloadReceipt}
                     disabled={receiptBusy}
                     style={[styles.receiptButton, styles.receiptButtonSecondary]}>
                     <Icon name="download-outline" size={18} color={colors.blue} />
-                    <AppText style={[styles.receiptButtonText, styles.receiptButtonTextSecondary]}>
-                      Download PDF
-                    </AppText>
+                    <AppText style={[styles.receiptButtonText, styles.receiptButtonTextSecondary]}>{ui("Download PDF")}</AppText>
                   </TouchableOpacity>
                 </View>
               </>

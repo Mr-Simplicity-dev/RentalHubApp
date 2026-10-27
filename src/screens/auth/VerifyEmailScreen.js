@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useState } from 'react';
 import {StyleSheet} from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -14,13 +16,14 @@ import { colors, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const VerifyEmailScreen = ({ navigation, route }) => {
+  useInterfaceLanguage();
   const [token, setToken] = useState(route?.params?.token || '');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
 
   const verifyEmail = async (nextToken = token) => {
     if (!nextToken) {
-      Toast.show({ type: 'error', text1: 'Verification token is required' });
+      Toast.show({ type: 'error', text1: ui("Verification token is required") });
       return;
     }
 
@@ -28,12 +31,12 @@ const VerifyEmailScreen = ({ navigation, route }) => {
     try {
       const response = await authService.verifyEmail(nextToken);
       setMessage(response?.message || 'Email verified successfully.');
-      Toast.show({ type: 'success', text1: 'Email verified' });
+      Toast.show({ type: 'success', text1: ui("Email verified") });
     } catch (error) {
       setMessage(getErrorMessage(error, 'Could not verify email'));
       Toast.show({
         type: 'error',
-        text1: 'Email verification failed',
+        text1: ui("Email verification failed"),
         text2: getErrorMessage(error, 'Could not verify email'),
       });
     } finally {
@@ -50,33 +53,33 @@ const VerifyEmailScreen = ({ navigation, route }) => {
   return (
     <PremiumScreen>
       <PremiumHero
-        eyebrow="Email security"
-        title="Verify your email"
-        subtitle="Confirm your email to unlock safer payments, applications and account recovery."
+        eyebrow={ui("Email security")}
+        title={ui("Verify your email")}
+        subtitle={ui("Confirm your email to unlock safer payments, applications and account recovery.")}
         icon="mail-open-outline"
       />
 
       <PremiumCard>
         <Input
-          label="Email verification token"
+          label={ui("Email verification token")}
           value={token}
           onChangeText={setToken}
           autoCapitalize="none"
-          placeholder="Paste token"
+          placeholder={ui("Paste token")}
           icon="ticket-outline"
         />
 
         {message ? <AppText style={styles.message}>{message}</AppText> : null}
 
         <PremiumButton
-          title="Verify email"
+          title={ui("Verify email")}
           onPress={() => verifyEmail()}
           loading={loading}
           icon="shield-checkmark-outline"
         />
         {navigation.canGoBack() ? (
           <PremiumButton
-            title="Done"
+            title={ui("Done")}
             variant="secondary"
             onPress={() => navigation.goBack()}
             icon="arrow-back-outline"

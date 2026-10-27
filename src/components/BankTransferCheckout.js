@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../i18n/useInterfaceLanguage';
 import React, { useEffect, useState } from 'react';
 import { Image, Modal, Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -26,6 +28,7 @@ export default function BankTransferCheckout({
   onWalletCredited,
   onSubmitted,
 }) {
+  useInterfaceLanguage();
   const [accounts, setAccounts] = useState(providedAccounts || []);
   const [accountsLoading, setAccountsLoading] = useState(!providedAccounts?.length);
   const [accountId, setAccountId] = useState('');
@@ -134,18 +137,18 @@ export default function BankTransferCheckout({
     try {
       const result = await cameraService.pickTransferScreenshot();
       if (result.cancelled) {
-        if (result.message) Toast.show({ type: 'info', text1: 'Selection cancelled', text2: result.message });
+        if (result.message) Toast.show({ type: 'info', text1: ui("Selection cancelled"), text2: result.message });
         return;
       }
       if (result.proofImage) {
         setProofImage(result.proofImage);
         setProofAsset(result.asset || null);
-        Toast.show({ type: 'success', text1: 'Screenshot selected' });
+        Toast.show({ type: 'success', text1: ui("Screenshot selected") });
       } else {
-        Toast.show({ type: 'error', text1: 'Error', text2: 'Could not prepare screenshot' });
+        Toast.show({ type: 'error', text1: ui("Error"), text2: ui("Could not prepare screenshot") });
       }
     } catch (error) {
-      Toast.show({ type: 'error', text1: 'Error', text2: error.message || 'Could not select screenshot' });
+      Toast.show({ type: 'error', text1: ui("Error"), text2: error.message || ui("Could not select screenshot") });
     } finally {
       setCapturing(false);
     }
@@ -154,15 +157,15 @@ export default function BankTransferCheckout({
   const handleSubmit = async () => {
     if (submitted) return;
     if (!accountId) {
-      Toast.show({ type: 'error', text1: 'Missing info', text2: 'Choose the account you paid into' });
+      Toast.show({ type: 'error', text1: ui("Missing info"), text2: ui("Choose the account you paid into") });
       return;
     }
     if (!payerName.trim()) {
-      Toast.show({ type: 'error', text1: 'Missing info', text2: 'Enter the name on the account you paid from' });
+      Toast.show({ type: 'error', text1: ui("Missing info"), text2: ui("Enter the name on the account you paid from") });
       return;
     }
     if (!proofImage) {
-      Toast.show({ type: 'error', text1: 'Missing info', text2: 'Select your transfer screenshot first' });
+      Toast.show({ type: 'error', text1: ui("Missing info"), text2: ui("Select your transfer screenshot first") });
       return;
     }
 
@@ -181,12 +184,12 @@ export default function BankTransferCheckout({
       if (response?.success) {
         setSubmitted(true);
         if (onSubmitted) onSubmitted(response.data);
-        Toast.show({ type: 'success', text1: 'Proof submitted', text2: 'We will review and confirm shortly.' });
+        Toast.show({ type: 'success', text1: ui("Proof submitted"), text2: ui("We will review and confirm shortly.") });
       } else {
-        Toast.show({ type: 'error', text1: 'Submission failed', text2: response?.message || 'Please try again' });
+        Toast.show({ type: 'error', text1: ui("Submission failed"), text2: response?.message || ui("Please try again") });
       }
     } catch (error) {
-      Toast.show({ type: 'error', text1: 'Submission failed', text2: error?.response?.data?.message || error.message || 'Please try again' });
+      Toast.show({ type: 'error', text1: ui("Submission failed"), text2: error?.response?.data?.message || error.message || ui("Please try again") });
     } finally {
       setSubmitting(false);
     }
@@ -213,13 +216,13 @@ export default function BankTransferCheckout({
           <View style={styles.sheet}>
             <View style={styles.successBody}>
               <Icon name="checkmark-circle" size={48} color="#16a34a" />
-              <AppText style={styles.successTitle}>Payment confirmed</AppText>
+              <AppText style={styles.successTitle}>{ui("Payment confirmed")}</AppText>
               <AppText style={styles.successText}>
                 {mode === 'registration'
                   ? 'Your transfer was received. Your account is being created.'
                   : 'Your transfer was received and your wallet has been credited.'}
               </AppText>
-              <Button title="Close" onPress={handleClose} style={styles.cta} />
+              <Button title={ui("Close")} onPress={handleClose} style={styles.cta} />
             </View>
           </View>
         </View>
@@ -235,18 +238,16 @@ export default function BankTransferCheckout({
             <View style={styles.header}>
               <View style={styles.headerTitle}>
                 <Icon name="time-outline" size={22} color="#0d9488" />
-                <AppText style={styles.title}>Awaiting approval</AppText>
+                <AppText style={styles.title}>{ui("Awaiting approval")}</AppText>
               </View>
               <TouchableOpacity onPress={handleClose}>
                 <Icon name="close" size={24} color="#64748b" />
               </TouchableOpacity>
             </View>
             <View style={styles.pendingBody}>
-              <AppText style={styles.pendingText}>
-                Your transfer screenshot was submitted. An admin will review it and your account/wallet will be updated once confirmed.
-              </AppText>
-              {reference ? <AppText style={styles.refText}>Reference: {reference}</AppText> : null}
-              <Button title="Close" onPress={handleClose} style={styles.cta} />
+              <AppText style={styles.pendingText}>{ui("Your transfer screenshot was submitted. An admin will review it and your account/wallet will be updated once confirmed.")}</AppText>
+              {reference ? <AppText style={styles.refText}>{ui("Reference: ")}{reference}</AppText> : null}
+              <Button title={ui("Close")} onPress={handleClose} style={styles.cta} />
             </View>
           </View>
         </View>
@@ -261,7 +262,7 @@ export default function BankTransferCheckout({
           <View style={styles.header}>
             <View style={styles.headerTitle}>
               <Icon name="business-outline" size={22} color="#0d9488" />
-              <AppText style={styles.title}>Bank Transfer</AppText>
+              <AppText style={styles.title}>{ui("Bank Transfer")}</AppText>
             </View>
             <TouchableOpacity onPress={handleClose}>
               <Icon name="close" size={24} color="#64748b" />
@@ -270,9 +271,9 @@ export default function BankTransferCheckout({
 
           <View style={styles.body}>
             <View style={styles.amountCard}>
-              <AppText style={styles.amountLabel}>{virtualAccount ? 'Transfer to this account' : 'Amount to pay'}</AppText>
+              <AppText style={styles.amountLabel}>{virtualAccount ? ui("Transfer to this account") : 'Amount to pay'}</AppText>
               <AppText style={styles.amountValue}>
-                {virtualAccount && amount ? `₦${formatNumber(amount)}` : `₦${formatNumber(amount || 0)}`}
+                {virtualAccount && amount ? ui("₦{value0}", {value0: (formatNumber(amount))}) : ui("₦{value0}", {value0: (formatNumber(amount || 0))})}
               </AppText>
               <AppText style={styles.amountNote}>
                 {virtualAccount ? 'This account belongs to you. The bank confirms automatically.' : 'Send exactly this amount to the account below and upload your screenshot.'}
@@ -281,34 +282,34 @@ export default function BankTransferCheckout({
 
             {virtualAccount ? (
               <View style={styles.accountCard}>
-                <AppText style={styles.sectionTitle}>Transfer details</AppText>
+                <AppText style={styles.sectionTitle}>{ui("Transfer details")}</AppText>
                 <View style={styles.detailRow}>
-                  <AppText style={styles.detailLabel}>Bank</AppText>
+                  <AppText style={styles.detailLabel}>{ui("Bank")}</AppText>
                   <AppText style={styles.detailValue}>{virtualAccount.bank_name}</AppText>
                 </View>
                 <View style={styles.detailRow}>
-                  <AppText style={styles.detailLabel}>Account name</AppText>
+                  <AppText style={styles.detailLabel}>{ui("Account name")}</AppText>
                   <AppText style={styles.detailValue}>{virtualAccount.account_name}</AppText>
                 </View>
                 <View style={styles.detailRow}>
-                  <AppText style={styles.detailLabel}>Account number</AppText>
+                  <AppText style={styles.detailLabel}>{ui("Account number")}</AppText>
                   <AppText style={styles.detailValue}>{virtualAccount.account_number}</AppText>
                 </View>
                 {reference ? (
                   <View style={styles.detailRow}>
-                    <AppText style={styles.detailLabel}>Reference</AppText>
+                    <AppText style={styles.detailLabel}>{ui("Reference")}</AppText>
                     <AppText style={styles.detailValue}>{reference}</AppText>
                   </View>
                 ) : null}
-                <AppText style={styles.listeningText}>Listening for your transfer…</AppText>
+                <AppText style={styles.listeningText}>{ui("Listening for your transfer…")}</AppText>
               </View>
             ) : (
               <>
-                <AppText style={styles.sectionTitle}>Select account to pay into</AppText>
+                <AppText style={styles.sectionTitle}>{ui("Select account to pay into")}</AppText>
                 {accountsLoading ? (
-                  <AppText style={styles.mutedText}>Loading accounts...</AppText>
+                  <AppText style={styles.mutedText}>{ui("Loading accounts...")}</AppText>
                 ) : accounts.length === 0 ? (
-                  <AppText style={styles.mutedText}>No bank accounts available. Please try again later.</AppText>
+                  <AppText style={styles.mutedText}>{ui("No bank accounts available. Please try again later.")}</AppText>
                 ) : (
                   <View style={styles.accountsList}>
                     {accounts.map((account) => {
@@ -331,10 +332,10 @@ export default function BankTransferCheckout({
                   </View>
                 )}
 
-                <Input label="Name on the account you paid from" value={payerName} onChangeText={setPayerName} placeholder="Enter payer name" />
-                <Input label="Bank you paid from (optional)" value={payerBank} onChangeText={setPayerBank} placeholder="e.g. GTBank" />
+                <Input label={ui("Name on the account you paid from")} value={payerName} onChangeText={setPayerName} placeholder={ui("Enter payer name")} />
+                <Input label={ui("Bank you paid from (optional)")} value={payerBank} onChangeText={setPayerBank} placeholder={ui("e.g. GTBank")} />
 
-                <AppText style={styles.sectionTitle}>Transfer screenshot</AppText>
+                <AppText style={styles.sectionTitle}>{ui("Transfer screenshot")}</AppText>
                 <Button
                   title={capturing ? 'Selecting...' : proofImage ? 'Change screenshot' : 'Select screenshot'}
                   onPress={handleCapture}
@@ -348,13 +349,13 @@ export default function BankTransferCheckout({
                   <Image source={{ uri: proofImage }} style={styles.preview} resizeMode="contain" />
                 ) : null}
 
-                <Button title={submitting ? 'Submitting...' : 'Submit proof'} onPress={handleSubmit} loading={submitting} disabled={submitting} style={styles.cta} />
+                <Button title={submitting ? ui("Submitting...") : 'Submit proof'} onPress={handleSubmit} loading={submitting} disabled={submitting} style={styles.cta} />
               </>
             )}
 
             {virtualAccount && onClose ? (
               <TouchableOpacity onPress={handleClose} style={styles.cancelBtn}>
-                <AppText style={styles.cancelText}>Cancel</AppText>
+                <AppText style={styles.cancelText}>{ui("Cancel")}</AppText>
               </TouchableOpacity>
             ) : null}
           </View>

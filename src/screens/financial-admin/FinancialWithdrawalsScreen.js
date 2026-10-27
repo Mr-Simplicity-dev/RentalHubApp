@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useCallback, useEffect, useState } from 'react';
 import {StyleSheet, View} from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -23,6 +25,7 @@ const getStatusColor = (status) => {
 };
 
 const FinancialWithdrawalsScreen = () => {
+  useInterfaceLanguage();
   const [withdrawals, setWithdrawals] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [processingId, setProcessingId] = useState(null);
@@ -34,7 +37,7 @@ const FinancialWithdrawalsScreen = () => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(error, 'Could not load withdrawal requests'),
       });
     } finally {
@@ -50,12 +53,12 @@ const FinancialWithdrawalsScreen = () => {
     setProcessingId(`${id}-${action}`);
     try {
       await financialAdminService.processWithdrawal(id, { status: action });
-      Toast.show({ type: 'success', text1: `Withdrawal ${action}ed` });
+      Toast.show({ type: 'success', text1: ui("Withdrawal {value0}ed", {value0: (ui(action))}) });
       loadWithdrawals();
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(error, `Could not ${action} withdrawal`),
       });
     } finally {
@@ -66,9 +69,9 @@ const FinancialWithdrawalsScreen = () => {
   const header = (
     <TourTarget id="financial_settlements" padding={6} radius={18}>
       <PremiumHero
-        eyebrow="Financial admin"
-        title="Withdrawal controls"
-        subtitle="Review requested payouts with beneficiary details and quick approval actions."
+        eyebrow={ui("Financial admin")}
+        title={ui("Withdrawal controls")}
+        subtitle={ui("Review requested payouts with beneficiary details and quick approval actions.")}
         icon="cash-outline"
       />
     </TourTarget>
@@ -84,8 +87,8 @@ const FinancialWithdrawalsScreen = () => {
         loadWithdrawals();
       }}
       header={header}
-      emptyTitle="No withdrawal requests"
-      emptyMessage="Pending payout requests will appear here for review."
+      emptyTitle={ui("No withdrawal requests")}
+      emptyMessage={ui("Pending payout requests will appear here for review.")}
       emptyIcon="card-outline"
       renderItem={({ item }) => {
         const status = item.status || 'pending';
@@ -95,33 +98,33 @@ const FinancialWithdrawalsScreen = () => {
             <View style={styles.cardHeader}>
               <View>
                 <AppText style={styles.amount}>{formatNaira(item.amount || 0)}</AppText>
-                <AppText style={styles.user}>{item.user_name || item.user?.name || 'Unknown user'}</AppText>
+                <AppText style={styles.user}>{item.user_name || item.user?.name || ui("Unknown user")}</AppText>
               </View>
               <StatusPill label={status} color={getStatusColor(status)} />
             </View>
 
             <InfoRow
               icon="business-outline"
-              label="Bank"
+              label={ui("Bank")}
               value={`${item.bank_name || 'N/A'}${item.account_number ? ` • ${item.account_number}` : ''}`}
             />
             <InfoRow
               icon="time-outline"
-              label="Requested"
+              label={ui("Requested")}
               value={item.created_at ? new Date(item.created_at).toLocaleString() : 'Not available'}
             />
 
             {isPending ? (
               <View style={styles.actions}>
                 <PremiumButton
-                  title="Approve"
+                  title={ui("Approve")}
                   onPress={() => processWithdrawal(item.id, 'approve')}
                   loading={processingId === `${item.id}-approve`}
                   icon="checkmark-outline"
                   style={styles.actionButton}
                 />
                 <PremiumButton
-                  title="Reject"
+                  title={ui("Reject")}
                   variant="ghost"
                   onPress={() => processWithdrawal(item.id, 'reject')}
                   loading={processingId === `${item.id}-reject`}

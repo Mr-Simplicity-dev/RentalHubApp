@@ -10,7 +10,7 @@ async function renderFixture(response,fail=false){
  const states=[];let cursor=0,mounted=false;const effects=[];
  const React={createElement:(type,props,...children)=>({type,props:props||{},children}),useState:value=>{const i=cursor++;if(!(i in states))states[i]=value;return[states[i],value=>{states[i]=typeof value==='function'?value(states[i]):value;}];},useEffect:callback=>{if(!mounted)effects.push(callback);}};
  const module={exports:{}};
- vm.runInNewContext(compiled,{module,exports:module.exports,require:name=>{
+ vm.runInNewContext(compiled,{module,exports:module.exports,require:name=>{if(name.includes('interfaceRuntime'))return require('../src/i18n/interfaceRuntime.cjs');if(name.includes('useInterfaceLanguage'))return {__esModule:true,default:()=>{}};
   if(name==='react')return React;
   if(name==='react-native')return{View:'View',ActivityIndicator:'ActivityIndicator'};
   if(name==='../../services/legalService')return{legalService:{getTreatedCases:async()=>{if(fail)throw Error('Unavailable');return response;}}};

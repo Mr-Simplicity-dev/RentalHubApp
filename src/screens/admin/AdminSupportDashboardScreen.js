@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useContext, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import {StyleSheet} from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -15,26 +17,27 @@ import {
 import { AuthContext } from '../../context/AuthContext';
 
 const LABELS = {
-  lga: { eyebrow: 'LGA SUPPORT', title: 'Local support desk' },
-  state: { eyebrow: 'STATE SUPPORT', title: 'State support desk' },
-  super: { eyebrow: 'SUPER SUPPORT', title: 'National support command centre' },
+  lga: { get "eyebrow"() { return ui("LGA SUPPORT"); }, get "title"() { return ui("Local support desk"); } },
+  state: { get "eyebrow"() { return ui("STATE SUPPORT"); }, get "title"() { return ui("State support desk"); } },
+  super: { get "eyebrow"() { return ui("SUPER SUPPORT"); }, get "title"() { return ui("National support command centre"); } },
 };
 
 const AdminSupportDashboardScreen = ({ navigation, route }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const { user } = useContext(AuthContext);
   const role = String(user?.user_type || '').trim().toLowerCase();
   const level = useMemo(() => {
     if (role === 'super_admin' || role === 'super_support_admin') return 'super';
     if (role === 'state_support_admin') return 'state';
     return 'lga';
-  }, [role]);
+  }, [role, interfaceLanguage]);
   const isSuperSupport = level === 'super';
   const [dashboard, setDashboard] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: navigation.canGoBack() });
-  }, [navigation]);
+  }, [navigation, interfaceLanguage]);
 
   const loadDashboard = async () => {
     setLoading(true);
@@ -44,7 +47,7 @@ const AdminSupportDashboardScreen = ({ navigation, route }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(error, 'Could not load support dashboard'),
       });
     } finally {
@@ -63,11 +66,11 @@ const AdminSupportDashboardScreen = ({ navigation, route }) => {
   const poolAdmins = dashboard?.pool_admins ?? dashboard?.total_admins ?? null;
 
   const summaryCards = [
-    { label: 'Open', value: String(openTickets), icon: 'chatbox-ellipses-outline', color: colors.blue },
-    { label: 'Closed', value: String(closedTickets), icon: 'checkmark-circle-outline', color: colors.success },
-    { label: 'Escalated', value: String(escalatedTickets), icon: 'alert-circle-outline', color: '#A66B00' },
-    ...(poolAdmins !== null ? [{ label: 'Pool Admins', value: String(poolAdmins), icon: 'people-outline', color: '#7C3AED' }] : []),
-    { label: 'Avg Response', value: String(avgResponse), icon: 'time-outline', color: '#0891B2' },
+    { label: ui("Open"), value: String(openTickets), icon: 'chatbox-ellipses-outline', color: colors.blue },
+    { label: ui("Closed"), value: String(closedTickets), icon: 'checkmark-circle-outline', color: colors.success },
+    { label: ui("Escalated"), value: String(escalatedTickets), icon: 'alert-circle-outline', color: '#A66B00' },
+    ...(poolAdmins !== null ? [{ label: ui("Pool Admins"), value: String(poolAdmins), icon: 'people-outline', color: '#7C3AED' }] : []),
+    { label: ui("Avg Response"), value: String(avgResponse), icon: 'time-outline', color: '#0891B2' },
   ];
 
   const label = LABELS[level] || LABELS.lga;
@@ -77,7 +80,7 @@ const AdminSupportDashboardScreen = ({ navigation, route }) => {
       <DashboardHero
         eyebrow={label.eyebrow}
         title={label.title}
-        subtitle={`Support ticket overview for the ${level} administrative level.`}
+        subtitle={ui("Support ticket overview for the {value0} administrative level.", {value0: (level)})}
         icon="chatbubbles-outline"
         onRefresh={loadDashboard}
       />
@@ -88,41 +91,41 @@ const AdminSupportDashboardScreen = ({ navigation, route }) => {
         ))}
       </MetricGrid>
 
-      <DashboardSection title="Support tools">
+      <DashboardSection title={ui("Support tools")}>
         <ActionRow
-          title="Support tickets"
-          subtitle="Review open, escalated and resolved tickets."
+          title={ui("Support tickets")}
+          subtitle={ui("Review open, escalated and resolved tickets.")}
           icon="chatbox-ellipses-outline"
           onPress={() => navigation.navigate('SupportTickets')}
         />
         <ActionRow
-          title="Messages"
-          subtitle="Open staff and customer conversations."
+          title={ui("Messages")}
+          subtitle={ui("Open staff and customer conversations.")}
           icon="chatbubbles-outline"
           onPress={() => navigation.navigate('Messages')}
         />
         <ActionRow
-          title="Notifications"
-          subtitle="Review system alerts and updates."
+          title={ui("Notifications")}
+          subtitle={ui("Review system alerts and updates.")}
           icon="notifications-outline"
           onPress={() => navigation.navigate('Notifications')}
         />
         <ActionRow
-          title="Admin Pool"
-          subtitle="View support admin pool and promote leads."
+          title={ui("Admin Pool")}
+          subtitle={ui("View support admin pool and promote leads.")}
           icon="people-outline"
           onPress={() => navigation.navigate('AdminPool')}
         />
         <ActionRow
-          title="Activity Feed"
-          subtitle="Track admin actions and system events."
+          title={ui("Activity Feed")}
+          subtitle={ui("Track admin actions and system events.")}
           icon="pulse-outline"
           onPress={() => navigation.navigate('ActivityFeed')}
         />
         {isSuperSupport ? (
           <ActionRow
-            title="All Activity"
-            subtitle="Full activity log across all locations."
+            title={ui("All Activity")}
+            subtitle={ui("Full activity log across all locations.")}
             icon="list-outline"
             onPress={() => navigation.navigate('AllActivity')}
           />

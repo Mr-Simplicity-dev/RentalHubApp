@@ -256,7 +256,7 @@ const FilterChip = ({ label, active, onPress }) => { useInterfaceLanguage(); ret
   </TouchableOpacity>); };
 
 const SuperAdminDashboardScreen = ({ navigation, route }) => {
-  useInterfaceLanguage();
+  const interfaceLanguage = useInterfaceLanguage();
   const { beginImpersonation } = useContext(AuthContext);
   const { reduceMotion } = useAccessibilityPreferences();
   const tourScroll = useTourScrollController({ animated: !reduceMotion });
@@ -282,7 +282,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
               </TouchableOpacity>
             ),
     });
-  }, [navigation, section]);
+  }, [navigation, section, interfaceLanguage]);
 
   const [showSectionPicker, setShowSectionPicker] = useState(false);
   const loadedSections = useRef(new Set());
@@ -369,7 +369,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
           </TouchableOpacity>
     ) });
     return () => navigation.setOptions({ headerRight: undefined });
-  }, [navigation, unreadCount]);
+  }, [navigation, unreadCount, interfaceLanguage]);
 
   const loadUnreadCount = async () => {
     try {
@@ -432,7 +432,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
 
   const selectedPricingState = useMemo(
     () => pricingLocations.find((item) => String(item.id) === String(pricingForm.state_id)),
-    [pricingForm.state_id, pricingLocations]
+    [pricingForm.state_id, pricingLocations, interfaceLanguage]
   );
 
   const availablePricingLgas = selectedPricingState?.lgas || [];
@@ -916,7 +916,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
           onPress: () => openWorkspace(item),
         })),
       })),
-    []
+    [interfaceLanguage]
   );
 
   const renderOverview = () => {
@@ -1072,14 +1072,14 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
     openOperationPrompt({
       type: 'bulk_users',
       target: { id: 'bulk-users' },
-      title: ui("Bulk {value0} users", {value0: (bulkAction)}),
-      message: ui("{value0} will be applied to {value1} selected user{value2}.", {value0: (bulkAction), value1: (bulkUserCount), value2: (bulkUserCount === 1 ? '' : ui("s"))}),
+      title: ui("Bulk {value0} users", {value0: (ui(bulkAction))}),
+      message: ui("{value0} will be applied to {value1} selected user{value2}.", {value0: (ui(bulkAction)), value1: (bulkUserCount), value2: (bulkUserCount === 1 ? '' : ui("s"))}),
       label: ui("Reason"),
       placeholder: ui("Explain why this bulk action is needed"),
       confirmText: ui("Apply to {value0}", {value0: (bulkUserCount)}),
       icon: 'people-outline',
       variant: bulkAction === 'ban' || bulkAction === 'delete' ? 'danger' : 'primary',
-      successMessage: ui("Bulk action \"{value0}\" completed on {value1} users", {value0: (bulkAction), value1: (bulkUserCount)}),
+      successMessage: ui("Bulk action \"{value0}\" completed on {value1} users", {value0: (ui(bulkAction)), value1: (bulkUserCount)}),
       run: async (note) => {
         await superAdminService.bulkUserAction(selectedUserIds, bulkAction, note);
         setSelectedUserIds([]);
@@ -1156,7 +1156,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                       type: 'ban_user',
                       target: item,
                       title: ui("Ban user account"),
-                      message: ui("{value0} will be blocked from accessing RentalHub.", {value0: (item.full_name || item.email || 'This user')}),
+                      message: ui("{value0} will be blocked from accessing RentalHub.", {value0: (item.full_name || item.email || ui("This user"))}),
                       label: ui("Ban reason"),
                       placeholder: ui("Explain why this user must be banned"),
                       confirmText: ui("Ban user"),
@@ -1299,7 +1299,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                       type: 'reject_verification',
                       target: item,
                       title: ui("Reject verification"),
-                      message: ui("{value0}'s identity verification will be rejected.", {value0: (item.full_name || item.email || 'This user')}),
+                      message: ui("{value0}'s identity verification will be rejected.", {value0: (item.full_name || item.email || ui("This user"))}),
                       label: ui("Rejection reason"),
                       placeholder: ui("Explain why this verification is rejected"),
                       confirmText: ui("Reject verification"),
@@ -1320,7 +1320,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                       type: 'delete_verification',
                       target: item,
                       title: ui("Delete rejected verification"),
-                      message: ui("{value0}'s rejected verification will be removed.", {value0: (item.full_name || item.email || 'This record')}),
+                      message: ui("{value0}'s rejected verification will be removed.", {value0: (item.full_name || item.email || ui("This record"))}),
                       label: ui("Delete reason"),
                       placeholder: ui("Explain why this record is being deleted"),
                       confirmText: ui("Delete record"),
@@ -1639,7 +1639,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                   )
                 }
               >
-                <AppText style={styles.linkText}>{rule.is_active ? 'Disable' : ui("Enable")}</AppText>
+                <AppText style={styles.linkText}>{rule.is_active ? ui("Disable") : ui("Enable")}</AppText>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() =>
@@ -1677,14 +1677,14 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
     openOperationPrompt({
       type: 'bulk_properties',
       target: { id: 'bulk-properties' },
-      title: ui("Bulk {value0} properties", {value0: (bulkAction)}),
-      message: ui("{value0} will be applied to {value1} selected propert{value2}.", {value0: (bulkAction), value1: (bulkPropertyCount), value2: (bulkPropertyCount === 1 ? 'y' : 'ies')}),
+      title: ui("Bulk {value0} properties", {value0: (ui(bulkAction))}),
+      message: ui("Apply {value0} to selected properties ({value1}).", {value0: ui(bulkAction), value1: bulkPropertyCount}),
       label: ui("Reason"),
       placeholder: ui("Explain why this bulk action is needed"),
       confirmText: ui("Apply to {value0}", {value0: (bulkPropertyCount)}),
       icon: 'home-outline',
       variant: 'danger',
-      successMessage: ui("Bulk action \"{value0}\" completed on {value1} properties", {value0: (bulkAction), value1: (bulkPropertyCount)}),
+      successMessage: ui("Bulk action \"{value0}\" completed on {value1} properties", {value0: (ui(bulkAction)), value1: (bulkPropertyCount)}),
       run: async (note) => {
         await superAdminService.bulkPropertyAction(selectedPropertyIds, bulkAction, note);
         setSelectedPropertyIds([]);
@@ -1760,7 +1760,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                     type: 'unlist_property',
                     target: item,
                     title: ui("Unlist property"),
-                    message: ui("{value0} will be hidden from listings.", {value0: (item.title || 'This property')}),
+                    message: ui("{value0} will be hidden from listings.", {value0: (item.title || ui("This property"))}),
                     label: ui("Unlist reason"),
                     placeholder: ui("Explain why this property is being unlisted"),
                     confirmText: ui("Unlist property"),
@@ -1780,7 +1780,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                       type: 'unfeature_property',
                       target: item,
                       title: ui("Remove from featured"),
-                      message: ui("{value0} will no longer be featured.", {value0: (item.title || 'This property')}),
+                      message: ui("{value0} will no longer be featured.", {value0: (item.title || ui("This property"))}),
                       label: ui("Unfeature reason"),
                       placeholder: ui("Explain why this property is being unfeatured"),
                       confirmText: ui("Unfeature property"),
@@ -1800,7 +1800,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                       type: 'feature_property',
                       target: item,
                       title: ui("Feature property"),
-                      message: ui("{value0} will be highlighted as featured.", {value0: (item.title || 'This property')}),
+                      message: ui("{value0} will be highlighted as featured.", {value0: (item.title || ui("This property"))}),
                       label: ui("Feature reason"),
                       placeholder: ui("Explain why this property should be featured"),
                       confirmText: ui("Feature property"),
@@ -1839,14 +1839,14 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
     openOperationPrompt({
       type: 'report_status',
       target: { id: reportId },
-      title: ui("Mark report {value0}", {value0: (status)}),
-      message: ui("This report will be marked as {value0}.", {value0: (status)}),
+      title: ui("Mark report {value0}", {value0: (ui(status))}),
+      message: ui("This report will be marked as {value0}.", {value0: (ui(status))}),
       label: ui("Investigation note"),
       placeholder: ui("Summarise what the investigation found"),
-      confirmText: ui("Mark {value0}", {value0: (status)}),
+      confirmText: ui("Mark {value0}", {value0: (ui(status))}),
       icon: 'document-text-outline',
       variant: status === 'dismissed' ? 'danger' : 'primary',
-      successMessage: ui("Report status changed to {value0}", {value0: (status)}),
+      successMessage: ui("Report status changed to {value0}", {value0: (ui(status))}),
       run: (note) => applyStatus(note),
     });
   };
@@ -1934,7 +1934,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                       type: 'reject_verification',
                       target: item,
                       title: ui("Reject verification"),
-                      message: ui("{value0}'s identity verification will be rejected.", {value0: (item.full_name || item.email || 'This user')}),
+                      message: ui("{value0}'s identity verification will be rejected.", {value0: (item.full_name || item.email || ui("This user"))}),
                       label: ui("Rejection reason"),
                       placeholder: ui("Explain why this verification is rejected"),
                       confirmText: ui("Reject verification"),
@@ -1996,7 +1996,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                     type: 'resolve_fraud',
                     target: item,
                     title: ui("Resolve fraud flag"),
-                    message: ui("{value0} will be marked resolved.", {value0: (item.rule || 'This fraud flag')}),
+                    message: ui("{value0} will be marked resolved.", {value0: (item.rule || ui("This fraud flag"))}),
                     label: ui("Resolution note"),
                     placeholder: ui("Explain how this flag was investigated and resolved"),
                     confirmText: ui("Resolve flag"),
@@ -2158,8 +2158,8 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
         openOperationPrompt({
           type: 'toggle_flag',
           target: { id: key },
-          title: ui("{value0} feature flag", {value0: (enabled ? ui("Enable") : 'Disable')}),
-          message: ui("{value0} will be turned {value1}.", {value0: (key), value1: (enabled ? ui("on") : 'off')}),
+          title: ui("{value0} feature flag", {value0: (enabled ? ui("Enable") : ui("Disable"))}),
+          message: ui("{value0} will be turned {value1}.", {value0: (key), value1: (enabled ? ui("on") : ui("off"))}),
           label: ui("Change reason"),
           placeholder: ui("Explain why this flag is changing"),
           confirmText: enabled ? ui("Enable flag") : ui("Disable flag"),
@@ -2413,7 +2413,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                 type: 'resolve_fraud',
                 target: item,
                 title: ui("Resolve fraud flag"),
-                message: ui("{value0} will be marked resolved.", {value0: (item.rule || 'This fraud flag')}),
+                message: ui("{value0} will be marked resolved.", {value0: (item.rule || ui("This fraud flag"))}),
                 label: ui("Resolution note"),
                 placeholder: ui("Explain how this flag was investigated and resolved"),
                 confirmText: ui("Resolve flag"),
@@ -2627,7 +2627,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
               type: 'delete_platform_lawyer',
               target: { id: lawyerId, full_name: lawyerName },
               title: ui("Delete platform lawyer"),
-              message: ui("{value0} will be removed from the platform lawyer list.", {value0: (lawyerName || 'This lawyer')}),
+              message: ui("{value0} will be removed from the platform lawyer list.", {value0: (lawyerName || ui("This lawyer"))}),
               label: ui("Deletion reason"),
               placeholder: ui("Explain why this lawyer is being removed"),
               confirmText: ui("Delete lawyer"),
@@ -3074,7 +3074,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
       type: 'update_jurisdiction',
       target: targetAdmin,
       title: ui("Update admin jurisdiction"),
-      message: ui("{value0} will be assigned to {value1}{value2}.", {value0: (targetAdmin.full_name || targetAdmin.email || 'This admin'), value1: (jurisdiction.city ? `${jurisdiction.city}, ` : ''), value2: (jurisdiction.state)}),
+      message: ui("{value0} will be assigned to {value1}{value2}.", {value0: (targetAdmin.full_name || targetAdmin.email || ui("This admin")), value1: (jurisdiction.city ? `${jurisdiction.city}, ` : ''), value2: (jurisdiction.state)}),
       label: ui("Change reason"),
       placeholder: ui("Explain why this jurisdiction is changing"),
       confirmText: ui("Update jurisdiction"),
@@ -3281,7 +3281,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                     type: 'reject_admin',
                     target: admin,
                     title: ui("Reject admin request"),
-                    message: ui("{value0} will be rejected and the pending account removed.", {value0: (admin.full_name || admin.email || 'This applicant')}),
+                    message: ui("{value0} will be rejected and the pending account removed.", {value0: (admin.full_name || admin.email || ui("This applicant"))}),
                     label: ui("Rejection reason"),
                     placeholder: ui("Explain why this admin request is rejected"),
                     confirmText: ui("Reject admin"),

@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useCallback, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -31,6 +33,7 @@ const describeValue = (value) => {
 };
 
 const PrivacyDataScreen = () => {
+  useInterfaceLanguage();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -70,21 +73,21 @@ const PrivacyDataScreen = () => {
       }
       file.write(JSON.stringify(data, null, 2));
       if (!(await Sharing.isAvailableAsync())) {
-        Toast.show({ type: 'info', text1: 'Sharing is not available on this device' });
+        Toast.show({ type: 'info', text1: ui("Sharing is not available on this device") });
         return;
       }
       await Sharing.shareAsync(file.uri, { mimeType: 'application/json', UTI: 'public.json' });
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Could not export your data',
-        text2: getErrorMessage(error, 'Please try again.'),
+        text1: ui("Could not export your data"),
+        text2: getErrorMessage(error, ui("Please try again.")),
       });
     }
   }, [data]);
 
   if (loading) {
-    return <PremiumCenter loading title="Preparing your data" />;
+    return <PremiumCenter loading title={ui("Preparing your data")} />;
   }
 
   const entries = data ? Object.entries(data).slice(0, 80) : [];
@@ -96,25 +99,23 @@ const PrivacyDataScreen = () => {
       showsVerticalScrollIndicator={false}
     >
       <PremiumHero
-        eyebrow="Privacy"
-        title="My personal data"
-        subtitle="A read-only summary of the data Amana RentalHub NG holds for your account (NDPR export)."
+        eyebrow={ui("Privacy")}
+        title={ui("My personal data")}
+        subtitle={ui("A read-only summary of the data Amana RentalHub NG holds for your account (NDPR export).")}
         icon="lock-closed-outline"
       />
 
       {error ? (
         <PremiumCard>
           <AppText style={styles.error}>{error}</AppText>
-          <PremiumButton title="Retry" onPress={load} icon="refresh-outline" style={styles.action} />
+          <PremiumButton title={ui("Retry")} onPress={load} icon="refresh-outline" style={styles.action} />
         </PremiumCard>
       ) : (
         <>
           <PremiumCard>
-            <AppText style={styles.note}>
-              Below is a summary of each stored field. Download the full export to review every value.
-            </AppText>
+            <AppText style={styles.note}>{ui("Below is a summary of each stored field. Download the full export to review every value.")}</AppText>
             <PremiumButton
-              title="Download my data (JSON)"
+              title={ui("Download my data (JSON)")}
               onPress={downloadExport}
               icon="download-outline"
               style={styles.action}
@@ -131,7 +132,7 @@ const PrivacyDataScreen = () => {
             ))}
             {entries.length === 0 ? (
               <PremiumCard>
-                <AppText style={styles.empty}>No personal data fields were returned.</AppText>
+                <AppText style={styles.empty}>{ui("No personal data fields were returned.")}</AppText>
               </PremiumCard>
             ) : null}
           </View>

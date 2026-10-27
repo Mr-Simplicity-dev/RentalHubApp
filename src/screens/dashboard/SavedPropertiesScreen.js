@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import {ActivityIndicator,
   FlatList,
@@ -15,6 +17,7 @@ import { getErrorMessage, pickList } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
 const SavedPropertiesScreen = ({ navigation }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [removingId, setRemovingId] = useState(null);
@@ -22,7 +25,7 @@ const SavedPropertiesScreen = ({ navigation }) => {
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
-  }, [navigation]);
+  }, [navigation, interfaceLanguage]);
 
   const loadSaved = async ({ refresh = false } = {}) => {
     refresh ? setRefreshing(true) : setLoading(true);
@@ -32,7 +35,7 @@ const SavedPropertiesScreen = ({ navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Could not load saved homes',
+        text1: ui("Could not load saved homes"),
         text2: getErrorMessage(error, 'Please check your connection and try again.'),
       });
     } finally {
@@ -52,13 +55,13 @@ const SavedPropertiesScreen = ({ navigation }) => {
       setItems((current) => current.filter((item) => item.id !== id));
       Toast.show({
         type: 'success',
-        text1: 'Removed from saved homes',
+        text1: ui("Removed from saved homes"),
       });
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Could not remove home',
-        text2: getErrorMessage(error, 'Please try again.'),
+        text1: ui("Could not remove home"),
+        text2: getErrorMessage(error, ui("Please try again.")),
       });
     } finally {
       setRemovingId(null);
@@ -69,14 +72,14 @@ const SavedPropertiesScreen = ({ navigation }) => {
     <SafeAreaView edges={['top']} style={styles.safeArea}>
       <View style={styles.header}>
         <TouchableOpacity
-          accessibilityLabel="Go back"
+          accessibilityLabel={ui("Go back")}
           onPress={() => navigation.goBack()}
           style={styles.backButton}>
           <Icon name="arrow-back" size={22} color={colors.navy} />
         </TouchableOpacity>
         <View style={styles.headerCopy}>
-          <AppText style={styles.eyebrow}>YOUR SHORTLIST</AppText>
-          <AppText style={styles.title}>Saved homes</AppText>
+          <AppText style={styles.eyebrow}>{ui("YOUR SHORTLIST")}</AppText>
+          <AppText style={styles.title}>{ui("Saved homes")}</AppText>
         </View>
         <View style={styles.headerSpacer} />
       </View>
@@ -88,29 +91,26 @@ const SavedPropertiesScreen = ({ navigation }) => {
         ListHeaderComponent={
           !loading && items.length ? (
             <AppText style={styles.summary}>
-              {items.length} {items.length === 1 ? 'home' : 'homes'} saved for later
-            </AppText>
+              {items.length} {items.length === 1 ? ui("home") : ui("homes")}{ui("saved for later")}</AppText>
           ) : null
         }
         ListEmptyComponent={
           loading ? (
             <View style={styles.center}>
               <ActivityIndicator color={colors.blue} size="large" />
-              <AppText style={styles.loadingText}>Loading your shortlist…</AppText>
+              <AppText style={styles.loadingText}>{ui("Loading your shortlist…")}</AppText>
             </View>
           ) : (
             <View style={styles.center}>
               <View style={styles.emptyIcon}>
                 <Icon name="heart-outline" size={31} color={colors.blue} />
               </View>
-              <AppText style={styles.emptyTitle}>Your shortlist is waiting</AppText>
-              <AppText style={styles.emptyText}>
-                Tap the heart on any property to keep it here for easy comparison.
-              </AppText>
+              <AppText style={styles.emptyTitle}>{ui("Your shortlist is waiting")}</AppText>
+              <AppText style={styles.emptyText}>{ui("Tap the heart on any property to keep it here for easy comparison.")}</AppText>
               <TouchableOpacity
                 onPress={() => navigation.navigate('PropertyList')}
                 style={styles.exploreButton}>
-                <AppText style={styles.exploreText}>Explore verified homes</AppText>
+                <AppText style={styles.exploreText}>{ui("Explore verified homes")}</AppText>
                 <Icon name="arrow-forward" size={17} color={colors.white} />
               </TouchableOpacity>
             </View>

@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import Toast from 'react-native-toast-message';
 import { serviceAdminService } from '../../services/serviceAdminService';
@@ -14,12 +16,13 @@ import {
 import WorkspaceBoard from '../../components/dashboard/WorkspaceBoard';
 
 const AdminFumigationDashboardScreen = ({ navigation }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const [stats, setStats] = useState({});
   const [loading, setLoading] = useState(true);
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: navigation.canGoBack() });
-  }, [navigation]);
+  }, [navigation, interfaceLanguage]);
 
   const loadStats = async () => {
     setLoading(true);
@@ -29,7 +32,7 @@ const AdminFumigationDashboardScreen = ({ navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(error, 'Could not load fumigation dashboard'),
       });
     } finally {
@@ -42,10 +45,10 @@ const AdminFumigationDashboardScreen = ({ navigation }) => {
   }, []);
 
   const cards = [
-    { label: 'Pending Bookings', value: stats.pending_bookings ?? stats.pendingBookings ?? '-', icon: 'time-outline', color: '#A66B00' },
-    { label: 'Completed', value: stats.completed_bookings ?? stats.completedBookings ?? '-', icon: 'checkmark-circle-outline', color: colors.success },
+    { label: ui("Pending Bookings"), value: stats.pending_bookings ?? stats.pendingBookings ?? '-', icon: 'time-outline', color: '#A66B00' },
+    { label: ui("Completed"), value: stats.completed_bookings ?? stats.completedBookings ?? '-', icon: 'checkmark-circle-outline', color: colors.success },
     {
-      label: 'Compliance Rate',
+      label: ui("Compliance Rate"),
       value: stats.compliance_rate == null ? '-' : `${stats.compliance_rate}%`,
       icon: 'shield-checkmark-outline',
       color: colors.blue,
@@ -55,9 +58,9 @@ const AdminFumigationDashboardScreen = ({ navigation }) => {
   return (
     <DashboardScreen refreshing={loading} onRefresh={loadStats}>
       <DashboardHero
-        eyebrow="FUMIGATION & CLEANING"
-        title="Fumigation oversight"
-        subtitle="Monitor bookings, completions and safety compliance."
+        eyebrow={ui("FUMIGATION & CLEANING")}
+        title={ui("Fumigation oversight")}
+        subtitle={ui("Monitor bookings, completions and safety compliance.")}
         icon="sparkles-outline"
         onRefresh={loadStats}
       />
@@ -68,16 +71,16 @@ const AdminFumigationDashboardScreen = ({ navigation }) => {
         ))}
       </MetricGrid>
 
-      <DashboardSection title="Mobile workspaces">
+      <DashboardSection title={ui("Mobile workspaces")}>
         <WorkspaceBoard
           collapsible
           groups={[
             {
-              title: 'Fumigation & Cleaning',
+              title: ui("Fumigation & Cleaning"),
               icon: 'sparkles-outline',
               items: [
                 {
-                  label: 'Booking Queue',
+                  label: ui("Booking Queue"),
                   icon: 'sparkles-outline',
                   onPress: () =>
                     navigation.navigate('ServiceBookings', { type: 'fumigation' }),

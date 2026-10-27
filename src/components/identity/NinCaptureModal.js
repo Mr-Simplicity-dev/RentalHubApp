@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useContext, useState } from 'react';
 import { ActivityIndicator, Modal, StyleSheet, View } from 'react-native';
 import TextInput from '../common/AppTextInput';
@@ -13,6 +15,7 @@ import AppText from '../../components/common/AppText';
 // No skip/back — the user must submit an 11-digit NIN (verified via Prembly)
 // before they can continue using the app.
 const NinCaptureModal = () => {
+  useInterfaceLanguage();
   const { user, updateUser } = useContext(AuthContext);
   const [nin, setNin] = useState('');
   const [dob, setDob] = useState('');
@@ -48,7 +51,7 @@ const NinCaptureModal = () => {
           nin_verified: true,
           identity_verified: response.identity_verified ?? user.identity_verified,
         });
-        Toast.show({ type: 'success', text1: 'NIN verified', text2: 'Your identity has been updated.' });
+        Toast.show({ type: 'success', text1: ui("NIN verified"), text2: ui("Your identity has been updated.") });
       } else {
         setError(response?.message || 'Could not verify your NIN');
       }
@@ -66,28 +69,26 @@ const NinCaptureModal = () => {
           <View style={styles.iconWrap}>
             <AppText style={styles.icon}>🪪</AppText>
           </View>
-          <AppText style={styles.title}>Add your NIN</AppText>
-          <AppText style={styles.subtitle}>
-            Your account was created before NIN was required. Enter your 11-digit NIN and date of birth to complete identity verification.
-          </AppText>
+          <AppText style={styles.title}>{ui("Add your NIN")}</AppText>
+          <AppText style={styles.subtitle}>{ui("Your account was created before NIN was required. Enter your 11-digit NIN and date of birth to complete identity verification.")}</AppText>
 
-          <AppText style={styles.label}>NIN</AppText>
+          <AppText style={styles.label}>{ui("NIN")}</AppText>
           <TextInput
             style={styles.input}
             value={nin}
             onChangeText={(value) => { setNin(value.replace(/[^0-9]/g, '').slice(0, 11)); setError(''); }}
-            placeholder="11-digit NIN"
+            placeholder={ui("11-digit NIN")}
             placeholderTextColor={colors.muted}
             keyboardType="number-pad"
             maxLength={11}
           />
 
-          <AppText style={styles.label}>Date of birth</AppText>
+          <AppText style={styles.label}>{ui("Date of birth")}</AppText>
           <TextInput
             style={styles.input}
             value={dob}
             onChangeText={(value) => { setDob(value.trim()); setError(''); }}
-            placeholder="YYYY-MM-DD"
+            placeholder={ui("YYYY-MM-DD")}
             placeholderTextColor={colors.muted}
             autoCapitalize="none"
           />
@@ -98,9 +99,7 @@ const NinCaptureModal = () => {
             {submitting ? (
               <ActivityIndicator color={colors.white} />
             ) : (
-              <AppText style={styles.submitText} onPress={handleSubmit}>
-                Verify NIN
-              </AppText>
+              <AppText style={styles.submitText} onPress={handleSubmit}>{ui("Verify NIN")}</AppText>
             )}
           </View>
         </View>

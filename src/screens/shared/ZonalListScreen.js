@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useCallback, useState } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -17,13 +19,13 @@ import { colors, radius, typography, typeScale } from '../../theme';
 import AppText from '../../components/common/AppText';
 
 const META = {
-  admins: { title: 'Zone admins', role: false },
-  users: { title: 'Zone users', role: true },
-  properties: { title: 'Properties', role: false },
-  applications: { title: 'Applications', role: false },
-  verifications: { title: 'Verifications', role: false },
-  escalations: { title: 'Open escalations', role: false },
-  'service-operations': { title: 'Service operations', role: false },
+  admins: { get "title"() { return ui("Zone admins"); }, role: false },
+  users: { get "title"() { return ui("Zone users"); }, role: true },
+  properties: { get "title"() { return ui("Properties"); }, role: false },
+  applications: { get "title"() { return ui("Applications"); }, role: false },
+  verifications: { get "title"() { return ui("Verifications"); }, role: false },
+  escalations: { get "title"() { return ui("Open escalations"); }, role: false },
+  'service-operations': { get "title"() { return ui("Service operations"); }, role: false },
 };
 
 const FIRST_FIELDS = [
@@ -36,8 +38,9 @@ const subtitle = (row) =>
   [row.email, row.phone, row.city, row.lga, row.state_name, row.state].filter(Boolean).join(' · ') || '';
 
 const ZonalListScreen = ({ route }) => {
+  useInterfaceLanguage();
   const resource = route?.params?.resource || 'users';
-  const meta = META[resource] || { title: 'Records', role: false };
+  const meta = META[resource] || { title: ui("Records"), role: false };
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -60,7 +63,7 @@ const ZonalListScreen = ({ route }) => {
       } catch (err) {
         Toast.show({
           type: 'error',
-          text1: 'Failed',
+          text1: ui("Failed"),
           text2: getErrorMessage(err, `Could not load ${meta.title.toLowerCase()}`),
         });
         setRows([]);
@@ -92,7 +95,7 @@ const ZonalListScreen = ({ route }) => {
   };
 
   if (loading && rows.length === 0) {
-    return <PremiumCenter loading title={`Loading ${meta.title.toLowerCase()}`} />;
+    return <PremiumCenter loading title={ui("Loading {value0}", {value0: (meta.title.toLowerCase())})} />;
   }
 
   const firstText = (row) => {
@@ -108,9 +111,9 @@ const ZonalListScreen = ({ route }) => {
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
       <PremiumHero
-        eyebrow="Zonal admin"
+        eyebrow={ui("Zonal admin")}
         title={meta.title}
-        subtitle="Records within your assigned zone."
+        subtitle={ui("Records within your assigned zone.")}
         icon="business-outline"
       />
 
@@ -118,7 +121,7 @@ const ZonalListScreen = ({ route }) => {
         <Input
           value={search}
           onChangeText={setSearch}
-          placeholder={`Search ${meta.title.toLowerCase()}…`}
+          placeholder={ui("Search {value0}…", {value0: (meta.title.toLowerCase())})}
           icon="search-outline"
         />
         {meta.role ? (
@@ -133,19 +136,19 @@ const ZonalListScreen = ({ route }) => {
                   style={[styles.chip, active && styles.chipActive]}
                 >
                   <AppText style={[styles.chipText, active && styles.chipTextActive]}>
-                    {key === 'all' ? 'All roles' : key[0].toUpperCase() + key.slice(1)}
+                    {key === "all" ? ui("All roles") : key[0].toUpperCase() + key.slice(1)}
                   </AppText>
                 </TouchableOpacity>
               );
             })}
           </View>
         ) : null}
-        <PremiumButton title="Apply filters" onPress={apply} icon="funnel-outline" size="sm" style={styles.apply} />
+        <PremiumButton title={ui("Apply filters")} onPress={apply} icon="funnel-outline" size="sm" style={styles.apply} />
       </View>
 
       {rows.length === 0 ? (
         <PremiumCard>
-          <AppText style={styles.empty}>No {meta.title.toLowerCase()} match the current filters.</AppText>
+          <AppText style={styles.empty}>{ui("No ")}{meta.title.toLowerCase()}{ui(" match the current filters.")}</AppText>
         </PremiumCard>
       ) : (
         rows.map((item, index) => {
@@ -162,9 +165,9 @@ const ZonalListScreen = ({ route }) => {
                   <StatusPill label={item.approval_status || item.status || item.user_type} color={colors.blue} />
                 ) : null}
               </View>
-              {item.id ? <InfoRow icon="pricetag-outline" label="ID" value={String(item.id)} /> : null}
+              {item.id ? <InfoRow icon="pricetag-outline" label={ui("ID")} value={String(item.id)} /> : null}
               {item.created_at ? (
-                <InfoRow icon="time-outline" label="Created" value={new Date(item.created_at).toLocaleDateString()} />
+                <InfoRow icon="time-outline" label={ui("Created")} value={new Date(item.created_at).toLocaleDateString()} />
               ) : null}
             </PremiumCard>
           );

@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useContext, useCallback, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -43,6 +45,7 @@ const formatDate = (value) => {
 };
 
 const StateMigrationScreen = ({ navigation }) => {
+  useInterfaceLanguage();
   const { user } = useContext(AuthContext);
   const currentState = user?.assigned_state || '';
 
@@ -63,7 +66,7 @@ const StateMigrationScreen = ({ navigation }) => {
     } catch (err) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(err, 'Could not load migration requests'),
       });
     } finally {
@@ -120,8 +123,8 @@ const StateMigrationScreen = ({ navigation }) => {
       if (response?.success) {
         Toast.show({
           type: 'success',
-          text1: 'Request submitted',
-          text2: 'A support administrator will review your migration.',
+          text1: ui("Request submitted"),
+          text2: ui("A support administrator will review your migration."),
         });
         setTargetState('');
         setReason('');
@@ -139,21 +142,21 @@ const StateMigrationScreen = ({ navigation }) => {
   const header = (
     <>
       <PremiumHero
-        eyebrow="Account"
-        title="State migration"
-        subtitle="Request to move your assigned state when you relocate."
+        eyebrow={ui("Account")}
+        title={ui("State migration")}
+        subtitle={ui("Request to move your assigned state when you relocate.")}
         icon="swap-horizontal-outline"
       />
 
       {!hasPending ? (
         <PremiumCard>
           <PremiumSectionTitle
-            title="Request a move"
-            subtitle={`From: ${currentState || 'Unassigned'} — pick your new state and explain why.`}
+            title={ui("Request a move")}
+            subtitle={ui("From: {value0} — pick your new state and explain why.", {value0: (currentState || ui("Unassigned"))})}
           />
           <View style={styles.chipWrap}>
             {availableStates.length === 0 ? (
-              <AppText style={styles.note}>Loading available states…</AppText>
+              <AppText style={styles.note}>{ui("Loading available states…")}</AppText>
             ) : (
               availableStates.map((name) => {
                 const selected = targetState === name;
@@ -174,10 +177,10 @@ const StateMigrationScreen = ({ navigation }) => {
           </View>
 
           <Input
-            label="Reason"
+            label={ui("Reason")}
             value={reason}
             onChangeText={setReason}
-            placeholder="Why are you moving to this state?"
+            placeholder={ui("Why are you moving to this state?")}
             multiline
             numberOfLines={3}
             containerStyle={styles.fieldGap}
@@ -186,7 +189,7 @@ const StateMigrationScreen = ({ navigation }) => {
           {error ? <AppText style={styles.error}>{error}</AppText> : null}
 
           <PremiumButton
-            title="Submit migration request"
+            title={ui("Submit migration request")}
             onPress={handleSubmit}
             loading={submitting}
             disabled={!targetState || !reason.trim()}
@@ -196,16 +199,14 @@ const StateMigrationScreen = ({ navigation }) => {
         </PremiumCard>
       ) : (
         <PremiumCard>
-          <AppText style={styles.note}>
-            You already have a pending migration request. New requests are blocked until it is resolved.
-          </AppText>
+          <AppText style={styles.note}>{ui("You already have a pending migration request. New requests are blocked until it is resolved.")}</AppText>
         </PremiumCard>
       )}
     </>
   );
 
   return loading && requests.length === 0 ? (
-    <PremiumCenter loading title="Loading requests" />
+    <PremiumCenter loading title={ui("Loading requests")} />
   ) : (
     <PremiumListScreen
       data={requests}
@@ -213,8 +214,8 @@ const StateMigrationScreen = ({ navigation }) => {
       refreshing={refreshing}
       onRefresh={() => loadRequests({ refresh: true })}
       header={header}
-      emptyTitle="No migration requests"
-      emptyMessage="Your submitted requests will appear here."
+      emptyTitle={ui("No migration requests")}
+      emptyMessage={ui("Your submitted requests will appear here.")}
       emptyIcon="swap-horizontal-outline"
       renderItem={({ item }) => {
         const color = STATUS_COLORS[item.status] || colors.blue;
@@ -223,7 +224,7 @@ const StateMigrationScreen = ({ navigation }) => {
             <View style={styles.row}>
               <InfoRow
                 icon="arrow-forward-outline"
-                label="Move"
+                label={ui("Move")}
                 value={`${item.from_state || '?'}  →  ${item.to_state || '?'}`}
               />
               <StatusPill label={statusLabel(item.status)} color={color} />

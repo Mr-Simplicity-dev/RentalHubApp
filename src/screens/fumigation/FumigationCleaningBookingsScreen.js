@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useState } from 'react';
 import {ActivityIndicator, StyleSheet, TouchableOpacity, View} from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -34,14 +36,13 @@ const STATUS_LABELS = {
   rescheduled: 'Rescheduled',
 };
 
-const StatCard = ({ value, label, tone }) => (
-  <PremiumCard style={styles.statCard}>
+const StatCard = ({ value, label, tone }) => { useInterfaceLanguage(); return (<PremiumCard style={styles.statCard}>
     <AppText style={[styles.statNumber, tone ? { color: tone } : null]}>{value || 0}</AppText>
     <AppText style={styles.statLabel}>{label}</AppText>
-  </PremiumCard>
-);
+  </PremiumCard>); };
 
 const FumigationCleaningBookingsScreen = ({ navigation }) => {
+  useInterfaceLanguage();
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -72,7 +73,7 @@ const FumigationCleaningBookingsScreen = ({ navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Load Failed',
+        text1: ui("Load Failed"),
         text2: getErrorMessage(error, 'Could not load bookings'),
       });
     } finally {
@@ -88,17 +89,17 @@ const FumigationCleaningBookingsScreen = ({ navigation }) => {
   const header = (
     <>
       <PremiumHero
-        eyebrow="Home services"
-        title="Cleaning & fumigation"
-        subtitle="Track home-service visits, schedules and payment status with a cleaner native booking view."
+        eyebrow={ui("Home services")}
+        title={ui("Cleaning & fumigation")}
+        subtitle={ui("Track home-service visits, schedules and payment status with a cleaner native booking view.")}
         icon="sparkles-outline"
       />
       {stats ? (
         <View style={styles.statsContainer}>
-          <StatCard value={stats.total_bookings} label="Total" />
-          <StatCard value={stats.upcoming_bookings} label="Upcoming" />
-          <StatCard value={stats.completed_bookings} label="Completed" tone={colors.success} />
-          <StatCard value={stats.pending_bookings} label="Pending" tone={colors.warning} />
+          <StatCard value={stats.total_bookings} label={ui("Total")} />
+          <StatCard value={stats.upcoming_bookings} label={ui("Upcoming")} />
+          <StatCard value={stats.completed_bookings} label={ui("Completed")} tone={colors.success} />
+          <StatCard value={stats.pending_bookings} label={ui("Pending")} tone={colors.warning} />
         </View>
       ) : null}
     </>
@@ -125,10 +126,10 @@ const FumigationCleaningBookingsScreen = ({ navigation }) => {
 
               <InfoRow
                 icon="calendar-outline"
-                label="Schedule"
+                label={ui("Schedule")}
                 value={`${item.booking_date || 'Date pending'} at ${item.booking_time || 'time pending'}`}
               />
-              <InfoRow icon="cash-outline" label="Total" value={formatNaira(item.total_price || 0)} />
+              <InfoRow icon="cash-outline" label={ui("Total")} value={formatNaira(item.total_price || 0)} />
             </PremiumCard>
           </TouchableOpacity>
         );

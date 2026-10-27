@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import TextInput from '../../components/common/AppTextInput';
@@ -48,6 +50,7 @@ const DUTY_LABELS = {
 };
 
 const VoiceMonitorScreen = () => {
+  useInterfaceLanguage();
   const [tab, setTab] = useState('summary');
   const [summary, setSummary] = useState(null);
   const [deskScope, setDeskScope] = useState(null);
@@ -79,8 +82,8 @@ const VoiceMonitorScreen = () => {
     if (!sid) {
       Toast.show({
         type: 'info',
-        text1: 'Missing call SID',
-        text2: 'Paste the active agent call SID before loading the call context.',
+        text1: ui("Missing call SID"),
+        text2: ui("Paste the active agent call SID before loading the call context."),
       });
       return;
     }
@@ -95,15 +98,15 @@ const VoiceMonitorScreen = () => {
       setLiveStatus('live');
       Toast.show({
         type: 'success',
-        text1: 'Call context loaded',
-        text2: 'The active caller is now ready for escalation actions.',
+        text1: ui("Call context loaded"),
+        text2: ui("The active caller is now ready for escalation actions."),
       });
     } catch (error) {
       setLiveStatus('stale');
       setCallContext(null);
       Toast.show({
         type: 'error',
-        text1: 'Call context unavailable',
+        text1: ui("Call context unavailable"),
         text2: getErrorMessage(error, 'The active call could not be resolved.'),
       });
     }
@@ -114,8 +117,8 @@ const VoiceMonitorScreen = () => {
     if (!sid) {
       Toast.show({
         type: 'info',
-        text1: 'No call SID available',
-        text2: 'Enter the active agent call SID to continue.',
+        text1: ui("No call SID available"),
+        text2: ui("Enter the active agent call SID to continue."),
       });
       return;
     }
@@ -124,8 +127,8 @@ const VoiceMonitorScreen = () => {
     if (['consult', 'transfer'].includes(action) && !normalizedDepartment) {
       Toast.show({
         type: 'info',
-        text1: 'No department selected',
-        text2: 'Choose a valid escalation department before acting on the call.',
+        text1: ui("No department selected"),
+        text2: ui("Choose a valid escalation department before acting on the call."),
       });
       return;
     }
@@ -145,8 +148,8 @@ const VoiceMonitorScreen = () => {
 
       Toast.show({
         type: 'success',
-        text1: 'Action sent',
-        text2: `The ${action} action was accepted by the voice desk.`,
+        text1: ui("Action sent"),
+        text2: ui("The {value0} action was accepted by the voice desk.", {value0: (ui(action))}),
       });
       if (action === 'cancel-consult' || action === 'transfer') {
         setCallContext(null);
@@ -154,7 +157,7 @@ const VoiceMonitorScreen = () => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Escalation failed',
+        text1: ui("Escalation failed"),
         text2: getErrorMessage(error, 'The remote voice desk rejected the action.'),
       });
     } finally {
@@ -209,7 +212,7 @@ const VoiceMonitorScreen = () => {
       if (failure) {
         Toast.show({
           type: 'error',
-          text1: 'Could not load all voice data',
+          text1: ui("Could not load all voice data"),
           text2: getErrorMessage(failure.reason, 'Some panels may be incomplete.'),
         });
       }
@@ -254,21 +257,21 @@ const VoiceMonitorScreen = () => {
   );
 
   if (loading) {
-    return <PremiumCenter loading title="Loading voice console" />;
+    return <PremiumCenter loading title={ui("Loading voice console")} />;
   }
 
   const tabs = [
-    { key: 'summary', label: 'Summary' },
-    { key: 'calls', label: 'Call log' },
-    { key: 'callbacks', label: 'Callbacks' },
+    { key: 'summary', label: ui("Summary") },
+    { key: 'calls', label: ui("Call log") },
+    { key: 'callbacks', label: ui("Callbacks") },
   ];
 
   const header = (
     <>
       <PremiumHero
-        eyebrow="Voice console"
-        title="Live voice desk"
-        subtitle="Support queue scope, callback requests and live call counters for the active support line."
+        eyebrow={ui("Voice console")}
+        title={ui("Live voice desk")}
+        subtitle={ui("Support queue scope, callback requests and live call counters for the active support line.")}
         icon="call-outline"
       />
       <View style={styles.tabRow}>
@@ -305,26 +308,24 @@ const VoiceMonitorScreen = () => {
           {metric('Open escalations', summary?.openEscalations)}
         </View>
         <PremiumCard>
-          <AppText style={styles.note}>
-            Support roles can review the live queue assignment and the current call data from this desk.
-          </AppText>
+          <AppText style={styles.note}>{ui("Support roles can review the live queue assignment and the current call data from this desk.")}</AppText>
           {deskScope ? (
             <View style={styles.scopeList}>
-              <InfoRow icon="people-outline" label="Queue" value={deskScope.queue || '—'} />
-              <InfoRow icon="toggle-outline" label="Geo routing" value={deskScope.geo_enabled ? 'Enabled' : 'Single queue'} />
-              <InfoRow icon="location-outline" label="State" value={deskScope.scope?.state || '—'} />
-              <InfoRow icon="map-outline" label="LGA" value={deskScope.scope?.lga || '—'} />
-              <InfoRow icon="time-outline" label="Waiting room" value={deskScope.waiting_room || '—'} />
+              <InfoRow icon="people-outline" label={ui("Queue")} value={deskScope.queue || '—'} />
+              <InfoRow icon="toggle-outline" label={ui("Geo routing")} value={deskScope.geo_enabled ? 'Enabled' : 'Single queue'} />
+              <InfoRow icon="location-outline" label={ui("State")} value={deskScope.scope?.state || '—'} />
+              <InfoRow icon="map-outline" label={ui("LGA")} value={deskScope.scope?.lga || '—'} />
+              <InfoRow icon="time-outline" label={ui("Waiting room")} value={deskScope.waiting_room || '—'} />
             </View>
           ) : null}
         </PremiumCard>
 
         <PremiumCard>
           <View style={styles.sectionHeaderRow}>
-            <AppText style={styles.sectionTitle}>Agents on duty</AppText>
+            <AppText style={styles.sectionTitle}>{ui("Agents on duty")}</AppText>
           </View>
           {dutyStatus.length === 0 ? (
-            <AppText style={styles.emptyHint}>No agent lines are currently reporting their duty status.</AppText>
+            <AppText style={styles.emptyHint}>{ui("No agent lines are currently reporting their duty status.")}</AppText>
           ) : (
             <View style={styles.chipRow}>
               {dutyStatus.map((agent) => (
@@ -342,7 +343,7 @@ const VoiceMonitorScreen = () => {
 
         <PremiumCard>
           <View style={styles.sectionHeaderRow}>
-            <AppText style={styles.sectionTitle}>Live escalation controls</AppText>
+            <AppText style={styles.sectionTitle}>{ui("Live escalation controls")}</AppText>
             <View style={[styles.liveBadge, liveStatus === 'live' ? styles.liveBadgeActive : styles.liveBadgeIdle]}>
               <AppText style={styles.liveBadgeText}>{liveStatus === 'live' ? 'Live' : liveStatus === 'stale' ? 'Stale' : 'Idle'}</AppText>
             </View>
@@ -350,7 +351,7 @@ const VoiceMonitorScreen = () => {
           <TextInput
             value={callSidInput}
             onChangeText={setCallSidInput}
-            placeholder="Auto-detected active agent call SID"
+            placeholder={ui("Auto-detected active agent call SID")}
             autoCapitalize="none"
             autoCorrect={false}
             style={styles.input}
@@ -361,33 +362,33 @@ const VoiceMonitorScreen = () => {
               onPress={() => resolveCallContext(callSidInput || autoPopulateCallSid(log))}
               style={[styles.primaryButton, styles.inlineButton]}
             >
-              <AppText style={styles.primaryButtonText}>Load call</AppText>
+              <AppText style={styles.primaryButtonText}>{ui("Load call")}</AppText>
             </TouchableOpacity>
           </View>
 
           {callContext ? (
             <>
               <View style={styles.scopeList}>
-                <InfoRow icon="person-outline" label="Caller" value={callContext.callerNumber || '—'} />
-                <InfoRow icon="alert-circle-outline" label="Source" value={callContext.source || '—'} />
-                <InfoRow icon="grid-outline" label="Room" value={callContext.roomName || '—'} />
+                <InfoRow icon="person-outline" label={ui("Caller")} value={callContext.callerNumber || '—'} />
+                <InfoRow icon="alert-circle-outline" label={ui("Source")} value={callContext.source || '—'} />
+                <InfoRow icon="grid-outline" label={ui("Room")} value={callContext.roomName || '—'} />
               </View>
 
-              <AppText style={styles.sectionMeta}>Current department</AppText>
+              <AppText style={styles.sectionMeta}>{ui("Current department")}</AppText>
               <TextInput
                 value={department}
                 onChangeText={setDepartment}
-                placeholder="finance"
+                placeholder={ui("finance")}
                 autoCapitalize="none"
                 autoCorrect={false}
                 style={styles.input}
               />
 
-              <AppText style={styles.sectionMeta}>Escalation note</AppText>
+              <AppText style={styles.sectionMeta}>{ui("Escalation note")}</AppText>
               <TextInput
                 value={note}
                 onChangeText={setNote}
-                placeholder="Optional note for the escalation"
+                placeholder={ui("Optional note for the escalation")}
                 autoCapitalize="sentences"
                 autoCorrect={false}
                 multiline
@@ -401,7 +402,7 @@ const VoiceMonitorScreen = () => {
                   onPress={() => runEscalationAction('consult')}
                   style={[styles.primaryButton, styles.actionButton]}
                 >
-                  <AppText style={styles.primaryButtonText}>Consult</AppText>
+                  <AppText style={styles.primaryButtonText}>{ui("Consult")}</AppText>
                 </TouchableOpacity>
                 <TouchableOpacity
                   disabled={actionBusy}
@@ -409,7 +410,7 @@ const VoiceMonitorScreen = () => {
                   onPress={() => runEscalationAction('transfer')}
                   style={[styles.secondaryButton, styles.actionButton]}
                 >
-                  <AppText style={styles.secondaryButtonText}>Transfer</AppText>
+                  <AppText style={styles.secondaryButtonText}>{ui("Transfer")}</AppText>
                 </TouchableOpacity>
               </View>
 
@@ -420,7 +421,7 @@ const VoiceMonitorScreen = () => {
                   onPress={() => runEscalationAction('cancel-consult')}
                   style={[styles.secondaryButton, styles.actionButton]}
                 >
-                  <AppText style={styles.secondaryButtonText}>Cancel consult</AppText>
+                  <AppText style={styles.secondaryButtonText}>{ui("Cancel consult")}</AppText>
                 </TouchableOpacity>
                 <TouchableOpacity
                   disabled={actionBusy}
@@ -428,7 +429,7 @@ const VoiceMonitorScreen = () => {
                   onPress={() => runEscalationAction('consult-up')}
                   style={[styles.primaryButton, styles.actionButton]}
                 >
-                  <AppText style={styles.primaryButtonText}>Hand-up consult</AppText>
+                  <AppText style={styles.primaryButtonText}>{ui("Hand-up consult")}</AppText>
                 </TouchableOpacity>
               </View>
 
@@ -439,12 +440,12 @@ const VoiceMonitorScreen = () => {
                   onPress={() => runEscalationAction('transfer-up')}
                   style={[styles.secondaryButton, styles.actionButton]}
                 >
-                  <AppText style={styles.secondaryButtonText}>Transfer up</AppText>
+                  <AppText style={styles.secondaryButtonText}>{ui("Transfer up")}</AppText>
                 </TouchableOpacity>
               </View>
             </>
           ) : (
-            <AppText style={styles.emptyHint}>No active call is currently detected. Open the call log or paste the current agent call SID to attach a live call.</AppText>
+            <AppText style={styles.emptyHint}>{ui("No active call is currently detected. Open the call log or paste the current agent call SID to attach a live call.")}</AppText>
           )}
         </PremiumCard>
       </View>
@@ -459,8 +460,8 @@ const VoiceMonitorScreen = () => {
         refreshing={false}
         onRefresh={load}
         header={header}
-        emptyTitle="No calls recorded"
-        emptyMessage="Calls on the support line will appear here."
+        emptyTitle={ui("No calls recorded")}
+        emptyMessage={ui("Calls on the support line will appear here.")}
         emptyIcon="call-outline"
         renderItem={({ item }) => (
           <PremiumCard>
@@ -473,10 +474,10 @@ const VoiceMonitorScreen = () => {
               </View>
               <StatusPill label={item.status} color={STATUS_COLORS[item.status] || colors.blue} />
             </View>
-            <InfoRow icon="timer-outline" label="Duration (s)" value={String(item.duration_sec ?? 0)} />
-            <InfoRow icon="time-outline" label="When" value={formatTime(item.created_at)} />
+            <InfoRow icon="timer-outline" label={ui("Duration (s)")} value={String(item.duration_sec ?? 0)} />
+            <InfoRow icon="time-outline" label={ui("When")} value={formatTime(item.created_at)} />
             {item.jurisdiction_state ? (
-              <InfoRow icon="location-outline" label="Jurisdiction" value={[item.jurisdiction_state, item.jurisdiction_lga].filter(Boolean).join(' · ') || item.jurisdiction_state} />
+              <InfoRow icon="location-outline" label={ui("Jurisdiction")} value={[item.jurisdiction_state, item.jurisdiction_lga].filter(Boolean).join(' · ') || item.jurisdiction_state} />
             ) : null}
           </PremiumCard>
         )}
@@ -491,22 +492,22 @@ const VoiceMonitorScreen = () => {
       refreshing={false}
       onRefresh={load}
       header={header}
-      emptyTitle="No callback requests"
-      emptyMessage="After-hours callback requests will appear here."
+      emptyTitle={ui("No callback requests")}
+      emptyMessage={ui("After-hours callback requests will appear here.")}
       emptyIcon="chatbubble-outline"
       renderItem={({ item }) => (
         <PremiumCard>
           <View style={styles.cardTop}>
             <View style={styles.cardCopy}>
-              <AppText style={styles.cardTitle}>{item.phone_number || `Callback #${item.id}`}</AppText>
+              <AppText style={styles.cardTitle}>{item.phone_number || ui("Callback #{value0}", {value0: (item.id)})}</AppText>
               <AppText style={styles.cardMeta}>{item.source || 'line'}</AppText>
             </View>
           </View>
-          {item.call_sid ? <InfoRow icon="call-outline" label="Call SID" value={item.call_sid} /> : null}
+          {item.call_sid ? <InfoRow icon="call-outline" label={ui("Call SID")} value={item.call_sid} /> : null}
           {item.jurisdiction_state ? (
-            <InfoRow icon="location-outline" label="Jurisdiction" value={[item.jurisdiction_state, item.jurisdiction_lga].filter(Boolean).join(' · ') || item.jurisdiction_state} />
+            <InfoRow icon="location-outline" label={ui("Jurisdiction")} value={[item.jurisdiction_state, item.jurisdiction_lga].filter(Boolean).join(' · ') || item.jurisdiction_state} />
           ) : null}
-          <InfoRow icon="time-outline" label="Requested" value={formatTime(item.created_at)} />
+          <InfoRow icon="time-outline" label={ui("Requested")} value={formatTime(item.created_at)} />
         </PremiumCard>
       )}
     />

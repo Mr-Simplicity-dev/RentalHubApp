@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useState } from 'react';
 import {ActivityIndicator, StyleSheet, TouchableOpacity, View} from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -35,14 +37,13 @@ const STATUS_LABELS = {
   rescheduled: 'Rescheduled',
 };
 
-const StatCard = ({ value, label, tone }) => (
-  <PremiumCard style={styles.statCard}>
+const StatCard = ({ value, label, tone }) => { useInterfaceLanguage(); return (<PremiumCard style={styles.statCard}>
     <AppText style={[styles.statNumber, tone ? { color: tone } : null]}>{value || 0}</AppText>
     <AppText style={styles.statLabel}>{label}</AppText>
-  </PremiumCard>
-);
+  </PremiumCard>); };
 
 const TransportationBookingsScreen = ({ navigation }) => {
+  useInterfaceLanguage();
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -73,7 +74,7 @@ const TransportationBookingsScreen = ({ navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Load Failed',
+        text1: ui("Load Failed"),
         text2: getErrorMessage(error, 'Could not load bookings'),
       });
     } finally {
@@ -96,18 +97,18 @@ const TransportationBookingsScreen = ({ navigation }) => {
     <>
       <TourTarget id="tenant_services" padding={6} radius={18}>
         <PremiumHero
-          eyebrow="Transportation"
-          title="My moving bookings"
-          subtitle="Track upcoming transport jobs, route details, schedules and payment totals in a native booking timeline."
+          eyebrow={ui("Transportation")}
+          title={ui("My moving bookings")}
+          subtitle={ui("Track upcoming transport jobs, route details, schedules and payment totals in a native booking timeline.")}
           icon="car-outline"
         />
       </TourTarget>
       {stats ? (
         <View style={styles.statsContainer}>
-          <StatCard value={stats.total_bookings} label="Total" />
-          <StatCard value={stats.upcoming_bookings} label="Upcoming" />
-          <StatCard value={stats.completed_bookings} label="Completed" tone={colors.success} />
-          <StatCard value={stats.pending_bookings} label="Pending" tone={colors.warning} />
+          <StatCard value={stats.total_bookings} label={ui("Total")} />
+          <StatCard value={stats.upcoming_bookings} label={ui("Upcoming")} />
+          <StatCard value={stats.completed_bookings} label={ui("Completed")} tone={colors.success} />
+          <StatCard value={stats.pending_bookings} label={ui("Pending")} tone={colors.warning} />
         </View>
       ) : null}
     </>
@@ -126,9 +127,9 @@ const TransportationBookingsScreen = ({ navigation }) => {
             <PremiumCard>
               <View style={styles.bookingHeader}>
                 <View style={styles.titleBlock}>
-                  <AppText style={styles.serviceName}>{item.service_name || 'Transportation'}</AppText>
+                  <AppText style={styles.serviceName}>{item.service_name || ui("Transportation")}</AppText>
                   <AppText style={styles.routeText} numberOfLines={2}>
-                    {item.pickup_address || 'Pickup'} to {item.destination_address || 'Destination'}
+                    {item.pickup_address || ui("Pickup")}{ui(" to ")}{item.destination_address || ui("Destination")}
                   </AppText>
                 </View>
                 <StatusPill label={STATUS_LABELS[status] || status} color={STATUS_COLORS[status] || colors.muted} />
@@ -136,10 +137,10 @@ const TransportationBookingsScreen = ({ navigation }) => {
 
               <InfoRow
                 icon="calendar-outline"
-                label="Schedule"
+                label={ui("Schedule")}
                 value={`${item.booking_date || 'Date pending'} at ${item.booking_time || 'time pending'}`}
               />
-              <InfoRow icon="cash-outline" label="Total" value={formatNaira(item.total_price || 0)} />
+              <InfoRow icon="cash-outline" label={ui("Total")} value={formatNaira(item.total_price || 0)} />
             </PremiumCard>
           </TouchableOpacity>
         );

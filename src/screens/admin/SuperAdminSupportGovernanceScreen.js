@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import {FlatList, StyleSheet, View} from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -14,12 +16,13 @@ DashboardHero,
 } from '../../components/dashboard/DashboardKit';
 
 const SuperAdminSupportGovernanceScreen = ({ navigation }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const [dashboard, setDashboard] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: navigation.canGoBack() });
-  }, [navigation]);
+  }, [navigation, interfaceLanguage]);
 
   const loadDashboard = async () => {
     setLoading(true);
@@ -29,7 +32,7 @@ const SuperAdminSupportGovernanceScreen = ({ navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(error, 'Could not load support governance'),
       });
     } finally {
@@ -49,19 +52,19 @@ const SuperAdminSupportGovernanceScreen = ({ navigation }) => {
   const slaBreakdown = Array.isArray(dashboard?.by_sla) ? dashboard.by_sla : [];
 
   const summaryCards = [
-    { label: 'Total Tickets', value: String(summary.total_tickets ?? 0), icon: 'chatbox-ellipses-outline', color: colors.blue },
-    { label: 'Active', value: String(summary.active_tickets ?? 0), icon: 'time-outline', color: '#A66B00' },
-    { label: 'Escalated', value: String(summary.escalated_tickets ?? 0), icon: 'arrow-up-circle-outline', color: '#7C3AED' },
-    { label: 'SLA Breached', value: String(summary.breached_sla ?? 0), icon: 'warning-outline', color: colors.danger },
-    { label: 'Unassigned', value: String(summary.unassigned_active ?? 0), icon: 'person-remove-outline', color: colors.warning },
+    { label: ui("Total Tickets"), value: String(summary.total_tickets ?? 0), icon: 'chatbox-ellipses-outline', color: colors.blue },
+    { label: ui("Active"), value: String(summary.active_tickets ?? 0), icon: 'time-outline', color: '#A66B00' },
+    { label: ui("Escalated"), value: String(summary.escalated_tickets ?? 0), icon: 'arrow-up-circle-outline', color: '#7C3AED' },
+    { label: ui("SLA Breached"), value: String(summary.breached_sla ?? 0), icon: 'warning-outline', color: colors.danger },
+    { label: ui("Unassigned"), value: String(summary.unassigned_active ?? 0), icon: 'person-remove-outline', color: colors.warning },
   ];
 
   return (
     <DashboardScreen refreshing={loading} onRefresh={loadDashboard}>
       <DashboardHero
-        eyebrow="GOVERNANCE"
-        title="Support governance"
-        subtitle="Oversee support operations, response metrics and escalated ticket resolution."
+        eyebrow={ui("GOVERNANCE")}
+        title={ui("Support governance")}
+        subtitle={ui("Oversee support operations, response metrics and escalated ticket resolution.")}
         icon="shield-outline"
         onRefresh={loadDashboard}
       />
@@ -72,37 +75,36 @@ const SuperAdminSupportGovernanceScreen = ({ navigation }) => {
         ))}
       </MetricGrid>
 
-      <DashboardSection title="Department accountability">
+      <DashboardSection title={ui("Department accountability")}>
         {departments.length === 0 ? (
-          <AppText style={styles.empty}>No department escalations at this time.</AppText>
+          <AppText style={styles.empty}>{ui("No department escalations at this time.")}</AppText>
         ) : (
           departments.map((item, index) => (
             <View key={`${item.department || 'department'}-${index}`} style={styles.ticketCard}>
               <AppText style={styles.ticketTitle}>{formatLabel(item.department || 'Unassigned department')}</AppText>
               <AppText style={styles.ticketMeta}>
-                {item.needs_action ?? 0} need action | {item.breached_sla ?? 0} breached | {item.total ?? 0} total
-              </AppText>
+                {item.needs_action ?? 0}{ui(" need action | ")}{item.breached_sla ?? 0}{ui(" breached | ")}{item.total ?? 0}{ui("total")}</AppText>
             </View>
           ))
         )}
       </DashboardSection>
 
-      <DashboardSection title="SLA position">
+      <DashboardSection title={ui("SLA position")}>
         {slaBreakdown.length === 0 ? (
-          <AppText style={styles.empty}>No SLA breakdown is available.</AppText>
+          <AppText style={styles.empty}>{ui("No SLA breakdown is available.")}</AppText>
         ) : (
           slaBreakdown.map((item, index) => (
             <View key={`${item.sla_status || 'status'}-${index}`} style={styles.ticketCard}>
               <AppText style={styles.ticketTitle}>{formatLabel(item.sla_status || 'Not set')}</AppText>
-              <AppText style={styles.ticketMeta}>{item.total ?? 0} ticket(s)</AppText>
+              <AppText style={styles.ticketMeta}>{item.total ?? 0}{ui(" ticket(s)")}</AppText>
             </View>
           ))
         )}
       </DashboardSection>
 
-      <DashboardSection title="Recent escalated tickets">
+      <DashboardSection title={ui("Recent escalated tickets")}>
         {escalatedTickets.length === 0 ? (
-          <AppText style={styles.empty}>No escalated tickets at this time.</AppText>
+          <AppText style={styles.empty}>{ui("No escalated tickets at this time.")}</AppText>
         ) : (
           <FlatList
             data={escalatedTickets}
@@ -110,14 +112,14 @@ const SuperAdminSupportGovernanceScreen = ({ navigation }) => {
             keyExtractor={(item, index) => String(item.id ?? index)}
             renderItem={({ item }) => (
               <View style={styles.ticketCard}>
-                <AppText style={styles.ticketTitle}>{item.subject || item.title || `Ticket #${item.id}`}</AppText>
+                <AppText style={styles.ticketTitle}>{item.subject || item.title || ui("Ticket #{value0}", {value0: (item.id)})}</AppText>
                 <AppText style={styles.ticketMeta}>
-                  {item.status ? `Status: ${item.status}` : ''}
-                  {item.priority ? ` | Priority: ${item.priority}` : ''}
+                  {item.status ? ui("Status: {value0}", {value0: (item.status)}) : ''}
+                  {item.priority ? ui(" | Priority: {value0}", {value0: (item.priority)}) : ''}
                 </AppText>
                 <AppText style={styles.ticketMeta}>
                   {formatLabel(item.escalation_department || 'Unassigned department')}
-                  {item.escalation_status ? ` | ${formatLabel(item.escalation_status)}` : ''}
+                  {item.escalation_status ? ui(" | {value0}", {value0: (formatLabel(item.escalation_status))}) : ''}
                 </AppText>
               </View>
             )}

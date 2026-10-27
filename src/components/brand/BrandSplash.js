@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useRef, useState } from 'react';
 import {Animated, Easing, Image, StatusBar, StyleSheet, View} from 'react-native';
 import { colors, typography } from '../../theme';
@@ -10,6 +12,7 @@ const LOADING_TRACK_WIDTH = 210;
 const DEFAULT_DURATION_MS = 8000;
 
 const BrandSplash = ({ duration = DEFAULT_DURATION_MS, showProgressPercent = false }) => {
+  useInterfaceLanguage();
   const { reduceMotion, scaleFont } = useAccessibilityPreferences();
   const scale = useRef(new Animated.Value(1)).current;
   const opacity = useRef(new Animated.Value(1)).current;
@@ -165,9 +168,9 @@ const BrandSplash = ({ duration = DEFAULT_DURATION_MS, showProgressPercent = fal
             source={require('../../../assets/brand/03_horizontal_dark_navy.png')}
             style={styles.lockup}
             resizeMode="contain"
-            accessibilityLabel="Amana RentalHub"
+            accessibilityLabel={ui("Amana RentalHub")}
           />
-          <AppText style={[styles.tagline, { fontSize: scaleFont(13) }]}>Trusted homes. Confident living.</AppText>
+          <AppText style={[styles.tagline, { fontSize: scaleFont(13) }]}>{ui("Trusted homes. Confident living.")}</AppText>
         </Animated.View>
       </Animated.View>
       <Animated.View
@@ -180,7 +183,7 @@ const BrandSplash = ({ duration = DEFAULT_DURATION_MS, showProgressPercent = fal
         ]}
       >
         <View style={[styles.loadingRow, !showProgressPercent && styles.loadingRowCentered]}>
-          <AppText style={[styles.loadingText, { fontSize: scaleFont(11) }]}>Loading mobile workspace</AppText>
+          <AppText style={[styles.loadingText, { fontSize: scaleFont(11) }]}>{ui("Loading mobile workspace")}</AppText>
           {showProgressPercent ? (
             <AppText style={[styles.loadingPercent, { fontSize: scaleFont(11) }]}>{progressPercent}%</AppText>
           ) : null}

@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, {
   useContext,
   useEffect,
@@ -46,6 +48,7 @@ const conditionTypeLabel = (value) =>
   value === 'water_damage' ? 'Water' : prettyLabel(value || 'Condition');
 
 const PropertyDetailScreen = ({ route, navigation }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const propertyId = route?.params?.id;
   const { width } = useWindowDimensions();
   const { user, isAuthenticated } = useContext(AuthContext);
@@ -64,7 +67,7 @@ const PropertyDetailScreen = ({ route, navigation }) => {
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
-  }, [navigation]);
+  }, [navigation, interfaceLanguage]);
 
   const canManageDamage = Boolean(
     isAuthenticated && propertyId && ['landlord', 'agent'].includes(user?.user_type)
@@ -95,8 +98,8 @@ const PropertyDetailScreen = ({ route, navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Could not load this home',
-        text2: getErrorMessage(error, 'Please try again.'),
+        text1: ui("Could not load this home"),
+        text2: getErrorMessage(error, ui("Please try again.")),
       });
     } finally {
       setLoading(false);
@@ -116,7 +119,7 @@ const PropertyDetailScreen = ({ route, navigation }) => {
       ),
     ].filter(Boolean);
     return [...new Set(candidates)];
-  }, [property]);
+  }, [property, interfaceLanguage]);
 
   const amenities = useMemo(() => {
     if (Array.isArray(property?.amenities)) return property.amenities;
@@ -129,7 +132,7 @@ const PropertyDetailScreen = ({ route, navigation }) => {
       }
     }
     return [];
-  }, [property?.amenities]);
+  }, [property?.amenities, interfaceLanguage]);
 
   const handleSave = async () => {
     if (!isAuthenticated) {
@@ -147,14 +150,14 @@ const PropertyDetailScreen = ({ route, navigation }) => {
       setSaved((current) => !current);
       Toast.show({
         type: 'success',
-        text1: saved ? 'Removed from saved homes' : 'Home saved',
-        text2: saved ? undefined : 'You can revisit it from My Hub.',
+        text1: saved ? ui("Removed from saved homes") : ui("Home saved"),
+        text2: saved ? undefined : ui("You can revisit it from My Hub."),
       });
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Could not update saved homes',
-        text2: getErrorMessage(error, 'Please try again.'),
+        text1: ui("Could not update saved homes"),
+        text2: getErrorMessage(error, ui("Please try again.")),
       });
     } finally {
       setSaving(false);
@@ -166,17 +169,17 @@ const PropertyDetailScreen = ({ route, navigation }) => {
     try {
       await applicationService.submitApplication({
         property_id: propertyId,
-        message: 'Application submitted from mobile app',
+        message: ui("Application submitted from mobile app"),
       });
       Toast.show({
         type: 'success',
-        text1: 'Application submitted',
-        text2: 'You can track its progress from Applications.',
+        text1: ui("Application submitted"),
+        text2: ui("You can track its progress from Applications."),
       });
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Application failed',
+        text1: ui("Application failed"),
         text2: getErrorMessage(error, 'Could not submit your application'),
       });
     } finally {
@@ -205,16 +208,16 @@ const PropertyDetailScreen = ({ route, navigation }) => {
       if (hasPaystackCheckout(response?.data)) {
         openNativeCheckout({
           transaction: response.data,
-          title: 'Unlock property',
-          subtitle: 'Pay securely to view the complete property details.',
-          amountLabel: response?.data?.amount ? `₦${Number(response.data.amount).toLocaleString()}` : '',
+          title: ui("Unlock property"),
+          subtitle: ui("Pay securely to view the complete property details."),
+          amountLabel: response?.data?.amount ? ui("₦{value0}", {value0: (Number(response.data.amount).toLocaleString())}) : '',
           onSuccess: (paymentResponse) =>
             completeUnlockPayment(paymentResponse?.reference || reference),
           onBrowserFallback: () => {
             Toast.show({
               type: 'info',
-              text1: 'Paystack checkout opened',
-              text2: 'Complete payment securely, then return and refresh the property.',
+              text1: ui("Paystack checkout opened"),
+              text2: ui("Complete payment securely, then return and refresh the property."),
             });
           },
         });
@@ -224,7 +227,7 @@ const PropertyDetailScreen = ({ route, navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Unlock failed',
+        text1: ui("Unlock failed"),
         text2: getErrorMessage(error, 'Could not start unlock payment'),
       });
     } finally {
@@ -241,20 +244,20 @@ const PropertyDetailScreen = ({ route, navigation }) => {
         fallbackFlow: 'unlock',
       });
       if (response?.success) {
-        Toast.show({ type: 'success', text1: 'Property unlocked' });
+        Toast.show({ type: 'success', text1: ui("Property unlocked") });
         await loadProperty();
       } else {
         Toast.show({
           type: 'error',
-          text1: 'Verification failed',
-          text2: response?.message || 'Could not verify property unlock.',
+          text1: ui("Verification failed"),
+          text2: response?.message || ui("Could not verify property unlock."),
         });
       }
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Verification failed',
-        text2: getErrorMessage(error, 'Could not verify property unlock.'),
+        text1: ui("Verification failed"),
+        text2: getErrorMessage(error, ui("Could not verify property unlock.")),
       });
     }
   };
@@ -262,8 +265,8 @@ const PropertyDetailScreen = ({ route, navigation }) => {
   const shareProperty = async () => {
     const link = `https://rentalhub.com.ng/properties/${propertyId}`;
     await Share.share({
-      message: `${property?.title || 'View this verified home'} on Amana RentalHub NG\n${link}`,
-      title: property?.title || 'RentalHub property',
+      message: ui("{value0} on Amana RentalHub NG\n{value1}", {value0: (property?.title || ui("View this verified home")), value1: (link)}),
+      title: property?.title || ui("RentalHub property"),
       url: link,
     });
   };
@@ -278,8 +281,8 @@ const PropertyDetailScreen = ({ route, navigation }) => {
     if (!receiverId) {
       Toast.show({
         type: 'error',
-        text1: 'Tour unavailable',
-        text2: 'This property does not expose a verified tour contact yet.',
+        text1: ui("Tour unavailable"),
+        text2: ui("This property does not expose a verified tour contact yet."),
       });
       return;
     }
@@ -291,12 +294,12 @@ const PropertyDetailScreen = ({ route, navigation }) => {
           receiverId,
           callType: 'virtual_tour',
           propertyId,
-          propertyTitle: property?.title || 'RentalHub property',
+          propertyTitle: property?.title || ui("RentalHub property"),
         });
         Toast.show({
           type: 'success',
-          text1: 'Virtual tour request sent',
-          text2: 'Waiting for the landlord or agent to accept.',
+          text1: ui("Virtual tour request sent"),
+          text2: ui("Waiting for the landlord or agent to accept."),
         });
       } else {
         await messageService.sendMessage({
@@ -307,8 +310,8 @@ const PropertyDetailScreen = ({ route, navigation }) => {
         });
         Toast.show({
           type: 'info',
-          text1: 'Tour request saved as message',
-          text2: 'Realtime is offline, so the request was sent to messages.',
+          text1: ui("Tour request saved as message"),
+          text2: ui("Realtime is offline, so the request was sent to messages."),
         });
       }
     } catch (error) {
@@ -321,13 +324,13 @@ const PropertyDetailScreen = ({ route, navigation }) => {
         });
         Toast.show({
           type: 'info',
-          text1: 'Tour request sent as message',
-          text2: 'The live request could not connect, but the contact has your message.',
+          text1: ui("Tour request sent as message"),
+          text2: ui("The live request could not connect, but the contact has your message."),
         });
       } catch (messageError) {
         Toast.show({
           type: 'error',
-          text1: 'Tour request failed',
+          text1: ui("Tour request failed"),
           text2: getErrorMessage(messageError, getErrorMessage(error, 'Could not request a virtual tour')),
         });
       }
@@ -340,7 +343,7 @@ const PropertyDetailScreen = ({ route, navigation }) => {
     return (
       <SafeAreaView style={styles.center}>
         <ActivityIndicator color={colors.blue} size="large" />
-        <AppText style={styles.loadingText}>Preparing property details…</AppText>
+        <AppText style={styles.loadingText}>{ui("Preparing property details…")}</AppText>
       </SafeAreaView>
     );
   }
@@ -351,9 +354,9 @@ const PropertyDetailScreen = ({ route, navigation }) => {
         <View style={styles.notFoundIcon}>
           <Icon name="home-outline" size={32} color={colors.blue} />
         </View>
-        <AppText style={styles.notFoundTitle}>This property is unavailable</AppText>
-        <AppText style={styles.empty}>It may have been rented or removed.</AppText>
-        <Button title="Return to properties" onPress={() => navigation.goBack()} style={styles.returnButton} />
+        <AppText style={styles.notFoundTitle}>{ui("This property is unavailable")}</AppText>
+        <AppText style={styles.empty}>{ui("It may have been rented or removed.")}</AppText>
+        <Button title={ui("Return to properties")} onPress={() => navigation.goBack()} style={styles.returnButton} />
       </SafeAreaView>
     );
   }
@@ -395,20 +398,20 @@ const PropertyDetailScreen = ({ route, navigation }) => {
                 <BrandImagePlaceholder
                   key={`fallback-${index}`}
                   style={[styles.image, { width }]}
-                  title="Property media pending"
+                  title={ui("Property media pending")}
                 />
               )
             ))}
           </ScrollView>
           <View style={styles.galleryTop}>
             <TouchableOpacity
-              accessibilityLabel="Go back"
+              accessibilityLabel={ui("Go back")}
               onPress={() => navigation.goBack()}
               style={styles.floatingButton}>
               <Icon name="arrow-back" size={21} color={colors.navy} />
             </TouchableOpacity>
             <TouchableOpacity
-              accessibilityLabel="Share property"
+              accessibilityLabel={ui("Share property")}
               onPress={shareProperty}
               style={styles.floatingButton}>
               <Icon name="share-outline" size={21} color={colors.navy} />
@@ -421,7 +424,7 @@ const PropertyDetailScreen = ({ route, navigation }) => {
           {property.featured ? (
             <View style={styles.featuredBadge}>
               <Icon name="sparkles" size={13} color={colors.navy} />
-              <AppText style={styles.featuredText}>Featured</AppText>
+              <AppText style={styles.featuredText}>{ui("Featured")}</AppText>
             </View>
           ) : null}
         </View>
@@ -442,7 +445,7 @@ const PropertyDetailScreen = ({ route, navigation }) => {
               </View>
             </View>
             <TouchableOpacity
-              accessibilityLabel={saved ? 'Remove saved property' : 'Save property'}
+              accessibilityLabel={saved ? 'Remove saved property' : ui("Save property")}
               disabled={saving}
               onPress={handleSave}
               style={[styles.saveButton, saved && styles.saveButtonActive]}>
@@ -463,7 +466,7 @@ const PropertyDetailScreen = ({ route, navigation }) => {
             <AppText style={styles.frequency}> / {frequency}</AppText>
           </View>
 
-          {(!isAuthenticated || user?.user_type === 'tenant') ? (
+          {(!isAuthenticated || user?.user_type === "tenant") ? (
             <TouchableOpacity
               activeOpacity={0.85}
               style={styles.calcCta}
@@ -476,7 +479,7 @@ const PropertyDetailScreen = ({ route, navigation }) => {
               }
             >
               <Icon name="calculator-outline" size={16} color={colors.blue} />
-              <AppText style={styles.calcCtaText}>What's this per month & move-in?</AppText>
+              <AppText style={styles.calcCtaText}>{ui("What's this per month & move-in?")}</AppText>
             </TouchableOpacity>
           ) : null}
 
@@ -486,7 +489,7 @@ const PropertyDetailScreen = ({ route, navigation }) => {
                 <Icon name="bed-outline" size={20} color={colors.blue} />
               </View>
               <AppText style={styles.factValue}>{Number(property.bedrooms || 0)}</AppText>
-              <AppText style={styles.factLabel}>Bedrooms</AppText>
+              <AppText style={styles.factLabel}>{ui("Bedrooms")}</AppText>
             </View>
             <View style={styles.factDivider} />
             <View style={styles.fact}>
@@ -494,7 +497,7 @@ const PropertyDetailScreen = ({ route, navigation }) => {
                 <Icon name="water-outline" size={20} color={colors.blue} />
               </View>
               <AppText style={styles.factValue}>{Number(property.bathrooms || 0)}</AppText>
-              <AppText style={styles.factLabel}>Bathrooms</AppText>
+              <AppText style={styles.factLabel}>{ui("Bathrooms")}</AppText>
             </View>
             <View style={styles.factDivider} />
             <View style={styles.fact}>
@@ -504,12 +507,12 @@ const PropertyDetailScreen = ({ route, navigation }) => {
               <AppText style={styles.factValue} numberOfLines={1}>
                 {prettyLabel(property.property_type || 'Home')}
               </AppText>
-              <AppText style={styles.factLabel}>Property</AppText>
+              <AppText style={styles.factLabel}>{ui("Property")}</AppText>
             </View>
           </View>
 
           <View style={styles.section}>
-            <AppText style={styles.sectionTitle}>About this home</AppText>
+            <AppText style={styles.sectionTitle}>{ui("About this home")}</AppText>
             <AppText style={styles.description}>
               {property.description || 'The property owner has not added a description yet.'}
             </AppText>
@@ -517,7 +520,7 @@ const PropertyDetailScreen = ({ route, navigation }) => {
 
           {amenities.length ? (
             <View style={styles.section}>
-              <AppText style={styles.sectionTitle}>Amenities</AppText>
+              <AppText style={styles.sectionTitle}>{ui("Amenities")}</AppText>
               <View style={styles.amenities}>
                 {amenities.slice(0, 10).map((amenity, index) => (
                   <View key={`${amenity}-${index}`} style={styles.amenity}>
@@ -538,8 +541,8 @@ const PropertyDetailScreen = ({ route, navigation }) => {
                   <Icon name="document-text-outline" size={20} color="#A15C00" />
                 </View>
                 <View>
-                  <AppText style={styles.cardEyebrow}>VERIFIED RECORD</AppText>
-                  <AppText style={styles.cardTitle}>Property condition report</AppText>
+                  <AppText style={styles.cardEyebrow}>{ui("VERIFIED RECORD")}</AppText>
+                  <AppText style={styles.cardTitle}>{ui("Property condition report")}</AppText>
                 </View>
               </View>
               <AppText style={styles.conditionMeta}>
@@ -547,16 +550,14 @@ const PropertyDetailScreen = ({ route, navigation }) => {
                 {prettyLabel(latestDamageReport.severity || 'Severity unavailable')}
               </AppText>
               {latestDamageReport.room_location ? (
-                <AppText style={styles.conditionMeta}>
-                  Location: {latestDamageReport.room_location}
+                <AppText style={styles.conditionMeta}>{ui("Location:")}{latestDamageReport.room_location}
                 </AppText>
               ) : null}
               {latestDamageReport.description ? (
                 <AppText style={styles.conditionText}>{latestDamageReport.description}</AppText>
               ) : null}
               {latestDamageReport.ai_analysis?.repair_recommendation ? (
-                <AppText style={styles.recommendation}>
-                  Recommendation: {latestDamageReport.ai_analysis.repair_recommendation}
+                <AppText style={styles.recommendation}>{ui("Recommendation:")}{latestDamageReport.ai_analysis.repair_recommendation}
                 </AppText>
               ) : null}
             </View>
@@ -569,7 +570,7 @@ const PropertyDetailScreen = ({ route, navigation }) => {
                   <Icon name="person" size={21} color={colors.white} />
                 </View>
                 <View style={styles.contactCopy}>
-                  <AppText style={styles.cardEyebrow}>VERIFIED CONTACT</AppText>
+                  <AppText style={styles.cardEyebrow}>{ui("VERIFIED CONTACT")}</AppText>
                   <AppText style={styles.cardTitle}>{property.landlord_name}</AppText>
                 </View>
                 <Icon name="shield-checkmark" size={22} color={colors.success} />
@@ -577,26 +578,26 @@ const PropertyDetailScreen = ({ route, navigation }) => {
               <View style={styles.contactActions}>
                 {property.landlord_phone ? (
                   <TouchableOpacity
-                    accessibilityLabel="Call verified property contact"
+                    accessibilityLabel={ui("Call verified property contact")}
                     accessibilityRole="button"
                     onPress={() => Linking.openURL(`tel:${property.landlord_phone}`)}
                     style={styles.contactAction}>
                     <Icon name="call-outline" size={18} color={colors.blue} />
-                    <AppText style={styles.contactActionText}>Call</AppText>
+                    <AppText style={styles.contactActionText}>{ui("Call")}</AppText>
                   </TouchableOpacity>
                 ) : null}
                 {property.landlord_email ? (
                   <TouchableOpacity
-                    accessibilityLabel="Email verified property contact"
+                    accessibilityLabel={ui("Email verified property contact")}
                     accessibilityRole="button"
                     onPress={() => Linking.openURL(`mailto:${property.landlord_email}`)}
                     style={styles.contactAction}>
                     <Icon name="mail-outline" size={18} color={colors.blue} />
-                    <AppText style={styles.contactActionText}>Email</AppText>
+                    <AppText style={styles.contactActionText}>{ui("Email")}</AppText>
                   </TouchableOpacity>
                 ) : null}
                 <TouchableOpacity
-                  accessibilityLabel="Request virtual property tour"
+                  accessibilityLabel={ui("Request virtual property tour")}
                   accessibilityRole="button"
                   disabled={requestingTour}
                   onPress={requestVirtualTour}
@@ -606,7 +607,7 @@ const PropertyDetailScreen = ({ route, navigation }) => {
                   ) : (
                     <Icon name="videocam-outline" size={18} color={colors.blue} />
                   )}
-                  <AppText style={styles.contactActionText}>Virtual tour</AppText>
+                  <AppText style={styles.contactActionText}>{ui("Virtual tour")}</AppText>
                 </TouchableOpacity>
               </View>
             </View>
@@ -615,14 +616,12 @@ const PropertyDetailScreen = ({ route, navigation }) => {
               <View style={styles.lockIcon}>
                 <Icon name="lock-closed" size={20} color={colors.gold} />
               </View>
-              <AppText style={styles.lockedTitle}>Unlock complete property details</AppText>
-              <AppText style={styles.lockedText}>
-                Access the verified contact, precise location and complete property information.
-              </AppText>
+              <AppText style={styles.lockedTitle}>{ui("Unlock complete property details")}</AppText>
+              <AppText style={styles.lockedText}>{ui("Access the verified contact, precise location and complete property information.")}</AppText>
               <Button
                 loading={unlocking}
                 onPress={handleUnlock}
-                title={isAuthenticated ? 'Unlock full details' : 'Sign in to continue'}
+                title={isAuthenticated ? ui("Unlock full details") : 'Sign in to continue'}
                 style={styles.unlockButton}
               />
             </View>
@@ -632,21 +631,19 @@ const PropertyDetailScreen = ({ route, navigation }) => {
             <Button
               onPress={() => setShowDamageCapture(true)}
               style={styles.damageButton}
-              title="Report property condition"
+              title={ui("Report property condition")}
               variant="outline"
             />
           ) : null}
 
           <View style={styles.safetyRow}>
             <Icon name="shield-checkmark-outline" size={18} color={colors.success} />
-            <AppText style={styles.safetyText}>
-              Never make payments outside RentalHub’s verified payment process.
-            </AppText>
+            <AppText style={styles.safetyText}>{ui("Never make payments outside RentalHub’s verified payment process.")}</AppText>
           </View>
         </View>
       </ScrollView>
 
-      {(!isAuthenticated || user?.user_type === 'tenant') ? (
+      {(!isAuthenticated || user?.user_type === "tenant") ? (
         <View style={styles.bottomBar}>
           <TouchableOpacity
             disabled={saving}

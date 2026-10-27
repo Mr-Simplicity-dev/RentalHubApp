@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import Toast from 'react-native-toast-message';
 import { financialAdminService } from '../../services/financialAdminService';
@@ -18,13 +20,14 @@ import { AuthContext } from '../../context/AuthContext';
 const formatCurrency = (value) => `₦${Number(value || 0).toLocaleString()}`;
 
 const FinancialAdminDashboardScreen = ({ navigation }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const { user } = useContext(AuthContext);
   const [overview, setOverview] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: navigation.canGoBack() });
-  }, [navigation]);
+  }, [navigation, interfaceLanguage]);
 
   const loadOverview = async () => {
     setLoading(true);
@@ -34,7 +37,7 @@ const FinancialAdminDashboardScreen = ({ navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(error, 'Could not load financial overview'),
       });
     } finally {
@@ -51,71 +54,71 @@ const FinancialAdminDashboardScreen = ({ navigation }) => {
   const completedTransactions = overview?.completed_transactions ?? overview?.completedTransactions ?? 0;
 
   const summaryCards = [
-    { label: 'Revenue', value: formatCurrency(totalRevenue), icon: 'trending-up-outline', color: colors.blue },
-    { label: 'Pending', value: formatCurrency(pendingPayments), icon: 'time-outline', color: '#A66B00' },
-    { label: 'Completed', value: String(completedTransactions), icon: 'checkmark-circle-outline', color: colors.success },
+    { label: ui("Revenue"), value: formatCurrency(totalRevenue), icon: 'trending-up-outline', color: colors.blue },
+    { label: ui("Pending"), value: formatCurrency(pendingPayments), icon: 'time-outline', color: '#A66B00' },
+    { label: ui("Completed"), value: String(completedTransactions), icon: 'checkmark-circle-outline', color: colors.success },
   ];
 
   const actionCards = [
-    { label: 'Revenue Reports', subtitle: 'Track income and settlement trends', icon: 'trending-up-outline', route: 'FinancialRevenueReport' },
-    { label: 'Transactions', subtitle: 'Review individual payment activity', icon: 'swap-horizontal-outline', route: 'FinancialTransactions' },
-    { label: 'Withdrawals', subtitle: 'Approve and monitor payout requests', icon: 'cash-outline', route: 'FinancialWithdrawals' },
-    { label: 'Commissions', subtitle: 'Manage agent and platform commissions', icon: 'people-outline', route: 'FinancialCommissions' },
-    { label: 'Controls & Reconciliation', subtitle: 'Audit trails, frozen funds, settlement health and exports', icon: 'shield-checkmark-outline', route: 'FinancialControls' },
+    { label: ui("Revenue Reports"), subtitle: ui("Track income and settlement trends"), icon: 'trending-up-outline', route: 'FinancialRevenueReport' },
+    { label: ui("Transactions"), subtitle: ui("Review individual payment activity"), icon: 'swap-horizontal-outline', route: 'FinancialTransactions' },
+    { label: ui("Withdrawals"), subtitle: ui("Approve and monitor payout requests"), icon: 'cash-outline', route: 'FinancialWithdrawals' },
+    { label: ui("Commissions"), subtitle: ui("Manage agent and platform commissions"), icon: 'people-outline', route: 'FinancialCommissions' },
+    { label: ui("Controls & Reconciliation"), subtitle: ui("Audit trails, frozen funds, settlement health and exports"), icon: 'shield-checkmark-outline', route: 'FinancialControls' },
   ];
 
   return (
     <DashboardScreen refreshing={loading} onRefresh={loadOverview}>
       <DashboardHero
-        eyebrow="FINANCIAL CONTROL"
-        title="Money at a glance"
-        subtitle="Review revenue, settlements, commissions and payout activity."
+        eyebrow={ui("FINANCIAL CONTROL")}
+        title={ui("Money at a glance")}
+        subtitle={ui("Review revenue, settlements, commissions and payout activity.")}
         icon="analytics-outline"
         onRefresh={loadOverview}
       />
       <AdminAccountActions navigation={navigation} />
 
-      <MetricGrid tourTarget="financial_overview" tourLabel="Financial overview">
+      <MetricGrid tourTarget="financial_overview" tourLabel={ui("Financial overview")}>
         {summaryCards.map((card) => (
           <MetricCard key={card.label} {...card} />
         ))}
       </MetricGrid>
 
       <DashboardSection
-        title="Financial operations"
-        subtitle="Open a focused workspace instead of managing everything on one page."
+        title={ui("Financial operations")}
+        subtitle={ui("Open a focused workspace instead of managing everything on one page.")}
       >
         <WorkspaceBoard
           collapsible
           groups={[
             {
-              title: 'Financial operations',
+              title: ui("Financial operations"),
               icon: 'cash-outline',
               items: [
                 {
-                  label: 'Revenue Reports',
+                  label: ui("Revenue Reports"),
                   icon: 'trending-up-outline',
                   tourTarget: 'financial_reports',
                   onPress: () => navigation.navigate('FinancialRevenueReport'),
                 },
                 {
-                  label: 'Transactions',
+                  label: ui("Transactions"),
                   icon: 'swap-horizontal-outline',
                   tourTarget: 'financial_transactions',
                   onPress: () => navigation.navigate('FinancialTransactions'),
                 },
                 {
-                  label: 'Withdrawals',
+                  label: ui("Withdrawals"),
                   icon: 'cash-outline',
                   onPress: () => navigation.navigate('FinancialWithdrawals'),
                 },
                 {
-                  label: 'Commissions',
+                  label: ui("Commissions"),
                   icon: 'people-outline',
                   onPress: () => navigation.navigate('FinancialCommissions'),
                 },
                 {
-                  label: 'Controls & Reconciliation',
+                  label: ui("Controls & Reconciliation"),
                   icon: 'shield-checkmark-outline',
                   tourTarget: 'financial_settlements',
                   onPress: () => navigation.navigate('FinancialControls'),
@@ -127,10 +130,10 @@ const FinancialAdminDashboardScreen = ({ navigation }) => {
       </DashboardSection>
 
       {user?.is_recruitment_admin === true ? (
-        <DashboardSection title="People operations">
+        <DashboardSection title={ui("People operations")}>
           <ActionRow
-            title="Recruitment"
-            subtitle="Review roles, candidates and hiring activity."
+            title={ui("Recruitment")}
+            subtitle={ui("Review roles, candidates and hiring activity.")}
             icon="people-outline"
             onPress={() => navigation.navigate('RecruitmentAdmin')}
           />

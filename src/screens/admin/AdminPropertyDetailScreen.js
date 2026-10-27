@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useState } from 'react';
 import {Image, StyleSheet, View} from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -25,6 +27,7 @@ const getStatusColor = (status) => {
 };
 
 const AdminPropertyDetailScreen = ({ route }) => {
+  useInterfaceLanguage();
   const propertyId = route?.params?.id;
   const [property, setProperty] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -42,7 +45,7 @@ const AdminPropertyDetailScreen = ({ route }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(error, 'Could not load property details'),
       });
     } finally {
@@ -54,12 +57,12 @@ const AdminPropertyDetailScreen = ({ route }) => {
     setActionLoading(true);
     try {
       await adminService.approveProperty(propertyId);
-      Toast.show({ type: 'success', text1: 'Property approved' });
+      Toast.show({ type: 'success', text1: ui("Property approved") });
       loadProperty();
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(error, 'Could not approve property'),
       });
     } finally {
@@ -71,12 +74,12 @@ const AdminPropertyDetailScreen = ({ route }) => {
     setActionLoading(true);
     try {
       await adminService.rejectProperty(propertyId);
-      Toast.show({ type: 'success', text1: 'Property rejected' });
+      Toast.show({ type: 'success', text1: ui("Property rejected") });
       loadProperty();
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(error, 'Could not reject property'),
       });
     } finally {
@@ -85,15 +88,15 @@ const AdminPropertyDetailScreen = ({ route }) => {
   };
 
   if (loading) {
-    return <PremiumCenter loading title="Loading property details" />;
+    return <PremiumCenter loading title={ui("Loading property details")} />;
   }
 
   if (!property) {
     return (
       <PremiumCenter
         icon="home-outline"
-        title="Property not found"
-        message="This property could not be loaded from the admin API."
+        title={ui("Property not found")}
+        message={ui("This property could not be loaded from the admin API.")}
       />
     );
   }
@@ -104,8 +107,8 @@ const AdminPropertyDetailScreen = ({ route }) => {
   return (
     <PremiumScreen>
       <PremiumHero
-        eyebrow="Admin property review"
-        title={property.title || 'Property'}
+        eyebrow={ui("Admin property review")}
+        title={property.title || ui("Property")}
         subtitle={[property.area, property.city, property.state_name].filter(Boolean).join(', ') || 'Location not available'}
         icon="business-outline"
         right={<StatusPill label={status} color={getStatusColor(status)} />}
@@ -115,57 +118,56 @@ const AdminPropertyDetailScreen = ({ route }) => {
         {cover ? (
           <Image source={{ uri: cover }} style={styles.image} />
         ) : (
-          <BrandImagePlaceholder style={styles.image} title="Property media pending" />
+          <BrandImagePlaceholder style={styles.image} title={ui("Property media pending")} />
         )}
         <View style={styles.pricePanel}>
           <AppText style={styles.price}>{formatNaira(property.rent_amount)}</AppText>
-          <AppText style={styles.frequency}>
-            per {property.payment_frequency === 'yearly' ? 'year' : 'month'}
+          <AppText style={styles.frequency}>{ui("per")}{property.payment_frequency === "yearly" ? ui("year") : ui("month")}
           </AppText>
         </View>
       </PremiumCard>
 
-      <PremiumSectionTitle title="Owner information" />
+      <PremiumSectionTitle title={ui("Owner information")} />
       <PremiumCard>
-        <InfoRow icon="person-outline" label="Name" value={property.landlord_name || property.owner_name || 'N/A'} />
-        <InfoRow icon="mail-outline" label="Email" value={property.landlord_email || 'N/A'} />
-        <InfoRow icon="call-outline" label="Phone" value={property.landlord_phone || 'N/A'} />
+        <InfoRow icon="person-outline" label={ui("Name")} value={property.landlord_name || property.owner_name || 'N/A'} />
+        <InfoRow icon="mail-outline" label={ui("Email")} value={property.landlord_email || 'N/A'} />
+        <InfoRow icon="call-outline" label={ui("Phone")} value={property.landlord_phone || 'N/A'} />
       </PremiumCard>
 
-      <PremiumSectionTitle title="Property details" />
+      <PremiumSectionTitle title={ui("Property details")} />
       <PremiumCard>
         <InfoRow
           icon="bed-outline"
-          label="Rooms"
+          label={ui("Rooms")}
           value={`${Number(property.bedrooms || 0)} bed • ${Number(property.bathrooms || 0)} bath`}
         />
-        <InfoRow icon="home-outline" label="Type" value={property.property_type || 'N/A'} />
+        <InfoRow icon="home-outline" label={ui("Type")} value={property.property_type || 'N/A'} />
         <InfoRow
           icon="calendar-outline"
-          label="Listed"
+          label={ui("Listed")}
           value={property.created_at ? new Date(property.created_at).toLocaleDateString() : 'N/A'}
         />
-        <InfoRow icon="eye-outline" label="Views" value={property.view_count ?? property.views ?? 0} />
+        <InfoRow icon="eye-outline" label={ui("Views")} value={property.view_count ?? property.views ?? 0} />
       </PremiumCard>
 
-      <PremiumSectionTitle title="Description" />
+      <PremiumSectionTitle title={ui("Description")} />
       <PremiumCard>
-        <AppText style={styles.description}>{property.description || 'No description provided.'}</AppText>
+        <AppText style={styles.description}>{property.description || ui("No description provided.")}</AppText>
       </PremiumCard>
 
-      {status === 'pending' ? (
+      {status === "pending" ? (
         <PremiumCard>
-          <AppText style={styles.actionTitle}>Approval decision</AppText>
+          <AppText style={styles.actionTitle}>{ui("Approval decision")}</AppText>
           <View style={styles.actions}>
             <PremiumButton
-              title="Approve"
+              title={ui("Approve")}
               onPress={handleApprove}
               loading={actionLoading}
               icon="checkmark-circle-outline"
               style={styles.actionButton}
             />
             <PremiumButton
-              title="Reject"
+              title={ui("Reject")}
               variant="ghost"
               onPress={handleReject}
               loading={actionLoading}
@@ -176,7 +178,7 @@ const AdminPropertyDetailScreen = ({ route }) => {
         </PremiumCard>
       ) : null}
 
-      <AppText style={styles.meta}>Property ID: {property.id}</AppText>
+      <AppText style={styles.meta}>{ui("Property ID: ")}{property.id}</AppText>
     </PremiumScreen>
   );
 };

@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useCallback, useEffect, useState } from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -21,13 +23,12 @@ const getProgress = (item) => {
   return Math.min(target ? (saved / target) * 100 : 0, 100);
 };
 
-const ProgressBar = ({ value }) => (
-  <View style={styles.progressBar}>
+const ProgressBar = ({ value }) => { useInterfaceLanguage(); return (<View style={styles.progressBar}>
     <View style={[styles.progressFill, { width: `${value}%` }]} />
-  </View>
-);
+  </View>); };
 
 const SavingsGoalListScreen = ({ navigation }) => {
+  useInterfaceLanguage();
   const [goals, setGoals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -39,7 +40,7 @@ const SavingsGoalListScreen = ({ navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(error, 'Could not load savings goals'),
       });
     } finally {
@@ -55,13 +56,13 @@ const SavingsGoalListScreen = ({ navigation }) => {
   const header = (
     <>
       <PremiumHero
-        eyebrow="Rent savings"
-        title={`My savings plans (${goals.length})`}
-        subtitle="Build rent discipline with visible progress, due dates and target tracking."
+        eyebrow={ui("Rent savings")}
+        title={ui("My savings plans ({value0})", {value0: (goals.length)})}
+        subtitle={ui("Build rent discipline with visible progress, due dates and target tracking.")}
         icon="wallet-outline"
       />
       <PremiumButton
-        title="Create new plan"
+        title={ui("Create new plan")}
         onPress={() => navigation.navigate('SavingsGoalCreate')}
         icon="add-circle-outline"
         style={styles.createButton}
@@ -100,12 +101,11 @@ const SavingsGoalListScreen = ({ navigation }) => {
               </View>
               <ProgressBar value={progress} />
               <AppText style={styles.progressCopy}>
-                {formatNaira(item.total_saved || 0)} saved • {Math.round(progress)}% complete
-              </AppText>
+                {formatNaira(item.total_saved || 0)}{ui(" saved • ")}{Math.round(progress)}{ui("% complete")}</AppText>
               {item.rent_due_date ? (
                 <InfoRow
                   icon="calendar-outline"
-                  label="Rent due"
+                  label={ui("Rent due")}
                   value={new Date(item.rent_due_date).toLocaleDateString()}
                 />
               ) : null}

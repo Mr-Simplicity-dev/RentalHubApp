@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React from 'react';
 import { Linking, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -15,22 +17,22 @@ const EFFECTIVE_DATE = '29 July 2026';
 const PRIVACY_PRINCIPLES = [
   {
     icon: 'eye-outline',
-    title: 'Transparent',
+    get "title"() { return ui("Transparent"); },
     text: 'We explain what we collect and why, including sensitive identity and payment-related information.',
   },
   {
     icon: 'options-outline',
-    title: 'Purpose limited',
+    get "title"() { return ui("Purpose limited"); },
     text: 'We use personal data for RentalHub services, safety, legal compliance and the other purposes described here.',
   },
   {
     icon: 'shield-checkmark-outline',
-    title: 'Protected',
+    get "title"() { return ui("Protected"); },
     text: 'We use technical and organisational controls appropriate to the data and the risks involved.',
   },
   {
     icon: 'person-circle-outline',
-    title: 'Your rights',
+    get "title"() { return ui("Your rights"); },
     text: 'You can ask to access, correct, export, restrict or delete data, subject to lawful exceptions.',
   },
 ];
@@ -38,7 +40,7 @@ const PRIVACY_PRINCIPLES = [
 const DATA_CATEGORIES = [
   {
     icon: 'person-outline',
-    title: 'Account, contact and profile data',
+    get "title"() { return ui("Account, contact and profile data"); },
     data:
       'Name, email address, phone number, account type, password hash, preferred state or LGA, referral details, profile photo, professional role and related agent or lawyer contact details.',
     purpose:
@@ -50,7 +52,7 @@ const DATA_CATEGORIES = [
   },
   {
     icon: 'finger-print-outline',
-    title: 'Identity and verification data',
+    get "title"() { return ui("Identity and verification data"); },
     data:
       'NIN, passport number, nationality, identity-document type, date of birth used for verification, passport or identity images, live face or liveness images, verification result and revalidation status.',
     purpose:
@@ -62,7 +64,7 @@ const DATA_CATEGORIES = [
   },
   {
     icon: 'home-outline',
-    title: 'Property, rental and application data',
+    get "title"() { return ui("Property, rental and application data"); },
     data:
       'Property address and location, listing details, prices and deposits, amenities, photos and media, saved properties, views, applications, inspections, tenancies, reviews, ratings and landlord-agent relationships.',
     purpose:
@@ -74,7 +76,7 @@ const DATA_CATEGORIES = [
   },
   {
     icon: 'card-outline',
-    title: 'Payment, wallet and payout data',
+    get "title"() { return ui("Payment, wallet and payout data"); },
     data:
       'Payment reference, amount, currency, purpose, status and timestamps; subscription, booking, wallet and rent-savings records; and payout or refund bank name, bank code, account number and account name.',
     purpose:
@@ -86,7 +88,7 @@ const DATA_CATEGORIES = [
   },
   {
     icon: 'chatbubbles-outline',
-    title: 'Messages, calls, support and legal records',
+    get "title"() { return ui("Messages, calls, support and legal records"); },
     data:
       'In-app messages, typing/read/online signals, call and WebRTC signalling/session metadata, support tickets and replies, notification history, dispute records, evidence, property reports, photos, inspection notes, legal authorisations and lawyer activity. Live WebRTC audio/video is processed between participants for delivery rather than stored as an ordinary call record.',
     purpose:
@@ -98,7 +100,7 @@ const DATA_CATEGORIES = [
   },
   {
     icon: 'car-outline',
-    title: 'Bookings, services and location data',
+    get "title"() { return ui("Bookings, services and location data"); },
     data:
       'Transportation pickup and destination, service address, booking date and time, property size or room details, cleaning or fumigation requirements, health and safety notes, provider assignment, location searches and related photos or evidence.',
     purpose:
@@ -110,7 +112,7 @@ const DATA_CATEGORIES = [
   },
   {
     icon: 'briefcase-outline',
-    title: 'Recruitment and professional data',
+    get "title"() { return ui("Recruitment and professional data"); },
     data:
       'Candidate profile, CV or résumé, documents, application answers, interview details, browser fingerprint, interview recordings, recording duration, violation log, scores, reports, professional credentials and recruitment payment or workflow records.',
     purpose:
@@ -122,7 +124,7 @@ const DATA_CATEGORIES = [
   },
   {
     icon: 'phone-portrait-outline',
-    title: 'Device, usage, diagnostics and notification data',
+    get "title"() { return ui("Device, usage, diagnostics and notification data"); },
     data:
       'IP address, user agent, device platform, app version, route or screen, session identifier, push token, optional device ID, notification status, analytics events, crash message, stack trace, component stack and fatal-error details.',
     purpose:
@@ -211,8 +213,7 @@ const RIGHTS = [
   'Complain to RentalHub and, if unresolved, to the Nigeria Data Protection Commission.',
 ];
 
-const BulletRow = ({ children, icon = 'checkmark-circle' }) => (
-  <View style={styles.bulletRow}>
+const BulletRow = ({ children, icon = 'checkmark-circle' }) => { useInterfaceLanguage(); return (<View style={styles.bulletRow}>
     <Icon
       accessibilityElementsHidden
       importantForAccessibility="no"
@@ -221,22 +222,16 @@ const BulletRow = ({ children, icon = 'checkmark-circle' }) => (
       color={colors.blue}
     />
     <AppText style={styles.bulletText}>{children}</AppText>
-  </View>
-);
+  </View>); };
 
-const PolicyCard = ({ children, style }) => (
-  <View style={[styles.policyCard, style]}>{children}</View>
-);
+const PolicyCard = ({ children, style }) => { useInterfaceLanguage(); return (<View style={[styles.policyCard, style]}>{children}</View>); };
 
-const LabelledCopy = ({ label, children }) => (
-  <View style={styles.labelledCopy}>
+const LabelledCopy = ({ label, children }) => { useInterfaceLanguage(); return (<View style={styles.labelledCopy}>
     <AppText style={styles.fieldLabel}>{label}</AppText>
     <AppText style={styles.fieldText}>{children}</AppText>
-  </View>
-);
+  </View>); };
 
-const DataCategoryCard = ({ item }) => (
-  <PolicyCard>
+const DataCategoryCard = ({ item }) => { useInterfaceLanguage(); return (<PolicyCard>
     <View style={styles.cardHeading}>
       <View style={styles.cardIcon}>
         <Icon name={item.icon} size={20} color={colors.blue} />
@@ -245,15 +240,13 @@ const DataCategoryCard = ({ item }) => (
         {item.title}
       </AppText>
     </View>
-    <LabelledCopy label="What we collect">{item.data}</LabelledCopy>
-    <LabelledCopy label="Why we use it">{item.purpose}</LabelledCopy>
-    <LabelledCopy label="Lawful basis">{item.basis}</LabelledCopy>
-    <LabelledCopy label="Retention approach">{item.retention}</LabelledCopy>
-  </PolicyCard>
-);
+    <LabelledCopy label={ui("What we collect")}>{item.data}</LabelledCopy>
+    <LabelledCopy label={ui("Why we use it")}>{item.purpose}</LabelledCopy>
+    <LabelledCopy label={ui("Lawful basis")}>{item.basis}</LabelledCopy>
+    <LabelledCopy label={ui("Retention approach")}>{item.retention}</LabelledCopy>
+  </PolicyCard>); };
 
-const ProviderCard = ({ item }) => (
-  <View style={styles.providerCard}>
+const ProviderCard = ({ item }) => { useInterfaceLanguage(); return (<View style={styles.providerCard}>
     <View style={styles.providerIcon}>
       <Icon name={item.icon} size={19} color={colors.navy} />
     </View>
@@ -261,13 +254,11 @@ const ProviderCard = ({ item }) => (
       <AppText style={styles.providerName}>{item.name}</AppText>
       <AppText style={styles.providerText}>{item.text}</AppText>
     </View>
-  </View>
-);
+  </View>); };
 
-const ContactLink = ({ icon, label, value, url }) => (
-  <TouchableOpacity
-    accessibilityHint={`Opens ${label.toLowerCase()}`}
-    accessibilityLabel={`${label}: ${value}`}
+const ContactLink = ({ icon, label, value, url }) => { useInterfaceLanguage(); return (<TouchableOpacity
+    accessibilityHint={ui("Opens {value0}", {value0: (label.toLowerCase())})}
+    accessibilityLabel={ui("{value0}: {value1}", {value0: (label), value1: (value)})}
     accessibilityRole="link"
     activeOpacity={0.78}
     style={styles.contactLink}
@@ -281,37 +272,35 @@ const ContactLink = ({ icon, label, value, url }) => (
       <AppText style={styles.contactValue}>{value}</AppText>
     </View>
     <Icon name="open-outline" size={17} color={colors.muted} />
-  </TouchableOpacity>
-);
+  </TouchableOpacity>); };
 
-const PrivacyPolicyScreen = () => (
-  <DashboardScreen contentContainerStyle={styles.screenContent}>
+const PrivacyPolicyScreen = () => { useInterfaceLanguage(); return (<DashboardScreen contentContainerStyle={styles.screenContent}>
     <DashboardHero
-      eyebrow="PRIVACY & DATA PROTECTION"
-      title="Privacy Policy"
-      subtitle="A clear account of how RentalHub collects, uses, shares, stores and protects personal data across our website, mobile applications and services."
+      eyebrow={ui("PRIVACY & DATA PROTECTION")}
+      title={ui("Privacy Policy")}
+      subtitle={ui("A clear account of how RentalHub collects, uses, shares, stores and protects personal data across our website, mobile applications and services.")}
       icon="shield-checkmark-outline"
     />
 
     <View style={styles.policyMeta}>
       <View style={styles.metaBadge}>
         <Icon name="calendar-outline" size={16} color={colors.navy} />
-        <AppText style={styles.metaText}>Effective {EFFECTIVE_DATE}</AppText>
+        <AppText style={styles.metaText}>{ui("Effective ")}{EFFECTIVE_DATE}</AppText>
       </View>
       <View style={styles.metaBadge}>
         <Icon name="location-outline" size={16} color={colors.navy} />
-        <AppText style={styles.metaText}>Nigeria</AppText>
+        <AppText style={styles.metaText}>{ui("Nigeria")}</AppText>
       </View>
     </View>
 
     <DashboardNotice
-      title="The short version"
-      message="RentalHub uses personal data to provide property, payment, communication, verification, support and related services. We share it as described below, including with service providers and people involved in a transaction or case."
+      title={ui("The short version")}
+      message={ui("RentalHub uses personal data to provide property, payment, communication, verification, support and related services. We share it as described below, including with service providers and people involved in a transaction or case.")}
     />
 
     <DashboardSection
-      title="Our privacy commitments"
-      subtitle="The principles behind every section of this notice."
+      title={ui("Our privacy commitments")}
+      subtitle={ui("The principles behind every section of this notice.")}
     >
       <View style={styles.principleGrid}>
         {PRIVACY_PRINCIPLES.map((principle) => (
@@ -326,365 +315,202 @@ const PrivacyPolicyScreen = () => (
       </View>
     </DashboardSection>
 
-    <DashboardSection title="1. Who controls your data">
+    <DashboardSection title={ui("1. Who controls your data")}>
       <PolicyCard>
-        <AppText style={styles.paragraph}>
-          Amana RentalHub NG ("RentalHub", "we", "us" or "our"), operating in Nigeria, is
-          responsible for the personal data processed through rentalhub.com.ng, the
-          Mobile Applications and connected RentalHub services, unless a
-          separate notice says otherwise.
-        </AppText>
-        <AppText style={styles.paragraph}>
-          This policy applies to visitors, account holders, tenants, landlords, agents,
-          lawyers, administrators, service providers, candidates and other people who use
-          or interact with RentalHub.
-        </AppText>
+        <AppText style={styles.paragraph}>{ui("Amana RentalHub NG (\"RentalHub\", \"we\", \"us\" or \"our\"), operating in Nigeria, is responsible for the personal data processed through rentalhub.com.ng, the Mobile Applications and connected RentalHub services, unless a separate notice says otherwise.")}</AppText>
+        <AppText style={styles.paragraph}>{ui("This policy applies to visitors, account holders, tenants, landlords, agents, lawyers, administrators, service providers, candidates and other people who use or interact with RentalHub.")}</AppText>
       </PolicyCard>
     </DashboardSection>
 
     <DashboardSection
-      title="2. How we obtain personal data"
-      subtitle="We receive data from several sources, not only from forms."
+      title={ui("2. How we obtain personal data")}
+      subtitle={ui("We receive data from several sources, not only from forms.")}
     >
       <PolicyCard>
-        <BulletRow>Directly from you when you register, verify, list, apply, book, pay, message, upload, contact support or change settings.</BulletRow>
-        <BulletRow>From other RentalHub users and authorised roles involved in a listing, application, service, dispute, payment or legal workflow.</BulletRow>
-        <BulletRow>Automatically from your browser, device and app use, including security logs, diagnostics, cookies, analytics and notification tokens.</BulletRow>
-        <BulletRow>From providers that verify identity, process payments, deliver communications, host media or provide mapping and infrastructure.</BulletRow>
+        <BulletRow>{ui("Directly from you when you register, verify, list, apply, book, pay, message, upload, contact support or change settings.")}</BulletRow>
+        <BulletRow>{ui("From other RentalHub users and authorised roles involved in a listing, application, service, dispute, payment or legal workflow.")}</BulletRow>
+        <BulletRow>{ui("Automatically from your browser, device and app use, including security logs, diagnostics, cookies, analytics and notification tokens.")}</BulletRow>
+        <BulletRow>{ui("From providers that verify identity, process payments, deliver communications, host media or provide mapping and infrastructure.")}</BulletRow>
       </PolicyCard>
     </DashboardSection>
 
     <DashboardSection
-      title="3. Data we collect and why"
-      subtitle="Each card explains the category, purpose, main lawful basis and retention approach."
+      title={ui("3. Data we collect and why")}
+      subtitle={ui("Each card explains the category, purpose, main lawful basis and retention approach.")}
     >
       {DATA_CATEGORIES.map((item) => (
         <DataCategoryCard key={item.title} item={item} />
       ))}
     </DashboardSection>
 
-    <DashboardSection title="4. Sensitive data, identity and biometrics">
+    <DashboardSection title={ui("4. Sensitive data, identity and biometrics")}>
       <PolicyCard>
-        <AppText style={styles.paragraph}>
-          Identity numbers, identity documents, live face images and some health or
-          safety notes require greater care. We process them only for the relevant
-          verification, safety, service, fraud-prevention or legal purpose and restrict
-          access according to role and workflow.
-        </AppText>
-        <BulletRow icon="lock-closed">
-          RentalHub encrypts NIN values and keeps a separate protected hash to detect
-          duplicate use without relying on the readable number.
-        </BulletRow>
-        <BulletRow icon="phone-portrait">
-          Fingerprint or Face ID templates used to unlock a saved mobile session remain
-          under the device operating system's control and are not sent to RentalHub.
-        </BulletRow>
-        <BulletRow icon="scan">
-          Device biometric login is different from identity verification. If you submit
-          an identity photo, RentalHub may store it. Current Prembly checks send NIN,
-          name and date of birth, or passport number, name, nationality and date of
-          birth. If a face/liveness workflow is enabled and shown to you, its collection
-          notice will explain any face image sent to the verification provider.
-        </BulletRow>
-        <AppText style={styles.securityCaveat}>
-          Property-application access: the relevant landlord can review the applicant's
-          name, permitted contact and application details, nationality where relevant,
-          identity-document type and verification status. RentalHub does not include the
-          stored NIN or passport number in the landlord's application response.
-        </AppText>
+        <AppText style={styles.paragraph}>{ui("Identity numbers, identity documents, live face images and some health or safety notes require greater care. We process them only for the relevant verification, safety, service, fraud-prevention or legal purpose and restrict access according to role and workflow.")}</AppText>
+        <BulletRow icon="lock-closed">{ui("RentalHub encrypts NIN values and keeps a separate protected hash to detect duplicate use without relying on the readable number.")}</BulletRow>
+        <BulletRow icon="phone-portrait">{ui("Fingerprint or Face ID templates used to unlock a saved mobile session remain under the device operating system's control and are not sent to RentalHub.")}</BulletRow>
+        <BulletRow icon="scan">{ui("Device biometric login is different from identity verification. If you submit an identity photo, RentalHub may store it. Current Prembly checks send NIN, name and date of birth, or passport number, name, nationality and date of birth. If a face/liveness workflow is enabled and shown to you, its collection notice will explain any face image sent to the verification provider.")}</BulletRow>
+        <AppText style={styles.securityCaveat}>{ui("Property-application access: the relevant landlord can review the applicant's name, permitted contact and application details, nationality where relevant, identity-document type and verification status. RentalHub does not include the stored NIN or passport number in the landlord's application response.")}</AppText>
       </PolicyCard>
     </DashboardSection>
 
-    <DashboardSection title="5. Live calls and interview recordings">
+    <DashboardSection title={ui("5. Live calls and interview recordings")}>
       <PolicyCard>
-        <AppText style={styles.paragraph}>
-          For an audio, video or virtual-tour call, RentalHub processes signalling and
-          call-status information to connect the participants. The live media travels
-          between participants using WebRTC. Connection setup may expose network or
-          address metadata to the configured STUN service, which currently includes
-          Google's public STUN infrastructure.
-        </AppText>
-        <AppText style={styles.paragraph}>
-          A recruitment interview can be recorded as a separate workflow. Where that
-          feature is used, RentalHub stores the submitted recording, its duration and any
-          violation log with the recruitment application. Camera and microphone
-          permissions can be controlled through your device settings, but disabling them
-          prevents the relevant calling or interview feature from working.
-        </AppText>
+        <AppText style={styles.paragraph}>{ui("For an audio, video or virtual-tour call, RentalHub processes signalling and call-status information to connect the participants. The live media travels between participants using WebRTC. Connection setup may expose network or address metadata to the configured STUN service, which currently includes Google's public STUN infrastructure.")}</AppText>
+        <AppText style={styles.paragraph}>{ui("A recruitment interview can be recorded as a separate workflow. Where that feature is used, RentalHub stores the submitted recording, its duration and any violation log with the recruitment application. Camera and microphone permissions can be controlled through your device settings, but disabling them prevents the relevant calling or interview feature from working.")}</AppText>
       </PolicyCard>
     </DashboardSection>
 
-    <DashboardSection title="6. Payments and financial data">
+    <DashboardSection title={ui("6. Payments and financial data")}>
       <PolicyCard>
-        <AppText style={styles.paragraph}>
-          Checkout is provided through Paystack. Full card numbers and CVVs are entered
-          into Paystack-controlled payment flows and are not stored by RentalHub. We
-          receive and retain transaction references, amounts, status, purpose and timing
-          needed to provide receipts, access and reconciliation.
-        </AppText>
-        <AppText style={styles.paragraph}>
-          Where a refund, withdrawal, settlement or payout is requested, RentalHub
-          collects and stores the bank name, bank code, account number and account name
-          needed to resolve the account and complete the transfer. Financial records may
-          remain after account closure where accounting, fraud, dispute or legal duties
-          require them.
-        </AppText>
+        <AppText style={styles.paragraph}>{ui("Checkout is provided through Paystack. Full card numbers and CVVs are entered into Paystack-controlled payment flows and are not stored by RentalHub. We receive and retain transaction references, amounts, status, purpose and timing needed to provide receipts, access and reconciliation.")}</AppText>
+        <AppText style={styles.paragraph}>{ui("Where a refund, withdrawal, settlement or payout is requested, RentalHub collects and stores the bank name, bank code, account number and account name needed to resolve the account and complete the transfer. Financial records may remain after account closure where accounting, fraud, dispute or legal duties require them.")}</AppText>
       </PolicyCard>
     </DashboardSection>
 
     <DashboardSection
-      title="7. Who receives personal data"
-      subtitle="We disclose only what is reasonably necessary for the stated purpose."
+      title={ui("7. Who receives personal data")}
+      subtitle={ui("We disclose only what is reasonably necessary for the stated purpose.")}
     >
       <PolicyCard>
-        <BulletRow>
-          Tenants, landlords, agents, lawyers, service providers, candidates and
-          authorised administrators when their role and the relevant workflow require
-          access.
-        </BulletRow>
-        <BulletRow>
-          Payment, verification, media, communications, mapping, hosting, database,
-          analytics, security and professional service providers acting for RentalHub.
-        </BulletRow>
-        <BulletRow>
-          Regulators, courts, law enforcement or other authorities when disclosure is
-          legally required or necessary to protect rights, safety and platform integrity.
-        </BulletRow>
-        <BulletRow>
-          A buyer, investor or successor during a genuine corporate transaction, subject
-          to confidentiality and applicable data-protection safeguards.
-        </BulletRow>
+        <BulletRow>{ui("Tenants, landlords, agents, lawyers, service providers, candidates and authorised administrators when their role and the relevant workflow require access.")}</BulletRow>
+        <BulletRow>{ui("Payment, verification, media, communications, mapping, hosting, database, analytics, security and professional service providers acting for RentalHub.")}</BulletRow>
+        <BulletRow>{ui("Regulators, courts, law enforcement or other authorities when disclosure is legally required or necessary to protect rights, safety and platform integrity.")}</BulletRow>
+        <BulletRow>{ui("A buyer, investor or successor during a genuine corporate transaction, subject to confidentiality and applicable data-protection safeguards.")}</BulletRow>
       </PolicyCard>
       {PROVIDERS.map((item) => (
         <ProviderCard key={item.name} item={item} />
       ))}
       <DashboardNotice
-        title="Public and sponsor content"
-        message="Sponsor content may record aggregate impression or click counts. Approved ratings can show a selected name format, comment, role/location and, only where both the platform setting and user choice permit it, a profile/passport photograph as a testimonial image."
+        title={ui("Public and sponsor content")}
+        message={ui("Sponsor content may record aggregate impression or click counts. Approved ratings can show a selected name format, comment, role/location and, only where both the platform setting and user choice permit it, a profile/passport photograph as a testimonial image.")}
       />
     </DashboardSection>
 
-    <DashboardSection title="8. Cookies, analytics and mobile technologies">
+    <DashboardSection title={ui("8. Cookies, analytics and mobile technologies")}>
       <PolicyCard>
-        <AppText style={styles.paragraph}>
-          The website uses necessary authentication and security technologies, including
-          an HTTP-only session cookie and a CSRF protection cookie. Their default
-          lifetime is seven days unless the session ends earlier or configuration
-          changes.
-        </AppText>
-        <AppText style={styles.paragraph}>
-          Google Analytics may run when it is configured and permitted, collecting
-          website usage and device information to measure performance. Browser controls
-          can block or delete cookies, although blocking necessary cookies can prevent
-          login or security features from working.
-        </AppText>
-        <AppText style={styles.paragraph}>
-          The mobile app uses equivalent technologies such as protected session storage,
-          push tokens, local preferences, diagnostics and analytics events. Notification
-          and device permissions can be changed in the app or operating-system settings.
-        </AppText>
+        <AppText style={styles.paragraph}>{ui("The website uses necessary authentication and security technologies, including an HTTP-only session cookie and a CSRF protection cookie. Their default lifetime is seven days unless the session ends earlier or configuration changes.")}</AppText>
+        <AppText style={styles.paragraph}>{ui("Google Analytics may run when it is configured and permitted, collecting website usage and device information to measure performance. Browser controls can block or delete cookies, although blocking necessary cookies can prevent login or security features from working.")}</AppText>
+        <AppText style={styles.paragraph}>{ui("The mobile app uses equivalent technologies such as protected session storage, push tokens, local preferences, diagnostics and analytics events. Notification and device permissions can be changed in the app or operating-system settings.")}</AppText>
       </PolicyCard>
     </DashboardSection>
 
-    <DashboardSection title="9. International processing and transfers">
+    <DashboardSection title={ui("9. International processing and transfers")}>
       <PolicyCard>
-        <AppText style={styles.paragraph}>
-          Some providers or their infrastructure may process data outside Nigeria. A
-          restricted international transfer must use a mechanism and safeguards permitted
-          by applicable law, such as an adequacy decision, contractual protection,
-          consent in a permitted situation or another recognised basis.
-        </AppText>
-        <AppText style={styles.paragraph}>
-          You may contact us to ask about the safeguards relevant to a particular
-          transfer.
-        </AppText>
+        <AppText style={styles.paragraph}>{ui("Some providers or their infrastructure may process data outside Nigeria. A restricted international transfer must use a mechanism and safeguards permitted by applicable law, such as an adequacy decision, contractual protection, consent in a permitted situation or another recognised basis.")}</AppText>
+        <AppText style={styles.paragraph}>{ui("You may contact us to ask about the safeguards relevant to a particular transfer.")}</AppText>
       </PolicyCard>
     </DashboardSection>
 
-    <DashboardSection title="10. How we protect and store data">
+    <DashboardSection title={ui("10. How we protect and store data")}>
       <PolicyCard>
-        <BulletRow icon="key">
-          Passwords are hashed rather than stored as readable passwords.
-        </BulletRow>
-        <BulletRow icon="shield-checkmark">
-          NIN values are encrypted and duplicate-detection hashes are protected
-          separately.
-        </BulletRow>
-        <BulletRow icon="lock-closed">
-          Production authentication uses secure, HTTP-only and SameSite cookie controls,
-          CSRF protection, rate limiting and security headers where applicable.
-        </BulletRow>
-        <BulletRow icon="people">
-          Role and jurisdiction checks limit access to administrative, legal, financial
-          and dispute workflows.
-        </BulletRow>
-        <BulletRow icon="phone-portrait">
-          The mobile app uses the device Keychain or secure credential store as the
-          authoritative location for supported session and guest-support secrets.
-          Local application storage holds preferences and is used for a marked,
-          temporary credential fallback only when secure storage is unavailable; the
-          fallback is migrated and removed when secure storage recovers. Device access
-          and screen-lock security therefore remain important.
-        </BulletRow>
-        <BulletRow icon="document-lock">
-          Audit records, evidence controls, security logging and provider safeguards
-          support accountability and incident investigation.
-        </BulletRow>
-        <AppText style={styles.securityCaveat}>
-          No website, app, transmission or storage system is perfectly secure. Keep your
-          device and login details protected, use a strong password and report suspected
-          misuse promptly.
-        </AppText>
+        <BulletRow icon="key">{ui("Passwords are hashed rather than stored as readable passwords.")}</BulletRow>
+        <BulletRow icon="shield-checkmark">{ui("NIN values are encrypted and duplicate-detection hashes are protected separately.")}</BulletRow>
+        <BulletRow icon="lock-closed">{ui("Production authentication uses secure, HTTP-only and SameSite cookie controls, CSRF protection, rate limiting and security headers where applicable.")}</BulletRow>
+        <BulletRow icon="people">{ui("Role and jurisdiction checks limit access to administrative, legal, financial and dispute workflows.")}</BulletRow>
+        <BulletRow icon="phone-portrait">{ui("The mobile app uses the device Keychain or secure credential store as the authoritative location for supported session and guest-support secrets. Local application storage holds preferences and is used for a marked, temporary credential fallback only when secure storage is unavailable; the fallback is migrated and removed when secure storage recovers. Device access and screen-lock security therefore remain important.")}</BulletRow>
+        <BulletRow icon="document-lock">{ui("Audit records, evidence controls, security logging and provider safeguards support accountability and incident investigation.")}</BulletRow>
+        <AppText style={styles.securityCaveat}>{ui("No website, app, transmission or storage system is perfectly secure. Keep your device and login details protected, use a strong password and report suspected misuse promptly.")}</AppText>
       </PolicyCard>
     </DashboardSection>
 
     <DashboardSection
-      title="11. How long we keep data"
-      subtitle="RentalHub applies purpose-based criteria because one fixed period would not be accurate for every record."
+      title={ui("11. How long we keep data")}
+      subtitle={ui("RentalHub applies purpose-based criteria because one fixed period would not be accurate for every record.")}
     >
       <PolicyCard>
         {RETENTION_RULES.map((rule) => (
           <BulletRow key={rule} icon="time-outline">{rule}</BulletRow>
         ))}
-        <AppText style={styles.paragraph}>
-          At the end of the relevant period, data should be deleted, securely disposed
-          of, redacted, aggregated or anonymised unless another lawful need applies.
-        </AppText>
+        <AppText style={styles.paragraph}>{ui("At the end of the relevant period, data should be deleted, securely disposed of, redacted, aggregated or anonymised unless another lawful need applies.")}</AppText>
       </PolicyCard>
     </DashboardSection>
 
-    <DashboardSection title="12. Account deletion">
+    <DashboardSection title={ui("12. Account deletion")}>
       <PolicyCard>
-        <AppText style={styles.paragraph}>
-          You can request account deletion through available account controls or by
-          contacting us. For security, we may ask you to verify your identity or password.
-        </AppText>
-        <AppText style={styles.paragraph}>
-          Deletion can be delayed or restricted while you have an active property,
-          tenancy, dispute, pending payment, booking, investigation or other unresolved
-          obligation. Some transaction, safety, audit and legal records must be retained
-          or anonymised rather than erased. Messages, evidence and linked records may be
-          redacted so other users' legitimate records remain usable.
-        </AppText>
+        <AppText style={styles.paragraph}>{ui("You can request account deletion through available account controls or by contacting us. For security, we may ask you to verify your identity or password.")}</AppText>
+        <AppText style={styles.paragraph}>{ui("Deletion can be delayed or restricted while you have an active property, tenancy, dispute, pending payment, booking, investigation or other unresolved obligation. Some transaction, safety, audit and legal records must be retained or anonymised rather than erased. Messages, evidence and linked records may be redacted so other users' legitimate records remain usable.")}</AppText>
       </PolicyCard>
     </DashboardSection>
 
-    <DashboardSection title="13. Automated tools and recommendations">
+    <DashboardSection title={ui("13. Automated tools and recommendations")}>
       <PolicyCard>
-        <AppText style={styles.paragraph}>
-          RentalHub may use automated tools to assist with identity checks, fraud and risk
-          signals, property or service recommendations, matching, diagnostics and condition
-          analysis. These tools support platform workflows; authorised people may review
-          important outcomes.
-        </AppText>
-        <AppText style={styles.paragraph}>
-          Where applicable law gives you the right, you may request human review, express
-          your view and contest a decision that has a legal or similarly significant
-          effect and was based only on automated processing.
-        </AppText>
+        <AppText style={styles.paragraph}>{ui("RentalHub may use automated tools to assist with identity checks, fraud and risk signals, property or service recommendations, matching, diagnostics and condition analysis. These tools support platform workflows; authorised people may review important outcomes.")}</AppText>
+        <AppText style={styles.paragraph}>{ui("Where applicable law gives you the right, you may request human review, express your view and contest a decision that has a legal or similarly significant effect and was based only on automated processing.")}</AppText>
       </PolicyCard>
     </DashboardSection>
 
-    <DashboardSection title="14. Children's privacy">
+    <DashboardSection title={ui("14. Children's privacy")}>
       <PolicyCard>
-        <AppText style={styles.paragraph}>
-          RentalHub is designed for adults who can enter property, payment and service
-          arrangements. The current registration code does not provide a comprehensive
-          age-verification gate. A parent or guardian who believes a child under 18 has
-          provided personal data should contact us so we can investigate and take
-          appropriate action.
-        </AppText>
+        <AppText style={styles.paragraph}>{ui("RentalHub is designed for adults who can enter property, payment and service arrangements. The current registration code does not provide a comprehensive age-verification gate. A parent or guardian who believes a child under 18 has provided personal data should contact us so we can investigate and take appropriate action.")}</AppText>
       </PolicyCard>
     </DashboardSection>
 
     <DashboardSection
-      title="15. Your data-protection rights"
-      subtitle="The precise right and any exception depend on the law and the circumstances."
+      title={ui("15. Your data-protection rights")}
+      subtitle={ui("The precise right and any exception depend on the law and the circumstances.")}
     >
       <PolicyCard>
         {RIGHTS.map((right) => (
           <BulletRow key={right}>{right}</BulletRow>
         ))}
-        <AppText style={styles.paragraph}>
-          To protect users, we may verify your identity before acting on a request. We
-          will explain if a request cannot be completed in full. You will not be treated
-          unfairly for exercising a privacy right.
-        </AppText>
+        <AppText style={styles.paragraph}>{ui("To protect users, we may verify your identity before acting on a request. We will explain if a request cannot be completed in full. You will not be treated unfairly for exercising a privacy right.")}</AppText>
       </PolicyCard>
     </DashboardSection>
 
-    <DashboardSection title="16. Marketing and communication choices">
+    <DashboardSection title={ui("16. Marketing and communication choices")}>
       <PolicyCard>
-        <AppText style={styles.paragraph}>
-          Some account and lead flows synchronise email and phone details to email/SMS
-          campaign lists. Email campaigns provide an unsubscribe route. Mobile
-          notification preferences control native push categories only; to stop SMS or
-          WhatsApp marketing, contact us. Promotional messages must only be sent where
-          consent or another applicable legal basis permits them. Essential service,
-          security, payment and legal notices may still be necessary.
-        </AppText>
+        <AppText style={styles.paragraph}>{ui("Some account and lead flows synchronise email and phone details to email/SMS campaign lists. Email campaigns provide an unsubscribe route. Mobile notification preferences control native push categories only; to stop SMS or WhatsApp marketing, contact us. Promotional messages must only be sent where consent or another applicable legal basis permits them. Essential service, security, payment and legal notices may still be necessary.")}</AppText>
       </PolicyCard>
     </DashboardSection>
 
-    <DashboardSection title="17. Questions, requests and complaints">
+    <DashboardSection title={ui("17. Questions, requests and complaints")}>
       <PolicyCard>
-        <AppText style={styles.paragraph}>
-          Contact RentalHub first so we can investigate a privacy question, rights
-          request or complaint. Include enough detail to identify the relevant account or
-          processing activity, but do not send passwords, CVVs or unnecessary identity
-          documents by ordinary email.
-        </AppText>
+        <AppText style={styles.paragraph}>{ui("Contact RentalHub first so we can investigate a privacy question, rights request or complaint. Include enough detail to identify the relevant account or processing activity, but do not send passwords, CVVs or unnecessary identity documents by ordinary email.")}</AppText>
         <ContactLink
           icon="mail-outline"
-          label="Privacy email"
+          label={ui("Privacy email")}
           value="support@rentalhub.com.ng"
           url="mailto:support@rentalhub.com.ng?subject=Privacy%20request"
         />
         <ContactLink
           icon="call-outline"
-          label="Telephone"
+          label={ui("Telephone")}
           value="+234 803 060 1238"
           url="tel:+234+1 447 747 4743"
         />
         <ContactLink
           icon="globe-outline"
-          label="Website"
+          label={ui("Website")}
           value="rentalhub.com.ng"
           url="https://rentalhub.com.ng"
         />
       </PolicyCard>
       <DashboardNotice
-        title="Regulatory complaint"
-        message="If you are not satisfied with our response, you may complain to the Nigeria Data Protection Commission (NDPC)."
+        title={ui("Regulatory complaint")}
+        message={ui("If you are not satisfied with our response, you may complain to the Nigeria Data Protection Commission (NDPC).")}
       />
       <ContactLink
         icon="business-outline"
-        label="Nigeria Data Protection Commission"
+        label={ui("Nigeria Data Protection Commission")}
         value="ndpc.gov.ng"
         url="https://ndpc.gov.ng/"
       />
     </DashboardSection>
 
-    <DashboardSection title="18. Changes to this policy">
+    <DashboardSection title={ui("18. Changes to this policy")}>
       <PolicyCard>
-        <AppText style={styles.paragraph}>
-          We may update this policy when RentalHub features, providers, legal requirements
-          or processing practices change. The effective date at the top identifies the
-          current version. We will provide an appropriate in-app, website, email or other
-          notice when a change is material.
-        </AppText>
+        <AppText style={styles.paragraph}>{ui("We may update this policy when RentalHub features, providers, legal requirements or processing practices change. The effective date at the top identifies the current version. We will provide an appropriate in-app, website, email or other notice when a change is material.")}</AppText>
       </PolicyCard>
     </DashboardSection>
 
-    <View style={styles.endMark} accessible accessibilityLabel="End of Privacy Policy">
+    <View style={styles.endMark} accessible accessibilityLabel={ui("End of Privacy Policy")}>
       <View style={styles.endIcon}>
         <Icon name="shield-checkmark" size={22} color={colors.gold} />
       </View>
-      <AppText style={styles.endTitle}>Privacy, explained clearly.</AppText>
-      <AppText style={styles.endText}>RentalHub Privacy Policy · Effective {EFFECTIVE_DATE}</AppText>
+      <AppText style={styles.endTitle}>{ui("Privacy, explained clearly.")}</AppText>
+      <AppText style={styles.endText}>{ui("RentalHub Privacy Policy · Effective ")}{EFFECTIVE_DATE}</AppText>
     </View>
-  </DashboardScreen>
-);
+  </DashboardScreen>); };
 
 const styles = StyleSheet.create({
   screenContent: {

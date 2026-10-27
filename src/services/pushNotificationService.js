@@ -10,12 +10,13 @@ const PUSH_TOKEN_KEY = 'expo_push_token';
 export const configureNotificationPresentation = () => {
   Notifications.setNotificationHandler({
     handleNotification: async (notification) => {
+      const isBadgeSummary = notification.request.content.data?.badgeSummary === true;
       const isLiveMessage =
         notification.request.content.data?.screen === 'Messages';
       return {
-        shouldPlaySound: !isLiveMessage,
+        shouldPlaySound: !isLiveMessage && !isBadgeSummary,
         shouldSetBadge: true,
-        shouldShowBanner: !isLiveMessage,
+        shouldShowBanner: !isLiveMessage && !isBadgeSummary,
         shouldShowList: !isLiveMessage,
       };
     },
@@ -30,12 +31,14 @@ export const registerForPushNotifications = async () => {
   if (Platform.OS === 'android') {
     await Notifications.setNotificationChannelAsync('messages', {
       name: 'Messages',
+      showBadge: true,
       importance: Notifications.AndroidImportance.HIGH,
       sound: 'default',
       vibrationPattern: [0, 250, 180, 250],
     });
     await Notifications.setNotificationChannelAsync('general', {
       name: 'Updates',
+      showBadge: true,
       importance: Notifications.AndroidImportance.DEFAULT,
       sound: 'default',
     });
@@ -43,7 +46,7 @@ export const registerForPushNotifications = async () => {
 
   let permissions = await Notifications.getPermissionsAsync();
   if (permissions.status !== 'granted') {
-    permissions = await Notifications.requestPermissionsAsync();
+    permissions = await Notifications.requestPermissionsAsync({ ios: { allowAlert: true, allowBadge: true, allowSound: true } });
   }
   if (permissions.status !== 'granted') {
     return { success: false, reason: 'permission-denied' };

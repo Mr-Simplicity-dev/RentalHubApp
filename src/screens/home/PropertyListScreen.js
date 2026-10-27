@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, {
   useContext,
   useEffect,
@@ -38,6 +40,7 @@ const FILTER_KEYS = [
 ];
 
 const PropertyListScreen = ({ route, navigation }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const { isAuthenticated } = useContext(AuthContext);
   const [items, setItems] = useState([]);
   const [page, setPage] = useState(1);
@@ -58,9 +61,9 @@ const PropertyListScreen = ({ route, navigation }) => {
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
-  }, [navigation]);
+  }, [navigation, interfaceLanguage]);
 
-  const filters = useMemo(() => route?.params || {}, [route?.params]);
+  const filters = useMemo(() => route?.params || {}, [route?.params, interfaceLanguage]);
   const genericPaymentReference = route?.params?.reference || route?.params?.trxref || '';
   const locationAccessReference =
     route?.params?.location_access_ref ||
@@ -121,7 +124,7 @@ const PropertyListScreen = ({ route, navigation }) => {
 
       Toast.show({
         type: 'error',
-        text1: 'Could not load homes',
+        text1: ui("Could not load homes"),
         text2: getErrorMessage(error, 'Check your connection and try again.'),
       });
     } finally {
@@ -185,13 +188,13 @@ const PropertyListScreen = ({ route, navigation }) => {
       await loadPage({ nextPage: 1 });
       Toast.show({
         type: 'success',
-        text1: 'Location unlocked',
-        text2: response.message || 'You can now browse homes in this location.',
+        text1: ui("Location unlocked"),
+        text2: response.message || ui("You can now browse homes in this location."),
       });
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Verification failed',
+        text1: ui("Verification failed"),
         text2: getErrorMessage(error, 'Could not verify location access payment'),
       });
     } finally {
@@ -214,8 +217,8 @@ const PropertyListScreen = ({ route, navigation }) => {
     if (!location?.state_id) {
       Toast.show({
         type: 'error',
-        text1: 'Invalid location',
-        text2: 'Select a valid location before paying.',
+        text1: ui("Invalid location"),
+        text2: ui("Select a valid location before paying."),
       });
       return;
     }
@@ -232,8 +235,8 @@ const PropertyListScreen = ({ route, navigation }) => {
         await loadPage({ nextPage: 1 });
         Toast.show({
           type: 'success',
-          text1: 'Access active',
-          text2: response.message || 'You already have access to this location.',
+          text1: ui("Access active"),
+          text2: response.message || ui("You already have access to this location."),
         });
         return;
       }
@@ -252,18 +255,18 @@ const PropertyListScreen = ({ route, navigation }) => {
       if (hasPaystackCheckout(response?.data)) {
         openNativeCheckout({
           transaction: response.data,
-          title: 'Unlock location',
-          subtitle: `Pay once to browse verified homes in ${location.lga_name || 'this location'}.`,
+          title: ui("Unlock location"),
+          subtitle: ui("Pay once to browse verified homes in {value0}.", {value0: (location.lga_name || ui("this location"))}),
           amountLabel: response?.data?.amount
-            ? `₦${Number(response.data.amount).toLocaleString()}`
+            ? ui("₦{value0}", {value0: (Number(response.data.amount).toLocaleString())})
             : accessFeeLabel,
           onSuccess: (paymentResponse) =>
             completeLocationAccessPayment(paymentResponse?.reference || reference),
           onBrowserFallback: () => {
             Toast.show({
               type: 'info',
-              text1: 'Paystack checkout opened',
-              text2: 'Complete payment securely, then return here to confirm.',
+              text1: ui("Paystack checkout opened"),
+              text2: ui("Complete payment securely, then return here to confirm."),
             });
           },
         });
@@ -279,7 +282,7 @@ const PropertyListScreen = ({ route, navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Payment failed',
+        text1: ui("Payment failed"),
         text2: getErrorMessage(error, 'Could not start location access payment'),
       });
     } finally {
@@ -318,13 +321,13 @@ const PropertyListScreen = ({ route, navigation }) => {
       });
       Toast.show({
         type: 'success',
-        text1: isSaved ? 'Removed from saved homes' : 'Home saved',
+        text1: isSaved ? ui("Removed from saved homes") : ui("Home saved"),
       });
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Could not update saved homes',
-        text2: getErrorMessage(error, 'Please try again.'),
+        text1: ui("Could not update saved homes"),
+        text2: getErrorMessage(error, ui("Please try again.")),
       });
     } finally {
       setSavingId(null);
@@ -364,21 +367,18 @@ const PropertyListScreen = ({ route, navigation }) => {
           <View style={styles.accessIcon}>
             <Icon name="location" size={20} color={colors.gold} />
           </View>
-          <AppText style={styles.accessEyebrow}>LOCATION ACCESS</AppText>
-          <AppText style={styles.accessTitle}>
-            Unlock homes in {locationLabel}
+          <AppText style={styles.accessEyebrow}>{ui("LOCATION ACCESS")}</AppText>
+          <AppText style={styles.accessTitle}>{ui("Unlock homes in")}{locationLabel}
           </AppText>
           <AppText style={styles.accessText}>
             {locationAccessRequirement.message ||
               'Pay once to browse verified homes outside your registered location.'}
           </AppText>
           {homeLocationLabel ? (
-            <AppText style={styles.accessMeta}>Your registered area: {homeLocationLabel}</AppText>
+            <AppText style={styles.accessMeta}>{ui("Your registered area: ")}{homeLocationLabel}</AppText>
           ) : null}
           {locationAccessRequirement.access_days ? (
-            <AppText style={styles.accessMeta}>
-              Access remains active for {locationAccessRequirement.access_days} days.
-            </AppText>
+            <AppText style={styles.accessMeta}>{ui("Access remains active for")}{locationAccessRequirement.access_days}{ui("days.")}</AppText>
           ) : null}
           <TouchableOpacity
             disabled={locationAccessLoading}
@@ -395,7 +395,7 @@ const PropertyListScreen = ({ route, navigation }) => {
                 <AppText style={styles.accessButtonText}>
                   {pendingLocationAccessReference
                     ? 'Confirm payment'
-                    : `Unlock for ${accessFeeLabel}`}
+                    : ui("Unlock for {value0}", {value0: (accessFeeLabel)})}
                 </AppText>
                 <Icon name="arrow-forward" size={18} color={colors.navy} />
               </>
@@ -407,10 +407,10 @@ const PropertyListScreen = ({ route, navigation }) => {
       {!locationAccessRequirement && !loading ? (
         <View style={styles.resultRow}>
           <AppText style={styles.resultText}>
-            {items.length ? `${items.length}${hasMore ? '+' : ''} homes found` : 'No homes found'}
+            {items.length ? ui("{value0}{value1} homes found", {value0: (items.length), value1: (hasMore ? '+' : '')}) : 'No homes found'}
           </AppText>
           {activeFilterCount ? (
-            <AppText style={styles.filterSummary}>{activeFilterCount} filters active</AppText>
+            <AppText style={styles.filterSummary}>{activeFilterCount}{ui(" filters active")}</AppText>
           ) : null}
         </View>
       ) : null}
@@ -425,17 +425,17 @@ const PropertyListScreen = ({ route, navigation }) => {
       <View style={styles.header}>
         <View style={styles.headerTop}>
           <TouchableOpacity
-            accessibilityLabel="Go back"
+            accessibilityLabel={ui("Go back")}
             onPress={() => navigation.goBack()}
             style={styles.iconButton}>
             <Icon name="arrow-back" size={22} color={colors.navy} />
           </TouchableOpacity>
           <View style={styles.headerCopy}>
-            <AppText style={styles.eyebrow}>EXPLORE</AppText>
-            <AppText style={styles.title}>Verified homes</AppText>
+            <AppText style={styles.eyebrow}>{ui("EXPLORE")}</AppText>
+            <AppText style={styles.title}>{ui("Verified homes")}</AppText>
           </View>
           <TouchableOpacity
-            accessibilityLabel="Create property request"
+            accessibilityLabel={ui("Create property request")}
             onPress={() =>
               navigation.navigate('PropertyAlertRequest', {
                 search: filters.search,
@@ -455,7 +455,7 @@ const PropertyListScreen = ({ route, navigation }) => {
             <TextInput
               onChangeText={setSearch}
               onSubmitEditing={submitSearch}
-              placeholder="Search an area or city"
+              placeholder={ui("Search an area or city")}
               placeholderTextColor="#96A2B8"
               returnKeyType="search"
               selectionColor={colors.blue}
@@ -473,7 +473,7 @@ const PropertyListScreen = ({ route, navigation }) => {
             ) : null}
           </View>
           <TouchableOpacity
-            accessibilityLabel="Open filters"
+            accessibilityLabel={ui("Open filters")}
             onPress={() => setFiltersVisible(true)}
             style={[styles.filterButton, activeFilterCount && styles.filterButtonActive]}>
             <Icon
@@ -502,21 +502,19 @@ const PropertyListScreen = ({ route, navigation }) => {
           loading ? (
             <View style={styles.loadingState}>
               <ActivityIndicator color={colors.blue} size="large" />
-              <AppText style={styles.loadingText}>Finding the right homes…</AppText>
+              <AppText style={styles.loadingText}>{ui("Finding the right homes…")}</AppText>
             </View>
           ) : !locationAccessRequirement ? (
             <View style={styles.emptyState}>
               <View style={styles.emptyIcon}>
                 <Icon name="search-outline" size={30} color={colors.blue} />
               </View>
-              <AppText style={styles.emptyTitle}>No matching homes yet</AppText>
-              <AppText style={styles.emptyText}>
-                Adjust your filters or create a request and we’ll notify you when one arrives.
-              </AppText>
+              <AppText style={styles.emptyTitle}>{ui("No matching homes yet")}</AppText>
+              <AppText style={styles.emptyText}>{ui("Adjust your filters or create a request and we’ll notify you when one arrives.")}</AppText>
               <TouchableOpacity
                 onPress={() => navigation.navigate('PropertyAlertRequest', filters)}
                 style={styles.emptyAction}>
-                <AppText style={styles.emptyActionText}>Create property request</AppText>
+                <AppText style={styles.emptyActionText}>{ui("Create property request")}</AppText>
               </TouchableOpacity>
             </View>
           ) : null
@@ -529,7 +527,7 @@ const PropertyListScreen = ({ route, navigation }) => {
           ) : !hasMore && items.length ? (
             <View style={styles.endRow}>
               <View style={styles.endLine} />
-              <AppText style={styles.endText}>You’ve seen every home</AppText>
+              <AppText style={styles.endText}>{ui("You’ve seen every home")}</AppText>
               <View style={styles.endLine} />
             </View>
           ) : null

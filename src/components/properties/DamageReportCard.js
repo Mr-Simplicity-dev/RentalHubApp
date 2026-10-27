@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import { typeScale } from '../../theme';
 import React from 'react';
 import {View, StyleSheet, Image, TouchableOpacity} from 'react-native';
@@ -14,6 +16,7 @@ const conditionTypeLabel = (value) => {
 };
 
 const DamageReportCard = ({ report, onPress, compact = false }) => {
+  useInterfaceLanguage();
   if (!report) return null;
 
   const severityColors = {
@@ -35,7 +38,7 @@ const DamageReportCard = ({ report, onPress, compact = false }) => {
             {conditionTypeLabel(report.damage_type) || 'Property Report'}
           </AppText>
           <AppText style={styles.compactMeta}>
-            {report.room_location || 'N/A'} | Severity: {report.severity || 'N/A'}
+            {report.room_location || ui("N/A")}{ui(" | Severity: ")}{report.severity || ui("N/A")}
           </AppText>
         </View>
         <Icon name="chevron-forward-outline" size={18} color="#94a3b8" />
@@ -53,11 +56,11 @@ const DamageReportCard = ({ report, onPress, compact = false }) => {
           <AppText style={styles.title}>{conditionTypeLabel(report.damage_type) || 'Property Report'}</AppText>
           <View style={[styles.badge, { backgroundColor: severityColor + '20' }]}>
             <AppText style={[styles.badgeText, { color: severityColor }]}>
-              {report.severity || 'N/A'}
+              {report.severity || ui("N/A")}
             </AppText>
           </View>
         </View>
-        <AppText style={styles.location}>Location: {report.room_location || 'N/A'}</AppText>
+        <AppText style={styles.location}>{ui("Location: ")}{report.room_location || ui("N/A")}</AppText>
         {report.description && (
           <AppText style={styles.description} numberOfLines={3}>
             {report.description}

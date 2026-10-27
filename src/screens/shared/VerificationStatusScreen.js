@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, RefreshControl, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import TextInput from '../../components/common/AppTextInput';
@@ -11,6 +13,7 @@ import { getErrorMessage, pickObject } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
 const VerificationStatusScreen = ({ navigation }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const [status, setStatus] = useState(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -27,7 +30,7 @@ const VerificationStatusScreen = ({ navigation }) => {
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
-  }, [navigation]);
+  }, [navigation, interfaceLanguage]);
 
   const loadStatus = useCallback(async ({ refresh = false } = {}) => {
     refresh ? setRefreshing(true) : setLoading(true);
@@ -48,8 +51,8 @@ const VerificationStatusScreen = ({ navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Could not load verification',
-        text2: getErrorMessage(error, 'Please try again.'),
+        text1: ui("Could not load verification"),
+        text2: getErrorMessage(error, ui("Please try again.")),
       });
     } finally {
       setLoading(false);
@@ -63,7 +66,7 @@ const VerificationStatusScreen = ({ navigation }) => {
 
   const activeRevalidation = useMemo(
     () => revalidationRequests.find((r) => ['requested', 'rejected', 'submitted'].includes(r.status)) || null,
-    [revalidationRequests]
+    [revalidationRequests, interfaceLanguage]
   );
 
   const emailRequired=status?.email_required!==false;
@@ -77,43 +80,43 @@ const VerificationStatusScreen = ({ navigation }) => {
   const identityRejected = reviewStatus === 'rejected';
   const identityInProgress = reviewStatus === 'provider_pending';
   const completedCount = [...(emailRequired?[emailVerified]:[]), phoneVerified, identityVerified].filter(Boolean).length;
-  const progress = useMemo(() => `${Math.round((completedCount / requiredCount) * 100)}%`, [completedCount,requiredCount]);
+  const progress = useMemo(() => `${Math.round((completedCount / requiredCount) * 100)}%`, [completedCount,requiredCount, interfaceLanguage]);
 
   const steps = [
     {
       key: 'email',
       icon: 'mail-outline',
-      title: 'Email address',
-      description: emailVerified ? 'Your email address is confirmed.' : 'Confirm your email address.',
+      title: ui("Email address"),
+      description: emailVerified ? ui("Your email address is confirmed.") : ui("Confirm your email address."),
       complete: emailVerified,
     },
     {
       key: 'phone',
       icon: 'call-outline',
-      title: 'Phone number',
-      description: phoneVerified ? 'Your phone number is confirmed.' : 'Verify your mobile number with an OTP.',
+      title: ui("Phone number"),
+      description: phoneVerified ? ui("Your phone number is confirmed.") : ui("Verify your mobile number with an OTP."),
       complete: phoneVerified,
       action: !phoneVerified ? () => navigation.navigate('VerifyPhone') : null,
-      actionLabel: 'Verify phone',
+      actionLabel: ui("Verify phone"),
     },
     {
       key: 'identity',
       icon: 'person-outline',
-      title: 'Identity document',
+      title: ui("Identity document"),
       description: identityVerified
-        ? 'Your identity has been verified.'
+        ? ui("Your identity has been verified.")
         : identityInProgress
-          ? 'Your credential is being verified by our identity partner.'
+          ? ui("Your credential is being verified by our identity partner.")
           : identityPending
-            ? 'Your passport photo is waiting for review.'
+            ? ui("Your passport photo is waiting for review.")
             : identityRejected
-              ? 'Your submission needs to be replaced.'
-              : 'Submit a live passport photo for review.',
+              ? ui("Your submission needs to be replaced.")
+              : ui("Submit a live passport photo for review."),
       complete: identityVerified,
       pending: identityPending || identityInProgress,
       rejected: identityRejected,
       action: !identityVerified ? () => navigation.navigate('Profile') : null,
-      actionLabel: identityRejected ? 'Replace photo' : identityPending ? 'View profile' : 'Start verification',
+      actionLabel: identityRejected ? ui("Replace photo") : identityPending ? ui("View profile") : ui("Start verification"),
     },
   ].filter(step=>emailRequired||step.key!=='email');
 
@@ -158,7 +161,7 @@ const VerificationStatusScreen = ({ navigation }) => {
       setRevalidationForm({ nin: '', date_of_birth: '', international_passport_number: '', nationality: '' });
       setFieldErrors({});
       await loadStatus({ refresh: true });
-      Toast.show({ type: 'success', text1: 'Credentials submitted', text2: 'Awaiting super-admin review.' });
+      Toast.show({ type: 'success', text1: ui("Credentials submitted"), text2: ui("Awaiting super-admin review.") });
     } catch (error) {
       setRevalidationError(getErrorMessage(error, 'Could not submit credentials'));
     } finally {
@@ -175,14 +178,14 @@ const VerificationStatusScreen = ({ navigation }) => {
     <SafeAreaView edges={['top']} style={styles.safeArea}>
       <View style={styles.header}>
         <TouchableOpacity
-          accessibilityLabel="Go back"
+          accessibilityLabel={ui("Go back")}
           onPress={() => navigation.goBack()}
           style={styles.backButton}>
           <Icon name="arrow-back" size={22} color={colors.navy} />
         </TouchableOpacity>
         <View style={styles.headerCopy}>
-          <AppText style={styles.eyebrow}>TRUST AND SAFETY</AppText>
-          <AppText style={styles.title}>Verification</AppText>
+          <AppText style={styles.eyebrow}>{ui("TRUST AND SAFETY")}</AppText>
+          <AppText style={styles.title}>{ui("Verification")}</AppText>
         </View>
         <View style={styles.headerSpacer} />
       </View>
@@ -201,7 +204,7 @@ const VerificationStatusScreen = ({ navigation }) => {
         {loading ? (
           <View style={styles.center}>
             <ActivityIndicator color={colors.blue} size="large" />
-            <AppText style={styles.loadingText}>Checking verification…</AppText>
+            <AppText style={styles.loadingText}>{ui("Checking verification…")}</AppText>
           </View>
         ) : (
           <>
@@ -217,7 +220,7 @@ const VerificationStatusScreen = ({ navigation }) => {
                 {completedCount === requiredCount ? 'FULLY VERIFIED' : 'ACCOUNT PROGRESS'}
               </AppText>
               <AppText style={styles.heroTitle}>
-                {completedCount === requiredCount ? 'Your identity is verified' : `${completedCount} of ${requiredCount} steps complete`}
+                {completedCount === requiredCount ? 'Your identity is verified' : ui("{value0} of {value1} steps complete", {value0: (completedCount), value1: (requiredCount)})}
               </AppText>
               <AppText style={styles.heroText}>
                 {completedCount === requiredCount
@@ -229,7 +232,7 @@ const VerificationStatusScreen = ({ navigation }) => {
               </View>
             </View>
 
-            <AppText style={styles.sectionEyebrow}>VERIFICATION STEPS</AppText>
+            <AppText style={styles.sectionEyebrow}>{ui("VERIFICATION STEPS")}</AppText>
             <View style={styles.stepsCard}>
               {steps.map((step, index) => (
                 <View key={step.key}>
@@ -255,20 +258,19 @@ const VerificationStatusScreen = ({ navigation }) => {
                     <View style={styles.stepBody}>
                       <View style={styles.stepHeading}>
                         <AppText style={styles.stepTitle}>{step.title}</AppText>
-                        <AppText 
+                        <AppText
                           style={[
                             styles.stepStatus,
                             step.complete && styles.stepStatusComplete,
                             step.pending && styles.stepStatusPending,
                             step.rejected && styles.stepStatusRejected,
                           ]}>
-                          {step.complete ? 'Verified' : identityInProgress ? 'Processing' : step.pending ? 'In review' : step.rejected ? 'Action needed' : 'Incomplete'}
+                          {step.complete ? ui("Verified") : identityInProgress ? ui("Processing") : step.pending ? ui("In review") : step.rejected ? 'Action needed' : 'Incomplete'}
                         </AppText>
                       </View>
                       <AppText style={styles.stepText}>{step.description}</AppText>
                       {step.key === 'identity' && status?.identity_document_type ? (
-                        <AppText style={styles.documentText}>
-                          Document: {String(status.identity_document_type).replace(/_/g, ' ')}
+                        <AppText style={styles.documentText}>{ui("Document:")}{String(status.identity_document_type).replace(/_/g, ' ')}
                         </AppText>
                       ) : null}
                       {step.action ? (
@@ -288,34 +290,33 @@ const VerificationStatusScreen = ({ navigation }) => {
               <View style={styles.revalidationCard}>
                 <View style={styles.revalidationHeader}>
                   <Icon name="alert-circle-outline" size={20} color={colors.warning} />
-                  <AppText style={styles.revalidationTitle}>Credential Revalidation Required</AppText>
+                  <AppText style={styles.revalidationTitle}>{ui("Credential Revalidation Required")}</AppText>
                 </View>
                 <AppText style={styles.revalidationReason}>{activeRevalidation.reason}</AppText>
                 {activeRevalidation.instructions ? (
                   <AppText style={styles.revalidationInstructions}>{activeRevalidation.instructions}</AppText>
                 ) : null}
                 {activeRevalidation.due_at ? (
-                  <AppText style={styles.revalidationDue}>
-                    Due: {new Date(activeRevalidation.due_at).toLocaleDateString()}
+                  <AppText style={styles.revalidationDue}>{ui("Due:")}{new Date(activeRevalidation.due_at).toLocaleDateString()}
                   </AppText>
                 ) : null}
                 {activeRevalidation.review_note ? (
                   <View style={styles.reviewNoteCard}>
-                    <AppText style={styles.reviewNoteTitle}>Admin feedback:</AppText>
+                    <AppText style={styles.reviewNoteTitle}>{ui("Admin feedback:")}</AppText>
                     <AppText style={styles.reviewNoteText}>{activeRevalidation.review_note}</AppText>
                   </View>
                 ) : null}
 
-                {activeRevalidation.status === 'submitted' ? (
+                {activeRevalidation.status === "submitted" ? (
                   <View style={styles.submittedBanner}>
                     <Icon name="time-outline" size={18} color={colors.blue} />
-                    <AppText style={styles.submittedText}>Credentials submitted. Awaiting super-admin review.</AppText>
+                    <AppText style={styles.submittedText}>{ui("Credentials submitted. Awaiting super-admin review.")}</AppText>
                   </View>
                 ) : (
                   <View style={styles.revalidationForm}>
                     {requestedFields.includes('nin') && (
                       <>
-                        <AppText style={styles.fieldLabel}>11-digit NIN</AppText>
+                        <AppText style={styles.fieldLabel}>{ui("11-digit NIN")}</AppText>
                         <TextInput
                           style={inputStyle('nin')}
                           value={revalidationForm.nin}
@@ -325,7 +326,7 @@ const VerificationStatusScreen = ({ navigation }) => {
                           }}
                           maxLength={11}
                           keyboardType="numeric"
-                          placeholder="Enter your NIN"
+                          placeholder={ui("Enter your NIN")}
                           placeholderTextColor={colors.muted}
                         />
                         {fieldErrors.nin ? <AppText style={styles.fieldError}>{fieldErrors.nin}</AppText> : null}
@@ -334,7 +335,7 @@ const VerificationStatusScreen = ({ navigation }) => {
 
                     {requestedFields.includes('international_passport') && (
                       <>
-                        <AppText style={styles.fieldLabel}>International Passport Number</AppText>
+                        <AppText style={styles.fieldLabel}>{ui("International Passport Number")}</AppText>
                         <TextInput
                           style={inputStyle('international_passport_number')}
                           value={revalidationForm.international_passport_number}
@@ -349,7 +350,7 @@ const VerificationStatusScreen = ({ navigation }) => {
                         />
                         {fieldErrors.international_passport_number ? <AppText style={styles.fieldError}>{fieldErrors.international_passport_number}</AppText> : null}
 
-                        <AppText style={[styles.fieldLabel, { marginTop: 10 }]}>Nationality</AppText>
+                        <AppText style={[styles.fieldLabel, { marginTop: 10 }]}>{ui("Nationality")}</AppText>
                         <TextInput
                           style={inputStyle('nationality')}
                           value={revalidationForm.nationality}
@@ -358,7 +359,7 @@ const VerificationStatusScreen = ({ navigation }) => {
                             setRevalidationForm((prev) => ({ ...prev, nationality: text }));
                           }}
                           maxLength={80}
-                          placeholder="e.g. Nigeria"
+                          placeholder={ui("e.g. Nigeria")}
                           placeholderTextColor={colors.muted}
                         />
                         {fieldErrors.nationality ? <AppText style={styles.fieldError}>{fieldErrors.nationality}</AppText> : null}
@@ -367,7 +368,7 @@ const VerificationStatusScreen = ({ navigation }) => {
 
                     {hasIdentityFields && (
                       <>
-                        <AppText style={[styles.fieldLabel, { marginTop: 10 }]}>Date of Birth</AppText>
+                        <AppText style={[styles.fieldLabel, { marginTop: 10 }]}>{ui("Date of Birth")}</AppText>
                         <TextInput
                           style={inputStyle('date_of_birth')}
                           value={revalidationForm.date_of_birth}
@@ -375,7 +376,7 @@ const VerificationStatusScreen = ({ navigation }) => {
                             clearFieldErrors();
                             setRevalidationForm((prev) => ({ ...prev, date_of_birth: text }));
                           }}
-                          placeholder="YYYY-MM-DD"
+                          placeholder={ui("YYYY-MM-DD")}
                           placeholderTextColor={colors.muted}
                         />
                         {fieldErrors.date_of_birth ? <AppText style={styles.fieldError}>{fieldErrors.date_of_birth}</AppText> : null}
@@ -385,11 +386,9 @@ const VerificationStatusScreen = ({ navigation }) => {
                     {requestedFields.includes('live_photo') && (
                       <View style={styles.livePhotoBlock}>
                         <Icon name="camera-outline" size={20} color={colors.blue} />
-                        <AppText style={styles.livePhotoText}>
-                          Capture a new live passport photo from your Profile page before submitting.
-                        </AppText>
+                        <AppText style={styles.livePhotoText}>{ui("Capture a new live passport photo from your Profile page before submitting.")}</AppText>
                         <Button
-                          title="Open Profile for Photo"
+                          title={ui("Open Profile for Photo")}
                           variant="outline"
                           onPress={() => navigation.navigate('Profile')}
                           icon="person-outline"
@@ -403,7 +402,7 @@ const VerificationStatusScreen = ({ navigation }) => {
                     ) : null}
 
                     <Button
-                      title={submittingRevalidation ? 'Submitting...' : 'Submit Credentials'}
+                      title={submittingRevalidation ? ui("Submitting...") : 'Submit Credentials'}
                       onPress={handleSubmitRevalidation}
                       loading={submittingRevalidation}
                       style={{ marginTop: 16 }}
@@ -416,17 +415,15 @@ const VerificationStatusScreen = ({ navigation }) => {
             <View style={styles.privacyCard}>
               <Icon name="lock-closed-outline" size={20} color={colors.success} />
               <View style={styles.privacyBody}>
-                <AppText style={styles.privacyTitle}>Your information is protected</AppText>
-                <AppText style={styles.privacyText}>
-                  Verification documents are used only for account trust and safety checks.
-                </AppText>
+                <AppText style={styles.privacyTitle}>{ui("Your information is protected")}</AppText>
+                <AppText style={styles.privacyText}>{ui("Verification documents are used only for account trust and safety checks.")}</AppText>
               </View>
             </View>
 
             {identityRejected ? (
               <Button
                 onPress={() => navigation.navigate('AppealCreate', { appealType: 'verification' })}
-                title="Appeal this decision"
+                title={ui("Appeal this decision")}
                 variant="outline"
                 icon="megaphone-outline"
                 style={{ marginBottom: 16 }}
@@ -435,7 +432,7 @@ const VerificationStatusScreen = ({ navigation }) => {
 
             <Button
               onPress={() => navigation.navigate('Profile')}
-              title="Manage verification in profile"
+              title={ui("Manage verification in profile")}
               variant="outline"
             />
           </>

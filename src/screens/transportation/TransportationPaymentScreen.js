@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useState } from 'react';
 import {StyleSheet, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -21,6 +23,7 @@ import { colors, radius, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const TransportationPaymentScreen = ({ route, navigation }) => {
+  useInterfaceLanguage();
   const { bookingId } = route.params;
   const [booking, setBooking] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -39,7 +42,7 @@ const TransportationPaymentScreen = ({ route, navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Load Failed',
+        text1: ui("Load Failed"),
         text2: getErrorMessage(error, 'Could not load booking'),
       });
     } finally {
@@ -63,15 +66,15 @@ const TransportationPaymentScreen = ({ route, navigation }) => {
         if (hasPaystackCheckout(response.data)) {
           openNativeCheckout({
             transaction: response.data,
-            title: 'Pay transportation booking',
-            subtitle: 'Complete your transport booking with secure in-app Paystack card payment.',
+            title: ui("Pay transportation booking"),
+            subtitle: ui("Complete your transport booking with secure in-app Paystack card payment."),
             amountLabel: formatNaira(booking?.total_price, ''),
             onSuccess: (paymentResponse) => verifyPayment(paymentResponse?.reference || reference),
             onBrowserFallback: () => {
               Toast.show({
                 type: 'info',
-                text1: 'Paystack checkout opened',
-                text2: 'Complete payment securely, then return to RentalHub.',
+                text1: ui("Paystack checkout opened"),
+                text2: ui("Complete payment securely, then return to RentalHub."),
               });
             },
           });
@@ -79,12 +82,12 @@ const TransportationPaymentScreen = ({ route, navigation }) => {
           verifyPayment(reference);
         }
       } else {
-        Toast.show({ type: 'error', text1: response?.message || 'Payment failed' });
+        Toast.show({ type: 'error', text1: response?.message || ui("Payment failed") });
       }
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Payment Error',
+        text1: ui("Payment Error"),
         text2: getErrorMessage(error),
       });
     } finally {
@@ -99,22 +102,22 @@ const TransportationPaymentScreen = ({ route, navigation }) => {
         fallbackFlow: 'transportation',
       });
       if (response?.success) {
-        Toast.show({ type: 'success', text1: 'Payment verified!' });
+        Toast.show({ type: 'success', text1: ui("Payment verified!") });
         navigation.navigate('TransportationBookingDetail', { bookingId });
       } else {
-        Toast.show({ type: 'error', text1: 'Payment verification failed' });
+        Toast.show({ type: 'error', text1: ui("Payment verification failed") });
       }
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Verification Error',
+        text1: ui("Verification Error"),
         text2: getErrorMessage(error),
       });
     }
   };
 
   if (loading) {
-    return <PremiumCenter loading title="Loading payment" message="Preparing your secure checkout details." />;
+    return <PremiumCenter loading title={ui("Loading payment")} message={ui("Preparing your secure checkout details.")} />;
   }
 
   if (!booking) {
@@ -122,9 +125,9 @@ const TransportationPaymentScreen = ({ route, navigation }) => {
       <PremiumCenter
         tone="danger"
         icon="alert-circle-outline"
-        title="Booking not found"
-        message="We could not find this transportation booking."
-        actionLabel="Go back"
+        title={ui("Booking not found")}
+        message={ui("We could not find this transportation booking.")}
+        actionLabel={ui("Go back")}
         onAction={() => navigation.goBack()}
       />
     );
@@ -135,9 +138,9 @@ const TransportationPaymentScreen = ({ route, navigation }) => {
       <PremiumCenter
         tone="success"
         icon="checkmark-circle-outline"
-        title="Payment complete"
-        message="Your transportation booking has already been paid for."
-        actionLabel="View booking"
+        title={ui("Payment complete")}
+        message={ui("Your transportation booking has already been paid for.")}
+        actionLabel={ui("View booking")}
         onAction={() => navigation.navigate('TransportationBookingDetail', { bookingId })}
       />
     );
@@ -147,39 +150,39 @@ const TransportationPaymentScreen = ({ route, navigation }) => {
     <>
       <PremiumScreen>
         <PremiumHero
-          eyebrow="Secure checkout"
-          title="Complete payment"
-          subtitle="Confirm your transportation booking with a protected in-app payment."
+          eyebrow={ui("Secure checkout")}
+          title={ui("Complete payment")}
+          subtitle={ui("Confirm your transportation booking with a protected in-app payment.")}
           icon="card-outline"
         />
 
         <PremiumCard>
-          <PremiumSectionTitle title="Booking summary" subtitle="Review the details before you pay." />
-          <InfoRow icon="car-outline" label="Service" value={booking.service_name || 'Transportation'} />
-          <InfoRow icon="calendar-outline" label="Date" value={booking.booking_date} />
-          <InfoRow icon="resize-outline" label="Distance" value={booking.estimated_distance_km ? `${booking.estimated_distance_km} km` : '—'} />
+          <PremiumSectionTitle title={ui("Booking summary")} subtitle={ui("Review the details before you pay.")} />
+          <InfoRow icon="car-outline" label={ui("Service")} value={booking.service_name || 'Transportation'} />
+          <InfoRow icon="calendar-outline" label={ui("Date")} value={booking.booking_date} />
+          <InfoRow icon="resize-outline" label={ui("Distance")} value={booking.estimated_distance_km ? `${booking.estimated_distance_km} km` : '—'} />
           <View style={styles.totalPanel}>
             <View>
-              <AppText style={styles.totalLabel}>Total amount</AppText>
-              <AppText style={styles.totalHint}>Processed securely via Paystack</AppText>
+              <AppText style={styles.totalLabel}>{ui("Total amount")}</AppText>
+              <AppText style={styles.totalHint}>{ui("Processed securely via Paystack")}</AppText>
             </View>
             <AppText style={styles.totalValue}>{formatNaira(booking.total_price)}</AppText>
           </View>
         </PremiumCard>
 
         <PremiumCard>
-          <PremiumSectionTitle title="Payment method" subtitle="Use card, bank transfer, USSD or supported Paystack channels." />
+          <PremiumSectionTitle title={ui("Payment method")} subtitle={ui("Use card, bank transfer, USSD or supported Paystack channels.")} />
           <View style={styles.methodRow}>
             <View style={styles.methodIcon}>
               <Icon name="shield-checkmark-outline" size={22} color={colors.blue} />
             </View>
             <View style={styles.methodCopy}>
-              <AppText style={styles.methodTitle}>Paystack secure checkout</AppText>
-              <AppText style={styles.methodText}>Encrypted payment, instant verification and recovery if the session is interrupted.</AppText>
+              <AppText style={styles.methodTitle}>{ui("Paystack secure checkout")}</AppText>
+              <AppText style={styles.methodText}>{ui("Encrypted payment, instant verification and recovery if the session is interrupted.")}</AppText>
             </View>
           </View>
           <PremiumButton
-            title="Pay securely"
+            title={ui("Pay securely")}
             icon="lock-closed-outline"
             loading={processing}
             disabled={processing}

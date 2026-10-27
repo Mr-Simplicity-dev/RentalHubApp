@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, {
   useCallback,
   useContext,
@@ -119,6 +121,7 @@ export const WithdrawalRequestModal = ({
   onClose,
   onSubmitted,
 }) => {
+  useInterfaceLanguage();
   const [form, setForm] = useState(EMPTY_FORM);
   const [errors, setErrors] = useState({});
   const [banks, setBanks] = useState([]);
@@ -259,8 +262,8 @@ export const WithdrawalRequestModal = ({
     if (!valid) {
       Toast.show({
         type: 'error',
-        text1: 'Check withdrawal details',
-        text2: 'Correct the highlighted fields before submitting.',
+        text1: ui("Check withdrawal details"),
+        text2: ui("Correct the highlighted fields before submitting."),
       });
       return;
     }
@@ -276,15 +279,15 @@ export const WithdrawalRequestModal = ({
       });
       Toast.show({
         type: 'success',
-        text1: 'Withdrawal requested',
-        text2: response?.message || 'Your commission withdrawal request was submitted.',
+        text1: ui("Withdrawal requested"),
+        text2: response?.message || ui("Your commission withdrawal request was submitted."),
       });
       onClose();
       await onSubmitted();
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Withdrawal not submitted',
+        text1: ui("Withdrawal not submitted"),
         text2: getErrorMessage(error, 'Could not submit the withdrawal request.'),
       });
     } finally {
@@ -313,12 +316,12 @@ export const WithdrawalRequestModal = ({
                   <Icon name="cash-outline" size={20} color={colors.blue} />
                 </View>
                 <View style={styles.modalTitleCopy}>
-                  <AppText style={styles.modalTitle}>Request withdrawal</AppText>
-                  <AppText style={styles.modalSubtitle}>Personal admin commission payout</AppText>
+                  <AppText style={styles.modalTitle}>{ui("Request withdrawal")}</AppText>
+                  <AppText style={styles.modalSubtitle}>{ui("Personal admin commission payout")}</AppText>
                 </View>
               </View>
               <TouchableOpacity
-                accessibilityLabel="Close withdrawal form"
+                accessibilityLabel={ui("Close withdrawal form")}
                 accessibilityRole="button"
                 disabled={submitting}
                 onPress={onClose}
@@ -334,28 +337,28 @@ export const WithdrawalRequestModal = ({
               showsVerticalScrollIndicator={false}
             >
               <View style={styles.balancePanel}>
-                <AppText style={styles.balanceLabel}>Available to withdraw</AppText>
+                <AppText style={styles.balanceLabel}>{ui("Available to withdraw")}</AppText>
                 <AppText style={styles.balanceValue}>{formatCurrency(withdrawable)}</AppText>
-                <AppText style={styles.balanceHint}>Minimum request: ₦1,000</AppText>
+                <AppText style={styles.balanceHint}>{ui("Minimum request: ₦1,000")}</AppText>
               </View>
 
               <Input
-                accessibilityLabel="Withdrawal amount in naira"
+                accessibilityLabel={ui("Withdrawal amount in naira")}
                 error={errors.amount}
                 icon="wallet-outline"
                 keyboardType="decimal-pad"
-                label="Amount (NGN)"
+                label={ui("Amount (NGN)")}
                 onChangeText={(value) => updateField('amount', value.replace(/[^\d.]/g, ''))}
-                placeholder="Minimum ₦1,000"
+                placeholder={ui("Minimum ₦1,000")}
                 value={form.amount}
               />
 
               <SelectField
                 disabled={banksLoading}
                 helperText={bankWarning || errors.bank_name}
-                label="Bank"
+                label={ui("Bank")}
                 onPress={() => setBankPickerVisible(true)}
-                placeholder={banksLoading ? 'Loading Nigerian banks…' : 'Select bank'}
+                placeholder={banksLoading ? 'Loading Nigerian banks…' : ui("Select bank")}
                 value={form.bank_name}
               />
 
@@ -363,10 +366,10 @@ export const WithdrawalRequestModal = ({
                 error={errors.account_number}
                 icon="card-outline"
                 keyboardType="number-pad"
-                label="Account number"
+                label={ui("Account number")}
                 maxLength={10}
                 onChangeText={updateAccountNumber}
-                placeholder="10-digit account number"
+                placeholder={ui("10-digit account number")}
                 value={form.account_number}
               />
 
@@ -376,7 +379,7 @@ export const WithdrawalRequestModal = ({
                 loading={verifying}
                 onPress={verifyAccount}
                 style={styles.verifyButton}
-                title="Verify bank account"
+                title={ui("Verify bank account")}
                 variant="secondary"
               />
 
@@ -403,12 +406,12 @@ export const WithdrawalRequestModal = ({
                 autoCapitalize="words"
                 error={errors.account_name}
                 icon="person-outline"
-                label="Account name"
+                label={ui("Account name")}
                 onChangeText={(value) => {
                   updateField('account_name', value);
                   setAccountVerified(false);
                 }}
-                placeholder="Account holder name"
+                placeholder={ui("Account holder name")}
                 value={form.account_name}
               />
 
@@ -417,7 +420,7 @@ export const WithdrawalRequestModal = ({
                   disabled={submitting}
                   onPress={onClose}
                   style={styles.modalAction}
-                  title="Cancel"
+                  title={ui("Cancel")}
                   variant="secondary"
                 />
                 <PremiumButton
@@ -425,7 +428,7 @@ export const WithdrawalRequestModal = ({
                   loading={submitting}
                   onPress={submit}
                   style={styles.modalAction}
-                  title="Submit request"
+                  title={ui("Submit request")}
                 />
               </View>
             </ScrollView>
@@ -439,9 +442,9 @@ export const WithdrawalRequestModal = ({
         onSelect={selectBank}
         options={banks}
         searchable
-        searchPlaceholder="Search Nigerian banks"
+        searchPlaceholder={ui("Search Nigerian banks")}
         selectedValue={selectedBankValue}
-        title="Select bank"
+        title={ui("Select bank")}
         visible={bankPickerVisible}
       />
     </>
@@ -449,6 +452,7 @@ export const WithdrawalRequestModal = ({
 };
 
 const LgaFinancialAdminDashboardScreen = ({ navigation }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const { user } = useContext(AuthContext);
   const [snapshot, setSnapshot] = useState(null);
   const [withdrawals, setWithdrawals] = useState([]);
@@ -458,7 +462,7 @@ const LgaFinancialAdminDashboardScreen = ({ navigation }) => {
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: navigation.canGoBack() });
-  }, [navigation]);
+  }, [navigation, interfaceLanguage]);
 
   const loadFinanceData = useCallback(async () => {
     setLoading(true);
@@ -489,7 +493,7 @@ const LgaFinancialAdminDashboardScreen = ({ navigation }) => {
     if (failureMessages.length) {
       const message = failureMessages.join(' ');
       setLoadError(message);
-      Toast.show({ type: 'error', text1: 'Some finance data did not load', text2: message });
+      Toast.show({ type: 'error', text1: ui("Some finance data did not load"), text2: message });
     }
     setLoading(false);
   }, []);
@@ -513,7 +517,7 @@ const LgaFinancialAdminDashboardScreen = ({ navigation }) => {
     if (assignedLga) return `${assignedLga} LGA`;
     if (assignedState) return assignedState;
     return 'No assigned LGA is configured for this account.';
-  }, [assignedLga, assignedState]);
+  }, [assignedLga, assignedState, interfaceLanguage]);
 
   const withdrawable = Number(snapshot?.withdrawable_amount || 0);
   const totalEarned = Number(snapshot?.total_earned || 0);
@@ -528,16 +532,16 @@ const LgaFinancialAdminDashboardScreen = ({ navigation }) => {
   return (
     <DashboardScreen refreshing={loading} onRefresh={loadFinanceData}>
       <DashboardHero
-        eyebrow="LGA FINANCE"
+        eyebrow={ui("LGA FINANCE")}
         icon="wallet-outline"
         onRefresh={loadFinanceData}
-        subtitle="Monitor your personal admin commissions and request secure payouts without leaving the app."
-        title="Finance workspace"
+        subtitle={ui("Monitor your personal admin commissions and request secure payouts without leaving the app.")}
+        title={ui("Finance workspace")}
       />
       <AdminAccountActions navigation={navigation} />
 
       <DashboardNotice
-        title="Assigned jurisdiction"
+        title={ui("Assigned jurisdiction")}
         message={jurisdiction}
         variant={assignedLga || assignedState ? 'info' : 'warning'}
       />
@@ -545,59 +549,59 @@ const LgaFinancialAdminDashboardScreen = ({ navigation }) => {
       {loadError ? (
         <View style={styles.noticeSpacing}>
           <DashboardNotice
-            message={`${loadError} Pull down or use the refresh icon to try again.`}
-            title="Partial data shown"
+            message={ui("{value0} Pull down or use the refresh icon to try again.", {value0: (loadError)})}
+            title={ui("Partial data shown")}
             variant="warning"
           />
         </View>
       ) : null}
 
       <View style={styles.metricsSpacing}>
-        <MetricGrid tourTarget="lga_financial_overview" tourLabel="LGA finance overview">
+        <MetricGrid tourTarget="lga_financial_overview" tourLabel={ui("LGA finance overview")}>
           <MetricCard
             color={colors.success}
             icon="wallet-outline"
-            label="Withdrawable"
+            label={ui("Withdrawable")}
             value={formatCurrency(withdrawable)}
           />
           <MetricCard
             color={colors.blue}
             icon="trending-up-outline"
-            label="Total earned"
+            label={ui("Total earned")}
             value={formatCurrency(totalEarned)}
           />
           <MetricCard
             color={colors.navy}
             icon="receipt-outline"
-            label="Requests"
+            label={ui("Requests")}
             value={String(withdrawals.length)}
           />
           <MetricCard
             color={colors.warning}
             icon="time-outline"
-            label="Pending"
+            label={ui("Pending")}
             value={String(pendingCount)}
           />
         </MetricGrid>
       </View>
 
       <DashboardSection
-        subtitle="Requests are reviewed through the financial approval workflow."
-        title="Commission withdrawal"
+        subtitle={ui("Requests are reviewed through the financial approval workflow.")}
+        title={ui("Commission withdrawal")}
       >
         <ActionRow
           badge={withdrawable >= 1000 ? 'Available' : 'Below minimum'}
           icon="cash-outline"
           onPress={() => setWithdrawalModalVisible(true)}
-          subtitle={`Current withdrawable balance: ${formatCurrency(withdrawable)}`}
-          title="Request personal withdrawal"
+          subtitle={ui("Current withdrawable balance: {value0}", {value0: (formatCurrency(withdrawable))})}
+          title={ui("Request personal withdrawal")}
           tourTarget="lga_financial_withdrawal"
         />
       </DashboardSection>
 
       <DashboardSection
-        subtitle={`Total requested: ${formatCurrency(totalRequested)}`}
-        title="Withdrawal history"
+        subtitle={ui("Total requested: {value0}", {value0: (formatCurrency(totalRequested))})}
+        title={ui("Withdrawal history")}
         tourTarget="lga_financial_history"
       >
         {withdrawals.length === 0 ? (
@@ -605,10 +609,8 @@ const LgaFinancialAdminDashboardScreen = ({ navigation }) => {
             <View style={styles.emptyIcon}>
               <Icon name="receipt-outline" size={23} color={colors.blue} />
             </View>
-            <AppText style={styles.emptyTitle}>No withdrawal requests yet</AppText>
-            <AppText style={styles.emptyMessage}>
-              Your personal commission payout requests will appear here.
-            </AppText>
+            <AppText style={styles.emptyTitle}>{ui("No withdrawal requests yet")}</AppText>
+            <AppText style={styles.emptyMessage}>{ui("Your personal commission payout requests will appear here.")}</AppText>
           </PremiumCard>
         ) : (
           withdrawals.map((withdrawal, index) => {
@@ -619,24 +621,24 @@ const LgaFinancialAdminDashboardScreen = ({ navigation }) => {
               >
                 <View style={styles.historyHeader}>
                   <View style={styles.historyAmountWrap}>
-                    <AppText style={styles.historyLabel}>Requested amount</AppText>
+                    <AppText style={styles.historyLabel}>{ui("Requested amount")}</AppText>
                     <AppText style={styles.historyAmount}>{formatCurrency(withdrawal?.amount)}</AppText>
                   </View>
                   <StatusPill label={status} color={getStatusColor(status)} />
                 </View>
                 <InfoRow
                   icon="business-outline"
-                  label="Bank account"
+                  label={ui("Bank account")}
                   value={`${withdrawal?.bank_name || 'Bank not available'} · ${maskAccountNumber(withdrawal?.account_number)}`}
                 />
                 <InfoRow
                   icon="person-outline"
-                  label="Account name"
+                  label={ui("Account name")}
                   value={withdrawal?.account_name || 'Not available'}
                 />
                 <InfoRow
                   icon="calendar-outline"
-                  label="Requested"
+                  label={ui("Requested")}
                   value={formatDate(withdrawal?.requested_at || withdrawal?.created_at)}
                 />
               </PremiumCard>

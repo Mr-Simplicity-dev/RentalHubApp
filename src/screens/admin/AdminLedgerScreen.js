@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useState } from 'react';
 import {StyleSheet, View} from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -17,6 +19,7 @@ import { colors, radius, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const AdminLedgerScreen = () => {
+  useInterfaceLanguage();
   const [verification, setVerification] = useState(null);
   const [checking, setChecking] = useState(false);
   const [lastCheckedAt, setLastCheckedAt] = useState(null);
@@ -31,16 +34,16 @@ const AdminLedgerScreen = () => {
       if (result?.success) {
         Toast.show({
           type: 'success',
-          text1: 'Integrity confirmed',
-          text2: result.message || 'The audit ledger hash chain is intact.',
+          text1: ui("Integrity confirmed"),
+          text2: result.message || ui("The audit ledger hash chain is intact."),
         });
       } else {
         Toast.show({
           type: 'error',
-          text1: 'Integrity issue detected',
+          text1: ui("Integrity issue detected"),
           text2: result?.compromisedAt
-            ? `The hash chain differs at audit record #${result.compromisedAt}.`
-            : result?.message || 'The ledger could not be verified as intact.',
+            ? ui("The hash chain differs at audit record #{value0}.", {value0: (result.compromisedAt)})
+            : result?.message || ui("The ledger could not be verified as intact."),
         });
       }
     } catch (error) {
@@ -49,7 +52,7 @@ const AdminLedgerScreen = () => {
       setLastCheckedAt(new Date());
       Toast.show({
         type: 'error',
-        text1: 'Verification failed',
+        text1: ui("Verification failed"),
         text2: message,
       });
     } finally {
@@ -58,14 +61,14 @@ const AdminLedgerScreen = () => {
   };
 
   const status = checking
-    ? { label: 'Checking', color: colors.blue }
+    ? { label: ui("Checking"), color: colors.blue }
     : verification?.requestFailed
-      ? { label: 'Check failed', color: colors.danger }
+      ? { label: ui("Check failed"), color: colors.danger }
       : verification?.success
-        ? { label: 'Integrity intact', color: colors.success }
+        ? { label: ui("Integrity intact"), color: colors.success }
         : verification
-          ? { label: 'Issue detected', color: colors.danger }
-          : { label: 'Not checked', color: colors.muted };
+          ? { label: ui("Issue detected"), color: colors.danger }
+          : { label: ui("Not checked"), color: colors.muted };
 
   const lastCheckedLabel = lastCheckedAt
     ? lastCheckedAt.toLocaleString()
@@ -74,16 +77,16 @@ const AdminLedgerScreen = () => {
   return (
     <PremiumScreen>
       <PremiumHero
-        eyebrow="Security operations"
-        title="Audit ledger integrity"
-        subtitle="Verify that RentalHub's append-only audit records still form an unbroken cryptographic hash chain."
+        eyebrow={ui("Security operations")}
+        title={ui("Audit ledger integrity")}
+        subtitle={ui("Verify that RentalHub's append-only audit records still form an unbroken cryptographic hash chain.")}
         icon="shield-checkmark-outline"
         right={<StatusPill label={status.label} color={status.color} />}
       />
 
       <PremiumSectionTitle
-        title="Integrity check"
-        subtitle="This is an explicit server verification. It does not load balances, payments or transaction history."
+        title={ui("Integrity check")}
+        subtitle={ui("This is an explicit server verification. It does not load balances, payments or transaction history.")}
       />
       <PremiumCard>
         <View style={[styles.resultIcon, { backgroundColor: `${status.color}14` }]}>
@@ -100,11 +103,11 @@ const AdminLedgerScreen = () => {
         </AppText>
 
         <View style={styles.details}>
-          <InfoRow icon="time-outline" label="Last checked" value={lastCheckedLabel} />
+          <InfoRow icon="time-outline" label={ui("Last checked")} value={lastCheckedLabel} />
           {verification && !verification.success && !verification.requestFailed ? (
             <InfoRow
               icon="alert-circle-outline"
-              label="Compromised audit record"
+              label={ui("Compromised audit record")}
               value={verification.compromisedAt ? `#${verification.compromisedAt}` : 'Not identified'}
               valueStyle={styles.dangerText}
             />
@@ -124,9 +127,7 @@ const AdminLedgerScreen = () => {
         <View style={styles.noteIcon}>
           <Icon name="information-circle-outline" size={20} color={colors.blue} />
         </View>
-        <AppText style={styles.noteText}>
-          A detected mismatch identifies the first audit-record ID whose stored hash differs from the server's recalculation. Escalate that result before relying on later audit entries.
-        </AppText>
+        <AppText style={styles.noteText}>{ui("A detected mismatch identifies the first audit-record ID whose stored hash differs from the server's recalculation. Escalate that result before relying on later audit entries.")}</AppText>
       </PremiumCard>
     </PremiumScreen>
   );

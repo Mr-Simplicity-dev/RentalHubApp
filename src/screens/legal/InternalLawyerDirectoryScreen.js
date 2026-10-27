@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import {ActivityIndicator, StyleSheet, View} from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -20,12 +22,13 @@ const tierLabel = (userType) => {
 };
 
 const InternalLawyerDirectoryScreen = ({ navigation }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const [lawyers, setLawyers] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: navigation.canGoBack() });
-  }, [navigation]);
+  }, [navigation, interfaceLanguage]);
 
   const load = async () => {
     setLoading(true);
@@ -35,7 +38,7 @@ const InternalLawyerDirectoryScreen = ({ navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Directory unavailable',
+        text1: ui("Directory unavailable"),
         text2: getErrorMessage(error, 'Could not load lawyer directory'),
       });
     } finally {
@@ -48,17 +51,17 @@ const InternalLawyerDirectoryScreen = ({ navigation }) => {
   return (
     <DashboardScreen refreshing={loading} onRefresh={load}>
       <DashboardHero
-        eyebrow="INTERNAL"
-        title="Lawyer directory"
-        subtitle="Roster of legal professionals and their assigned cases within your jurisdiction."
+        eyebrow={ui("INTERNAL")}
+        title={ui("Lawyer directory")}
+        subtitle={ui("Roster of legal professionals and their assigned cases within your jurisdiction.")}
         icon="people-outline"
         onRefresh={load}
       />
 
-      <DashboardSection title="Lawyers">
+      <DashboardSection title={ui("Lawyers")}>
         {loading && !lawyers.length ? <ActivityIndicator color={colors.blue} /> : null}
         {!loading && !lawyers.length ? (
-          <AppText style={styles.empty}>No lawyers found in your jurisdiction.</AppText>
+          <AppText style={styles.empty}>{ui("No lawyers found in your jurisdiction.")}</AppText>
         ) : null}
         {lawyers.map((lawyer) => (
           <View key={String(lawyer.id)} style={styles.card}>
@@ -78,7 +81,7 @@ const InternalLawyerDirectoryScreen = ({ navigation }) => {
             </View>
 
             <View style={styles.casesHeader}>
-              <AppText style={styles.casesLabel}>Cases ({lawyer.cases?.length || 0})</AppText>
+              <AppText style={styles.casesLabel}>{ui("Cases (")}{lawyer.cases?.length || 0})</AppText>
             </View>
             {(lawyer.cases || []).map((c, i) => (
               <View key={String(c.dispute_id || i)} style={styles.caseRow}>
@@ -87,8 +90,8 @@ const InternalLawyerDirectoryScreen = ({ navigation }) => {
                   size={16}
                   color={c.status === 'resolved' ? colors.success : colors.warning}
                 />
-                <AppText style={styles.caseTitle} numberOfLines={1}>{c.title || `Case #${c.dispute_id}`}</AppText>
-                <AppText style={styles.caseStatus}>{c.status || 'active'}</AppText>
+                <AppText style={styles.caseTitle} numberOfLines={1}>{c.title || ui("Case #{value0}", {value0: (c.dispute_id)})}</AppText>
+                <AppText style={styles.caseStatus}>{c.status || ui("active")}</AppText>
               </View>
             ))}
           </View>

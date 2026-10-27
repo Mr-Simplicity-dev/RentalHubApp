@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import {useLanguage} from '../../context/LanguageContext';
 const consentCopy=require('../../i18n/propertyRequestConsent.cjs');
 import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react';
@@ -22,13 +24,13 @@ import { colors, radius, shadows, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const propertyTypes = [
-  { label: 'Apartment', value: 'apartment' },
-  { label: 'House', value: 'house' },
-  { label: 'Duplex', value: 'duplex' },
-  { label: 'Studio', value: 'studio' },
-  { label: 'Bungalow', value: 'bungalow' },
-  { label: 'Flat', value: 'flat' },
-  { label: 'Room', value: 'room' },
+  { get "label"() { return ui("Apartment"); }, value: 'apartment' },
+  { get "label"() { return ui("House"); }, value: 'house' },
+  { get "label"() { return ui("Duplex"); }, value: 'duplex' },
+  { get "label"() { return ui("Studio"); }, value: 'studio' },
+  { get "label"() { return ui("Bungalow"); }, value: 'bungalow' },
+  { get "label"() { return ui("Flat"); }, value: 'flat' },
+  { get "label"() { return ui("Room"); }, value: 'room' },
 ];
 
 const defaultPricing = {
@@ -40,6 +42,7 @@ const defaultPricing = {
 };
 
 const PropertyAlertRequestScreen = ({ route, navigation }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const {language}=useLanguage();
   const paymentReference =
     route?.params?.alert_ref ||
@@ -79,14 +82,14 @@ const PropertyAlertRequestScreen = ({ route, navigation }) => {
   const selectedType = propertyTypes.find((item) => item.value === form.property_type);
   const selectedState = useMemo(
     () => locationOptions.find((item) => String(item.id) === String(form.state_id)),
-    [form.state_id, locationOptions]
+    [form.state_id, locationOptions, interfaceLanguage]
   );
   const availableLgas = selectedState?.lgas || [];
   const { openNativeCheckout, NativePaystackCheckoutModal } = useNativePaystackCheckout();
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
-  }, [navigation]);
+  }, [navigation, interfaceLanguage]);
 
   const loadLocationOptions = async () => {
     try {
@@ -144,11 +147,11 @@ const PropertyAlertRequestScreen = ({ route, navigation }) => {
 
   const validate = () => {
     if (!form.full_name.trim() || !form.email.trim() || !form.property_type) {
-      return 'Name, email and property type are required.';
+      return ui("Name, email and property type are required.");
     }
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
-      return 'Enter a valid email address.';
+      return ui("Enter a valid email address.");
     }
 
     if (
@@ -156,7 +159,7 @@ const PropertyAlertRequestScreen = ({ route, navigation }) => {
       form.max_price &&
       Number(form.min_price) > Number(form.max_price)
     ) {
-      return 'Maximum price must be greater than minimum price.';
+      return ui("Maximum price must be greater than minimum price.");
     }
 
     if (
@@ -164,15 +167,15 @@ const PropertyAlertRequestScreen = ({ route, navigation }) => {
         (value) => value && (!Number.isFinite(Number(value)) || Number(value) < 0)
       )
     ) {
-      return 'Budget, bedroom and bathroom values must be valid positive numbers.';
+      return ui("Budget, bedroom and bathroom values must be valid positive numbers.");
     }
 
     if (config.payment_required && !form.state_id) {
-      return 'Select your preferred state to calculate the request fee.';
+      return ui("Select your preferred state to calculate the request fee.");
     }
 
     if (config.payment_required && !form.lga_name.trim()) {
-      return 'Select your preferred local government area to calculate the request fee.';
+      return ui("Select your preferred local government area to calculate the request fee.");
     }
 
     return null;
@@ -198,7 +201,7 @@ const PropertyAlertRequestScreen = ({ route, navigation }) => {
     if (validationError) {
       Toast.show({
         type: 'error',
-        text1: 'Request failed',
+        text1: ui("Request failed"),
         text2: validationError,
       });
       return;
@@ -218,16 +221,16 @@ const PropertyAlertRequestScreen = ({ route, navigation }) => {
         if (hasPaystackCheckout(responseData)) {
           openNativeCheckout({
             transaction: responseData,
-            title: 'Pay property request',
-            subtitle: 'Complete your property alert request securely in the app.',
-            amountLabel: config.amount ? `₦${Number(config.amount).toLocaleString()}` : '',
+            title: ui("Pay property request"),
+            subtitle: ui("Complete your property alert request securely in the app."),
+            amountLabel: config.amount ? ui("₦{value0}", {value0: (Number(config.amount).toLocaleString())}) : '',
             onSuccess: (paymentResponse) =>
               completePaidRequest(paymentResponse?.reference || responseData.reference),
             onBrowserFallback: () => {
               Toast.show({
                 type: 'info',
-                text1: 'Paystack checkout opened',
-                text2: 'Complete payment securely, then return here and finish the request.',
+                text1: ui("Paystack checkout opened"),
+                text2: ui("Complete payment securely, then return here and finish the request."),
               });
             },
           });
@@ -238,10 +241,10 @@ const PropertyAlertRequestScreen = ({ route, navigation }) => {
       if (response.success) {
         Toast.show({
           type: 'success',
-          text1: 'Request submitted',
+          text1: ui("Request submitted"),
           text2:
             response.message ||
-            'We will notify you when a matching property is available.',
+            ui("We will notify you when a matching property is available."),
         });
         navigation.goBack();
       } else {
@@ -250,7 +253,7 @@ const PropertyAlertRequestScreen = ({ route, navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Request failed',
+        text1: ui("Request failed"),
         text2: getErrorMessage(error, 'Could not submit notification request'),
       });
     } finally {
@@ -276,16 +279,16 @@ const PropertyAlertRequestScreen = ({ route, navigation }) => {
 
       Toast.show({
         type: 'success',
-        text1: 'Request submitted',
+        text1: ui("Request submitted"),
         text2:
           response.message ||
-          'We will notify you when a matching property is available.',
+          ui("We will notify you when a matching property is available."),
       });
       navigation.goBack();
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Completion failed',
+        text1: ui("Completion failed"),
         text2: getErrorMessage(error, 'Could not complete notification request'),
       });
     } finally {
@@ -302,16 +305,16 @@ const PropertyAlertRequestScreen = ({ route, navigation }) => {
           reference: paymentState.reference,
           authorization_url: paymentState.authorizationUrl,
         },
-      title: 'Complete property request',
-      subtitle: 'Finish payment so we can submit your property alert request.',
-      amountLabel: config.amount ? `₦${Number(config.amount).toLocaleString()}` : '',
+      title: ui("Complete property request"),
+      subtitle: ui("Finish payment so we can submit your property alert request."),
+      amountLabel: config.amount ? ui("₦{value0}", {value0: (Number(config.amount).toLocaleString())}) : '',
       onSuccess: (paymentResponse) =>
         completePaidRequest(paymentResponse?.reference || paymentState.reference),
       onBrowserFallback: () => {
         Toast.show({
           type: 'info',
-          text1: 'Paystack checkout opened',
-          text2: 'Complete payment securely, then return and finish the request.',
+          text1: ui("Paystack checkout opened"),
+          text2: ui("Complete payment securely, then return and finish the request."),
         });
       },
     });
@@ -321,14 +324,14 @@ const PropertyAlertRequestScreen = ({ route, navigation }) => {
     <SafeAreaView edges={['top']} style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity
-          accessibilityLabel="Go back"
+          accessibilityLabel={ui("Go back")}
           onPress={() => navigation.goBack()}
           style={styles.backButton}>
           <Icon name="arrow-back" size={22} color={colors.navy} />
         </TouchableOpacity>
         <View style={styles.headerCopy}>
-          <AppText style={styles.headerEyebrow}>PERSONALISED SEARCH</AppText>
-          <AppText style={styles.headerTitle}>Property request</AppText>
+          <AppText style={styles.headerEyebrow}>{ui("PERSONALISED SEARCH")}</AppText>
+          <AppText style={styles.headerTitle}>{ui("Property request")}</AppText>
         </View>
         <View style={styles.headerSpacer} />
       </View>
@@ -343,10 +346,8 @@ const PropertyAlertRequestScreen = ({ route, navigation }) => {
         <View style={styles.introIcon}>
           <Icon name="notifications-outline" size={24} color={colors.blue} />
         </View>
-        <AppText style={styles.title}>Tell us what home you need</AppText>
-        <AppText style={styles.subtitle}>
-          We’ll notify you by email and WhatsApp when a matching verified property becomes available.
-        </AppText>
+        <AppText style={styles.title}>{ui("Tell us what home you need")}</AppText>
+        <AppText style={styles.subtitle}>{ui("We’ll notify you by email and WhatsApp when a matching verified property becomes available.")}</AppText>
 
         <View style={styles.priceCard}>
           <View style={styles.priceIcon}>
@@ -361,7 +362,7 @@ const PropertyAlertRequestScreen = ({ route, navigation }) => {
           </AppText>
           <AppText style={styles.priceAmount}>
             {config.payment_required
-              ? `₦${Number(config.amount || 0).toLocaleString()}`
+              ? ui("₦{value0}", {value0: (Number(config.amount || 0).toLocaleString())})
               : 'No payment required'}
           </AppText>
           <AppText style={styles.priceMeta}>
@@ -370,30 +371,28 @@ const PropertyAlertRequestScreen = ({ route, navigation }) => {
               : 'Requests currently go through immediately without payment.'}
           </AppText>
           {config.payment_required && !config.location_complete ? (
-            <AppText style={styles.priceMeta}>
-              Select both state and local government area to confirm the exact fee.
-            </AppText>
+            <AppText style={styles.priceMeta}>{ui("Select both state and local government area to confirm the exact fee.")}</AppText>
           ) : null}
         </View>
 
-        <AppText style={styles.sectionLabel}>YOUR CONTACT</AppText>
+        <AppText style={styles.sectionLabel}>{ui("YOUR CONTACT")}</AppText>
         <View style={styles.formCard}>
         <Input
-          label="Full Name"
+          label={ui("Full Name")}
           value={form.full_name}
           onChangeText={(value) => onChange('full_name', value)}
-          placeholder="Your full name"
+          placeholder={ui("Your full name")}
         />
         <Input
-          label="Email"
+          label={ui("Email")}
           value={form.email}
           onChangeText={(value) => onChange('email', value)}
-          placeholder="Email address"
+          placeholder={ui("Email address")}
           keyboardType="email-address"
           autoCapitalize="none"
         />
         <Input
-          label="WhatsApp Phone"
+          label={ui("WhatsApp Phone")}
           value={form.phone}
           onChangeText={(value) => onChange('phone', value)}
           placeholder="+234..."
@@ -402,72 +401,72 @@ const PropertyAlertRequestScreen = ({ route, navigation }) => {
         <TouchableOpacity accessibilityRole="checkbox" accessibilityState={{checked:form.whatsapp_opt_in === true}} onPress={()=>onChange('whatsapp_opt_in',!form.whatsapp_opt_in)} style={{flexDirection:'row',alignItems:'flex-start',gap:10,paddingVertical:12}}><Icon name={form.whatsapp_opt_in?'checkbox':'square-outline'} size={24} color={colors.blue} /><AppText style={{flex:1,color:colors.text}}>{consentCopy[language] || consentCopy.en}</AppText></TouchableOpacity>
         </View>
 
-        <AppText style={styles.sectionLabel}>PROPERTY PREFERENCES</AppText>
+        <AppText style={styles.sectionLabel}>{ui("PROPERTY PREFERENCES")}</AppText>
         <View style={styles.formCard}>
         <SelectField
-          label="Property Type"
+          label={ui("Property Type")}
           value={selectedType?.label}
-          placeholder="Select property type"
+          placeholder={ui("Select property type")}
           onPress={() => setShowTypePicker(true)}
         />
 
         <SelectField
-          label="Preferred State"
+          label={ui("Preferred State")}
           value={selectedState?.state_name}
-          placeholder="Select state"
+          placeholder={ui("Select state")}
           onPress={() => setShowStatePicker(true)}
         />
 
         <SelectField
-          label="Preferred Local Government Area"
+          label={ui("Preferred Local Government Area")}
           value={form.lga_name}
-          placeholder={selectedState ? 'Select LGA' : 'Choose state first'}
+          placeholder={selectedState ? ui("Select LGA") : 'Choose state first'}
           onPress={() => setShowLgaPicker(true)}
           disabled={!selectedState}
         />
 
         <Input
-          label="Preferred City / Area"
+          label={ui("Preferred City / Area")}
           value={form.city}
           onChangeText={(value) => onChange('city', value)}
-          placeholder="Optional"
+          placeholder={ui("Optional")}
         />
         </View>
 
-        <AppText style={styles.sectionLabel}>BUDGET AND SPACE</AppText>
+        <AppText style={styles.sectionLabel}>{ui("BUDGET AND SPACE")}</AppText>
         <View style={styles.formCard}>
         <Input
-          label="Minimum Price"
+          label={ui("Minimum Price")}
           value={form.min_price}
           onChangeText={(value) => onChange('min_price', value)}
           keyboardType="numeric"
-          placeholder="Optional"
+          placeholder={ui("Optional")}
         />
         <Input
-          label="Maximum Price"
+          label={ui("Maximum Price")}
           value={form.max_price}
           onChangeText={(value) => onChange('max_price', value)}
           keyboardType="numeric"
-          placeholder="Optional"
+          placeholder={ui("Optional")}
         />
         <Input
-          label="Bedrooms"
+          label={ui("Bedrooms")}
           value={form.bedrooms}
           onChangeText={(value) => onChange('bedrooms', value)}
           keyboardType="numeric"
-          placeholder="Optional"
+          placeholder={ui("Optional")}
         />
         <Input
-          label="Bathrooms"
+          label={ui("Bathrooms")}
           value={form.bathrooms}
           onChangeText={(value) => onChange('bathrooms', value)}
           keyboardType="numeric"
-          placeholder="Optional"
+          placeholder={ui("Optional")}
         />
         </View>
 
         <Button
-          title={config.payment_required ? 'Proceed to Payment' : 'Submit Request'}
+          title={config.payment_required ? ui("Proceed to Payment") : ui("Submit Request")}
           onPress={submitRequest}
           loading={loading}
           size="lg"
@@ -478,17 +477,17 @@ const PropertyAlertRequestScreen = ({ route, navigation }) => {
           <View style={styles.pendingCard}>
             <View style={styles.pendingHeading}>
               <Icon name="time-outline" size={21} color={colors.blue} />
-              <AppText style={styles.pendingTitle}>Payment pending</AppText>
+              <AppText style={styles.pendingTitle}>{ui("Payment pending")}</AppText>
             </View>
-            <AppText style={styles.pendingText}>Reference: {paymentState.reference}</AppText>
+            <AppText style={styles.pendingText}>{ui("Reference: ")}{paymentState.reference}</AppText>
             <Button
-              title="Complete Request"
+              title={ui("Complete Request")}
               onPress={() => completePaidRequest()}
               loading={paymentLoading}
               style={styles.marginTop}
             />
             <Button
-              title="Open Payment Options"
+              title={ui("Open Payment Options")}
               variant="outline"
               onPress={reopenPendingPayment}
               disabled={!paymentState.authorizationUrl && !paymentState.transaction}
@@ -500,7 +499,7 @@ const PropertyAlertRequestScreen = ({ route, navigation }) => {
 
       <OptionPickerModal
         visible={showTypePicker}
-        title="Select Property Type"
+        title={ui("Select Property Type")}
         options={propertyTypes}
         selectedValue={form.property_type}
         onClose={() => setShowTypePicker(false)}
@@ -511,11 +510,11 @@ const PropertyAlertRequestScreen = ({ route, navigation }) => {
 
       <OptionPickerModal
         visible={showStatePicker}
-        title="Select State"
+        title={ui("Select State")}
         options={locationOptions}
         selectedValue={form.state_id}
         searchable
-        searchPlaceholder="Search states"
+        searchPlaceholder={ui("Search states")}
         onClose={() => setShowStatePicker(false)}
         onSelect={(item) => onChange('state_id', String(item.id))}
         getOptionLabel={(item) => item.state_name}
@@ -524,11 +523,11 @@ const PropertyAlertRequestScreen = ({ route, navigation }) => {
 
       <OptionPickerModal
         visible={showLgaPicker}
-        title="Select Local Government Area"
+        title={ui("Select Local Government Area")}
         options={availableLgas}
         selectedValue={form.lga_name}
         searchable
-        searchPlaceholder="Search LGAs"
+        searchPlaceholder={ui("Search LGAs")}
         onClose={() => setShowLgaPicker(false)}
         onSelect={(item) => onChange('lga_name', String(item))}
         getOptionLabel={(item) => String(item)}

@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useContext, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import {ActivityIndicator,
   Alert,
@@ -20,6 +22,7 @@ import { getErrorMessage, pickList } from '../../utils/http';
 import AppText from '../../components/common/AppText';
 import { useTourTarget } from '../../components/tour/TourTarget';
 const MyPropertiesScreen = ({ navigation }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const { user } = useContext(AuthContext);
   const agentPropertiesTarget = useTourTarget('agent_properties', {
     disabled: user?.user_type !== 'agent',
@@ -35,7 +38,7 @@ const MyPropertiesScreen = ({ navigation }) => {
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
-  }, [navigation]);
+  }, [navigation, interfaceLanguage]);
 
   const loadProperties = async ({ refresh = false } = {}) => {
     refresh ? setRefreshing(true) : setLoading(true);
@@ -45,8 +48,8 @@ const MyPropertiesScreen = ({ navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Could not load properties',
-        text2: getErrorMessage(error, 'Please try again.'),
+        text1: ui("Could not load properties"),
+        text2: getErrorMessage(error, ui("Please try again.")),
       });
     } finally {
       setLoading(false);
@@ -63,7 +66,7 @@ const MyPropertiesScreen = ({ navigation }) => {
 
   const visibleItems = useMemo(
     () => filter === 'all' ? items : items.filter((item) => statusOf(item) === filter),
-    [filter, items]
+    [filter, items, interfaceLanguage]
   );
 
   const updateAvailability = async (item) => {
@@ -77,13 +80,13 @@ const MyPropertiesScreen = ({ navigation }) => {
       );
       Toast.show({
         type: 'success',
-        text1: item.is_available ? 'Property marked unavailable' : 'Property is now available',
+        text1: item.is_available ? ui("Property marked unavailable") : ui("Property is now available"),
       });
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Could not update availability',
-        text2: getErrorMessage(error, 'Please try again.'),
+        text1: ui("Could not update availability"),
+        text2: getErrorMessage(error, ui("Please try again.")),
       });
     } finally {
       setBusyId(null);
@@ -92,24 +95,24 @@ const MyPropertiesScreen = ({ navigation }) => {
 
   const confirmUnlist = (item) => {
     Alert.alert(
-      'Unlist this property?',
-      'The property will no longer appear in public search results.',
+      ui("Unlist this property?"),
+      ui("The property will no longer appear in public search results."),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: ui("Cancel"), style: 'cancel' },
         {
-          text: 'Unlist',
+          text: ui("Unlist"),
           style: 'destructive',
           onPress: async () => {
             setBusyId(item.id);
             try {
               await propertyService.unlistProperty(item.id);
               setItems((current) => current.filter((entry) => entry.id !== item.id));
-              Toast.show({ type: 'success', text1: 'Property unlisted' });
+              Toast.show({ type: 'success', text1: ui("Property unlisted") });
             } catch (error) {
               Toast.show({
                 type: 'error',
-                text1: 'Could not unlist property',
-                text2: getErrorMessage(error, 'Please try again.'),
+                text1: ui("Could not unlist property"),
+                text2: getErrorMessage(error, ui("Please try again.")),
               });
             } finally {
               setBusyId(null);
@@ -124,8 +127,8 @@ const MyPropertiesScreen = ({ navigation }) => {
     return (
       <SafeAreaView style={styles.center}>
         <Icon name="lock-closed-outline" size={32} color={colors.blue} />
-        <AppText style={styles.emptyTitle}>Property management unavailable</AppText>
-        <AppText style={styles.emptyText}>This area is for landlords and assigned agents.</AppText>
+        <AppText style={styles.emptyTitle}>{ui("Property management unavailable")}</AppText>
+        <AppText style={styles.emptyText}>{ui("This area is for landlords and assigned agents.")}</AppText>
       </SafeAreaView>
     );
   }
@@ -137,8 +140,8 @@ const MyPropertiesScreen = ({ navigation }) => {
           <Icon name="arrow-back" size={22} color={colors.navy} />
         </TouchableOpacity>
         <View style={styles.headerCopy}>
-          <AppText style={styles.eyebrow}>PORTFOLIO</AppText>
-          <AppText style={styles.title}>My properties</AppText>
+          <AppText style={styles.eyebrow}>{ui("PORTFOLIO")}</AppText>
+          <AppText style={styles.title}>{ui("My properties")}</AppText>
         </View>
         <TouchableOpacity
           onPress={() => navigation.navigate('AddProperty')}
@@ -155,8 +158,8 @@ const MyPropertiesScreen = ({ navigation }) => {
           <>
             <View style={styles.summaryCard}>
               <View>
-                <AppText style={styles.summaryLabel}>TOTAL PORTFOLIO</AppText>
-                <AppText style={styles.summaryValue}>{items.length} properties</AppText>
+                <AppText style={styles.summaryLabel}>{ui("TOTAL PORTFOLIO")}</AppText>
+                <AppText style={styles.summaryValue}>{items.length}{ui(" properties")}</AppText>
               </View>
               <View style={styles.summaryIcon}>
                 <Icon name="business-outline" size={23} color={colors.gold} />
@@ -187,18 +190,18 @@ const MyPropertiesScreen = ({ navigation }) => {
                 <Icon name="home-outline" size={31} color={colors.blue} />
               </View>
               <AppText style={styles.emptyTitle}>
-                {filter === 'all' ? 'Build your property portfolio' : `No ${filter} properties`}
+                {filter === "all" ? 'Build your property portfolio' : ui("No {value0} properties", {value0: (filter)})}
               </AppText>
               <AppText style={styles.emptyText}>
-                {filter === 'all'
+                {filter === "all"
                   ? 'Add your first property and submit it for verification.'
                   : 'Try another portfolio filter.'}
               </AppText>
-              {filter === 'all' ? (
+              {filter === "all" ? (
                 <TouchableOpacity
                   onPress={() => navigation.navigate('AddProperty')}
                   style={styles.emptyAction}>
-                  <AppText style={styles.emptyActionText}>Add a property</AppText>
+                  <AppText style={styles.emptyActionText}>{ui("Add a property")}</AppText>
                   <Icon name="arrow-forward" size={17} color={colors.white} />
                 </TouchableOpacity>
               ) : null}
@@ -240,7 +243,7 @@ const MyPropertiesScreen = ({ navigation }) => {
                   <AppText style={styles.cardTitle}>{item.title || 'Rental property'}</AppText>
                   <AppText style={styles.cardMeta}>
                     {[item.area, item.city, item.state_name].filter(Boolean).join(', ') ||
-                      'Location unavailable'}
+                      ui("Location unavailable")}
                   </AppText>
                   <AppText style={styles.price}>₦{Number(item.rent_amount || 0).toLocaleString()}</AppText>
                 </View>
@@ -255,11 +258,11 @@ const MyPropertiesScreen = ({ navigation }) => {
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => setDamagePropertyId(item.id)} style={styles.action}>
                   <Icon name="construct-outline" size={18} color={colors.blue} />
-                  <AppText style={styles.actionText}>Damage</AppText>
+                  <AppText style={styles.actionText}>{ui("Damage")}</AppText>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => confirmUnlist(item)} style={styles.action}>
                   <Icon name="trash-outline" size={18} color={colors.danger} />
-                  <AppText style={styles.dangerText}>Unlist</AppText>
+                  <AppText style={styles.dangerText}>{ui("Unlist")}</AppText>
                 </TouchableOpacity>
               </View>
             </View>

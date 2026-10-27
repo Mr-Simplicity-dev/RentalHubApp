@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useMemo, useState } from 'react';
 import {ActivityIndicator, Alert, Image, Linking, StyleSheet, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -31,8 +33,9 @@ const FilePreviewCard = ({
   onRetry,
   actionLabel = 'Open file',
 }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const [opening, setOpening] = useState(false);
-  const extension = useMemo(() => getExtension(fileName || uri || mimeType), [fileName, uri, mimeType]);
+  const extension = useMemo(() => getExtension(fileName || uri || mimeType), [fileName, uri, mimeType, interfaceLanguage]);
   const isImage =
     String(mimeType || '').startsWith('image/') ||
     IMAGE_EXTENSIONS.includes(extension);
@@ -41,7 +44,7 @@ const FilePreviewCard = ({
 
   const openFile = async () => {
     if (!uri) {
-      Alert.alert('File unavailable', 'No file link is available for this item.');
+      Alert.alert(ui("File unavailable"), ui("No file link is available for this item."));
       return;
     }
 
@@ -49,7 +52,7 @@ const FilePreviewCard = ({
     try {
       const canOpen = await Linking.canOpenURL(uri);
       if (!canOpen) {
-        Alert.alert('Cannot open file', 'This device cannot open the selected file link.');
+        Alert.alert(ui("Cannot open file"), ui("This device cannot open the selected file link."));
         return;
       }
       trackMobileEvent('file_preview_opened', {
@@ -59,7 +62,7 @@ const FilePreviewCard = ({
       });
       await Linking.openURL(uri);
     } catch {
-      Alert.alert('Open failed', 'The file could not be opened. Check your connection and try again.');
+      Alert.alert(ui("Open failed"), ui("The file could not be opened. Check your connection and try again."));
     } finally {
       setOpening(false);
     }
@@ -88,7 +91,7 @@ const FilePreviewCard = ({
           {onRetry ? (
             <TouchableOpacity accessibilityRole="button" onPress={onRetry} style={styles.retryButton}>
               <Icon name="refresh-outline" size={14} color={colors.danger} />
-              <AppText style={styles.retryText}>Retry</AppText>
+              <AppText style={styles.retryText}>{ui("Retry")}</AppText>
             </TouchableOpacity>
           ) : null}
         </View>

@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useMemo, useState } from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -20,6 +22,7 @@ import { colors, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const SavingsGoalCreateScreen = ({ navigation }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const [applications, setApplications] = useState([]);
   const [selectedPropertyId, setSelectedPropertyId] = useState(null);
   const [rentDueDate, setRentDueDate] = useState('');
@@ -38,7 +41,7 @@ const SavingsGoalCreateScreen = ({ navigation }) => {
       } catch (error) {
         Toast.show({
           type: 'error',
-          text1: 'Failed',
+          text1: ui("Failed"),
           text2: getErrorMessage(error, 'Could not load approved properties'),
         });
       } finally {
@@ -51,7 +54,7 @@ const SavingsGoalCreateScreen = ({ navigation }) => {
 
   const selectedApplication = useMemo(
     () => applications.find((item) => String(item.property_id) === String(selectedPropertyId)),
-    [applications, selectedPropertyId]
+    [applications, selectedPropertyId, interfaceLanguage]
   );
 
   const validate = () => {
@@ -78,13 +81,13 @@ const SavingsGoalCreateScreen = ({ navigation }) => {
       });
 
       if (response?.success || response?.data?.id) {
-        Toast.show({ type: 'success', text1: 'Savings plan created' });
+        Toast.show({ type: 'success', text1: ui("Savings plan created") });
         navigation.goBack();
       }
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(error, 'Could not create savings plan'),
       });
     } finally {
@@ -95,15 +98,15 @@ const SavingsGoalCreateScreen = ({ navigation }) => {
   return (
     <PremiumScreen>
       <PremiumHero
-        eyebrow="Rent savings"
-        title="Create a savings plan"
-        subtitle="Choose an approved property, set a due date, and keep rent progress visible every month."
+        eyebrow={ui("Rent savings")}
+        title={ui("Create a savings plan")}
+        subtitle={ui("Choose an approved property, set a due date, and keep rent progress visible every month.")}
         icon="wallet-outline"
       />
 
       <PremiumSectionTitle
-        title="Approved property"
-        subtitle="Only approved or accepted rental applications can start a rent-savings plan."
+        title={ui("Approved property")}
+        subtitle={ui("Only approved or accepted rental applications can start a rent-savings plan.")}
       />
 
       {applications.map((item) => {
@@ -122,7 +125,7 @@ const SavingsGoalCreateScreen = ({ navigation }) => {
                     {[item.area, item.city, item.state_name].filter(Boolean).join(', ') || 'Location not available'}
                   </AppText>
                 </View>
-                {selected ? <StatusPill label="Selected" color={colors.success} /> : null}
+                {selected ? <StatusPill label={ui("Selected")} color={colors.success} /> : null}
               </View>
               <AppText style={styles.propertyRent}>{formatNaira(item.rent_amount)}</AppText>
             </PremiumCard>
@@ -132,8 +135,8 @@ const SavingsGoalCreateScreen = ({ navigation }) => {
 
       {!loadingProperties && applications.length === 0 ? (
         <EmptyPanel
-          title="No approved property"
-          message="You need an approved rental application before creating a savings plan."
+          title={ui("No approved property")}
+          message={ui("You need an approved rental application before creating a savings plan.")}
           icon="home-outline"
         />
       ) : null}
@@ -141,10 +144,10 @@ const SavingsGoalCreateScreen = ({ navigation }) => {
 
       <PremiumCard>
         <Input
-          label="Rent due date"
+          label={ui("Rent due date")}
           value={rentDueDate}
           onChangeText={setRentDueDate}
-          placeholder="YYYY-MM-DD"
+          placeholder={ui("YYYY-MM-DD")}
           icon="calendar-outline"
           error={errors.rentDueDate}
         />
@@ -152,13 +155,13 @@ const SavingsGoalCreateScreen = ({ navigation }) => {
         {selectedApplication ? (
           <InfoRow
             icon="flag-outline"
-            label="Savings target"
+            label={ui("Savings target")}
             value={formatNaira(selectedApplication.rent_amount)}
           />
         ) : null}
 
         <PremiumButton
-          title="Create plan"
+          title={ui("Create plan")}
           onPress={handleCreate}
           loading={submitting}
           disabled={loadingProperties || applications.length === 0}

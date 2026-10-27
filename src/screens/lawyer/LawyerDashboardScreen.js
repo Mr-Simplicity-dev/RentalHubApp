@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import {Alert, FlatList, ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -15,6 +17,7 @@ import { useAccessibilityPreferences } from '../../hooks/useAccessibilityPrefere
 
 import AppText from '../../components/common/AppText';
 const LawyerDashboardScreen = ({ navigation }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const [properties, setProperties] = useState([]);
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [disputes, setDisputes] = useState([]);
@@ -22,14 +25,14 @@ const LawyerDashboardScreen = ({ navigation }) => {
   const { reduceMotion } = useAccessibilityPreferences();
   const tourScroll = useTourScrollController({ animated: !reduceMotion });
   const evidenceTargetProps = useTourTarget('lawyer_evidence', {
-    label: 'Verify evidence',
+    label: ui("Verify evidence"),
     padding: 6,
     radius: radius.pill,
   });
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: navigation.canGoBack() });
-  }, [navigation]);
+  }, [navigation, interfaceLanguage]);
 
   const loadProperties = async () => {
     setLoading(true);
@@ -39,7 +42,7 @@ const LawyerDashboardScreen = ({ navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(error, 'Could not load lawyer properties'),
       });
     } finally {
@@ -55,8 +58,8 @@ const LawyerDashboardScreen = ({ navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
-        text2: getErrorMessage(error, 'Could not load disputes'),
+        text1: ui("Failed"),
+        text2: getErrorMessage(error, ui("Could not load disputes")),
       });
     }
   };
@@ -67,11 +70,11 @@ const LawyerDashboardScreen = ({ navigation }) => {
       if (selectedProperty) {
         await loadDisputes(selectedProperty);
       }
-      Toast.show({ type: 'success', text1: 'Dispute resolved' });
+      Toast.show({ type: 'success', text1: ui("Dispute resolved") });
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(error, 'Could not resolve dispute'),
       });
     }
@@ -100,12 +103,12 @@ const LawyerDashboardScreen = ({ navigation }) => {
             style={styles.verifyButton}
           >
             <Icon name="shield-checkmark-outline" size={17} color={colors.navy} />
-            <AppText style={styles.verifyText}>Verify evidence</AppText>
+            <AppText style={styles.verifyText}>{ui("Verify evidence")}</AppText>
           </TouchableOpacity>
         </View>
-        <AppText style={styles.heroEyebrow}>LEGAL WORKSPACE</AppText>
-        <AppText style={styles.title}>Cases and property access</AppText>
-        <AppText style={styles.heroText}>Review authorised properties, trace evidence and resolve disputes.</AppText>
+        <AppText style={styles.heroEyebrow}>{ui("LEGAL WORKSPACE")}</AppText>
+        <AppText style={styles.title}>{ui("Cases and property access")}</AppText>
+        <AppText style={styles.heroText}>{ui("Review authorised properties, trace evidence and resolve disputes.")}</AppText>
       </View>
 
       <TouchableOpacity
@@ -114,17 +117,17 @@ const LawyerDashboardScreen = ({ navigation }) => {
         style={styles.migrationLink}
       >
         <Icon name="swap-horizontal-outline" size={16} color={colors.blue} />
-        <AppText style={styles.migrationLinkText}>Request state migration</AppText>
+        <AppText style={styles.migrationLinkText}>{ui("Request state migration")}</AppText>
       </TouchableOpacity>
 
-      <TourTarget id="lawyer_cases" label="Authorised cases" padding={8} radius={radius.md}>
+      <TourTarget id="lawyer_cases" label={ui("Authorised cases")} padding={8} radius={radius.md}>
         <View>
-          <AppText style={styles.sectionTitle}>Authorised properties</AppText>
+          <AppText style={styles.sectionTitle}>{ui("Authorised properties")}</AppText>
         </View>
       </TourTarget>
 
       {loading ? (
-        <AppText style={styles.empty}>Loading...</AppText>
+        <AppText style={styles.empty}>{ui("Loading...")}</AppText>
       ) : (
         <FlatList
           data={properties}
@@ -141,9 +144,8 @@ const LawyerDashboardScreen = ({ navigation }) => {
                   {[item.city, item.state_name || item.state].filter(Boolean).join(', ')}
                 </AppText>
                 <View style={styles.cardArrow}><Icon name="chevron-forward" size={18} color={colors.blue} /></View>
-                <AppText style={styles.cardMeta}>
-                  Assigned by {item.assigned_by_name || item.client_name || 'Unknown'}
-                  {item.client_name ? ` for ${item.client_name}` : ''}
+                <AppText style={styles.cardMeta}>{ui("Assigned by")}{item.assigned_by_name || item.client_name || ui("Unknown")}
+                  {item.client_name ? ui(" for {value0}", {value0: (item.client_name)}) : ''}
                 </AppText>
               </TouchableOpacity>
             );
@@ -151,7 +153,7 @@ const LawyerDashboardScreen = ({ navigation }) => {
             return index === 0 ? (
               <TourTarget
                 id="lawyer_clients"
-                label="Client property assignments"
+                label={ui("Client property assignments")}
                 padding={6}
                 radius={radius.md}
               >
@@ -162,11 +164,11 @@ const LawyerDashboardScreen = ({ navigation }) => {
           ListEmptyComponent={(
             <TourTarget
               id="lawyer_clients"
-              label="Client property assignments"
+              label={ui("Client property assignments")}
               padding={6}
               radius={radius.md}
             >
-              <AppText style={styles.empty}>No authorized properties.</AppText>
+              <AppText style={styles.empty}>{ui("No authorized properties.")}</AppText>
             </TourTarget>
           )}
         />
@@ -174,34 +176,34 @@ const LawyerDashboardScreen = ({ navigation }) => {
 
       {selectedProperty ? (
         <>
-          <AppText style={styles.sectionTitle}>Disputes for {selectedProperty.title}</AppText>
+          <AppText style={styles.sectionTitle}>{ui("Disputes for ")}{selectedProperty.title}</AppText>
           {disputes.length === 0 ? (
-            <AppText style={styles.empty}>No disputes found.</AppText>
+            <AppText style={styles.empty}>{ui("No disputes found.")}</AppText>
           ) : (
             disputes.map((item) => (
               <View key={item.id} style={styles.card}>
-                <AppText style={styles.cardTitle}>Dispute #{item.id}</AppText>
-                <AppText style={styles.cardMeta}>Status: {item.status || 'open'}</AppText>
+                <AppText style={styles.cardTitle}>{ui("Dispute #")}{item.id}</AppText>
+                <AppText style={styles.cardMeta}>{ui("Status: ")}{item.status || ui("open")}</AppText>
                 <AppText style={styles.cardText}>{item.description || 'No description available'}</AppText>
                 <View style={styles.row}>
                   <TouchableOpacity
                     onPress={() => navigation.navigate('VerifyCase', { disputeId: item.id })}
                   >
-                    <AppText style={styles.linkText}>Verify Integrity</AppText>
+                    <AppText style={styles.linkText}>{ui("Verify Integrity")}</AppText>
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => navigation.navigate('DisputeDetails', { disputeId: item.id })}
                   >
-                    <AppText style={styles.linkText}>Trace Dispute</AppText>
+                    <AppText style={styles.linkText}>{ui("Trace Dispute")}</AppText>
                   </TouchableOpacity>
-                  {item.status !== 'resolved' ? (
+                  {item.status !== "resolved" ? (
                     <TouchableOpacity onPress={() =>
-                      Alert.alert('Resolve dispute?', 'Mark this dispute as resolved?', [
-                        { text: 'Cancel', style: 'cancel' },
-                        { text: 'Resolve', onPress: () => resolveDispute(item.id) },
+                      Alert.alert(ui("Resolve dispute?"), ui("Mark this dispute as resolved?"), [
+                        { text: ui("Cancel"), style: 'cancel' },
+                        { text: ui("Resolve"), onPress: () => resolveDispute(item.id) },
                       ])
                     }>
-                      <AppText style={styles.linkWarn}>Resolve</AppText>
+                      <AppText style={styles.linkWarn}>{ui("Resolve")}</AppText>
                     </TouchableOpacity>
                   ) : null}
                 </View>

@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, Modal, Pressable, RefreshControl, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import TextInput from '../../components/common/AppTextInput';
@@ -10,11 +12,11 @@ import { getErrorMessage, pickList } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
 const STATUS_CONFIG = {
-  pending: { color: colors.blue, bg: '#EFF6FF', label: 'Pending' },
-  resolved: { color: colors.success, bg: '#F0FBF6', label: 'Resolved' },
-  rejected: { color: colors.danger, bg: '#FFF0EF', label: 'Rejected' },
-  open: { color: colors.blue, bg: '#EFF6FF', label: 'Open' },
-  in_review: { color: '#B46B00', bg: '#FFFBEB', label: 'In Review' },
+  pending: { color: colors.blue, bg: '#EFF6FF', get "label"() { return ui("Pending"); } },
+  resolved: { color: colors.success, bg: '#F0FBF6', get "label"() { return ui("Resolved"); } },
+  rejected: { color: colors.danger, bg: '#FFF0EF', get "label"() { return ui("Rejected"); } },
+  open: { color: colors.blue, bg: '#EFF6FF', get "label"() { return ui("Open"); } },
+  in_review: { color: '#B46B00', bg: '#FFFBEB', get "label"() { return ui("In Review"); } },
 };
 
 const getStatusStyle = (status) => {
@@ -36,13 +38,14 @@ const formatDate = (value) => {
 };
 
 const MyDisputesScreen = ({ navigation }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [items, setItems] = useState([]);
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
-  }, [navigation]);
+  }, [navigation, interfaceLanguage]);
 
   const loadDisputes = async ({ refresh = false } = {}) => {
     refresh ? setRefreshing(true) : setLoading(true);
@@ -52,7 +55,7 @@ const MyDisputesScreen = ({ navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Could not load disputes',
+        text1: ui("Could not load disputes"),
         text2: getErrorMessage(error, 'Please check your connection and try again.'),
       });
     } finally {
@@ -72,7 +75,7 @@ const MyDisputesScreen = ({ navigation }) => {
   const handleCreateDispute = async () => {
     const { property_id, title, description, against_user } = createForm;
     if (!property_id || !title || !description || !against_user) {
-      Toast.show({ type: 'info', text1: 'All fields are required' });
+      Toast.show({ type: 'info', text1: ui("All fields are required") });
       return;
     }
     setCreating(true);
@@ -84,7 +87,7 @@ const MyDisputesScreen = ({ navigation }) => {
         description: description.trim(),
       });
       if (res.data?.success) {
-        Toast.show({ type: 'success', text1: 'Dispute created' });
+        Toast.show({ type: 'success', text1: ui("Dispute created") });
         setCreateOpen(false);
         setCreateForm({ property_id: '', title: '', description: '', against_user: '' });
         loadDisputes();
@@ -92,7 +95,7 @@ const MyDisputesScreen = ({ navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Create failed',
+        text1: ui("Create failed"),
         text2: getErrorMessage(error, 'Could not create dispute'),
       });
     } finally {
@@ -147,17 +150,17 @@ const MyDisputesScreen = ({ navigation }) => {
     <SafeAreaView edges={['top']} style={styles.safeArea}>
       <View style={styles.header}>
         <TouchableOpacity
-          accessibilityLabel="Go back"
+          accessibilityLabel={ui("Go back")}
           onPress={() => navigation.goBack()}
           style={styles.backButton}>
           <Icon name="arrow-back" size={22} color={colors.navy} />
         </TouchableOpacity>
         <View style={styles.headerCopy}>
-          <AppText style={styles.eyebrow}>CONFLICT RESOLUTION</AppText>
-          <AppText style={styles.title}>My disputes</AppText>
+          <AppText style={styles.eyebrow}>{ui("CONFLICT RESOLUTION")}</AppText>
+          <AppText style={styles.title}>{ui("My disputes")}</AppText>
         </View>
         <TouchableOpacity
-          accessibilityLabel="Create dispute"
+          accessibilityLabel={ui("Create dispute")}
           onPress={() => setCreateOpen(true)}
           style={styles.createButton}>
           <Icon name="add" size={24} color={colors.blue} />
@@ -171,25 +174,22 @@ const MyDisputesScreen = ({ navigation }) => {
         ListHeaderComponent={
           !loading && items.length ? (
             <AppText style={styles.summary}>
-              {items.length} {items.length === 1 ? 'dispute' : 'disputes'} on file
-            </AppText>
+              {items.length} {items.length === 1 ? ui("dispute") : ui("disputes")}{ui("on file")}</AppText>
           ) : null
         }
         ListEmptyComponent={
           loading ? (
             <View style={styles.center}>
               <ActivityIndicator color={colors.blue} size="large" />
-              <AppText style={styles.loadingText}>Loading your disputes…</AppText>
+              <AppText style={styles.loadingText}>{ui("Loading your disputes…")}</AppText>
             </View>
           ) : (
             <View style={styles.center}>
               <View style={styles.emptyIcon}>
                 <Icon name="shield-outline" size={31} color={colors.blue} />
               </View>
-              <AppText style={styles.emptyTitle}>No disputes yet</AppText>
-              <AppText style={styles.emptyText}>
-                You have not filed any disputes. If you run into an issue with a property, you can raise a dispute from the property or application screen.
-              </AppText>
+              <AppText style={styles.emptyTitle}>{ui("No disputes yet")}</AppText>
+              <AppText style={styles.emptyText}>{ui("You have not filed any disputes. If you run into an issue with a property, you can raise a dispute from the property or application screen.")}</AppText>
             </View>
           )
         }
@@ -209,24 +209,24 @@ const MyDisputesScreen = ({ navigation }) => {
         <Pressable style={styles.modalBackdrop} onPress={() => setCreateOpen(false)}>
           <Pressable style={styles.modalCard}>
             <View style={styles.modalHeader}>
-              <AppText style={styles.modalTitle}>Create dispute</AppText>
+              <AppText style={styles.modalTitle}>{ui("Create dispute")}</AppText>
               <TouchableOpacity onPress={() => setCreateOpen(false)}>
                 <Icon name="close" size={22} color={colors.muted} />
               </TouchableOpacity>
             </View>
             <ScrollView>
-              <AppText style={styles.fieldLabel}>Property ID *</AppText>
+              <AppText style={styles.fieldLabel}>{ui("Property ID *")}</AppText>
               <TextInput style={styles.input} value={createForm.property_id} onChangeText={(v) => setCreateForm((p) => ({ ...p, property_id: v }))} placeholder="e.g. 42" keyboardType="number-pad" placeholderTextColor={colors.muted} />
-              <AppText style={styles.fieldLabel}>User ID to dispute against *</AppText>
+              <AppText style={styles.fieldLabel}>{ui("User ID to dispute against *")}</AppText>
               <TextInput style={styles.input} value={createForm.against_user} onChangeText={(v) => setCreateForm((p) => ({ ...p, against_user: v }))} placeholder="e.g. 7" keyboardType="number-pad" placeholderTextColor={colors.muted} />
-              <AppText style={styles.fieldLabel}>Title *</AppText>
-              <TextInput style={styles.input} value={createForm.title} onChangeText={(v) => setCreateForm((p) => ({ ...p, title: v }))} placeholder="Dispute title" placeholderTextColor={colors.muted} />
-              <AppText style={styles.fieldLabel}>Description *</AppText>
-              <TextInput style={[styles.input, styles.descInput]} value={createForm.description} onChangeText={(v) => setCreateForm((p) => ({ ...p, description: v }))} placeholder="Describe the issue" multiline placeholderTextColor={colors.muted} />
-              <AppText style={styles.hint}>Find Property ID and user IDs on the property detail page.</AppText>
+              <AppText style={styles.fieldLabel}>{ui("Title *")}</AppText>
+              <TextInput style={styles.input} value={createForm.title} onChangeText={(v) => setCreateForm((p) => ({ ...p, title: v }))} placeholder={ui("Dispute title")} placeholderTextColor={colors.muted} />
+              <AppText style={styles.fieldLabel}>{ui("Description *")}</AppText>
+              <TextInput style={[styles.input, styles.descInput]} value={createForm.description} onChangeText={(v) => setCreateForm((p) => ({ ...p, description: v }))} placeholder={ui("Describe the issue")} multiline placeholderTextColor={colors.muted} />
+              <AppText style={styles.hint}>{ui("Find Property ID and user IDs on the property detail page.")}</AppText>
             </ScrollView>
             <TouchableOpacity style={[styles.submitBtn, creating && { opacity: 0.6 }]} disabled={creating} onPress={handleCreateDispute}>
-              {creating ? <ActivityIndicator color={colors.white} /> : <AppText style={styles.submitBtnText}>Create dispute</AppText>}
+              {creating ? <ActivityIndicator color={colors.white} /> : <AppText style={styles.submitBtnText}>{ui("Create dispute")}</AppText>}
             </TouchableOpacity>
           </Pressable>
         </Pressable>

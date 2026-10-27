@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useCallback, useContext, useState } from 'react';
 import { Modal, StyleSheet, View } from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -28,6 +30,7 @@ const STATUS_COLORS = {
 };
 
 const AdminInspectionsScreen = () => {
+  useInterfaceLanguage();
   const { user } = useContext(AuthContext);
   const adminId = user?.id;
   const [items, setItems] = useState([]);
@@ -47,7 +50,7 @@ const AdminInspectionsScreen = () => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(error, 'Could not load inspections'),
       });
     } finally {
@@ -69,13 +72,13 @@ const AdminInspectionsScreen = () => {
     try {
       const res = await api.post(`/admin/inspections/${item.id}/assign`);
       if (res.data?.success) {
-        Toast.show({ type: 'success', text1: 'Assigned to you' });
+        Toast.show({ type: 'success', text1: ui("Assigned to you") });
         await loadInspections();
       }
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Assign failed',
+        text1: ui("Assign failed"),
         text2: getErrorMessage(error, 'Could not assign inspection'),
       });
     } finally {
@@ -116,7 +119,7 @@ const AdminInspectionsScreen = () => {
     try {
       const res = await api.post(`/admin/inspections/${item.id}/${action}`, body);
       if (res.data?.success) {
-        Toast.show({ type: 'success', text1: `Inspection ${action}d` });
+        Toast.show({ type: 'success', text1: ui("Inspection {value0}d", {value0: (ui(action))}) });
         setModal(null);
         await loadInspections();
       }
@@ -137,7 +140,7 @@ const AdminInspectionsScreen = () => {
     !['completed', 'cancelled'].includes(item.status) && mine(item);
 
   if (loading && items.length === 0) {
-    return <PremiumCenter loading title="Loading inspections" />;
+    return <PremiumCenter loading title={ui("Loading inspections")} />;
   }
 
   return (
@@ -147,16 +150,16 @@ const AdminInspectionsScreen = () => {
         refreshing={loading}
         onRefresh={() => loadInspections({ refresh: true })}
         keyExtractor={(item) => String(item.id)}
-        emptyTitle="No inspections found"
-        emptyMessage="Scheduled or completed inspections will appear here."
+        emptyTitle={ui("No inspections found")}
+        emptyMessage={ui("Scheduled or completed inspections will appear here.")}
         emptyIcon="search-outline"
         header={
           <PremiumHero
-            eyebrow="Operations"
-            title="Inspections"
-            subtitle="Assign, start, complete or cancel inspection requests."
+            eyebrow={ui("Operations")}
+            title={ui("Inspections")}
+            subtitle={ui("Assign, start, complete or cancel inspection requests.")}
             icon="search-outline"
-            right={<StatusPill label={`${items.length} records`} color={colors.blue} />}
+            right={<StatusPill label={ui("{value0} records", {value0: (items.length)})} color={colors.blue} />}
           />
         }
         renderItem={({ item }) => {
@@ -172,40 +175,40 @@ const AdminInspectionsScreen = () => {
             <PremiumCard>
               <View style={styles.cardHeader}>
                 <View style={styles.inspectionIcon}>
-                  <AppText style={styles.inspectionIconText}>IN</AppText>
+                  <AppText style={styles.inspectionIconText}>{ui("IN")}</AppText>
                 </View>
                 <View style={styles.cardCopy}>
                   <AppText style={styles.cardTitle}>
-                    {item.property_name || item.property_title || 'Property'}
+                    {item.property_name || item.property_title || ui("Property")}
                   </AppText>
                   <StatusPill label={status} color={badgeColor} />
                 </View>
               </View>
-              <InfoRow icon="person-outline" label="Tenant" value={item.tenant_name || 'N/A'} />
+              <InfoRow icon="person-outline" label={ui("Tenant")} value={item.tenant_name || 'N/A'} />
               <InfoRow
                 icon="shield-outline"
-                label="Assigned admin"
+                label={ui("Assigned admin")}
                 value={item.assigned_admin_name || 'Unassigned'}
               />
               <InfoRow
                 icon="calendar-outline"
-                label="Requested"
+                label={ui("Requested")}
                 value={item.requested_at ? new Date(item.requested_at).toLocaleString() : 'N/A'}
               />
               <InfoRow
                 icon="location-outline"
-                label="Location"
+                label={ui("Location")}
                 value={[item.lga_name, item.state_name].filter(Boolean).join(', ') || 'N/A'}
               />
               {item.cancellation_reason ? (
-                <InfoRow icon="close-circle-outline" label="Cancelled" value={item.cancellation_reason} />
+                <InfoRow icon="close-circle-outline" label={ui("Cancelled")} value={item.cancellation_reason} />
               ) : null}
 
               {anyAction ? (
                 <View style={styles.actions}>
                   {showAssign ? (
                     <PremiumButton
-                      title="Assign to me"
+                      title={ui("Assign to me")}
                       onPress={() => assignItem(item)}
                       loading={busyKey === `${item.id}:assign`}
                       icon="person-add-outline"
@@ -214,7 +217,7 @@ const AdminInspectionsScreen = () => {
                   ) : null}
                   {showStart ? (
                     <PremiumButton
-                      title="Start"
+                      title={ui("Start")}
                       onPress={() => openAction(item, 'start')}
                       icon="play-outline"
                       style={styles.actionButton}
@@ -222,7 +225,7 @@ const AdminInspectionsScreen = () => {
                   ) : null}
                   {showComplete ? (
                     <PremiumButton
-                      title="Complete"
+                      title={ui("Complete")}
                       onPress={() => openAction(item, 'complete')}
                       icon="checkmark-circle-outline"
                       style={styles.actionButton}
@@ -230,7 +233,7 @@ const AdminInspectionsScreen = () => {
                   ) : null}
                   {showCancel ? (
                     <PremiumButton
-                      title="Cancel"
+                      title={ui("Cancel")}
                       variant="ghost"
                       onPress={() => openAction(item, 'cancel')}
                       icon="close-circle-outline"
@@ -249,22 +252,22 @@ const AdminInspectionsScreen = () => {
           <View style={styles.overlay}>
             <View style={styles.modalCard}>
               <AppText style={styles.modalTitle}>
-                {modal.action === 'start'
+                {modal.action === "start"
                   ? 'Start inspection'
-                  : modal.action === 'cancel'
+                  : modal.action === "cancel"
                     ? 'Cancel inspection'
                     : 'Complete inspection'}
               </AppText>
               <AppText style={styles.modalSubtitle}>
-                {modal.item.property_name || modal.item.property_title || 'Property'}
+                {modal.item.property_name || modal.item.property_title || ui("Property")}
               </AppText>
 
-              {modal.action === 'complete' ? (
+              {modal.action === "complete" ? (
                 <Input
-                  label="Inspection summary"
+                  label={ui("Inspection summary")}
                   value={summaryText}
                   onChangeText={setSummaryText}
-                  placeholder="Summarise what was found"
+                  placeholder={ui("Summarise what was found")}
                   multiline
                   numberOfLines={4}
                   containerStyle={styles.fieldGap}
@@ -273,16 +276,16 @@ const AdminInspectionsScreen = () => {
 
               <Input
                 label={
-                  modal.action === 'start'
-                    ? 'Note (optional)'
-                    : modal.action === 'cancel'
-                      ? 'Cancellation reason'
-                      : 'Admin note (optional)'
+                  modal.action === "start"
+                    ? ui("Note (optional)")
+                    : modal.action === "cancel"
+                      ? ui("Cancellation reason")
+                      : ui("Admin note (optional)")
                 }
                 value={noteText}
                 onChangeText={setNoteText}
                 placeholder={
-                  modal.action === 'cancel'
+                  modal.action === "cancel"
                     ? 'Explain why this inspection is being cancelled'
                     : 'Optional note for the record'
                 }
@@ -295,14 +298,14 @@ const AdminInspectionsScreen = () => {
 
               <View style={styles.modalActions}>
                 <PremiumButton
-                  title="Cancel"
+                  title={ui("Cancel")}
                   variant="ghost"
                   onPress={() => setModal(null)}
                   disabled={modalBusy}
                   style={styles.actionButton}
                 />
                 <PremiumButton
-                  title={modalBusy ? 'Working…' : 'Confirm'}
+                  title={modalBusy ? 'Working…' : ui("Confirm")}
                   onPress={submitAction}
                   loading={modalBusy}
                   style={styles.actionButton}

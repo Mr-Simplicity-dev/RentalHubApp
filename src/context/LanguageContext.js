@@ -1,3 +1,4 @@
+import { setInterfaceLanguage } from '../i18n/interfaceRuntime.cjs';
 import React, {
   createContext,
   useCallback,
@@ -72,6 +73,8 @@ export const LanguageProvider = ({ children }) => {
     I18nManager.forceRTL(false);
     I18nManager.swapLeftAndRightInRTL(false);
   }, []);
+
+  useEffect(() => { setInterfaceLanguage(language); }, [language]);
 
   const setLanguage = useCallback(async (nextLanguage) => {
     const normalized = normalizeLanguage(nextLanguage);

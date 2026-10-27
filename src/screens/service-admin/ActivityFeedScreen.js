@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useCallback, useLayoutEffect, useState } from 'react';
 import {FlatList, StyleSheet, TouchableOpacity, View} from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -8,13 +10,14 @@ import { formatDisplayValue } from '../../utils/display';
 
 import AppText from '../../components/common/AppText';
 const ActivityFeedScreen = ({ navigation, route }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const allMode = route?.params?.all === true;
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: navigation.canGoBack() });
-  }, [navigation]);
+  }, [navigation, interfaceLanguage]);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -23,7 +26,7 @@ const ActivityFeedScreen = ({ navigation, route }) => {
       const res = await fn();
       if (res.success) setLogs(res.data || []);
     } catch (err) {
-      Toast.show({ type: 'error', text1: 'Failed', text2: getErrorMessage(err) });
+      Toast.show({ type: 'error', text1: ui("Failed"), text2: getErrorMessage(err) });
     } finally {
       setLoading(false);
     }
@@ -49,10 +52,9 @@ const ActivityFeedScreen = ({ navigation, route }) => {
       <View style={[styles.dot, { backgroundColor: actionColor(item.action) }]} />
       <View style={styles.body}>
         <AppText style={styles.action}>{formatDisplayValue(item.action).replace(/_/g, ' ')}</AppText>
-        <AppText style={styles.actor}>
-          by {item.user_name || 'System'} ({item.user_type})
+        <AppText style={styles.actor}>{ui("by")}{item.user_name || ui("System")} ({item.user_type})
         </AppText>
-        {item.state && <AppText style={styles.location}>{item.state}{item.lga ? ` / ${item.lga}` : ''}</AppText>}
+        {item.state && <AppText style={styles.location}>{item.state}{item.lga ? ui(" / {value0}", {value0: (item.lga)}) : ''}</AppText>}
         {item.metadata && <AppText style={styles.meta}>{JSON.stringify(item.metadata)}</AppText>}
       </View>
       <AppText style={styles.time}>{formatDate(item.created_at)}</AppText>
@@ -61,15 +63,15 @@ const ActivityFeedScreen = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-      <AppText style={styles.title}>{allMode ? 'All Activity' : 'Activity Feed'}</AppText>
-      <TouchableOpacity onPress={load} style={styles.refresh}><AppText>Refresh</AppText></TouchableOpacity>
+      <AppText style={styles.title}>{allMode ? ui("All Activity") : ui("Activity Feed")}</AppText>
+      <TouchableOpacity onPress={load} style={styles.refresh}><AppText>{ui("Refresh")}</AppText></TouchableOpacity>
       <FlatList
         data={logs}
         keyExtractor={(item) => String(item.id)}
         renderItem={renderItem}
         refreshing={loading}
         onRefresh={load}
-        ListEmptyComponent={<AppText style={styles.empty}>No activity logs found</AppText>}
+        ListEmptyComponent={<AppText style={styles.empty}>{ui("No activity logs found")}</AppText>}
       />
     </View>
   );

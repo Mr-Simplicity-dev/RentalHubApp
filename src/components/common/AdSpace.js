@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {Image,
   Linking,
@@ -20,6 +22,7 @@ const PLACEMENTS = {
 };
 
 const AdSpace = ({ placement, limit = 10, onRefresh }) => {
+  useInterfaceLanguage();
   const [ads, setAds] = useState([]);
   const [loading, setLoading] = useState(true);
   const trackedRef = useRef(new Set());
@@ -74,7 +77,7 @@ const AdSpace = ({ placement, limit = 10, onRefresh }) => {
     const url = ad.target_url || ad.video_url;
     if (/^https?:\/\//i.test(String(url))) {
       Linking.openURL(url).catch(() => {
-        Toast.show({ type: 'error', text1: 'Could not open ad link' });
+        Toast.show({ type: 'error', text1: ui("Could not open ad link") });
       });
     }
   };
@@ -88,7 +91,7 @@ const AdSpace = ({ placement, limit = 10, onRefresh }) => {
           onPress={() => handlePress(ad)}
           style={styles.card}
         >
-          {ad.media_type === 'video' && ad.video_url ? (
+          {ad.media_type === "video" && ad.video_url ? (
             <View style={styles.videoWrap}>
               {ad.video_thumbnail || ad.image_url ? (
                 <Image
@@ -103,7 +106,7 @@ const AdSpace = ({ placement, limit = 10, onRefresh }) => {
               )}
               <View style={styles.playBadge}>
                 <Icon name="play" size={16} color={colors.white} />
-                <AppText style={styles.playText}>Play video</AppText>
+                <AppText style={styles.playText}>{ui("Play video")}</AppText>
               </View>
             </View>
           ) : ad.image_url ? (
@@ -116,7 +119,7 @@ const AdSpace = ({ placement, limit = 10, onRefresh }) => {
 
           <View style={styles.body}>
             <View style={styles.sponsorRow}>
-              <AppText style={styles.sponsored}>SPONSORED</AppText>
+              <AppText style={styles.sponsored}>{ui("SPONSORED")}</AppText>
               {ad.sponsor_name ? (
                 <AppText style={styles.sponsorName}>{ad.sponsor_name}</AppText>
               ) : null}
@@ -127,7 +130,7 @@ const AdSpace = ({ placement, limit = 10, onRefresh }) => {
             ) : null}
             {ad.target_url ? (
               <View style={styles.cta}>
-                <AppText style={styles.ctaText}>{ad.cta_label || 'Learn more'}</AppText>
+                <AppText style={styles.ctaText}>{ad.cta_label || ui("Learn more")}</AppText>
                 <Icon name="arrow-forward" size={14} color={colors.white} />
               </View>
             ) : null}

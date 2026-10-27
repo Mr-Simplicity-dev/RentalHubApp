@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import TextInput from '../../components/common/AppTextInput';
@@ -16,6 +18,7 @@ const money = (amount) =>
   `₦${Number(amount || 0).toLocaleString('en-NG', { maximumFractionDigits: 0 })}`;
 
 const RentSavingsSetupFeesScreen = () => {
+  useInterfaceLanguage();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [fees, setFees] = useState([]);
@@ -35,7 +38,7 @@ const RentSavingsSetupFeesScreen = () => {
       const stateList = statesRes?.data;
       setStates(Array.isArray(stateList) ? stateList : []);
     } catch (error) {
-      Toast.show({ type: 'error', text1: 'Could not load setup fees', text2: getErrorMessage(error, 'Please try again.') });
+      Toast.show({ type: 'error', text1: ui("Could not load setup fees"), text2: getErrorMessage(error, ui("Please try again.")) });
     } finally {
       setLoading(false);
     }
@@ -75,11 +78,11 @@ const RentSavingsSetupFeesScreen = () => {
 
   const submit = async () => {
     if (!form.state_id || !form.setup_fee) {
-      Toast.show({ type: 'error', text1: 'State and setup fee are required' });
+      Toast.show({ type: 'error', text1: ui("State and setup fee are required") });
       return;
     }
     if (!form.governance_note.trim()) {
-      Toast.show({ type: 'error', text1: 'A governance note is required' });
+      Toast.show({ type: 'error', text1: ui("A governance note is required") });
       return;
     }
     setSaving(true);
@@ -92,30 +95,30 @@ const RentSavingsSetupFeesScreen = () => {
         setup_fee: Number(form.setup_fee),
         governance_note: form.governance_note.trim(),
       });
-      Toast.show({ type: 'success', text1: 'Setup fee saved' });
+      Toast.show({ type: 'success', text1: ui("Setup fee saved") });
       setShowForm(false);
       resetForm();
       await load();
     } catch (error) {
-      Toast.show({ type: 'error', text1: 'Could not save setup fee', text2: getErrorMessage(error, 'Please try again.') });
+      Toast.show({ type: 'error', text1: ui("Could not save setup fee"), text2: getErrorMessage(error, ui("Please try again.")) });
     } finally {
       setSaving(false);
     }
   };
 
   const remove = (fee) => {
-    Alert.alert('Delete setup fee?', 'This removes the location-specific fee.', [
-      { text: 'Cancel', style: 'cancel' },
+    Alert.alert(ui("Delete setup fee?"), ui("This removes the location-specific fee."), [
+      { text: ui("Cancel"), style: 'cancel' },
       {
-        text: 'Delete',
+        text: ui("Delete"),
         style: 'destructive',
         onPress: async () => {
           try {
             await rentSavingsAdminService.deleteSetupFee(fee.id);
-            Toast.show({ type: 'success', text1: 'Setup fee deleted' });
+            Toast.show({ type: 'success', text1: ui("Setup fee deleted") });
             await load();
           } catch (error) {
-            Toast.show({ type: 'error', text1: 'Could not delete', text2: getErrorMessage(error, 'Please try again.') });
+            Toast.show({ type: 'error', text1: ui("Could not delete"), text2: getErrorMessage(error, ui("Please try again.")) });
           }
         },
       },
@@ -127,10 +130,8 @@ const RentSavingsSetupFeesScreen = () => {
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.headerRow}>
           <View style={styles.headerBody}>
-            <AppText style={styles.title}>Rent Savings Setup Fees</AppText>
-            <AppText style={styles.subtitle}>
-              Location-based one-time fees charged when a tenant activates a rent-savings plan.
-            </AppText>
+            <AppText style={styles.title}>{ui("Rent Savings Setup Fees")}</AppText>
+            <AppText style={styles.subtitle}>{ui("Location-based one-time fees charged when a tenant activates a rent-savings plan.")}</AppText>
           </View>
           <TouchableOpacity onPress={() => { setShowForm((v) => !v); resetForm(); }} style={styles.addButton}>
             <Icon name={showForm ? 'close' : 'add'} size={20} color={colors.white} />
@@ -139,9 +140,9 @@ const RentSavingsSetupFeesScreen = () => {
 
         {showForm ? (
           <View style={styles.card}>
-            <AppText style={styles.cardTitle}>New / update fee</AppText>
+            <AppText style={styles.cardTitle}>{ui("New / update fee")}</AppText>
 
-            <AppText style={styles.label}>State *</AppText>
+            <AppText style={styles.label}>{ui("State *")}</AppText>
             <View style={styles.chipWrap}>
               {states.map((state) => {
                 const selected = String(state.id) === String(form.state_id);
@@ -161,7 +162,7 @@ const RentSavingsSetupFeesScreen = () => {
 
             {lgas.length > 0 ? (
               <>
-                <AppText style={styles.label}>LGA (optional — state-wide if none)</AppText>
+                <AppText style={styles.label}>{ui("LGA (optional — state-wide if none)")}</AppText>
                 <View style={styles.chipWrap}>
                   {lgas.map((lga) => {
                     const selected = String(lga.id) === String(form.lga_id);
@@ -181,7 +182,7 @@ const RentSavingsSetupFeesScreen = () => {
               </>
             ) : null}
 
-            <AppText style={styles.label}>Setup fee (₦) *</AppText>
+            <AppText style={styles.label}>{ui("Setup fee (₦) *")}</AppText>
             <TextInput
               value={form.setup_fee}
               onChangeText={(value) => setForm((prev) => ({ ...prev, setup_fee: value }))}
@@ -191,11 +192,11 @@ const RentSavingsSetupFeesScreen = () => {
               style={styles.input}
             />
 
-            <AppText style={styles.label}>Governance note *</AppText>
+            <AppText style={styles.label}>{ui("Governance note *")}</AppText>
             <TextInput
               value={form.governance_note}
               onChangeText={(value) => setForm((prev) => ({ ...prev, governance_note: value }))}
-              placeholder="Why this fee changed"
+              placeholder={ui("Why this fee changed")}
               placeholderTextColor={colors.muted}
               multiline
               style={[styles.input, styles.textarea]}
@@ -203,7 +204,7 @@ const RentSavingsSetupFeesScreen = () => {
 
             <TouchableOpacity disabled={saving} onPress={submit} style={styles.primaryButton}>
               {saving ? <ActivityIndicator color={colors.white} size="small" /> : (
-                <AppText style={styles.primaryButtonText}>Save setup fee</AppText>
+                <AppText style={styles.primaryButtonText}>{ui("Save setup fee")}</AppText>
               )}
             </TouchableOpacity>
           </View>
@@ -212,19 +213,19 @@ const RentSavingsSetupFeesScreen = () => {
         {loading ? (
           <View style={styles.center}>
             <ActivityIndicator color={colors.blue} size="large" />
-            <AppText style={styles.loadingText}>Loading setup fees…</AppText>
+            <AppText style={styles.loadingText}>{ui("Loading setup fees…")}</AppText>
           </View>
         ) : fees.length === 0 ? (
           <View style={styles.empty}>
             <Icon name="cash-outline" size={30} color={colors.muted} />
-            <AppText style={styles.emptyTitle}>No setup fees configured</AppText>
-            <AppText style={styles.emptyText}>Add a fee so rent-savings activation charges the correct amount.</AppText>
+            <AppText style={styles.emptyTitle}>{ui("No setup fees configured")}</AppText>
+            <AppText style={styles.emptyText}>{ui("Add a fee so rent-savings activation charges the correct amount.")}</AppText>
           </View>
         ) : fees.map((fee) => (
           <View key={fee.id} style={styles.feeCard}>
             <View style={styles.feeBody}>
               <AppText style={styles.feeTitle}>
-                {fee.state_name || `State #${fee.state_id}`}{fee.lga_id ? ` · LGA #${fee.lga_id}` : ' (state-wide)'}
+                {fee.state_name || ui("State #{value0}", {value0: (fee.state_id)})}{fee.lga_id ? ui(" · LGA #{value0}", {value0: (fee.lga_id)}) : ' (state-wide)'}
               </AppText>
               <AppText style={styles.feeAmount}>{money(fee.setup_fee)}</AppText>
             </View>

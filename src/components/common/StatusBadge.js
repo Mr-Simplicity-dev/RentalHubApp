@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import { typeScale } from '../../theme';
 import React from 'react';
 import {View, StyleSheet} from 'react-native';
@@ -21,13 +23,14 @@ const statusColorMap = {
 };
 
 const StatusBadge = ({ status, style, textStyle }) => {
+  useInterfaceLanguage();
   const normalized = (status || '').toLowerCase().replace(/\s+/g, '_');
   const colors = statusColorMap[normalized] || statusColorMap.default;
 
   return (
     <View style={[styles.badge, { backgroundColor: colors.bg }, style]}>
       <AppText style={[styles.text, { color: colors.text }, textStyle]}>
-        {status || 'Unknown'}
+        {ui(status ? String(status).replace(/_/g, ' ') : "Unknown")}
       </AppText>
     </View>
   );

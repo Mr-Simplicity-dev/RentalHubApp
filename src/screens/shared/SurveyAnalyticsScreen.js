@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useCallback, useState } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -23,6 +25,7 @@ const mmss = (seconds) => {
 };
 
 const SurveyAnalyticsScreen = () => {
+  useInterfaceLanguage();
   const [tab, setTab] = useState('tenant');
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -34,7 +37,7 @@ const SurveyAnalyticsScreen = () => {
     setError('');
     try {
       const res = await surveyAnalyticsService.enableAllNigerianLgas();
-      Toast.show({ type: 'success', text1: 'Survey enabled', text2: res?.message || 'All Nigerian LGAs enabled.' });
+      Toast.show({ type: 'success', text1: ui("Survey enabled"), text2: res?.message || ui("All Nigerian LGAs enabled.") });
     } catch (err) {
       setError(getErrorMessage(err, 'Could not enable all locations'));
     } finally {
@@ -68,7 +71,7 @@ const SurveyAnalyticsScreen = () => {
   );
 
   if (loading) {
-    return <PremiumCenter loading title="Loading analytics" />;
+    return <PremiumCenter loading title={ui("Loading analytics")} />;
   }
 
   const meta = data?.meta || {};
@@ -87,9 +90,9 @@ const SurveyAnalyticsScreen = () => {
       showsVerticalScrollIndicator={false}
     >
       <PremiumHero
-        eyebrow="Super admin"
-        title="Survey analytics"
-        subtitle="Read-only summary of onboarding survey responses."
+        eyebrow={ui("Super admin")}
+        title={ui("Survey analytics")}
+        subtitle={ui("Read-only summary of onboarding survey responses.")}
         icon="analytics-outline"
       />
 
@@ -130,35 +133,35 @@ const SurveyAnalyticsScreen = () => {
           <View style={styles.metricRow}>
             <View style={[styles.metric, styles.metricAccent]}>
               <AppText style={styles.metricValue}>{total}</AppText>
-              <AppText style={styles.metricLabel}>Responses</AppText>
+              <AppText style={styles.metricLabel}>{ui("Responses")}</AppText>
             </View>
             <View style={styles.metric}>
               <AppText style={styles.metricValue}>{completed}</AppText>
-              <AppText style={styles.metricLabel}>Completed</AppText>
+              <AppText style={styles.metricLabel}>{ui("Completed")}</AppText>
             </View>
             <View style={styles.metric}>
               <AppText style={styles.metricValue}>{rate}%</AppText>
-              <AppText style={styles.metricLabel}>Completion</AppText>
+              <AppText style={styles.metricLabel}>{ui("Completion")}</AppText>
             </View>
           </View>
 
           <PremiumCard>
-            <InfoRow icon="time-outline" label="Avg. time" value={mmss(meta.avg_time_seconds)} />
-            <InfoRow icon="chatbox-outline" label="Open answers" value={String(openCount)} />
+            <InfoRow icon="time-outline" label={ui("Avg. time")} value={mmss(meta.avg_time_seconds)} />
+            <InfoRow icon="chatbox-outline" label={ui("Open answers")} value={String(openCount)} />
             <InfoRow
               icon="pulse-outline"
-              label="Sources"
+              label={ui("Sources")}
               value={Object.keys(sources)
                 .map((key) => `${key}: ${formatDisplayValue(sources[key])}`)
                 .join(', ') || '—'}
             />
-            <InfoRow icon="refresh-outline" label="Generated" value={data?.generated_at ? new Date(data.generated_at).toLocaleString() : '—'} />
+            <InfoRow icon="refresh-outline" label={ui("Generated")} value={data?.generated_at ? new Date(data.generated_at).toLocaleString() : '—'} />
           </PremiumCard>
 
           <PremiumCard>
-            <AppText style={styles.sectionTitle}>Top states</AppText>
+            <AppText style={styles.sectionTitle}>{ui("Top states")}</AppText>
             {states.length === 0 ? (
-              <AppText style={styles.empty}>No state breakdown available.</AppText>
+              <AppText style={styles.empty}>{ui("No state breakdown available.")}</AppText>
             ) : (
               states.map((row) => (
                 <View key={row.state} style={styles.stateRow}>
@@ -170,9 +173,9 @@ const SurveyAnalyticsScreen = () => {
           </PremiumCard>
 
           <PremiumCard>
-            <AppText style={styles.sectionTitle}>Field agent leaderboard</AppText>
+            <AppText style={styles.sectionTitle}>{ui("Field agent leaderboard")}</AppText>
             {agents.length === 0 ? (
-              <AppText style={styles.empty}>No agent-captured responses in this range.</AppText>
+              <AppText style={styles.empty}>{ui("No agent-captured responses in this range.")}</AppText>
             ) : (
               agents.map((row, index) => (
                 <View key={String(row.agent_user_id || index)} style={styles.stateRow}>
@@ -181,10 +184,10 @@ const SurveyAnalyticsScreen = () => {
                       {index + 1}. {row.agent_name}
                     </AppText>
                     <AppText style={styles.empty} numberOfLines={2}>
-                      {Number(row.lgas) || 0} LGA{Number(row.lgas) === 1 ? '' : 's'}
-                      {row.agent_phone ? ` · ${row.agent_phone}` : ''}
+                      {Number(row.lgas) || 0}{ui(" LGA")}{Number(row.lgas) === 1 ? '' : ui("s")}
+                      {row.agent_phone ? ui(" · {value0}", {value0: (row.agent_phone)}) : ''}
                       {row.last_activity
-                        ? ` · last ${new Date(row.last_activity).toLocaleDateString()}`
+                        ? ui(" · last {value0}", {value0: (new Date(row.last_activity).toLocaleDateString())})
                         : ''}
                     </AppText>
                   </View>

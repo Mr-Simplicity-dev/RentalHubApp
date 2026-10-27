@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -16,6 +18,7 @@ import { colors, radius, typography, typeScale } from '../../theme';
 import AppText from '../../components/common/AppText';
 
 const SurveyScreen = ({ navigation }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const [phase, setPhase] = useState('loading'); // loading | info | question | partADone | finished | error
   const [status, setStatus] = useState(null);
   const [questions, setQuestions] = useState([]);
@@ -49,7 +52,7 @@ const SurveyScreen = ({ navigation }) => {
       return Array.from(seen.values());
     }
     return [];
-  }, [current, questions]);
+  }, [current, questions, interfaceLanguage]);
 
   useEffect(() => () => clearTimeout(saveTimerRef.current), []);
 
@@ -156,7 +159,7 @@ const SurveyScreen = ({ navigation }) => {
       ? list.filter((v) => v !== optionV)
       : [...list, optionV];
     if (current.maxPicks && next.length > current.maxPicks) {
-      Toast.show({ type: 'info', text1: `Pick up to ${current.maxPicks} options` });
+      Toast.show({ type: 'info', text1: ui("Pick up to {value0} options", {value0: (current.maxPicks)}) });
       return;
     }
     setValue(current.key, next);
@@ -165,7 +168,7 @@ const SurveyScreen = ({ navigation }) => {
   const next = async () => {
     if (!current) return;
     if (current.required !== false && !answered) {
-      Toast.show({ type: 'info', text1: 'Please answer this question to continue.' });
+      Toast.show({ type: 'info', text1: ui("Please answer this question to continue.") });
       return;
     }
     if (index < queue.length - 1) {
@@ -195,7 +198,7 @@ const SurveyScreen = ({ navigation }) => {
     } catch (err) {
       Toast.show({
         type: 'error',
-        text1: 'Could not save',
+        text1: ui("Could not save"),
         text2: getErrorMessage(err, 'Please check your answers and try again.'),
       });
     } finally {
@@ -229,16 +232,16 @@ const SurveyScreen = ({ navigation }) => {
   };
 
   if (phase === 'loading') {
-    return <PremiumCenter loading title="Preparing survey" />;
+    return <PremiumCenter loading title={ui("Preparing survey")} />;
   }
 
   if (phase === 'error') {
     return (
       <PremiumCenter
         icon="alert-circle-outline"
-        title="Could not load the survey"
+        title={ui("Could not load the survey")}
         message={errorMessage}
-        actionLabel="Try again"
+        actionLabel={ui("Try again")}
         onAction={() => run()}
       />
     );
@@ -248,7 +251,7 @@ const SurveyScreen = ({ navigation }) => {
     return (
       <PremiumCenter
         icon="checkmark-circle-outline"
-        title={status?.completed ? 'Survey completed' : 'Nothing to complete'}
+        title={status?.completed ? ui("Survey completed") : 'Nothing to complete'}
         message={
           status?.completed
             ? 'Thank you for completing the Amana RentalHub NG survey.'
@@ -256,7 +259,7 @@ const SurveyScreen = ({ navigation }) => {
               ? 'Your account is not required to complete the survey.'
               : 'There is no active survey for you right now.'
         }
-        actionLabel="Back to dashboard"
+        actionLabel={ui("Back to dashboard")}
         onAction={() => navigation.goBack()}
       />
     );
@@ -266,13 +269,13 @@ const SurveyScreen = ({ navigation }) => {
     return (
       <PremiumCenter
         icon="checkmark-done-outline"
-        title="Part A complete"
+        title={ui("Part A complete")}
         message={
           screenedOut
             ? 'Based on your answers, you do not need to continue the survey. Thank you!'
             : 'Thanks! You can continue the rest of the survey now or later from your dashboard.'
         }
-        actionLabel={screenedOut ? 'Back to dashboard' : 'Continue survey'}
+        actionLabel={screenedOut ? ui("Back to dashboard") : ui("Continue survey")}
         onAction={() => (screenedOut ? navigation.goBack() : continueToFull())}
       />
     );
@@ -282,9 +285,9 @@ const SurveyScreen = ({ navigation }) => {
     return (
       <PremiumCenter
         icon="ribbon-outline"
-        title="Survey completed"
-        message="Thank you for your time — your responses have been saved."
-        actionLabel="Back to dashboard"
+        title={ui("Survey completed")}
+        message={ui("Thank you for your time — your responses have been saved.")}
+        actionLabel={ui("Back to dashboard")}
         onAction={() => navigation.goBack()}
       />
     );
@@ -293,14 +296,14 @@ const SurveyScreen = ({ navigation }) => {
   return (
     <PremiumScreen>
       <PremiumHero
-        eyebrow="Market research"
-        title={status?.part_a_done ? 'Continue survey' : 'Survey'}
-        subtitle="Your answers help Amana RentalHub NG improve how renters and landlords are served."
+        eyebrow={ui("Market research")}
+        title={status?.part_a_done ? ui("Continue survey") : ui("Survey")}
+        subtitle={ui("Your answers help Amana RentalHub NG improve how renters and landlords are served.")}
         icon="chatbubbles-outline"
       />
 
       <View style={styles.progressRow}>
-        <StatusPill label={`${index + 1} of ${queue.length}`} color={colors.blue} />
+        <StatusPill label={ui("{value0} of {value1}", {value0: (index + 1), value1: (queue.length)})} color={colors.blue} />
         <View style={styles.progressTrack}>
           <View style={[styles.progressFill, { width: `${progressPct}%` }]} />
         </View>
@@ -309,7 +312,7 @@ const SurveyScreen = ({ navigation }) => {
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
         <PremiumCard>
           <AppText style={styles.sectionLabel}>
-            {current?.section ? `${current.section} · ` : ''}Question {index + 1}
+            {current?.section ? ui("{value0} · ", {value0: (current.section)}) : ''}{ui("Question ")}{index + 1}
           </AppText>
           <AppText style={styles.prompt}>{current?.prompt || current?.key}</AppText>
 
@@ -317,7 +320,7 @@ const SurveyScreen = ({ navigation }) => {
             <Input
               value={typeof answerValue === 'string' ? answerValue : ''}
               onChangeText={(text) => setValue(current.key, text)}
-              placeholder="Type your answer…"
+              placeholder={ui("Type your answer…")}
               multiline
               numberOfLines={4}
               containerStyle={styles.fieldGap}
@@ -368,19 +371,17 @@ const SurveyScreen = ({ navigation }) => {
               })}
 
               {current?.type === 'multi' && current?.maxPicks ? (
-                <AppText style={styles.hint}>Pick up to {current.maxPicks}.</AppText>
+                <AppText style={styles.hint}>{ui("Pick up to ")}{current.maxPicks}.</AppText>
               ) : null}
             </View>
           )}
 
           {screenedOut && current?.analysis === 'consent' ? (
-            <AppText style={styles.screenedOut}>
-              Based on your answer, this survey ends here after this section.
-            </AppText>
+            <AppText style={styles.screenedOut}>{ui("Based on your answer, this survey ends here after this section.")}</AppText>
           ) : null}
 
           <PremiumButton
-            title={index === queue.length - 1 ? (status?.part_a_done ? 'Finish survey' : 'Complete part A') : 'Next'}
+            title={index === queue.length - 1 ? (status?.part_a_done ? 'Finish survey' : 'Complete part A') : ui("Next")}
             onPress={next}
             loading={busy}
             icon="arrow-forward-outline"

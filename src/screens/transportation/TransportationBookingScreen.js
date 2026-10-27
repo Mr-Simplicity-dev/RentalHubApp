@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useState, useEffect, useCallback, useLayoutEffect } from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Platform } from 'react-native';
 import TextInput from '../../components/common/AppTextInput';
@@ -17,6 +19,7 @@ const SERVICE_ICONS = {
 };
 
 const TransportationBookingScreen = ({ route, navigation }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const { propertyId } = route.params || {};
 
   const [loading, setLoading] = useState(true);
@@ -39,7 +42,7 @@ const TransportationBookingScreen = ({ route, navigation }) => {
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
-  }, [navigation]);
+  }, [navigation, interfaceLanguage]);
 
   const today = new Date().toISOString().split('T')[0];
 
@@ -55,8 +58,8 @@ const TransportationBookingScreen = ({ route, navigation }) => {
           if (!eligibilityRes?.data?.can_book) {
             Toast.show({
               type: 'error',
-              text1: 'Cannot Book Transportation',
-              text2: eligibilityRes?.data?.reason || 'Not eligible',
+              text1: ui("Cannot Book Transportation"),
+              text2: eligibilityRes?.data?.reason || ui("Not eligible"),
             });
             navigation.goBack();
             return;
@@ -74,7 +77,7 @@ const TransportationBookingScreen = ({ route, navigation }) => {
       } catch (error) {
         Toast.show({
           type: 'error',
-          text1: 'Load Failed',
+          text1: ui("Load Failed"),
           text2: getErrorMessage(error, 'Could not load transportation data'),
         });
         navigation.goBack();
@@ -121,19 +124,19 @@ const TransportationBookingScreen = ({ route, navigation }) => {
 
   const handleSubmit = async () => {
     if (!selectedService) {
-      Toast.show({ type: 'error', text1: 'Please select a service' });
+      Toast.show({ type: 'error', text1: ui("Please select a service") });
       return;
     }
 
     if (!priceCalculation) {
-      Toast.show({ type: 'error', text1: 'Please enter distance to calculate price' });
+      Toast.show({ type: 'error', text1: ui("Please enter distance to calculate price") });
       return;
     }
 
     const requiredFields = ['pickup_address', 'destination_address', 'booking_date', 'booking_time'];
     for (const field of requiredFields) {
       if (!formData[field]) {
-        Toast.show({ type: 'error', text1: `Please fill in ${field.replace(/_/g, ' ')}` });
+        Toast.show({ type: 'error', text1: ui("Please fill in {value0}", {value0: (field.replace(/_/g, ' '))}) });
         return;
       }
     }
@@ -150,16 +153,16 @@ const TransportationBookingScreen = ({ route, navigation }) => {
       const response = await transportationService.createBooking(bookingData);
 
       if (response?.success) {
-        Toast.show({ type: 'success', text1: 'Booking created successfully' });
+        Toast.show({ type: 'success', text1: ui("Booking created successfully") });
         navigation.navigate('TransportationPayment', { bookingId: response.data.id });
       } else {
-        Toast.show({ type: 'error', text1: response?.message || 'Failed to create booking' });
+        Toast.show({ type: 'error', text1: response?.message || ui("Failed to create booking") });
       }
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Error',
-        text2: getErrorMessage(error, 'Failed to create booking'),
+        text1: ui("Error"),
+        text2: getErrorMessage(error, ui("Failed to create booking")),
       });
     } finally {
       setCreatingBooking(false);
@@ -184,16 +187,14 @@ const TransportationBookingScreen = ({ route, navigation }) => {
           </TouchableOpacity>
           <View style={styles.headerIcon}><Icon name="car-sport-outline" size={23} color={colors.gold} /></View>
         </View>
-        <AppText style={styles.headerEyebrow}>MOVING SUPPORT</AppText>
-        <AppText style={styles.headerTitle}>Book transportation</AppText>
-        <AppText style={styles.headerSub}>
-          Arrange transportation to move your items
-        </AppText>
+        <AppText style={styles.headerEyebrow}>{ui("MOVING SUPPORT")}</AppText>
+        <AppText style={styles.headerTitle}>{ui("Book transportation")}</AppText>
+        <AppText style={styles.headerSub}>{ui("Arrange transportation to move your items")}</AppText>
       </View>
 
       {/* Service Selection */}
       <View style={styles.section}>
-        <AppText style={styles.sectionTitle}>Select Service</AppText>
+        <AppText style={styles.sectionTitle}>{ui("Select Service")}</AppText>
         {services.map((service) => (
           <TouchableOpacity
             key={service.id}
@@ -219,62 +220,59 @@ const TransportationBookingScreen = ({ route, navigation }) => {
             </View>
             <AppText style={styles.serviceDesc}>{service.description}</AppText>
             <View style={styles.serviceDetails}>
-              <AppText style={styles.serviceDetailText}>
-                Capacity: {service.capacity_kg} kg
-              </AppText>
+              <AppText style={styles.serviceDetailText}>{ui("Capacity:")}{service.capacity_kg}{ui("kg")}</AppText>
               <AppText style={styles.servicePrice}>
                 ₦{service.base_price?.toLocaleString()}
               </AppText>
             </View>
             <AppText style={styles.perKmText}>
-              + ₦{service.price_per_km?.toLocaleString()} per km
-            </AppText>
+              + ₦{service.price_per_km?.toLocaleString()}{ui("per km")}</AppText>
           </TouchableOpacity>
         ))}
       </View>
 
       {/* Booking Form */}
       <View style={styles.section}>
-        <AppText style={styles.sectionTitle}>Booking Details</AppText>
+        <AppText style={styles.sectionTitle}>{ui("Booking Details")}</AppText>
 
         <View style={styles.inputGroup}>
-          <AppText style={styles.label}>Pickup Address *</AppText>
+          <AppText style={styles.label}>{ui("Pickup Address *")}</AppText>
           <TextInput
             style={styles.input}
             value={formData.pickup_address}
             onChangeText={(v) => handleInputChange('pickup_address', v)}
-            placeholder="Where will items be picked up?"
+            placeholder={ui("Where will items be picked up?")}
           />
         </View>
 
         <View style={styles.inputGroup}>
-          <AppText style={styles.label}>Destination Address *</AppText>
+          <AppText style={styles.label}>{ui("Destination Address *")}</AppText>
           <TextInput
             style={styles.input}
             value={formData.destination_address}
             onChangeText={(v) => handleInputChange('destination_address', v)}
-            placeholder="Where are you moving to?"
+            placeholder={ui("Where are you moving to?")}
           />
         </View>
 
         <View style={styles.row}>
           <View style={[styles.inputGroup, { flex: 1, marginRight: 8 }]}>
-            <AppText style={styles.label}>Distance (km) *</AppText>
+            <AppText style={styles.label}>{ui("Distance (km) *")}</AppText>
             <TextInput
               style={styles.input}
               value={formData.estimated_distance_km}
               onChangeText={(v) => handleInputChange('estimated_distance_km', v)}
-              placeholder="e.g., 15.5"
+              placeholder={ui("e.g., 15.5")}
               keyboardType="decimal-pad"
             />
           </View>
           <View style={[styles.inputGroup, { flex: 1, marginLeft: 8 }]}>
-            <AppText style={styles.label}>Date *</AppText>
+            <AppText style={styles.label}>{ui("Date *")}</AppText>
             <TextInput
               style={styles.input}
               value={formData.booking_date}
               onChangeText={(v) => handleInputChange('booking_date', v)}
-              placeholder="YYYY-MM-DD"
+              placeholder={ui("YYYY-MM-DD")}
               keyboardType="numbers-and-punctuation"
             />
           </View>
@@ -282,32 +280,32 @@ const TransportationBookingScreen = ({ route, navigation }) => {
 
         <View style={styles.row}>
           <View style={[styles.inputGroup, { flex: 1, marginRight: 8 }]}>
-            <AppText style={styles.label}>Time *</AppText>
+            <AppText style={styles.label}>{ui("Time *")}</AppText>
             <TextInput
               style={styles.input}
               value={formData.booking_time}
               onChangeText={(v) => handleInputChange('booking_time', v)}
-              placeholder="HH:MM"
+              placeholder={ui("HH:MM")}
             />
           </View>
           <View style={[styles.inputGroup, { flex: 1, marginLeft: 8 }]}>
-            <AppText style={styles.label}>Items</AppText>
+            <AppText style={styles.label}>{ui("Items")}</AppText>
             <TextInput
               style={styles.input}
               value={formData.items_description}
               onChangeText={(v) => handleInputChange('items_description', v)}
-              placeholder="e.g., Furniture, boxes"
+              placeholder={ui("e.g., Furniture, boxes")}
             />
           </View>
         </View>
 
         <View style={styles.inputGroup}>
-          <AppText style={styles.label}>Special Requirements</AppText>
+          <AppText style={styles.label}>{ui("Special Requirements")}</AppText>
           <TextInput
             style={[styles.input, styles.textArea]}
             value={formData.special_requirements}
             onChangeText={(v) => handleInputChange('special_requirements', v)}
-            placeholder="Any special instructions..."
+            placeholder={ui("Any special instructions...")}
             multiline
             numberOfLines={3}
           />
@@ -316,17 +314,17 @@ const TransportationBookingScreen = ({ route, navigation }) => {
         {/* Price Summary */}
         {priceCalculation && (
           <View style={styles.priceCard}>
-            <AppText style={styles.priceTitle}>Price Summary</AppText>
+            <AppText style={styles.priceTitle}>{ui("Price Summary")}</AppText>
             <View style={styles.priceRow}>
-              <AppText>Base Price:</AppText>
+              <AppText>{ui("Base Price:")}</AppText>
               <AppText style={styles.priceValue}>₦{priceCalculation.base_price?.toLocaleString()}</AppText>
             </View>
             <View style={styles.priceRow}>
-              <AppText>Distance Charge ({formData.estimated_distance_km} km):</AppText>
+              <AppText>{ui("Distance Charge (")}{formData.estimated_distance_km}{ui(" km):")}</AppText>
               <AppText style={styles.priceValue}>₦{priceCalculation.distance_price?.toLocaleString()}</AppText>
             </View>
             <View style={[styles.priceRow, styles.totalRow]}>
-              <AppText style={styles.totalLabel}>Total:</AppText>
+              <AppText style={styles.totalLabel}>{ui("Total:")}</AppText>
               <AppText style={styles.totalValue}>₦{priceCalculation.total_price?.toLocaleString()}</AppText>
             </View>
           </View>
@@ -335,7 +333,7 @@ const TransportationBookingScreen = ({ route, navigation }) => {
         {calculatingPrice && (
           <View style={styles.calculatingContainer}>
             <ActivityIndicator size="small" color="#0284c7" />
-            <AppText style={styles.calculatingText}>Calculating price...</AppText>
+            <AppText style={styles.calculatingText}>{ui("Calculating price...")}</AppText>
           </View>
         )}
 
@@ -347,7 +345,7 @@ const TransportationBookingScreen = ({ route, navigation }) => {
           {creatingBooking ? (
             <ActivityIndicator color="#ffffff" />
           ) : (
-            <AppText style={styles.submitButtonText}>Proceed to Payment</AppText>
+            <AppText style={styles.submitButtonText}>{ui("Proceed to Payment")}</AppText>
           )}
         </TouchableOpacity>
       </View>

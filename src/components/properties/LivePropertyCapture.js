@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Image, Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -30,14 +32,14 @@ export const MAX_CLIP_SECONDS = 6;
  * with GUIDED_SHOTS in the server's propertyTourVideo.js.
  */
 export const GUIDED_SHOT_PROMPTS = [
-  { key: 'building_front', label: 'Front of the building', hint: 'Stand outside and face the main entrance.' },
-  { key: 'compound', label: 'Compound / surroundings', hint: 'Show the yard, gate and parking space.' },
-  { key: 'sitting_room', label: 'Sitting room', hint: 'Stand at the doorway and show the whole room.' },
-  { key: 'kitchen', label: 'Kitchen', hint: 'Capture the counters and fittings.' },
-  { key: 'bedroom', label: 'Bedroom', hint: 'Show the room and any wardrobe.' },
-  { key: 'bathroom', label: 'Bathroom', hint: 'Show the fittings and water source.' },
-  { key: 'toilet', label: 'Toilet', hint: 'Show the toilet and its condition.' },
-  { key: 'street', label: 'Street outside', hint: 'Show the road and how the house is reached.' },
+  { key: 'building_front', get "label"() { return ui("Front of the building"); }, get "hint"() { return ui("Stand outside and face the main entrance."); } },
+  { key: 'compound', get "label"() { return ui("Compound / surroundings"); }, get "hint"() { return ui("Show the yard, gate and parking space."); } },
+  { key: 'sitting_room', get "label"() { return ui("Sitting room"); }, get "hint"() { return ui("Stand at the doorway and show the whole room."); } },
+  { key: 'kitchen', get "label"() { return ui("Kitchen"); }, get "hint"() { return ui("Capture the counters and fittings."); } },
+  { key: 'bedroom', get "label"() { return ui("Bedroom"); }, get "hint"() { return ui("Show the room and any wardrobe."); } },
+  { key: 'bathroom', get "label"() { return ui("Bathroom"); }, get "hint"() { return ui("Show the fittings and water source."); } },
+  { key: 'toilet', get "label"() { return ui("Toilet"); }, get "hint"() { return ui("Show the toilet and its condition."); } },
+  { key: 'street', get "label"() { return ui("Street outside"); }, get "hint"() { return ui("Show the road and how the house is reached."); } },
 ];
 
 const LivePropertyCapture = ({
@@ -50,6 +52,7 @@ const LivePropertyCapture = ({
   onRemoveClip,
   onClose,
 }) => {
+  useInterfaceLanguage();
   const [permission, requestPermission] = useCameraPermissions();
   const cameraRef = useRef(null);
   const [facing, setFacing] = useState('back');
@@ -89,8 +92,8 @@ const LivePropertyCapture = ({
     if (photos.length >= MAX_PROPERTY_PHOTOS) {
       Toast.show({
         type: 'info',
-        text1: 'Photo limit reached',
-        text2: `You can capture up to ${MAX_PROPERTY_PHOTOS} property photos.`,
+        text1: ui("Photo limit reached"),
+        text2: ui("You can capture up to {value0} property photos.", {value0: (MAX_PROPERTY_PHOTOS)}),
       });
       return;
     }
@@ -99,7 +102,7 @@ const LivePropertyCapture = ({
     try {
       const shot = await cameraRef.current.takePictureAsync({ quality: 0.9, skipProcessing: false });
       if (!shot?.uri) {
-        Toast.show({ type: 'error', text1: 'Could not capture photo', text2: 'Please try again.' });
+        Toast.show({ type: 'error', text1: ui("Could not capture photo"), text2: ui("Please try again.") });
         return;
       }
 
@@ -111,8 +114,8 @@ const LivePropertyCapture = ({
       if (!session?.success || !token) {
         Toast.show({
           type: 'error',
-          text1: 'Could not verify live capture',
-          text2: 'Please retake the photo.',
+          text1: ui("Could not verify live capture"),
+          text2: ui("Please retake the photo."),
         });
         return;
       }
@@ -131,8 +134,8 @@ const LivePropertyCapture = ({
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Capture failed',
-        text2: error?.response?.data?.message || 'Could not verify live capture. Please try again.',
+        text1: ui("Capture failed"),
+        text2: error?.response?.data?.message || ui("Could not verify live capture. Please try again."),
       });
     } finally {
       setBusy(false);
@@ -145,8 +148,8 @@ const LivePropertyCapture = ({
     if (clips.length >= MAX_PROPERTY_CLIPS) {
       Toast.show({
         type: 'info',
-        text1: 'Clip limit reached',
-        text2: `You can record up to ${MAX_PROPERTY_CLIPS} property clips.`,
+        text1: ui("Clip limit reached"),
+        text2: ui("You can record up to {value0} property clips.", {value0: (MAX_PROPERTY_CLIPS)}),
       });
       return;
     }
@@ -162,7 +165,7 @@ const LivePropertyCapture = ({
     try {
       const clip = await cameraRef.current.recordAsync({ maxDuration: MAX_CLIP_SECONDS });
       if (!clip?.uri) {
-        Toast.show({ type: 'error', text1: 'Could not record clip', text2: 'Please try again.' });
+        Toast.show({ type: 'error', text1: ui("Could not record clip"), text2: ui("Please try again.") });
         return;
       }
 
@@ -173,8 +176,8 @@ const LivePropertyCapture = ({
       if (!session?.success || !token) {
         Toast.show({
           type: 'error',
-          text1: 'Could not verify live capture',
-          text2: 'Please record the clip again.',
+          text1: ui("Could not verify live capture"),
+          text2: ui("Please record the clip again."),
         });
         return;
       }
@@ -190,8 +193,8 @@ const LivePropertyCapture = ({
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Recording failed',
-        text2: error?.response?.data?.message || 'Could not record the clip. Please try again.',
+        text1: ui("Recording failed"),
+        text2: error?.response?.data?.message || ui("Could not record the clip. Please try again."),
       });
     } finally {
       if (clipTimerRef.current) {
@@ -221,7 +224,7 @@ const LivePropertyCapture = ({
     if (!permission) {
       return (
         <View style={styles.centered}>
-          <AppText style={styles.centeredText}>Checking camera permission…</AppText>
+          <AppText style={styles.centeredText}>{ui("Checking camera permission…")}</AppText>
         </View>
       );
     }
@@ -230,11 +233,9 @@ const LivePropertyCapture = ({
       return (
         <View style={styles.centered}>
           <Icon name="camera-outline" size={44} color={colors.gold} />
-          <AppText style={styles.centeredTitle}>Camera access needed</AppText>
-          <AppText style={styles.centeredText}>
-            Property photos must be taken live in the app. Allow camera access to continue.
-          </AppText>
-          <Button title="Allow camera access" onPress={() => requestPermission().catch(() => {})} />
+          <AppText style={styles.centeredTitle}>{ui("Camera access needed")}</AppText>
+          <AppText style={styles.centeredText}>{ui("Property photos must be taken live in the app. Allow camera access to continue.")}</AppText>
+          <Button title={ui("Allow camera access")} onPress={() => requestPermission().catch(() => {})} />
         </View>
       );
     }
@@ -251,63 +252,59 @@ const LivePropertyCapture = ({
         {flash ? <View style={styles.flash} /> : null}
         <View style={styles.topBar}>
           <TouchableOpacity
-            accessibilityLabel="Close camera"
+            accessibilityLabel={ui("Close camera")}
             onPress={onClose}
             style={styles.topButton}>
             <Icon name="close" size={22} color={colors.white} />
           </TouchableOpacity>
           <View style={styles.modePill}>
             <TouchableOpacity
-              accessibilityLabel="Photo mode"
+              accessibilityLabel={ui("Photo mode")}
               disabled={recording}
               onPress={() => setMode('photo')}
               style={[styles.modeButton, mode === 'photo' && styles.modeButtonActive]}>
-              <AppText style={[styles.modeText, mode === 'photo' && styles.modeTextActive]}>Photo</AppText>
+              <AppText style={[styles.modeText, mode === 'photo' && styles.modeTextActive]}>{ui("Photo")}</AppText>
             </TouchableOpacity>
             <TouchableOpacity
-              accessibilityLabel="Clip mode"
+              accessibilityLabel={ui("Clip mode")}
               disabled={recording}
               onPress={() => setMode('clip')}
               style={[styles.modeButton, mode === 'clip' && styles.modeButtonActive]}>
-              <AppText style={[styles.modeText, mode === 'clip' && styles.modeTextActive]}>Clip</AppText>
+              <AppText style={[styles.modeText, mode === 'clip' && styles.modeTextActive]}>{ui("Clip")}</AppText>
             </TouchableOpacity>
           </View>
           <TouchableOpacity
-            accessibilityLabel="Switch camera"
+            accessibilityLabel={ui("Switch camera")}
             onPress={() => setFacing((current) => (current === 'back' ? 'front' : 'back'))}
             style={styles.topButton}>
             <Icon name="camera-reverse-outline" size={22} color={colors.white} />
           </TouchableOpacity>
         </View>
 
-        {mode === 'photo' && canCaptureMore ? (
+        {mode === "photo" && canCaptureMore ? (
           <View style={styles.promptCard} pointerEvents="none">
-            <AppText style={styles.promptStep}>
-              Shot {photos.length + 1} of {Math.min(MAX_PROPERTY_PHOTOS, GUIDED_SHOT_PROMPTS.length)}
+            <AppText style={styles.promptStep}>{ui("Shot")}{photos.length + 1}{ui(" of ")}{Math.min(MAX_PROPERTY_PHOTOS, GUIDED_SHOT_PROMPTS.length)}
             </AppText>
             <AppText style={styles.promptTitle}>{currentShot.label}</AppText>
             <AppText style={styles.promptHint}>{currentShot.hint}</AppText>
           </View>
         ) : null}
 
-        {mode === 'clip' ? (
+        {mode === "clip" ? (
           <View style={styles.promptCard} pointerEvents="none">
-            <AppText style={styles.promptStep}>
-              Clip {clips.length + 1} of {MAX_PROPERTY_CLIPS}
+            <AppText style={styles.promptStep}>{ui("Clip")}{clips.length + 1}{ui(" of ")}{MAX_PROPERTY_CLIPS}
             </AppText>
             <AppText style={styles.promptTitle}>
-              {recording ? `Recording... ${seconds}s / ${MAX_CLIP_SECONDS}s` : 'Film a short clip'}
+              {recording ? ui("Recording... {value0}s / {value1}s", {value0: (seconds), value1: (MAX_CLIP_SECONDS)}) : 'Film a short clip'}
             </AppText>
-            <AppText style={styles.promptHint}>
-              Clips are slowed down and woven into your automatic tour video.
-            </AppText>
+            <AppText style={styles.promptHint}>{ui("Clips are slowed down and woven into your automatic tour video.")}</AppText>
           </View>
         ) : null}
 
         <View style={styles.bottomBar}>
-          {mode === 'photo' ? (
+          {mode === "photo" ? (
             <TouchableOpacity
-              accessibilityLabel="Take photo"
+              accessibilityLabel={ui("Take photo")}
               disabled={busy || !ready || !canCaptureMore}
               onPress={takePhoto}
               style={[
@@ -345,7 +342,7 @@ const LivePropertyCapture = ({
                   </View>
                 ) : null}
                 <TouchableOpacity
-                  accessibilityLabel={`Remove photo ${index + 1}`}
+                  accessibilityLabel={ui("Remove photo {value0}", {value0: (index + 1)})}
                   onPress={() => onRemove?.(index)}
                   style={styles.stripRemove}>
                   <Icon name="close" size={13} color={colors.white} />
@@ -362,11 +359,10 @@ const LivePropertyCapture = ({
                 <View style={styles.clipIcon}>
                   <Icon name="videocam" size={16} color={colors.white} />
                 </View>
-                <AppText style={styles.clipLabel} numberOfLines={1}>
-                  Clip {index + 1}
+                <AppText style={styles.clipLabel} numberOfLines={1}>{ui("Clip")}{index + 1}
                 </AppText>
                 <TouchableOpacity
-                  accessibilityLabel={`Remove clip ${index + 1}`}
+                  accessibilityLabel={ui("Remove clip {value0}", {value0: (index + 1)})}
                   onPress={() => onRemoveClip?.(index)}
                   style={styles.stripRemove}>
                   <Icon name="close" size={13} color={colors.white} />

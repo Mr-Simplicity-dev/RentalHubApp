@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AppState, Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -36,13 +38,12 @@ const INACTIVITY_WARNING_MS = 120000;
 const RECORDING_MAX_DURATION_SECONDS = 3900;
 const MOBILE_FINGERPRINT_PREFIX = 'mobile:';
 
-const ProgressBar = ({ value }) => (
-  <View style={styles.progressTrack}>
+const ProgressBar = ({ value }) => { useInterfaceLanguage(); return (<View style={styles.progressTrack}>
     <View style={[styles.progressFill, { width: `${value}%` }]} />
-  </View>
-);
+  </View>); };
 
 const InterviewScreen = ({ route, navigation }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const applicationId = route?.params?.applicationId;
   const phoneNumber = route?.params?.phoneNumber;
   const email = route?.params?.email;
@@ -95,13 +96,13 @@ const InterviewScreen = ({ route, navigation }) => {
 
   const fingerprint = useMemo(
     () => `${MOBILE_FINGERPRINT_PREFIX}${referenceNumber || ''}`,
-    [referenceNumber]
+    [referenceNumber, interfaceLanguage]
   );
   const currentQuestion = questions[currentIndex];
   const progress = useMemo(() => {
     if (!questions.length) return 0;
     return ((currentIndex + 1) / questions.length) * 100;
-  }, [currentIndex, questions.length]);
+  }, [currentIndex, questions.length, interfaceLanguage]);
 
   // ── Helpers ──
   const bufferEvent = useCallback((event) => {
@@ -143,8 +144,8 @@ const InterviewScreen = ({ route, navigation }) => {
       } catch {
         Toast.show({
           type: 'error',
-          text1: 'Recording not saved',
-          text2: 'Your interview recording failed to upload. Please contact recruitment support.',
+          text1: ui("Recording not saved"),
+          text2: ui("Your interview recording failed to upload. Please contact recruitment support."),
         });
         return false;
       }
@@ -211,8 +212,8 @@ const InterviewScreen = ({ route, navigation }) => {
     if (!consented) {
       Toast.show({
         type: 'error',
-        text1: 'Consent required',
-        text2: 'Please confirm that you consent to being recorded before starting the interview.',
+        text1: ui("Consent required"),
+        text2: ui("Please confirm that you consent to being recorded before starting the interview."),
       });
       return;
     }
@@ -491,7 +492,7 @@ const InterviewScreen = ({ route, navigation }) => {
       }
       Toast.show({
         type: 'error',
-        text1: 'Interview failed',
+        text1: ui("Interview failed"),
         text2: getErrorMessage(err, 'Could not submit your answer'),
       });
     } finally {
@@ -513,8 +514,8 @@ const InterviewScreen = ({ route, navigation }) => {
       await stopAndUploadRecording();
       Toast.show({
         type: 'success',
-        text1: 'Interview complete',
-        text2: `Score: ${completionResponse?.data?.data?.score || 0}%`,
+        text1: ui("Interview complete"),
+        text2: ui("Score: {value0}%", {value0: (completionResponse?.data?.data?.score || 0)}),
       });
     } catch (err) {
       if (err?.response?.status === 410) {
@@ -523,7 +524,7 @@ const InterviewScreen = ({ route, navigation }) => {
       }
       Toast.show({
         type: 'error',
-        text1: 'Interview failed',
+        text1: ui("Interview failed"),
         text2: getErrorMessage(err, 'Could not complete your interview'),
       });
     }
@@ -549,14 +550,14 @@ const InterviewScreen = ({ route, navigation }) => {
 
   // ── Renders ──
   if (loading) {
-    return <PremiumCenter loading title="Launching interview" message="Preparing your proctored session..." />;
+    return <PremiumCenter loading title={ui("Launching interview")} message={ui("Preparing your proctored session...")} />;
   }
 
   if (sessionEnded) {
     return (
       <PremiumCenter
         icon="lock-closed-outline"
-        title="Session ended"
+        title={ui("Session ended")}
         message={error}
         tone="danger"
       />
@@ -567,7 +568,7 @@ const InterviewScreen = ({ route, navigation }) => {
     return (
       <PremiumCenter
         icon="alert-circle-outline"
-        title="Interview unavailable"
+        title={ui("Interview unavailable")}
         message={error}
         tone="danger"
       />
@@ -578,16 +579,16 @@ const InterviewScreen = ({ route, navigation }) => {
     return (
       <PremiumScreen>
         <PremiumHero
-          eyebrow="Recruitment interview"
-          title="Proctored interview"
-          subtitle="You will answer multiple-choice questions while your camera records and monitors your session."
+          eyebrow={ui("Recruitment interview")}
+          title={ui("Proctored interview")}
+          subtitle={ui("You will answer multiple-choice questions while your camera records and monitors your session.")}
           icon="videocam-outline"
         />
 
         <PremiumCard>
-          <InfoRow icon="notifications-outline" label="Recording" value="Video and audio are recorded" />
-          <InfoRow icon="shield-checkmark-outline" label="Monitoring" value="Face monitoring and liveness checks" />
-          <InfoRow icon="timer-outline" label="Session" value="A total time limit applies" />
+          <InfoRow icon="notifications-outline" label={ui("Recording")} value="Video and audio are recorded" />
+          <InfoRow icon="shield-checkmark-outline" label={ui("Monitoring")} value="Face monitoring and liveness checks" />
+          <InfoRow icon="timer-outline" label={ui("Session")} value="A total time limit applies" />
           <TouchableOpacity
             activeOpacity={0.84}
             style={styles.consentRow}
@@ -596,12 +597,10 @@ const InterviewScreen = ({ route, navigation }) => {
             <View style={[styles.checkbox, consented && styles.checkboxChecked]}>
               {consented ? <AppText style={styles.checkboxMark}>✓</AppText> : null}
             </View>
-            <AppText style={styles.consentText}>
-              I consent to being video and audio recorded during this proctored interview for assessment and integrity purposes.
-            </AppText>
+            <AppText style={styles.consentText}>{ui("I consent to being video and audio recorded during this proctored interview for assessment and integrity purposes.")}</AppText>
           </TouchableOpacity>
           <PremiumButton
-            title="Start interview"
+            title={ui("Start interview")}
             onPress={startInterview}
             icon="play-outline"
             disabled={!consented || loading}
@@ -626,7 +625,7 @@ const InterviewScreen = ({ route, navigation }) => {
 
       {!interviewActive && (
         <View style={[StyleSheet.absoluteFill, styles.cameraPlaceholder]}>
-          <AppText style={styles.cameraPlaceholderText}>Preparing camera...</AppText>
+          <AppText style={styles.cameraPlaceholderText}>{ui("Preparing camera...")}</AppText>
         </View>
       )}
 
@@ -637,12 +636,12 @@ const InterviewScreen = ({ route, navigation }) => {
             <>
               <StatusPill
                 label={
-                  faceStatus.status === 'monitoring'
+                  faceStatus.status === "monitoring"
                     ? 'Face: OK'
                     : faceStatus.status === 'violation'
                     ? 'Violation'
                     : faceStatus.faces > 0
-                    ? `Faces: ${faceStatus.faces}`
+                    ? ui("Faces: {value0}", {value0: (faceStatus.faces)})
                     : 'No face'
                 }
                 color={faceStatus.status === 'violation' ? colors.danger : colors.gold}
@@ -652,11 +651,11 @@ const InterviewScreen = ({ route, navigation }) => {
                 color={livenessChallenge ? colors.gold : livenessStatus === 'no_blink' ? colors.danger : colors.success}
               />
               <StatusPill
-                label={`Session ${formatSessionTime(sessionTimeLeft)}`}
+                label={ui("Session {value0}", {value0: (formatSessionTime(sessionTimeLeft))})}
                 color={sessionTimeLeft <= 300 ? colors.gold : colors.blue}
               />
               {!proctoringAvailable && (
-                <StatusPill label="Recording only" color={colors.warning} />
+                <StatusPill label={ui("Recording only")} color={colors.warning} />
               )}
             </>
           )}
@@ -666,9 +665,7 @@ const InterviewScreen = ({ route, navigation }) => {
       {/* ── Inactivity warning ── */}
       {inactivityWarning && !locked && (
         <View style={styles.warningBanner}>
-          <AppText style={styles.warningBannerText}>
-            No activity detected! Answer a question to keep your session active.
-          </AppText>
+          <AppText style={styles.warningBannerText}>{ui("No activity detected! Answer a question to keep your session active.")}</AppText>
         </View>
       )}
 
@@ -677,8 +674,8 @@ const InterviewScreen = ({ route, navigation }) => {
         <View style={styles.challengeBanner}>
           <AppText style={styles.challengeText}>
             {livenessChallenge === 'blink'
-              ? 'Liveness check: Please BLINK now'
-              : `Liveness check: Please turn your head ${livenessChallenge.toUpperCase()} and back`}
+              ? ui("Liveness check: Please BLINK now")
+              : ui("Liveness check: Please turn your head {value0} and back", {value0: (livenessChallenge.toUpperCase())})}
           </AppText>
         </View>
       )}
@@ -687,10 +684,9 @@ const InterviewScreen = ({ route, navigation }) => {
       {interviewActive && !locked && currentQuestion && (
         <View style={styles.questionCard}>
           <View style={styles.progressHeader}>
-            <AppText style={styles.progressHeaderText}>
-              Question {currentIndex + 1} of {questions.length}
+            <AppText style={styles.progressHeaderText}>{ui("Question")}{currentIndex + 1}{ui(" of ")}{questions.length}
             </AppText>
-            <AppText style={styles.timerText}>{questionTimeLeft}s</AppText>
+            <AppText style={styles.timerText}>{questionTimeLeft}{ui("s")}</AppText>
           </View>
           <ProgressBar value={progress} />
           <AppText style={styles.questionText}>{currentQuestion.question}</AppText>
@@ -713,7 +709,7 @@ const InterviewScreen = ({ route, navigation }) => {
               onPress={() => submitAnswer('X')}
               disabled={submitting}
             >
-              <AppText style={styles.skipText}>Skip question</AppText>
+              <AppText style={styles.skipText}>{ui("Skip question")}</AppText>
             </TouchableOpacity>
           </View>
         </View>
@@ -723,15 +719,15 @@ const InterviewScreen = ({ route, navigation }) => {
       {locked && (
         <View style={styles.lockedOverlay}>
           <AppText style={styles.lockedTitle}>
-            {sessionEnded ? 'Session ended' : 'Interview locked'}
+            {sessionEnded ? ui("Session ended") : 'Interview locked'}
           </AppText>
           <AppText style={styles.lockedText}>
             {sessionEnded
-              ? 'This interview session is no longer active. Please contact recruitment support.'
+              ? ui("This interview session is no longer active. Please contact recruitment support.")
               : 'A proctoring violation was detected. Your answers so far have been submitted for review.'}
           </AppText>
           <PremiumButton
-            title="Back"
+            title={ui("Back")}
             onPress={() => navigation.goBack()}
             icon="arrow-back-outline"
           />
@@ -742,17 +738,17 @@ const InterviewScreen = ({ route, navigation }) => {
       {completedSummary && (
         <View style={styles.completedOverlay}>
           <PremiumCard style={styles.completeCard}>
-            <AppText style={styles.completeTitle}>Interview complete</AppText>
-            <InfoRow icon="stats-chart-outline" label="Score" value={`${completedSummary.score}%`} />
-            <InfoRow icon="checkmark-done-outline" label="Correct answers" value={completedSummary.correct_answers} />
+            <AppText style={styles.completeTitle}>{ui("Interview complete")}</AppText>
+            <InfoRow icon="stats-chart-outline" label={ui("Score")} value={`${completedSummary.score}%`} />
+            <InfoRow icon="checkmark-done-outline" label={ui("Correct answers")} value={completedSummary.correct_answers} />
             <InfoRow
               icon="shield-checkmark-outline"
-              label="Passed"
+              label={ui("Passed")}
               value={completedSummary.passed ? 'Yes' : 'No'}
               valueStyle={{ color: completedSummary.passed ? colors.success : colors.danger }}
             />
             <PremiumButton
-              title="Back to applications"
+              title={ui("Back to applications")}
               onPress={() => navigation.goBack()}
               icon="arrow-back-outline"
             />

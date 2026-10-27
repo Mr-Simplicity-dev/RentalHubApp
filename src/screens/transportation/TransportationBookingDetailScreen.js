@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useState } from 'react';
 import {Alert, StyleSheet, View} from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -31,6 +33,7 @@ const STATUS_COLORS = {
 };
 
 const TransportationBookingDetailScreen = ({ route, navigation }) => {
+  useInterfaceLanguage();
   const { bookingId } = route.params;
   const [booking, setBooking] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -50,7 +53,7 @@ const TransportationBookingDetailScreen = ({ route, navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Load Failed',
+        text1: ui("Load Failed"),
         text2: getErrorMessage(error, 'Could not load booking details'),
       });
       navigation.goBack();
@@ -61,23 +64,23 @@ const TransportationBookingDetailScreen = ({ route, navigation }) => {
 
   const handleCancel = () => {
     Alert.alert(
-      'Cancel Booking',
-      'Are you sure you want to cancel this transportation booking?',
+      ui("Cancel Booking"),
+      ui("Are you sure you want to cancel this transportation booking?"),
       [
-        { text: 'No', style: 'cancel' },
+        { text: ui("No"), style: 'cancel' },
         {
-          text: 'Yes, Cancel',
+          text: ui("Yes, Cancel"),
           style: 'destructive',
           onPress: async () => {
             setCancelling(true);
             try {
               await transportationService.cancelBooking(bookingId);
-              Toast.show({ type: 'success', text1: 'Booking cancelled' });
+              Toast.show({ type: 'success', text1: ui("Booking cancelled") });
               loadBookingDetails();
             } catch (error) {
               Toast.show({
                 type: 'error',
-                text1: 'Failed to cancel',
+                text1: ui("Failed to cancel"),
                 text2: getErrorMessage(error),
               });
             } finally {
@@ -105,16 +108,16 @@ const TransportationBookingDetailScreen = ({ route, navigation }) => {
         if (hasPaystackCheckout(response.data)) {
           openNativeCheckout({
             transaction: response.data,
-            title: 'Pay transportation booking',
-            subtitle: 'Complete your transport booking with secure in-app Paystack card payment.',
+            title: ui("Pay transportation booking"),
+            subtitle: ui("Complete your transport booking with secure in-app Paystack card payment."),
             amountLabel: formatNaira(booking?.total_price, ''),
             onSuccess: (paymentResponse) =>
               completeNativePayment(paymentResponse?.reference || reference),
             onBrowserFallback: () => {
               Toast.show({
                 type: 'info',
-                text1: 'Paystack checkout opened',
-                text2: 'Complete payment securely, then return to RentalHub.',
+                text1: ui("Paystack checkout opened"),
+                text2: ui("Complete payment securely, then return to RentalHub."),
               });
             },
           });
@@ -122,12 +125,12 @@ const TransportationBookingDetailScreen = ({ route, navigation }) => {
           await completeNativePayment(reference);
         }
       } else {
-        Toast.show({ type: 'error', text1: response?.message || 'Payment initialization failed' });
+        Toast.show({ type: 'error', text1: response?.message || ui("Payment initialization failed") });
       }
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Payment Error',
+        text1: ui("Payment Error"),
         text2: getErrorMessage(error),
       });
     } finally {
@@ -144,22 +147,22 @@ const TransportationBookingDetailScreen = ({ route, navigation }) => {
         fallbackFlow: 'transportation',
       });
       if (response?.success) {
-        Toast.show({ type: 'success', text1: 'Payment verified' });
+        Toast.show({ type: 'success', text1: ui("Payment verified") });
         await loadBookingDetails();
       } else {
-        Toast.show({ type: 'error', text1: response?.message || 'Payment verification failed' });
+        Toast.show({ type: 'error', text1: response?.message || ui("Payment verification failed") });
       }
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Verification Error',
+        text1: ui("Verification Error"),
         text2: getErrorMessage(error),
       });
     }
   };
 
   if (loading) {
-    return <PremiumCenter loading title="Loading booking" message="Fetching your transportation booking details." />;
+    return <PremiumCenter loading title={ui("Loading booking")} message={ui("Fetching your transportation booking details.")} />;
   }
 
   if (!booking) {
@@ -167,9 +170,9 @@ const TransportationBookingDetailScreen = ({ route, navigation }) => {
       <PremiumCenter
         tone="danger"
         icon="alert-circle-outline"
-        title="Booking unavailable"
-        message="We could not load this transportation booking."
-        actionLabel="Go back"
+        title={ui("Booking unavailable")}
+        message={ui("We could not load this transportation booking.")}
+        actionLabel={ui("Go back")}
         onAction={() => navigation.goBack()}
       />
     );
@@ -183,36 +186,35 @@ const TransportationBookingDetailScreen = ({ route, navigation }) => {
     <>
       <PremiumScreen>
         <PremiumHero
-          eyebrow="Transportation"
-          title={booking.service_name || 'Transportation booking'}
-          subtitle="Track trip details, payment status and next actions from one clean screen."
+          eyebrow={ui("Transportation")}
+          title={booking.service_name || ui("Transportation booking")}
+          subtitle={ui("Track trip details, payment status and next actions from one clean screen.")}
           icon="car-outline"
-          right={<StatusPill label={booking.status || 'pending'} color={statusColor} />}
+          right={<StatusPill label={booking.status || ui("pending")} color={statusColor} />}
         />
 
         <PremiumCard>
-          <PremiumSectionTitle title="Trip details" subtitle="Pickup, destination and schedule." />
-          <InfoRow icon="location-outline" label="Pickup" value={booking.pickup_address} />
-          <InfoRow icon="navigate-outline" label="Destination" value={booking.destination_address} />
-          <InfoRow icon="calendar-outline" label="Date & time" value={`${booking.booking_date || '—'} at ${booking.booking_time || '—'}`} />
-          <InfoRow icon="resize-outline" label="Distance" value={booking.estimated_distance_km ? `${booking.estimated_distance_km} km` : '—'} />
+          <PremiumSectionTitle title={ui("Trip details")} subtitle={ui("Pickup, destination and schedule.")} />
+          <InfoRow icon="location-outline" label={ui("Pickup")} value={booking.pickup_address} />
+          <InfoRow icon="navigate-outline" label={ui("Destination")} value={booking.destination_address} />
+          <InfoRow icon="calendar-outline" label={ui("Date & time")} value={`${booking.booking_date || '—'} at ${booking.booking_time || '—'}`} />
+          <InfoRow icon="resize-outline" label={ui("Distance")} value={booking.estimated_distance_km ? `${booking.estimated_distance_km} km` : '—'} />
         </PremiumCard>
 
         <PremiumCard>
-          <PremiumSectionTitle title="Payment" subtitle="Charges and payment completion status." />
+          <PremiumSectionTitle title={ui("Payment")} subtitle={ui("Charges and payment completion status.")} />
           <View style={styles.priceLine}>
-            <AppText style={styles.priceLabel}>Base price</AppText>
+            <AppText style={styles.priceLabel}>{ui("Base price")}</AppText>
             <AppText style={styles.priceValue}>{formatNaira(booking.base_price)}</AppText>
           </View>
           <View style={styles.priceLine}>
-            <AppText style={styles.priceLabel}>Distance charge</AppText>
+            <AppText style={styles.priceLabel}>{ui("Distance charge")}</AppText>
             <AppText style={styles.priceValue}>{formatNaira(booking.distance_price)}</AppText>
           </View>
           <View style={styles.totalPanel}>
             <View>
-              <AppText style={styles.totalLabel}>Total</AppText>
-              <AppText style={styles.paymentStatus}>
-                Payment {booking.payment_status === 'paid' ? 'completed' : 'pending'}
+              <AppText style={styles.totalLabel}>{ui("Total")}</AppText>
+              <AppText style={styles.paymentStatus}>{ui("Payment")}{booking.payment_status === "paid" ? ui("completed") : ui("pending")}
               </AppText>
             </View>
             <AppText style={styles.totalValue}>{formatNaira(booking.total_price)}</AppText>
@@ -221,14 +223,14 @@ const TransportationBookingDetailScreen = ({ route, navigation }) => {
 
         {booking.items_description ? (
           <PremiumCard>
-            <PremiumSectionTitle title="Items" />
+            <PremiumSectionTitle title={ui("Items")} />
             <AppText style={styles.bodyText}>{booking.items_description}</AppText>
           </PremiumCard>
         ) : null}
 
         {booking.special_requirements ? (
           <PremiumCard>
-            <PremiumSectionTitle title="Special requirements" />
+            <PremiumSectionTitle title={ui("Special requirements")} />
             <AppText style={styles.bodyText}>{booking.special_requirements}</AppText>
           </PremiumCard>
         ) : null}
@@ -236,7 +238,7 @@ const TransportationBookingDetailScreen = ({ route, navigation }) => {
         <View style={styles.actions}>
           {canPay ? (
             <PremiumButton
-              title="Pay now"
+              title={ui("Pay now")}
               icon="card-outline"
               loading={paying}
               disabled={paying}
@@ -245,7 +247,7 @@ const TransportationBookingDetailScreen = ({ route, navigation }) => {
           ) : null}
           {canCancel ? (
             <PremiumButton
-              title="Cancel booking"
+              title={ui("Cancel booking")}
               variant="ghost"
               icon="close-circle-outline"
               loading={cancelling}

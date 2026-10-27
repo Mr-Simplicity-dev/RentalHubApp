@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useCallback, useState } from 'react';
 import { Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -33,6 +35,7 @@ const REVALIDATION_COLORS = {
 };
 
 const ModerationHubScreen = () => {
+  useInterfaceLanguage();
   const [tab, setTab] = useState('ratings');
   const [ratings, setRatings] = useState([]);
   const [requests, setRequests] = useState([]);
@@ -55,7 +58,7 @@ const ModerationHubScreen = () => {
     } catch (err) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(err, 'Could not load moderation queue'),
       });
     } finally {
@@ -92,7 +95,7 @@ const ModerationHubScreen = () => {
           status: action,
           note: note.trim() || undefined,
         });
-        Toast.show({ type: 'success', text1: `Rating ${action}` });
+        Toast.show({ type: 'success', text1: ui("Rating {value0}", {value0: (ui(action))}) });
       } else {
         await superModerationService.reviewCredentialRevalidation(item.id, {
           decision: action,
@@ -100,7 +103,7 @@ const ModerationHubScreen = () => {
         });
         Toast.show({
           type: 'success',
-          text1: action === 'approved' ? 'Credentials approved' : 'Credentials returned',
+          text1: action === "approved" ? ui("Credentials approved") : ui("Credentials returned"),
         });
       }
       setModal(null);
@@ -118,13 +121,13 @@ const ModerationHubScreen = () => {
       return (
         <View style={styles.actions}>
           <PremiumButton
-            title="Approve"
+            title={ui("Approve")}
             onPress={() => openAction(kind, item, 'approved')}
             icon="checkmark-circle-outline"
             style={styles.actionButton}
           />
           <PremiumButton
-            title="Return"
+            title={ui("Return")}
             variant="ghost"
             onPress={() => openAction(kind, item, 'rejected')}
             icon="arrow-undo-outline"
@@ -142,7 +145,7 @@ const ModerationHubScreen = () => {
       <View style={styles.actions}>
         {canApprove ? (
           <PremiumButton
-            title="Approve"
+            title={ui("Approve")}
             onPress={() => openAction(kind, item, 'approved')}
             icon="checkmark-circle-outline"
             style={styles.actionButton}
@@ -150,7 +153,7 @@ const ModerationHubScreen = () => {
         ) : null}
         {canHide ? (
           <PremiumButton
-            title="Hide"
+            title={ui("Hide")}
             variant="secondary"
             onPress={() => openAction(kind, item, 'hidden')}
             icon="eye-off-outline"
@@ -159,7 +162,7 @@ const ModerationHubScreen = () => {
         ) : null}
         {canReject ? (
           <PremiumButton
-            title="Reject"
+            title={ui("Reject")}
             variant="ghost"
             onPress={() => openAction(kind, item, 'rejected')}
             icon="close-circle-outline"
@@ -171,14 +174,14 @@ const ModerationHubScreen = () => {
   };
 
   if (loading) {
-    return <PremiumCenter loading title="Loading moderation queue" />;
+    return <PremiumCenter loading title={ui("Loading moderation queue")} />;
   }
 
   const header = (
     <PremiumHero
-      eyebrow="Super admin"
-      title="Moderation"
-      subtitle="Approve or hide public ratings, and review credential revalidation submissions."
+      eyebrow={ui("Super admin")}
+      title={ui("Moderation")}
+      subtitle={ui("Approve or hide public ratings, and review credential revalidation submissions.")}
       icon="shield-checkmark-outline"
     />
   );
@@ -186,8 +189,8 @@ const ModerationHubScreen = () => {
   const tabBar = (
     <View style={styles.tabRow}>
       {[
-        { key: 'ratings', label: 'Ratings' },
-        { key: 'credentials', label: 'Credential revalidation' },
+        { key: 'ratings', label: ui("Ratings") },
+        { key: 'credentials', label: ui("Credential revalidation") },
       ].map((t) => {
         const activeTab = tab === t.key;
         return (
@@ -217,9 +220,9 @@ const ModerationHubScreen = () => {
             {tabBar}
           </>
         }
-        emptyTitle={tab === 'ratings' ? 'No ratings' : 'No revalidation requests'}
+        emptyTitle={tab === "ratings" ? 'No ratings' : 'No revalidation requests'}
         emptyMessage={
-          tab === 'ratings'
+          tab === "ratings"
             ? 'New tenant and landlord ratings will appear here.'
             : 'Credential revalidation requests will appear here.'
         }
@@ -233,23 +236,23 @@ const ModerationHubScreen = () => {
                     <AppText style={styles.cardTitle}>
                       {item.source_title || item.rating_context || 'Platform rating'}
                     </AppText>
-                    <AppText style={styles.cardMeta}>{item.full_name || `User #${item.user_id}`}</AppText>
+                    <AppText style={styles.cardMeta}>{item.full_name || ui("User #{value0}", {value0: (item.user_id)})}</AppText>
                   </View>
                   <StatusPill label={item.status} color={color} />
                 </View>
-                <InfoRow icon="star-outline" label="Stars" value={String(item.stars || 0)} />
+                <InfoRow icon="star-outline" label={ui("Stars")} value={String(item.stars || 0)} />
                 {item.comment ? (
-                  <InfoRow icon="chatbubble-outline" label="Comment" value={item.comment} />
+                  <InfoRow icon="chatbubble-outline" label={ui("Comment")} value={item.comment} />
                 ) : null}
                 <InfoRow
                   icon="location-outline"
-                  label="Location"
+                  label={ui("Location")}
                   value={[item.state_name, item.lga_name, item.city].filter(Boolean).join(', ') || '—'}
                 />
                 {item.created_at ? (
                   <InfoRow
                     icon="time-outline"
-                    label="Submitted"
+                    label={ui("Submitted")}
                     value={new Date(item.created_at).toLocaleString()}
                   />
                 ) : null}
@@ -267,23 +270,23 @@ const ModerationHubScreen = () => {
               <View style={styles.cardTop}>
                 <View style={styles.cardCopy}>
                   <AppText style={styles.cardTitle}>
-                    {item.user_name || `User #${item.user_id}`}
+                    {item.user_name || ui("User #{value0}", {value0: (item.user_id)})}
                   </AppText>
                   {item.email ? <AppText style={styles.cardMeta}>{item.email}</AppText> : null}
                 </View>
                 <StatusPill label={item.status} color={color} />
               </View>
               {fields ? (
-                <InfoRow icon="document-text-outline" label="Requested fields" value={fields} />
+                <InfoRow icon="document-text-outline" label={ui("Requested fields")} value={fields} />
               ) : null}
-              {item.reason ? <InfoRow icon="reader-outline" label="Reason" value={item.reason} /> : null}
+              {item.reason ? <InfoRow icon="reader-outline" label={ui("Reason")} value={item.reason} /> : null}
               {item.review_note ? (
-                <InfoRow icon="chatbubble-outline" label="Review note" value={item.review_note} />
+                <InfoRow icon="chatbubble-outline" label={ui("Review note")} value={item.review_note} />
               ) : null}
               {item.created_at ? (
                 <InfoRow
                   icon="time-outline"
-                  label="Requested"
+                  label={ui("Requested")}
                   value={new Date(item.created_at).toLocaleString()}
                 />
               ) : null}
@@ -298,31 +301,31 @@ const ModerationHubScreen = () => {
           <View style={styles.overlay}>
             <View style={styles.modalCard}>
               <AppText style={styles.modalTitle}>
-                {modal.action === 'approved'
-                  ? 'Approve'
+                {modal.action === "approved"
+                  ? ui("Approve")
                   : modal.action === 'hidden'
                     ? 'Hide rating'
-                    : modal.action === 'rejected' && modal.kind === 'rating'
+                    : modal.action === "rejected" && modal.kind === "rating"
                       ? 'Reject rating'
                       : 'Return for correction'}
               </AppText>
               <AppText style={styles.modalSubtitle}>
-                {modal.kind === 'rating'
-                  ? modal.item.comment || modal.item.source_title || `Rating #${modal.item.id}`
-                  : `Credential revalidation #${modal.item.id}`}
+                {modal.kind === "rating"
+                  ? modal.item.comment || modal.item.source_title || ui("Rating #{value0}", {value0: (modal.item.id)})
+                  : ui("Credential revalidation #{value0}", {value0: (modal.item.id)})}
               </AppText>
 
               <Input
                 label={
-                  modal.action === 'approved'
-                    ? 'Note (optional)'
+                  modal.action === "approved"
+                    ? ui("Note (optional)")
                     : modal.action === 'hidden'
                       ? 'Reason for hiding (optional)'
                       : 'Reason (required for returns)'
                 }
                 value={note}
                 onChangeText={setNote}
-                placeholder="Optional note for the audit record"
+                placeholder={ui("Optional note for the audit record")}
                 multiline
                 numberOfLines={3}
                 containerStyle={styles.fieldGap}
@@ -332,14 +335,14 @@ const ModerationHubScreen = () => {
 
               <View style={styles.modalActions}>
                 <PremiumButton
-                  title="Cancel"
+                  title={ui("Cancel")}
                   variant="ghost"
                   onPress={() => setModal(null)}
                   disabled={busy}
                   style={styles.actionButton}
                 />
                 <PremiumButton
-                  title={busy ? 'Working…' : 'Confirm'}
+                  title={busy ? 'Working…' : ui("Confirm")}
                   onPress={submit}
                   loading={busy}
                   style={styles.actionButton}

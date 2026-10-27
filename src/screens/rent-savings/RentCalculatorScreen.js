@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -24,6 +26,7 @@ const numOrEmpty = (value) => {
 };
 
 const RentCalculatorScreen = ({ navigation, route }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const { user } = useContext(AuthContext);
   const params = route?.params || {};
 
@@ -40,7 +43,7 @@ const RentCalculatorScreen = ({ navigation, route }) => {
   const canCalculate = useMemo(() => {
     const rent = Number(rentAmount);
     return Number.isFinite(rent) && rent > 0;
-  }, [rentAmount]);
+  }, [rentAmount, interfaceLanguage]);
 
   const calculate = async () => {
     if (!canCalculate) {
@@ -67,7 +70,7 @@ const RentCalculatorScreen = ({ navigation, route }) => {
     } catch (err) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(err, 'Could not run the rent calculator'),
       });
       setError(getErrorMessage(err, 'Could not run the rent calculator'));
@@ -86,35 +89,35 @@ const RentCalculatorScreen = ({ navigation, route }) => {
 
   const feeRows = result
     ? [
-        { label: `Rent (${result.upfront_months} months upfront)`, value: formatNaira(result.rent_due_at_move_in) },
-        { label: 'Agent fee', value: formatNaira(result.fees.agent_fee) },
-        { label: 'Legal fee', value: formatNaira(result.fees.legal_fee) },
-        { label: 'Caution deposit', value: formatNaira(result.fees.caution_deposit) },
-        { label: 'Agreement / stamp fee', value: formatNaira(result.fees.agreement_fee) },
+        { label: ui("Rent ({value0} months upfront)", {value0: (result.upfront_months)}), value: formatNaira(result.rent_due_at_move_in) },
+        { label: ui("Agent fee"), value: formatNaira(result.fees.agent_fee) },
+        { label: ui("Legal fee"), value: formatNaira(result.fees.legal_fee) },
+        { label: ui("Caution deposit"), value: formatNaira(result.fees.caution_deposit) },
+        { label: ui("Agreement / stamp fee"), value: formatNaira(result.fees.agreement_fee) },
       ]
     : [];
 
   if (Number(result?.fees?.service_charge || 0) > 0) {
-    feeRows.push({ label: 'Service charge', value: formatNaira(result.fees.service_charge) });
+    feeRows.push({ label: ui("Service charge"), value: formatNaira(result.fees.service_charge) });
   }
 
   return (
     <PremiumScreen>
       <PremiumHero
-        eyebrow="Rent calculator"
-        title="Understand your monthly rent"
-        subtitle="See the monthly cost, the full move-in total, and the monthly savings you would need."
+        eyebrow={ui("Rent calculator")}
+        title={ui("Understand your monthly rent")}
+        subtitle={ui("See the monthly cost, the full move-in total, and the monthly savings you would need.")}
         icon="calculator-outline"
       />
 
       <PremiumSectionTitle
-        title="Rent details"
-        subtitle="What the landlord is asking"
+        title={ui("Rent details")}
+        subtitle={ui("What the landlord is asking")}
       />
 
       <PremiumCard>
         <Input
-          label="Rent amount (₦)"
+          label={ui("Rent amount (₦)")}
           value={rentAmount}
           onChangeText={setRentAmount}
           placeholder="e.g. 1200000"
@@ -122,7 +125,7 @@ const RentCalculatorScreen = ({ navigation, route }) => {
           keyboardType="numeric"
         />
 
-        <AppText style={styles.fieldLabel}>This rent is per</AppText>
+        <AppText style={styles.fieldLabel}>{ui("This rent is per")}</AppText>
         <View style={styles.freqRow}>
           {['yearly', 'monthly'].map((freq) => (
             <TouchableOpacity
@@ -132,14 +135,14 @@ const RentCalculatorScreen = ({ navigation, route }) => {
               style={[styles.freqButton, frequency === freq && styles.freqButtonActive]}
             >
               <AppText style={[styles.freqText, frequency === freq && styles.freqTextActive]}>
-                {freq === 'yearly' ? 'Per year' : 'Per month'}
+                {freq === "yearly" ? ui("Per year") : ui("Per month")}
               </AppText>
             </TouchableOpacity>
           ))}
         </View>
 
         <Input
-          label="Rent due upfront (months)"
+          label={ui("Rent due upfront (months)")}
           value={upfrontMonths || (frequency === 'yearly' ? '12' : '1')}
           onChangeText={setUpfrontMonths}
           placeholder="e.g. 12"
@@ -148,7 +151,7 @@ const RentCalculatorScreen = ({ navigation, route }) => {
         />
 
         <Input
-          label="Your monthly income (₦) — optional"
+          label={ui("Your monthly income (₦) — optional")}
           value={monthlyIncome}
           onChangeText={setMonthlyIncome}
           placeholder="e.g. 400000"
@@ -158,7 +161,7 @@ const RentCalculatorScreen = ({ navigation, route }) => {
 
         {monthlyIncome ? (
           <Input
-            label="Share of income for rent (%)"
+            label={ui("Share of income for rent (%)")}
             value={ratioPct}
             onChangeText={setRatioPct}
             placeholder="33"
@@ -168,7 +171,7 @@ const RentCalculatorScreen = ({ navigation, route }) => {
         ) : null}
 
         <Input
-          label="Months until rent is due — optional"
+          label={ui("Months until rent is due — optional")}
           value={monthsToGoal}
           onChangeText={setMonthsToGoal}
           placeholder="e.g. 12"
@@ -179,7 +182,7 @@ const RentCalculatorScreen = ({ navigation, route }) => {
         {error ? <AppText style={styles.error}>{error}</AppText> : null}
 
         <PremiumButton
-          title="Calculate rent"
+          title={ui("Calculate rent")}
           onPress={calculate}
           loading={loading}
           icon="calculator-outline"
@@ -191,12 +194,11 @@ const RentCalculatorScreen = ({ navigation, route }) => {
         <View style={styles.results}>
           <View style={styles.heroCard}>
             <AppText style={styles.heroEyebrow}>
-              {result.frequency === 'yearly' ? 'Monthly equivalent of your yearly rent' : 'Monthly rent'}
+              {result.frequency === "yearly" ? 'Monthly equivalent of your yearly rent' : 'Monthly rent'}
             </AppText>
             <AppText style={styles.heroValue}>{formatNaira(result.monthly_equivalent)}</AppText>
             <AppText style={styles.heroCaption}>
-              {result.upfront_months} month(s) upfront = {formatNaira(result.rent_due_at_move_in)} of rent alone
-            </AppText>
+              {result.upfront_months}{ui(" month(s) upfront = ")}{formatNaira(result.rent_due_at_move_in)}{ui("of rent alone")}</AppText>
           </View>
 
           {afford ? (
@@ -204,46 +206,41 @@ const RentCalculatorScreen = ({ navigation, route }) => {
               <AppText style={styles.budgetTitle}>
                 {withinBudget ? 'Fits your income budget' : 'Above your income budget'}
               </AppText>
-              <AppText style={styles.budgetText}>
-                At {afford.ratio_pct}% of {formatNaira(afford.monthly_income)}/month, you can put{' '}
-                {formatNaira(afford.affordable_monthly)} toward rent monthly (~{formatNaira(afford.affordable_annual_rent)}/year).
-              </AppText>
+              <AppText style={styles.budgetText}>{ui("At")}{afford.ratio_pct}{ui("% of ")}{formatNaira(afford.monthly_income)}{ui("/month, you can put")}{' '}
+                {formatNaira(afford.affordable_monthly)}{ui(" toward rent monthly (~")}{formatNaira(afford.affordable_annual_rent)}{ui("/year).")}</AppText>
             </PremiumCard>
           ) : null}
 
           <PremiumCard>
             <PremiumSectionTitle
-              title="Money needed on day one"
-              subtitle="Rent plus the usual Nigerian fees"
+              title={ui("Money needed on day one")}
+              subtitle={ui("Rent plus the usual Nigerian fees")}
             />
             {feeRows.map((row) => (
               <InfoRow key={row.label} label={row.label} value={row.value} />
             ))}
             <View style={styles.totalRow}>
-              <AppText style={styles.totalLabel}>Move-in total</AppText>
+              <AppText style={styles.totalLabel}>{ui("Move-in total")}</AppText>
               <AppText style={styles.totalValue}>{formatNaira(result.move_in_total)}</AppText>
             </View>
           </PremiumCard>
 
           {result.savings?.enabled ? (
             <View style={styles.savingsCard}>
-              <AppText style={styles.savingsEyebrow}>Rent Savings top-up</AppText>
-              <AppText style={styles.savingsValue}>{formatNaira(result.savings.monthly_savings_required)}/month</AppText>
-              <AppText style={styles.savingsText}>
-                Saving this monthly for {result.savings.months_to_goal} months covers the full{' '}
+              <AppText style={styles.savingsEyebrow}>{ui("Rent Savings top-up")}</AppText>
+              <AppText style={styles.savingsValue}>{formatNaira(result.savings.monthly_savings_required)}{ui("/month")}</AppText>
+              <AppText style={styles.savingsText}>{ui("Saving this monthly for")}{result.savings.months_to_goal}{ui(" months covers the full")}{' '}
                 {formatNaira(result.move_in_total)}.
               </AppText>
             </View>
           ) : null}
 
-          {user?.user_type === 'tenant' ? (
+          {user?.user_type === "tenant" ? (
             <PremiumCard style={styles.planCtaCard}>
-              <AppText style={styles.planCtaTitle}>Ready to start saving?</AppText>
-              <AppText style={styles.planCtaText}>
-                Pick an approved property and a due date to begin a monthly Rent Savings plan.
-              </AppText>
+              <AppText style={styles.planCtaTitle}>{ui("Ready to start saving?")}</AppText>
+              <AppText style={styles.planCtaText}>{ui("Pick an approved property and a due date to begin a monthly Rent Savings plan.")}</AppText>
               <PremiumButton
-                title="Start a rent savings plan"
+                title={ui("Start a rent savings plan")}
                 onPress={() => navigation.navigate('SavingsGoalCreate')}
                 icon="wallet-outline"
               />

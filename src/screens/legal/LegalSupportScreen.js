@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import {AuthContext} from '../../context/AuthContext';
 import {useLanguage} from '../../context/LanguageContext';
 const legalCopy=require('../../i18n/legalCasesCopy.cjs');
@@ -21,6 +23,7 @@ DashboardHero,
 const urgencyOptions = ['normal', 'urgent', 'emergency'];
 
 const LegalSupportScreen = ({ navigation }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const {isAuthenticated}=useContext(AuthContext);
   const {language}=useLanguage();
   const copy=legalCopy[language]||legalCopy.en;
@@ -36,7 +39,7 @@ const LegalSupportScreen = ({ navigation }) => {
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: navigation.canGoBack() });
-  }, [navigation]);
+  }, [navigation, interfaceLanguage]);
 
   const loadLegalSupport = async () => {
     if(!isAuthenticated){setCoverage(null);setRequests([]);setLoading(false);return;}
@@ -51,7 +54,7 @@ const LegalSupportScreen = ({ navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Assistance unavailable',
+        text1: ui("Assistance unavailable"),
         text2: getErrorMessage(error, 'Could not load assistance'),
       });
     } finally {
@@ -68,7 +71,7 @@ const LegalSupportScreen = ({ navigation }) => {
   const submitRequest = async () => {
     if(!isAuthenticated)return;
     if (!form.subject.trim() || !form.description.trim()) {
-      Toast.show({ type: 'info', text1: 'Subject and description are required' });
+      Toast.show({ type: 'info', text1: ui("Subject and description are required") });
       return;
     }
 
@@ -76,12 +79,12 @@ const LegalSupportScreen = ({ navigation }) => {
     try {
       await legalService.submitSupportRequest(form);
       setForm({ subject: '', description: '', urgency: 'normal' });
-      Toast.show({ type: 'success', text1: 'Assistance request submitted' });
+      Toast.show({ type: 'success', text1: ui("Assistance request submitted") });
       await loadLegalSupport();
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Request failed',
+        text1: ui("Request failed"),
         text2: getErrorMessage(error, 'Could not submit assistance request'),
       });
     } finally {
@@ -115,7 +118,7 @@ const LegalSupportScreen = ({ navigation }) => {
       {coverage?.has_coverage ? (
         <DashboardSection title={copy.request}>
           <TextInput
-            placeholder="Subject"
+            placeholder={ui("Subject")}
             placeholderTextColor={colors.muted}
             value={form.subject}
             onChangeText={(value) => setForm((prev) => ({ ...prev, subject: value }))}
@@ -123,7 +126,7 @@ const LegalSupportScreen = ({ navigation }) => {
           />
           <TextInput
             multiline
-            placeholder="Describe your issue"
+            placeholder={ui("Describe your issue")}
             placeholderTextColor={colors.muted}
             value={form.description}
             onChangeText={(value) => setForm((prev) => ({ ...prev, description: value }))}
@@ -131,7 +134,7 @@ const LegalSupportScreen = ({ navigation }) => {
           />
           <View style={styles.urgencyRow}>
             {urgencyOptions.map((option) => (
-              <AppText 
+              <AppText
                 key={option}
                 onPress={() => setForm((prev) => ({ ...prev, urgency: option }))}
                 style={[
@@ -143,24 +146,24 @@ const LegalSupportScreen = ({ navigation }) => {
               </AppText>
             ))}
           </View>
-          <Button title="Submit request" loading={submitting} onPress={submitRequest} />
+          <Button title={ui("Submit request")} loading={submitting} onPress={submitRequest} />
         </DashboardSection>
       ) : null}
 
-      <DashboardSection title="Your requests">
+      <DashboardSection title={ui("Your requests")}>
         {loading && !requests.length ? <ActivityIndicator color={colors.blue} /> : null}
         {!loading && !requests.length ? (
-          <AppText style={styles.empty}>No assistance requests yet.</AppText>
+          <AppText style={styles.empty}>{ui("No assistance requests yet.")}</AppText>
         ) : null}
         {requests.map((request) => (
           <View key={String(request.id)} style={styles.requestCard}>
             <View style={styles.requestTop}>
               <AppText style={styles.requestTitle}>{request.subject}</AppText>
-              <AppText style={styles.statusPill}>{request.status || 'pending'}</AppText>
+              <AppText style={styles.statusPill}>{request.status || ui("pending")}</AppText>
             </View>
             <AppText style={styles.requestDescription}>{request.description}</AppText>
             {request.assigned_lawyer_name ? (
-              <AppText style={styles.requestMeta}>Assigned to {request.assigned_lawyer_name}</AppText>
+              <AppText style={styles.requestMeta}>{ui("Assigned to ")}{request.assigned_lawyer_name}</AppText>
             ) : null}
           </View>
         ))}

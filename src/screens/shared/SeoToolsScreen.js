@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useCallback, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -15,6 +17,7 @@ import { colors, radius, typography, typeScale } from '../../theme';
 import AppText from '../../components/common/AppText';
 
 const SeoToolsScreen = () => {
+  useInterfaceLanguage();
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(null);
@@ -29,7 +32,7 @@ const SeoToolsScreen = () => {
     } catch (err) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(err, 'Could not load the SEO summary'),
       });
     } finally {
@@ -55,20 +58,20 @@ const SeoToolsScreen = () => {
           type: 'success',
           text1: label,
           text2:
-            action === 'sitemap'
-              ? `Sitemap regenerated (${response.data?.urlCount || 0} URLs).`
-              : action === 'rankings'
-                ? response.message || 'Ranking checks completed.'
-                : 'Google notified.',
+            action === "sitemap"
+              ? ui("Sitemap regenerated ({value0} URLs).", {value0: (response.data?.urlCount || 0)})
+              : action === "rankings"
+                ? response.message || ui("Ranking checks completed.")
+                : ui("Google notified."),
         });
       } else {
-        Toast.show({ type: 'error', text1: label, text2: response?.message || 'Request failed.' });
+        Toast.show({ type: 'error', text1: label, text2: response?.message || ui("Request failed.") });
       }
     } catch (err) {
       Toast.show({
         type: 'error',
         text1: label,
-        text2: getErrorMessage(err, 'Request failed'),
+        text2: getErrorMessage(err, ui("Request failed")),
       });
     } finally {
       setBusy(null);
@@ -76,7 +79,7 @@ const SeoToolsScreen = () => {
   };
 
   if (loading) {
-    return <PremiumCenter loading title="Loading SEO summary" />;
+    return <PremiumCenter loading title={ui("Loading SEO summary")} />;
   }
 
   const s = summary || {};
@@ -84,33 +87,31 @@ const SeoToolsScreen = () => {
   return (
     <View style={styles.screen}>
       <PremiumCard style={styles.hero}>
-        <AppText style={styles.heroTitle}>SEO & indexing tools</AppText>
-        <AppText style={styles.heroText}>
-          Live page inventory and on-demand Google / sitemap actions.
-        </AppText>
+        <AppText style={styles.heroTitle}>{ui("SEO & indexing tools")}</AppText>
+        <AppText style={styles.heroText}>{ui("Live page inventory and on-demand Google / sitemap actions.")}</AppText>
       </PremiumCard>
 
       <View style={styles.metricRow}>
         <View style={[styles.metric, styles.metricAccent]}>
           <AppText style={styles.metricValue}>{Number(s.totalSeoPages || 0).toLocaleString()}</AppText>
-          <AppText style={styles.metricLabel}>SEO pages</AppText>
+          <AppText style={styles.metricLabel}>{ui("SEO pages")}</AppText>
         </View>
         <View style={styles.metric}>
           <AppText style={styles.metricValue}>{Number(s.sitemapUrls || 0).toLocaleString()}</AppText>
-          <AppText style={styles.metricLabel}>Sitemap URLs</AppText>
+          <AppText style={styles.metricLabel}>{ui("Sitemap URLs")}</AppText>
         </View>
       </View>
 
       <PremiumCard>
-        <InfoRow icon="layers-outline" label="State pages" value={String(s.statePages || 0)} />
-        <InfoRow icon="grid-outline" label="LGA pages" value={String(s.lgaPages || 0)} />
-        <InfoRow icon="map-outline" label="Area pages" value={String(s.areaPages || 0)} />
-        <InfoRow icon="business-outline" label="Property pages" value={String(s.propertyPages || 0)} />
+        <InfoRow icon="layers-outline" label={ui("State pages")} value={String(s.statePages || 0)} />
+        <InfoRow icon="grid-outline" label={ui("LGA pages")} value={String(s.lgaPages || 0)} />
+        <InfoRow icon="map-outline" label={ui("Area pages")} value={String(s.areaPages || 0)} />
+        <InfoRow icon="business-outline" label={ui("Property pages")} value={String(s.propertyPages || 0)} />
       </PremiumCard>
 
       <PremiumCard>
         <PremiumButton
-          title={busy === 'sitemap' ? 'Regenerating…' : 'Regenerate sitemap'}
+          title={busy === "sitemap" ? 'Regenerating…' : ui("Regenerate sitemap")}
           onPress={() => run('sitemap', 'Sitemap regenerated')}
           loading={busy === 'sitemap'}
           disabled={busy !== null && busy !== 'sitemap'}
@@ -118,7 +119,7 @@ const SeoToolsScreen = () => {
           style={styles.action}
         />
         <PremiumButton
-          title={busy === 'rankings' ? 'Running checks…' : 'Run ranking checks'}
+          title={busy === "rankings" ? 'Running checks…' : 'Run ranking checks'}
           onPress={() => run('rankings', 'Ranking checks')}
           loading={busy === 'rankings'}
           disabled={busy !== null && busy !== 'rankings'}
@@ -127,7 +128,7 @@ const SeoToolsScreen = () => {
           style={styles.action}
         />
         <PremiumButton
-          title="Ping Google"
+          title={ui("Ping Google")}
           onPress={() => run('ping', 'Google notified')}
           loading={busy === 'ping'}
           disabled={busy !== null && busy !== 'ping'}

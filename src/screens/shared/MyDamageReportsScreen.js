@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import {ActivityIndicator,
   FlatList,
@@ -14,12 +16,12 @@ import { getErrorMessage, pickList } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
 const STATUS_CONFIG = {
-  pending: { color: colors.blue, bg: '#EFF6FF', label: 'Pending' },
-  resolved: { color: colors.success, bg: '#F0FBF6', label: 'Resolved' },
-  rejected: { color: colors.danger, bg: '#FFF0EF', label: 'Rejected' },
-  open: { color: colors.blue, bg: '#EFF6FF', label: 'Open' },
-  in_review: { color: '#B46B00', bg: '#FFFBEB', label: 'In Review' },
-  acknowledged: { color: colors.blue, bg: '#EFF6FF', label: 'Acknowledged' },
+  pending: { color: colors.blue, bg: '#EFF6FF', get "label"() { return ui("Pending"); } },
+  resolved: { color: colors.success, bg: '#F0FBF6', get "label"() { return ui("Resolved"); } },
+  rejected: { color: colors.danger, bg: '#FFF0EF', get "label"() { return ui("Rejected"); } },
+  open: { color: colors.blue, bg: '#EFF6FF', get "label"() { return ui("Open"); } },
+  in_review: { color: '#B46B00', bg: '#FFFBEB', get "label"() { return ui("In Review"); } },
+  acknowledged: { color: colors.blue, bg: '#EFF6FF', get "label"() { return ui("Acknowledged"); } },
 };
 
 const getStatusStyle = (status) => {
@@ -46,13 +48,14 @@ const truncate = (text, max = 80) => {
 };
 
 const MyDamageReportsScreen = ({ navigation }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [items, setItems] = useState([]);
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
-  }, [navigation]);
+  }, [navigation, interfaceLanguage]);
 
   const loadReports = async ({ refresh = false } = {}) => {
     refresh ? setRefreshing(true) : setLoading(true);
@@ -62,7 +65,7 @@ const MyDamageReportsScreen = ({ navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Could not load property reports',
+        text1: ui("Could not load property reports"),
         text2: getErrorMessage(error, 'Please check your connection and try again.'),
       });
     } finally {
@@ -119,14 +122,14 @@ const MyDamageReportsScreen = ({ navigation }) => {
     <SafeAreaView edges={['top']} style={styles.safeArea}>
       <View style={styles.header}>
         <TouchableOpacity
-          accessibilityLabel="Go back"
+          accessibilityLabel={ui("Go back")}
           onPress={() => navigation.goBack()}
           style={styles.backButton}>
           <Icon name="arrow-back" size={22} color={colors.navy} />
         </TouchableOpacity>
         <View style={styles.headerCopy}>
-          <AppText style={styles.eyebrow}>PROPERTY REPORTS</AppText>
-          <AppText style={styles.title}>Property reports</AppText>
+          <AppText style={styles.eyebrow}>{ui("PROPERTY REPORTS")}</AppText>
+          <AppText style={styles.title}>{ui("Property reports")}</AppText>
         </View>
         <View style={styles.headerSpacer} />
       </View>
@@ -138,25 +141,22 @@ const MyDamageReportsScreen = ({ navigation }) => {
         ListHeaderComponent={
           !loading && items.length ? (
             <AppText style={styles.summary}>
-              {items.length} {items.length === 1 ? 'report' : 'reports'} submitted
-            </AppText>
+              {items.length} {items.length === 1 ? ui("report") : ui("reports")}{ui("submitted")}</AppText>
           ) : null
         }
         ListEmptyComponent={
           loading ? (
             <View style={styles.center}>
               <ActivityIndicator color={colors.blue} size="large" />
-              <AppText style={styles.loadingText}>Loading your reports…</AppText>
+              <AppText style={styles.loadingText}>{ui("Loading your reports…")}</AppText>
             </View>
           ) : (
             <View style={styles.center}>
               <View style={styles.emptyIcon}>
                 <Icon name="warning-outline" size={31} color={colors.blue} />
               </View>
-              <AppText style={styles.emptyTitle}>No property reports</AppText>
-              <AppText style={styles.emptyText}>
-                You have not filed any property reports. If you notice an issue in a property, you can submit a report from the property detail screen.
-              </AppText>
+              <AppText style={styles.emptyTitle}>{ui("No property reports")}</AppText>
+              <AppText style={styles.emptyText}>{ui("You have not filed any property reports. If you notice an issue in a property, you can submit a report from the property detail screen.")}</AppText>
             </View>
           )
         }

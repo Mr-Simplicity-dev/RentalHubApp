@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import Toast from 'react-native-toast-message';
 import { AuthContext } from '../../context/AuthContext';
@@ -21,6 +23,7 @@ import WorkspaceBoard from '../../components/dashboard/WorkspaceBoard';
 const formatCurrency = (value) => `₦${Number(value || 0).toLocaleString()}`;
 
 const StateAdminDashboardScreen = ({ navigation }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const { user } = useContext(AuthContext);
   const [dashboard, setDashboard] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -36,7 +39,7 @@ const StateAdminDashboardScreen = ({ navigation }) => {
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: navigation.canGoBack() });
-  }, [navigation]);
+  }, [navigation, interfaceLanguage]);
 
   const loadDashboard = async () => {
     if (!stateId) {
@@ -51,7 +54,7 @@ const StateAdminDashboardScreen = ({ navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(error, 'Could not load state dashboard'),
       });
     } finally {
@@ -65,17 +68,17 @@ const StateAdminDashboardScreen = ({ navigation }) => {
 
   const overview = dashboard?.summary || dashboard || {};
   const overviewCards = [
-    { label: 'Managed users', value: overview.total_managed_users ?? '-', icon: 'people-outline', color: colors.blue },
-    { label: 'Pending commission', value: formatCurrency(overview.total_pending_commission), icon: 'hourglass-outline', color: '#A66B00' },
-    { label: 'Weekly available', value: formatCurrency(overview.weekly_withdrawable), icon: 'wallet-outline', color: colors.success },
+    { label: ui("Managed users"), value: overview.total_managed_users ?? '-', icon: 'people-outline', color: colors.blue },
+    { label: ui("Pending commission"), value: formatCurrency(overview.total_pending_commission), icon: 'hourglass-outline', color: '#A66B00' },
+    { label: ui("Weekly available"), value: formatCurrency(overview.weekly_withdrawable), icon: 'wallet-outline', color: colors.success },
   ];
 
   return (
     <DashboardScreen refreshing={loading} onRefresh={loadDashboard}>
       <DashboardHero
-        eyebrow="STATE OPERATIONS"
-        title={`${stateName} command centre`}
-        subtitle="Manage local users, approvals, tenancy workflows and commissions."
+        eyebrow={ui("STATE OPERATIONS")}
+        title={ui("{value0} command centre", {value0: (stateName)})}
+        subtitle={ui("Manage local users, approvals, tenancy workflows and commissions.")}
         icon="map-outline"
         onRefresh={loadDashboard}
       />
@@ -84,68 +87,68 @@ const StateAdminDashboardScreen = ({ navigation }) => {
       {!stateId ? (
         <DashboardNotice
           variant="warning"
-          title="State assignment required"
-          message="This account must be assigned to a state before operational data can be loaded."
+          title={ui("State assignment required")}
+          message={ui("This account must be assigned to a state before operational data can be loaded.")}
         />
       ) : null}
 
-      <MetricGrid tourTarget="state_overview" tourLabel="State operations overview">
+      <MetricGrid tourTarget="state_overview" tourLabel={ui("State operations overview")}>
         {overviewCards.map((card) => (
           <MetricCard key={card.label} {...card} />
         ))}
       </MetricGrid>
 
       <DashboardSection
-        title="Management tools"
-        subtitle="Move into a focused workflow for each administrative task."
+        title={ui("Management tools")}
+        subtitle={ui("Move into a focused workflow for each administrative task.")}
       >
         <WorkspaceBoard
           collapsible
           groups={[
             {
-              title: 'State operations',
+              title: ui("State operations"),
               icon: 'map-outline',
               items: [
                 {
-                  label: 'Property Approvals',
+                  label: ui("Property Approvals"),
                   icon: 'business-outline',
                   tourTarget: 'state_management',
                   onPress: () => navigation.navigate('StateAdminMigrations'),
                 },
                 {
-                  label: 'Users',
+                  label: ui("Users"),
                   icon: 'people-outline',
                   onPress: () => navigation.navigate('AdminUsers'),
                 },
                 {
-                  label: 'Transactions',
+                  label: ui("Transactions"),
                   icon: 'swap-horizontal-outline',
                   onPress: () => navigation.navigate('FinancialTransactions'),
                 },
                 {
-                  label: 'Commissions',
+                  label: ui("Commissions"),
                   icon: 'cash-outline',
                   onPress: () => navigation.navigate('StateAdminFinance'),
                 },
                 {
-                  label: 'Oversight',
+                  label: ui("Oversight"),
                   icon: 'shield-outline',
                   onPress: () => navigation.navigate('AdminCompliance'),
                 },
                 {
-                  label: 'Calculator Fees',
+                  label: ui("Calculator Fees"),
                   icon: 'calculator-outline',
                   onPress: () => navigation.navigate('RentCalculatorFeesAdmin'),
                 },
                 {
-                  label: 'Appeals',
+                  label: ui("Appeals"),
                   icon: 'document-text-outline',
                   onPress: () => navigation.navigate('AdminAppeals'),
                 },
                 ...(hasRecruitmentAccess
                   ? [
                       {
-                        label: 'Recruitment',
+                        label: ui("Recruitment"),
                         icon: 'people-outline',
                         onPress: () => navigation.navigate('RecruitmentAdmin'),
                       },
@@ -157,12 +160,12 @@ const StateAdminDashboardScreen = ({ navigation }) => {
         />
       </DashboardSection>
 
-      <DashboardSection title="Property request workflow" tourTarget="state_requests">
-        <PropertyRequestWorkflowSection mode="state" title="State Tenant Property Requests" />
+      <DashboardSection title={ui("Property request workflow")} tourTarget="state_requests">
+        <PropertyRequestWorkflowSection mode="state" title={ui("State Tenant Property Requests")} />
       </DashboardSection>
 
-      <DashboardSection title="Tenancy controls" tourTarget="state_tenancy">
-        <TenancyWorkflowSection title="State Tenancy Grace and Refund Enablement" />
+      <DashboardSection title={ui("Tenancy controls")} tourTarget="state_tenancy">
+        <TenancyWorkflowSection title={ui("State Tenancy Grace and Refund Enablement")} />
       </DashboardSection>
     </DashboardScreen>
   );

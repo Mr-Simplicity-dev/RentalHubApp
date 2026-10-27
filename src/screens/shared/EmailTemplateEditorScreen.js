@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useRef, useState } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import TextInput from '../../components/common/AppTextInput';
@@ -50,6 +52,7 @@ const COMMANDS = [
 ];
 
 const EmailTemplateEditorScreen = ({ navigation }) => {
+  useInterfaceLanguage();
   const webRef = useRef(null);
   const [tab, setTab] = useState('edit');
   const [name, setName] = useState('');
@@ -64,7 +67,7 @@ const EmailTemplateEditorScreen = ({ navigation }) => {
 
   const save = async () => {
     if (!name.trim() || !subject.trim()) {
-      Toast.show({ type: 'info', text1: 'Name and subject are required' });
+      Toast.show({ type: 'info', text1: ui("Name and subject are required") });
       return;
     }
     setBusy(true);
@@ -75,13 +78,13 @@ const EmailTemplateEditorScreen = ({ navigation }) => {
         htmlContent: tab === 'source' ? source : html,
       });
       if (res?.success) {
-        Toast.show({ type: 'success', text1: 'Template created' });
+        Toast.show({ type: 'success', text1: ui("Template created") });
         navigation.goBack();
       } else {
-        Toast.show({ type: 'error', text1: 'Could not save', text2: res?.message || '' });
+        Toast.show({ type: 'error', text1: ui("Could not save"), text2: res?.message || '' });
       }
     } catch (err) {
-      Toast.show({ type: 'error', text1: 'Failed', text2: getErrorMessage(err, 'Could not create the template') });
+      Toast.show({ type: 'error', text1: ui("Failed"), text2: getErrorMessage(err, 'Could not create the template') });
     } finally {
       setBusy(false);
     }
@@ -95,15 +98,15 @@ const EmailTemplateEditorScreen = ({ navigation }) => {
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
       <PremiumHero
-        eyebrow="Email templates"
-        title="HTML template editor"
-        subtitle="Compose rich email HTML, preview it, and save as a template."
+        eyebrow={ui("Email templates")}
+        title={ui("HTML template editor")}
+        subtitle={ui("Compose rich email HTML, preview it, and save as a template.")}
         icon="color-wand-outline"
       />
 
       <PremiumCard>
-        <Input label="Template name" value={name} onChangeText={setName} />
-        <Input label="Subject" value={subject} onChangeText={setSubject} containerStyle={styles.fieldGap} />
+        <Input label={ui("Template name")} value={name} onChangeText={setName} />
+        <Input label={ui("Subject")} value={subject} onChangeText={setSubject} containerStyle={styles.fieldGap} />
 
         <View style={styles.tabRow}>
           {['edit', 'source', 'preview'].map((key) => (
@@ -117,13 +120,13 @@ const EmailTemplateEditorScreen = ({ navigation }) => {
               style={[styles.tab, tab === key && styles.tabActive]}
             >
               <AppText style={[styles.tabText, tab === key && styles.tabTextActive]}>
-                {key === 'edit' ? 'Editor' : key === 'source' ? 'HTML' : 'Preview'}
+                {key === "edit" ? 'Editor' : key === "source" ? 'HTML' : ui("Preview")}
               </AppText>
             </TouchableOpacity>
           ))}
         </View>
 
-        {tab === 'edit' ? (
+        {tab === "edit" ? (
           <View style={styles.editorWrap}>
             <View style={styles.toolbar}>
               {COMMANDS.map((c) => (
@@ -151,18 +154,18 @@ const EmailTemplateEditorScreen = ({ navigation }) => {
           </View>
         ) : null}
 
-        {tab === 'source' ? (
+        {tab === "source" ? (
           <TextInput
             style={styles.source}
             multiline
             value={source}
             onChangeText={setSource}
-            placeholder="<p>Your HTML here…</p>"
+            placeholder={ui("<p>Your HTML here…</p>")}
             textAlignVertical="top"
           />
         ) : null}
 
-        {tab === 'preview' ? (
+        {tab === "preview" ? (
           <View style={styles.editorWrap}>
             <WebView
               originWhitelist={['*']}
@@ -173,9 +176,9 @@ const EmailTemplateEditorScreen = ({ navigation }) => {
           </View>
         ) : null}
 
-        {tab === 'source' ? (
+        {tab === "source" ? (
           <PremiumButton
-            title="Preview this HTML"
+            title={ui("Preview this HTML")}
             onPress={() => {
               setHtml(source);
               setTab('preview');
@@ -185,7 +188,7 @@ const EmailTemplateEditorScreen = ({ navigation }) => {
           />
         ) : null}
 
-        <PremiumButton title="Save template" onPress={save} loading={busy} icon="checkmark-circle-outline" style={styles.action} />
+        <PremiumButton title={ui("Save template")} onPress={save} loading={busy} icon="checkmark-circle-outline" style={styles.action} />
       </PremiumCard>
     </ScrollView>
   );

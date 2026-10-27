@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, {
   useCallback,
   useContext,
@@ -65,6 +67,7 @@ const maskAccountNumber = (value) => {
 };
 
 const ZonalFinancialAdminDashboardScreen = ({ navigation }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const { user } = useContext(AuthContext);
   const [snapshot, setSnapshot] = useState({});
   const [withdrawals, setWithdrawals] = useState([]);
@@ -75,7 +78,7 @@ const ZonalFinancialAdminDashboardScreen = ({ navigation }) => {
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: navigation.canGoBack() });
-  }, [navigation]);
+  }, [navigation, interfaceLanguage]);
 
   const loadFinanceData = useCallback(async () => {
     setLoading(true);
@@ -107,7 +110,7 @@ const ZonalFinancialAdminDashboardScreen = ({ navigation }) => {
     if (failures.length) {
       const message = failures.join(' ');
       setLoadError(message);
-      Toast.show({ type: 'error', text1: 'Some finance data did not load', text2: message });
+      Toast.show({ type: 'error', text1: ui("Some finance data did not load"), text2: message });
     }
     setLoading(false);
   }, []);
@@ -132,26 +135,26 @@ const ZonalFinancialAdminDashboardScreen = ({ navigation }) => {
   const zoneMetrics = useMemo(() => {
     if (!overview) return [];
     return [
-      { label: 'Zone revenue', value: formatCurrency(overview?.totalRevenue) },
-      { label: 'Completed', value: String(overview?.completedPayments || 0) },
-      { label: 'Pending payouts', value: String(overview?.withdrawals?.pending || 0) },
-      { label: 'Paid out', value: formatCurrency(overview?.withdrawals?.paidOut) },
+      { label: ui("Zone revenue"), value: formatCurrency(overview?.totalRevenue) },
+      { label: ui("Completed"), value: String(overview?.completedPayments || 0) },
+      { label: ui("Pending payouts"), value: String(overview?.withdrawals?.pending || 0) },
+      { label: ui("Paid out"), value: formatCurrency(overview?.withdrawals?.paidOut) },
     ];
-  }, [overview]);
+  }, [overview, interfaceLanguage]);
 
   return (
     <DashboardScreen refreshing={loading} onRefresh={loadFinanceData}>
       <DashboardHero
-        eyebrow="ZONAL FINANCE"
+        eyebrow={ui("ZONAL FINANCE")}
         icon="wallet-outline"
         onRefresh={loadFinanceData}
-        subtitle="Monitor finance across your zone and manage your commission payouts."
-        title="Finance workspace"
+        subtitle={ui("Monitor finance across your zone and manage your commission payouts.")}
+        title={ui("Finance workspace")}
       />
       <AdminAccountActions navigation={navigation} />
 
       <DashboardNotice
-        title="Assigned jurisdiction"
+        title={ui("Assigned jurisdiction")}
         message={jurisdiction}
         variant={zone ? 'info' : 'warning'}
       />
@@ -159,24 +162,24 @@ const ZonalFinancialAdminDashboardScreen = ({ navigation }) => {
       {loadError ? (
         <View style={styles.noticeSpacing}>
           <DashboardNotice
-            message={`${loadError} Pull down or use the refresh icon to try again.`}
-            title="Partial data shown"
+            message={ui("{value0} Pull down or use the refresh icon to try again.", {value0: (loadError)})}
+            title={ui("Partial data shown")}
             variant="warning"
           />
         </View>
       ) : null}
 
       <View style={styles.metricsSpacing}>
-        <MetricGrid tourTarget="lga_financial_overview" tourLabel="Zonal finance overview">
-          <MetricCard color={colors.success} icon="wallet-outline" label="Withdrawable" value={formatCurrency(withdrawable)} />
-          <MetricCard color={colors.blue} icon="trending-up-outline" label="Total earned" value={formatCurrency(totalEarned)} />
-          <MetricCard color={colors.navy} icon="receipt-outline" label="Requests" value={String(withdrawals.length)} />
-          <MetricCard color={colors.warning} icon="time-outline" label="Pending" value={String(pendingCount)} />
+        <MetricGrid tourTarget="lga_financial_overview" tourLabel={ui("Zonal finance overview")}>
+          <MetricCard color={colors.success} icon="wallet-outline" label={ui("Withdrawable")} value={formatCurrency(withdrawable)} />
+          <MetricCard color={colors.blue} icon="trending-up-outline" label={ui("Total earned")} value={formatCurrency(totalEarned)} />
+          <MetricCard color={colors.navy} icon="receipt-outline" label={ui("Requests")} value={String(withdrawals.length)} />
+          <MetricCard color={colors.warning} icon="time-outline" label={ui("Pending")} value={String(pendingCount)} />
         </MetricGrid>
       </View>
 
       {overview ? (
-        <DashboardSection subtitle="Aggregated payments and payouts for your zone." title="Zone overview">
+        <DashboardSection subtitle={ui("Aggregated payments and payouts for your zone.")} title={ui("Zone overview")}>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <View style={styles.zoneMetricRow}>
               {zoneMetrics.map((metric) => (
@@ -190,25 +193,25 @@ const ZonalFinancialAdminDashboardScreen = ({ navigation }) => {
         </DashboardSection>
       ) : null}
 
-      <DashboardSection subtitle="Requests are reviewed through the financial approval workflow." title="Commission withdrawal">
+      <DashboardSection subtitle={ui("Requests are reviewed through the financial approval workflow.")} title={ui("Commission withdrawal")}>
         <ActionRow
           badge={withdrawable >= 1000 ? 'Available' : 'Below minimum'}
           icon="cash-outline"
           onPress={() => setWithdrawalModalVisible(true)}
-          subtitle={`Current withdrawable balance: ${formatCurrency(withdrawable)}`}
+          subtitle={ui("Current withdrawable balance: {value0}", {value0: (formatCurrency(withdrawable))})}
           tourTarget="lga_financial_withdrawal"
-          title="Request personal withdrawal"
+          title={ui("Request personal withdrawal")}
         />
       </DashboardSection>
 
-      <DashboardSection subtitle={`Total requested: ${formatCurrency(totalRequested)}`} title="Withdrawal history" tourTarget="lga_financial_history">
+      <DashboardSection subtitle={ui("Total requested: {value0}", {value0: (formatCurrency(totalRequested))})} title={ui("Withdrawal history")} tourTarget="lga_financial_history">
         {withdrawals.length === 0 ? (
           <PremiumCard style={styles.emptyCard}>
             <View style={styles.emptyIcon}>
               <Icon name="receipt-outline" size={23} color={colors.blue} />
             </View>
-            <AppText style={styles.emptyTitle}>No withdrawal requests yet</AppText>
-            <AppText style={styles.emptyMessage}>Your personal commission payout requests will appear here.</AppText>
+            <AppText style={styles.emptyTitle}>{ui("No withdrawal requests yet")}</AppText>
+            <AppText style={styles.emptyMessage}>{ui("Your personal commission payout requests will appear here.")}</AppText>
           </PremiumCard>
         ) : (
           withdrawals.map((withdrawal, index) => {
@@ -217,18 +220,18 @@ const ZonalFinancialAdminDashboardScreen = ({ navigation }) => {
               <PremiumCard key={String(withdrawal?.id || `${withdrawal?.requested_at || 'request'}-${index}`)}>
                 <View style={styles.historyHeader}>
                   <View style={styles.historyAmountWrap}>
-                    <AppText style={styles.historyLabel}>Requested amount</AppText>
+                    <AppText style={styles.historyLabel}>{ui("Requested amount")}</AppText>
                     <AppText style={styles.historyAmount}>{formatCurrency(withdrawal?.amount)}</AppText>
                   </View>
                   <StatusPill label={status} color={getStatusColor(status)} />
                 </View>
                 <InfoRow
                   icon="business-outline"
-                  label="Bank account"
+                  label={ui("Bank account")}
                   value={`${withdrawal?.bank_name || 'Bank not available'} · ${maskAccountNumber(withdrawal?.account_number)}`}
                 />
-                <InfoRow icon="person-outline" label="Account name" value={withdrawal?.account_name || 'Not available'} />
-                <InfoRow icon="calendar-outline" label="Requested" value={formatDate(withdrawal?.requested_at || withdrawal?.created_at)} />
+                <InfoRow icon="person-outline" label={ui("Account name")} value={withdrawal?.account_name || 'Not available'} />
+                <InfoRow icon="calendar-outline" label={ui("Requested")} value={formatDate(withdrawal?.requested_at || withdrawal?.created_at)} />
               </PremiumCard>
             );
           })

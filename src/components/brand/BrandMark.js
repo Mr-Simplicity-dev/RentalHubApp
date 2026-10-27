@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import { colors, typography } from '../../theme';
@@ -11,8 +13,7 @@ export const AMANA_RED = '#6e1b2b';
 export const AMANA_RED_ON_DARK = '#a12a40';
 export const AMANA_SCRIPT_FONT = 'AmanaScript';
 
-const BrandMark = ({ light = false, compact = false, showName = true, style }) => (
-  <View style={[styles.row, style]}>
+const BrandMark = ({ light = false, compact = false, showName = true, style }) => { useInterfaceLanguage(); return (<View style={[styles.row, style]}>
     <BrandLogoMark size={compact ? 'sm' : 'md'} surface={light ? 'dark' : 'light'} />
     {showName ? (
       <View style={styles.wordmark}>
@@ -29,12 +30,11 @@ const BrandMark = ({ light = false, compact = false, showName = true, style }) =
           RentalHub
         </AppText>
         {!compact ? (
-          <AppText style={[styles.country, light && styles.countryLight]}>NIGERIA</AppText>
+          <AppText style={[styles.country, light && styles.countryLight]}>{ui("NIGERIA")}</AppText>
         ) : null}
       </View>
     ) : null}
-  </View>
-);
+  </View>); };
 
 const styles = StyleSheet.create({
   row: {

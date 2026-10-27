@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import {ActivityIndicator,
   FlatList,
@@ -15,13 +17,14 @@ import { getErrorMessage, pickList } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
 const SubscribedPropertiesScreen = ({ navigation }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [items, setItems] = useState([]);
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
-  }, [navigation]);
+  }, [navigation, interfaceLanguage]);
 
   const loadProperties = async ({ refresh = false } = {}) => {
     refresh ? setRefreshing(true) : setLoading(true);
@@ -31,7 +34,7 @@ const SubscribedPropertiesScreen = ({ navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Could not load subscribed properties',
+        text1: ui("Could not load subscribed properties"),
         text2: getErrorMessage(error, 'Please check your connection and try again.'),
       });
     } finally {
@@ -48,14 +51,14 @@ const SubscribedPropertiesScreen = ({ navigation }) => {
     <SafeAreaView edges={['top']} style={styles.safeArea}>
       <View style={styles.header}>
         <TouchableOpacity
-          accessibilityLabel="Go back"
+          accessibilityLabel={ui("Go back")}
           onPress={() => navigation.goBack()}
           style={styles.backButton}>
           <Icon name="arrow-back" size={22} color={colors.navy} />
         </TouchableOpacity>
         <View style={styles.headerCopy}>
-          <AppText style={styles.eyebrow}>UNLOCKED ACCESS</AppText>
-          <AppText style={styles.title}>Subscribed properties</AppText>
+          <AppText style={styles.eyebrow}>{ui("UNLOCKED ACCESS")}</AppText>
+          <AppText style={styles.title}>{ui("Subscribed properties")}</AppText>
         </View>
         <View style={styles.headerSpacer} />
       </View>
@@ -67,29 +70,26 @@ const SubscribedPropertiesScreen = ({ navigation }) => {
         ListHeaderComponent={
           !loading && items.length ? (
             <AppText style={styles.summary}>
-              {items.length} {items.length === 1 ? 'property' : 'properties'} unlocked
-            </AppText>
+              {items.length} {items.length === 1 ? ui("property") : ui("properties")}{ui("unlocked")}</AppText>
           ) : null
         }
         ListEmptyComponent={
           loading ? (
             <View style={styles.center}>
               <ActivityIndicator color={colors.blue} size="large" />
-              <AppText style={styles.loadingText}>Loading your subscriptions…</AppText>
+              <AppText style={styles.loadingText}>{ui("Loading your subscriptions…")}</AppText>
             </View>
           ) : (
             <View style={styles.center}>
               <View style={styles.emptyIcon}>
                 <Icon name="key-outline" size={31} color={colors.blue} />
               </View>
-              <AppText style={styles.emptyTitle}>No subscribed properties</AppText>
-              <AppText style={styles.emptyText}>
-                You have not unlocked any properties yet. Browse verified listings and unlock a property to access full details.
-              </AppText>
+              <AppText style={styles.emptyTitle}>{ui("No subscribed properties")}</AppText>
+              <AppText style={styles.emptyText}>{ui("You have not unlocked any properties yet. Browse verified listings and unlock a property to access full details.")}</AppText>
               <TouchableOpacity
                 onPress={() => navigation.navigate('PropertyList')}
                 style={styles.exploreButton}>
-                <AppText style={styles.exploreText}>Browse properties</AppText>
+                <AppText style={styles.exploreText}>{ui("Browse properties")}</AppText>
                 <Icon name="arrow-forward" size={17} color={colors.white} />
               </TouchableOpacity>
             </View>

@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { ActivityIndicator, Alert, Modal, Pressable, StyleSheet, Switch, TouchableOpacity, View } from 'react-native';
 import TextInput from '../../components/common/AppTextInput';
@@ -45,6 +47,7 @@ const labels = {
 };
 
 const SettingsScreen = ({ navigation }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const { user, logout } = useContext(AuthContext);
   const { replayTour } = useTour();
   const { language, languages, setLanguage, t } = useLanguage();
@@ -65,7 +68,7 @@ const SettingsScreen = ({ navigation }) => {
         : () => (
             <TouchableOpacity
               accessibilityRole="button"
-              accessibilityLabel="Go back"
+              accessibilityLabel={ui("Go back")}
               activeOpacity={0.7}
               onPress={() => navigation.navigate('Profile')}
               style={styles.headerBack}
@@ -74,7 +77,7 @@ const SettingsScreen = ({ navigation }) => {
             </TouchableOpacity>
           ),
     });
-  }, [navigation]);
+  }, [navigation, interfaceLanguage]);
 
   useEffect(() => {
     let active = true;
@@ -102,12 +105,12 @@ const SettingsScreen = ({ navigation }) => {
       });
       Toast.show({
         type: nextVersionState?.update_available ? 'info' : 'success',
-        text1: nextVersionState?.message || 'Version checked',
+        text1: nextVersionState?.message || ui("Version checked"),
       });
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Version check failed',
+        text1: ui("Version check failed"),
         text2: getErrorMessage(error, 'Could not check for updates'),
       });
     } finally {
@@ -119,8 +122,8 @@ const SettingsScreen = ({ navigation }) => {
     if (!versionState) {
       Toast.show({
         type: 'info',
-        text1: 'Check updates first',
-        text2: 'Run the update check before starting an app update.',
+        text1: ui("Check updates first"),
+        text2: ui("Run the update check before starting an app update."),
       });
       return;
     }
@@ -129,14 +132,14 @@ const SettingsScreen = ({ navigation }) => {
       if (result?.reason === 'install-permission-required') {
         Toast.show({
           type: 'info',
-          text1: 'Permission needed',
-          text2: 'Enable APK installs for RentalHub, then tap update again.',
+          text1: ui("Permission needed"),
+          text2: ui("Enable APK installs for RentalHub, then tap update again."),
         });
       }
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Could not start update',
+        text1: ui("Could not start update"),
         text2: getErrorMessage(error, 'Try again when your connection is stable.'),
       });
     }
@@ -155,37 +158,37 @@ const SettingsScreen = ({ navigation }) => {
       try {
         const synced = await syncNotificationPreferences(next);
         setSettings(synced);
-        Toast.show({ type: 'success', text1: 'Preference synced' });
+        Toast.show({ type: 'success', text1: ui("Preference synced") });
         return;
       } catch {
         Toast.show({
           type: 'info',
-          text1: 'Saved on this device',
-          text2: 'Server sync will retry when your connection is stable.',
+          text1: ui("Saved on this device"),
+          text2: ui("Server sync will retry when your connection is stable."),
         });
         return;
       }
     }
-    Toast.show({ type: 'success', text1: 'Setting saved' });
+    Toast.show({ type: 'success', text1: ui("Setting saved") });
   };
 
   const confirmLogout = () => {
-    Alert.alert('Logout', 'Do you want to sign out of this device?', [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Logout', style: 'destructive', onPress: logout },
+    Alert.alert(ui("Logout"), ui("Do you want to sign out of this device?"), [
+      { text: ui("Cancel"), style: 'cancel' },
+      { text: ui("Logout"), style: 'destructive', onPress: logout },
     ]);
   };
 
   const resetLocalSettings = () => {
-    Alert.alert('Reset app settings', 'This resets local notification and tour preferences on this device.', [
-      { text: 'Cancel', style: 'cancel' },
+    Alert.alert(ui("Reset app settings"), ui("This resets local notification and tour preferences on this device."), [
+      { text: ui("Cancel"), style: 'cancel' },
       {
-        text: 'Reset',
+        text: ui("Reset"),
         style: 'destructive',
         onPress: async () => {
           const next = await resetAppSettings();
           setSettings(next);
-          Toast.show({ type: 'success', text1: 'Local settings reset' });
+          Toast.show({ type: 'success', text1: ui("Local settings reset") });
         },
       },
     ]);
@@ -211,19 +214,19 @@ const SettingsScreen = ({ navigation }) => {
     if (!deletePassword.trim()) {
       Toast.show({
         type: 'error',
-        text1: 'Password required',
-        text2: 'Enter your current password to continue.',
+        text1: ui("Password required"),
+        text2: ui("Enter your current password to continue."),
       });
       return;
     }
 
     Alert.alert(
-      'Permanently delete account?',
-      'Your account will be deactivated. Active listings, tenancies, disputes or pending payments may block deletion.',
+      ui("Permanently delete account?"),
+      ui("Your account will be deactivated. Active listings, tenancies, disputes or pending payments may block deletion."),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: ui("Cancel"), style: 'cancel' },
         {
-          text: 'Delete account',
+          text: ui("Delete account"),
           style: 'destructive',
           onPress: async () => {
             setDeletingAccount(true);
@@ -232,8 +235,8 @@ const SettingsScreen = ({ navigation }) => {
               trackMobileEvent('account_deleted', { screen: 'Settings' });
               Toast.show({
                 type: 'success',
-                text1: 'Account deleted',
-                text2: 'You have been signed out of this device.',
+                text1: ui("Account deleted"),
+                text2: ui("You have been signed out of this device."),
               });
               setDeleteModalVisible(false);
               setDeletePassword('');
@@ -241,7 +244,7 @@ const SettingsScreen = ({ navigation }) => {
             } catch (error) {
               Toast.show({
                 type: 'error',
-                text1: 'Deletion blocked',
+                text1: ui("Deletion blocked"),
                 text2: getErrorMessage(error, 'Could not delete your account'),
               });
             } finally {
@@ -264,16 +267,16 @@ const SettingsScreen = ({ navigation }) => {
   return (
     <DashboardScreen>
       <DashboardHero
-        eyebrow="APP SETTINGS"
-        title="Control your RentalHub app"
-        subtitle="Manage notifications, privacy shortcuts, security actions and the mobile tour from one native screen."
+        eyebrow={ui("APP SETTINGS")}
+        title={ui("Control your RentalHub app")}
+        subtitle={ui("Manage notifications, privacy shortcuts, security actions and the mobile tour from one native screen.")}
         icon="settings-outline"
         tourTarget="tour_settings"
       />
 
       <DashboardNotice
-        title="Synced preferences"
-        message="Notification switches are saved on this device and synced to your account when the server is reachable."
+        title={ui("Synced preferences")}
+        message={ui("Notification switches are saved on this device and synced to your account when the server is reachable.")}
       />
 
       <DashboardSection
@@ -285,7 +288,7 @@ const SettingsScreen = ({ navigation }) => {
             const selected = language === option.code;
             return (
               <TouchableOpacity
-                accessibilityLabel={`${option.label}: ${option.nativeLabel}`}
+                accessibilityLabel={ui("{value0}: {value1}", {value0: (option.label), value1: (option.nativeLabel)})}
                 accessibilityRole="radio"
                 accessibilityState={{ checked: selected }}
                 key={option.code}
@@ -312,12 +315,12 @@ const SettingsScreen = ({ navigation }) => {
         </View>
       </DashboardSection>
 
-      <DashboardSection title="Notification preferences">
+      <DashboardSection title={ui("Notification preferences")}>
         {notificationKeys.map((key) => (
           <View key={key} style={styles.switchRow}>
             <View style={styles.switchCopy}>
               <AppText style={styles.switchTitle}>{labels[key]}</AppText>
-              <AppText style={styles.switchSubtitle}>Allow native alerts for {labels[key].toLowerCase()}.</AppText>
+              <AppText style={styles.switchSubtitle}>{ui("Allow native alerts for ")}{labels[key].toLowerCase()}.</AppText>
             </View>
             <Switch
               value={settings[key]}
@@ -329,35 +332,35 @@ const SettingsScreen = ({ navigation }) => {
         ))}
       </DashboardSection>
 
-      <DashboardSection title="Security and privacy">
+      <DashboardSection title={ui("Security and privacy")}>
         <ActionRow
-          title="Profile and biometric login"
-          subtitle="Update profile, verification photo and biometric unlock."
+          title={ui("Profile and biometric login")}
+          subtitle={ui("Update profile, verification photo and biometric unlock.")}
           icon="finger-print-outline"
           onPress={() => navigation.navigate('Profile')}
           tourTarget="settings_profile_biometric"
         />
         <ActionRow
-          title="Privacy Policy"
-          subtitle="Review how RentalHub handles and protects personal data."
+          title={ui("Privacy Policy")}
+          subtitle={ui("Review how RentalHub handles and protects personal data.")}
           icon="lock-closed-outline"
           onPress={() => navigation.navigate('PublicInfo', { page: 'privacy' })}
           tourTarget="settings_privacy"
         />
         <ActionRow
-          title="Terms summary"
-          subtitle="Review the mobile terms summary."
+          title={ui("Terms summary")}
+          subtitle={ui("Review the mobile terms summary.")}
           icon="document-text-outline"
           onPress={() => navigation.navigate('PublicInfo', { page: 'terms' })}
           tourTarget="settings_terms"
         />
       </DashboardSection>
 
-      <DashboardSection title="App experience">
+      <DashboardSection title={ui("App experience")}>
         <View style={styles.switchRow}>
           <View style={styles.switchCopy}>
             <AppText style={styles.switchTitle}>{labels.weakNetworkWarnings}</AppText>
-            <AppText style={styles.switchSubtitle}>Show a banner when API requests detect poor connectivity.</AppText>
+            <AppText style={styles.switchSubtitle}>{ui("Show a banner when API requests detect poor connectivity.")}</AppText>
           </View>
           <Switch
             value={settings.weakNetworkWarnings}
@@ -369,7 +372,7 @@ const SettingsScreen = ({ navigation }) => {
         <View style={styles.switchRow}>
           <View style={styles.switchCopy}>
             <AppText style={styles.switchTitle}>{labels.updateAlerts}</AppText>
-            <AppText style={styles.switchSubtitle}>Show a native banner or dot when a newer RentalHub APK is available.</AppText>
+            <AppText style={styles.switchSubtitle}>{ui("Show a native banner or dot when a newer RentalHub APK is available.")}</AppText>
           </View>
           <Switch
             value={settings.updateAlerts}
@@ -381,7 +384,7 @@ const SettingsScreen = ({ navigation }) => {
         <View style={styles.switchRow}>
           <View style={styles.switchCopy}>
             <AppText style={styles.switchTitle}>{labels.notificationBadges}</AppText>
-            <AppText style={styles.switchSubtitle}>Allow RentalHub to show home-screen badge counts for unread account activity.</AppText>
+            <AppText style={styles.switchSubtitle}>{ui("Allow RentalHub to show home-screen badge counts for unread account activity.")}</AppText>
           </View>
           <Switch
             value={settings.notificationBadges}
@@ -393,7 +396,7 @@ const SettingsScreen = ({ navigation }) => {
         <View style={styles.switchRow}>
           <View style={styles.switchCopy}>
             <AppText style={styles.switchTitle}>{labels.largerText}</AppText>
-            <AppText style={styles.switchSubtitle}>Increase key dashboard, tour and control text across the app.</AppText>
+            <AppText style={styles.switchSubtitle}>{ui("Increase key dashboard, tour and control text across the app.")}</AppText>
           </View>
           <Switch
             value={settings.largerText}
@@ -405,7 +408,7 @@ const SettingsScreen = ({ navigation }) => {
         <View style={styles.switchRow}>
           <View style={styles.switchCopy}>
             <AppText style={styles.switchTitle}>{labels.reduceMotion}</AppText>
-            <AppText style={styles.switchSubtitle}>Reduce splash and guided-tour animations for calmer navigation.</AppText>
+            <AppText style={styles.switchSubtitle}>{ui("Reduce splash and guided-tour animations for calmer navigation.")}</AppText>
           </View>
           <Switch
             value={settings.reduceMotion}
@@ -415,29 +418,29 @@ const SettingsScreen = ({ navigation }) => {
           />
         </View>
         <ActionRow
-          title="Replay app tour"
-          subtitle="Open the guided mobile walkthrough again."
+          title={ui("Replay app tour")}
+          subtitle={ui("Open the guided mobile walkthrough again.")}
           icon="map-outline"
           onPress={replayTour}
           tourTarget="settings_replay"
         />
         <ActionRow
-          title="Reset local settings"
-          subtitle="Restore this device’s app settings to default."
+          title={ui("Reset local settings")}
+          subtitle={ui("Restore this device’s app settings to default.")}
           icon="refresh-outline"
           onPress={resetLocalSettings}
           tourTarget="settings_reset"
         />
       </DashboardSection>
 
-      <DashboardSection title="App updates">
+      <DashboardSection title={ui("App updates")}>
         <View style={styles.versionCard}>
           <View style={styles.versionTop}>
             <View style={styles.versionCopy}>
-              <AppText style={styles.versionTitle}>RentalHub app version</AppText>
-              <AppText style={styles.versionMeta}>Installed: {getMobileAppVersion() || 'Unknown'}</AppText>
+              <AppText style={styles.versionTitle}>{ui("RentalHub app version")}</AppText>
+              <AppText style={styles.versionMeta}>{ui("Installed: ")}{getMobileAppVersion() || ui("Unknown")}</AppText>
               {versionState?.latest_version ? (
-                <AppText style={styles.versionMeta}>Latest: {versionState.latest_version}</AppText>
+                <AppText style={styles.versionMeta}>{ui("Latest: ")}{versionState.latest_version}</AppText>
               ) : null}
             </View>
             <View
@@ -447,7 +450,7 @@ const SettingsScreen = ({ navigation }) => {
                 versionState?.update_available && !versionState?.update_required ? styles.versionBadgeWarning : null,
               ]}
             >
-              <AppText 
+              <AppText
                 style={[
                   styles.versionBadgeText,
                   versionState?.update_required ? styles.versionBadgeTextDanger : null,
@@ -455,9 +458,9 @@ const SettingsScreen = ({ navigation }) => {
                 ]}
               >
                 {versionState?.update_required
-                  ? 'Required'
+                  ? ui("Required")
                   : versionState?.update_available
-                    ? 'Update'
+                    ? ui("Update")
                     : 'Current'}
               </AppText>
             </View>
@@ -487,18 +490,18 @@ const SettingsScreen = ({ navigation }) => {
         </View>
       </DashboardSection>
 
-      <DashboardSection title="Account">
+      <DashboardSection title={ui("Account")}>
         <ActionRow
-          title="Account deletion"
-          subtitle="Delete this account after password confirmation and server safety checks."
+          title={ui("Account deletion")}
+          subtitle={ui("Delete this account after password confirmation and server safety checks.")}
           icon="trash-outline"
           badge="Secure"
           onPress={() => setDeleteModalVisible(true)}
           tourTarget="settings_account"
         />
         <ActionRow
-          title="Logout"
-          subtitle="Sign out from this device."
+          title={ui("Logout")}
+          subtitle={ui("Sign out from this device.")}
           icon="log-out-outline"
           onPress={confirmLogout}
         />
@@ -508,11 +511,11 @@ const SettingsScreen = ({ navigation }) => {
           <Pressable style={styles.modalCard}>
             <View style={styles.modalHeader}>
               <View>
-                <AppText style={styles.modalTitle}>Delete account</AppText>
-                <AppText style={styles.modalSubtitle}>This is protected by password confirmation.</AppText>
+                <AppText style={styles.modalTitle}>{ui("Delete account")}</AppText>
+                <AppText style={styles.modalSubtitle}>{ui("This is protected by password confirmation.")}</AppText>
               </View>
               <TouchableOpacity
-                accessibilityLabel="Close account deletion"
+                accessibilityLabel={ui("Close account deletion")}
                 accessibilityRole="button"
                 disabled={deletingAccount}
                 onPress={closeDeleteModal}
@@ -523,17 +526,15 @@ const SettingsScreen = ({ navigation }) => {
 
             <View style={styles.warningBox}>
               <Icon name="warning-outline" size={20} color={colors.danger} />
-              <AppText style={styles.warningText}>
-                We will not delete accounts with active property listings, tenancies, ongoing disputes or pending payments.
-              </AppText>
+              <AppText style={styles.warningText}>{ui("We will not delete accounts with active property listings, tenancies, ongoing disputes or pending payments.")}</AppText>
             </View>
 
-            <AppText style={styles.inputLabel}>Current password</AppText>
+            <AppText style={styles.inputLabel}>{ui("Current password")}</AppText>
             <TextInput
-              accessibilityLabel="Current password for account deletion"
+              accessibilityLabel={ui("Current password for account deletion")}
               autoCapitalize="none"
               onChangeText={setDeletePassword}
-              placeholder="Enter current password"
+              placeholder={ui("Enter current password")}
               placeholderTextColor={colors.muted}
               secureTextEntry
               style={styles.input}
@@ -547,7 +548,7 @@ const SettingsScreen = ({ navigation }) => {
               style={[styles.deleteButton, deletingAccount ? styles.disabled : null]}
             >
               {deletingAccount ? <ActivityIndicator color={colors.white} /> : <Icon name="trash-outline" size={18} color={colors.white} />}
-              <AppText style={styles.deleteButtonText}>{deletingAccount ? 'Deleting...' : 'Delete account'}</AppText>
+              <AppText style={styles.deleteButtonText}>{deletingAccount ? ui("Deleting...") : ui("Delete account")}</AppText>
             </TouchableOpacity>
           </Pressable>
         </Pressable>

@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import {useLanguage} from '../../context/LanguageContext';
 const recruitmentCopy = require('../../i18n/recruitmentCopy.cjs');
 import React, { useEffect, useMemo, useState } from 'react';
@@ -26,21 +28,20 @@ import { colors, radius, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const DOCUMENT_FIELDS = [
-  { key: 'cv', label: 'CV / Resume' },
-  { key: 'cover_letter', label: 'Cover Letter' },
-  { key: 'guarantor_letter', label: "Guarantor's Letter" },
-  { key: 'government_id', label: 'Government ID' },
-  { key: 'proof_of_address', label: 'Proof of Address' },
-  { key: 'certificates', label: 'Certificates' },
+  { key: 'cv', get "label"() { return ui("CV / Resume"); } },
+  { key: 'cover_letter', get "label"() { return ui("Cover Letter"); } },
+  { key: 'guarantor_letter', get "label"() { return ui("Guarantor's Letter"); } },
+  { key: 'government_id', get "label"() { return ui("Government ID"); } },
+  { key: 'proof_of_address', get "label"() { return ui("Proof of Address"); } },
+  { key: 'certificates', get "label"() { return ui("Certificates"); } },
 ];
 
-const ProgressBar = ({ value }) => (
-  <View style={styles.progressTrack}>
+const ProgressBar = ({ value }) => { useInterfaceLanguage(); return (<View style={styles.progressTrack}>
     <View style={[styles.progressFill, { width: `${value}%` }]} />
-  </View>
-);
+  </View>); };
 
 const RecruitmentApplicationScreen = ({ route }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const {language}=useLanguage();
   const copy=recruitmentCopy[language]||recruitmentCopy.en;
   const initialApplication = route?.params?.application || null;
@@ -93,7 +94,7 @@ const RecruitmentApplicationScreen = ({ route }) => {
 
   const canUpload = useMemo(() => {
     return application?.opportunity_type==='volunteer'||(application?.payment_status === 'paid' && application?.access_code_used);
-  }, [application]);
+  }, [application, interfaceLanguage]);
 
   const openPayment = async () => {
     if(application?.opportunity_type==='volunteer')return;
@@ -121,26 +122,26 @@ const RecruitmentApplicationScreen = ({ route }) => {
       if (hasPaystackCheckout(paymentData)) {
         openNativeCheckout({
           transaction: paymentData,
-          title: 'Pay application fee',
-          subtitle: 'Complete your recruitment application payment securely in the app.',
+          title: ui("Pay application fee"),
+          subtitle: ui("Complete your recruitment application payment securely in the app."),
           amountLabel: paymentData.amount ? formatNaira(paymentData.amount) : '',
           onSuccess: (paymentResponse) =>
             completeRecruitmentPayment(paymentResponse?.reference || reference),
           onBrowserFallback: () => {
             Toast.show({
               type: 'info',
-              text1: 'Paystack checkout opened',
-              text2: 'Complete payment securely, then return to RentalHub.',
+              text1: ui("Paystack checkout opened"),
+              text2: ui("Complete payment securely, then return to RentalHub."),
             });
           },
         });
       } else if (reference) {
         await completeRecruitmentPayment(reference);
       } else {
-        Toast.show({ type: 'error', text1: 'Payment unavailable', text2: 'No payment link was returned.' });
+        Toast.show({ type: 'error', text1: ui("Payment unavailable"), text2: ui("No payment link was returned.") });
       }
     } catch (err) {
-      setError(getErrorMessage(err, 'Could not start payment'));
+      setError(getErrorMessage(err, ui("Could not start payment")));
     } finally {
       setPaymentLoading(false);
     }
@@ -149,7 +150,7 @@ const RecruitmentApplicationScreen = ({ route }) => {
   const verifyPayment = async () => {
     const reference = paymentReferenceInput.trim();
     if (!reference) {
-      Alert.alert('Reference needed', 'Enter the payment reference to verify your payment.');
+      Alert.alert(ui("Reference needed"), ui("Enter the payment reference to verify your payment."));
       return;
     }
 
@@ -160,9 +161,9 @@ const RecruitmentApplicationScreen = ({ route }) => {
       if (updatedApp) {
         setApplication((prev) => ({ ...(prev || {}), ...updatedApp }));
       }
-      Toast.show({ type: 'success', text1: 'Payment verified', text2: 'Your access code is ready.' });
+      Toast.show({ type: 'success', text1: ui("Payment verified"), text2: ui("Your access code is ready.") });
     } catch (err) {
-      setError(getErrorMessage(err, 'Payment verification failed'));
+      setError(getErrorMessage(err, ui("Payment verification failed")));
     } finally {
       setPaymentLoading(false);
     }
@@ -170,7 +171,7 @@ const RecruitmentApplicationScreen = ({ route }) => {
 
   const verifyAccessCode = async () => {
     if (!accessCodeInput.trim()) {
-      Alert.alert('Access code needed', 'Enter the access code you received after payment.');
+      Alert.alert(ui("Access code needed"), ui("Enter the access code you received after payment."));
       return;
     }
 
@@ -186,8 +187,8 @@ const RecruitmentApplicationScreen = ({ route }) => {
       setApplication((prev) => ({ ...(prev || {}), access_code_used: true }));
       Toast.show({
         type: 'success',
-        text1: 'Access code verified',
-        text2: response?.message || 'You can now upload documents.',
+        text1: ui("Access code verified"),
+        text2: response?.message || ui("You can now upload documents."),
       });
     } catch (err) {
       setError(getErrorMessage(err, 'Could not verify access code'));
@@ -204,8 +205,8 @@ const RecruitmentApplicationScreen = ({ route }) => {
       setSelectedFiles((prev) => ({ ...prev, [docKey]: asset }));
       Toast.show({
         type: 'info',
-        text1: 'File selected',
-        text2: asset.fileName || 'Your document is ready to upload.',
+        text1: ui("File selected"),
+        text2: asset.fileName || ui("Your document is ready to upload."),
       });
     } catch (err) {
       setError(getErrorMessage(err, 'Could not select a file'));
@@ -217,13 +218,13 @@ const RecruitmentApplicationScreen = ({ route }) => {
 
     const pendingFiles = Object.entries(selectedFiles).filter(([, asset]) => !!asset);
     if (!pendingFiles.length) {
-      Alert.alert('No files selected', 'Choose at least one file to upload.');
+      Alert.alert(ui("No files selected"), ui("Choose at least one file to upload."));
       return;
     }
 
     try {
       setUploading(true);
-      setUploadProgress({ current: 0, total: pendingFiles.length, label: 'Preparing upload', percent: 0 });
+      setUploadProgress({ current: 0, total: pendingFiles.length, label: ui("Preparing upload"), percent: 0 });
       setError('');
       for (const [index, [docKey, asset]] of pendingFiles.entries()) {
         const field = DOCUMENT_FIELDS.find((item) => item.key === docKey);
@@ -264,8 +265,8 @@ const RecruitmentApplicationScreen = ({ route }) => {
       }
       Toast.show({
         type: 'success',
-        text1: 'Documents uploaded',
-        text2: 'Your supporting files were submitted.',
+        text1: ui("Documents uploaded"),
+        text2: ui("Your supporting files were submitted."),
       });
       setSelectedFiles({});
       await loadApplication();
@@ -288,21 +289,21 @@ const RecruitmentApplicationScreen = ({ route }) => {
         setApplication((prev) => ({ ...(prev || {}), ...updatedApp }));
       }
       setPaymentReferenceInput(reference);
-      Toast.show({ type: 'success', text1: 'Payment verified', text2: 'Your access code is ready.' });
+      Toast.show({ type: 'success', text1: ui("Payment verified"), text2: ui("Your access code is ready.") });
     } catch (err) {
-      setError(getErrorMessage(err, 'Payment verification failed'));
+      setError(getErrorMessage(err, ui("Payment verification failed")));
     } finally {
       setPaymentLoading(false);
     }
   };
 
   if (loading) {
-    return <PremiumCenter loading title="Loading your application" message="Preparing your recruitment progress..." />;
+    return <PremiumCenter loading title={ui("Loading your application")} message={ui("Preparing your recruitment progress...")} />;
   }
 
   if(application?.opportunity_type==='volunteer') return <PremiumScreen>
     <PremiumHero eyebrow={copy.opportunity_volunteer} title={copy.volunteer_received} subtitle={copy.volunteer_confirmation} icon="heart-outline" />
-    <PremiumCard><InfoRow label="Reference" value={application.reference_number}/><InfoRow label="Opportunity" value={application.role_title}/><InfoRow label="Status" value={application.status}/><AppText variant="bodySm">{copy.volunteer_free}</AppText></PremiumCard>
+    <PremiumCard><InfoRow label={ui("Reference")} value={application.reference_number}/><InfoRow label={ui("Opportunity")} value={application.role_title}/><InfoRow label={ui("Status")} value={application.status}/><AppText variant="bodySm">{copy.volunteer_free}</AppText></PremiumCard>
     {error?<AppText color={colors.danger}>{error}</AppText>:null}
     {['submitted','under_review'].includes(application.status)&&<PremiumCard><AppText variant="h4">{copy.optional_cv}</AppText><PremiumButton title={copy.optional_cv} variant="secondary" onPress={()=>pickFile('cv')}/>{selectedFiles.cv?<><AppText variant="bodySm">{selectedFiles.cv.fileName}</AppText><PremiumButton title={copy.upload_documents} onPress={uploadDocuments} loading={uploading}/></>:null}</PremiumCard>}
   </PremiumScreen>;
@@ -315,9 +316,9 @@ const RecruitmentApplicationScreen = ({ route }) => {
     <>
       <PremiumScreen>
         <PremiumHero
-          eyebrow="Recruitment"
-          title="Application progress"
-          subtitle="Complete payment, verify your access code, then upload the documents needed for review."
+          eyebrow={ui("Recruitment")}
+          title={ui("Application progress")}
+          subtitle={ui("Complete payment, verify your access code, then upload the documents needed for review.")}
           icon="briefcase-outline"
           right={<StatusPill label={appStatus} color={appStatus === 'approved' ? colors.success : colors.gold} />}
         />
@@ -329,31 +330,31 @@ const RecruitmentApplicationScreen = ({ route }) => {
         ) : null}
 
         <PremiumCard>
-          <AppText style={styles.cardTitle}>Application status</AppText>
-          <InfoRow icon="pricetag-outline" label="Reference" value={application?.reference_number || '-'} />
-          <InfoRow icon="briefcase-outline" label="Status" value={appStatus} />
-          <InfoRow icon="card-outline" label="Payment" value={paymentStatus} />
+          <AppText style={styles.cardTitle}>{ui("Application status")}</AppText>
+          <InfoRow icon="pricetag-outline" label={ui("Reference")} value={application?.reference_number || '-'} />
+          <InfoRow icon="briefcase-outline" label={ui("Status")} value={appStatus} />
+          <InfoRow icon="card-outline" label={ui("Payment")} value={paymentStatus} />
           <InfoRow
             icon="key-outline"
-            label="Access code"
+            label={ui("Access code")}
             value={application?.access_code_used ? 'Verified' : 'Pending'}
             valueStyle={{ color: application?.access_code_used ? colors.success : colors.warning }}
           />
         </PremiumCard>
 
-        <PremiumSectionTitle title="1. Pay application fee" />
+        <PremiumSectionTitle title={ui("1. Pay application fee")} />
         <PremiumCard>
-          <AppText style={styles.cardText}>Start the payment flow to receive your access code.</AppText>
+          <AppText style={styles.cardText}>{ui("Start the payment flow to receive your access code.")}</AppText>
           <PremiumButton
-            title="Start payment"
+            title={ui("Start payment")}
             onPress={openPayment}
             loading={paymentLoading}
             icon="card-outline"
             style={styles.blockGap}
           />
           <Input
-            label="Payment reference"
-            placeholder="Paste payment reference"
+            label={ui("Payment reference")}
+            placeholder={ui("Paste payment reference")}
             value={paymentReferenceInput}
             onChangeText={setPaymentReferenceInput}
             autoCapitalize="none"
@@ -361,7 +362,7 @@ const RecruitmentApplicationScreen = ({ route }) => {
             containerStyle={styles.inputGap}
           />
           <PremiumButton
-            title="Verify payment"
+            title={ui("Verify payment")}
             variant="secondary"
             onPress={verifyPayment}
             loading={paymentLoading}
@@ -369,12 +370,12 @@ const RecruitmentApplicationScreen = ({ route }) => {
           />
         </PremiumCard>
 
-        <PremiumSectionTitle title="2. Unlock your application" />
+        <PremiumSectionTitle title={ui("2. Unlock your application")} />
         <PremiumCard>
-          <AppText style={styles.cardText}>Enter the access code sent after successful payment.</AppText>
+          <AppText style={styles.cardText}>{ui("Enter the access code sent after successful payment.")}</AppText>
           <Input
-            label="Access code"
-            placeholder="Access code"
+            label={ui("Access code")}
+            placeholder={ui("Access code")}
             value={accessCodeInput}
             onChangeText={setAccessCodeInput}
             autoCapitalize="characters"
@@ -382,7 +383,7 @@ const RecruitmentApplicationScreen = ({ route }) => {
             containerStyle={styles.inputGap}
           />
           <PremiumButton
-            title="Verify access code"
+            title={ui("Verify access code")}
             onPress={verifyAccessCode}
             loading={accessLoading}
             icon="lock-open-outline"
@@ -390,8 +391,8 @@ const RecruitmentApplicationScreen = ({ route }) => {
         </PremiumCard>
 
         <PremiumSectionTitle
-          title="3. Upload documents"
-          subtitle="Available after your payment and access code are verified."
+          title={ui("3. Upload documents")}
+          subtitle={ui("Available after your payment and access code are verified.")}
         />
         <PremiumCard>
           {DOCUMENT_FIELDS.map((field) => {
@@ -403,26 +404,26 @@ const RecruitmentApplicationScreen = ({ route }) => {
                   {asset ? (
                     <FilePreviewCard
                       title={asset.fileName || field.label}
-                      subtitle="Ready to upload"
+                      subtitle={ui("Ready to upload")}
                       uri={asset.uri}
                       fileName={asset.fileName}
                       fileSize={asset.fileSize}
                       mimeType={asset.type}
-                      actionLabel="Preview"
+                      actionLabel={ui("Preview")}
                     />
                   ) : (
-                    <AppText style={styles.docHint}>No file selected</AppText>
+                    <AppText style={styles.docHint}>{ui("No file selected")}</AppText>
                   )}
                 </View>
                 <TouchableOpacity
                   accessibilityRole="button"
-                  accessibilityLabel={`${asset ? 'Change' : 'Select'} ${field.label}`}
+                  accessibilityLabel={ui("{value0} {value1}", {value0: (asset ? ui("Change") : ui("Select")), value1: (field.label)})}
                   activeOpacity={0.84}
                   style={[styles.docButton, uploading && styles.disabledButton]}
                   onPress={() => pickFile(field.key)}
                   disabled={uploading}
                 >
-                  <AppText style={styles.docButtonText}>{asset ? 'Change' : 'Select'}</AppText>
+                  <AppText style={styles.docButtonText}>{asset ? ui("Change") : ui("Select")}</AppText>
                 </TouchableOpacity>
               </View>
             );
@@ -430,16 +431,15 @@ const RecruitmentApplicationScreen = ({ route }) => {
 
           {uploadProgress ? (
             <View style={styles.uploadProgressCard}>
-              <AppText style={styles.uploadProgressTitle}>
-                Uploading {uploadProgress.label} ({uploadProgress.current}/{uploadProgress.total})
+              <AppText style={styles.uploadProgressTitle}>{ui("Uploading")}{uploadProgress.label} ({uploadProgress.current}/{uploadProgress.total})
               </AppText>
               <ProgressBar value={uploadPercent} />
-              <AppText style={styles.uploadProgressText}>{uploadPercent}% complete</AppText>
+              <AppText style={styles.uploadProgressText}>{uploadPercent}{ui("% complete")}</AppText>
             </View>
           ) : null}
 
           <PremiumButton
-            title="Upload documents"
+            title={ui("Upload documents")}
             onPress={uploadDocuments}
             loading={uploading}
             disabled={uploading || !canUpload}
@@ -447,9 +447,7 @@ const RecruitmentApplicationScreen = ({ route }) => {
             style={styles.blockGap}
           />
           {!canUpload ? (
-            <AppText style={styles.lockedCopy}>
-              Payment and access-code verification are required before uploads unlock.
-            </AppText>
+            <AppText style={styles.lockedCopy}>{ui("Payment and access-code verification are required before uploads unlock.")}</AppText>
           ) : null}
         </PremiumCard>
       </PremiumScreen>

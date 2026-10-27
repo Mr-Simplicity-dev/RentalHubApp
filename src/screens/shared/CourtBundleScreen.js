@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -17,6 +19,7 @@ import { colors, radius, typography, typeScale } from '../../theme';
 import AppText from '../../components/common/AppText';
 
 const CourtBundleScreen = () => {
+  useInterfaceLanguage();
   const [disputeId, setDisputeId] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -51,8 +54,8 @@ const CourtBundleScreen = () => {
       if (!(await Sharing.isAvailableAsync())) {
         Toast.show({
           type: 'info',
-          text1: 'Saved',
-          text2: `The PDF was saved to ${file.uri}`,
+          text1: ui("Saved"),
+          text2: ui("The PDF was saved to {value0}", {value0: (file.uri)}),
         });
         setShared(true);
         return;
@@ -61,10 +64,10 @@ const CourtBundleScreen = () => {
       await Sharing.shareAsync(file.uri, {
         mimeType: 'application/pdf',
         UTI: 'com.adobe.pdf',
-        dialogTitle: 'Court bundle',
+        dialogTitle: ui("Court bundle"),
       });
       setShared(true);
-      Toast.show({ type: 'success', text1: 'Court bundle ready' });
+      Toast.show({ type: 'success', text1: ui("Court bundle ready") });
     } catch (err) {
       setError(getErrorMessage(err, 'Could not generate the court bundle.'));
     } finally {
@@ -76,22 +79,22 @@ const CourtBundleScreen = () => {
     <View style={styles.screen}>
       <PremiumCard style={styles.hero}>
         <PremiumHero
-          eyebrow="Court bundle"
-          title="Generate & share"
-          subtitle="Download a dispute's court bundle as a PDF and share it."
+          eyebrow={ui("Court bundle")}
+          title={ui("Generate & share")}
+          subtitle={ui("Download a dispute's court bundle as a PDF and share it.")}
           icon="document-attach-outline"
         />
       </PremiumCard>
 
       <PremiumCard>
         <Input
-          label="Dispute ID"
+          label={ui("Dispute ID")}
           value={disputeId}
           onChangeText={(v) => {
             setDisputeId(v.replace(/\D/g, ''));
             setError('');
           }}
-          placeholder="Enter the dispute id"
+          placeholder={ui("Enter the dispute id")}
           keyboardType="number-pad"
         />
         {error ? <AppText style={styles.error}>{error}</AppText> : null}
@@ -103,11 +106,9 @@ const CourtBundleScreen = () => {
           style={styles.action}
         />
         {shared ? (
-          <InfoRow icon="checkmark-circle-outline" label="Status" value="Generated — shared or saved" />
+          <InfoRow icon="checkmark-circle-outline" label={ui("Status")} value="Generated — shared or saved" />
         ) : null}
-        <AppText style={styles.note}>
-          Admin, lawyer and super-admin roles can download court bundles for disputes they can access.
-        </AppText>
+        <AppText style={styles.note}>{ui("Admin, lawyer and super-admin roles can download court bundles for disputes they can access.")}</AppText>
       </PremiumCard>
     </View>
   );

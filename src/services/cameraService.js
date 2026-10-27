@@ -1,3 +1,4 @@
+import { translateUi as ui } from '../i18n/interfaceRuntime.cjs';
 import { Platform } from 'react-native';
 
 const pickImageFromWeb = (accept = 'image/*') =>
@@ -5,7 +6,7 @@ const pickImageFromWeb = (accept = 'image/*') =>
     if (typeof document === 'undefined') {
       resolve({
         cancelled: true,
-        message: 'Image selection is not available in this environment.',
+        message: ui("Image selection is not available in this environment."),
       });
       return;
     }
@@ -67,7 +68,7 @@ export const cameraService = {
       if (!asset?.uri) {
         return {
           cancelled: true,
-          message: 'No photo was captured.',
+          message: ui("No photo was captured."),
         };
       }
 
@@ -82,7 +83,7 @@ export const cameraService = {
     } catch (error) {
       return {
         cancelled: true,
-        message: 'Camera is not available on this device right now.',
+        message: ui("Camera is not available on this device right now."),
       };
     }
   },
@@ -122,7 +123,7 @@ export const cameraService = {
       if (!asset) {
         return {
           cancelled: true,
-          message: 'No image was selected.',
+          message: ui("No image was selected."),
         };
       }
 
@@ -131,7 +132,7 @@ export const cameraService = {
       if (!proofImage) {
         return {
           cancelled: true,
-          message: 'Could not prepare the screenshot. Try again with a smaller image.',
+          message: ui("Could not prepare the screenshot. Try again with a smaller image."),
         };
       }
 
@@ -147,7 +148,7 @@ export const cameraService = {
     } catch (error) {
       return {
         cancelled: true,
-        message: 'Photo library is not available on this device right now.',
+        message: ui("Photo library is not available on this device right now."),
       };
     }
   },

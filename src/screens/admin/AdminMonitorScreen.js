@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useCallback, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import TextInput from '../../components/common/AppTextInput';
@@ -23,6 +25,7 @@ const formatDateTime = (value) => {
 };
 
 const AdminMonitorScreen = () => {
+  const interfaceLanguage = useInterfaceLanguage();
   const [activities, setActivities] = useState([]);
   const [pagination, setPagination] = useState({ total: 0, limit: PAGE_SIZE, offset: 0 });
   const [query, setQuery] = useState('');
@@ -46,7 +49,7 @@ const AdminMonitorScreen = () => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Activity unavailable',
+        text1: ui("Activity unavailable"),
         text2: getErrorMessage(error, 'Could not load admin activity'),
       });
     } finally {
@@ -72,30 +75,28 @@ const AdminMonitorScreen = () => {
         item.target_id,
       ].some((value) => String(value || '').toLowerCase().includes(term))
     );
-  }, [activities, query]);
+  }, [activities, query, interfaceLanguage]);
 
   const canLoadMore = activities.length < Number(pagination.total || 0);
   const header = (
     <>
       <PremiumHero
-        eyebrow="SUPER ADMIN"
-        title="Admin activity monitor"
-        subtitle="Review auditable actions performed by administrative accounts across RentalHub."
+        eyebrow={ui("SUPER ADMIN")}
+        title={ui("Admin activity monitor")}
+        subtitle={ui("Review auditable actions performed by administrative accounts across RentalHub.")}
         icon="pulse-outline"
-        right={<StatusPill label={`${pagination.total || 0} actions`} color={colors.blue} />}
+        right={<StatusPill label={ui("{value0} actions", {value0: (pagination.total || 0)})} color={colors.blue} />}
       />
       <TextInput
-        accessibilityLabel="Search admin activity"
+        accessibilityLabel={ui("Search admin activity")}
         autoCapitalize="none"
-        placeholder="Search name, role, action or target"
+        placeholder={ui("Search name, role, action or target")}
         placeholderTextColor={colors.muted}
         style={styles.search}
         value={query}
         onChangeText={setQuery}
       />
-      <AppText style={styles.summary}>
-        Showing {filteredActivities.length} of {activities.length} loaded actions
-      </AppText>
+      <AppText style={styles.summary}>{ui("Showing")}{filteredActivities.length}{ui(" of ")}{activities.length}{ui("loaded actions")}</AppText>
     </>
   );
 
@@ -106,13 +107,13 @@ const AdminMonitorScreen = () => {
       refreshing={refreshing}
       onRefresh={() => loadActivities()}
       header={header}
-      emptyTitle="No admin activity found"
+      emptyTitle={ui("No admin activity found")}
       emptyMessage={query ? 'Try a broader search.' : 'Audited admin actions will appear here.'}
       emptyIcon="shield-checkmark-outline"
       ListFooterComponent={
         canLoadMore ? (
           <PremiumButton
-            title="Load more activity"
+            title={ui("Load more activity")}
             variant="secondary"
             loading={loadingMore}
             onPress={() => loadActivities({ append: true })}
@@ -126,19 +127,19 @@ const AdminMonitorScreen = () => {
               <AppText style={styles.actor}>{item.actor_name || 'Unknown administrator'}</AppText>
               <AppText style={styles.email}>{item.actor_email || 'Email unavailable'}</AppText>
             </View>
-            <StatusPill label={item.actor_role || 'admin'} color={colors.blue} />
+            <StatusPill label={item.actor_role || ui("admin")} color={colors.blue} />
           </View>
-          <InfoRow icon="flash-outline" label="Action" value={item.action || 'Activity recorded'} />
+          <InfoRow icon="flash-outline" label={ui("Action")} value={item.action || 'Activity recorded'} />
           <InfoRow
             icon="locate-outline"
-            label="Target"
+            label={ui("Target")}
             value={
               [item.target_type, item.target_id ? `#${item.target_id}` : null]
                 .filter(Boolean)
                 .join(' ') || 'Platform'
             }
           />
-          <InfoRow icon="time-outline" label="Recorded" value={formatDateTime(item.created_at)} />
+          <InfoRow icon="time-outline" label={ui("Recorded")} value={formatDateTime(item.created_at)} />
         </PremiumCard>
       )}
     />

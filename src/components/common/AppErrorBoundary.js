@@ -1,3 +1,4 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
 import React from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -64,10 +65,8 @@ class AppErrorBoundary extends React.Component {
           <View style={styles.iconBubble}>
             <Icon name="warning-outline" color={colors.danger} size={30} />
           </View>
-          <AppText style={styles.title}>Something needs a quick refresh</AppText>
-          <AppText style={styles.subtitle}>
-            The app hit an unexpected issue. We have saved a diagnostic report so the team can trace it.
-          </AppText>
+          <AppText style={styles.title}>{ui("Something needs a quick refresh")}</AppText>
+          <AppText style={styles.subtitle}>{ui("The app hit an unexpected issue. We have saved a diagnostic report so the team can trace it.")}</AppText>
 
           <View style={styles.actions}>
             <TouchableOpacity
@@ -75,7 +74,7 @@ class AppErrorBoundary extends React.Component {
               onPress={this.reset}
               style={styles.button}
             >
-              <AppText style={styles.buttonText}>Try again</AppText>
+              <AppText style={styles.buttonText}>{ui("Try again")}</AppText>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -85,7 +84,7 @@ class AppErrorBoundary extends React.Component {
               style={[styles.button, styles.secondaryButton]}
             >
               <AppText style={styles.secondaryButtonText}>
-                {isResetting ? 'Resetting...' : 'Sign out & reset'}
+                {isResetting ? ui("Resetting...") : 'Sign out & reset'}
               </AppText>
             </TouchableOpacity>
           </View>
@@ -107,11 +106,11 @@ class AppErrorBoundary extends React.Component {
 
           {showDetails ? (
             <ScrollView style={styles.detailsContainer} nestedScrollEnabled>
-              <AppText style={styles.errorTitle}>Error:</AppText>
+              <AppText style={styles.errorTitle}>{ui("Error:")}</AppText>
               <AppText style={styles.errorText}>{errorMessage}</AppText>
               {errorInfo?.componentStack ? (
                 <>
-                  <AppText style={[styles.errorTitle, { marginTop: 8 }]}>Component Stack:</AppText>
+                  <AppText style={[styles.errorTitle, { marginTop: 8 }]}>{ui("Component Stack:")}</AppText>
                   <AppText style={styles.stackText}>
                     {errorInfo.componentStack.trim()}
                   </AppText>

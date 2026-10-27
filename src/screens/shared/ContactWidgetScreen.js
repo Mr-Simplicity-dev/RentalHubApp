@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import WhatsAppBotScreen from './WhatsAppBotScreen';
 import React, { useState, useEffect, useRef, useContext, useCallback } from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, KeyboardAvoidingView, Platform, Linking, RefreshControl } from 'react-native';
@@ -87,6 +89,7 @@ const STATUS_COLORS = {
 };
 
 const ContactWidgetScreen = ({ navigation, route }) => {
+  useInterfaceLanguage();
   const { user, isAuthenticated } = useContext(AuthContext);
   const identityKey=isAuthenticated?String(user?.id || ''):'guest';
   const identityRef=useRef(identityKey);identityRef.current=identityKey;
@@ -220,7 +223,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
 
   const handleSubmit = async () => {
     if (!form.name.trim() || !form.email.trim() || !form.state || !form.message.trim()) {
-      Toast.show({ type: 'error', text1: 'Please fill in name, email, state, and message.' });
+      Toast.show({ type: 'error', text1: ui("Please fill in name, email, state, and message.") });
       return;
     }
     setSending(true);
@@ -232,16 +235,16 @@ const ContactWidgetScreen = ({ navigation, route }) => {
         guestAccessToken: ticket?.guestAccessToken,
         email: form.email,
       });
-      Toast.show({ type: 'success', text1: 'Message sent!', text2: "We'll get back to you shortly." });
+      Toast.show({ type: 'success', text1: ui("Message sent!"), text2: ui("We'll get back to you shortly.") });
       setView('success');
     } catch (err) {
-      Toast.show({ type: 'error', text1: err.response?.data?.message || 'Could not send message.' });
+      Toast.show({ type: 'error', text1: err.response?.data?.message || ui("Could not send message.") });
     } finally { setSending(false); }
   };
 
   const handleAuthenticatedCreate = async () => {
-    if (!form.state) { Toast.show({ type: 'error', text1: 'Please select your state.' }); return; }
-    if (!form.message.trim()) { Toast.show({ type: 'error', text1: 'Please write a message.' }); return; }
+    if (!form.state) { Toast.show({ type: 'error', text1: ui("Please select your state.") }); return; }
+    if (!form.message.trim()) { Toast.show({ type: 'error', text1: ui("Please write a message.") }); return; }
     setSending(true);
     try {
       const payload = {
@@ -256,10 +259,10 @@ const ContactWidgetScreen = ({ navigation, route }) => {
       if (newTicket) {
         setActiveTicket(newTicket);
         setView('conversation');
-        Toast.show({ type: 'success', text1: 'Ticket created' });
+        Toast.show({ type: 'success', text1: ui("Ticket created") });
       }
     } catch (err) {
-      Toast.show({ type: 'error', text1: err.response?.data?.message || 'Failed to create ticket' });
+      Toast.show({ type: 'error', text1: err.response?.data?.message || ui("Failed to create ticket") });
     } finally { setSending(false); }
   };
 
@@ -282,7 +285,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
       setConversation((prev) => prev.map((r) => r.id === tempId ? { ...getResponseData(res), _temp: false } : r));
     } catch {
       setConversation((prev) => prev.map((r) => r.id === tempId ? { ...r, _failed: true } : r));
-      Toast.show({ type: 'error', text1: 'Failed to send reply' });
+      Toast.show({ type: 'error', text1: ui("Failed to send reply") });
     } finally { setSendingReply(false); }
   };
 
@@ -334,12 +337,12 @@ const ContactWidgetScreen = ({ navigation, route }) => {
       if (!nextTickets.length && legacyAccessDenied && credentials.length === 0) {
         Toast.show({
           type: 'info',
-          text1: 'Secure ticket access',
-          text2: 'Guest tickets can only be reopened on the device where they were created.',
+          text1: ui("Secure ticket access"),
+          text2: ui("Guest tickets can only be reopened on the device where they were created."),
         });
       }
     } catch {
-      Toast.show({ type: 'error', text1: 'Could not load saved tickets. Try again.' });
+      Toast.show({ type: 'error', text1: ui("Could not load saved tickets. Try again.") });
     } finally { setLookupLoading(false); }
   };
 
@@ -358,8 +361,8 @@ const ContactWidgetScreen = ({ navigation, route }) => {
       }
       Toast.show({
         type: 'error',
-        text1: 'Could not securely open this conversation.',
-        text2: 'Start a new request if access has expired.',
+        text1: ui("Could not securely open this conversation."),
+        text2: ui("Start a new request if access has expired."),
       });
     }
   };
@@ -394,7 +397,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
         await guestSupportCredentialService.remove(viewingContactTicket.id);
       }
       setContactConv((prev) => prev.map((r) => r.id === tempId ? { ...r, _failed: true } : r));
-      Toast.show({ type: 'error', text1: 'Failed to send reply' });
+      Toast.show({ type: 'error', text1: ui("Failed to send reply") });
     } finally { setSendingContactReply(false); }
   };
 
@@ -405,7 +408,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
       const asset = result.assets?.[0];
       if (!asset) return;
       if (asset.fileSize && asset.fileSize > MAX_FILE_SIZE) {
-        Toast.show({ type: 'error', text1: 'File must be under 15MB' });
+        Toast.show({ type: 'error', text1: ui("File must be under 15MB") });
         return;
       }
       setFile({
@@ -414,7 +417,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
         fileName: asset.fileName || asset.uri.split('/').pop() || 'attachment',
       });
     } catch {
-      Toast.show({ type: 'error', text1: 'Failed to pick file' });
+      Toast.show({ type: 'error', text1: ui("Failed to pick file") });
     }
   };
 
@@ -444,22 +447,22 @@ const ContactWidgetScreen = ({ navigation, route }) => {
 
   const renderHeader = () => (
     <View style={styles.header}>
-      {view !== 'menu' && view !== 'success' && (
+      {view !== "menu" && view !== "success" && (
         <TouchableOpacity onPress={goBack} style={styles.headerBack}>
           <Icon name="arrow-back" size={22} color={colors.white} />
         </TouchableOpacity>
       )}
       <Icon name="headset-outline" size={20} color={colors.gold} />
       <View style={styles.headerText}>
-        <AppText style={styles.headerTitle}>RentalHub Support</AppText>
-        <AppText style={styles.headerSubtitle}>Assistant first. Human support when needed.</AppText>
+        <AppText style={styles.headerTitle}>{ui("RentalHub Support")}</AppText>
+        <AppText style={styles.headerSubtitle}>{ui("Assistant first. Human support when needed.")}</AppText>
       </View>
     </View>
   );
 
   const handleCallSupport = async () => {
     if (!connected) {
-      Toast.show({ type: 'info', text1: 'Connecting', text2: 'Realtime connection is not ready yet.' });
+      Toast.show({ type: 'info', text1: ui("Connecting"), text2: ui("Realtime connection is not ready yet.") });
       return;
     }
     setCallingSupport(true);
@@ -471,11 +474,11 @@ const ContactWidgetScreen = ({ navigation, route }) => {
         setView(isAuthenticated ? 'auth-form' : 'form');
         Toast.show({
           type: 'info',
-          text1: 'No agent available',
-          text2: 'Please leave a message and we will get back to you.',
+          text1: ui("No agent available"),
+          text2: ui("Please leave a message and we will get back to you."),
         });
       } else {
-        Toast.show({ type: 'error', text1: 'Call failed', text2: error?.message || 'Could not start the support call.' });
+        Toast.show({ type: 'error', text1: ui("Call failed"), text2: error?.message || ui("Could not start the support call.") });
       }
     } finally {
       setCallingSupport(false);
@@ -488,10 +491,8 @@ const ContactWidgetScreen = ({ navigation, route }) => {
         <View style={styles.heroIconWrap}>
           <Icon name="headset-outline" size={28} color={colors.gold} />
         </View>
-        <AppText style={styles.heroTitle}>How can we help?</AppText>
-        <AppText style={styles.heroText}>
-          Submit a support request and our team will get back to you via email.
-        </AppText>
+        <AppText style={styles.heroTitle}>{ui("How can we help?")}</AppText>
+        <AppText style={styles.heroText}>{ui("Submit a support request and our team will get back to you via email.")}</AppText>
       </View>
 
       <TouchableOpacity style={styles.menuRow} onPress={() => setView(isAuthenticated ? 'auth-form' : 'form')}>
@@ -499,8 +500,8 @@ const ContactWidgetScreen = ({ navigation, route }) => {
           <Icon name="chatbubble-ellipses-outline" size={20} color={colors.blue} />
         </View>
         <View style={styles.menuRowText}>
-          <AppText style={styles.menuRowTitle}>Start a conversation</AppText>
-          <AppText style={styles.menuRowSub}>Send us a message about any issue</AppText>
+          <AppText style={styles.menuRowTitle}>{ui("Start a conversation")}</AppText>
+          <AppText style={styles.menuRowSub}>{ui("Send us a message about any issue")}</AppText>
         </View>
         <Icon name="chevron-forward" size={18} color={colors.muted} />
       </TouchableOpacity>
@@ -511,8 +512,8 @@ const ContactWidgetScreen = ({ navigation, route }) => {
             <Icon name="document-text-outline" size={20} color="#D97706" />
           </View>
           <View style={styles.menuRowText}>
-            <AppText style={styles.menuRowTitle}>My tickets</AppText>
-            <AppText style={styles.menuRowSub}>View and reply to your support tickets</AppText>
+            <AppText style={styles.menuRowTitle}>{ui("My tickets")}</AppText>
+            <AppText style={styles.menuRowSub}>{ui("View and reply to your support tickets")}</AppText>
           </View>
           <Icon name="chevron-forward" size={18} color={colors.muted} />
         </TouchableOpacity>
@@ -526,8 +527,8 @@ const ContactWidgetScreen = ({ navigation, route }) => {
           <Icon name="search-outline" size={20} color="#059669" />
         </View>
         <View style={styles.menuRowText}>
-          <AppText style={styles.menuRowTitle}>Check ticket status</AppText>
-          <AppText style={styles.menuRowSub}>Look up existing tickets by email</AppText>
+          <AppText style={styles.menuRowTitle}>{ui("Check ticket status")}</AppText>
+          <AppText style={styles.menuRowSub}>{ui("Look up existing tickets by email")}</AppText>
         </View>
         <Icon name="chevron-forward" size={18} color={colors.muted} />
       </TouchableOpacity>
@@ -537,7 +538,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
           <Icon name="mail-outline" size={20} color="#7C3AED" />
         </View>
         <View style={styles.menuRowText}>
-          <AppText style={styles.menuRowTitle}>Email support</AppText>
+          <AppText style={styles.menuRowTitle}>{ui("Email support")}</AppText>
           <AppText style={styles.menuRowSub}>support@rentalhub.com.ng</AppText>
         </View>
         <Icon name="chevron-forward" size={18} color={colors.muted} />
@@ -549,7 +550,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
         </View>
         <View style={styles.menuRowText}>
           <AppText style={styles.menuRowTitle}>{callingSupport ? 'Connecting…' : 'Call support'}</AppText>
-          <AppText style={styles.menuRowSub}>Talk to a support agent in-app</AppText>
+          <AppText style={styles.menuRowSub}>{ui("Talk to a support agent in-app")}</AppText>
         </View>
         <Icon name="chevron-forward" size={18} color={colors.muted} />
       </TouchableOpacity>
@@ -559,8 +560,8 @@ const ContactWidgetScreen = ({ navigation, route }) => {
           <Icon name="call-outline" size={20} color={colors.danger} />
         </View>
         <View style={styles.menuRowText}>
-          <AppText style={styles.menuRowTitle}>Call us</AppText>
-          <AppText style={styles.menuRowSub}>Business hours: Mon-Fri 9am-5pm</AppText>
+          <AppText style={styles.menuRowTitle}>{ui("Call us")}</AppText>
+          <AppText style={styles.menuRowSub}>{ui("Business hours: Mon-Fri 9am-5pm")}</AppText>
         </View>
         <Icon name="chevron-forward" size={18} color={colors.muted} />
       </TouchableOpacity>
@@ -569,18 +570,18 @@ const ContactWidgetScreen = ({ navigation, route }) => {
 
   const renderContactForm = () => (
     <View style={styles.formContainer}>
-      <AppText style={styles.formHint}>Fill this form and we'll get back to you via email.</AppText>
+      <AppText style={styles.formHint}>{ui("Fill this form and we'll get back to you via email.")}</AppText>
 
-      <AppText style={styles.label}>Name *</AppText>
+      <AppText style={styles.label}>{ui("Name *")}</AppText>
       <TextInput
         style={styles.input}
         value={form.name}
         onChangeText={(v) => setForm((p) => ({ ...p, name: v }))}
-        placeholder="Your name"
+        placeholder={ui("Your name")}
         placeholderTextColor={colors.muted}
       />
 
-      <AppText style={styles.label}>Email *</AppText>
+      <AppText style={styles.label}>{ui("Email *")}</AppText>
       <TextInput
         style={styles.input}
         value={form.email}
@@ -591,7 +592,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
         autoCapitalize="none"
       />
 
-      <AppText style={styles.label}>State *</AppText>
+      <AppText style={styles.label}>{ui("State *")}</AppText>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipScroll}>
         <View style={styles.chipRow}>
           {states.map((s) => (
@@ -608,7 +609,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
 
       {lgas.length > 0 && (
         <>
-          <AppText style={styles.label}>LGA</AppText>
+          <AppText style={styles.label}>{ui("LGA")}</AppText>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipScroll}>
             <View style={styles.chipRow}>
               {lgas.map((l) => (
@@ -625,16 +626,16 @@ const ContactWidgetScreen = ({ navigation, route }) => {
         </>
       )}
 
-      <AppText style={styles.label}>Subject</AppText>
+      <AppText style={styles.label}>{ui("Subject")}</AppText>
       <TextInput
         style={styles.input}
         value={form.subject}
         onChangeText={(v) => setForm((p) => ({ ...p, subject: v }))}
-        placeholder="How can we help?"
+        placeholder={ui("How can we help?")}
         placeholderTextColor={colors.muted}
       />
 
-      <AppText style={styles.label}>Priority</AppText>
+      <AppText style={styles.label}>{ui("Priority")}</AppText>
       <View style={styles.chipRow}>
         {PRIORITY_OPTIONS.map((p) => (
           <TouchableOpacity
@@ -649,12 +650,12 @@ const ContactWidgetScreen = ({ navigation, route }) => {
         ))}
       </View>
 
-      <AppText style={styles.label}>Message *</AppText>
+      <AppText style={styles.label}>{ui("Message *")}</AppText>
       <TextInput
         style={[styles.input, styles.textArea]}
         value={form.message}
         onChangeText={(v) => setForm((p) => ({ ...p, message: v }))}
-        placeholder="Tell us more..."
+        placeholder={ui("Tell us more...")}
         placeholderTextColor={colors.muted}
         multiline
         numberOfLines={4}
@@ -671,7 +672,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
         ) : (
           <>
             <Icon name="paper-plane" size={16} color={colors.white} />
-            <AppText style={styles.primaryBtnText}>Send message</AppText>
+            <AppText style={styles.primaryBtnText}>{ui("Send message")}</AppText>
           </>
         )}
       </TouchableOpacity>
@@ -680,27 +681,27 @@ const ContactWidgetScreen = ({ navigation, route }) => {
         setLookupEmail(form.email || '');
         setView('check-status');
       }}>
-        <AppText style={styles.linkText}>Already contacted us? Check your ticket status</AppText>
+        <AppText style={styles.linkText}>{ui("Already contacted us? Check your ticket status")}</AppText>
       </TouchableOpacity>
     </View>
   );
 
   const renderAuthForm = () => (
     <View style={styles.formContainer}>
-      <AppText style={styles.formHint}>Start a new conversation</AppText>
+      <AppText style={styles.formHint}>{ui("Start a new conversation")}</AppText>
 
       <View style={styles.infoRow}>
         <View style={styles.infoBox}>
-          <AppText style={styles.infoLabel}>Name</AppText>
+          <AppText style={styles.infoLabel}>{ui("Name")}</AppText>
           <AppText style={styles.infoValue} numberOfLines={1}>{user?.full_name || form.name}</AppText>
         </View>
         <View style={styles.infoBox}>
-          <AppText style={styles.infoLabel}>Email</AppText>
+          <AppText style={styles.infoLabel}>{ui("Email")}</AppText>
           <AppText style={styles.infoValue} numberOfLines={1}>{user?.email || form.email}</AppText>
         </View>
       </View>
 
-      <AppText style={styles.label}>State *</AppText>
+      <AppText style={styles.label}>{ui("State *")}</AppText>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipScroll}>
         <View style={styles.chipRow}>
           {states.map((s) => (
@@ -717,7 +718,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
 
       {lgas.length > 0 && (
         <>
-          <AppText style={styles.label}>LGA</AppText>
+          <AppText style={styles.label}>{ui("LGA")}</AppText>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipScroll}>
             <View style={styles.chipRow}>
               {lgas.map((l) => (
@@ -734,16 +735,16 @@ const ContactWidgetScreen = ({ navigation, route }) => {
         </>
       )}
 
-      <AppText style={styles.label}>Subject (optional)</AppText>
+      <AppText style={styles.label}>{ui("Subject (optional)")}</AppText>
       <TextInput
         style={styles.input}
         value={form.subject}
         onChangeText={(v) => setForm((p) => ({ ...p, subject: v }))}
-        placeholder="Subject"
+        placeholder={ui("Subject")}
         placeholderTextColor={colors.muted}
       />
 
-      <AppText style={styles.label}>Priority</AppText>
+      <AppText style={styles.label}>{ui("Priority")}</AppText>
       <View style={styles.chipRow}>
         {PRIORITY_OPTIONS.map((p) => (
           <TouchableOpacity
@@ -758,12 +759,12 @@ const ContactWidgetScreen = ({ navigation, route }) => {
         ))}
       </View>
 
-      <AppText style={styles.label}>Message *</AppText>
+      <AppText style={styles.label}>{ui("Message *")}</AppText>
       <TextInput
         style={[styles.input, styles.textArea]}
         value={form.message}
         onChangeText={(v) => setForm((p) => ({ ...p, message: v }))}
-        placeholder="How can we help you?"
+        placeholder={ui("How can we help you?")}
         placeholderTextColor={colors.muted}
         multiline
         numberOfLines={4}
@@ -780,7 +781,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
         ) : (
           <>
             <Icon name="paper-plane" size={16} color={colors.white} />
-            <AppText style={styles.primaryBtnText}>Start conversation</AppText>
+            <AppText style={styles.primaryBtnText}>{ui("Start conversation")}</AppText>
           </>
         )}
       </TouchableOpacity>
@@ -792,25 +793,25 @@ const ContactWidgetScreen = ({ navigation, route }) => {
       <View style={styles.successIcon}>
         <Icon name="checkmark-circle" size={56} color={colors.success} />
       </View>
-      <AppText style={styles.successTitle}>Message sent!</AppText>
-      <AppText style={styles.successSub}>We'll get back to you shortly.</AppText>
+      <AppText style={styles.successTitle}>{ui("Message sent!")}</AppText>
+      <AppText style={styles.successSub}>{ui("We'll get back to you shortly.")}</AppText>
       <TouchableOpacity style={styles.secondaryBtn} onPress={resetForm}>
-        <AppText style={styles.secondaryBtnText}>Back to menu</AppText>
+        <AppText style={styles.secondaryBtnText}>{ui("Back to menu")}</AppText>
       </TouchableOpacity>
     </View>
   );
 
   const renderTicketList = () => (
     <View style={styles.listContainer}>
-      <AppText style={styles.sectionTitle}>YOUR TICKETS</AppText>
+      <AppText style={styles.sectionTitle}>{ui("YOUR TICKETS")}</AppText>
       {loadingTickets ? (
         <ActivityIndicator color={colors.blue} style={{ marginTop: 24 }} />
       ) : tickets.length === 0 ? (
         <View style={styles.emptyState}>
           <Icon name="document-text-outline" size={40} color={colors.border} />
-          <AppText style={styles.emptyText}>No tickets yet.</AppText>
+          <AppText style={styles.emptyText}>{ui("No tickets yet.")}</AppText>
           <TouchableOpacity onPress={() => setView('auth-form')}>
-            <AppText style={styles.linkText}>Start a new conversation</AppText>
+            <AppText style={styles.linkText}>{ui("Start a new conversation")}</AppText>
           </TouchableOpacity>
         </View>
       ) : (
@@ -834,7 +835,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
                 <AppText style={styles.ticketMeta}>#{ticket.id} · {formatDate(ticket.created_at)}</AppText>
                 {ticket.unread_admin_replies > 0 && (
                   <View style={styles.unreadBadge}>
-                    <AppText style={styles.unreadText}>{ticket.unread_admin_replies} new</AppText>
+                    <AppText style={styles.unreadText}>{ticket.unread_admin_replies}{ui(" new")}</AppText>
                   </View>
                 )}
               </TouchableOpacity>
@@ -859,7 +860,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
             onPress={() => Linking.openURL(msg.attachment_url)}
           >
             <Icon name="mic" size={12} color={isOwn ? colors.white : colors.blue} />
-            <AppText style={[styles.attachmentText, isOwn && { color: colors.white }]}>Voice message</AppText>
+            <AppText style={[styles.attachmentText, isOwn && { color: colors.white }]}>{ui("Voice message")}</AppText>
           </TouchableOpacity>
         ) : msg.attachment_url ? (
           <TouchableOpacity
@@ -868,7 +869,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
           >
             <Icon name="document-outline" size={12} color={isOwn ? colors.white : colors.blue} />
             <AppText style={[styles.attachmentText, isOwn && { color: colors.white }]} numberOfLines={1}>
-              {msg.attachment_name || 'Attachment'}
+              {msg.attachment_name || ui("Attachment")}
             </AppText>
           </TouchableOpacity>
         ) : null}
@@ -876,7 +877,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
           {formatTime(msg.created_at)}{msg._temp ? ' · Sending...' : ''}
         </AppText>
         {msg._failed && (
-          <AppText style={styles.failedText}>Failed to send</AppText>
+          <AppText style={styles.failedText}>{ui("Failed to send")}</AppText>
         )}
       </View>
     );
@@ -900,7 +901,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
         {loadingConv ? (
           <ActivityIndicator color={colors.blue} style={{ marginTop: 24 }} />
         ) : conversation.length === 0 ? (
-          <AppText style={styles.emptyConvText}>No messages yet.</AppText>
+          <AppText style={styles.emptyConvText}>{ui("No messages yet.")}</AppText>
         ) : (
           conversation.map((reply) => (
             <View key={reply.id} style={styles.bubbleWrap}>
@@ -910,12 +911,12 @@ const ContactWidgetScreen = ({ navigation, route }) => {
         )}
         {typingUser && (
           <View style={styles.typingRow}>
-            <AppText style={styles.typingText}>{typingUser.userName || 'Admin'} is typing...</AppText>
+            <AppText style={styles.typingText}>{typingUser.userName || ui("Admin")}{ui(" is typing...")}</AppText>
           </View>
         )}
       </ScrollView>
 
-      {activeTicket?.status !== 'resolved' && (
+      {activeTicket?.status !== "resolved" && (
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
           {attachmentFile && (
             <View style={styles.filePreview}>
@@ -934,7 +935,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
               style={styles.replyInput}
               value={replyText}
               onChangeText={setReplyText}
-              placeholder="Type a message..."
+              placeholder={ui("Type a message...")}
               placeholderTextColor={colors.muted}
               multiline
               maxLength={2000}
@@ -958,7 +959,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
 
   const renderCheckStatus = () => (
     <View style={styles.formContainer}>
-      <AppText style={styles.formHint}>Enter the email you used to contact us.</AppText>
+      <AppText style={styles.formHint}>{ui("Enter the email you used to contact us.")}</AppText>
       <TextInput
         style={styles.input}
         value={lookupEmail}
@@ -976,13 +977,13 @@ const ContactWidgetScreen = ({ navigation, route }) => {
         {lookupLoading ? (
           <ActivityIndicator color={colors.white} size="small" />
         ) : (
-          <AppText style={styles.primaryBtnText}>Check Tickets Status</AppText>
+          <AppText style={styles.primaryBtnText}>{ui("Check Tickets Status")}</AppText>
         )}
       </TouchableOpacity>
 
       {lookupTickets.length > 0 && (
         <View style={{ marginTop: 12 }}>
-          <AppText style={styles.sectionTitle}>YOUR TICKETS</AppText>
+          <AppText style={styles.sectionTitle}>{ui("YOUR TICKETS")}</AppText>
           {lookupTickets.map((ticket) => {
             const isViewing = viewingContactTicket?.id === ticket.id;
             const sc = STATUS_COLORS[ticket.status] || STATUS_COLORS.open;
@@ -1004,21 +1005,21 @@ const ContactWidgetScreen = ({ navigation, route }) => {
                 {isViewing && (
                   <View style={styles.contactConvWrap}>
                     {contactConv.length === 0 ? (
-                      <AppText style={styles.emptyConvText}>No replies yet.</AppText>
+                      <AppText style={styles.emptyConvText}>{ui("No replies yet.")}</AppText>
                     ) : (
                       contactConv.map((r) => (
                         <View key={r.id} style={[styles.contactBubble, r.is_admin ? styles.contactBubbleAdmin : styles.contactBubbleUser, r._failed && styles.contactBubbleFailed]}>
-                          {r.is_admin && <AppText style={styles.contactBubbleAuthor}>{r.author_name || 'Support'}</AppText>}
+                          {r.is_admin && <AppText style={styles.contactBubbleAuthor}>{r.author_name || ui("Support")}</AppText>}
                           {r.message ? <AppText style={styles.contactBubbleMsg}>{r.message}</AppText> : null}
                           {r.attachment_url ? (
                             <TouchableOpacity onPress={() => Linking.openURL(r.attachment_url)}>
-                              <AppText style={styles.contactBubbleLink}>{r.attachment_name || 'Attachment'}</AppText>
+                              <AppText style={styles.contactBubbleLink}>{r.attachment_name || ui("Attachment")}</AppText>
                             </TouchableOpacity>
                           ) : null}
                           <AppText style={styles.contactBubbleTime}>
                             {formatDateTime(r.created_at)}{r._temp ? ' · Sending...' : ''}
                           </AppText>
-                          {r._failed && <AppText style={styles.failedText}>Failed</AppText>}
+                          {r._failed && <AppText style={styles.failedText}>{ui("Failed")}</AppText>}
                         </View>
                       ))
                     )}
@@ -1026,13 +1027,13 @@ const ContactWidgetScreen = ({ navigation, route }) => {
                     {adminViewingName && (
                       <View style={styles.statusIndicator}>
                         <View style={styles.dotGreen} />
-                        <AppText style={styles.statusIndicatorText}>{adminViewingName} is viewing this conversation</AppText>
+                        <AppText style={styles.statusIndicatorText}>{adminViewingName}{ui(" is viewing this conversation")}</AppText>
                       </View>
                     )}
                     {adminTypingName && (
                       <View style={styles.statusIndicator}>
                         <View style={styles.dotBlue} />
-                        <AppText style={[styles.statusIndicatorText, { color: colors.blue }]}>{adminTypingName} is typing...</AppText>
+                        <AppText style={[styles.statusIndicatorText, { color: colors.blue }]}>{adminTypingName}{ui(" is typing...")}</AppText>
                       </View>
                     )}
 
@@ -1053,7 +1054,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
                         style={styles.replyInput}
                         value={contactReplyText}
                         onChangeText={setContactReplyText}
-                        placeholder="Type a reply..."
+                        placeholder={ui("Type a reply...")}
                         placeholderTextColor={colors.muted}
                         multiline
                         maxLength={2000}
@@ -1079,11 +1080,11 @@ const ContactWidgetScreen = ({ navigation, route }) => {
       )}
 
       {lookupTickets.length === 0 && !lookupLoading && lookupEmail.trim() && (
-        <AppText style={styles.emptyConvText}>No tickets found for this email.</AppText>
+        <AppText style={styles.emptyConvText}>{ui("No tickets found for this email.")}</AppText>
       )}
 
       <TouchableOpacity onPress={() => setView('menu')}>
-        <AppText style={styles.linkText}>Start a new conversation</AppText>
+        <AppText style={styles.linkText}>{ui("Start a new conversation")}</AppText>
       </TouchableOpacity>
     </View>
   );
@@ -1094,15 +1095,15 @@ const ContactWidgetScreen = ({ navigation, route }) => {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       {renderHeader()}
-      {view==='assistant' ? <><WhatsAppBotScreen embedded navigation={navigation} onHumanRequest={({summary})=>{setForm(prev=>({...prev,subject:'Support follow-up',message:summary || ''}));setView(isAuthenticated?'auth-form':'form');}}/><View style={{flexDirection:'row',gap:12,padding:12}}><TouchableOpacity onPress={()=>setView('menu')}><AppText style={{color:colors.blue}}>Support options</AppText></TouchableOpacity><TouchableOpacity onPress={()=>setView(isAuthenticated?'tickets':'check-status')}><AppText style={{color:colors.blue}}>My tickets</AppText></TouchableOpacity></View></> : null}
+      {view==='assistant' ? <><WhatsAppBotScreen embedded navigation={navigation} onHumanRequest={({summary})=>{setForm(prev=>({...prev,subject:'Support follow-up',message:summary || ''}));setView(isAuthenticated?'auth-form':'form');}}/><View style={{flexDirection:'row',gap:12,padding:12}}><TouchableOpacity onPress={()=>setView('menu')}><AppText style={{color:colors.blue}}>{ui("Support options")}</AppText></TouchableOpacity><TouchableOpacity onPress={()=>setView(isAuthenticated?'tickets':'check-status')}><AppText style={{color:colors.blue}}>{ui("My tickets")}</AppText></TouchableOpacity></View></> : null}
 
       {view!=='assistant' && <ScrollView style={styles.body} contentContainerStyle={styles.bodyContent}>
-        {view === 'menu' && renderMenu()}
+        {view === "menu" && renderMenu()}
         {view === 'form' && renderContactForm()}
         {view === 'auth-form' && renderAuthForm()}
-        {view === 'success' && renderSuccess()}
-        {view === 'tickets' && renderTicketList()}
-        {view === 'conversation' && renderConversation()}
+        {view === "success" && renderSuccess()}
+        {view === "tickets" && renderTicketList()}
+        {view === "conversation" && renderConversation()}
         {view === 'check-status' && renderCheckStatus()}
       </ScrollView>}
     </KeyboardAvoidingView>

@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useState } from 'react';
 import {Modal,
   View,
@@ -19,32 +21,32 @@ import { typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const DAMAGE_TYPES = [
-  { value: 'scratch', label: 'Scratch' },
-  { value: 'crack', label: 'Crack' },
-  { value: 'hole', label: 'Hole' },
-  { value: 'dent', label: 'Dent' },
-  { value: 'stain', label: 'Stain' },
-  { value: 'water_damage', label: 'Water' },
-  { value: 'mold', label: 'Mold' },
-  { value: 'other', label: 'Other' },
+  { value: 'scratch', get "label"() { return ui("Scratch"); } },
+  { value: 'crack', get "label"() { return ui("Crack"); } },
+  { value: 'hole', get "label"() { return ui("Hole"); } },
+  { value: 'dent', get "label"() { return ui("Dent"); } },
+  { value: 'stain', get "label"() { return ui("Stain"); } },
+  { value: 'water_damage', get "label"() { return ui("Water"); } },
+  { value: 'mold', get "label"() { return ui("Mold"); } },
+  { value: 'other', get "label"() { return ui("Other"); } },
 ];
 
 const SEVERITY_LEVELS = [
-  { value: 'minor', label: 'Minor' },
-  { value: 'moderate', label: 'Moderate' },
-  { value: 'severe', label: 'Severe' },
+  { value: 'minor', get "label"() { return ui("Minor"); } },
+  { value: 'moderate', get "label"() { return ui("Moderate"); } },
+  { value: 'severe', get "label"() { return ui("Severe"); } },
 ];
 
 const DEPTH_LEVELS = [
-  { value: 'surface', label: 'Surface' },
-  { value: 'shallow', label: 'Shallow' },
-  { value: 'deep', label: 'Deep' },
+  { value: 'surface', get "label"() { return ui("Surface"); } },
+  { value: 'shallow', get "label"() { return ui("Shallow"); } },
+  { value: 'deep', get "label"() { return ui("Deep"); } },
 ];
 
 const URGENCY_LEVELS = [
-  { value: 'low', label: 'Low' },
-  { value: 'medium', label: 'Medium' },
-  { value: 'high', label: 'High' },
+  { value: 'low', get "label"() { return ui("Low"); } },
+  { value: 'medium', get "label"() { return ui("Medium"); } },
+  { value: 'high', get "label"() { return ui("High"); } },
 ];
 
 const ROOMS = [
@@ -61,6 +63,7 @@ const ROOMS = [
 ];
 
 const DamageReportCapture = ({ visible, propertyId, onClose, onSaved }) => {
+  useInterfaceLanguage();
   const [stage, setStage] = useState('workflow');
   const [photo, setPhoto] = useState(null);
   const [analyzing, setAnalyzing] = useState(false);
@@ -146,7 +149,7 @@ const DamageReportCapture = ({ visible, propertyId, onClose, onSaved }) => {
       setAnalysisError('');
       setAiResult(null);
       setRetryAction(null);
-      setUploadProgress({ label: 'Uploading photo for AI analysis', percent: 0 });
+      setUploadProgress({ label: ui("Uploading photo for AI analysis"), percent: 0 });
 
       try {
         const response = await propertyService.analyzeDamagePhoto(captured, {
@@ -154,7 +157,7 @@ const DamageReportCapture = ({ visible, propertyId, onClose, onSaved }) => {
             const total = event.total || asset.fileSize || 0;
             const percent = total ? Math.round((event.loaded / total) * 100) : 0;
             setUploadProgress({
-              label: 'Uploading photo for AI analysis',
+              label: ui("Uploading photo for AI analysis"),
               percent: Math.min(percent, 100),
             });
           },
@@ -176,7 +179,7 @@ const DamageReportCapture = ({ visible, propertyId, onClose, onSaved }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Camera error',
+        text1: ui("Camera error"),
         text2: getErrorMessage(error, 'Could not open camera'),
       });
     }
@@ -187,14 +190,14 @@ const DamageReportCapture = ({ visible, propertyId, onClose, onSaved }) => {
     setAnalyzing(true);
     setAnalysisError('');
     setRetryAction(null);
-    setUploadProgress({ label: 'Retrying AI analysis', percent: 0 });
+    setUploadProgress({ label: ui("Retrying AI analysis"), percent: 0 });
     try {
       const response = await propertyService.analyzeDamagePhoto(targetPhoto, {
         onUploadProgress: (event) => {
           const total = event.total || 0;
           const percent = total ? Math.round((event.loaded / total) * 100) : 0;
           setUploadProgress({
-            label: 'Retrying AI analysis',
+            label: ui("Retrying AI analysis"),
             percent: Math.min(percent, 100),
           });
         },
@@ -219,14 +222,14 @@ const DamageReportCapture = ({ visible, propertyId, onClose, onSaved }) => {
     if (!photo || !form.room_location.trim()) {
       Toast.show({
         type: 'error',
-        text1: 'Missing information',
-        text2: 'Capture a photo and select a room location.',
+        text1: ui("Missing information"),
+        text2: ui("Capture a photo and select a room location."),
       });
       return;
     }
 
     setSaving(true);
-    setUploadProgress({ label: 'Saving evidence report', percent: 0 });
+    setUploadProgress({ label: ui("Saving evidence report"), percent: 0 });
     setRetryAction(null);
     try {
       const payload = {
@@ -250,7 +253,7 @@ const DamageReportCapture = ({ visible, propertyId, onClose, onSaved }) => {
           const total = event.total || photo.fileSize || 0;
           const percent = total ? Math.round((event.loaded / total) * 100) : 0;
           setUploadProgress({
-            label: 'Saving evidence report',
+            label: ui("Saving evidence report"),
             percent: Math.min(percent, 100),
           });
         },
@@ -259,24 +262,24 @@ const DamageReportCapture = ({ visible, propertyId, onClose, onSaved }) => {
       if (response?.success) {
         Toast.show({
           type: 'success',
-          text1: 'Assessment saved',
-          text2: 'Property maintenance assessment saved successfully.',
+          text1: ui("Assessment saved"),
+          text2: ui("Property maintenance assessment saved successfully."),
         });
         onSaved?.();
         handleClose();
       } else {
         Toast.show({
           type: 'error',
-          text1: 'Save failed',
-          text2: response?.message || 'Could not save assessment',
+          text1: ui("Save failed"),
+          text2: response?.message || ui("Could not save assessment"),
         });
       }
     } catch (error) {
       setRetryAction(() => saveReport);
       Toast.show({
         type: 'error',
-        text1: 'Save failed',
-        text2: getErrorMessage(error, 'Could not save assessment'),
+        text1: ui("Save failed"),
+        text2: getErrorMessage(error, ui("Could not save assessment")),
       });
     } finally {
       setSaving(false);
@@ -297,8 +300,8 @@ const DamageReportCapture = ({ visible, propertyId, onClose, onSaved }) => {
       <View style={styles.overlay}>
         <View style={styles.sheet}>
           <View style={styles.header}>
-            <AppText style={styles.title}>Property Maintenance Assessment</AppText>
-            <TouchableOpacity accessibilityLabel="Close condition assessment" accessibilityRole="button" onPress={handleClose}>
+            <AppText style={styles.title}>{ui("Property Maintenance Assessment")}</AppText>
+            <TouchableOpacity accessibilityLabel={ui("Close condition assessment")} accessibilityRole="button" onPress={handleClose}>
               <Icon name="close" size={24} color="#64748b" />
             </TouchableOpacity>
           </View>
@@ -306,14 +309,12 @@ const DamageReportCapture = ({ visible, propertyId, onClose, onSaved }) => {
           <ScrollView contentContainerStyle={styles.body}>
             {stage === 'workflow' ? (
               <>
-                <AppText style={styles.lead}>
-                  Capture a clear photo of the issue. AI will suggest details you can review before saving.
-                </AppText>
-                <Button title="Open Camera" onPress={capturePhoto} />
+                <AppText style={styles.lead}>{ui("Capture a clear photo of the issue. AI will suggest details you can review before saving.")}</AppText>
+                <Button title={ui("Open Camera")} onPress={capturePhoto} />
               </>
             ) : null}
 
-            {stage === 'review' ? (
+            {stage === "review" ? (
               <>
                 {photo?.uri ? (
                   <Image source={{ uri: photo.uri }} style={styles.preview} resizeMode="cover" />
@@ -322,7 +323,7 @@ const DamageReportCapture = ({ visible, propertyId, onClose, onSaved }) => {
                 {analyzing ? (
                   <View style={styles.analyzingRow}>
                     <ActivityIndicator color="#0284c7" />
-                    <AppText style={styles.analyzingText}>Analyzing photo...</AppText>
+                    <AppText style={styles.analyzingText}>{ui("Analyzing photo...")}</AppText>
                   </View>
                 ) : null}
 
@@ -332,87 +333,87 @@ const DamageReportCapture = ({ visible, propertyId, onClose, onSaved }) => {
                     <View style={styles.progressTrack}>
                       <View style={[styles.progressFill, { width: `${uploadProgress.percent}%` }]} />
                     </View>
-                    <AppText style={styles.progressText}>{uploadProgress.percent}% complete</AppText>
+                    <AppText style={styles.progressText}>{uploadProgress.percent}{ui("% complete")}</AppText>
                   </View>
                 ) : null}
 
                 {analysisError ? <AppText style={styles.warningText}>{analysisError}</AppText> : null}
                 {retryAction ? (
                   <TouchableOpacity
-                    accessibilityLabel="Retry last report evidence upload step"
+                    accessibilityLabel={ui("Retry last report evidence upload step")}
                     accessibilityRole="button"
                     style={styles.retryButton}
                     onPress={retryAction}
                   >
                     <Icon name="refresh-outline" size={17} color="#1d4ed8" />
-                    <AppText style={styles.retryText}>Retry last upload step</AppText>
+                    <AppText style={styles.retryText}>{ui("Retry last upload step")}</AppText>
                   </TouchableOpacity>
                 ) : null}
 
                 <SelectField
-                  label="Room Location"
+                  label={ui("Room Location")}
                   value={form.room_location}
-                  placeholder="Select room"
+                  placeholder={ui("Select room")}
                   onPress={() => setPickerType('room')}
                 />
                 <SelectField
-                  label="Condition Type"
+                  label={ui("Condition Type")}
                   value={
                     DAMAGE_TYPES.find((item) => item.value === form.damage_type)?.label ||
                     form.damage_type
                   }
-                  placeholder="Select condition type"
+                  placeholder={ui("Select condition type")}
                   onPress={() => setPickerType('damage_type')}
                 />
                 <SelectField
-                  label="Severity"
+                  label={ui("Severity")}
                   value={
                     SEVERITY_LEVELS.find((item) => item.value === form.severity)?.label ||
                     form.severity
                   }
-                  placeholder="Select severity"
+                  placeholder={ui("Select severity")}
                   onPress={() => setPickerType('severity')}
                 />
                 <SelectField
-                  label="Depth"
+                  label={ui("Depth")}
                   value={
                     DEPTH_LEVELS.find((item) => item.value === form.depth_level)?.label ||
                     form.depth_level
                   }
-                  placeholder="Select depth"
+                  placeholder={ui("Select depth")}
                   onPress={() => setPickerType('depth_level')}
                 />
                 <SelectField
-                  label="Urgency"
+                  label={ui("Urgency")}
                   value={
                     URGENCY_LEVELS.find((item) => item.value === form.urgency)?.label ||
                     form.urgency
                   }
-                  placeholder="Select urgency"
+                  placeholder={ui("Select urgency")}
                   onPress={() => setPickerType('urgency')}
                 />
                 <Input
-                  label="Width (cm)"
+                  label={ui("Width (cm)")}
                   value={form.width_cm}
                   onChangeText={(value) => setForm((prev) => ({ ...prev, width_cm: value }))}
                   keyboardType="decimal-pad"
                 />
                 <Input
-                  label="Height (cm)"
+                  label={ui("Height (cm)")}
                   value={form.height_cm}
                   onChangeText={(value) => setForm((prev) => ({ ...prev, height_cm: value }))}
                   keyboardType="decimal-pad"
                 />
                 <Input
-                  label="Description"
+                  label={ui("Description")}
                   value={form.description}
                   onChangeText={(value) => setForm((prev) => ({ ...prev, description: value }))}
                   multiline
                   numberOfLines={4}
                 />
 
-                <Button title="Retake Photo" variant="secondary" onPress={capturePhoto} />
-                <Button title="Save Assessment" onPress={saveReport} loading={saving} />
+                <Button title={ui("Retake Photo")} variant="secondary" onPress={capturePhoto} />
+                <Button title={ui("Save Assessment")} onPress={saveReport} loading={saving} />
               </>
             ) : null}
           </ScrollView>
@@ -421,7 +422,7 @@ const DamageReportCapture = ({ visible, propertyId, onClose, onSaved }) => {
 
       <OptionPickerModal
         visible={Boolean(pickerType)}
-        title="Select option"
+        title={ui("Select option")}
         options={pickerOptions[pickerType] || []}
         onSelect={(option) => {
           if (pickerType === 'room') {

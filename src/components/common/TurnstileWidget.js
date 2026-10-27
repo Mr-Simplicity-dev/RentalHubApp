@@ -1,3 +1,4 @@
+import { useLanguage } from '../../context/LanguageContext';
 import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { WebView } from 'react-native-webview';
@@ -7,7 +8,7 @@ const TURNSTILE_SITE_KEY = Constants.expoConfig?.extra?.TURNSTILE_SITE_KEY;
 
 const TURNSTILE_ORIGIN = 'https://rentalhub.com.ng/';
 
-const TURNSTILE_HTML = (siteKey, action) => `<!DOCTYPE html>
+const TURNSTILE_HTML = (siteKey, action, language) => `<!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
@@ -53,6 +54,7 @@ const TURNSTILE_HTML = (siteKey, action) => `<!DOCTYPE html>
       rendered = true;
       var options = {
         sitekey: '${siteKey}',
+        language: '${language}',
         callback: function(token) {
           window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'token', token: token }));
         },
@@ -108,6 +110,8 @@ const TURNSTILE_HTML = (siteKey, action) => `<!DOCTYPE html>
 </html>`;
 
 const TurnstileWidget = forwardRef(({ onToken, onExpire, onError, action }, ref) => {
+  const { language } = useLanguage();
+  const challengeLanguage = ['en','fr','ar','ru','zh'].includes(language) ? language : 'en';
   const webViewRef = useRef(null);
   const [webviewHeight, setWebviewHeight] = useState(72);
   const callbacksRef = useRef({ onToken, onExpire, onError });
@@ -161,7 +165,7 @@ const TurnstileWidget = forwardRef(({ onToken, onExpire, onError, action }, ref)
       <View style={[styles.webviewWrapper, { height: webviewHeight }]}>
         <WebView
           ref={webViewRef}
-          source={{ html: TURNSTILE_HTML(TURNSTILE_SITE_KEY, action || ''), baseUrl: TURNSTILE_ORIGIN }}
+          source={{ html: TURNSTILE_HTML(TURNSTILE_SITE_KEY, action || '', challengeLanguage), baseUrl: TURNSTILE_ORIGIN }}
           onMessage={handleMessage}
           onHttpError={(syntheticEvent) => {
             const { nativeEvent } = syntheticEvent;

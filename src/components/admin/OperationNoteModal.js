@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useState } from 'react';
 import {KeyboardAvoidingView,
   Modal,
@@ -25,6 +27,7 @@ const OperationNoteModal = ({
   onCancel,
   onConfirm,
 }) => {
+  useInterfaceLanguage();
   const [note, setNote] = useState('');
   const [error, setError] = useState('');
 
@@ -78,7 +81,7 @@ const OperationNoteModal = ({
               {message ? <AppText style={styles.message}>{message}</AppText> : null}
             </View>
             <TouchableOpacity
-              accessibilityLabel="Close"
+              accessibilityLabel={ui("Close")}
               disabled={loading}
               onPress={handleCancel}
               style={styles.closeButton}
@@ -89,7 +92,7 @@ const OperationNoteModal = ({
 
           <Input
             accessibilityLabel={label}
-            label={required ? label : `${label} (optional)`}
+            label={required ? label : ui("{value0} (optional)", {value0: (label)})}
             value={note}
             onChangeText={handleChange}
             placeholder={placeholder}
@@ -101,13 +104,11 @@ const OperationNoteModal = ({
             containerStyle={styles.input}
           />
 
-          <AppText style={styles.auditHint}>
-            This note is recorded in the administration audit history.
-          </AppText>
+          <AppText style={styles.auditHint}>{ui("This note is recorded in the administration audit history.")}</AppText>
 
           <View style={styles.actions}>
             <PremiumButton
-              title="Cancel"
+              title={ui("Cancel")}
               variant="secondary"
               disabled={loading}
               onPress={handleCancel}

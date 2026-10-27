@@ -1,3 +1,4 @@
+import { translateUi as ui } from '../i18n/interfaceRuntime.cjs';
 import { Alert, Linking, NativeModules, Platform } from 'react-native';
 import { checkMobileAppVersion, trackMobileEvent } from './mobileDiagnosticsService';
 import { API_ORIGIN } from './api';
@@ -83,12 +84,12 @@ export const startAppUpdate = async (versionState = {}) => {
 
     if (!canInstall) {
       Alert.alert(
-        'Allow RentalHub updates',
-        'Android needs your permission before RentalHub can install an APK update directly. Turn on “Allow from this source”, then return to RentalHub and tap Update again.',
+        ui("Allow RentalHub updates"),
+        ui("Android needs your permission before RentalHub can install an APK update directly. Turn on “Allow from this source”, then return to RentalHub and tap Update again."),
         [
-          { text: 'Later', style: 'cancel' },
+          { text: ui("Later"), style: 'cancel' },
           {
-            text: 'Open settings',
+            text: ui("Open settings"),
             onPress: () => {
               openInstallPermissionSettings().catch(() => {});
             },
@@ -123,8 +124,8 @@ export const startAppUpdate = async (versionState = {}) => {
   }
 
   Alert.alert(
-    'Update link unavailable',
-    'The latest RentalHub app download link has not been configured yet.'
+    ui("Update link unavailable"),
+    ui("The latest RentalHub app download link has not been configured yet.")
   );
   return { started: false, reason: 'missing-update-url' };
 };

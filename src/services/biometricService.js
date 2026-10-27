@@ -1,3 +1,4 @@
+import { translateUi as ui } from '../i18n/interfaceRuntime.cjs';
 import { Platform } from 'react-native';
 import { jwtDecode } from 'jwt-decode';
 import { storageService } from './storageService';
@@ -68,9 +69,9 @@ const getSetOptions = () => {
   const options = {
     service: BIOMETRIC_SERVICE,
     authenticationPrompt: {
-      title: 'Enable biometric login',
-      subtitle: 'Secure quick sign-in for Amana RentalHub NG',
-      description: 'Confirm your identity to save this login securely',
+      title: ui("Enable biometric login"),
+      subtitle: ui("Secure quick sign-in for Amana RentalHub NG"),
+      description: ui("Confirm your identity to save this login securely"),
       cancel: 'Cancel',
     },
   };
@@ -92,9 +93,9 @@ const getGetOptions = () => {
   const options = {
     service: BIOMETRIC_SERVICE,
     authenticationPrompt: {
-      title: 'Use biometric login',
-      subtitle: 'Sign in to Amana RentalHub NG',
-      description: 'Use your saved biometric login to continue',
+      title: ui("Use biometric login"),
+      subtitle: ui("Sign in to Amana RentalHub NG"),
+      description: ui("Use your saved biometric login to continue"),
       cancel: 'Use password',
     },
   };
@@ -146,7 +147,7 @@ export const biometricService = {
         available: false,
         enabled: false,
         biometryType: null,
-        label: 'Biometrics',
+        label: ui("Biometrics"),
       };
     }
 
@@ -166,7 +167,7 @@ export const biometricService = {
         available: false,
         enabled: false,
         biometryType: null,
-        label: 'Biometrics',
+        label: ui("Biometrics"),
       };
     }
   },
@@ -181,21 +182,21 @@ export const biometricService = {
     if (!status.available) {
       return {
         success: false,
-        message: 'Biometric login is not available on this device.',
+        message: ui("Biometric login is not available on this device."),
       };
     }
 
     if (!hasAccessControl) {
       return {
         success: false,
-        message: 'Secure biometric storage is not available on this device.',
+        message: ui("Secure biometric storage is not available on this device."),
       };
     }
 
     if (!token || !user) {
       return {
         success: false,
-        message: 'No active session is available to secure for biometric login.',
+        message: ui("No active session is available to secure for biometric login."),
       };
     }
 
@@ -225,7 +226,7 @@ export const biometricService = {
     if (!status.enabled) {
       return {
         success: false,
-        message: 'Biometric login has not been enabled on this device yet.',
+        message: ui("Biometric login has not been enabled on this device yet."),
       };
     }
 
@@ -235,7 +236,7 @@ export const biometricService = {
       if (!credentials) {
         return {
           success: false,
-          message: 'No biometric login was found for this device.',
+          message: ui("No biometric login was found for this device."),
         };
       }
 
@@ -245,7 +246,7 @@ export const biometricService = {
         await biometricService.clearStoredSession();
         return {
           success: false,
-          message: 'Saved biometric login data is invalid. Please sign in with your password again.',
+          message: ui("Saved biometric login data is invalid. Please sign in with your password again."),
         };
       }
 
@@ -262,7 +263,7 @@ export const biometricService = {
         await biometricService.clearStoredSession();
         return {
           success: false,
-          message: 'This biometric login belongs to a different account. Sign in with your password to enable it again.',
+          message: ui("This biometric login belongs to a different account. Sign in with your password to enable it again."),
         };
       }
 
@@ -273,7 +274,7 @@ export const biometricService = {
         await biometricService.clearStoredSession();
         return {
           success: false,
-          message: 'Your saved biometric login has expired. Please sign in with your password again.',
+          message: ui("Your saved biometric login has expired. Please sign in with your password again."),
         };
       }
 

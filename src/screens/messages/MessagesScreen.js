@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, {
   useContext,
   useEffect,
@@ -29,6 +31,7 @@ const initials = (name = 'User') =>
     .join('');
 
 const MessagesScreen = ({ navigation, route }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const { user } = useContext(AuthContext);
   const messageTourId = ['lawyer', 'state_lawyer', 'zonal_lawyer', 'super_lawyer'].includes(user?.user_type)
     ? 'lawyer_clients'
@@ -59,7 +62,7 @@ const MessagesScreen = ({ navigation, route }) => {
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
-  }, [navigation]);
+  }, [navigation, interfaceLanguage]);
 
   useEffect(() => {
     selectedRef.current = selected;
@@ -105,8 +108,8 @@ const MessagesScreen = ({ navigation, route }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Could not load messages',
-        text2: getErrorMessage(error, 'Please try again.'),
+        text1: ui("Could not load messages"),
+        text2: getErrorMessage(error, ui("Please try again.")),
       });
     } finally {
       setLoading(false);
@@ -191,7 +194,7 @@ const MessagesScreen = ({ navigation, route }) => {
       } else if (!mine) {
         Toast.show({
           type: 'info',
-          text1: message.sender_name || 'New RentalHub message',
+          text1: message.sender_name || ui("New RentalHub message"),
           text2: message.message_text,
         });
       }
@@ -267,7 +270,7 @@ const MessagesScreen = ({ navigation, route }) => {
         .filter(Boolean)
         .some((field) => String(field).toLowerCase().includes(value))
     );
-  }, [conversations, query]);
+  }, [conversations, query, interfaceLanguage]);
 
   const unreadTotal = useMemo(
     () =>
@@ -275,7 +278,7 @@ const MessagesScreen = ({ navigation, route }) => {
         (sum, conversation) => sum + Number(conversation.unread_count || 0),
         0
       ),
-    [conversations]
+    [conversations, interfaceLanguage]
   );
 
   const pickConversation = async (conversation) => {
@@ -286,8 +289,8 @@ const MessagesScreen = ({ navigation, route }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Could not open conversation',
-        text2: getErrorMessage(error, 'Please try again.'),
+        text1: ui("Could not open conversation"),
+        text2: getErrorMessage(error, ui("Please try again.")),
       });
     }
   };
@@ -373,8 +376,8 @@ const MessagesScreen = ({ navigation, route }) => {
       setMessageText(optimisticMessage.message_text);
       Toast.show({
         type: 'error',
-        text1: 'Message not sent',
-        text2: getErrorMessage(error, 'Please try again.'),
+        text1: ui("Message not sent"),
+        text2: getErrorMessage(error, ui("Please try again.")),
       });
     } finally {
       setSending(false);
@@ -418,7 +421,7 @@ const MessagesScreen = ({ navigation, route }) => {
     return (
       <SafeAreaView style={styles.center}>
         <ActivityIndicator color={colors.blue} size="large" />
-        <AppText style={styles.loadingText}>Loading conversations…</AppText>
+        <AppText style={styles.loadingText}>{ui("Loading conversations…")}</AppText>
       </SafeAreaView>
     );
   }
@@ -431,7 +434,7 @@ const MessagesScreen = ({ navigation, route }) => {
           style={styles.keyboardView}>
           <View {...messageTourTarget} style={styles.threadHeader}>
             <TouchableOpacity
-              accessibilityLabel="Back to conversations"
+              accessibilityLabel={ui("Back to conversations")}
               onPress={closeThread}
               style={styles.backButton}>
               <Icon name="arrow-back" size={22} color={colors.navy} />
@@ -447,12 +450,12 @@ const MessagesScreen = ({ navigation, route }) => {
                 {typingUserId
                   ? 'Typing…'
                   : isUserOnline(selected.other_user_id)
-                    ? 'Online'
+                    ? ui("Online")
                     : String(selected.other_user_type || 'member').replace(/_/g, ' ')}
               </AppText>
             </View>
             <TouchableOpacity
-              accessibilityLabel="Refresh conversation"
+              accessibilityLabel={ui("Refresh conversation")}
               onPress={() => loadConversation(selected.other_user_id, { refresh: true })}
               style={styles.refreshButton}>
               <Icon name="refresh" size={20} color={colors.muted} />
@@ -490,7 +493,7 @@ const MessagesScreen = ({ navigation, route }) => {
                   <View style={styles.emptyThreadIcon}>
                     <Icon name="chatbubbles-outline" size={28} color={colors.blue} />
                   </View>
-                  <AppText style={styles.emptyThreadTitle}>Start of the conversation</AppText>
+                  <AppText style={styles.emptyThreadTitle}>{ui("Start of the conversation")}</AppText>
                   <AppText style={styles.emptyThreadText}>
                     {canCompose
                       ? 'Send a clear message to begin.'
@@ -567,14 +570,14 @@ const MessagesScreen = ({ navigation, route }) => {
               <TextInput
                 multiline
                 onChangeText={updateMessageText}
-                placeholder="Write a message…"
+                placeholder={ui("Write a message…")}
                 placeholderTextColor="#96A2B8"
                 selectionColor={colors.blue}
                 style={styles.composerInput}
                 value={messageText}
               />
               <TouchableOpacity
-                accessibilityLabel="Send message"
+                accessibilityLabel={ui("Send message")}
                 disabled={!messageText.trim() || sending}
                 onPress={send}
                 style={[
@@ -591,9 +594,7 @@ const MessagesScreen = ({ navigation, route }) => {
           ) : (
             <View style={styles.readOnlyBar}>
               <Icon name="lock-closed-outline" size={16} color={colors.muted} />
-              <AppText style={styles.readOnlyText}>
-                This is a read-only channel for official RentalHub updates.
-              </AppText>
+              <AppText style={styles.readOnlyText}>{ui("This is a read-only channel for official RentalHub updates.")}</AppText>
             </View>
           )}
         </KeyboardAvoidingView>
@@ -605,12 +606,12 @@ const MessagesScreen = ({ navigation, route }) => {
     <SafeAreaView edges={['top']} style={styles.safeArea}>
       <View {...messageTourTarget} style={styles.header}>
         <View>
-          <AppText style={styles.eyebrow}>INBOX</AppText>
-          <AppText style={styles.title}>Messages</AppText>
+          <AppText style={styles.eyebrow}>{ui("INBOX")}</AppText>
+          <AppText style={styles.title}>{ui("Messages")}</AppText>
         </View>
         {canCompose ? (
           <TouchableOpacity
-            accessibilityLabel="Start a conversation"
+            accessibilityLabel={ui("Start a conversation")}
             onPress={() => setShowRecipientPicker(true)}
             style={styles.newButton}>
             <Icon name="create-outline" size={21} color={colors.white} />
@@ -632,7 +633,7 @@ const MessagesScreen = ({ navigation, route }) => {
               <Icon name="search-outline" size={20} color={colors.muted} />
               <TextInput
                 onChangeText={setQuery}
-                placeholder="Search conversations"
+                placeholder={ui("Search conversations")}
                 placeholderTextColor="#96A2B8"
                 style={styles.searchInput}
                 value={query}
@@ -645,8 +646,8 @@ const MessagesScreen = ({ navigation, route }) => {
             </View>
             <AppText style={styles.summary}>
               {unreadTotal
-                ? `${unreadTotal} unread message${unreadTotal === 1 ? '' : 's'}`
-                : `${conversations.length} conversation${conversations.length === 1 ? '' : 's'}`}
+                ? ui("{value0} unread message{value1}", {value0: (unreadTotal), value1: (unreadTotal === 1 ? '' : ui("s"))})
+                : ui("{value0} conversation{value1}", {value0: (conversations.length), value1: (conversations.length === 1 ? '' : ui("s"))})}
             </AppText>
           </>
         }
@@ -667,7 +668,7 @@ const MessagesScreen = ({ navigation, route }) => {
               <TouchableOpacity
                 onPress={() => setShowRecipientPicker(true)}
                 style={styles.startButton}>
-                <AppText style={styles.startButtonText}>New conversation</AppText>
+                <AppText style={styles.startButtonText}>{ui("New conversation")}</AppText>
                 <Icon name="arrow-forward" size={17} color={colors.white} />
               </TouchableOpacity>
             ) : null}
@@ -704,13 +705,13 @@ const MessagesScreen = ({ navigation, route }) => {
                 </AppText>
               </View>
               <View style={styles.conversationPreview}>
-                <AppText 
+                <AppText
                   numberOfLines={1}
                   style={[
                     styles.conversationMessage,
                     Number(item.unread_count || 0) > 0 && styles.conversationMessageUnread,
                   ]}>
-                  {item.message_text || item.subject || 'No messages yet'}
+                  {item.message_text || item.subject || ui("No messages yet")}
                 </AppText>
                 {Number(item.unread_count || 0) > 0 ? (
                   <View style={styles.unreadBadge}>
@@ -720,7 +721,7 @@ const MessagesScreen = ({ navigation, route }) => {
               </View>
               <AppText style={styles.conversationRole}>
                 {String(item.other_user_type || 'member').replace(/_/g, ' ')}
-                {item.property_title ? ` · ${item.property_title}` : ''}
+                {item.property_title ? ui(" · {value0}", {value0: (item.property_title)}) : ''}
               </AppText>
             </View>
           </TouchableOpacity>
@@ -738,8 +739,8 @@ const MessagesScreen = ({ navigation, route }) => {
         onSelect={startConversation}
         options={recipients}
         searchable
-        searchPlaceholder="Search eligible recipients"
-        title="New conversation"
+        searchPlaceholder={ui("Search eligible recipients")}
+        title={ui("New conversation")}
         visible={showRecipientPicker}
       />
     </SafeAreaView>

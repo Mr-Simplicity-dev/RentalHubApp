@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useState } from 'react';
 import { Modal, StyleSheet, View } from 'react-native';
 import TextInput from './AppTextInput';
@@ -14,6 +16,7 @@ import Button from '../../components/common/Button';
 // Shown when the server answers 403 MFA_REQUIRED: privileged dashboards need a
 // fresh 6-digit TOTP code before they will hand over data.
 const MfaCodeModal = () => {
+  useInterfaceLanguage();
   const [challenge, setChallenge] = useState(getMfaState());
   const [code, setCode] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -43,13 +46,10 @@ const MfaCodeModal = () => {
           <View style={styles.iconWrap}>
             <AppText style={styles.icon}>🔐</AppText>
           </View>
-          <AppText style={styles.title}>Two-factor check</AppText>
-          <AppText style={styles.subtitle}>
-            This screen is protected by two-factor authentication. Enter the 6-digit code from your
-            authenticator app (e.g. Google Authenticator) to unlock it.
-          </AppText>
+          <AppText style={styles.title}>{ui("Two-factor check")}</AppText>
+          <AppText style={styles.subtitle}>{ui("This screen is protected by two-factor authentication. Enter the 6-digit code from your authenticator app (e.g. Google Authenticator) to unlock it.")}</AppText>
 
-          <AppText style={styles.label}>6-digit code</AppText>
+          <AppText style={styles.label}>{ui("6-digit code")}</AppText>
           <TextInput
             style={styles.input}
             value={code}
@@ -64,19 +64,17 @@ const MfaCodeModal = () => {
           />
 
           {challenge.attempt > 1 ? (
-            <AppText style={styles.error}>
-              That code was not accepted. Codes change every 30 seconds, so try the next one.
-            </AppText>
+            <AppText style={styles.error}>{ui("That code was not accepted. Codes change every 30 seconds, so try the next one.")}</AppText>
           ) : null}
 
           <Button
-            title="Unlock"
+            title={ui("Unlock")}
             onPress={handleSubmit}
             loading={submitting}
             disabled={code.trim().length !== 6}
             style={styles.submitButton}
           />
-          <Button title="Not now" variant="outline" onPress={cancelMfaChallenge} style={styles.cancelButton} />
+          <Button title={ui("Not now")} variant="outline" onPress={cancelMfaChallenge} style={styles.cancelButton} />
         </View>
       </View>
     </Modal>

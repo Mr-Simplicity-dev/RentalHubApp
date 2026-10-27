@@ -1,0 +1,28 @@
+const assert=require('node:assert/strict');
+const fs=require('fs');const vm=require('vm');const {transformSync}=require('@babel/core');
+const code=transformSync(fs.readFileSync('src/services/appBadgeService.js','utf8'),{configFile:false,babelrc:false,plugins:['@babel/plugin-transform-modules-commonjs']}).code;
+const calls=[];let enabled=true,permission=true,result={data:{total:7,unread_notifications:5,unread_messages:2}};
+const notifications={AndroidImportance:{LOW:2},getPermissionsAsync:async()=>({granted:permission}),setNotificationChannelAsync:async(id,data)=>calls.push(['channel',id,data]),scheduleNotificationAsync:async data=>calls.push(['summary',data]),dismissNotificationAsync:async id=>calls.push(['dismiss',id]),setBadgeCountAsync:async n=>{calls.push(['badge',n]);return false;}};
+const platform={OS:'android'};
+const moduleObject={exports:{}};
+vm.runInNewContext(code,{module:moduleObject,exports:moduleObject.exports,require:name=>{if(name.includes('interfaceRuntime'))return require('../src/i18n/interfaceRuntime.cjs');if(name.includes('useInterfaceLanguage'))return {__esModule:true,default:()=>{}};
+ if(name==='react-native')return {Platform:platform};if(name==='expo-notifications')return notifications;
+ if(name==='./appSettingsService')return {getAppSettings:async()=>({notificationBadges:enabled}),subscribeAppSettings:()=>()=>{}};
+ if(name==='./mobileDiagnosticsService')return {trackMobileEvent:()=>{}};
+ if(name==='./notificationService')return {notificationService:{getUnreadActivity:async()=>result,getUnreadCount:async()=>{throw Error('offline');}}};
+ if(name==='./messageService')return {messageService:{getUnreadCount:async()=>{throw Error('offline');}}};
+ throw Error(name);
+}});
+(async()=>{
+ const api=moduleObject.exports;
+ await api.syncAppIconBadge('login');assert.equal(calls.find(x=>x[0]==='summary')[1].content.badge,7);assert.equal(calls.at(-1)[1],7);
+ const summary=calls.find(x=>x[0]==='summary')[1];assert.equal(summary.content.sound,false);assert.equal(summary.content.data.badgeSummary,true);assert.equal(summary.identifier,'rentalhub-unread-summary');
+ calls.length=0;await api.setAppIconBadgeCount(3);assert.equal(calls.find(x=>x[0]==='summary')[1].identifier,summary.identifier);
+ calls.length=0;enabled=false;await api.syncAppIconBadge();assert.ok(!calls.some(x=>x[0]==='summary'));assert.equal(calls.at(-1)[1],0);
+ enabled=true;permission=false;calls.length=0;await api.setAppIconBadgeCount(9);assert.ok(!calls.some(x=>x[0]==='summary'));
+ permission=true;let resolve;result=new Promise(r=>{resolve=r;});const pending=api.syncAppIconBadge();await new Promise(r=>setImmediate(r));await api.resetBadgeSession();calls.length=0;resolve({data:{total:99}});assert.equal((await pending).stale,true);assert.equal(calls.length,0);
+ result={data:{}};await assert.rejects(api.syncAppIconBadge(),/Unavailable|unavailable/);
+ platform.OS='ios';calls.length=0;await api.setAppIconBadgeCount(4);assert.equal(calls.length,1);assert.equal(calls[0][1],4);
+ const source=fs.readFileSync('src/screens/admin/SuperAdminDashboardScreen.js','utf8');assert.ok(source.includes('navigation.setOptions({ headerRight:'));assert.ok(!source.includes('headerRight={('));
+ console.log('Notification checks passed: Android summary/counts, permissions, badge preference, account-switch races, offline preservation, iOS count and top-right bell.');
+})().catch(error=>{console.error(error);process.exitCode=1;});

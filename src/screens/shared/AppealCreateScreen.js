@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -19,11 +21,12 @@ import { colors, radius, typography, typeScale } from '../../theme';
 import AppText from '../../components/common/AppText';
 
 const TYPES = [
-  { key: 'property', label: 'Rejected property', icon: 'business-outline', hint: 'Appeal a rejection on one of your listed properties.' },
-  { key: 'verification', label: 'Rejected verification', icon: 'person-circle-outline', hint: 'Appeal the rejection of your identity verification.' },
+  { key: 'property', get "label"() { return ui("Rejected property"); }, icon: 'business-outline', get "hint"() { return ui("Appeal a rejection on one of your listed properties."); } },
+  { key: 'verification', get "label"() { return ui("Rejected verification"); }, icon: 'person-circle-outline', get "hint"() { return ui("Appeal the rejection of your identity verification."); } },
 ];
 
 const AppealCreateScreen = ({ navigation, route }) => {
+  useInterfaceLanguage();
   const { user } = useContext(AuthContext);
   const params = route?.params || {};
 
@@ -56,7 +59,7 @@ const AppealCreateScreen = ({ navigation, route }) => {
       } catch (err) {
         Toast.show({
           type: 'error',
-          text1: 'Failed',
+          text1: ui("Failed"),
           text2: getErrorMessage(err, 'Could not load rejected properties'),
         });
       } finally {
@@ -113,8 +116,8 @@ const AppealCreateScreen = ({ navigation, route }) => {
       if (response?.success) {
         Toast.show({
           type: 'success',
-          text1: 'Appeal submitted',
-          text2: 'A state admin will review your case.',
+          text1: ui("Appeal submitted"),
+          text2: ui("A state admin will review your case."),
         });
         navigation.goBack();
       } else {
@@ -132,9 +135,9 @@ const AppealCreateScreen = ({ navigation, route }) => {
   return (
     <PremiumScreen>
       <PremiumHero
-        eyebrow="Appeals"
-        title="Submit an appeal"
-        subtitle="Disagree with a rejection? Explain why the decision should be reviewed."
+        eyebrow={ui("Appeals")}
+        title={ui("Submit an appeal")}
+        subtitle={ui("Disagree with a rejection? Explain why the decision should be reviewed.")}
         icon="megaphone-outline"
       />
 
@@ -161,28 +164,24 @@ const AppealCreateScreen = ({ navigation, route }) => {
             <PremiumCard>
               <InfoRow
                 icon="shield-checkmark-outline"
-                label="Appeal target"
+                label={ui("Appeal target")}
                 value="Your identity verification"
               />
-              <AppText style={styles.note}>
-                Only rejected verifications can be appealed. A state administrator will re-review your case.
-              </AppText>
+              <AppText style={styles.note}>{ui("Only rejected verifications can be appealed. A state administrator will re-review your case.")}</AppText>
             </PremiumCard>
           ) : (
             <>
               <PremiumSectionTitle
-                title="Rejected property"
-                subtitle="Pick the property whose rejection you are appealing."
+                title={ui("Rejected property")}
+                subtitle={ui("Pick the property whose rejection you are appealing.")}
               />
               {loadingProperties ? (
                 <PremiumCard>
-                  <AppText style={styles.note}>Loading your properties…</AppText>
+                  <AppText style={styles.note}>{ui("Loading your properties…")}</AppText>
                 </PremiumCard>
               ) : rejectedProperties.length === 0 ? (
                 <PremiumCard>
-                  <AppText style={styles.note}>
-                    You have no rejected properties to appeal right now.
-                  </AppText>
+                  <AppText style={styles.note}>{ui("You have no rejected properties to appeal right now.")}</AppText>
                 </PremiumCard>
               ) : (
                 rejectedProperties.map((item) => {
@@ -196,15 +195,15 @@ const AppealCreateScreen = ({ navigation, route }) => {
                       <PremiumCard style={[styles.propertyCard, selected && styles.propertyCardSelected]}>
                         <View style={styles.propertyHeader}>
                           <View style={styles.propertyCopy}>
-                            <AppText style={styles.propertyTitle}>{item.title || `Property #${item.id}`}</AppText>
+                            <AppText style={styles.propertyTitle}>{item.title || ui("Property #{value0}", {value0: (item.id)})}</AppText>
                             <AppText style={styles.propertyMeta}>
                               {[item.area, item.city, item.state_name || item.state].filter(Boolean).join(', ') || 'Location not available'}
                             </AppText>
                           </View>
-                          {selected ? <StatusPill label="Selected" color={colors.blue} /> : null}
+                          {selected ? <StatusPill label={ui("Selected")} color={colors.blue} /> : null}
                         </View>
                         {item.rejection_reason ? (
-                          <AppText style={styles.rejectionReason}>Reason: {item.rejection_reason}</AppText>
+                          <AppText style={styles.rejectionReason}>{ui("Reason: ")}{item.rejection_reason}</AppText>
                         ) : null}
                       </PremiumCard>
                     </TouchableOpacity>
@@ -216,19 +215,19 @@ const AppealCreateScreen = ({ navigation, route }) => {
 
           <PremiumCard>
             <Input
-              label="Reason for appeal"
+              label={ui("Reason for appeal")}
               value={reason}
               onChangeText={setReason}
-              placeholder="Explain why the decision was incorrect…"
+              placeholder={ui("Explain why the decision was incorrect…")}
               multiline
               numberOfLines={4}
               error={error && !reason.trim() ? 'A reason is required' : undefined}
             />
             <Input
-              label="Additional information (optional)"
+              label={ui("Additional information (optional)")}
               value={additionalInfo}
               onChangeText={setAdditionalInfo}
-              placeholder="Any supporting details or context…"
+              placeholder={ui("Any supporting details or context…")}
               multiline
               numberOfLines={3}
               containerStyle={styles.fieldGap}
@@ -237,7 +236,7 @@ const AppealCreateScreen = ({ navigation, route }) => {
             {error ? <AppText style={styles.error}>{error}</AppText> : null}
 
             <PremiumButton
-              title="Submit appeal"
+              title={ui("Submit appeal")}
               onPress={handleSubmit}
               loading={submitting}
               disabled={!canSubmit}

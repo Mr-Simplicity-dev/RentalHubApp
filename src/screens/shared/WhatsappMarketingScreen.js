@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useCallback, useState } from 'react';
 import { Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -30,21 +32,21 @@ const STATUS_COLORS = {
 
 const GOVERNANCE_COPY = {
   send: {
-    title: 'Queue campaign',
-    label: 'Launch approval note',
-    placeholder: 'Who approved this send and why now?',
+    get "title"() { return ui("Queue campaign"); },
+    get "label"() { return ui("Launch approval note"); },
+    get "placeholder"() { return ui("Who approved this send and why now?"); },
     required: 'A launch approval note is required',
   },
   retry: {
-    title: 'Retry failed messages',
-    label: 'Retry reason',
-    placeholder: 'Why should these messages be retried?',
+    get "title"() { return ui("Retry failed messages"); },
+    get "label"() { return ui("Retry reason"); },
+    get "placeholder"() { return ui("Why should these messages be retried?"); },
     required: 'A retry reason is required',
   },
   delete: {
-    title: 'Delete campaign',
-    label: 'Deletion reason',
-    placeholder: 'Why should this campaign be deleted?',
+    get "title"() { return ui("Delete campaign"); },
+    get "label"() { return ui("Deletion reason"); },
+    get "placeholder"() { return ui("Why should this campaign be deleted?"); },
     required: 'A deletion reason is required',
   },
 };
@@ -76,8 +78,7 @@ const formatDate = (value) => {
   }
 };
 
-const ChannelToggle = ({ options, value, onChange }) => (
-  <View style={styles.toggleRow}>
+const ChannelToggle = ({ options, value, onChange }) => { useInterfaceLanguage(); return (<View style={styles.toggleRow}>
     {options.map((option) => {
       const active = option.value === value;
       return (
@@ -91,10 +92,10 @@ const ChannelToggle = ({ options, value, onChange }) => (
         </TouchableOpacity>
       );
     })}
-  </View>
-);
+  </View>); };
 
 const WhatsappMarketingScreen = () => {
+  useInterfaceLanguage();
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState(null);
   const [campaigns, setCampaigns] = useState([]);
@@ -130,7 +131,7 @@ const WhatsappMarketingScreen = () => {
     } catch (err) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(err, 'Could not load WhatsApp campaigns'),
       });
       setStats(null);
@@ -161,7 +162,7 @@ const WhatsappMarketingScreen = () => {
       });
       setAudience(res?.data?.count ?? 0);
     } catch (err) {
-      Toast.show({ type: 'error', text1: 'Failed', text2: getErrorMessage(err, 'Could not estimate audience') });
+      Toast.show({ type: 'error', text1: ui("Failed"), text2: getErrorMessage(err, 'Could not estimate audience') });
     } finally {
       setAudienceLoading(false);
     }
@@ -173,8 +174,8 @@ const WhatsappMarketingScreen = () => {
     if (asset.fileSize && asset.fileSize > limit) {
       Toast.show({
         type: 'error',
-        text1: 'File too large',
-        text2: mediaType === 'video' ? 'Clips must be under 16MB' : 'Images must be under 5MB',
+        text1: ui("File too large"),
+        text2: mediaType === "video" ? ui("Clips must be under 16MB") : ui("Images must be under 5MB"),
       });
       return;
     }
@@ -189,9 +190,9 @@ const WhatsappMarketingScreen = () => {
       const res = await marketingOpsService.whatsappUploadMedia(data);
       const uploaded = res?.data || {};
       updateForm({ [setterKey]: { type: uploaded.media_type || mediaType, url: uploaded.url || '' } });
-      Toast.show({ type: 'success', text1: 'Media uploaded' });
+      Toast.show({ type: 'success', text1: ui("Media uploaded") });
     } catch (err) {
-      Toast.show({ type: 'error', text1: 'Upload failed', text2: getErrorMessage(err, 'Could not upload media') });
+      Toast.show({ type: 'error', text1: ui("Upload failed"), text2: getErrorMessage(err, 'Could not upload media') });
     } finally {
       setUploading('');
     }
@@ -209,7 +210,7 @@ const WhatsappMarketingScreen = () => {
       if (result?.didCancel) return;
       await uploadAsset(mediaType, asset, setterKey);
     } catch (err) {
-      Toast.show({ type: 'error', text1: 'Picker failed', text2: getErrorMessage(err, 'Could not open gallery') });
+      Toast.show({ type: 'error', text1: ui("Picker failed"), text2: getErrorMessage(err, 'Could not open gallery') });
     }
   };
 
@@ -231,33 +232,33 @@ const WhatsappMarketingScreen = () => {
     try {
       if (type === 'send') {
         await marketingOpsService.whatsappSendCampaign(target.id, note.trim());
-        Toast.show({ type: 'success', text1: 'Campaign queued', text2: 'Messages go out within a minute.' });
+        Toast.show({ type: 'success', text1: ui("Campaign queued"), text2: ui("Messages go out within a minute.") });
       } else if (type === 'retry') {
         await marketingOpsService.whatsappRetryCampaign(target.id, note.trim());
-        Toast.show({ type: 'success', text1: 'Failed messages re-queued' });
+        Toast.show({ type: 'success', text1: ui("Failed messages re-queued") });
       } else if (type === 'delete') {
         await marketingOpsService.whatsappDeleteCampaign(target.id, note.trim());
-        Toast.show({ type: 'success', text1: 'Campaign deleted' });
+        Toast.show({ type: 'success', text1: ui("Campaign deleted") });
       }
       closeNote();
       await load();
     } catch (err) {
-      Toast.show({ type: 'error', text1: 'Failed', text2: getErrorMessage(err, 'Action failed') });
+      Toast.show({ type: 'error', text1: ui("Failed"), text2: getErrorMessage(err, ui("Action failed")) });
     } finally {
       setBusyKey(null);
     }
   };
 
   const createCampaign = async () => {
-    if (!form.name.trim()) return Toast.show({ type: 'info', text1: 'Campaign name is required' });
+    if (!form.name.trim()) return Toast.show({ type: 'info', text1: ui("Campaign name is required") });
     if (form.kind === 'template' && !form.template_name.trim()) {
-      return Toast.show({ type: 'info', text1: 'Meta template name is required' });
+      return Toast.show({ type: 'info', text1: ui("Meta template name is required") });
     }
     if (form.kind === 'text' && !form.content.trim() && !form.media.url.trim()) {
-      return Toast.show({ type: 'info', text1: 'Write a message or attach media' });
+      return Toast.show({ type: 'info', text1: ui("Write a message or attach media") });
     }
     if (form.source === 'users' && form.scope === 'user_type' && !form.user_type.trim()) {
-      return Toast.show({ type: 'info', text1: 'Enter the user type to target' });
+      return Toast.show({ type: 'info', text1: ui("Enter the user type to target") });
     }
 
     setBusyKey('create');
@@ -290,12 +291,12 @@ const WhatsappMarketingScreen = () => {
       await load();
       Toast.show({
         type: 'success',
-        text1: `Queued for ${created.recipients ?? 0} recipient(s)`,
-        text2: created.skipped ? `Skipped ${created.skipped} invalid/duplicate` : 'Ready to send',
+        text1: ui("Queued for {value0} recipient(s)", {value0: (created.recipients ?? 0)}),
+        text2: created.skipped ? ui("Skipped {value0} invalid/duplicate", {value0: (created.skipped)}) : ui("Ready to send"),
       });
       openNote('send', created);
     } catch (err) {
-      Toast.show({ type: 'error', text1: 'Failed', text2: getErrorMessage(err, 'Could not create campaign') });
+      Toast.show({ type: 'error', text1: ui("Failed"), text2: getErrorMessage(err, 'Could not create campaign') });
     } finally {
       setBusyKey(null);
     }
@@ -308,7 +309,7 @@ const WhatsappMarketingScreen = () => {
       .filter((p) => p.length >= 10);
 
     if (phones.length === 0) {
-      Toast.show({ type: 'info', text1: 'Paste at least one phone number' });
+      Toast.show({ type: 'info', text1: ui("Paste at least one phone number") });
       return;
     }
 
@@ -318,14 +319,14 @@ const WhatsappMarketingScreen = () => {
       const data = res?.data || {};
       Toast.show({
         type: 'success',
-        text1: `Imported ${data.added ?? 0} new`,
-        text2: `Already in system ${data.alreadyKnown ?? 0} · Duplicates ${data.duplicates ?? 0} · Invalid ${data.invalid ?? 0}`,
+        text1: ui("Imported {value0} new", {value0: (data.added ?? 0)}),
+        text2: ui("Already in system {value0} · Duplicates {value1} · Invalid {value2}", {value0: (data.alreadyKnown ?? 0), value1: (data.duplicates ?? 0), value2: (data.invalid ?? 0)}),
       });
       setContactPaste('');
       setShowPasteBox(false);
       await load();
     } catch (err) {
-      Toast.show({ type: 'error', text1: 'Import failed', text2: getErrorMessage(err, 'Could not import numbers') });
+      Toast.show({ type: 'error', text1: ui("Import failed"), text2: getErrorMessage(err, 'Could not import numbers') });
     } finally {
       setContactBusy('');
     }
@@ -337,17 +338,17 @@ const WhatsappMarketingScreen = () => {
       const res = await marketingOpsService.whatsappCheckContacts({ all: true });
       const data = res?.data || {};
       if ((data.checked ?? 0) === 0) {
-        Toast.show({ type: 'info', text1: 'Nothing new to check' });
+        Toast.show({ type: 'info', text1: ui("Nothing new to check") });
       } else {
         Toast.show({
           type: 'success',
-          text1: `Checked ${data.checked}`,
-          text2: `On WhatsApp ${data.valid ?? 0} · Not on WhatsApp ${data.invalid ?? 0}`,
+          text1: ui("Checked {value0}", {value0: (data.checked)}),
+          text2: ui("On WhatsApp {value0} · Not on WhatsApp {value1}", {value0: (data.valid ?? 0), value1: (data.invalid ?? 0)}),
         });
       }
       await load();
     } catch (err) {
-      Toast.show({ type: 'error', text1: 'Check failed', text2: getErrorMessage(err, 'WhatsApp check failed') });
+      Toast.show({ type: 'error', text1: ui("Check failed"), text2: getErrorMessage(err, 'WhatsApp check failed') });
     } finally {
       setContactBusy('');
     }
@@ -357,10 +358,10 @@ const WhatsappMarketingScreen = () => {
     setContactBusy(`del:${contact.id}`);
     try {
       await marketingOpsService.whatsappDeleteContact(contact.id);
-      Toast.show({ type: 'success', text1: 'Contact removed' });
+      Toast.show({ type: 'success', text1: ui("Contact removed") });
       await load();
     } catch (err) {
-      Toast.show({ type: 'error', text1: 'Failed', text2: getErrorMessage(err, 'Could not remove contact') });
+      Toast.show({ type: 'error', text1: ui("Failed"), text2: getErrorMessage(err, 'Could not remove contact') });
     } finally {
       setContactBusy('');
     }
@@ -368,16 +369,16 @@ const WhatsappMarketingScreen = () => {
 
   const removeInvalidContacts = async () => {
     if ((contactStats?.invalid ?? 0) === 0) {
-      Toast.show({ type: 'info', text1: 'No invalid contacts to delete' });
+      Toast.show({ type: 'info', text1: ui("No invalid contacts to delete") });
       return;
     }
     setContactBusy('delInvalid');
     try {
       const res = await marketingOpsService.whatsappDeleteInvalidContacts();
-      Toast.show({ type: 'success', text1: `Removed ${res?.data?.deleted ?? 0} invalid contact(s)` });
+      Toast.show({ type: 'success', text1: ui("Removed {value0} invalid contact(s)", {value0: (res?.data?.deleted ?? 0)}) });
       await load();
     } catch (err) {
-      Toast.show({ type: 'error', text1: 'Failed', text2: getErrorMessage(err, 'Could not delete invalid contacts') });
+      Toast.show({ type: 'error', text1: ui("Failed"), text2: getErrorMessage(err, 'Could not delete invalid contacts') });
     } finally {
       setContactBusy('');
     }
@@ -389,7 +390,7 @@ const WhatsappMarketingScreen = () => {
       const res = await marketingOpsService.whatsappCampaignStats(campaign.id);
       setStatsModal({ open: true, data: res?.data || null });
     } catch (err) {
-      Toast.show({ type: 'error', text1: 'Failed', text2: getErrorMessage(err, 'Could not load stats') });
+      Toast.show({ type: 'error', text1: ui("Failed"), text2: getErrorMessage(err, 'Could not load stats') });
     } finally {
       setBusyKey(null);
     }
@@ -409,13 +410,13 @@ const WhatsappMarketingScreen = () => {
         header={
           <>
             <PremiumHero
-              eyebrow="Super admin"
-              title="WhatsApp marketing"
-              subtitle="Send approved template or free-text WhatsApp campaigns, with optional images and clips."
+              eyebrow={ui("Super admin")}
+              title={ui("WhatsApp marketing")}
+              subtitle={ui("Send approved template or free-text WhatsApp campaigns, with optional images and clips.")}
               icon="logo-whatsapp"
               right={
                 <TouchableOpacity activeOpacity={0.85} onPress={() => setShowBuilder((v) => !v)} style={styles.heroAction}>
-                  <AppText style={styles.heroActionText}>{showBuilder ? 'Close' : '+ New'}</AppText>
+                  <AppText style={styles.heroActionText}>{showBuilder ? ui("Close") : '+ New'}</AppText>
                 </TouchableOpacity>
               }
             />
@@ -423,75 +424,71 @@ const WhatsappMarketingScreen = () => {
             <View style={styles.metricRow}>
               <View style={[styles.metric, styles.metricAccent]}>
                 <AppText style={styles.metricValue}>{Number(campaignStats.total ?? 0)}</AppText>
-                <AppText style={styles.metricLabel}>Campaigns</AppText>
+                <AppText style={styles.metricLabel}>{ui("Campaigns")}</AppText>
               </View>
               <View style={styles.metric}>
                 <AppText style={styles.metricValue}>{Number(messageStats.sent ?? 0)}</AppText>
-                <AppText style={styles.metricLabel}>Sent</AppText>
+                <AppText style={styles.metricLabel}>{ui("Sent")}</AppText>
               </View>
               <View style={styles.metric}>
                 <AppText style={styles.metricValue}>{Number(messageStats.failed ?? 0)}</AppText>
-                <AppText style={styles.metricLabel}>Failed</AppText>
+                <AppText style={styles.metricLabel}>{ui("Failed")}</AppText>
               </View>
               <View style={styles.metric}>
                 <AppText style={styles.metricValue}>
-                  {`${Number(stats?.daily_quota?.sent_today ?? 0)}/${Number(stats?.daily_quota?.limit ?? 250)}`}
+                  {ui("{value0}/{value1}", {value0: (Number(stats?.daily_quota?.sent_today ?? 0)), value1: (Number(stats?.daily_quota?.limit ?? 250))})}
                 </AppText>
-                <AppText style={styles.metricLabel}>Today</AppText>
+                <AppText style={styles.metricLabel}>{ui("Today")}</AppText>
               </View>
             </View>
 
             <View style={styles.rules}>
-              <AppText style={styles.rulesText}>
-                Template messages must be approved in Meta first. Free-text and media messages only reach
-                users who messaged the business number in the last 24 hours. Marketing templates must
-                include opt-out wording.
-              </AppText>
+              <AppText style={styles.rulesText}>{ui("Template messages must be approved in Meta first. Free-text and media messages only reach users who messaged the business number in the last 24 hours. Marketing templates must include opt-out wording.")}</AppText>
             </View>
 
             {showBuilder ? (
               <>
-                <PremiumSectionTitle title="Create campaign" subtitle="Build the audience, then queue the send with an approval note." />
+                <PremiumSectionTitle title={ui("Create campaign")} subtitle={ui("Build the audience, then queue the send with an approval note.")} />
                 <PremiumCard>
-                  <Input label="Campaign name" value={form.name} onChangeText={(v) => updateForm({ name: v })} placeholder="October rent reminder" />
+                  <Input label={ui("Campaign name")} value={form.name} onChangeText={(v) => updateForm({ name: v })} placeholder={ui("October rent reminder")} />
 
-                  <AppText style={styles.fieldLabel}>Message type</AppText>
+                  <AppText style={styles.fieldLabel}>{ui("Message type")}</AppText>
                   <ChannelToggle
-                    options={[{ value: 'template', label: 'Template' }, { value: 'text', label: 'Free text' }]}
+                    options={[{ value: 'template', label: ui("Template") }, { value: 'text', label: ui("Free text") }]}
                     value={form.kind}
                     onChange={(kind) => updateForm({ kind })}
                   />
 
-                  {form.kind === 'template' ? (
+                  {form.kind === "template" ? (
                     <>
                       <Input
-                        label="Meta template name"
+                        label={ui("Meta template name")}
                         value={form.template_name}
                         onChangeText={(v) => updateForm({ template_name: v })}
-                        placeholder="rent_due_reminder"
+                        placeholder={ui("rent_due_reminder")}
                         containerStyle={styles.fieldGap}
                       />
                       <Input
-                        label="Language"
+                        label={ui("Language")}
                         value={form.template_language}
                         onChangeText={(v) => updateForm({ template_language: v })}
-                        placeholder="en or en_US"
+                        placeholder={ui("en or en_US")}
                         containerStyle={styles.fieldGap}
                       />
                       <Input
-                        label="Body parameters"
+                        label={ui("Body parameters")}
                         value={form.template_params}
                         onChangeText={(v) => updateForm({ template_params: v })}
-                        placeholder="Ada, N50,000"
+                        placeholder={ui("Ada, N50,000")}
                         containerStyle={styles.fieldGap}
                       />
-                      <AppText style={styles.mediaHeading}>Template header media (optional)</AppText>
+                      <AppText style={styles.mediaHeading}>{ui("Template header media (optional)")}</AppText>
                       <ChannelToggle
                         options={[
-                          { value: '', label: 'None' },
-                          { value: 'image', label: 'Image' },
-                          { value: 'video', label: 'Video' },
-                          { value: 'document', label: 'Doc link' },
+                          { value: '', label: ui("None") },
+                          { value: 'image', label: ui("Image") },
+                          { value: 'video', label: ui("Video") },
+                          { value: 'document', label: ui("Doc link") },
                         ]}
                         value={form.headerMedia.type}
                         onChange={(type) => setForm((prev) => ({ ...prev, headerMedia: { type, url: '' } }))}
@@ -507,7 +504,7 @@ const WhatsappMarketingScreen = () => {
                       ) : null}
                       {form.headerMedia.type ? (
                         <Input
-                          label="Or paste a public https link"
+                          label={ui("Or paste a public https link")}
                           value={form.headerMedia.url}
                           onChangeText={(v) => setForm((prev) => ({ ...prev, headerMedia: { ...prev.headerMedia, url: v } }))}
                           autoCapitalize="none"
@@ -518,21 +515,21 @@ const WhatsappMarketingScreen = () => {
                   ) : (
                     <>
                       <Input
-                        label="Message"
+                        label={ui("Message")}
                         value={form.content}
                         onChangeText={(v) => updateForm({ content: v })}
-                        placeholder="Type the message users will receive"
+                        placeholder={ui("Type the message users will receive")}
                         multiline
                         numberOfLines={4}
                         containerStyle={styles.fieldGap}
                       />
-                      <AppText style={styles.mediaHeading}>Attach an image or clip (optional)</AppText>
+                      <AppText style={styles.mediaHeading}>{ui("Attach an image or clip (optional)")}</AppText>
                       <ChannelToggle
                         options={[
-                          { value: '', label: 'None' },
-                          { value: 'image', label: 'Image' },
-                          { value: 'video', label: 'Video' },
-                          { value: 'document', label: 'Doc link' },
+                          { value: '', label: ui("None") },
+                          { value: 'image', label: ui("Image") },
+                          { value: 'video', label: ui("Video") },
+                          { value: 'document', label: ui("Doc link") },
                         ]}
                         value={form.media.type}
                         onChange={(type) => setForm((prev) => ({ ...prev, media: { type, url: '' } }))}
@@ -548,7 +545,7 @@ const WhatsappMarketingScreen = () => {
                       ) : null}
                       {form.media.type ? (
                         <Input
-                          label="Or paste a public https link"
+                          label={ui("Or paste a public https link")}
                           value={form.media.url}
                           onChangeText={(v) => setForm((prev) => ({ ...prev, media: { ...prev.media, url: v } }))}
                           autoCapitalize="none"
@@ -558,39 +555,39 @@ const WhatsappMarketingScreen = () => {
                     </>
                   )}
 
-                  <AppText style={styles.mediaHeading}>Audience</AppText>
+                  <AppText style={styles.mediaHeading}>{ui("Audience")}</AppText>
                   <ChannelToggle
                     options={[
-                      { value: 'users', label: 'Users' },
-                      { value: 'contacts', label: 'Imported' },
-                      { value: 'both', label: 'Both' },
+                      { value: 'users', label: ui("Users") },
+                      { value: 'contacts', label: ui("Imported") },
+                      { value: 'both', label: ui("Both") },
                     ]}
                     value={form.source}
                     onChange={(source) => updateForm({ source })}
                   />
-                  {form.source === 'users' ? (
+                  {form.source === "users" ? (
                     <ChannelToggle
-                      options={[{ value: 'all', label: 'All users' }, { value: 'user_type', label: 'By user type' }]}
+                      options={[{ value: 'all', label: ui("All users") }, { value: 'user_type', label: ui("By user type") }]}
                       value={form.scope}
                       onChange={(scope) => updateForm({ scope })}
                     />
                   ) : null}
-                  {form.source === 'users' && form.scope === 'user_type' ? (
+                  {form.source === "users" && form.scope === 'user_type' ? (
                     <Input
-                      label="User type"
+                      label={ui("User type")}
                       value={form.user_type}
                       onChangeText={(v) => updateForm({ user_type: v })}
-                      placeholder="tenant, landlord, agent"
+                      placeholder={ui("tenant, landlord, agent")}
                       containerStyle={styles.fieldGap}
                     />
                   ) : null}
 
                   {audience !== null ? (
-                    <AppText style={styles.audienceText}>≈ {audience} recipient(s) will receive this campaign.</AppText>
+                    <AppText style={styles.audienceText}>≈ {audience}{ui(" recipient(s) will receive this campaign.")}</AppText>
                   ) : null}
 
                   <PremiumButton
-                    title="Preview audience"
+                    title={ui("Preview audience")}
                     variant="secondary"
                     icon="people-outline"
                     onPress={previewAudience}
@@ -598,7 +595,7 @@ const WhatsappMarketingScreen = () => {
                     style={styles.fieldGap}
                   />
                   <PremiumButton
-                    title="Create campaign"
+                    title={ui("Create campaign")}
                     icon="paper-plane-outline"
                     onPress={createCampaign}
                     loading={busyKey === 'create'}
@@ -609,48 +606,48 @@ const WhatsappMarketingScreen = () => {
             ) : null}
 
             <PremiumSectionTitle
-              title="WhatsApp contacts"
-              subtitle="Numbers that are not platform users. Import them, then check who is on WhatsApp."
+              title={ui("WhatsApp contacts")}
+              subtitle={ui("Numbers that are not platform users. Import them, then check who is on WhatsApp.")}
             />
             <PremiumCard>
               <View style={styles.contactStatsRow}>
                 <View style={styles.contactStatBox}>
                   <AppText style={styles.contactStatValue}>{contactStats?.total ?? 0}</AppText>
-                  <AppText style={styles.contactStatLabel}>Total</AppText>
+                  <AppText style={styles.contactStatLabel}>{ui("Total")}</AppText>
                 </View>
                 <View style={[styles.contactStatBox, styles.contactStatValid]}>
                   <AppText style={[styles.contactStatValue, styles.contactStatValidText]}>
                     {contactStats?.valid ?? 0}
                   </AppText>
-                  <AppText style={styles.contactStatLabel}>On WhatsApp</AppText>
+                  <AppText style={styles.contactStatLabel}>{ui("On WhatsApp")}</AppText>
                 </View>
                 <View style={[styles.contactStatBox, styles.contactStatInvalid]}>
                   <AppText style={[styles.contactStatValue, styles.contactStatInvalidText]}>
                     {contactStats?.invalid ?? 0}
                   </AppText>
-                  <AppText style={styles.contactStatLabel}>Not on WA</AppText>
+                  <AppText style={styles.contactStatLabel}>{ui("Not on WA")}</AppText>
                 </View>
                 <View style={styles.contactStatBox}>
                   <AppText style={[styles.contactStatValue, styles.contactStatMuted]}>
                     {contactStats?.unknown ?? 0}
                   </AppText>
-                  <AppText style={styles.contactStatLabel}>Not checked</AppText>
+                  <AppText style={styles.contactStatLabel}>{ui("Not checked")}</AppText>
                 </View>
               </View>
 
               {showPasteBox ? (
                 <>
                   <Input
-                    label="Paste phone numbers"
+                    label={ui("Paste phone numbers")}
                     value={contactPaste}
                     onChangeText={setContactPaste}
-                    placeholder="0803..., 0809... (one per line or comma separated)"
+                    placeholder={ui("0803..., 0809... (one per line or comma separated)")}
                     multiline
                     numberOfLines={4}
                     containerStyle={styles.fieldGap}
                   />
                   <PremiumButton
-                    title="Import numbers"
+                    title={ui("Import numbers")}
                     icon="cloud-upload-outline"
                     onPress={importPastedContacts}
                     loading={contactBusy === 'import'}
@@ -667,14 +664,14 @@ const WhatsappMarketingScreen = () => {
                 style={styles.fieldGap}
               />
               <PremiumButton
-                title="Check on WhatsApp"
+                title={ui("Check on WhatsApp")}
                 icon="checkmark-circle-outline"
                 onPress={checkContacts}
                 loading={contactBusy === 'check'}
                 style={styles.fieldGap}
               />
               <PremiumButton
-                title={`Delete all invalid (${contactStats?.invalid ?? 0})`}
+                title={ui("Delete all invalid ({value0})", {value0: (contactStats?.invalid ?? 0)})}
                 variant="secondary"
                 icon="trash-outline"
                 onPress={removeInvalidContacts}
@@ -682,7 +679,7 @@ const WhatsappMarketingScreen = () => {
                 style={styles.fieldGap}
               />
               <PremiumButton
-                title={showContacts ? 'Hide contacts' : `Show contacts (${contacts.length})`}
+                title={showContacts ? 'Hide contacts' : ui("Show contacts ({value0})", {value0: (contacts.length)})}
                 variant="secondary"
                 icon="people-outline"
                 onPress={() => setShowContacts((v) => !v)}
@@ -698,16 +695,16 @@ const WhatsappMarketingScreen = () => {
                         <AppText style={styles.cardTitle}>{c.phone}</AppText>
                         <AppText style={styles.cardMeta}>{c.full_name || 'No name'} · {c.source}</AppText>
                         {c.wa_checked_at ? (
-                          <AppText style={styles.cardMeta}>Checked {formatDate(c.wa_checked_at)}</AppText>
+                          <AppText style={styles.cardMeta}>{ui("Checked ")}{formatDate(c.wa_checked_at)}</AppText>
                         ) : null}
                       </View>
                       <StatusPill
                         label={
-                          c.wa_status === 'valid'
-                            ? 'On WhatsApp'
-                            : c.wa_status === 'invalid'
+                          c.wa_status === "valid"
+                            ? ui("On WhatsApp")
+                            : c.wa_status === "invalid"
                             ? 'Not on WhatsApp'
-                            : 'Not checked'
+                            : ui("Not checked")
                         }
                         color={
                           c.wa_status === 'valid' ? '#16a34a' : c.wa_status === 'invalid' ? '#dc2626' : colors.muted
@@ -716,7 +713,7 @@ const WhatsappMarketingScreen = () => {
                     </View>
                     <View style={styles.actions}>
                       <PremiumButton
-                        title="Remove"
+                        title={ui("Remove")}
                         variant="secondary"
                         icon="trash-outline"
                         onPress={() => removeContact(c)}
@@ -729,8 +726,8 @@ const WhatsappMarketingScreen = () => {
               : null}
           </>
         }
-        emptyTitle="No WhatsApp campaigns yet"
-        emptyMessage="Tap '+ New' to build your first WhatsApp campaign."
+        emptyTitle={ui("No WhatsApp campaigns yet")}
+        emptyMessage={ui("Tap '+ New' to build your first WhatsApp campaign.")}
         emptyIcon="logo-whatsapp"
         renderItem={({ item }) => {
           const color = STATUS_COLORS[item.status] || colors.muted;
@@ -740,24 +737,24 @@ const WhatsappMarketingScreen = () => {
             <PremiumCard>
               <View style={styles.cardTop}>
                 <View style={styles.cardCopy}>
-                  <AppText style={styles.cardTitle}>{item.name || `Campaign #${item.id}`}</AppText>
-                  {item.kind === 'template' ? (
-                    <AppText style={styles.cardMeta}>template: {item.template_name}</AppText>
+                  <AppText style={styles.cardTitle}>{item.name || ui("Campaign #{value0}", {value0: (item.id)})}</AppText>
+                  {item.kind === "template" ? (
+                    <AppText style={styles.cardMeta}>{ui("template: ")}{item.template_name}</AppText>
                   ) : (
-                    <AppText style={styles.cardMeta}>free text</AppText>
+                    <AppText style={styles.cardMeta}>{ui("free text")}</AppText>
                   )}
-                  {item.created_at ? <AppText style={styles.cardMeta}>Created {formatDate(item.created_at)}</AppText> : null}
+                  {item.created_at ? <AppText style={styles.cardMeta}>{ui("Created ")}{formatDate(item.created_at)}</AppText> : null}
                 </View>
                 <StatusPill label={item.status} color={color} />
               </View>
 
-              <InfoRow icon="paper-plane-outline" label="Sent" value={String(item.sent_count ?? 0)} />
-              <InfoRow icon="alert-circle-outline" label="Failed" value={String(item.failed_count ?? 0)} />
-              <InfoRow icon="time-outline" label="Pending" value={String(item.pending_count ?? 0)} />
+              <InfoRow icon="paper-plane-outline" label={ui("Sent")} value={String(item.sent_count ?? 0)} />
+              <InfoRow icon="alert-circle-outline" label={ui("Failed")} value={String(item.failed_count ?? 0)} />
+              <InfoRow icon="time-outline" label={ui("Pending")} value={String(item.pending_count ?? 0)} />
 
               <View style={styles.actions}>
                 <PremiumButton
-                  title="Stats"
+                  title={ui("Stats")}
                   variant="secondary"
                   icon="stats-chart-outline"
                   onPress={() => openCampaignStats(item)}
@@ -766,7 +763,7 @@ const WhatsappMarketingScreen = () => {
                 />
                 {isDraft ? (
                   <PremiumButton
-                    title="Send"
+                    title={ui("Send")}
                     icon="send-outline"
                     onPress={() => openNote('send', item)}
                     style={styles.actionButton}
@@ -774,7 +771,7 @@ const WhatsappMarketingScreen = () => {
                 ) : null}
                 {canRetry ? (
                   <PremiumButton
-                    title="Retry"
+                    title={ui("Retry")}
                     variant="secondary"
                     icon="refresh-outline"
                     onPress={() => openNote('retry', item)}
@@ -783,7 +780,7 @@ const WhatsappMarketingScreen = () => {
                 ) : null}
                 {item.status !== 'sending' ? (
                   <PremiumButton
-                    title="Delete"
+                    title={ui("Delete")}
                     variant="secondary"
                     icon="trash-outline"
                     onPress={() => openNote('delete', item)}
@@ -801,7 +798,7 @@ const WhatsappMarketingScreen = () => {
           <View style={styles.modalCard}>
             <AppText style={styles.modalTitle}>{note.title}</AppText>
             {noteModal.target?.name ? (
-              <AppText style={styles.modalMeta}>Campaign: {noteModal.target.name}</AppText>
+              <AppText style={styles.modalMeta}>{ui("Campaign: ")}{noteModal.target.name}</AppText>
             ) : null}
             <Input
               label={note.label}
@@ -813,17 +810,15 @@ const WhatsappMarketingScreen = () => {
               containerStyle={styles.fieldGap}
             />
             {noteModal.error ? <AppText style={styles.modalError}>{noteModal.error}</AppText> : null}
-            <AppText style={styles.modalHint}>
-              This action is written to the marketing audit log with your name and the note above.
-            </AppText>
+            <AppText style={styles.modalHint}>{ui("This action is written to the marketing audit log with your name and the note above.")}</AppText>
             <View style={styles.modalActions}>
               <PremiumButton
-                title="Confirm"
+                title={ui("Confirm")}
                 onPress={submitNote}
                 loading={busyKey === `note:${noteModal.type}`}
                 style={styles.actionButton}
               />
-              <PremiumButton title="Cancel" variant="secondary" onPress={closeNote} style={styles.actionButton} />
+              <PremiumButton title={ui("Cancel")} variant="secondary" onPress={closeNote} style={styles.actionButton} />
             </View>
           </View>
         </View>
@@ -833,28 +828,28 @@ const WhatsappMarketingScreen = () => {
         <View style={styles.modalOverlay}>
           <View style={styles.modalCard}>
             <AppText style={styles.modalTitle}>{statsModal.data?.campaign?.name || 'Delivery'}</AppText>
-            <AppText style={styles.modalMeta}>Live counts from the recipient queue</AppText>
+            <AppText style={styles.modalMeta}>{ui("Live counts from the recipient queue")}</AppText>
             <View style={styles.statsRow}>
               <View style={styles.statBox}>
                 <AppText style={styles.statValue}>{statsModal.data?.counts?.total ?? 0}</AppText>
-                <AppText style={styles.statLabel}>Total</AppText>
+                <AppText style={styles.statLabel}>{ui("Total")}</AppText>
               </View>
               <View style={styles.statBox}>
                 <AppText style={styles.statValue}>{statsModal.data?.counts?.sent ?? 0}</AppText>
-                <AppText style={styles.statLabel}>Sent</AppText>
+                <AppText style={styles.statLabel}>{ui("Sent")}</AppText>
               </View>
               <View style={styles.statBox}>
                 <AppText style={styles.statValue}>{statsModal.data?.counts?.failed ?? 0}</AppText>
-                <AppText style={styles.statLabel}>Failed</AppText>
+                <AppText style={styles.statLabel}>{ui("Failed")}</AppText>
               </View>
               <View style={styles.statBox}>
                 <AppText style={styles.statValue}>{statsModal.data?.counts?.pending ?? 0}</AppText>
-                <AppText style={styles.statLabel}>Pending</AppText>
+                <AppText style={styles.statLabel}>{ui("Pending")}</AppText>
               </View>
             </View>
             {statsModal.data?.recent_failures?.length ? (
               <View style={styles.failureList}>
-                <AppText style={styles.fieldLabel}>Recent failures</AppText>
+                <AppText style={styles.fieldLabel}>{ui("Recent failures")}</AppText>
                 {statsModal.data.recent_failures.map((failure, index) => (
                   <AppText key={index} style={styles.failureText}>
                     {failure.phone} — {failure.error_message}
@@ -863,7 +858,7 @@ const WhatsappMarketingScreen = () => {
               </View>
             ) : null}
             <PremiumButton
-              title="Close"
+              title={ui("Close")}
               variant="secondary"
               onPress={() => setStatsModal({ open: false, data: null })}
               style={styles.fieldGap}

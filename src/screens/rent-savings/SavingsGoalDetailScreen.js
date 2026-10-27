@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useState } from 'react';
 import {Modal, StyleSheet, View} from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -19,13 +21,12 @@ import { getErrorMessage, pickList, pickObject } from '../../utils/http';
 import { colors, radius, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
-const ProgressBar = ({ value }) => (
-  <View style={styles.progressBar}>
+const ProgressBar = ({ value }) => { useInterfaceLanguage(); return (<View style={styles.progressBar}>
     <View style={[styles.progressFill, { width: `${value}%` }]} />
-  </View>
-);
+  </View>); };
 
 const SavingsGoalDetailScreen = ({ route }) => {
+  useInterfaceLanguage();
   const { goalId } = route?.params || {};
   const [goal, setGoal] = useState(null);
   const [contributions, setContributions] = useState([]);
@@ -46,7 +47,7 @@ const SavingsGoalDetailScreen = ({ route }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(error, 'Could not load goal details'),
       });
     } finally {
@@ -61,7 +62,7 @@ const SavingsGoalDetailScreen = ({ route }) => {
   const handleContribute = async () => {
     const amount = Number(contributionAmount);
     if (!amount || amount <= 0) {
-      Toast.show({ type: 'error', text1: 'Enter a valid amount' });
+      Toast.show({ type: 'error', text1: ui("Enter a valid amount") });
       return;
     }
 
@@ -72,7 +73,7 @@ const SavingsGoalDetailScreen = ({ route }) => {
         month: new Date().toISOString().slice(0, 7),
       });
       if (response?.success || response?.data?.id) {
-        Toast.show({ type: 'success', text1: 'Contribution added!' });
+        Toast.show({ type: 'success', text1: ui("Contribution added!") });
         setContributeModal(false);
         setContributionAmount('');
         loadGoal();
@@ -80,7 +81,7 @@ const SavingsGoalDetailScreen = ({ route }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(error, 'Could not add contribution'),
       });
     } finally {
@@ -89,15 +90,15 @@ const SavingsGoalDetailScreen = ({ route }) => {
   };
 
   if (loading) {
-    return <PremiumCenter loading title="Loading savings goal" />;
+    return <PremiumCenter loading title={ui("Loading savings goal")} />;
   }
 
   if (!goal) {
     return (
       <PremiumCenter
         icon="wallet-outline"
-        title="Goal not found"
-        message="This savings plan could not be loaded."
+        title={ui("Goal not found")}
+        message={ui("This savings plan could not be loaded.")}
       />
     );
   }
@@ -112,33 +113,33 @@ const SavingsGoalDetailScreen = ({ route }) => {
     <>
       <PremiumScreen>
         <PremiumHero
-          eyebrow="Rent savings"
+          eyebrow={ui("Rent savings")}
           title={goal.property_title || 'Rent savings plan'}
-          subtitle={`${Math.round(progress)}% complete • ${formatNaira(remainingAmount)} remaining`}
+          subtitle={ui("{value0}% complete • {value1} remaining", {value0: (Math.round(progress)), value1: (formatNaira(remainingAmount))})}
           icon="wallet-outline"
           right={<StatusPill label={status} color={status === 'active' ? colors.blue : colors.muted} />}
         />
 
         <View style={styles.amountRow}>
           <PremiumCard style={styles.amountItem}>
-            <AppText style={styles.amountLabel}>Target</AppText>
+            <AppText style={styles.amountLabel}>{ui("Target")}</AppText>
             <AppText style={styles.amountValue}>{formatNaira(targetAmount)}</AppText>
           </PremiumCard>
           <PremiumCard style={styles.amountItem}>
-            <AppText style={styles.amountLabel}>Saved</AppText>
+            <AppText style={styles.amountLabel}>{ui("Saved")}</AppText>
             <AppText style={[styles.amountValue, styles.savedValue]}>{formatNaira(savedAmount)}</AppText>
           </PremiumCard>
         </View>
 
         <PremiumCard>
           <ProgressBar value={progress} />
-          <AppText style={styles.progressText}>{Math.round(progress)}% complete</AppText>
-          <InfoRow icon="cash-outline" label="Remaining" value={formatNaira(remainingAmount)} />
+          <AppText style={styles.progressText}>{Math.round(progress)}{ui("% complete")}</AppText>
+          <InfoRow icon="cash-outline" label={ui("Remaining")} value={formatNaira(remainingAmount)} />
         </PremiumCard>
 
         {goal.property_address ? (
           <>
-            <PremiumSectionTitle title="Property" />
+            <PremiumSectionTitle title={ui("Property")} />
             <PremiumCard>
               <AppText style={styles.description}>{goal.property_address}</AppText>
             </PremiumCard>
@@ -149,38 +150,38 @@ const SavingsGoalDetailScreen = ({ route }) => {
           <PremiumCard>
             <InfoRow
               icon="calendar-outline"
-              label="Rent due date"
+              label={ui("Rent due date")}
               value={new Date(goal.rent_due_date).toLocaleDateString()}
             />
           </PremiumCard>
         ) : null}
 
         <PremiumButton
-          title="Add contribution"
+          title={ui("Add contribution")}
           onPress={() => setContributeModal(true)}
           icon="add-circle-outline"
           style={styles.addButton}
         />
 
         <PremiumSectionTitle
-          title="Contribution history"
-          subtitle="Recent deposits towards this rent target."
+          title={ui("Contribution history")}
+          subtitle={ui("Recent deposits towards this rent target.")}
         />
         {contributions.length > 0 ? (
           contributions.map((item, index) => (
             <PremiumCard key={item.id || index}>
-              <InfoRow icon="cash-outline" label="Amount" value={formatNaira(item.amount)} />
+              <InfoRow icon="cash-outline" label={ui("Amount")} value={formatNaira(item.amount)} />
               <InfoRow
                 icon="calendar-outline"
-                label="Date"
+                label={ui("Date")}
                 value={item.contributed_at ? new Date(item.contributed_at).toLocaleDateString() : 'N/A'}
               />
             </PremiumCard>
           ))
         ) : (
           <EmptyPanel
-            title="No contributions yet"
-            message="Add your first contribution to start building this rent plan."
+            title={ui("No contributions yet")}
+            message={ui("Add your first contribution to start building this rent plan.")}
             icon="cash-outline"
           />
         )}
@@ -189,18 +190,18 @@ const SavingsGoalDetailScreen = ({ route }) => {
       <Modal visible={contributeModal} transparent animationType="fade">
         <View style={styles.modalOverlay}>
           <PremiumCard style={styles.modalContent}>
-            <AppText style={styles.modalTitle}>Add contribution</AppText>
+            <AppText style={styles.modalTitle}>{ui("Add contribution")}</AppText>
             <Input
-              label="Amount"
+              label={ui("Amount")}
               value={contributionAmount}
               onChangeText={setContributionAmount}
-              placeholder="Amount (NGN)"
+              placeholder={ui("Amount (NGN)")}
               keyboardType="numeric"
               icon="cash-outline"
             />
             <View style={styles.modalActions}>
               <PremiumButton
-                title="Cancel"
+                title={ui("Cancel")}
                 variant="secondary"
                 onPress={() => {
                   setContributeModal(false);
@@ -209,7 +210,7 @@ const SavingsGoalDetailScreen = ({ route }) => {
                 style={styles.modalButton}
               />
               <PremiumButton
-                title="Save"
+                title={ui("Save")}
                 onPress={handleContribute}
                 loading={contributing}
                 style={styles.modalButton}

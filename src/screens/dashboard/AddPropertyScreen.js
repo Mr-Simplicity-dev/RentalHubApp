@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useLayoutEffect, useState } from 'react';
 import {Image, ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -18,6 +20,7 @@ import AppText from '../../components/common/AppText';
 const propertyTypes = ['apartment', 'house', 'duplex', 'studio', 'bungalow', 'flat', 'room'];
 
 const AddPropertyScreen = ({ navigation }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const [loading, setLoading] = useState(false);
   const [captureOpen, setCaptureOpen] = useState(false);
   const [images, setImages] = useState([]);
@@ -42,7 +45,7 @@ const AddPropertyScreen = ({ navigation }) => {
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
-  }, [navigation]);
+  }, [navigation, interfaceLanguage]);
 
   const onChange = (key, value) => {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -81,8 +84,8 @@ const AddPropertyScreen = ({ navigation }) => {
     ) {
       Toast.show({
         type: 'error',
-        text1: 'Complete required fields',
-        text2: 'Title, description, location, coordinates and rent are required.',
+        text1: ui("Complete required fields"),
+        text2: ui("Title, description, location, coordinates and rent are required."),
       });
       return;
     }
@@ -92,8 +95,8 @@ const AddPropertyScreen = ({ navigation }) => {
     if (images.length === 0) {
       Toast.show({
         type: 'error',
-        text1: 'Add property photos',
-        text2: 'Capture at least one live property photo before submitting.',
+        text1: ui("Add property photos"),
+        text2: ui("Capture at least one live property photo before submitting."),
       });
       return;
     }
@@ -101,8 +104,8 @@ const AddPropertyScreen = ({ navigation }) => {
     if (imageCaptureTokens.length !== images.length) {
       Toast.show({
         type: 'error',
-        text1: 'Retake the photos',
-        text2: 'Every photo must be captured live before publishing.',
+        text1: ui("Retake the photos"),
+        text2: ui("Every photo must be captured live before publishing."),
       });
       return;
     }
@@ -117,7 +120,7 @@ const AddPropertyScreen = ({ navigation }) => {
       longitude < -180 ||
       longitude > 180
     ) {
-      Toast.show({ type: 'error', text1: 'Enter valid map coordinates' });
+      Toast.show({ type: 'error', text1: ui("Enter valid map coordinates") });
       return;
     }
     setLoading(true);
@@ -143,26 +146,26 @@ const AddPropertyScreen = ({ navigation }) => {
           } catch (error) {
             Toast.show({
               type: 'info',
-              text1: 'Property created',
-              text2: 'The listing is live, but the clips could not be added.',
+              text1: ui("Property created"),
+              text2: ui("The listing is live, but the clips could not be added."),
             });
           }
         }
 
-        Toast.show({ type: 'success', text1: 'Property created' });
+        Toast.show({ type: 'success', text1: ui("Property created") });
         navigation.navigate('MyProperties');
       } else {
         Toast.show({
           type: 'error',
-          text1: 'Creation failed',
-          text2: response.message || 'Could not create property',
+          text1: ui("Creation failed"),
+          text2: response.message || ui("Could not create property"),
         });
       }
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Creation failed',
-        text2: getErrorMessage(error, 'Could not create property'),
+        text1: ui("Creation failed"),
+        text2: getErrorMessage(error, ui("Could not create property")),
       });
     } finally {
       setLoading(false);
@@ -176,8 +179,8 @@ const AddPropertyScreen = ({ navigation }) => {
           <Icon name="arrow-back" size={22} color={colors.navy} />
         </TouchableOpacity>
         <View style={styles.headerCopy}>
-          <AppText style={styles.eyebrow}>NEW LISTING</AppText>
-          <AppText style={styles.headerTitle}>Add property</AppText>
+          <AppText style={styles.eyebrow}>{ui("NEW LISTING")}</AppText>
+          <AppText style={styles.headerTitle}>{ui("Add property")}</AppText>
         </View>
         <View style={styles.headerSpacer} />
       </View>
@@ -190,21 +193,21 @@ const AddPropertyScreen = ({ navigation }) => {
         <View style={styles.introIcon}>
           <Icon name="business-outline" size={23} color={colors.gold} />
         </View>
-        <AppText style={styles.title}>Create a verified listing</AppText>
-        <AppText style={styles.subtitle}>Provide accurate property and map information for review.</AppText>
+        <AppText style={styles.title}>{ui("Create a verified listing")}</AppText>
+        <AppText style={styles.subtitle}>{ui("Provide accurate property and map information for review.")}</AppText>
       </View>
 
-      <AppText style={styles.sectionLabel}>PROPERTY DETAILS</AppText>
+      <AppText style={styles.sectionLabel}>{ui("PROPERTY DETAILS")}</AppText>
       <View style={styles.card}>
-      <Input label="Title" value={form.title} onChangeText={(value) => onChange('title', value)} />
+      <Input label={ui("Title")} value={form.title} onChangeText={(value) => onChange('title', value)} />
       <Input
-        label="Description"
+        label={ui("Description")}
         value={form.description}
         onChangeText={(value) => onChange('description', value)}
         multiline
         numberOfLines={4}
       />
-      <AppText style={styles.fieldLabel}>Property type</AppText>
+      <AppText style={styles.fieldLabel}>{ui("Property type")}</AppText>
       <View style={styles.chipGrid}>
         {propertyTypes.map((type) => (
           <TouchableOpacity
@@ -220,7 +223,7 @@ const AddPropertyScreen = ({ navigation }) => {
       <View style={styles.numberRow}>
         <View style={styles.numberField}>
           <Input
-            label="Bedrooms"
+            label={ui("Bedrooms")}
             value={form.bedrooms}
             onChangeText={(value) => onChange('bedrooms', value)}
             keyboardType="number-pad"
@@ -228,7 +231,7 @@ const AddPropertyScreen = ({ navigation }) => {
         </View>
         <View style={styles.numberField}>
           <Input
-            label="Bathrooms"
+            label={ui("Bathrooms")}
             value={form.bathrooms}
             onChangeText={(value) => onChange('bathrooms', value)}
             keyboardType="number-pad"
@@ -237,12 +240,10 @@ const AddPropertyScreen = ({ navigation }) => {
       </View>
       </View>
 
-      <AppText style={styles.sectionLabel}>PROPERTY PHOTOS</AppText>
+      <AppText style={styles.sectionLabel}>{ui("PROPERTY PHOTOS")}</AppText>
       <View style={styles.card}>
-        <AppText style={styles.fieldLabel}>Live photos</AppText>
-        <AppText style={styles.photoHint}>
-          Property photos must be captured live in the app. Gallery images are not accepted. Up to 8 photos. Add optional clips in photo/clip mode.
-        </AppText>
+        <AppText style={styles.fieldLabel}>{ui("Live photos")}</AppText>
+        <AppText style={styles.photoHint}>{ui("Property photos must be captured live in the app. Gallery images are not accepted. Up to 8 photos. Add optional clips in photo/clip mode.")}</AppText>
 
         {images.length > 0 ? (
           <View style={styles.photoGrid}>
@@ -250,7 +251,7 @@ const AddPropertyScreen = ({ navigation }) => {
               <View key={`${photo.uri}-${index}`} style={styles.photoItem}>
                 <Image source={{ uri: photo.uri }} style={styles.photoThumb} />
                 <TouchableOpacity
-                  accessibilityLabel={`Remove photo ${index + 1}`}
+                  accessibilityLabel={ui("Remove photo {value0}", {value0: (index + 1)})}
                   onPress={() => handleRemovePhoto(index)}
                   style={styles.photoRemove}>
                   <Icon name="close" size={13} color={colors.white} />
@@ -266,7 +267,7 @@ const AddPropertyScreen = ({ navigation }) => {
               <View key={`${photo.uri}-${index}`} style={styles.photoItem}>
                 <Image source={{ uri: photo.uri }} style={styles.photoThumb} />
                 <TouchableOpacity
-                  accessibilityLabel={`Remove photo ${index + 1}`}
+                  accessibilityLabel={ui("Remove photo {value0}", {value0: (index + 1)})}
                   onPress={() => handleRemovePhoto(index)}
                   style={styles.photoRemove}>
                   <Icon name="close" size={13} color={colors.white} />
@@ -278,11 +279,10 @@ const AddPropertyScreen = ({ navigation }) => {
                 <View style={styles.clipIcon}>
                   <Icon name="videocam" size={16} color={colors.white} />
                 </View>
-                <AppText style={styles.clipLabel} numberOfLines={1}>
-                  Clip {index + 1}
+                <AppText style={styles.clipLabel} numberOfLines={1}>{ui("Clip")}{index + 1}
                 </AppText>
                 <TouchableOpacity
-                  accessibilityLabel={`Remove clip ${index + 1}`}
+                  accessibilityLabel={ui("Remove clip {value0}", {value0: (index + 1)})}
                   onPress={() => handleRemoveClip(index)}
                   style={styles.photoRemove}>
                   <Icon name="close" size={13} color={colors.white} />
@@ -293,7 +293,7 @@ const AddPropertyScreen = ({ navigation }) => {
         ) : null}
 
         <TouchableOpacity
-          accessibilityLabel="Open live camera"
+          accessibilityLabel={ui("Open live camera")}
           onPress={() => setCaptureOpen(true)}
           disabled={images.length >= MAX_PROPERTY_PHOTOS && clips.length >= MAX_PROPERTY_CLIPS}
           style={[
@@ -304,44 +304,42 @@ const AddPropertyScreen = ({ navigation }) => {
           <AppText style={styles.captureButtonText}>
             {images.length === 0 && clips.length === 0
               ? 'Open live camera (Photos & Clips)'
-              : `Add more (Photos ${images.length}/${MAX_PROPERTY_PHOTOS} • Clips ${clips.length}/${MAX_PROPERTY_CLIPS})`}
+              : ui("Add more (Photos {value0}/{value1} • Clips {value2}/{value3})", {value0: (images.length), value1: (MAX_PROPERTY_PHOTOS), value2: (clips.length), value3: (MAX_PROPERTY_CLIPS)})}
           </AppText>
         </TouchableOpacity>
       </View>
 
-      <AppText style={styles.sectionLabel}>LOCATION</AppText>
+      <AppText style={styles.sectionLabel}>{ui("LOCATION")}</AppText>
       <View style={styles.card}>
-      <Input label="State" value={form.state} onChangeText={(value) => onChange('state', value)} />
-      <Input label="City" value={form.city} onChangeText={(value) => onChange('city', value)} />
-      <Input label="Area" value={form.area} onChangeText={(value) => onChange('area', value)} />
+      <Input label={ui("State")} value={form.state} onChangeText={(value) => onChange('state', value)} />
+      <Input label={ui("City")} value={form.city} onChangeText={(value) => onChange('city', value)} />
+      <Input label={ui("Area")} value={form.area} onChangeText={(value) => onChange('area', value)} />
       <Input
-        label="Full address"
+        label={ui("Full address")}
         value={form.full_address}
         onChangeText={(value) => onChange('full_address', value)}
-        placeholder="Street and building details"
+        placeholder={ui("Street and building details")}
       />
-      <AppText style={styles.coordinateHint}>
-        Copy the latitude and longitude from the property’s Google Maps pin.
-      </AppText>
+      <AppText style={styles.coordinateHint}>{ui("Copy the latitude and longitude from the property’s Google Maps pin.")}</AppText>
       <View style={styles.numberRow}>
         <View style={styles.numberField}>
-          <Input label="Latitude" value={form.latitude} onChangeText={(value) => onChange('latitude', value)} keyboardType="decimal-pad" placeholder="6.5244" />
+          <Input label={ui("Latitude")} value={form.latitude} onChangeText={(value) => onChange('latitude', value)} keyboardType="decimal-pad" placeholder="6.5244" />
         </View>
         <View style={styles.numberField}>
-          <Input label="Longitude" value={form.longitude} onChangeText={(value) => onChange('longitude', value)} keyboardType="decimal-pad" placeholder="3.3792" />
+          <Input label={ui("Longitude")} value={form.longitude} onChangeText={(value) => onChange('longitude', value)} keyboardType="decimal-pad" placeholder="3.3792" />
         </View>
       </View>
       </View>
 
-      <AppText style={styles.sectionLabel}>PRICING</AppText>
+      <AppText style={styles.sectionLabel}>{ui("PRICING")}</AppText>
       <View style={styles.card}>
       <Input
-        label="Rent Amount"
+        label={ui("Rent Amount")}
         value={form.rent_amount}
         onChangeText={(value) => onChange('rent_amount', value)}
         keyboardType="number-pad"
       />
-      <AppText style={styles.fieldLabel}>Payment frequency</AppText>
+      <AppText style={styles.fieldLabel}>{ui("Payment frequency")}</AppText>
       <View style={styles.frequencyRow}>
         {['monthly', 'yearly'].map((frequency) => (
           <TouchableOpacity
@@ -356,10 +354,10 @@ const AddPropertyScreen = ({ navigation }) => {
       </View>
       </View>
 
-      <Button title="Submit for verification" onPress={handleSubmit} loading={loading} size="lg" />
+      <Button title={ui("Submit for verification")} onPress={handleSubmit} loading={loading} size="lg" />
       <View style={styles.reviewNote}>
         <Icon name="shield-checkmark-outline" size={17} color={colors.success} />
-        <AppText style={styles.reviewText}>RentalHub reviews listings before they become publicly available.</AppText>
+        <AppText style={styles.reviewText}>{ui("RentalHub reviews listings before they become publicly available.")}</AppText>
       </View>
     </ScrollView>
 

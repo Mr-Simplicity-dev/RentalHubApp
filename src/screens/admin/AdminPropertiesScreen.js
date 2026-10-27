@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useState } from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -15,6 +17,7 @@ import { colors, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const AdminPropertiesScreen = ({ navigation }) => {
+  useInterfaceLanguage();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -26,8 +29,8 @@ const AdminPropertiesScreen = ({ navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
-        text2: getErrorMessage(error, 'Could not load properties'),
+        text1: ui("Failed"),
+        text2: getErrorMessage(error, ui("Could not load properties")),
       });
     } finally {
       setLoading(false);
@@ -44,16 +47,16 @@ const AdminPropertiesScreen = ({ navigation }) => {
       refreshing={loading}
       onRefresh={loadProperties}
       keyExtractor={(item) => String(item.id)}
-      emptyTitle="No properties found"
-      emptyMessage="Properties submitted to RentalHub will appear here."
+      emptyTitle={ui("No properties found")}
+      emptyMessage={ui("Properties submitted to RentalHub will appear here.")}
       emptyIcon="home-outline"
       header={
         <PremiumHero
-          eyebrow="Administration"
-          title="Properties"
-          subtitle="Review property records, landlords and locations in a cleaner mobile view."
+          eyebrow={ui("Administration")}
+          title={ui("Properties")}
+          subtitle={ui("Review property records, landlords and locations in a cleaner mobile view.")}
           icon="business-outline"
-          right={<StatusPill label={`${items.length} records`} color={colors.blue} />}
+          right={<StatusPill label={ui("{value0} records", {value0: (items.length)})} color={colors.blue} />}
         />
       }
       renderItem={({ item }) => {
@@ -65,14 +68,14 @@ const AdminPropertiesScreen = ({ navigation }) => {
         return (
           <TouchableOpacity
             accessibilityRole="button"
-            accessibilityLabel={`Open ${item.title || 'property'}`}
+            accessibilityLabel={ui("Open {value0}", {value0: (item.title || ui("property"))})}
             activeOpacity={0.85}
             onPress={() => navigation.navigate('AdminPropertyDetail', { id: item.id })}
           >
             <PremiumCard>
               <View style={styles.cardHeader}>
                 <View style={styles.propertyIcon}>
-                  <AppText style={styles.propertyIconText}>RH</AppText>
+                  <AppText style={styles.propertyIconText}>{ui("RH")}</AppText>
                 </View>
                 <View style={styles.cardCopy}>
                   <AppText style={styles.cardTitle}>{item.title || 'Untitled property'}</AppText>
@@ -80,8 +83,8 @@ const AdminPropertiesScreen = ({ navigation }) => {
                 </View>
                 <Icon name="chevron-forward" size={20} color={colors.muted} />
               </View>
-              <InfoRow icon="person-outline" label="Landlord" value={item.landlord_name || 'No landlord name'} />
-              <InfoRow icon="pricetag-outline" label="Status" value={item.status || item.approval_status || '—'} />
+              <InfoRow icon="person-outline" label={ui("Landlord")} value={item.landlord_name || 'No landlord name'} />
+              <InfoRow icon="pricetag-outline" label={ui("Status")} value={item.status || item.approval_status || '—'} />
             </PremiumCard>
           </TouchableOpacity>
         );

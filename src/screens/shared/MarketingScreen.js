@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useCallback, useState } from 'react';
 import { Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -45,9 +47,9 @@ const STATUS_COLORS = {
 // Each channel exposes the same shape so the screen body stays generic.
 const CHANNELS = {
   email: {
-    label: 'Email',
+    get "label"() { return ui("Email"); },
     audienceNoun: 'subscriber',
-    importHint: 'One email address per line, or the first column of a CSV.',
+    get "importHint"() { return ui("One email address per line, or the first column of a CSV."); },
     stats: marketingOpsService.emailStats,
     campaigns: marketingOpsService.emailCampaigns,
     send: marketingOpsService.sendEmailCampaign,
@@ -63,9 +65,9 @@ const CHANNELS = {
     subscriberKeys: ['email'],
   },
   sms: {
-    label: 'SMS',
+    get "label"() { return ui("SMS"); },
     audienceNoun: 'contact',
-    importHint: 'One phone number per line, or the first column of a CSV.',
+    get "importHint"() { return ui("One phone number per line, or the first column of a CSV."); },
     stats: marketingOpsService.smsStats,
     campaigns: marketingOpsService.smsCampaigns,
     send: marketingOpsService.sendSmsCampaign,
@@ -85,11 +87,11 @@ const CHANNELS = {
 // The backend refuses any launch, retry, removal or template deletion that
 // does not carry a written reason, so the app always collects one first.
 const NOTE_COPY = {
-  send: { title: 'Queue campaign', label: 'Approval note', placeholder: 'Who approved this send and why now?' },
-  retry: { title: 'Retry failed messages', label: 'Retry reason', placeholder: 'Why should these be retried?' },
-  deleteCampaign: { title: 'Delete campaign', label: 'Deletion reason', placeholder: 'Why is this campaign going?' },
-  deleteSubscriber: { title: 'Remove contact', label: 'Removal reason', placeholder: 'Why is this contact going?' },
-  deleteUnsubscribed: { title: 'Delete all unsubscribed', label: 'Cleanup reason', placeholder: 'Why is this cleanup needed?' },
+  send: { get "title"() { return ui("Queue campaign"); }, get "label"() { return ui("Approval note"); }, get "placeholder"() { return ui("Who approved this send and why now?"); } },
+  retry: { get "title"() { return ui("Retry failed messages"); }, get "label"() { return ui("Retry reason"); }, get "placeholder"() { return ui("Why should these be retried?"); } },
+  deleteCampaign: { get "title"() { return ui("Delete campaign"); }, get "label"() { return ui("Deletion reason"); }, get "placeholder"() { return ui("Why is this campaign going?"); } },
+  deleteSubscriber: { get "title"() { return ui("Remove contact"); }, get "label"() { return ui("Removal reason"); }, get "placeholder"() { return ui("Why is this contact going?"); } },
+  deleteUnsubscribed: { get "title"() { return ui("Delete all unsubscribed"); }, get "label"() { return ui("Cleanup reason"); }, get "placeholder"() { return ui("Why is this cleanup needed?"); } },
 };
 
 const splitList = (text, channel) => {
@@ -102,6 +104,7 @@ const splitList = (text, channel) => {
 };
 
 const MarketingScreen = () => {
+  useInterfaceLanguage();
   const [channel, setChannel] = useState('email');
   const [stats, setStats] = useState(null);
   const [campaigns, setCampaigns] = useState([]);
@@ -138,7 +141,7 @@ const MarketingScreen = () => {
     } catch (err) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(err, `Could not load ${channel} marketing`),
       });
       setStats(null);
@@ -172,14 +175,14 @@ const MarketingScreen = () => {
   const updateForm = (patch) => setForm((prev) => ({ ...prev, ...patch }));
 
   const createCampaign = async () => {
-    if (!form.name.trim()) return Toast.show({ type: 'info', text1: 'Campaign name is required' });
+    if (!form.name.trim()) return Toast.show({ type: 'info', text1: ui("Campaign name is required") });
     if (channel === 'email' && !form.subject.trim()) {
-      return Toast.show({ type: 'info', text1: 'A subject line is required for email' });
+      return Toast.show({ type: 'info', text1: ui("A subject line is required for email") });
     }
     if (!form.content.trim()) {
       return Toast.show({
         type: 'info',
-        text1: channel === 'email' ? 'Write the email body' : 'Write the SMS message',
+        text1: channel === "email" ? ui("Write the email body") : ui("Write the SMS message"),
       });
     }
 
@@ -202,10 +205,10 @@ const MarketingScreen = () => {
       setForm({ name: '', subject: '', content: '', template_id: '' });
       setShowBuilder(false);
       await load();
-      Toast.show({ type: 'success', text1: 'Campaign created', text2: 'Queue it when you are ready to send' });
+      Toast.show({ type: 'success', text1: ui("Campaign created"), text2: ui("Queue it when you are ready to send") });
       if (campaignId) openNote('send', { id: campaignId, name: form.name.trim() });
     } catch (err) {
-      Toast.show({ type: 'error', text1: 'Failed', text2: getErrorMessage(err, 'Could not create campaign') });
+      Toast.show({ type: 'error', text1: ui("Failed"), text2: getErrorMessage(err, 'Could not create campaign') });
     } finally {
       setBusyKey('');
     }
@@ -228,27 +231,27 @@ const MarketingScreen = () => {
     try {
       if (type === 'send') {
         await ops.send(target.id, trimmed);
-        Toast.show({ type: 'success', text1: `${channel.toUpperCase()} campaign queued` });
+        Toast.show({ type: 'success', text1: ui("{value0} campaign queued", {value0: (channel.toUpperCase())}) });
       } else if (type === 'retry') {
         await ops.retry(target.id, trimmed);
-        Toast.show({ type: 'success', text1: 'Failed messages re-queued' });
+        Toast.show({ type: 'success', text1: ui("Failed messages re-queued") });
       } else if (type === 'deleteCampaign') {
         await ops.removeCampaign(target.id, trimmed);
-        Toast.show({ type: 'success', text1: 'Campaign deleted' });
+        Toast.show({ type: 'success', text1: ui("Campaign deleted") });
       } else if (type === 'deleteSubscriber') {
         const del = channel === 'email'
           ? marketingOpsService.emailDeleteSubscriber
           : marketingOpsService.smsDeleteSubscriber;
         await del(target.id, trimmed);
-        Toast.show({ type: 'success', text1: 'Contact removed' });
+        Toast.show({ type: 'success', text1: ui("Contact removed") });
       } else if (type === 'deleteUnsubscribed') {
         const res = await ops.deleteUnsubscribed(trimmed);
-        Toast.show({ type: 'success', text1: `Removed ${res?.data?.deleted ?? 0} unsubscribed contact(s)` });
+        Toast.show({ type: 'success', text1: ui("Removed {value0} unsubscribed contact(s)", {value0: (res?.data?.deleted ?? 0)}) });
       }
       closeNote();
       await load();
     } catch (err) {
-      Toast.show({ type: 'error', text1: 'Failed', text2: getErrorMessage(err, 'Action failed') });
+      Toast.show({ type: 'error', text1: ui("Failed"), text2: getErrorMessage(err, ui("Action failed")) });
     } finally {
       setBusyKey('');
     }
@@ -259,7 +262,7 @@ const MarketingScreen = () => {
     if (list.length === 0) {
       return Toast.show({
         type: 'info',
-        text1: channel === 'email' ? 'Paste at least one email address' : 'Paste at least one phone number',
+        text1: channel === "email" ? ui("Paste at least one email address") : ui("Paste at least one phone number"),
       });
     }
 
@@ -269,14 +272,14 @@ const MarketingScreen = () => {
       const data = res?.data || {};
       Toast.show({
         type: 'success',
-        text1: `Imported ${data.added ?? 0} new`,
-        text2: `Already in system ${data.alreadyKnown ?? 0} · Duplicates ${data.duplicates ?? 0} · Invalid ${data.invalid ?? 0}`,
+        text1: ui("Imported {value0} new", {value0: (data.added ?? 0)}),
+        text2: ui("Already in system {value0} · Duplicates {value1} · Invalid {value2}", {value0: (data.alreadyKnown ?? 0), value1: (data.duplicates ?? 0), value2: (data.invalid ?? 0)}),
       });
       setPasteList('');
       setShowPasteBox(false);
       await load();
     } catch (err) {
-      Toast.show({ type: 'error', text1: 'Import failed', text2: getErrorMessage(err, 'Could not import') });
+      Toast.show({ type: 'error', text1: ui("Import failed"), text2: getErrorMessage(err, 'Could not import') });
     } finally {
       setBusyKey('');
     }
@@ -288,14 +291,14 @@ const MarketingScreen = () => {
       const res = await ops.campaignStats(campaign.id);
       setStatsModal({ open: true, data: res?.data || null });
     } catch (err) {
-      Toast.show({ type: 'error', text1: 'Failed', text2: getErrorMessage(err, 'Could not load stats') });
+      Toast.show({ type: 'error', text1: ui("Failed"), text2: getErrorMessage(err, 'Could not load stats') });
     } finally {
       setBusyKey('');
     }
   };
 
   if (loading && campaigns.length === 0 && subscribers.length === 0) {
-    return <PremiumCenter loading title="Loading campaigns" />;
+    return <PremiumCenter loading title={ui("Loading campaigns")} />;
   }
 
   const subscriberStats = stats?.subscribers || {};
@@ -315,9 +318,9 @@ const MarketingScreen = () => {
         header={
           <>
             <PremiumHero
-              eyebrow="Super admin"
-              title="Email & SMS marketing"
-              subtitle="Create campaigns, manage contacts and launch sends from the app."
+              eyebrow={ui("Super admin")}
+              title={ui("Email & SMS marketing")}
+              subtitle={ui("Create campaigns, manage contacts and launch sends from the app.")}
               icon="megaphone-outline"
             />
 
@@ -336,64 +339,64 @@ const MarketingScreen = () => {
             <View style={styles.metricRow}>
               <View style={[styles.metric, styles.metricAccent]}>
                 <AppText style={styles.metricValue}>{Number(subscriberStats.total ?? subscribers.length ?? 0)}</AppText>
-                <AppText style={styles.metricLabel}>{ops.audienceNoun}s</AppText>
+                <AppText style={styles.metricLabel}>{ops.audienceNoun}{ui("s")}</AppText>
               </View>
               <View style={styles.metric}>
                 <AppText style={styles.metricValue}>{Number(campaignStats.total ?? campaigns.length ?? 0)}</AppText>
-                <AppText style={styles.metricLabel}>Campaigns</AppText>
+                <AppText style={styles.metricLabel}>{ui("Campaigns")}</AppText>
               </View>
               <View style={styles.metric}>
                 <AppText style={styles.metricValue}>{Number(unsubscribeCount ?? 0)}</AppText>
-                <AppText style={styles.metricLabel}>Unsubscribed</AppText>
+                <AppText style={styles.metricLabel}>{ui("Unsubscribed")}</AppText>
               </View>
             </View>
 
             {showBuilder ? (
               <PremiumCard>
-                <PremiumSectionTitle title="Create campaign" subtitle={`Draft a ${ops.label} campaign, then queue it.`} />
+                <PremiumSectionTitle title={ui("Create campaign")} subtitle={ui("Draft a {value0} campaign, then queue it.", {value0: (ops.label)})} />
                 <Input
-                  label="Campaign name"
+                  label={ui("Campaign name")}
                   value={form.name}
                   onChangeText={(v) => updateForm({ name: v })}
-                  placeholder="e.g. October rent reminder"
+                  placeholder={ui("e.g. October rent reminder")}
                 />
-                {channel === 'email' ? (
+                {channel === "email" ? (
                   <Input
-                    label="Subject line"
+                    label={ui("Subject line")}
                     value={form.subject}
                     onChangeText={(v) => updateForm({ subject: v })}
-                    placeholder="Your October rent is due"
+                    placeholder={ui("Your October rent is due")}
                     containerStyle={styles.fieldGap}
                   />
                 ) : null}
                 <Input
-                  label={channel === 'email' ? 'Email body (HTML allowed)' : 'Message'}
+                  label={channel === "email" ? 'Email body (HTML allowed)' : ui("Message")}
                   value={form.content}
                   onChangeText={(v) => updateForm({ content: v })}
-                  placeholder={channel === 'email' ? '<p>Hello…</p>' : 'Type the SMS text'}
+                  placeholder={channel === "email" ? '<p>Hello…</p>' : 'Type the SMS text'}
                   multiline
                   numberOfLines={6}
                   containerStyle={styles.fieldGap}
                 />
                 {templates.length > 0 ? (
                   <Input
-                    label="Link a template (optional)"
+                    label={ui("Link a template (optional)")}
                     value={form.template_id}
                     onChangeText={(v) => updateForm({ template_id: v.replace(/\D/g, '') })}
-                    placeholder={`Template id — e.g. ${templates[0]?.id ?? 1}`}
+                    placeholder={ui("Template id — e.g. {value0}", {value0: (templates[0]?.id ?? 1)})}
                     keyboardType="number-pad"
                     containerStyle={styles.fieldGap}
                   />
                 ) : null}
                 <PremiumButton
-                  title="Create campaign"
+                  title={ui("Create campaign")}
                   icon="add-circle-outline"
                   onPress={createCampaign}
                   loading={busyKey === 'create'}
                   style={styles.fieldGap}
                 />
                 <PremiumButton
-                  title="Cancel"
+                  title={ui("Cancel")}
                   variant="secondary"
                   onPress={() => setShowBuilder(false)}
                   style={styles.fieldGap}
@@ -401,21 +404,21 @@ const MarketingScreen = () => {
               </PremiumCard>
             ) : (
               <PremiumButton
-                title={`New ${ops.label} campaign`}
+                title={ui("New {value0} campaign", {value0: (ops.label)})}
                 icon="add-outline"
                 onPress={() => setShowBuilder(true)}
               />
             )}
 
             <PremiumSectionTitle
-              title={`${ops.label} contacts`}
-              subtitle="Import a list, then remove anyone who opted out."
+              title={ui("{value0} contacts", {value0: (ops.label)})}
+              subtitle={ui("Import a list, then remove anyone who opted out.")}
             />
             <PremiumCard>
               {showPasteBox ? (
                 <>
                   <Input
-                    label={channel === 'email' ? 'Paste email addresses' : 'Paste phone numbers'}
+                    label={channel === "email" ? 'Paste email addresses' : ui("Paste phone numbers")}
                     value={pasteList}
                     onChangeText={setPasteList}
                     placeholder={ops.importHint}
@@ -423,7 +426,7 @@ const MarketingScreen = () => {
                     numberOfLines={5}
                   />
                   <PremiumButton
-                    title="Import list"
+                    title={ui("Import list")}
                     icon="cloud-upload-outline"
                     onPress={importSubscribers}
                     loading={busyKey === 'import'}
@@ -440,14 +443,14 @@ const MarketingScreen = () => {
                 style={styles.fieldGap}
               />
               <PremiumButton
-                title={`Delete all unsubscribed (${unsubscribeCount ?? 0})`}
+                title={ui("Delete all unsubscribed ({value0})", {value0: (unsubscribeCount ?? 0)})}
                 variant="secondary"
                 icon="trash-outline"
                 onPress={() => openNote('deleteUnsubscribed', { id: null })}
                 style={styles.fieldGap}
               />
               <PremiumButton
-                title={showSubscribers ? 'Hide contacts' : `Show contacts (${subscribers.length})`}
+                title={showSubscribers ? 'Hide contacts' : ui("Show contacts ({value0})", {value0: (subscribers.length)})}
                 variant="secondary"
                 icon="people-outline"
                 onPress={() => setShowSubscribers((v) => !v)}
@@ -465,19 +468,19 @@ const MarketingScreen = () => {
                     <PremiumCard key={s.id}>
                       <View style={styles.cardTop}>
                         <View style={styles.cardCopy}>
-                          <AppText style={styles.cardTitle}>{primary || `#${s.id}`}</AppText>
+                          <AppText style={styles.cardTitle}>{primary || ui("#{value0}", {value0: (s.id)})}</AppText>
                           <AppText style={styles.cardMeta}>
-                            {s.full_name || 'No name'} · {s.source || 'unknown'}
+                            {s.full_name || 'No name'} · {s.source || ui("unknown")}
                           </AppText>
                         </View>
                         <StatusPill
-                          label={s.subscribed === false ? 'Unsubscribed' : 'Subscribed'}
+                          label={s.subscribed === false ? ui("Unsubscribed") : 'Subscribed'}
                           color={s.subscribed === false ? colors.danger : colors.success}
                         />
                       </View>
                       <View style={styles.actions}>
                         <PremiumButton
-                          title="Remove"
+                          title={ui("Remove")}
                           variant="secondary"
                           icon="trash-outline"
                           onPress={() => openNote('deleteSubscriber', s)}
@@ -490,13 +493,13 @@ const MarketingScreen = () => {
               : null}
 
             <PremiumSectionTitle
-              title={`${ops.label} campaigns`}
-              subtitle="Queue a draft, retry failures, or remove a campaign."
+              title={ui("{value0} campaigns", {value0: (ops.label)})}
+              subtitle={ui("Queue a draft, retry failures, or remove a campaign.")}
             />
           </>
         }
-        emptyTitle="No campaigns yet"
-        emptyMessage={`No ${channel} marketing campaigns found. Tap "New campaign" to create one.`}
+        emptyTitle={ui("No campaigns yet")}
+        emptyMessage={ui("No {value0} marketing campaigns found. Tap \"New campaign\" to create one.", {value0: (channel)})}
         emptyIcon="mail-outline"
         renderItem={({ item }) => {
           const row = item.stats || {};
@@ -507,24 +510,24 @@ const MarketingScreen = () => {
             <PremiumCard>
               <View style={styles.cardTop}>
                 <View style={styles.cardCopy}>
-                  <AppText style={styles.cardTitle}>{item.name || `Campaign #${item.id}`}</AppText>
+                  <AppText style={styles.cardTitle}>{item.name || ui("Campaign #{value0}", {value0: (item.id)})}</AppText>
                   {item.subject ? <AppText style={styles.cardMeta}>{item.subject}</AppText> : null}
                   {item.created_at ? (
-                    <AppText style={styles.cardMeta}>Created {formatDate(item.created_at)}</AppText>
+                    <AppText style={styles.cardMeta}>{ui("Created ")}{formatDate(item.created_at)}</AppText>
                   ) : null}
                 </View>
                 <StatusPill label={item.status} color={color} />
               </View>
 
-              <InfoRow icon="paper-plane-outline" label="Sent" value={String(row.sent ?? item.sent_count ?? 0)} />
-              <InfoRow icon="alert-circle-outline" label="Failed" value={String(row.failed ?? item.failed_count ?? 0)} />
-              {channel === 'email' ? (
-                <InfoRow icon="eye-outline" label="Opened" value={String(row.opened ?? item.opened_count ?? 0)} />
+              <InfoRow icon="paper-plane-outline" label={ui("Sent")} value={String(row.sent ?? item.sent_count ?? 0)} />
+              <InfoRow icon="alert-circle-outline" label={ui("Failed")} value={String(row.failed ?? item.failed_count ?? 0)} />
+              {channel === "email" ? (
+                <InfoRow icon="eye-outline" label={ui("Opened")} value={String(row.opened ?? item.opened_count ?? 0)} />
               ) : null}
 
               <View style={styles.actions}>
                 <PremiumButton
-                  title="Stats"
+                  title={ui("Stats")}
                   variant="secondary"
                   icon="stats-chart-outline"
                   onPress={() => openCampaignStats(item)}
@@ -533,7 +536,7 @@ const MarketingScreen = () => {
                 />
                 {isDraft ? (
                   <PremiumButton
-                    title="Send"
+                    title={ui("Send")}
                     icon="send-outline"
                     onPress={() => openNote('send', item)}
                     style={styles.actionButton}
@@ -541,7 +544,7 @@ const MarketingScreen = () => {
                 ) : null}
                 {canRetry ? (
                   <PremiumButton
-                    title="Retry"
+                    title={ui("Retry")}
                     variant="secondary"
                     icon="refresh-outline"
                     onPress={() => openNote('retry', item)}
@@ -550,7 +553,7 @@ const MarketingScreen = () => {
                 ) : null}
                 {item.status !== 'sending' ? (
                   <PremiumButton
-                    title="Delete"
+                    title={ui("Delete")}
                     variant="secondary"
                     icon="trash-outline"
                     onPress={() => openNote('deleteCampaign', item)}
@@ -580,18 +583,16 @@ const MarketingScreen = () => {
               containerStyle={styles.fieldGap}
             />
             {noteModal.error ? <AppText style={styles.modalError}>{noteModal.error}</AppText> : null}
-            <AppText style={styles.modalHint}>
-              This reason is stored in the governance log with your name.
-            </AppText>
+            <AppText style={styles.modalHint}>{ui("This reason is stored in the governance log with your name.")}</AppText>
             <View style={styles.modalActions}>
               <PremiumButton
-                title="Confirm"
+                title={ui("Confirm")}
                 onPress={submitNote}
                 loading={busyKey.startsWith('note:')}
                 style={styles.actionButton}
               />
               <PremiumButton
-                title="Cancel"
+                title={ui("Cancel")}
                 variant="secondary"
                 onPress={closeNote}
                 style={styles.actionButton}
@@ -613,24 +614,24 @@ const MarketingScreen = () => {
             <View style={styles.statsRow}>
               <View style={styles.statBox}>
                 <AppText style={styles.statValue}>{Number(statsData.sent ?? 0)}</AppText>
-                <AppText style={styles.statLabel}>Sent</AppText>
+                <AppText style={styles.statLabel}>{ui("Sent")}</AppText>
               </View>
               <View style={styles.statBox}>
                 <AppText style={styles.statValue}>{Number(statsData.failed ?? 0)}</AppText>
-                <AppText style={styles.statLabel}>Failed</AppText>
+                <AppText style={styles.statLabel}>{ui("Failed")}</AppText>
               </View>
               <View style={styles.statBox}>
                 <AppText style={styles.statValue}>{Number(statsData.pending ?? 0)}</AppText>
-                <AppText style={styles.statLabel}>Pending</AppText>
+                <AppText style={styles.statLabel}>{ui("Pending")}</AppText>
               </View>
               <View style={styles.statBox}>
                 <AppText style={styles.statValue}>{Number(statsData.opened ?? 0)}</AppText>
-                <AppText style={styles.statLabel}>Opened</AppText>
+                <AppText style={styles.statLabel}>{ui("Opened")}</AppText>
               </View>
             </View>
             <View style={styles.modalActions}>
               <PremiumButton
-                title="Close"
+                title={ui("Close")}
                 variant="secondary"
                 onPress={() => setStatsModal({ open: false, data: null })}
                 style={styles.actionButton}

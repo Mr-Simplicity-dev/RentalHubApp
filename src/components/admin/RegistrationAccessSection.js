@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import { typeScale } from '../../theme';
 import React, { useEffect, useMemo, useState } from 'react';
 import {Alert, StyleSheet, Switch, TouchableOpacity, View} from 'react-native';
@@ -17,6 +19,7 @@ const defaultForm = {
 };
 
 const RegistrationAccessSection = () => {
+  const interfaceLanguage = useInterfaceLanguage();
   const [loading, setLoading] = useState(false);
   const [rules, setRules] = useState([]);
   const [targets, setTargets] = useState([]);
@@ -38,7 +41,7 @@ const RegistrationAccessSection = () => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Load failed',
+        text1: ui("Load failed"),
         text2: getErrorMessage(error, 'Could not load registration access rules'),
       });
     } finally {
@@ -52,14 +55,14 @@ const RegistrationAccessSection = () => {
 
   const selectedState = useMemo(
     () => locations.find((item) => String(item.id) === String(form.state_id)),
-    [locations, form.state_id]
+    [locations, form.state_id, interfaceLanguage]
   );
   const availableLgas = selectedState?.lgas || [];
   const selectedTarget = targets.find((item) => item.key === form.applies_to);
 
   const saveRule = async () => {
     if (!form.state_id) {
-      Toast.show({ type: 'error', text1: 'Select a state' });
+      Toast.show({ type: 'error', text1: ui("Select a state") });
       return;
     }
 
@@ -74,10 +77,10 @@ const RegistrationAccessSection = () => {
       setLoading(true);
       if (editingRuleId) {
         await superAdminService.updateRegistrationAccessRule(editingRuleId, payload);
-        Toast.show({ type: 'success', text1: 'Rule updated' });
+        Toast.show({ type: 'success', text1: ui("Rule updated") });
       } else {
         await superAdminService.createRegistrationAccessRule(payload);
-        Toast.show({ type: 'success', text1: 'Rule created' });
+        Toast.show({ type: 'success', text1: ui("Rule created") });
       }
       setEditingRuleId(null);
       setForm(defaultForm);
@@ -85,7 +88,7 @@ const RegistrationAccessSection = () => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Save failed',
+        text1: ui("Save failed"),
         text2: getErrorMessage(error, 'Could not save rule'),
       });
     } finally {
@@ -94,21 +97,21 @@ const RegistrationAccessSection = () => {
   };
 
   const deleteRule = (ruleId) => {
-    Alert.alert('Delete rule', 'Remove this registration access rule?', [
-      { text: 'Cancel', style: 'cancel' },
+    Alert.alert(ui("Delete rule"), ui("Remove this registration access rule?"), [
+      { text: ui("Cancel"), style: 'cancel' },
       {
-        text: 'Delete',
+        text: ui("Delete"),
         style: 'destructive',
         onPress: async () => {
           try {
             setLoading(true);
             await superAdminService.deleteRegistrationAccessRule(ruleId);
-            Toast.show({ type: 'success', text1: 'Rule deleted' });
+            Toast.show({ type: 'success', text1: ui("Rule deleted") });
             await loadData();
           } catch (error) {
             Toast.show({
               type: 'error',
-              text1: 'Delete failed',
+              text1: ui("Delete failed"),
               text2: getErrorMessage(error, 'Could not delete rule'),
             });
           } finally {
@@ -121,33 +124,30 @@ const RegistrationAccessSection = () => {
 
   return (
     <View style={styles.wrap}>
-      <AppText style={styles.heading}>Registration Access Rules</AppText>
-      <AppText style={styles.subheading}>
-        When active rules exist for a role, registration is only allowed in those state/LGA
-        locations. Global role switches on Flags must also be enabled.
-      </AppText>
+      <AppText style={styles.heading}>{ui("Registration Access Rules")}</AppText>
+      <AppText style={styles.subheading}>{ui("When active rules exist for a role, registration is only allowed in those state/LGA locations. Global role switches on Flags must also be enabled.")}</AppText>
 
       <SelectField
-        label="Applies To"
+        label={ui("Applies To")}
         value={selectedTarget?.label || form.applies_to}
-        placeholder="Select role"
+        placeholder={ui("Select role")}
         onPress={() => setShowRolePicker(true)}
       />
       <SelectField
-        label="State"
+        label={ui("State")}
         value={selectedState?.state_name}
-        placeholder="Select state"
+        placeholder={ui("Select state")}
         onPress={() => setShowStatePicker(true)}
       />
       <SelectField
-        label="LGA (optional)"
+        label={ui("LGA (optional)")}
         value={form.lga_name || 'Whole state'}
-        placeholder="Select LGA"
+        placeholder={ui("Select LGA")}
         onPress={() => setShowLgaPicker(true)}
         disabled={!form.state_id}
       />
       <View style={styles.switchRow}>
-        <AppText style={styles.switchLabel}>Rule active</AppText>
+        <AppText style={styles.switchLabel}>{ui("Rule active")}</AppText>
         <Switch
           value={form.is_active}
           onValueChange={(value) => setForm((prev) => ({ ...prev, is_active: value }))}
@@ -159,17 +159,17 @@ const RegistrationAccessSection = () => {
         loading={loading}
       />
 
-      <AppText style={[styles.heading, styles.sectionGap]}>Existing Rules</AppText>
+      <AppText style={[styles.heading, styles.sectionGap]}>{ui("Existing Rules")}</AppText>
       {rules.length === 0 ? (
-        <AppText style={styles.meta}>No rules configured.</AppText>
+        <AppText style={styles.meta}>{ui("No rules configured.")}</AppText>
       ) : (
         rules.map((rule) => (
           <View key={rule.id} style={styles.card}>
             <AppText style={styles.cardTitle}>
               {rule.applies_to} · {rule.state_name}
-              {rule.lga_name ? ` · ${rule.lga_name}` : ' · Whole state'}
+              {rule.lga_name ? ui(" · {value0}", {value0: (rule.lga_name)}) : ' · Whole state'}
             </AppText>
-            <AppText style={styles.meta}>{rule.is_active ? 'Active' : 'Inactive'}</AppText>
+            <AppText style={styles.meta}>{rule.is_active ? ui("Active") : ui("Inactive")}</AppText>
             <View style={styles.row}>
               <TouchableOpacity
                 onPress={() => {
@@ -182,10 +182,10 @@ const RegistrationAccessSection = () => {
                   });
                 }}
               >
-                <AppText style={styles.link}>Edit</AppText>
+                <AppText style={styles.link}>{ui("Edit")}</AppText>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => deleteRule(rule.id)}>
-                <AppText style={styles.danger}>Delete</AppText>
+                <AppText style={styles.danger}>{ui("Delete")}</AppText>
               </TouchableOpacity>
             </View>
           </View>
@@ -194,7 +194,7 @@ const RegistrationAccessSection = () => {
 
       <OptionPickerModal
         visible={showRolePicker}
-        title="Applies To"
+        title={ui("Applies To")}
         options={targets}
         selectedValue={form.applies_to}
         getOptionLabel={(item) => item.label}
@@ -204,7 +204,7 @@ const RegistrationAccessSection = () => {
       />
       <OptionPickerModal
         visible={showStatePicker}
-        title="Select State"
+        title={ui("Select State")}
         options={locations}
         selectedValue={form.state_id}
         searchable
@@ -217,7 +217,7 @@ const RegistrationAccessSection = () => {
       />
       <OptionPickerModal
         visible={showLgaPicker}
-        title="Select LGA"
+        title={ui("Select LGA")}
         options={[{ id: '', name: 'Whole state' }, ...availableLgas.map((lga) => ({ id: lga, name: lga }))]}
         selectedValue={form.lga_name}
         getOptionLabel={(item) => item.name}

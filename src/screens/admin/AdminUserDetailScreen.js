@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useState } from 'react';
 import {StyleSheet, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -19,6 +21,7 @@ import { colors, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const AdminUserDetailScreen = ({ route, navigation }) => {
+  useInterfaceLanguage();
   const userId = route?.params?.id;
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -37,7 +40,7 @@ const AdminUserDetailScreen = ({ route, navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(error, 'Could not load user details'),
       });
     } finally {
@@ -50,12 +53,12 @@ const AdminUserDetailScreen = ({ route, navigation }) => {
     try {
       await adminService.deleteUser(userId, reason);
       setDisablePromptVisible(false);
-      Toast.show({ type: 'success', text1: 'User disabled' });
+      Toast.show({ type: 'success', text1: ui("User disabled") });
       navigation.goBack();
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(error, 'Could not disable user'),
       });
     } finally {
@@ -64,15 +67,15 @@ const AdminUserDetailScreen = ({ route, navigation }) => {
   };
 
   if (loading) {
-    return <PremiumCenter loading title="Loading user details" />;
+    return <PremiumCenter loading title={ui("Loading user details")} />;
   }
 
   if (!user) {
     return (
       <PremiumCenter
         icon="person-circle-outline"
-        title="User not found"
-        message="This account could not be loaded from the admin API."
+        title={ui("User not found")}
+        message={ui("This account could not be loaded from the admin API.")}
       />
     );
   }
@@ -86,7 +89,7 @@ const AdminUserDetailScreen = ({ route, navigation }) => {
     <>
       <PremiumScreen>
       <PremiumHero
-        eyebrow="Admin user profile"
+        eyebrow={ui("Admin user profile")}
         title={user.full_name || user.name || 'User account'}
         subtitle={user.email || 'No email on file'}
         icon="person-circle-outline"
@@ -102,35 +105,33 @@ const AdminUserDetailScreen = ({ route, navigation }) => {
         <StatusPill label={status} color={status === 'active' ? colors.success : colors.warning} />
       </PremiumCard>
 
-      <PremiumSectionTitle title="Account information" />
+      <PremiumSectionTitle title={ui("Account information")} />
       <PremiumCard>
-        <InfoRow icon="call-outline" label="Phone" value={user.phone || 'N/A'} />
-        <InfoRow icon="shield-checkmark-outline" label="Verified" value={user.identity_verified ? 'Yes' : 'No'} />
+        <InfoRow icon="call-outline" label={ui("Phone")} value={user.phone || 'N/A'} />
+        <InfoRow icon="shield-checkmark-outline" label={ui("Verified")} value={user.identity_verified ? 'Yes' : 'No'} />
         <InfoRow
           icon="calendar-outline"
-          label="Joined"
+          label={ui("Joined")}
           value={user.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A'}
         />
-        <InfoRow icon="location-outline" label="State" value={user.state_name || user.state || 'N/A'} />
+        <InfoRow icon="location-outline" label={ui("State")} value={user.state_name || user.state || 'N/A'} />
       </PremiumCard>
 
-      <PremiumSectionTitle title="Subscription" />
+      <PremiumSectionTitle title={ui("Subscription")} />
       <PremiumCard>
         <InfoRow
           icon="diamond-outline"
-          label="Plan"
+          label={ui("Plan")}
           value={`${user.subscription_active ? 'Active' : 'Inactive'}${user.subscription_plan ? ` • ${user.subscription_plan}` : ''}`}
         />
       </PremiumCard>
 
         {canDisable ? (
           <PremiumCard style={styles.dangerZone}>
-            <AppText style={styles.dangerTitle}>Danger zone</AppText>
-            <AppText style={styles.dangerCopy}>
-              Disabling this account immediately blocks access and records the reason in the audit history.
-            </AppText>
+            <AppText style={styles.dangerTitle}>{ui("Danger zone")}</AppText>
+            <AppText style={styles.dangerCopy}>{ui("Disabling this account immediately blocks access and records the reason in the audit history.")}</AppText>
             <PremiumButton
-              title="Disable user"
+              title={ui("Disable user")}
               variant="danger"
               onPress={() => setDisablePromptVisible(true)}
               loading={deleting}
@@ -141,11 +142,11 @@ const AdminUserDetailScreen = ({ route, navigation }) => {
       </PremiumScreen>
       <OperationNoteModal
         visible={disablePromptVisible}
-        title="Disable user account"
-        message={`${user.full_name || user.email || 'This user'} will no longer be able to sign in.`}
-        label="Disable reason"
-        placeholder="Explain why this account must be disabled"
-        confirmText="Disable account"
+        title={ui("Disable user account")}
+        message={ui("{value0} will no longer be able to sign in.", {value0: (user.full_name || user.email || ui("This user"))})}
+        label={ui("Disable reason")}
+        placeholder={ui("Explain why this account must be disabled")}
+        confirmText={ui("Disable account")}
         icon="ban-outline"
         variant="danger"
         loading={deleting}

@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, RefreshControl, ScrollView, StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native';
 import TextInput from '../../components/common/AppTextInput';
@@ -16,13 +18,14 @@ import { getErrorMessage, pickList } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
 const propertyTypes = [
-  { label: 'Apartment', value: 'apartment', icon: 'business-outline' },
-  { label: 'House', value: 'house', icon: 'home-outline' },
-  { label: 'Duplex', value: 'duplex', icon: 'layers-outline' },
-  { label: 'Short let', value: 'short_let', icon: 'bed-outline' },
+  { get "label"() { return ui("Apartment"); }, value: 'apartment', icon: 'business-outline' },
+  { get "label"() { return ui("House"); }, value: 'house', icon: 'home-outline' },
+  { get "label"() { return ui("Duplex"); }, value: 'duplex', icon: 'layers-outline' },
+  { get "label"() { return ui("Short let"); }, value: 'short_let', icon: 'bed-outline' },
 ];
 
 const HomeScreen = ({ navigation }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const { isAuthenticated, user } = useContext(AuthContext);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
@@ -31,7 +34,7 @@ const HomeScreen = ({ navigation }) => {
   const [locations, setLocations] = useState([]);
   const [unreadTotal, setUnreadTotal] = useState(0);
 
-  const featuredCards = useMemo(() => featured.slice(0, 6), [featured]);
+  const featuredCards = useMemo(() => featured.slice(0, 6), [featured, interfaceLanguage]);
   const firstName = String(user?.full_name || user?.name || '').trim().split(/\s+/)[0];
   const notificationsTourTarget = useTourTarget('header_notifications', {
     padding: 6,
@@ -55,7 +58,7 @@ const HomeScreen = ({ navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Could not refresh Explore',
+        text1: ui("Could not refresh Explore"),
         text2: getErrorMessage(error, 'Please check your connection and try again.'),
       });
     } finally {
@@ -147,7 +150,7 @@ const HomeScreen = ({ navigation }) => {
             </View>
           ) : (
             <TouchableOpacity
-              accessibilityLabel="Back to welcome screen"
+              accessibilityLabel={ui("Back to welcome screen")}
               accessibilityRole="button"
               activeOpacity={0.75}
               onPress={goBackToWelcome}
@@ -159,8 +162,8 @@ const HomeScreen = ({ navigation }) => {
             {...notificationsTourTarget}
             accessibilityLabel={
               isAuthenticated
-                ? `Open notifications${unreadTotal ? `, ${unreadTotal} unread` : ''}`
-                : 'Sign in'
+                ? ui("Open notifications{value0}", {value0: (unreadTotal ? `, ${unreadTotal} unread` : '')})
+                : ui("Sign in")
             }
             accessibilityRole="button"
             onPress={() =>
@@ -183,20 +186,18 @@ const HomeScreen = ({ navigation }) => {
         </View>
 
         <View style={styles.intro}>
-          {firstName ? <AppText style={styles.greeting}>Hello, {firstName}</AppText> : null}
-          <AppText style={styles.title}>Find a place that{'\n'}feels like yours.</AppText>
-          <AppText style={styles.subtitle}>
-            Search verified homes and move with confidence.
-          </AppText>
+          {firstName ? <AppText style={styles.greeting}>{ui("Hello, ")}{firstName}</AppText> : null}
+          <AppText style={styles.title}>{ui("Find a place that")}{'\n'}{ui("feels like yours.")}</AppText>
+          <AppText style={styles.subtitle}>{ui("Search verified homes and move with confidence.")}</AppText>
         </View>
 
         <View style={styles.searchCard}>
           <Icon name="search-outline" size={21} color={colors.muted} />
           <TextInput
-            accessibilityLabel="Search properties"
+            accessibilityLabel={ui("Search properties")}
             value={search}
             onChangeText={setSearch}
-            placeholder="City, state or neighbourhood"
+            placeholder={ui("City, state or neighbourhood")}
             placeholderTextColor="#909CB2"
             style={styles.searchInput}
             returnKeyType="search"
@@ -204,7 +205,7 @@ const HomeScreen = ({ navigation }) => {
             onSubmitEditing={submitSearch}
           />
           <TouchableOpacity
-            accessibilityLabel="Search"
+            accessibilityLabel={ui("Search")}
             accessibilityRole="button"
             onPress={submitSearch}
             style={styles.searchButton}>
@@ -232,14 +233,14 @@ const HomeScreen = ({ navigation }) => {
 
         <View style={styles.sectionHeader}>
           <View>
-            <AppText style={styles.sectionEyebrow}>CURATED FOR YOU</AppText>
-            <AppText style={styles.sectionTitle}>Featured homes</AppText>
+            <AppText style={styles.sectionEyebrow}>{ui("CURATED FOR YOU")}</AppText>
+            <AppText style={styles.sectionTitle}>{ui("Featured homes")}</AppText>
           </View>
           <TouchableOpacity
             accessibilityRole="button"
             onPress={() => goToPropertyList()}
             style={styles.seeAllButton}>
-            <AppText style={styles.seeAllText}>See all</AppText>
+            <AppText style={styles.seeAllText}>{ui("See all")}</AppText>
             <Icon name="chevron-forward" size={16} color={colors.blue} />
           </TouchableOpacity>
         </View>
@@ -247,7 +248,7 @@ const HomeScreen = ({ navigation }) => {
         {loading ? (
           <View style={styles.loadingState}>
             <ActivityIndicator size="large" color={colors.blue} />
-            <AppText style={styles.loadingText}>Finding verified homes…</AppText>
+            <AppText style={styles.loadingText}>{ui("Finding verified homes…")}</AppText>
           </View>
         ) : featuredCards.length ? (
           <ScrollView
@@ -269,16 +270,16 @@ const HomeScreen = ({ navigation }) => {
           <View style={styles.emptyState}>
             <Icon name="home-outline" size={25} color={colors.blue} />
             <View style={styles.emptyCopy}>
-              <AppText style={styles.emptyTitle}>Fresh listings are on the way</AppText>
-              <AppText style={styles.emptyText}>Browse all available properties for now.</AppText>
+              <AppText style={styles.emptyTitle}>{ui("Fresh listings are on the way")}</AppText>
+              <AppText style={styles.emptyText}>{ui("Browse all available properties for now.")}</AppText>
             </View>
           </View>
         )}
 
         <View style={styles.sectionHeader}>
           <View>
-            <AppText style={styles.sectionEyebrow}>EXPLORE NIGERIA</AppText>
-            <AppText style={styles.sectionTitle}>Popular locations</AppText>
+            <AppText style={styles.sectionEyebrow}>{ui("EXPLORE NIGERIA")}</AppText>
+            <AppText style={styles.sectionTitle}>{ui("Popular locations")}</AppText>
           </View>
         </View>
 
@@ -299,8 +300,7 @@ const HomeScreen = ({ navigation }) => {
                 {item.state_name || item.name}
               </AppText>
               <AppText style={styles.locationMeta}>
-                {Number(item.property_count || 0).toLocaleString()} homes
-              </AppText>
+                {Number(item.property_count || 0).toLocaleString()}{ui("homes")}</AppText>
               <Icon
                 name="arrow-forward-circle-outline"
                 size={23}
@@ -313,8 +313,8 @@ const HomeScreen = ({ navigation }) => {
 
         <View style={styles.sectionHeader}>
           <View style={{ flex: 1 }}>
-            <AppText style={styles.sectionEyebrow}>SPONSORED</AppText>
-            <AppText style={styles.sectionTitle}>Featured offers</AppText>
+            <AppText style={styles.sectionEyebrow}>{ui("SPONSORED")}</AppText>
+            <AppText style={styles.sectionTitle}>{ui("Featured offers")}</AppText>
           </View>
         </View>
         <View style={styles.adSection}>
@@ -331,19 +331,17 @@ const HomeScreen = ({ navigation }) => {
           <View style={styles.requestIcon}>
             <Icon name="sparkles" size={20} color={colors.gold} />
           </View>
-          <AppText style={styles.requestTitle}>Can’t find the right home?</AppText>
-          <AppText style={styles.requestText}>
-            Tell us what you need and we’ll alert you when a matching property arrives.
-          </AppText>
+          <AppText style={styles.requestTitle}>{ui("Can’t find the right home?")}</AppText>
+          <AppText style={styles.requestText}>{ui("Tell us what you need and we’ll alert you when a matching property arrives.")}</AppText>
           <View style={styles.requestAction}>
-            <AppText style={styles.requestActionText}>Create property request</AppText>
+            <AppText style={styles.requestActionText}>{ui("Create property request")}</AppText>
             <Icon name="arrow-forward" size={18} color={colors.navy} />
           </View>
         </TouchableOpacity>
 
         <View style={styles.trustLine}>
           <Icon name="shield-checkmark" size={16} color={colors.success} />
-          <AppText style={styles.trustText}>Listings reviewed for a safer rental journey</AppText>
+          <AppText style={styles.trustText}>{ui("Listings reviewed for a safer rental journey")}</AppText>
         </View>
       </ScrollView>
     </SafeAreaView>

@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import {useTourTarget} from '../../components/tour/TourTarget';
 import {useLanguage} from '../../context/LanguageContext';
 const recruitmentCopy = require('../../i18n/recruitmentCopy.cjs');
@@ -32,8 +34,9 @@ const emptyForm = {
 };
 
 const CareersScreen = ({ navigation, route }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const {language}=useLanguage();
-  const careerTourProps=useTourTarget('public_careers',{label:'Careers and volunteering'});
+  const careerTourProps=useTourTarget('public_careers',{label:ui("Careers and volunteering")});
   const copy=recruitmentCopy[language]||recruitmentCopy.en;
   const [opportunityFilter,setOpportunityFilter]=useState(['employment','volunteer'].includes(route?.params?.type)?route.params.type:'all');
   const [loading, setLoading] = useState(true);
@@ -102,7 +105,7 @@ const CareersScreen = ({ navigation, route }) => {
 
   const selectedRole = useMemo(
     () => roles.find((role) => String(role.id) === String(selectedRoleId)) || null,
-    [roles, selectedRoleId]
+    [roles, selectedRoleId, interfaceLanguage]
   );
 
   const volunteer=selectedRole?.opportunity_type==='volunteer';
@@ -118,12 +121,12 @@ const CareersScreen = ({ navigation, route }) => {
     if (!intakeOpen) return;
     if(volunteer&&(!form.volunteer_motivation.trim()||!form.availability.trim())){Toast.show({type:'error',text1:copy.volunteer_fields_required});return;}
     if (!selectedRoleId) {
-      Toast.show({ type: 'error', text1: 'Choose a role', text2: 'Pick a role before submitting your application.' });
+      Toast.show({ type: 'error', text1: ui("Choose a role"), text2: ui("Pick a role before submitting your application.") });
       return;
     }
 
     if (!turnstileToken) {
-      Toast.show({ type: 'error', text1: 'Security check required', text2: 'Please complete the security check before submitting.' });
+      Toast.show({ type: 'error', text1: ui("Security check required"), text2: ui("Please complete the security check before submitting.") });
       return;
     }
 
@@ -155,9 +158,9 @@ const CareersScreen = ({ navigation, route }) => {
       setSubmittedApplication(data);
       setLookupEmail(data?.email_address || form.email_address);
       setLookupReference(data?.reference_number || '');
-      Toast.show({ type:'success', text1:data?.opportunity_type==='volunteer'?copy.volunteer_received:'Application started', text2:data?.opportunity_type==='volunteer'?copy.volunteer_confirmation:'Your application is ready for payment and document upload.' });
+      Toast.show({ type:'success', text1:data?.opportunity_type==="volunteer"?copy.volunteer_received:ui("Application started"), text2:data?.opportunity_type==="volunteer"?copy.volunteer_confirmation:ui("Your application is ready for payment and document upload.") });
     } catch (err) {
-      Toast.show({ type: 'error', text1: 'Submission failed', text2: getErrorMessage(err, 'Could not submit your application') });
+      Toast.show({ type: 'error', text1: ui("Submission failed"), text2: getErrorMessage(err, 'Could not submit your application') });
     } finally {
       turnstileRef.current?.reset();
       setTurnstileToken('');
@@ -169,8 +172,8 @@ const CareersScreen = ({ navigation, route }) => {
     if (!lookupEmail.trim() || !lookupReference.trim()) {
       Toast.show({
         type: 'error',
-        text1: 'Email and reference needed',
-        text2: 'Enter the email and application reference shown when you applied.',
+        text1: ui("Email and reference needed"),
+        text2: ui("Enter the email and application reference shown when you applied."),
       });
       return;
     }
@@ -183,7 +186,7 @@ const CareersScreen = ({ navigation, route }) => {
       });
       setApplications(response?.data?.data || []);
     } catch (err) {
-      Toast.show({ type: 'error', text1: 'Lookup failed', text2: getErrorMessage(err, 'Could not load applications') });
+      Toast.show({ type: 'error', text1: ui("Lookup failed"), text2: getErrorMessage(err, ui("Could not load applications")) });
     } finally {
       setLookupLoading(false);
     }
@@ -195,7 +198,7 @@ const CareersScreen = ({ navigation, route }) => {
         <StatusBar barStyle="dark-content" backgroundColor={colors.surface} />
         <View style={styles.centered}>
         <ActivityIndicator size="large" color={colors.blue} />
-        <AppText style={styles.centerText}>Loading careers portal...</AppText>
+        <AppText style={styles.centerText}>{ui("Loading careers portal...")}</AppText>
       </View>
       </SafeAreaView>
     );
@@ -206,8 +209,8 @@ const CareersScreen = ({ navigation, route }) => {
       <StatusBar barStyle="dark-content" backgroundColor={colors.surface} />
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
       <PremiumHero
-        eyebrow="Careers"
-        title="Join RentalHub"
+        eyebrow={ui("Careers")}
+        title={ui("Join RentalHub")}
         subtitle={copy.portal_intro}
         icon="briefcase-outline"
       />
@@ -235,8 +238,8 @@ const CareersScreen = ({ navigation, route }) => {
                 onPress={() => {setSelectedRoleId(role.id);updateField('application_track','standard');}}
               >
                 <AppText style={[styles.roleTitle, active && styles.roleTitleActive]}>{role.title}</AppText>
-                <AppText style={styles.roleMeta}>{role.opportunity_type==='volunteer'?copy.volunteer_position:copy.employment_position}</AppText>
-                <AppText style={styles.roleMeta}>{role.opportunity_type==='volunteer'?copy.volunteer_free:('₦'+Number(role.application_fee||0).toLocaleString()+' standard')}</AppText>
+                <AppText style={styles.roleMeta}>{role.opportunity_type==="volunteer"?copy.volunteer_position:copy.employment_position}</AppText>
+                <AppText style={styles.roleMeta}>{role.opportunity_type==="volunteer"?copy.volunteer_free:('₦'+Number(role.application_fee||0).toLocaleString()+ui(" standard"))}</AppText>
               </TouchableOpacity>
             );
           })}
@@ -247,28 +250,28 @@ const CareersScreen = ({ navigation, route }) => {
 
       {selectedRole ? (
         <View style={styles.selectionCard}>
-          <AppText style={styles.selectionTitle}>Selected role</AppText>
+          <AppText style={styles.selectionTitle}>{ui("Selected role")}</AppText>
           <AppText style={styles.selectionText}>{selectedRole.title}</AppText>
           <AppText style={styles.roleMeta}>{selectedRole.description || 'A professional role in the RentalHub team.'}</AppText>
         </View>
       ) : null}
 
       {intakeOpen && selectedRole && !submittedApplication ? <>
-      <AppText style={styles.sectionTitle}>Your details</AppText>
+      <AppText style={styles.sectionTitle}>{ui("Your details")}</AppText>
       <View style={styles.formCard}>
-        <TextInput style={styles.input} placeholder="Full name" value={form.full_name} onChangeText={(v) => updateField('full_name', v)} />
-        <TextInput style={styles.input} placeholder="Phone number" value={form.phone_number} onChangeText={(v) => updateField('phone_number', v)} keyboardType="phone-pad" />
-        <TextInput style={styles.input} placeholder="Email address" value={form.email_address} onChangeText={(v) => updateField('email_address', v)} keyboardType="email-address" autoCapitalize="none" />
-        <TextInput style={styles.input} placeholder="Highest education" value={form.highest_education} onChangeText={(v) => updateField('highest_education', v)} />
-        <TextInput style={styles.input} placeholder="Current employment status" value={form.current_employment_status} onChangeText={(v) => updateField('current_employment_status', v)} />
-        <TextInput style={styles.input} placeholder="Years of experience" value={form.years_of_experience} onChangeText={(v) => updateField('years_of_experience', v)} keyboardType="numeric" />
-        <TextInput style={styles.input} placeholder="Area / locality" value={form.area_locality} onChangeText={(v) => updateField('area_locality', v)} />
-        <TextInput style={styles.input} placeholder="Residential address" value={form.residential_address} onChangeText={(v) => updateField('residential_address', v)} multiline />
-        <TextInput style={[styles.input, styles.textarea]} placeholder="Skills and qualifications" value={form.skills_qualifications} onChangeText={(v) => updateField('skills_qualifications', v)} multiline />
-        <TextInput style={[styles.input, styles.textarea]} placeholder="Why you are suitable for this role" value={form.suitability_reason} onChangeText={(v) => updateField('suitability_reason', v)} multiline />
+        <TextInput style={styles.input} placeholder={ui("Full name")} value={form.full_name} onChangeText={(v) => updateField('full_name', v)} />
+        <TextInput style={styles.input} placeholder={ui("Phone number")} value={form.phone_number} onChangeText={(v) => updateField('phone_number', v)} keyboardType="phone-pad" />
+        <TextInput style={styles.input} placeholder={ui("Email address")} value={form.email_address} onChangeText={(v) => updateField('email_address', v)} keyboardType="email-address" autoCapitalize="none" />
+        <TextInput style={styles.input} placeholder={ui("Highest education")} value={form.highest_education} onChangeText={(v) => updateField('highest_education', v)} />
+        <TextInput style={styles.input} placeholder={ui("Current employment status")} value={form.current_employment_status} onChangeText={(v) => updateField('current_employment_status', v)} />
+        <TextInput style={styles.input} placeholder={ui("Years of experience")} value={form.years_of_experience} onChangeText={(v) => updateField('years_of_experience', v)} keyboardType="numeric" />
+        <TextInput style={styles.input} placeholder={ui("Area / locality")} value={form.area_locality} onChangeText={(v) => updateField('area_locality', v)} />
+        <TextInput style={styles.input} placeholder={ui("Residential address")} value={form.residential_address} onChangeText={(v) => updateField('residential_address', v)} multiline />
+        <TextInput style={[styles.input, styles.textarea]} placeholder={ui("Skills and qualifications")} value={form.skills_qualifications} onChangeText={(v) => updateField('skills_qualifications', v)} multiline />
+        <TextInput style={[styles.input, styles.textarea]} placeholder={ui("Why you are suitable for this role")} value={form.suitability_reason} onChangeText={(v) => updateField('suitability_reason', v)} multiline />
 
 <View>{volunteer&&<><AppText style={styles.noticeText}>{copy.volunteer_notice}</AppText><AppText style={styles.helperLabel}>{copy.volunteer_motivation}</AppText><TextInput accessibilityLabel={copy.volunteer_motivation} style={[styles.input,styles.textarea]} value={form.volunteer_motivation} onChangeText={v=>updateField('volunteer_motivation',v)} multiline maxLength={5000}/><AppText style={styles.helperLabel}>{copy.volunteer_availability}</AppText><TextInput accessibilityLabel={copy.volunteer_availability} style={[styles.input,styles.textarea]} value={form.availability} onChangeText={v=>updateField('availability',v)} multiline maxLength={5000}/></>}</View>
-        {!volunteer && <><AppText style={styles.helperLabel}>Application track</AppText>
+        {!volunteer && <><AppText style={styles.helperLabel}>{ui("Application track")}</AppText>
         <View style={styles.trackRow}>
           {['standard', 'premium'].map((track) => {
             const active = form.application_track === track;
@@ -278,14 +281,14 @@ const CareersScreen = ({ navigation, route }) => {
                 style={[styles.trackButton, active && styles.trackButtonActive]}
                 onPress={() => updateField('application_track', track)}
               >
-                <AppText style={[styles.trackText, active && styles.trackTextActive]}>{track === 'standard' ? 'Standard' : 'Premium'}</AppText>
+                <AppText style={[styles.trackText, active && styles.trackTextActive]}>{track === "standard" ? ui("Standard") : ui("Premium")}</AppText>
               </TouchableOpacity>
             );
           })}
         </View>
 
         </>}
-        <AppText style={styles.helperLabel}>State</AppText>
+        <AppText style={styles.helperLabel}>{ui("State")}</AppText>
         <View style={styles.chipRow}>
           {states.map((state) => {
             const active = form.state_name === (state.displayName || state.name);
@@ -303,7 +306,7 @@ const CareersScreen = ({ navigation, route }) => {
 
         {form.state_name ? (
           <>
-            <AppText style={styles.helperLabel}>LGA</AppText>
+            <AppText style={styles.helperLabel}>{ui("LGA")}</AppText>
             <View style={styles.chipRow}>
               {lgas.length > 0 ? lgas.map((lga) => {
                 const active = form.lga_name === lga;
@@ -316,7 +319,7 @@ const CareersScreen = ({ navigation, route }) => {
                     <AppText style={[styles.chipText, active && styles.chipTextActive]}>{lga}</AppText>
                   </TouchableOpacity>
                 );
-              }) : <AppText style={styles.emptyText}>No LGAs available for this state.</AppText>}
+              }) : <AppText style={styles.emptyText}>{ui("No LGAs available for this state.")}</AppText>}
             </View>
           </>
         ) : null}
@@ -330,42 +333,42 @@ const CareersScreen = ({ navigation, route }) => {
         />
 
         <TouchableOpacity style={styles.submitButton} onPress={handleSubmit} disabled={submitting}>
-          {submitting ? <ActivityIndicator color="#ffffff" /> : <AppText style={styles.submitButtonText}>{volunteer?copy.apply_volunteer:'Submit application'}</AppText>}
+          {submitting ? <ActivityIndicator color="#ffffff" /> : <AppText style={styles.submitButtonText}>{volunteer?copy.apply_volunteer:ui("Submit application")}</AppText>}
         </TouchableOpacity>
       </View>
 
       </> : null}
       {submittedApplication ? (
         <View style={styles.successCard}>
-          <AppText style={styles.successTitle}>{submittedApplication.opportunity_type==='volunteer'?copy.volunteer_received:'Application started'}</AppText>
-          <AppText style={styles.successText}>Reference: {submittedApplication.reference_number}</AppText>
-          <AppText style={styles.successText}>Status: {submittedApplication.status}</AppText>
-          <AppText style={styles.successText}>{submittedApplication.opportunity_type==='volunteer'?copy.volunteer_confirmation:'Next: complete payment and upload your supporting documents.'}</AppText>
-          <TouchableOpacity style={styles.secondaryButton} onPress={()=>navigation.navigate('RecruitmentApplication',{application:submittedApplication})}><AppText style={styles.secondaryButtonText}>{submittedApplication.opportunity_type==='volunteer'?copy.optional_cv:'Application progress'}</AppText></TouchableOpacity>
+          <AppText style={styles.successTitle}>{submittedApplication.opportunity_type==="volunteer"?copy.volunteer_received:ui("Application started")}</AppText>
+          <AppText style={styles.successText}>{ui("Reference: ")}{submittedApplication.reference_number}</AppText>
+          <AppText style={styles.successText}>{ui("Status: ")}{submittedApplication.status}</AppText>
+          <AppText style={styles.successText}>{submittedApplication.opportunity_type==="volunteer"?copy.volunteer_confirmation:'Next: complete payment and upload your supporting documents.'}</AppText>
+          <TouchableOpacity style={styles.secondaryButton} onPress={()=>navigation.navigate('RecruitmentApplication',{application:submittedApplication})}><AppText style={styles.secondaryButtonText}>{submittedApplication.opportunity_type==="volunteer"?copy.optional_cv:ui("Application progress")}</AppText></TouchableOpacity>
         </View>
       ) : null}
 
-      <AppText style={styles.sectionTitle}>Check your applications</AppText>
+      <AppText style={styles.sectionTitle}>{ui("Check your applications")}</AppText>
       <View style={styles.lookupCard}>
-        <TextInput style={styles.input} placeholder="Enter your email" value={lookupEmail} onChangeText={setLookupEmail} keyboardType="email-address" autoCapitalize="none" />
+        <TextInput style={styles.input} placeholder={ui("Enter your email")} value={lookupEmail} onChangeText={setLookupEmail} keyboardType="email-address" autoCapitalize="none" />
         <TextInput
           style={styles.input}
-          placeholder="Application reference (RH-APP-...)"
+          placeholder={ui("Application reference (RH-APP-...)")}
           value={lookupReference}
           onChangeText={setLookupReference}
           autoCapitalize="characters"
           autoCorrect={false}
         />
         <TouchableOpacity style={styles.secondaryButton} onPress={lookupApplications} disabled={lookupLoading}>
-          {lookupLoading ? <ActivityIndicator color="#0284c7" /> : <AppText style={styles.secondaryButtonText}>Lookup applications</AppText>}
+          {lookupLoading ? <ActivityIndicator color="#0284c7" /> : <AppText style={styles.secondaryButtonText}>{ui("Lookup applications")}</AppText>}
         </TouchableOpacity>
         {applications.map((application) => {
           const canStartInterview = application.status === 'shortlisted' && application.interview_activated === true;
           return (
             <View key={application.id} style={styles.applicationRow}>
-              <AppText style={styles.applicationTitle}>{application.role_title || 'Application'}</AppText>
-              <AppText style={styles.roleMeta}>Status: {application.status}</AppText>
-              <AppText style={styles.roleMeta}>Reference: {application.reference_number}</AppText>
+              <AppText style={styles.applicationTitle}>{application.role_title || ui("Application")}</AppText>
+              <AppText style={styles.roleMeta}>{ui("Status: ")}{application.status}</AppText>
+              <AppText style={styles.roleMeta}>{ui("Reference: ")}{application.reference_number}</AppText>
               <TouchableOpacity
                 style={styles.interviewButton}
                 onPress={() => navigation.navigate('RecruitmentApplication', {
@@ -375,7 +378,7 @@ const CareersScreen = ({ navigation, route }) => {
                   referenceNumber: application.reference_number,
                 })}
               >
-                <AppText style={styles.interviewButtonText}>Open application</AppText>
+                <AppText style={styles.interviewButtonText}>{ui("Open application")}</AppText>
               </TouchableOpacity>
               {canStartInterview ? (
                 <TouchableOpacity
@@ -387,7 +390,7 @@ const CareersScreen = ({ navigation, route }) => {
                     referenceNumber: application.reference_number,
                   })}
                 >
-                  <AppText style={styles.interviewSecondaryButtonText}>Start interview</AppText>
+                  <AppText style={styles.interviewSecondaryButtonText}>{ui("Start interview")}</AppText>
                 </TouchableOpacity>
               ) : null}
             </View>

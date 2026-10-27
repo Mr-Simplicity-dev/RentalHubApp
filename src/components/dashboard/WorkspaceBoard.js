@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -7,6 +9,7 @@ import AppText from '../common/AppText';
 import { useTour } from '../../context/TourContext';
 
 const WorkspaceCard = ({ item, groupTitle }) => {
+  useInterfaceLanguage();
   const tourTargetProps = useTourTarget(item.tourTarget, {
     label: item.label,
     onAction: item.onPress,
@@ -18,7 +21,7 @@ const WorkspaceCard = ({ item, groupTitle }) => {
     <TouchableOpacity
       {...tourTargetProps}
       accessibilityRole="button"
-      accessibilityLabel={`${groupTitle}: ${item.label}`}
+      accessibilityLabel={ui("{value0}: {value1}", {value0: (groupTitle), value1: (item.label)})}
       activeOpacity={0.85}
       onPress={item.onPress}
       style={styles.card}
@@ -42,6 +45,7 @@ const WorkspaceBoard = ({
   visibleGroups = 1,
   maxVisibleCards = 6,
 }) => {
+  useInterfaceLanguage();
   const [expanded, setExpanded] = useState(false);
 
   const { walkthroughVisible, steps, currentStep } = useTour();
@@ -62,13 +66,13 @@ const WorkspaceBoard = ({
           items.push(
             expanded
               ? {
-                  label: 'Show less',
+                  label: ui("Show less"),
                   icon: 'chevron-up-circle-outline',
                   tint: colors.muted,
                   onPress: () => setExpanded(false),
                 }
               : {
-                  label: 'More',
+                  label: ui("More"),
                   icon: 'ellipsis-horizontal-circle-outline',
                   tint: colors.blue,
                   onPress: () => setExpanded(true),

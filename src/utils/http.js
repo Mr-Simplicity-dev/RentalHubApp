@@ -1,12 +1,13 @@
+import { translateUi as ui } from '../i18n/interfaceRuntime.cjs';
 import { API_ORIGIN } from '../services/api';
 
 export const getErrorMessage = (error, fallback = 'Request failed') => {
   if (error?.offlineQueued) {
-    return `${error.queuedAction?.label || 'This action'} was saved and will retry when connection returns.`;
+    return ui('{value0} was saved and will retry when connection returns.', {value0: error.queuedAction?.label || ui('This action')});
   }
 
   const validationError = error?.response?.data?.errors?.[0]?.msg;
-  return (
+  return ui(
     validationError ||
     error?.response?.data?.message ||
     error?.message ||

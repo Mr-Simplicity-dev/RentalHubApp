@@ -1,3 +1,4 @@
+import { translateUi as ui } from '../i18n/interfaceRuntime.cjs';
 import { Platform } from 'react-native';
 import axios from 'axios';
 import {
@@ -93,8 +94,8 @@ const showRateLimitNotice = (message) => {
   lastRateLimitNoticeAt = now;
   Toast.show({
     type: 'info',
-    text1: 'Slow down a moment',
-    text2: message || 'Too many requests. Please wait a moment and try again.',
+    text1: ui("Slow down a moment"),
+    text2: message || ui("Too many requests. Please wait a moment and try again."),
   });
 };
 

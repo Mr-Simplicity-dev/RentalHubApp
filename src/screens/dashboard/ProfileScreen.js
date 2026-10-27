@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import AssistedPasswordForm from '../../components/common/AssistedPasswordForm';
 import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import {Platform, View, StyleSheet, ScrollView, Image, TouchableOpacity, Switch} from 'react-native';
@@ -18,6 +20,7 @@ import { colors, radius, shadows, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const ProfileScreen = ({ navigation }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const { user, updateUser, logout } = useContext(AuthContext);
   const { replayTour } = useTour();
   const [saving, setSaving] = useState(false);
@@ -26,7 +29,7 @@ const ProfileScreen = ({ navigation }) => {
   const [biometricStatus, setBiometricStatus] = useState({
     available: false,
     enabled: false,
-    label: 'Biometrics',
+    label: ui("Biometrics"),
   });
   const [status, setStatus] = useState(null);
   const [passportAsset, setPassportAsset] = useState(null);
@@ -38,7 +41,7 @@ const ProfileScreen = ({ navigation }) => {
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
-  }, [navigation]);
+  }, [navigation, interfaceLanguage]);
 
   const [twoFa, setTwoFa] = useState({ enabled: false, checked: false });
   const [twoFaPhase, setTwoFaPhase] = useState('idle');
@@ -69,11 +72,11 @@ const ProfileScreen = ({ navigation }) => {
       setTwoFaSecret(res?.data?.secret || '');
       setTwoFaCode('');
       setTwoFaPhase('confirm');
-      Toast.show({ type: 'success', text1: 'Add the secret to your authenticator app' });
+      Toast.show({ type: 'success', text1: ui("Add the secret to your authenticator app") });
     } catch (err) {
       Toast.show({
         type: 'error',
-        text1: 'Setup failed',
+        text1: ui("Setup failed"),
         text2: getErrorMessage(err, 'Could not start two-factor setup'),
       });
     } finally {
@@ -83,7 +86,7 @@ const ProfileScreen = ({ navigation }) => {
 
   const handleConfirm2fa = async () => {
     if (!twoFaCode.trim()) {
-      Toast.show({ type: 'info', text1: 'Enter the 6-digit code from your authenticator app' });
+      Toast.show({ type: 'info', text1: ui("Enter the 6-digit code from your authenticator app") });
       return;
     }
     setTwoFaBusy(true);
@@ -92,11 +95,11 @@ const ProfileScreen = ({ navigation }) => {
       setTwoFaRecovery(res?.data?.recovery_codes || []);
       setTwoFa((prev) => ({ ...prev, enabled: true }));
       setTwoFaPhase('recovery');
-      Toast.show({ type: 'success', text1: 'Two-factor enabled' });
+      Toast.show({ type: 'success', text1: ui("Two-factor enabled") });
     } catch (err) {
       Toast.show({
         type: 'error',
-        text1: 'Verification failed',
+        text1: ui("Verification failed"),
         text2: getErrorMessage(err, 'Could not confirm your code'),
       });
     } finally {
@@ -106,7 +109,7 @@ const ProfileScreen = ({ navigation }) => {
 
   const handleDisable2fa = async () => {
     if (!twoFaCode.trim()) {
-      Toast.show({ type: 'info', text1: 'Enter your current 6-digit code' });
+      Toast.show({ type: 'info', text1: ui("Enter your current 6-digit code") });
       return;
     }
     setTwoFaBusy(true);
@@ -117,11 +120,11 @@ const ProfileScreen = ({ navigation }) => {
       setTwoFaSecret('');
       setTwoFaCode('');
       setTwoFaRecovery([]);
-      Toast.show({ type: 'success', text1: 'Two-factor disabled' });
+      Toast.show({ type: 'success', text1: ui("Two-factor disabled") });
     } catch (err) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(err, 'Could not disable two-factor'),
       });
     } finally {
@@ -174,11 +177,11 @@ const ProfileScreen = ({ navigation }) => {
       if (nextUser) {
         await updateUser(nextUser);
       }
-      Toast.show({ type: 'success', text1: 'Profile updated' });
+      Toast.show({ type: 'success', text1: ui("Profile updated") });
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Update failed',
+        text1: ui("Update failed"),
         text2: getErrorMessage(error, 'Could not update profile'),
       });
     } finally {
@@ -193,7 +196,7 @@ const ProfileScreen = ({ navigation }) => {
       if (result.message) {
         Toast.show({
           type: 'info',
-          text1: Platform.OS === 'web' ? 'Select a passport photo' : 'Camera unavailable',
+          text1: Platform.OS === "web" ? ui("Select a passport photo") : ui("Camera unavailable"),
           text2: result.message,
         });
       }
@@ -209,7 +212,7 @@ const ProfileScreen = ({ navigation }) => {
     if (!passportAsset?.uri) {
       Toast.show({
         type: 'error',
-        text1: Platform.OS === 'web' ? 'Select passport photo first' : 'Capture passport photo first',
+        text1: Platform.OS === "web" ? ui("Select passport photo first") : ui("Capture passport photo first"),
       });
       return;
     }
@@ -229,11 +232,11 @@ const ProfileScreen = ({ navigation }) => {
       }
       setPassportAsset(null);
       await loadVerificationStatus();
-      Toast.show({ type: 'success', text1: 'Passport uploaded' });
+      Toast.show({ type: 'success', text1: ui("Passport uploaded") });
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Upload failed',
+        text1: ui("Upload failed"),
         text2: getErrorMessage(error, 'Could not upload passport'),
       });
     } finally {
@@ -254,7 +257,7 @@ const ProfileScreen = ({ navigation }) => {
         setBiometricStatus((previous) => ({ ...previous, enabled: false }));
         Toast.show({
           type: 'success',
-          text1: 'Biometric login disabled',
+          text1: ui("Biometric login disabled"),
         });
         return;
       }
@@ -266,8 +269,8 @@ const ProfileScreen = ({ navigation }) => {
       if (!token || !currentUser) {
         Toast.show({
           type: 'error',
-          text1: 'Biometric Login',
-          text2: 'Sign in again before enabling biometric login.',
+          text1: ui("Biometric Login"),
+          text2: ui("Sign in again before enabling biometric login."),
         });
         return;
       }
@@ -281,8 +284,8 @@ const ProfileScreen = ({ navigation }) => {
       if (!response.success) {
         Toast.show({
           type: 'error',
-          text1: 'Biometric Login',
-          text2: response.message || 'Could not enable biometric login.',
+          text1: ui("Biometric Login"),
+          text2: response.message || ui("Could not enable biometric login."),
         });
         return;
       }
@@ -290,13 +293,13 @@ const ProfileScreen = ({ navigation }) => {
       await loadBiometricStatus();
       Toast.show({
         type: 'success',
-        text1: `${response.label || 'Biometric'} login enabled`,
+        text1: ui("{value0} login enabled", {value0: (response.label || ui("Biometric"))}),
       });
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Biometric Login',
-        text2: 'Could not update biometric login right now.',
+        text1: ui("Biometric Login"),
+        text2: ui("Could not update biometric login right now."),
       });
     } finally {
       setBiometricSaving(false);
@@ -321,17 +324,17 @@ const ProfileScreen = ({ navigation }) => {
     <SafeAreaView edges={['top']} style={styles.safeArea}>
       <View style={styles.header}>
         <TouchableOpacity
-          accessibilityLabel="Go back"
+          accessibilityLabel={ui("Go back")}
           onPress={() => navigation.goBack()}
           style={styles.backButton}>
           <Icon name="arrow-back" size={22} color={colors.navy} />
         </TouchableOpacity>
         <View style={styles.headerCopy}>
-          <AppText style={styles.headerEyebrow}>ACCOUNT</AppText>
-          <AppText style={styles.headerTitle}>Profile</AppText>
+          <AppText style={styles.headerEyebrow}>{ui("ACCOUNT")}</AppText>
+          <AppText style={styles.headerTitle}>{ui("Profile")}</AppText>
         </View>
         <TouchableOpacity
-          accessibilityLabel="Open notifications"
+          accessibilityLabel={ui("Open notifications")}
           onPress={() => navigation.navigate('Notifications')}
           style={styles.backButton}>
           <Icon name="notifications-outline" size={21} color={colors.navy} />
@@ -348,7 +351,7 @@ const ProfileScreen = ({ navigation }) => {
           <AppText style={styles.avatarText}>
             {String(user?.full_name || 'U').trim().charAt(0).toUpperCase()}
           </AppText>
-          {reviewStatus === 'verified' ? (
+          {reviewStatus === "verified" ? (
             <View style={styles.verifiedDot}>
               <Icon name="checkmark" size={11} color={colors.white} />
             </View>
@@ -368,28 +371,28 @@ const ProfileScreen = ({ navigation }) => {
           <View style={styles.cardIcon}>
             <Icon name="person-outline" size={19} color={colors.blue} />
           </View>
-          <AppText style={styles.cardTitle}>Personal information</AppText>
+          <AppText style={styles.cardTitle}>{ui("Personal information")}</AppText>
         </View>
         <Input
-          label="Full Name"
+          label={ui("Full Name")}
           value={form.full_name}
           onChangeText={(value) => setForm((prev) => ({ ...prev, full_name: value }))}
         />
         <Input
-          label="Phone"
+          label={ui("Phone")}
           value={form.phone}
           onChangeText={(value) => setForm((prev) => ({ ...prev, phone: value }))}
           keyboardType="phone-pad"
         />
         <Input
-          label="Bio"
+          label={ui("Bio")}
           value={form.bio}
           onChangeText={(value) => setForm((prev) => ({ ...prev, bio: value }))}
           multiline
           numberOfLines={3}
-          placeholder="Tell us about yourself..."
+          placeholder={ui("Tell us about yourself...")}
         />
-        <Button title="Save changes" onPress={handleSaveProfile} loading={saving} />
+        <Button title={ui("Save changes")} onPress={handleSaveProfile} loading={saving} />
       </View>
 
       <View style={styles.card}>
@@ -398,49 +401,43 @@ const ProfileScreen = ({ navigation }) => {
             <Icon name="shield-checkmark-outline" size={19} color={colors.blue} />
           </View>
           <View style={styles.cardHeaderCopy}>
-            <AppText style={styles.cardTitle}>Identity verification</AppText>
-            <AppText style={styles.cardCaption}>Status: {reviewStatusLabel}</AppText>
+            <AppText style={styles.cardTitle}>{ui("Identity verification")}</AppText>
+            <AppText style={styles.cardCaption}>{ui("Status: ")}{reviewStatusLabel}</AppText>
           </View>
         </View>
-        <AppText style={styles.statusText}>
-          Email: {status?.email_required===false ? 'Not required' : status?.email ? 'Verified' : 'Pending'} | Phone: {status?.phone ? 'Verified' : 'Pending'}
+        <AppText style={styles.statusText}>{ui("Email:")}{status?.email_required===false ? 'Not required' : status?.email ? ui("Verified") : ui("Pending")}{ui(" | Phone: ")}{status?.phone ? ui("Verified") : ui("Pending")}
         </AppText>
-        <AppText style={styles.statusText}>
-          Identity: {status?.identity ? 'Verified' : 'Pending'} | Document: {status?.identity_document_type || '-'}
+        <AppText style={styles.statusText}>{ui("Identity:")}{status?.identity ? ui("Verified") : ui("Pending")}{ui(" | Document: ")}{status?.identity_document_type || '-'}
         </AppText>
-        <AppText style={styles.statusText}>Review Status: {reviewStatusLabel}</AppText>
+        <AppText style={styles.statusText}>{ui("Review Status: ")}{reviewStatusLabel}</AppText>
 
-        {reviewStatus === 'rejected' ? (
+        {reviewStatus === "rejected" ? (
           <View style={styles.warningBox}>
-            <AppText style={styles.warningText}>
-              Your verification was rejected. Capture a new live passport photo and upload it again.
-            </AppText>
+            <AppText style={styles.warningText}>{ui("Your verification was rejected. Capture a new live passport photo and upload it again.")}</AppText>
           </View>
-        ) : reviewStatus === 'pending' ? (
+        ) : reviewStatus === "pending" ? (
           <View style={styles.infoBox}>
-            <AppText style={styles.infoText}>
-              Your passport has been submitted and is waiting for review.
-            </AppText>
+            <AppText style={styles.infoText}>{ui("Your passport has been submitted and is waiting for review.")}</AppText>
           </View>
         ) : null}
 
         {passportAsset?.uri ? <Image source={{ uri: passportAsset.uri }} style={styles.preview} /> : null}
         <Button
-          title={Platform.OS === 'web' ? 'Select Passport Photo' : 'Capture Passport Photo'}
+          title={Platform.OS === "web" ? 'Select Passport Photo' : 'Capture Passport Photo'}
           onPress={openCamera}
           variant="outline"
           style={styles.marginTop}
         />
-        <Button title="Upload Passport" onPress={uploadPassport} loading={uploading} style={styles.marginTop} />
+        <Button title={ui("Upload Passport")} onPress={uploadPassport} loading={uploading} style={styles.marginTop} />
         <Button
-          title="View Verification Status"
+          title={ui("View Verification Status")}
           variant="outline"
           onPress={() => navigation.navigate('VerificationStatus')}
           style={styles.marginTop}
         />
         {!status?.phone ? (
           <Button
-            title="Verify Phone"
+            title={ui("Verify Phone")}
             variant="outline"
             onPress={() => navigation.navigate('VerifyPhone')}
             style={styles.marginTop}
@@ -453,16 +450,14 @@ const ProfileScreen = ({ navigation }) => {
           <View style={styles.cardIcon}>
             <Icon name="finger-print-outline" size={20} color={colors.blue} />
           </View>
-          <AppText style={styles.cardTitle}>Security</AppText>
+          <AppText style={styles.cardTitle}>{ui("Security")}</AppText>
         </View>
         {biometricStatus.available ? (
           <>
             <View style={styles.switchRow}>
               <View style={styles.switchTextWrap}>
-                <AppText style={styles.switchTitle}>Use {biometricStatus.label} to unlock the app</AppText>
-                <AppText style={styles.switchDescription}>
-                  When enabled, we will ask for your biometric before restoring your saved session.
-                </AppText>
+                <AppText style={styles.switchTitle}>{ui("Use ")}{biometricStatus.label}{ui(" to unlock the app")}</AppText>
+                <AppText style={styles.switchDescription}>{ui("When enabled, we will ask for your biometric before restoring your saved session.")}</AppText>
               </View>
               <Switch
                 value={biometricStatus.enabled}
@@ -472,29 +467,24 @@ const ProfileScreen = ({ navigation }) => {
                 thumbColor={biometricStatus.enabled ? '#0284c7' : '#f8fafc'}
               />
             </View>
-            <AppText style={styles.helperText}>
-              Status: {biometricStatus.enabled ? `${biometricStatus.label} enabled` : 'Disabled'}
+            <AppText style={styles.helperText}>{ui("Status:")}{biometricStatus.enabled ? ui("{value0} enabled", {value0: (biometricStatus.label)}) : 'Disabled'}
             </AppText>
           </>
         ) : (
-          <AppText style={styles.helperText}>
-            Biometric login is not available on this device.
-          </AppText>
+          <AppText style={styles.helperText}>{ui("Biometric login is not available on this device.")}</AppText>
         )}
 
         <View style={{ borderTopWidth: 1, borderTopColor: colors.border, marginTop: 16, paddingTop: 14 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-            <AppText style={{ color: colors.ink, fontFamily: typography.semibold, fontSize: typeScale.sm, lineHeight: 20 }}>
-              Two-factor authentication
-            </AppText>
+            <AppText style={{ color: colors.ink, fontFamily: typography.semibold, fontSize: typeScale.sm, lineHeight: 20 }}>{ui("Two-factor authentication")}</AppText>
             <AppText style={{ color: twoFa.enabled ? colors.success : colors.muted, fontFamily: typography.semibold, fontSize: typeScale.xs, lineHeight: 18 }}>
-              {twoFa.enabled ? 'Enabled' : twoFa.checked ? 'Off' : 'Checking…'}
+              {twoFa.enabled ? ui("Enabled") : twoFa.checked ? ui("Off") : 'Checking…'}
             </AppText>
           </View>
 
           {!twoFa.enabled && twoFa.checked && twoFaPhase === 'idle' ? (
             <Button
-              title="Enable two-factor auth"
+              title={ui("Enable two-factor auth")}
               variant="outline"
               style={{ marginTop: 10 }}
               onPress={handleEnable2fa}
@@ -502,25 +492,23 @@ const ProfileScreen = ({ navigation }) => {
             />
           ) : null}
 
-          {twoFaPhase === 'confirm' ? (
+          {twoFaPhase === "confirm" ? (
             <>
-              <AppText style={styles.helperText}>
-                Add this secret to your authenticator app (Google Authenticator, Authy, etc.):
-              </AppText>
+              <AppText style={styles.helperText}>{ui("Add this secret to your authenticator app (Google Authenticator, Authy, etc.):")}</AppText>
               <AppText selectable style={{ color: colors.ink, fontFamily: typography.medium, fontSize: typeScale.xs, lineHeight: 18, marginVertical: 6 }}>
                 {twoFaSecret}
               </AppText>
               <Input
-                label="6-digit code"
+                label={ui("6-digit code")}
                 value={twoFaCode}
                 onChangeText={setTwoFaCode}
                 placeholder="123456"
                 keyboardType="number-pad"
                 maxLength={6}
               />
-              <Button title="Confirm and enable" onPress={handleConfirm2fa} loading={twoFaBusy} style={{ marginTop: 8 }} />
+              <Button title={ui("Confirm and enable")} onPress={handleConfirm2fa} loading={twoFaBusy} style={{ marginTop: 8 }} />
               <Button
-                title="Cancel setup"
+                title={ui("Cancel setup")}
                 variant="outline"
                 style={{ marginTop: 8 }}
                 onPress={() => {
@@ -534,9 +522,7 @@ const ProfileScreen = ({ navigation }) => {
 
           {twoFaPhase === 'recovery' ? (
             <>
-              <AppText style={styles.helperText}>
-                Save these recovery codes somewhere safe — you can use one if you lose your authenticator app.
-              </AppText>
+              <AppText style={styles.helperText}>{ui("Save these recovery codes somewhere safe — you can use one if you lose your authenticator app.")}</AppText>
               <View style={{ backgroundColor: colors.surface, borderRadius: radius.md, padding: 10, marginVertical: 8 }}>
                 {twoFaRecovery.map((code) => (
                   <AppText key={code} style={{ color: colors.ink, fontFamily: typography.medium, fontSize: typeScale.xs, lineHeight: 18, marginVertical: 2 }}>
@@ -545,7 +531,7 @@ const ProfileScreen = ({ navigation }) => {
                 ))}
               </View>
               <Button
-                title="Done"
+                title={ui("Done")}
                 onPress={() => {
                   setTwoFaPhase('idle');
                   setTwoFaSecret('');
@@ -558,7 +544,7 @@ const ProfileScreen = ({ navigation }) => {
 
           {twoFa.enabled && twoFaPhase !== 'disable' ? (
             <Button
-              title="Disable two-factor auth"
+              title={ui("Disable two-factor auth")}
               variant="outline"
               style={{ marginTop: 10 }}
               onPress={() => {
@@ -571,7 +557,7 @@ const ProfileScreen = ({ navigation }) => {
           {twoFaPhase === 'disable' ? (
             <>
               <Input
-                label="Current 6-digit code"
+                label={ui("Current 6-digit code")}
                 value={twoFaCode}
                 onChangeText={setTwoFaCode}
                 placeholder="123456"
@@ -579,9 +565,9 @@ const ProfileScreen = ({ navigation }) => {
                 maxLength={6}
                 containerStyle={{ marginTop: 10 }}
               />
-              <Button title="Confirm disable" onPress={handleDisable2fa} loading={twoFaBusy} style={{ marginTop: 8 }} />
+              <Button title={ui("Confirm disable")} onPress={handleDisable2fa} loading={twoFaBusy} style={{ marginTop: 8 }} />
               <Button
-                title="Cancel"
+                title={ui("Cancel")}
                 variant="outline"
                 style={{ marginTop: 8 }}
                 onPress={() => setTwoFaPhase('idle')}
@@ -593,25 +579,25 @@ const ProfileScreen = ({ navigation }) => {
 
       <View style={styles.card}>
         <Button
-          title="App Settings"
+          title={ui("App Settings")}
           variant="outline"
           onPress={() => navigation.navigate('Settings')}
         />
         <Button
-          title="Replay App Tour"
+          title={ui("Replay App Tour")}
           variant="outline"
           style={styles.marginTop}
           onPress={replayTour}
         />
         <Button
-          title="Notifications"
+          title={ui("Notifications")}
           variant="outline"
           style={styles.marginTop}
           onPress={() => navigation.navigate('Notifications')}
         />
         {['tenant', 'user', 'landlord', 'agent', 'lawyer', 'state_lawyer', 'zonal_lawyer', 'super_lawyer'].includes(user?.user_type) ? (
           <Button
-            title="My Appeals"
+            title={ui("My Appeals")}
             variant="outline"
             style={styles.marginTop}
             onPress={() => navigation.navigate('MyAppeals')}
@@ -621,15 +607,15 @@ const ProfileScreen = ({ navigation }) => {
             Only the roles that cannot see that dashboard keep their shortcuts here. */}
         {user?.user_type === 'super_financial_admin' ? (
           <Button
-            title="State Admin Management"
+            title={ui("State Admin Management")}
             variant="outline"
             style={styles.marginTop}
             onPress={() => navigation.navigate('FinanceStateAdmins')}
           />
         ) : null}
-        {user?.user_type === 'admin' ? (
+        {user?.user_type === "admin" ? (
           <Button
-            title="Agent Commissions"
+            title={ui("Agent Commissions")}
             variant="outline"
             style={styles.marginTop}
             onPress={() => navigation.navigate('AgentCommissionAdmin')}
@@ -637,28 +623,28 @@ const ProfileScreen = ({ navigation }) => {
         ) : null}
         {['lawyer', 'state_lawyer', 'zonal_lawyer', 'super_lawyer'].includes(user?.user_type) ? (
           <Button
-            title="Court Bundle"
+            title={ui("Court Bundle")}
             variant="outline"
             style={styles.marginTop}
             onPress={() => navigation.navigate('CourtBundle')}
           />
         ) : null}
         <Button
-          title="My Personal Data (NDPR)"
+          title={ui("My Personal Data (NDPR)")}
           variant="outline"
           style={styles.marginTop}
           onPress={() => navigation.navigate('PrivacyData')}
         />
         {['state_admin', 'state_financial_admin'].includes(user?.user_type) ? (
           <Button
-            title="Commissions & Withdrawals"
+            title={ui("Commissions & Withdrawals")}
             variant="outline"
             style={styles.marginTop}
             onPress={() => navigation.navigate('StateAdminFinance')}
           />
         ) : null}
         <Button
-          title="Logout"
+          title={ui("Logout")}
           variant="danger"
           onPress={handleLogout}
           style={styles.marginTop}

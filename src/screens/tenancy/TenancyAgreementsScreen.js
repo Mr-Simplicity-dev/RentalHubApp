@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
@@ -22,29 +24,29 @@ import { getErrorMessage, pickList } from '../../utils/http';
 import AppText from '../../components/common/AppText';
 
 const ALL_FILTERS = [
-  { value: 'all', label: 'All' },
-  { value: 'PENDING_LANDLORD_REVIEW', label: 'Landlord review' },
-  { value: 'PENDING_LANDLORD_SIGNATURE', label: 'Landlord signature' },
-  { value: 'PENDING_TENANT_REVIEW', label: 'Tenant review' },
-  { value: 'PENDING_TENANT_SIGNATURE', label: 'Tenant signature' },
-  { value: 'FULLY_EXECUTED', label: 'Executed' },
+  { value: 'all', get "label"() { return ui("All"); } },
+  { value: 'PENDING_LANDLORD_REVIEW', get "label"() { return ui("Landlord review"); } },
+  { value: 'PENDING_LANDLORD_SIGNATURE', get "label"() { return ui("Landlord signature"); } },
+  { value: 'PENDING_TENANT_REVIEW', get "label"() { return ui("Tenant review"); } },
+  { value: 'PENDING_TENANT_SIGNATURE', get "label"() { return ui("Tenant signature"); } },
+  { value: 'FULLY_EXECUTED', get "label"() { return ui("Executed"); } },
 ];
 
 const getFiltersForRole = (role) => {
   if (role === 'landlord') {
     return [
-      { value: 'all', label: 'All' },
-      { value: 'PENDING_LANDLORD_REVIEW', label: 'Landlord review' },
-      { value: 'PENDING_LANDLORD_SIGNATURE', label: 'Landlord signature' },
-      { value: 'FULLY_EXECUTED', label: 'Executed' },
+      { value: 'all', label: ui("All") },
+      { value: 'PENDING_LANDLORD_REVIEW', label: ui("Landlord review") },
+      { value: 'PENDING_LANDLORD_SIGNATURE', label: ui("Landlord signature") },
+      { value: 'FULLY_EXECUTED', label: ui("Executed") },
     ];
   }
   if (role === 'tenant') {
     return [
-      { value: 'all', label: 'All' },
-      { value: 'PENDING_TENANT_REVIEW', label: 'Tenant review' },
-      { value: 'PENDING_TENANT_SIGNATURE', label: 'Tenant signature' },
-      { value: 'FULLY_EXECUTED', label: 'Executed' },
+      { value: 'all', label: ui("All") },
+      { value: 'PENDING_TENANT_REVIEW', label: ui("Tenant review") },
+      { value: 'PENDING_TENANT_SIGNATURE', label: ui("Tenant signature") },
+      { value: 'FULLY_EXECUTED', label: ui("Executed") },
     ];
   }
   return ALL_FILTERS;
@@ -61,6 +63,7 @@ const needsAction = (agreement, role) => {
 };
 
 const TenancyAgreementsScreen = ({ navigation }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const { user } = useContext(AuthContext);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -69,7 +72,7 @@ const TenancyAgreementsScreen = ({ navigation }) => {
 
   const role = user?.user_type === 'landlord' ? 'landlord' : user?.user_type === 'tenant' ? 'tenant' : null;
 
-  const filters = useMemo(() => getFiltersForRole(role), [role]);
+  const filters = useMemo(() => getFiltersForRole(role), [role, interfaceLanguage]);
 
   const load = async ({ refresh = false } = {}) => {
     refresh ? setRefreshing(true) : setLoading(true);
@@ -79,8 +82,8 @@ const TenancyAgreementsScreen = ({ navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Could not load agreements',
-        text2: getErrorMessage(error, 'Please try again.'),
+        text1: ui("Could not load agreements"),
+        text2: getErrorMessage(error, ui("Please try again.")),
       });
     } finally {
       setLoading(false);
@@ -94,20 +97,20 @@ const TenancyAgreementsScreen = ({ navigation }) => {
 
   const actionCount = useMemo(
     () => items.filter((agreement) => needsAction(agreement, user?.user_type)).length,
-    [items, user]
+    [items, user, interfaceLanguage]
   );
 
   const visibleItems = useMemo(
     () => (filter === 'all' ? items : items.filter((agreement) => agreement.status === filter)),
-    [filter, items]
+    [filter, items, interfaceLanguage]
   );
 
   return (
     <SafeAreaView edges={['top']} style={styles.safeArea}>
       <View style={styles.header}>
         <View>
-          <AppText style={styles.eyebrow}>TENANCY</AppText>
-          <AppText style={styles.title}>My tenancy agreements</AppText>
+          <AppText style={styles.eyebrow}>{ui("TENANCY")}</AppText>
+          <AppText style={styles.title}>{ui("My tenancy agreements")}</AppText>
         </View>
         <View style={styles.headerIcon}>
           <Icon name="document-text-outline" size={22} color={colors.blue} />
@@ -124,8 +127,7 @@ const TenancyAgreementsScreen = ({ navigation }) => {
               <View style={styles.actionBanner}>
                 <Icon name="alert-circle" size={18} color="#B46B00" />
                 <AppText style={styles.actionBannerText}>
-                  {actionCount} agreement{actionCount > 1 ? 's' : ''} awaiting your action
-                </AppText>
+                  {actionCount}{ui(" agreement")}{actionCount > 1 ? ui("s") : ''}{ui("awaiting your action")}</AppText>
               </View>
             ) : null}
             <View style={styles.filterRow}>
@@ -146,17 +148,15 @@ const TenancyAgreementsScreen = ({ navigation }) => {
           loading ? (
             <View style={styles.center}>
               <ActivityIndicator color={colors.blue} size="large" />
-              <AppText style={styles.loadingText}>Loading agreements…</AppText>
+              <AppText style={styles.loadingText}>{ui("Loading agreements…")}</AppText>
             </View>
           ) : (
             <View style={styles.center}>
               <View style={styles.emptyIcon}>
                 <Icon name="document-text-outline" size={31} color={colors.blue} />
               </View>
-              <AppText style={styles.emptyTitle}>No tenancy agreements yet</AppText>
-              <AppText style={styles.emptyText}>
-                When a landlord approves an application, the tenancy agreement will appear here for review and signature.
-              </AppText>
+              <AppText style={styles.emptyTitle}>{ui("No tenancy agreements yet")}</AppText>
+              <AppText style={styles.emptyText}>{ui("When a landlord approves an application, the tenancy agreement will appear here for review and signature.")}</AppText>
             </View>
           )
         }
@@ -182,13 +182,13 @@ const TenancyAgreementsScreen = ({ navigation }) => {
                 </View>
                 <View style={styles.cardHeading}>
                   <AppText style={styles.cardTitle} numberOfLines={2}>
-                    {item.property_title || 'Property'}
+                    {item.property_title || ui("Property")}
                   </AppText>
                   <AppText style={styles.cardMeta}>{TENANCY_AGREEMENT_STATUS_LABELS[item.status] || item.status}</AppText>
                 </View>
                 {action ? (
                   <View style={styles.actionPill}>
-                    <AppText style={styles.actionPillText}>Action</AppText>
+                    <AppText style={styles.actionPillText}>{ui("Action")}</AppText>
                   </View>
                 ) : null}
               </View>
@@ -200,8 +200,7 @@ const TenancyAgreementsScreen = ({ navigation }) => {
               </View>
               <View style={styles.detailRow}>
                 <Icon name="layers-outline" size={14} color={colors.muted} />
-                <AppText style={styles.detailText}>
-                  Version {item.current_version} · Created {item.created_at ? new Date(item.created_at).toLocaleDateString() : '—'}
+                <AppText style={styles.detailText}>{ui("Version")}{item.current_version}{ui(" · Created ")}{item.created_at ? new Date(item.created_at).toLocaleDateString() : '—'}
                 </AppText>
               </View>
             </TouchableOpacity>

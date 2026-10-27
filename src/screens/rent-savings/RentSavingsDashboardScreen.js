@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useState, useCallback, useLayoutEffect } from 'react';
 import {View, StyleSheet, TouchableOpacity, ScrollView, RefreshControl} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -11,13 +13,14 @@ import AppText from '../../components/common/AppText';
 const formatCurrency = (value) => `₦${Number(value || 0).toLocaleString()}`;
 
 const RentSavingsDashboardScreen = ({ navigation }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const [dashboard, setDashboard] = useState(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: navigation.canGoBack() });
-  }, [navigation]);
+  }, [navigation, interfaceLanguage]);
 
   const loadDashboard = useCallback(async () => {
     try {
@@ -26,7 +29,7 @@ const RentSavingsDashboardScreen = ({ navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(error, 'Could not load savings dashboard'),
       });
     } finally {
@@ -60,17 +63,17 @@ const RentSavingsDashboardScreen = ({ navigation }) => {
           <View style={styles.heroIcon}><Icon name="leaf-outline" size={22} color={colors.gold} /></View>
           <TouchableOpacity style={styles.refreshButton} onPress={onRefresh}><Icon name="refresh" size={19} color={colors.white} /></TouchableOpacity>
         </View>
-        <AppText style={styles.summaryLabel}>TOTAL SAVED FOR RENT</AppText>
+        <AppText style={styles.summaryLabel}>{ui("TOTAL SAVED FOR RENT")}</AppText>
         <AppText style={styles.summaryValue}>{formatCurrency(totalSaved)}</AppText>
-        <AppText style={styles.heroCaption}>Build your next rent payment steadily and confidently.</AppText>
+        <AppText style={styles.heroCaption}>{ui("Build your next rent payment steadily and confidently.")}</AppText>
         <View style={styles.summaryRow}>
           <View style={styles.summaryItem}>
             <AppText style={styles.summaryItemValue}>{totalGoals}</AppText>
-            <AppText style={styles.summaryItemLabel}>Total plans</AppText>
+            <AppText style={styles.summaryItemLabel}>{ui("Total plans")}</AppText>
           </View>
           <View style={styles.summaryItem}>
             <AppText style={styles.summaryItemValue}>{activeGoals}</AppText>
-            <AppText style={styles.summaryItemLabel}>Active plans</AppText>
+            <AppText style={styles.summaryItemLabel}>{ui("Active plans")}</AppText>
           </View>
         </View>
       </View>
@@ -81,7 +84,7 @@ const RentSavingsDashboardScreen = ({ navigation }) => {
           onPress={() => navigation.navigate('SavingsGoalCreate')}
         >
           <View style={styles.actionIcon}><Icon name="add" size={23} color={colors.blue} /></View>
-          <View style={styles.actionCopy}><AppText style={styles.actionText}>Create a plan</AppText><AppText style={styles.actionSub}>Set a new rent target</AppText></View>
+          <View style={styles.actionCopy}><AppText style={styles.actionText}>{ui("Create a plan")}</AppText><AppText style={styles.actionSub}>{ui("Set a new rent target")}</AppText></View>
           <Icon name="chevron-forward" size={17} color={colors.muted} />
         </TouchableOpacity>
 
@@ -90,14 +93,14 @@ const RentSavingsDashboardScreen = ({ navigation }) => {
           onPress={() => navigation.navigate('SavingsGoalList')}
         >
           <View style={styles.actionIcon}><Icon name="list-outline" size={22} color={colors.blue} /></View>
-          <View style={styles.actionCopy}><AppText style={styles.actionText}>My plans</AppText><AppText style={styles.actionSub}>Track every goal</AppText></View>
+          <View style={styles.actionCopy}><AppText style={styles.actionText}>{ui("My plans")}</AppText><AppText style={styles.actionSub}>{ui("Track every goal")}</AppText></View>
           <Icon name="chevron-forward" size={17} color={colors.muted} />
         </TouchableOpacity>
       </View>
 
       {dashboard?.upcoming_due?.length > 0 && (
         <>
-          <View style={styles.sectionHeader}><AppText style={styles.sectionTitle}>Upcoming rent</AppText><AppText style={styles.sectionCount}>{dashboard.upcoming_due.length} due</AppText></View>
+          <View style={styles.sectionHeader}><AppText style={styles.sectionTitle}>{ui("Upcoming rent")}</AppText><AppText style={styles.sectionCount}>{dashboard.upcoming_due.length}{ui(" due")}</AppText></View>
           {dashboard.upcoming_due.map((goal) => (
             <TouchableOpacity
               key={goal.id}
@@ -106,7 +109,7 @@ const RentSavingsDashboardScreen = ({ navigation }) => {
             >
               <View style={styles.goalHeader}>
                 <View style={styles.goalIcon}><Icon name="home-outline" size={18} color={colors.blue} /></View>
-                <AppText style={styles.goalName}>Plan #{goal.id}</AppText>
+                <AppText style={styles.goalName}>{ui("Plan #")}{goal.id}</AppText>
                 <AppText style={styles.goalStatus}>
                   {new Date(goal.rent_due_date).toLocaleDateString()}
                 </AppText>
@@ -128,8 +131,7 @@ const RentSavingsDashboardScreen = ({ navigation }) => {
                 />
               </View>
               <AppText style={styles.goalProgress}>
-                {formatCurrency(goal.total_saved || 0)} saved
-              </AppText>
+                {formatCurrency(goal.total_saved || 0)}{ui("saved")}</AppText>
             </TouchableOpacity>
           ))}
         </>

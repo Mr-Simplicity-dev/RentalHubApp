@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
@@ -20,6 +22,7 @@ const money = (amount) =>
   `₦${Number(amount || 0).toLocaleString('en-NG', { maximumFractionDigits: 0 })}`;
 
 const RequestRentHelpScreen = () => {
+  useInterfaceLanguage();
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
   const [properties, setProperties] = useState([]);
@@ -34,8 +37,8 @@ const RequestRentHelpScreen = () => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Could not load your properties',
-        text2: getErrorMessage(error, 'Please try again.'),
+        text1: ui("Could not load your properties"),
+        text2: getErrorMessage(error, ui("Please try again.")),
       });
     } finally {
       setLoading(false);
@@ -56,8 +59,8 @@ const RequestRentHelpScreen = () => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Could not create the link',
-        text2: getErrorMessage(error, 'Please try again.'),
+        text1: ui("Could not create the link"),
+        text2: getErrorMessage(error, ui("Please try again.")),
       });
     } finally {
       setCreating(false);
@@ -68,7 +71,7 @@ const RequestRentHelpScreen = () => {
     if (!createdLink) return;
     try {
       await Share.share({
-        message: `Pay my rent securely on Amana RentalHub NG: ${createdLink}`,
+        message: ui("Pay my rent securely on Amana RentalHub NG: {value0}", {value0: (createdLink)}),
         url: createdLink,
       });
     } catch (error) {
@@ -84,28 +87,24 @@ const RequestRentHelpScreen = () => {
             <Icon name="hand-left-outline" size={22} color="#0F766E" />
           </View>
           <View style={styles.headerBody}>
-            <AppText style={styles.title}>Ask someone to pay your rent</AppText>
-            <AppText style={styles.subtitle}>
-              We create a secure link you can share with a friend or family member. The amount is confirmed by the server.
-            </AppText>
+            <AppText style={styles.title}>{ui("Ask someone to pay your rent")}</AppText>
+            <AppText style={styles.subtitle}>{ui("We create a secure link you can share with a friend or family member. The amount is confirmed by the server.")}</AppText>
           </View>
         </View>
 
         {loading ? (
           <View style={styles.center}>
             <ActivityIndicator color={colors.blue} size="large" />
-            <AppText style={styles.loadingText}>Checking your properties…</AppText>
+            <AppText style={styles.loadingText}>{ui("Checking your properties…")}</AppText>
           </View>
         ) : properties.length === 0 ? (
           <View style={styles.notice}>
             <Icon name="information-circle-outline" size={18} color="#92400E" />
-            <AppText style={styles.noticeText}>
-              You don't have a property to request rent help for yet. You can do this once you've paid rent on a property, or once a landlord has approved your application.
-            </AppText>
+            <AppText style={styles.noticeText}>{ui("You don't have a property to request rent help for yet. You can do this once you've paid rent on a property, or once a landlord has approved your application.")}</AppText>
           </View>
         ) : (
           <>
-            <AppText style={styles.sectionLabel}>Choose a property</AppText>
+            <AppText style={styles.sectionLabel}>{ui("Choose a property")}</AppText>
             {properties.map((property) => {
               const selected = String(property.property_id) === String(selectedId);
               return (
@@ -123,11 +122,11 @@ const RequestRentHelpScreen = () => {
                   />
                   <View style={styles.propertyBody}>
                     <AppText style={styles.propertyTitle} numberOfLines={2}>
-                      {property.title || 'Property'}
+                      {property.title || ui("Property")}
                     </AppText>
                     <AppText style={styles.propertyMeta}>
                       {money(property.rent_amount)}
-                      {property.source === 'approved' ? ' · approved' : ''}
+                      {property.source === "approved" ? ' · approved' : ''}
                     </AppText>
                   </View>
                 </TouchableOpacity>
@@ -142,7 +141,7 @@ const RequestRentHelpScreen = () => {
               {creating ? (
                 <ActivityIndicator color={colors.white} size="small" />
               ) : (
-                <AppText style={styles.primaryButtonText}>Create share link</AppText>
+                <AppText style={styles.primaryButtonText}>{ui("Create share link")}</AppText>
               )}
             </TouchableOpacity>
           </>
@@ -150,11 +149,11 @@ const RequestRentHelpScreen = () => {
 
         {createdLink ? (
           <View style={styles.linkCard}>
-            <AppText style={styles.linkLabel}>SHARE THIS LINK (EXPIRES IN 72 HOURS)</AppText>
+            <AppText style={styles.linkLabel}>{ui("SHARE THIS LINK (EXPIRES IN 72 HOURS)")}</AppText>
             <AppText style={styles.linkValue} selectable>{createdLink}</AppText>
             <TouchableOpacity onPress={shareLink} style={styles.shareButton}>
               <Icon name="share-social-outline" size={17} color={colors.white} />
-              <AppText style={styles.shareButtonText}>Share link</AppText>
+              <AppText style={styles.shareButtonText}>{ui("Share link")}</AppText>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
@@ -163,7 +162,7 @@ const RequestRentHelpScreen = () => {
               }}
               style={styles.linkReset}
             >
-              <AppText style={styles.linkResetText}>Create another link</AppText>
+              <AppText style={styles.linkResetText}>{ui("Create another link")}</AppText>
             </TouchableOpacity>
           </View>
         ) : null}

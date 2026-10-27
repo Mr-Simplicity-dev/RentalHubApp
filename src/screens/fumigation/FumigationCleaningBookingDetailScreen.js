@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useState } from 'react';
 import {Alert, StyleSheet, View} from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -31,6 +33,7 @@ const STATUS_COLORS = {
 };
 
 const FumigationCleaningBookingDetailScreen = ({ route, navigation }) => {
+  useInterfaceLanguage();
   const { bookingId } = route.params;
   const [booking, setBooking] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -50,7 +53,7 @@ const FumigationCleaningBookingDetailScreen = ({ route, navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Load Failed',
+        text1: ui("Load Failed"),
         text2: getErrorMessage(error),
       });
       navigation.goBack();
@@ -60,16 +63,16 @@ const FumigationCleaningBookingDetailScreen = ({ route, navigation }) => {
   };
 
   const handleCancel = () => {
-    Alert.alert('Cancel Booking', 'Are you sure you want to cancel this service booking?', [
-      { text: 'No', style: 'cancel' },
+    Alert.alert(ui("Cancel Booking"), ui("Are you sure you want to cancel this service booking?"), [
+      { text: ui("No"), style: 'cancel' },
       {
-        text: 'Yes, Cancel',
+        text: ui("Yes, Cancel"),
         style: 'destructive',
         onPress: async () => {
           setCancelling(true);
           try {
             await fumigationCleaningService.cancelBooking(bookingId);
-            Toast.show({ type: 'success', text1: 'Booking cancelled' });
+            Toast.show({ type: 'success', text1: ui("Booking cancelled") });
             loadBookingDetails();
           } catch (error) {
             Toast.show({ type: 'error', text1: getErrorMessage(error) });
@@ -97,16 +100,16 @@ const FumigationCleaningBookingDetailScreen = ({ route, navigation }) => {
         if (hasPaystackCheckout(response.data)) {
           openNativeCheckout({
             transaction: response.data,
-            title: 'Pay service booking',
-            subtitle: 'Complete your fumigation or cleaning booking with secure in-app card payment.',
+            title: ui("Pay service booking"),
+            subtitle: ui("Complete your fumigation or cleaning booking with secure in-app card payment."),
             amountLabel: formatNaira(booking?.total_price, ''),
             onSuccess: (paymentResponse) =>
               completeNativePayment(paymentResponse?.reference || reference),
             onBrowserFallback: () => {
               Toast.show({
                 type: 'info',
-                text1: 'Paystack checkout opened',
-                text2: 'Complete payment securely, then return to RentalHub.',
+                text1: ui("Paystack checkout opened"),
+                text2: ui("Complete payment securely, then return to RentalHub."),
               });
             },
           });
@@ -130,10 +133,10 @@ const FumigationCleaningBookingDetailScreen = ({ route, navigation }) => {
         fallbackFlow: 'fumigation',
       });
       if (response?.success) {
-        Toast.show({ type: 'success', text1: 'Payment verified' });
+        Toast.show({ type: 'success', text1: ui("Payment verified") });
         await loadBookingDetails();
       } else {
-        Toast.show({ type: 'error', text1: response?.message || 'Payment verification failed' });
+        Toast.show({ type: 'error', text1: response?.message || ui("Payment verification failed") });
       }
     } catch (error) {
       Toast.show({ type: 'error', text1: getErrorMessage(error) });
@@ -141,7 +144,7 @@ const FumigationCleaningBookingDetailScreen = ({ route, navigation }) => {
   };
 
   if (loading) {
-    return <PremiumCenter loading title="Loading booking" message="Fetching your service booking details." />;
+    return <PremiumCenter loading title={ui("Loading booking")} message={ui("Fetching your service booking details.")} />;
   }
 
   if (!booking) {
@@ -149,9 +152,9 @@ const FumigationCleaningBookingDetailScreen = ({ route, navigation }) => {
       <PremiumCenter
         tone="danger"
         icon="alert-circle-outline"
-        title="Booking unavailable"
-        message="We could not load this service booking."
-        actionLabel="Go back"
+        title={ui("Booking unavailable")}
+        message={ui("We could not load this service booking.")}
+        actionLabel={ui("Go back")}
         onAction={() => navigation.goBack()}
       />
     );
@@ -165,26 +168,25 @@ const FumigationCleaningBookingDetailScreen = ({ route, navigation }) => {
     <>
       <PremiumScreen>
         <PremiumHero
-          eyebrow="Fumigation & cleaning"
+          eyebrow={ui("Fumigation & cleaning")}
           title={booking.service_name || 'Service booking'}
-          subtitle="Track schedule, payment status and service requirements from one clean screen."
+          subtitle={ui("Track schedule, payment status and service requirements from one clean screen.")}
           icon="sparkles-outline"
-          right={<StatusPill label={booking.status || 'pending'} color={statusColor} />}
+          right={<StatusPill label={booking.status || ui("pending")} color={statusColor} />}
         />
 
         <PremiumCard>
-          <PremiumSectionTitle title="Booking details" subtitle="Service schedule and request information." />
-          <InfoRow icon="calendar-outline" label="Date & time" value={`${booking.booking_date || '—'} at ${booking.booking_time || '—'}`} />
-          <InfoRow icon="sparkles-outline" label="Service" value={booking.service_name || 'Service'} />
+          <PremiumSectionTitle title={ui("Booking details")} subtitle={ui("Service schedule and request information.")} />
+          <InfoRow icon="calendar-outline" label={ui("Date & time")} value={`${booking.booking_date || '—'} at ${booking.booking_time || '—'}`} />
+          <InfoRow icon="sparkles-outline" label={ui("Service")} value={booking.service_name || 'Service'} />
         </PremiumCard>
 
         <PremiumCard>
-          <PremiumSectionTitle title="Payment" subtitle="Total amount and completion status." />
+          <PremiumSectionTitle title={ui("Payment")} subtitle={ui("Total amount and completion status.")} />
           <View style={styles.totalPanel}>
             <View>
-              <AppText style={styles.totalLabel}>Total</AppText>
-              <AppText style={styles.paymentStatus}>
-                Payment {booking.payment_status === 'paid' ? 'completed' : 'pending'}
+              <AppText style={styles.totalLabel}>{ui("Total")}</AppText>
+              <AppText style={styles.paymentStatus}>{ui("Payment")}{booking.payment_status === "paid" ? ui("completed") : ui("pending")}
               </AppText>
             </View>
             <AppText style={styles.totalValue}>{formatNaira(booking.total_price)}</AppText>
@@ -193,7 +195,7 @@ const FumigationCleaningBookingDetailScreen = ({ route, navigation }) => {
 
         {booking.special_requirements ? (
           <PremiumCard>
-            <PremiumSectionTitle title="Special requirements" />
+            <PremiumSectionTitle title={ui("Special requirements")} />
             <AppText style={styles.bodyText}>{booking.special_requirements}</AppText>
           </PremiumCard>
         ) : null}
@@ -201,7 +203,7 @@ const FumigationCleaningBookingDetailScreen = ({ route, navigation }) => {
         <View style={styles.actions}>
           {canPay ? (
             <PremiumButton
-              title="Pay now"
+              title={ui("Pay now")}
               icon="card-outline"
               loading={paying}
               disabled={paying}
@@ -210,7 +212,7 @@ const FumigationCleaningBookingDetailScreen = ({ route, navigation }) => {
           ) : null}
           {canCancel ? (
             <PremiumButton
-              title="Cancel booking"
+              title={ui("Cancel booking")}
               variant="ghost"
               icon="close-circle-outline"
               loading={cancelling}

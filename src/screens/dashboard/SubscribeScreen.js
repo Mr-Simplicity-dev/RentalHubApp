@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import {ActivityIndicator,
   RefreshControl,
@@ -18,6 +20,7 @@ import { getErrorMessage, pickList, pickObject } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
 const SubscribeScreen = ({ navigation }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const [plans, setPlans] = useState([]);
   const [status, setStatus] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -27,7 +30,7 @@ const SubscribeScreen = ({ navigation }) => {
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
-  }, [navigation]);
+  }, [navigation, interfaceLanguage]);
 
   const loadSubscriptionData = async ({ refresh = false } = {}) => {
     refresh ? setRefreshing(true) : setLoading(true);
@@ -41,8 +44,8 @@ const SubscribeScreen = ({ navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Could not load subscriptions',
-        text2: getErrorMessage(error, 'Please try again.'),
+        text1: ui("Could not load subscriptions"),
+        text2: getErrorMessage(error, ui("Please try again.")),
       });
     } finally {
       setLoading(false);
@@ -74,16 +77,16 @@ const SubscribeScreen = ({ navigation }) => {
         const selectedPlan = plans.find((plan) => String(plan.id) === String(planId));
         openNativeCheckout({
           transaction: response.data,
-          title: 'Pay subscription',
-          subtitle: 'Complete your membership payment securely in the app.',
-          amountLabel: selectedPlan?.amount ? `₦${Number(selectedPlan.amount).toLocaleString()}` : '',
+          title: ui("Pay subscription"),
+          subtitle: ui("Complete your membership payment securely in the app."),
+          amountLabel: selectedPlan?.amount ? ui("₦{value0}", {value0: (Number(selectedPlan.amount).toLocaleString())}) : '',
           onSuccess: (paymentResponse) =>
             completeSubscriptionPayment(paymentResponse?.reference || reference),
           onBrowserFallback: () => {
             Toast.show({
               type: 'info',
-              text1: 'Paystack checkout opened',
-              text2: 'Complete payment securely, then return to RentalHub.',
+              text1: ui("Paystack checkout opened"),
+              text2: ui("Complete payment securely, then return to RentalHub."),
             });
           },
         });
@@ -92,14 +95,14 @@ const SubscribeScreen = ({ navigation }) => {
       } else {
         Toast.show({
           type: 'success',
-          text1: 'Subscription initialized',
-          text2: 'Refresh this page to confirm activation.',
+          text1: ui("Subscription initialized"),
+          text2: ui("Refresh this page to confirm activation."),
         });
       }
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Subscription failed',
+        text1: ui("Subscription failed"),
         text2: getErrorMessage(error, 'Could not initialize subscription'),
       });
     } finally {
@@ -116,20 +119,20 @@ const SubscribeScreen = ({ navigation }) => {
         fallbackFlow: 'subscription',
       });
       if (response?.success) {
-        Toast.show({ type: 'success', text1: 'Subscription activated' });
+        Toast.show({ type: 'success', text1: ui("Subscription activated") });
         await loadSubscriptionData({ refresh: true });
       } else {
         Toast.show({
           type: 'error',
-          text1: 'Verification failed',
-          text2: response?.message || 'Could not verify subscription payment.',
+          text1: ui("Verification failed"),
+          text2: response?.message || ui("Could not verify subscription payment."),
         });
       }
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Verification failed',
-        text2: getErrorMessage(error, 'Could not verify subscription payment.'),
+        text1: ui("Verification failed"),
+        text2: getErrorMessage(error, ui("Could not verify subscription payment.")),
       });
     }
   };
@@ -141,14 +144,14 @@ const SubscribeScreen = ({ navigation }) => {
     <SafeAreaView edges={['top']} style={styles.safeArea}>
       <View style={styles.header}>
         <TouchableOpacity
-          accessibilityLabel="Go back"
+          accessibilityLabel={ui("Go back")}
           onPress={() => navigation.goBack()}
           style={styles.backButton}>
           <Icon name="arrow-back" size={22} color={colors.navy} />
         </TouchableOpacity>
         <View style={styles.headerCopy}>
-          <AppText style={styles.eyebrow}>MEMBERSHIP</AppText>
-          <AppText style={styles.title}>Subscription</AppText>
+          <AppText style={styles.eyebrow}>{ui("MEMBERSHIP")}</AppText>
+          <AppText style={styles.title}>{ui("Subscription")}</AppText>
         </View>
         <View style={styles.headerSpacer} />
       </View>
@@ -167,7 +170,7 @@ const SubscribeScreen = ({ navigation }) => {
         {loading ? (
           <View style={styles.center}>
             <ActivityIndicator color={colors.blue} size="large" />
-            <AppText style={styles.loadingText}>Loading membership options…</AppText>
+            <AppText style={styles.loadingText}>{ui("Loading membership options…")}</AppText>
           </View>
         ) : (
           <>
@@ -190,7 +193,7 @@ const SubscribeScreen = ({ navigation }) => {
               <AppText style={styles.statusText}>
                 {status?.subscription_active
                   ? expiry
-                    ? `Your access remains active until ${new Date(expiry).toLocaleDateString()}.`
+                    ? ui("Your access remains active until {value0}.", {value0: (new Date(expiry).toLocaleDateString())})
                     : 'Your premium RentalHub access is currently active.'
                   : 'View full property details, verified contacts and premium tenant tools.'}
               </AppText>
@@ -212,8 +215,8 @@ const SubscribeScreen = ({ navigation }) => {
             </View>
 
             <View style={styles.sectionHeading}>
-              <AppText style={styles.sectionEyebrow}>CHOOSE YOUR ACCESS</AppText>
-              <AppText style={styles.sectionTitle}>Available plans</AppText>
+              <AppText style={styles.sectionEyebrow}>{ui("CHOOSE YOUR ACCESS")}</AppText>
+              <AppText style={styles.sectionTitle}>{ui("Available plans")}</AppText>
             </View>
 
             {plans.map((plan, index) => {
@@ -226,14 +229,14 @@ const SubscribeScreen = ({ navigation }) => {
                 <View key={plan.id} style={[styles.planCard, index === 0 && styles.planCardFeatured]}>
                   {index === 0 ? (
                     <View style={styles.recommendedPill}>
-                      <AppText style={styles.recommendedText}>RECOMMENDED</AppText>
+                      <AppText style={styles.recommendedText}>{ui("RECOMMENDED")}</AppText>
                     </View>
                   ) : null}
                   <AppText style={styles.planName}>{plan.name || 'RentalHub membership'}</AppText>
                   <View style={styles.priceRow}>
                     <AppText style={styles.planPrice}>₦{Number(plan.amount || 0).toLocaleString()}</AppText>
                     {plan.duration_days ? (
-                      <AppText style={styles.duration}> / {plan.duration_days} days</AppText>
+                      <AppText style={styles.duration}> / {plan.duration_days}{ui(" days")}</AppText>
                     ) : null}
                   </View>
                   <AppText style={styles.planDesc}>
@@ -266,14 +269,14 @@ const SubscribeScreen = ({ navigation }) => {
             {!plans.length ? (
               <View style={styles.emptyCard}>
                 <Icon name="time-outline" size={26} color={colors.blue} />
-                <AppText style={styles.emptyTitle}>Plans are being updated</AppText>
-                <AppText style={styles.emptyText}>Please check again shortly.</AppText>
+                <AppText style={styles.emptyTitle}>{ui("Plans are being updated")}</AppText>
+                <AppText style={styles.emptyText}>{ui("Please check again shortly.")}</AppText>
               </View>
             ) : null}
 
             <View style={styles.safetyRow}>
               <Icon name="shield-checkmark-outline" size={17} color={colors.success} />
-              <AppText style={styles.safetyText}>Secure payment processing powered by Paystack</AppText>
+              <AppText style={styles.safetyText}>{ui("Secure payment processing powered by Paystack")}</AppText>
             </View>
           </>
         )}

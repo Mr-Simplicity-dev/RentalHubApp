@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useMemo, useState } from 'react';
 import {
   FlatList,
@@ -16,13 +18,14 @@ import AppText from './AppText';
 // the welcome screen, before any account exists. It reads and writes the same
 // stored preference as Settings, so the choice survives sign-in.
 const LanguageDropdown = ({ tone = 'light', fullWidth = false }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const { language, languages, setLanguage, t } = useLanguage();
   const [open, setOpen] = useState(false);
   const [switching, setSwitching] = useState(false);
 
   const current = useMemo(
     () => languages.find((option) => option.code === language) || languages[0],
-    [language, languages]
+    [language, languages, interfaceLanguage]
   );
 
   const choose = async (code) => {
@@ -48,7 +51,7 @@ const LanguageDropdown = ({ tone = 'light', fullWidth = false }) => {
   return (
     <>
       <TouchableOpacity
-        accessibilityLabel={`${t('welcome.languageLabel')}: ${current.nativeLabel}`}
+        accessibilityLabel={ui("{value0}: {value1}", {value0: (t('welcome.languageLabel')), value1: (current.nativeLabel)})}
         accessibilityRole="button"
         accessibilityHint={t('welcome.languageHelp')}
         onPress={() => setOpen(true)}
@@ -73,7 +76,7 @@ const LanguageDropdown = ({ tone = 'light', fullWidth = false }) => {
         onRequestClose={() => setOpen(false)}
       >
         <Pressable
-          accessibilityLabel="Close language list"
+          accessibilityLabel={ui("Close language list")}
           onPress={() => setOpen(false)}
           style={styles.backdrop}
         />
@@ -84,7 +87,7 @@ const LanguageDropdown = ({ tone = 'light', fullWidth = false }) => {
                 {t('welcome.languageChoose')}
               </AppText>
               <TouchableOpacity
-                accessibilityLabel="Close language list"
+                accessibilityLabel={ui("Close language list")}
                 accessibilityRole="button"
                 onPress={() => setOpen(false)}
                 style={styles.closeButton}
@@ -100,7 +103,7 @@ const LanguageDropdown = ({ tone = 'light', fullWidth = false }) => {
                 const selected = item.code === language;
                 return (
                   <TouchableOpacity
-                    accessibilityLabel={`${item.label}: ${item.nativeLabel}`}
+                    accessibilityLabel={ui("{value0}: {value1}", {value0: (item.label), value1: (item.nativeLabel)})}
                     accessibilityRole="radio"
                     accessibilityState={{ checked: selected }}
                     onPress={() => choose(item.code)}

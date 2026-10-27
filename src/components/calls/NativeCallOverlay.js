@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
 import TextInput from '../common/AppTextInput';
@@ -82,6 +84,7 @@ const getStreamUrl = (stream) => {
 };
 
 const NativeCallOverlay = () => {
+  const interfaceLanguage = useInterfaceLanguage();
   const {
     acceptCall,
     activeCall,
@@ -108,7 +111,7 @@ const NativeCallOverlay = () => {
   const [showAddParticipant, setShowAddParticipant] = useState(false);
   const [participantUserId, setParticipantUserId] = useState('');
   const [recentRoomHistory, setRecentRoomHistory] = useState([]);
-  const displayParticipants = useMemo(() => normalizeParticipants(activeCall), [activeCall]);
+  const displayParticipants = useMemo(() => normalizeParticipants(activeCall), [activeCall, interfaceLanguage]);
 
   useEffect(() => {
     activeCallRef.current = activeCall;
@@ -220,8 +223,8 @@ const NativeCallOverlay = () => {
       cleanupMedia();
       Toast.show({
         type: 'error',
-        text1: 'Could not start media',
-        text2: error.message || 'Camera or microphone permission failed.',
+        text1: ui("Could not start media"),
+        text2: error.message || ui("Camera or microphone permission failed."),
       });
       if (call?.callId) {
         endCall(call.callId).catch(() => {});
@@ -272,7 +275,7 @@ const NativeCallOverlay = () => {
           description: peer.localDescription,
         });
       } catch (error) {
-        Toast.show({ type: 'error', text1: 'Call offer failed', text2: error.message });
+        Toast.show({ type: 'error', text1: ui("Call offer failed"), text2: error.message });
       }
     });
 
@@ -282,7 +285,7 @@ const NativeCallOverlay = () => {
       try {
         await peerRef.current.setRemoteDescription(new RTCSessionDescription(description));
       } catch (error) {
-        Toast.show({ type: 'error', text1: 'Call answer failed', text2: error.message });
+        Toast.show({ type: 'error', text1: ui("Call answer failed"), text2: error.message });
       }
     });
 
@@ -368,8 +371,8 @@ const NativeCallOverlay = () => {
     } else {
       Toast.show({
         type: 'error',
-        text1: 'Could not add participant',
-        text2: response?.message || 'Please try another user.',
+        text1: ui("Could not add participant"),
+        text2: response?.message || ui("Please try another user."),
       });
     }
   };
@@ -385,8 +388,8 @@ const NativeCallOverlay = () => {
     if (!response?.success) {
       Toast.show({
         type: 'error',
-        text1: 'Could not remove participant',
-        text2: response?.message || 'Please try again.',
+        text1: ui("Could not remove participant"),
+        text2: response?.message || ui("Please try again."),
       });
     }
   };
@@ -402,8 +405,8 @@ const NativeCallOverlay = () => {
     if (!response?.success) {
       Toast.show({
         type: 'error',
-        text1: 'Could not transfer host',
-        text2: response?.message || 'Please try again.',
+        text1: ui("Could not transfer host"),
+        text2: response?.message || ui("Please try again."),
       });
     }
   };
@@ -429,7 +432,7 @@ const NativeCallOverlay = () => {
                     <Icon name={videoCall ? 'videocam-outline' : 'call-outline'} size={42} color={colors.white} />
                   )}
                   <AppText style={styles.remotePlaceholderText}>
-                    {mediaStatus === 'connected'
+                    {mediaStatus === "connected"
                       ? videoCall ? 'Waiting for remote video…' : 'Audio session connected'
                       : 'Connecting media…'}
                   </AppText>
@@ -503,10 +506,10 @@ const NativeCallOverlay = () => {
           <AppText style={[styles.title, isAccepted && styles.liveTitle]}>{participantSummary}</AppText>
           <AppText style={[styles.subtitle, isAccepted && styles.liveSubtitle]}>
             {isIncoming
-              ? `${otherPartyName(activeCall)} is requesting this session.`
+              ? ui("{value0} is requesting this session.", {value0: (otherPartyName(activeCall))})
               : displayParticipants.length > 1
-                ? `${displayParticipants.length} active participants in this call room.`
-                : `With ${otherPartyName(activeCall)}`}
+                ? ui("{value0} active participants in this call room.", {value0: (displayParticipants.length)})
+                : ui("With {value0}", {value0: (otherPartyName(activeCall))})}
           </AppText>
           {activeCall.propertyTitle ? (
             <AppText style={[styles.propertyText, isAccepted && styles.livePropertyText]}>
@@ -516,12 +519,12 @@ const NativeCallOverlay = () => {
 
           {recentRoomHistory.length > 0 ? (
             <View style={styles.historyCard}>
-              <AppText style={styles.historyTitle}>Recent room activity</AppText>
+              <AppText style={styles.historyTitle}>{ui("Recent room activity")}</AppText>
               {recentRoomHistory.slice(0, 3).map((event) => (
                 <View key={event.id || `${event.callId}-${event.createdAt}`} style={styles.historyRow}>
                   <AppText style={styles.historyAction}>{String(event.action || '').replace(/_/g, ' ')}</AppText>
                   <AppText style={styles.historyMeta}>
-                    {event.actorName || 'Someone'} → {event.targetName || 'Room'}
+                    {event.actorName || 'Someone'} → {event.targetName || ui("Room")}
                   </AppText>
                 </View>
               ))}
@@ -536,7 +539,7 @@ const NativeCallOverlay = () => {
                 onPress={() => setShowAddParticipant((current) => !current)}
               >
                 <Icon name="person-add-outline" size={18} color={colors.white} />
-                <AppText style={styles.addParticipantButtonText}>Add participant</AppText>
+                <AppText style={styles.addParticipantButtonText}>{ui("Add participant")}</AppText>
               </TouchableOpacity>
               {showAddParticipant ? (
                 <View style={styles.addParticipantRow}>
@@ -544,7 +547,7 @@ const NativeCallOverlay = () => {
                     value={participantUserId}
                     onChangeText={setParticipantUserId}
                     keyboardType="numeric"
-                    placeholder="User ID"
+                    placeholder={ui("User ID")}
                     style={styles.addParticipantInput}
                     placeholderTextColor="#94a3b8"
                   />
@@ -553,7 +556,7 @@ const NativeCallOverlay = () => {
                     style={styles.addParticipantSubmit}
                     onPress={handleAddParticipant}
                   >
-                    <AppText style={styles.addParticipantSubmitText}>Add</AppText>
+                    <AppText style={styles.addParticipantSubmitText}>{ui("Add")}</AppText>
                   </TouchableOpacity>
                 </View>
               ) : null}
@@ -564,7 +567,7 @@ const NativeCallOverlay = () => {
             {isIncoming ? (
               <>
                 <TouchableOpacity
-                  accessibilityLabel="Reject call"
+                  accessibilityLabel={ui("Reject call")}
                   accessibilityRole="button"
                   style={[styles.roundButton, styles.rejectButton]}
                   onPress={() => safeAction(() => rejectCall(activeCall.callId), 'Could not reject call')}
@@ -572,7 +575,7 @@ const NativeCallOverlay = () => {
                   <Icon name="close" size={24} color={colors.white} />
                 </TouchableOpacity>
                 <TouchableOpacity
-                  accessibilityLabel="Accept call"
+                  accessibilityLabel={ui("Accept call")}
                   accessibilityRole="button"
                   style={[styles.roundButton, styles.acceptButton]}
                   onPress={() => safeAction(() => acceptCall(activeCall.callId), 'Could not accept call')}
@@ -592,7 +595,7 @@ const NativeCallOverlay = () => {
                 </TouchableOpacity>
                 {videoCall ? (
                   <TouchableOpacity
-                    accessibilityLabel={cameraEnabled ? 'Turn camera off' : 'Turn camera on'}
+                    accessibilityLabel={cameraEnabled ? ui("Turn camera off") : ui("Turn camera on")}
                     accessibilityRole="button"
                     style={[styles.roundButton, styles.controlButton, !cameraEnabled && styles.controlButtonMuted]}
                     onPress={toggleCamera}
@@ -601,7 +604,7 @@ const NativeCallOverlay = () => {
                   </TouchableOpacity>
                 ) : null}
                 <TouchableOpacity
-                  accessibilityLabel="End call"
+                  accessibilityLabel={ui("End call")}
                   accessibilityRole="button"
                   style={[styles.roundButton, styles.rejectButton]}
                   onPress={() => safeAction(hangUp, 'Could not end call')}
@@ -611,7 +614,7 @@ const NativeCallOverlay = () => {
               </>
             ) : isClosing ? (
               <TouchableOpacity accessibilityRole="button" style={styles.closeButton} onPress={clearCall}>
-                <AppText style={styles.closeButtonText}>Close</AppText>
+                <AppText style={styles.closeButtonText}>{ui("Close")}</AppText>
               </TouchableOpacity>
             ) : (
               <TouchableOpacity
@@ -620,7 +623,7 @@ const NativeCallOverlay = () => {
                 onPress={() => safeAction(hangUp, 'Could not cancel call')}
               >
                 <Icon name="close" size={18} color={colors.white} />
-                <AppText style={styles.endButtonText}>Cancel request</AppText>
+                <AppText style={styles.endButtonText}>{ui("Cancel request")}</AppText>
               </TouchableOpacity>
             )}
           </View>

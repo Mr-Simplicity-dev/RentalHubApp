@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Alert, RefreshControl, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import TextInput from '../../components/common/AppTextInput';
@@ -38,14 +40,13 @@ const EVENT_LABELS = {
   NEW_VERSION_CREATED: 'New version created',
 };
 
-const Row = ({ label, value }) => (
-  <View style={styles.row}>
+const Row = ({ label, value }) => { useInterfaceLanguage(); return (<View style={styles.row}>
     <AppText style={styles.rowLabel}>{label}</AppText>
     <AppText style={styles.rowValue}>{value || '—'}</AppText>
-  </View>
-);
+  </View>); };
 
 const TenancyAgreementDetailScreen = ({ route, navigation }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const { id } = route.params || {};
   const { user } = useContext(AuthContext);
   const role = user?.user_type === 'landlord' ? 'landlord' : user?.user_type === 'tenant' ? 'tenant' : null;
@@ -71,8 +72,8 @@ const TenancyAgreementDetailScreen = ({ route, navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Could not load agreement',
-        text2: getErrorMessage(error, 'Please try again.'),
+        text1: ui("Could not load agreement"),
+        text2: getErrorMessage(error, ui("Please try again.")),
       });
     } finally {
       setLoading(false);
@@ -85,7 +86,7 @@ const TenancyAgreementDetailScreen = ({ route, navigation }) => {
   }, [load]);
 
   const terms = agreement?.terms || {};
-  const signatures = useMemo(() => agreement?.signatures || [], [agreement]);
+  const signatures = useMemo(() => agreement?.signatures || [], [agreement, interfaceLanguage]);
 
   const canReview = role && (
     (role === 'landlord' && agreement?.status === 'PENDING_LANDLORD_REVIEW') ||
@@ -111,7 +112,7 @@ const TenancyAgreementDetailScreen = ({ route, navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Not confirmed',
+        text1: ui("Not confirmed"),
         text2: getErrorMessage(error, 'Your signature was not confirmed. Please reconnect and try again.'),
       });
     } finally {
@@ -124,20 +125,20 @@ const TenancyAgreementDetailScreen = ({ route, navigation }) => {
 
   const handleSign = () => {
     if (!consent) {
-      Toast.show({ type: 'error', text1: 'Please confirm you reviewed the agreement' });
+      Toast.show({ type: 'error', text1: ui("Please confirm you reviewed the agreement") });
       return;
     }
     if (!String(signatoryName).trim()) {
-      Toast.show({ type: 'error', text1: 'Please enter your full name' });
+      Toast.show({ type: 'error', text1: ui("Please enter your full name") });
       return;
     }
     Alert.alert(
-      'Sign agreement?',
-      'Your electronic signature will be recorded with a timestamp and the document hash.',
+      ui("Sign agreement?"),
+      ui("Your electronic signature will be recorded with a timestamp and the document hash."),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: ui("Cancel"), style: 'cancel' },
         {
-          text: 'Sign',
+          text: ui("Sign"),
           onPress: () =>
             run(
               'sign',
@@ -151,13 +152,13 @@ const TenancyAgreementDetailScreen = ({ route, navigation }) => {
 
   const handleDecline = () => {
     if (!declineReason.trim()) {
-      Toast.show({ type: 'error', text1: 'Please provide a reason' });
+      Toast.show({ type: 'error', text1: ui("Please provide a reason") });
       return;
     }
-    Alert.alert('Decline agreement?', 'This will be shown to the other party.', [
-      { text: 'Cancel', style: 'cancel' },
+    Alert.alert(ui("Decline agreement?"), ui("This will be shown to the other party."), [
+      { text: ui("Cancel"), style: 'cancel' },
       {
-        text: 'Decline',
+        text: ui("Decline"),
         style: 'destructive',
         onPress: () => run('decline', () => tenancyAgreementService.decline(id, { role, reason: declineReason.trim() }), 'Agreement declined'),
       },
@@ -168,7 +169,7 @@ const TenancyAgreementDetailScreen = ({ route, navigation }) => {
     return (
       <SafeAreaView style={styles.center}>
         <ActivityIndicator color={colors.blue} size="large" />
-        <AppText style={styles.loadingText}>Loading agreement…</AppText>
+        <AppText style={styles.loadingText}>{ui("Loading agreement…")}</AppText>
       </SafeAreaView>
     );
   }
@@ -177,9 +178,9 @@ const TenancyAgreementDetailScreen = ({ route, navigation }) => {
     return (
       <SafeAreaView style={styles.center}>
         <Icon name="alert-circle-outline" size={34} color={colors.muted} />
-        <AppText style={styles.emptyTitle}>Agreement unavailable</AppText>
+        <AppText style={styles.emptyTitle}>{ui("Agreement unavailable")}</AppText>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <AppText style={styles.backButtonText}>Go back</AppText>
+          <AppText style={styles.backButtonText}>{ui("Go back")}</AppText>
         </TouchableOpacity>
       </SafeAreaView>
     );
@@ -193,7 +194,7 @@ const TenancyAgreementDetailScreen = ({ route, navigation }) => {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.headerBack}>
           <Icon name="chevron-back" size={22} color={colors.ink} />
         </TouchableOpacity>
-        <AppText style={styles.headerTitle} numberOfLines={1}>Tenancy agreement</AppText>
+        <AppText style={styles.headerTitle} numberOfLines={1}>{ui("Tenancy agreement")}</AppText>
         <View style={styles.headerIcon}>
           <Icon name="document-text-outline" size={20} color={colors.blue} />
         </View>
@@ -210,7 +211,7 @@ const TenancyAgreementDetailScreen = ({ route, navigation }) => {
               <Icon name={visual.icon} size={20} color={visual.color} />
             </View>
             <View style={styles.cardHeading}>
-              <AppText style={styles.cardTitle} numberOfLines={2}>{agreement.property_title || 'Property'}</AppText>
+              <AppText style={styles.cardTitle} numberOfLines={2}>{agreement.property_title || ui("Property")}</AppText>
               <AppText style={styles.cardMeta}>{agreement.full_address || '—'}</AppText>
             </View>
           </View>
@@ -222,21 +223,21 @@ const TenancyAgreementDetailScreen = ({ route, navigation }) => {
         </View>
 
         <View style={styles.section}>
-          <AppText style={styles.sectionTitle}>Summary</AppText>
-          <Row label="Agreement ID" value={`#${agreement.id}`} />
-          <Row label="Version" value={String(agreement.current_version)} />
-          <Row label="Jurisdiction" value={[terms.state, terms.lga].filter(Boolean).join(' · ')} />
-          <Row label="Rent" value={formatCurrency(terms.rentAmount)} />
-          <Row label="Commencement" value={formatDate(terms.commencementDate)} />
-          <Row label="Expiry" value={formatDate(terms.expiryDate)} />
-          <Row label="Deposit" value={formatCurrency(terms.deposit)} />
-          <Row label="Notice period" value={`${terms.noticeConfiguration?.noticePeriodDays ?? '—'} days`} />
-          {terms.tenancyLawReference ? <Row label="Governing law" value={terms.tenancyLawReference} /> : null}
+          <AppText style={styles.sectionTitle}>{ui("Summary")}</AppText>
+          <Row label={ui("Agreement ID")} value={`#${agreement.id}`} />
+          <Row label={ui("Version")} value={String(agreement.current_version)} />
+          <Row label={ui("Jurisdiction")} value={[terms.state, terms.lga].filter(Boolean).join(' · ')} />
+          <Row label={ui("Rent")} value={formatCurrency(terms.rentAmount)} />
+          <Row label={ui("Commencement")} value={formatDate(terms.commencementDate)} />
+          <Row label={ui("Expiry")} value={formatDate(terms.expiryDate)} />
+          <Row label={ui("Deposit")} value={formatCurrency(terms.deposit)} />
+          <Row label={ui("Notice period")} value={`${terms.noticeConfiguration?.noticePeriodDays ?? '—'} days`} />
+          {terms.tenancyLawReference ? <Row label={ui("Governing law")} value={terms.tenancyLawReference} /> : null}
         </View>
 
         {Array.isArray(terms.statutoryClauses) && terms.statutoryClauses.length > 0 ? (
           <View style={styles.section}>
-            <AppText style={styles.sectionTitle}>Clauses</AppText>
+            <AppText style={styles.sectionTitle}>{ui("Clauses")}</AppText>
             {terms.statutoryClauses.map((clause, index) => (
               <AppText key={index} style={styles.clause}>• {clause}</AppText>
             ))}
@@ -244,9 +245,9 @@ const TenancyAgreementDetailScreen = ({ route, navigation }) => {
         ) : null}
 
         <View style={styles.section}>
-          <AppText style={styles.sectionTitle}>Signatures</AppText>
+          <AppText style={styles.sectionTitle}>{ui("Signatures")}</AppText>
           {signatures.length === 0 ? (
-            <AppText style={styles.mutedText}>No signatures recorded yet.</AppText>
+            <AppText style={styles.mutedText}>{ui("No signatures recorded yet.")}</AppText>
           ) : signatures.map((signature) => (
             <View key={signature.id} style={styles.signatureRow}>
               <Icon name="checkmark-circle" size={18} color={colors.success} />
@@ -262,16 +263,14 @@ const TenancyAgreementDetailScreen = ({ route, navigation }) => {
 
         {(canReview || canSign || canDecline) ? (
           <View style={styles.actionCard}>
-            <AppText style={styles.actionTitle}>Your action</AppText>
-            <AppText style={styles.actionHint}>
-              Signing is an electronic execution recorded with a timestamp, your account and the document hash.
-            </AppText>
+            <AppText style={styles.actionTitle}>{ui("Your action")}</AppText>
+            <AppText style={styles.actionHint}>{ui("Signing is an electronic execution recorded with a timestamp, your account and the document hash.")}</AppText>
 
             {canReview ? (
               <TouchableOpacity disabled={busy === 'review'} onPress={handleReview} style={styles.primaryButton}>
-                {busy === 'review' ? <ActivityIndicator color={colors.white} size="small" /> : (
+                {busy === "review" ? <ActivityIndicator color={colors.white} size="small" /> : (
                   <>
-                    <AppText style={styles.primaryButtonText}>I have reviewed the agreement</AppText>
+                    <AppText style={styles.primaryButtonText}>{ui("I have reviewed the agreement")}</AppText>
                     <Icon name="checkmark" size={17} color={colors.white} />
                   </>
                 )}
@@ -280,48 +279,44 @@ const TenancyAgreementDetailScreen = ({ route, navigation }) => {
 
             {canSign ? (
               <View style={styles.signBlock}>
-                <AppText style={styles.inputLabel}>Full name</AppText>
+                <AppText style={styles.inputLabel}>{ui("Full name")}</AppText>
                 <TextInput
                   value={signatoryName}
                   onChangeText={setSignatoryName}
-                  placeholder="Your full name"
+                  placeholder={ui("Your full name")}
                   placeholderTextColor={colors.muted}
                   style={styles.input}
                   autoCorrect={false}
                 />
                 <TouchableOpacity onPress={() => setConsent((current) => !current)} style={styles.consentRow}>
                   <Icon name={consent ? 'checkbox' : 'square-outline'} size={22} color={consent ? colors.success : colors.muted} />
-                  <AppText style={styles.consentText}>
-                    I confirm that I have reviewed this agreement and agree to sign it electronically.
-                  </AppText>
+                  <AppText style={styles.consentText}>{ui("I confirm that I have reviewed this agreement and agree to sign it electronically.")}</AppText>
                 </TouchableOpacity>
                 <TouchableOpacity disabled={busy === 'sign'} onPress={handleSign} style={styles.signButton}>
-                  {busy === 'sign' ? <ActivityIndicator color={colors.white} size="small" /> : (
+                  {busy === "sign" ? <ActivityIndicator color={colors.white} size="small" /> : (
                     <>
-                      <AppText style={styles.primaryButtonText}>Sign agreement</AppText>
+                      <AppText style={styles.primaryButtonText}>{ui("Sign agreement")}</AppText>
                       <Icon name="create" size={17} color={colors.white} />
                     </>
                   )}
                 </TouchableOpacity>
-                <AppText style={styles.offlineHint}>
-                  If your connection drops, your signature will not be recorded — reconnect and try again.
-                </AppText>
+                <AppText style={styles.offlineHint}>{ui("If your connection drops, your signature will not be recorded — reconnect and try again.")}</AppText>
               </View>
             ) : null}
 
             {canDecline ? (
               <View style={styles.declineBlock}>
-                <AppText style={styles.inputLabel}>Decline reason</AppText>
+                <AppText style={styles.inputLabel}>{ui("Decline reason")}</AppText>
                 <TextInput
                   value={declineReason}
                   onChangeText={setDeclineReason}
-                  placeholder="Reason for declining"
+                  placeholder={ui("Reason for declining")}
                   placeholderTextColor={colors.muted}
                   style={styles.input}
                 />
                 <TouchableOpacity disabled={busy === 'decline'} onPress={handleDecline} style={styles.declineButton}>
-                  {busy === 'decline' ? <ActivityIndicator color={colors.danger} size="small" /> : (
-                    <AppText style={styles.declineButtonText}>Decline agreement</AppText>
+                  {busy === "decline" ? <ActivityIndicator color={colors.danger} size="small" /> : (
+                    <AppText style={styles.declineButtonText}>{ui("Decline agreement")}</AppText>
                   )}
                 </TouchableOpacity>
               </View>
@@ -330,18 +325,18 @@ const TenancyAgreementDetailScreen = ({ route, navigation }) => {
         ) : null}
 
         <View style={styles.section}>
-          <AppText style={styles.sectionTitle}>History</AppText>
+          <AppText style={styles.sectionTitle}>{ui("History")}</AppText>
           {audit.length === 0 ? (
-            <AppText style={styles.mutedText}>No activity recorded yet.</AppText>
+            <AppText style={styles.mutedText}>{ui("No activity recorded yet.")}</AppText>
           ) : audit.map((event) => (
             <View key={event.id} style={styles.historyRow}>
               <View style={styles.historyDot} />
               <View style={styles.historyBody}>
                 <AppText style={styles.historyTitle}>
-                  {EVENT_LABELS[event.event_type] || event.event_type}{event.version ? ` · v${event.version}` : ''}
+                  {EVENT_LABELS[event.event_type] || event.event_type}{event.version ? ui(" · v{value0}", {value0: (event.version)}) : ''}
                 </AppText>
                 <AppText style={styles.historyMeta}>
-                  {formatDate(event.created_at)}{event.actor_role ? ` · ${event.actor_role}` : ''}
+                  {formatDate(event.created_at)}{event.actor_role ? ui(" · {value0}", {value0: (event.actor_role)}) : ''}
                 </AppText>
               </View>
             </View>

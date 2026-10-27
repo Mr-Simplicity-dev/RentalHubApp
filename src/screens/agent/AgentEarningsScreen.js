@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import {ActivityIndicator, RefreshControl, ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -11,6 +13,7 @@ import { getErrorMessage, pickList } from '../../utils/http';
 import AppText from '../../components/common/AppText';
 import { useTourTarget } from '../../components/tour/TourTarget';
 const AgentEarningsScreen = ({ navigation }) => {
+  const interfaceLanguage = useInterfaceLanguage();
   const { user } = useContext(AuthContext);
   const earningsTourTarget = useTourTarget('agent_commissions', { padding: 6, radius: 18 });
   const [loading, setLoading] = useState(true);
@@ -19,7 +22,7 @@ const AgentEarningsScreen = ({ navigation }) => {
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
-  }, [navigation]);
+  }, [navigation, interfaceLanguage]);
 
   const loadData = async () => {
     if (!user?.id) return;
@@ -37,7 +40,7 @@ const AgentEarningsScreen = ({ navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(error, 'Could not load earnings'),
       });
     } finally {
@@ -68,7 +71,7 @@ const AgentEarningsScreen = ({ navigation }) => {
         <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
           <Icon name="arrow-back" size={21} color={colors.ink} />
         </TouchableOpacity>
-        <AppText style={styles.topTitle}>Earnings</AppText>
+        <AppText style={styles.topTitle}>{ui("Earnings")}</AppText>
         <TouchableOpacity style={styles.refreshButton} onPress={loadData}>
           <Icon name="refresh" size={20} color={colors.blue} />
         </TouchableOpacity>
@@ -76,25 +79,25 @@ const AgentEarningsScreen = ({ navigation }) => {
 
       <View {...earningsTourTarget} style={styles.hero}>
         <View style={styles.heroIcon}><Icon name="wallet-outline" size={22} color={colors.gold} /></View>
-        <AppText style={styles.heroLabel}>TOTAL COMMISSION EARNED</AppText>
+        <AppText style={styles.heroLabel}>{ui("TOTAL COMMISSION EARNED")}</AppText>
         <AppText style={styles.heroAmount}>{amount(earnings?.total_earned)}</AppText>
-        <AppText style={styles.heroCaption}>A clear record of every commission generated.</AppText>
+        <AppText style={styles.heroCaption}>{ui("A clear record of every commission generated.")}</AppText>
       </View>
 
       <View style={styles.metrics}>
         <View style={styles.statCard}>
           <View style={[styles.statIcon, styles.paidIcon]}><Icon name="checkmark-circle-outline" size={19} color={colors.success} /></View>
-          <AppText style={styles.statLabel}>Paid</AppText>
+          <AppText style={styles.statLabel}>{ui("Paid")}</AppText>
           <AppText style={styles.statValue}>{amount(earnings?.total_paid)}</AppText>
         </View>
         <View style={styles.statCard}>
           <View style={[styles.statIcon, styles.pendingIcon]}><Icon name="time-outline" size={19} color="#A66B00" /></View>
-          <AppText style={styles.statLabel}>Pending</AppText>
+          <AppText style={styles.statLabel}>{ui("Pending")}</AppText>
           <AppText style={styles.statValue}>{amount(earnings?.total_pending)}</AppText>
         </View>
         <View style={styles.statCard}>
           <View style={[styles.statIcon, styles.countIcon]}><Icon name="receipt-outline" size={19} color={colors.blue} /></View>
-          <AppText style={styles.statLabel}>Transactions</AppText>
+          <AppText style={styles.statLabel}>{ui("Transactions")}</AppText>
           <AppText style={styles.statValue}>{Number(earnings?.transaction_count || 0)}</AppText>
         </View>
       </View>
@@ -104,21 +107,21 @@ const AgentEarningsScreen = ({ navigation }) => {
         onPress={() => navigation.navigate('AgentWithdrawals')}
       >
         <Icon name="cash-outline" size={19} color={colors.white} />
-        <AppText style={styles.primaryBtnText}>Request withdrawal</AppText>
+        <AppText style={styles.primaryBtnText}>{ui("Request withdrawal")}</AppText>
         <Icon name="arrow-forward" size={18} color={colors.white} />
       </TouchableOpacity>
 
       <View style={styles.sectionHeader}>
-        <AppText style={styles.sectionTitle}>Recent activity</AppText>
-        <AppText style={styles.sectionCount}>{history.length} entries</AppText>
+        <AppText style={styles.sectionTitle}>{ui("Recent activity")}</AppText>
+        <AppText style={styles.sectionCount}>{history.length}{ui(" entries")}</AppText>
       </View>
       {loading && history.length === 0 ? <ActivityIndicator color={colors.blue} /> : null}
 
       {!loading && history.length === 0 ? (
         <View style={styles.emptyCard}>
           <Icon name="document-text-outline" size={28} color={colors.muted} />
-          <AppText style={styles.emptyTitle}>No commission entries yet</AppText>
-          <AppText style={styles.muted}>New commissions will appear here automatically.</AppText>
+          <AppText style={styles.emptyTitle}>{ui("No commission entries yet")}</AppText>
+          <AppText style={styles.muted}>{ui("New commissions will appear here automatically.")}</AppText>
         </View>
       ) : null}
 
@@ -136,10 +139,10 @@ const AgentEarningsScreen = ({ navigation }) => {
           </View>
           <View style={styles.statusRow}>
             <View style={[styles.statusPill, statusStyle(entry.status)]}>
-              <AppText style={styles.statusText}>{entry.status || 'pending'}</AppText>
+              <AppText style={styles.statusText}>{entry.status || ui("pending")}</AppText>
             </View>
             {entry.payment_status ? (
-              <AppText style={styles.paymentText}>Payment: {entry.payment_status}</AppText>
+              <AppText style={styles.paymentText}>{ui("Payment: ")}{entry.payment_status}</AppText>
             ) : null}
           </View>
         </View>

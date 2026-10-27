@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useCallback, useEffect, useState } from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -31,6 +33,7 @@ const statusColor = (status) => {
 };
 
 const AdminAppealsScreen = () => {
+  useInterfaceLanguage();
   const [appeals, setAppeals] = useState([]);
   const [status, setStatus] = useState('pending');
   const [total, setTotal] = useState(0);
@@ -51,7 +54,7 @@ const AdminAppealsScreen = () => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Appeals unavailable',
+        text1: ui("Appeals unavailable"),
         text2: getErrorMessage(error, 'Could not load admin appeals'),
       });
     } finally {
@@ -67,12 +70,12 @@ const AdminAppealsScreen = () => {
     setActionId(`${appeal.id}-under_review`);
     try {
       await appealsService.markUnderReview(appeal.id);
-      Toast.show({ type: 'success', text1: 'Appeal marked under review' });
+      Toast.show({ type: 'success', text1: ui("Appeal marked under review") });
       await loadAppeals();
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Update failed',
+        text1: ui("Update failed"),
         text2: getErrorMessage(error, 'Could not update appeal'),
       });
     } finally {
@@ -92,14 +95,14 @@ const AdminAppealsScreen = () => {
       );
       Toast.show({
         type: 'success',
-        text1: reviewAction.status === 'upheld' ? 'Appeal upheld' : 'Appeal dismissed',
+        text1: reviewAction.status === "upheld" ? ui("Appeal upheld") : ui("Appeal dismissed"),
       });
       setReviewAction(null);
       await loadAppeals();
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Review failed',
+        text1: ui("Review failed"),
         text2: getErrorMessage(error, 'Could not review appeal'),
       });
     } finally {
@@ -117,7 +120,7 @@ const AdminAppealsScreen = () => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Appeal details unavailable',
+        text1: ui("Appeal details unavailable"),
         text2: getErrorMessage(error, 'Could not open this appeal'),
       });
     } finally {
@@ -128,11 +131,11 @@ const AdminAppealsScreen = () => {
   const header = (
     <>
       <PremiumHero
-        eyebrow="GOVERNANCE"
-        title="Admin appeals"
-        subtitle="Review appeals against property and identity-verification decisions within your jurisdiction."
+        eyebrow={ui("GOVERNANCE")}
+        title={ui("Admin appeals")}
+        subtitle={ui("Review appeals against property and identity-verification decisions within your jurisdiction.")}
         icon="scale-outline"
-        right={<StatusPill label={`${total} total`} color={colors.blue} />}
+        right={<StatusPill label={ui("{value0} total", {value0: (total)})} color={colors.blue} />}
       />
       <View style={styles.filters}>
         {STATUS_FILTERS.map(([value, label]) => (
@@ -159,8 +162,8 @@ const AdminAppealsScreen = () => {
         refreshing={refreshing}
         onRefresh={loadAppeals}
         header={header}
-        emptyTitle={`No ${status ? status.replace(/_/g, ' ') : ''} appeals`}
-        emptyMessage="Appeals matching this filter will appear here."
+        emptyTitle={ui("No {value0} appeals", {value0: (status ? status.replace(/_/g, ' ') : '')})}
+        emptyMessage={ui("Appeals matching this filter will appear here.")}
         emptyIcon="scale-outline"
         renderItem={({ item }) => {
           const canResolve = ['pending', 'under_review'].includes(item.status);
@@ -168,8 +171,7 @@ const AdminAppealsScreen = () => {
             <PremiumCard>
               <View style={styles.cardHeader}>
                 <View style={styles.cardCopy}>
-                  <AppText style={styles.title}>
-                    Appeal #{item.id} - {String(item.appeal_type || 'appeal').replace(/_/g, ' ')}
+                  <AppText style={styles.title}>{ui("Appeal #")}{item.id} - {String(item.appeal_type || 'appeal').replace(/_/g, ' ')}
                   </AppText>
                   <AppText style={styles.appellant}>
                     {item.appellant_name || item.appellant_email || 'Unknown appellant'}
@@ -179,25 +181,25 @@ const AdminAppealsScreen = () => {
               </View>
               <InfoRow
                 icon="chatbox-ellipses-outline"
-                label="Appeal reason"
+                label={ui("Appeal reason")}
                 value={item.appeal_reason || 'No reason provided'}
               />
               {item.property_title || item.property_id ? (
                 <InfoRow
                   icon="business-outline"
-                  label="Property"
+                  label={ui("Property")}
                   value={item.property_title || `Property #${item.property_id}`}
                 />
               ) : null}
               <InfoRow
                 icon="alert-circle-outline"
-                label="Original rejection"
+                label={ui("Original rejection")}
                 value={item.original_rejection_reason || 'Not provided'}
               />
 
-              {item.status === 'pending' ? (
+              {item.status === "pending" ? (
                 <PremiumButton
-                  title="Mark under review"
+                  title={ui("Mark under review")}
                   variant="secondary"
                   loading={actionId === `${item.id}-under_review`}
                   onPress={() => markUnderReview(item)}
@@ -208,13 +210,13 @@ const AdminAppealsScreen = () => {
               {canResolve ? (
                 <View style={styles.actions}>
                   <PremiumButton
-                    title="Uphold"
+                    title={ui("Uphold")}
                     loading={actionId === `${item.id}-details-upheld`}
                     onPress={() => openFinalReview(item, 'upheld')}
                     style={styles.actionButton}
                   />
                   <PremiumButton
-                    title="Dismiss"
+                    title={ui("Dismiss")}
                     variant="danger"
                     loading={actionId === `${item.id}-details-dismissed`}
                     onPress={() => openFinalReview(item, 'dismissed')}
@@ -229,11 +231,11 @@ const AdminAppealsScreen = () => {
 
       <OperationNoteModal
         visible={Boolean(reviewAction)}
-        title={reviewAction?.status === 'upheld' ? 'Uphold appeal' : 'Dismiss appeal'}
-        message={`Record the reason for the final decision on appeal #${reviewAction?.appeal?.id || ''}.`}
-        label="Review note"
-        placeholder="Explain this appeal decision"
-        confirmText={reviewAction?.status === 'upheld' ? 'Uphold appeal' : 'Dismiss appeal'}
+        title={reviewAction?.status === "upheld" ? 'Uphold appeal' : 'Dismiss appeal'}
+        message={ui("Record the reason for the final decision on appeal #{value0}.", {value0: (reviewAction?.appeal?.id || '')})}
+        label={ui("Review note")}
+        placeholder={ui("Explain this appeal decision")}
+        confirmText={reviewAction?.status === "upheld" ? 'Uphold appeal' : 'Dismiss appeal'}
         icon="scale-outline"
         variant={reviewAction?.status === 'dismissed' ? 'danger' : 'primary'}
         loading={Boolean(actionId)}

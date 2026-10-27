@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useState } from 'react';
 import { KeyboardAvoidingView, Modal, Platform, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import TextInput from '../common/AppTextInput';
@@ -9,26 +11,26 @@ import { colors, radius, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const propertyTypes = [
-  { label: 'Any property type', value: '' },
-  { label: 'Apartment', value: 'apartment' },
-  { label: 'House', value: 'house' },
-  { label: 'Duplex', value: 'duplex' },
-  { label: 'Bungalow', value: 'bungalow' },
-  { label: 'Studio', value: 'studio' },
-  { label: 'Mansion', value: 'mansion' },
-  { label: 'Commercial', value: 'commercial' },
-  { label: 'Short let', value: 'short_let' },
+  { get "label"() { return ui("Any property type"); }, value: '' },
+  { get "label"() { return ui("Apartment"); }, value: 'apartment' },
+  { get "label"() { return ui("House"); }, value: 'house' },
+  { get "label"() { return ui("Duplex"); }, value: 'duplex' },
+  { get "label"() { return ui("Bungalow"); }, value: 'bungalow' },
+  { get "label"() { return ui("Studio"); }, value: 'studio' },
+  { get "label"() { return ui("Mansion"); }, value: 'mansion' },
+  { get "label"() { return ui("Commercial"); }, value: 'commercial' },
+  { get "label"() { return ui("Short let"); }, value: 'short_let' },
 ];
 
 const frequencies = [
-  { label: 'Any payment schedule', value: '' },
-  { label: 'Monthly', value: 'monthly' },
-  { label: 'Yearly', value: 'yearly' },
-  { label: 'Quarterly', value: 'quarterly' },
+  { get "label"() { return ui("Any payment schedule"); }, value: '' },
+  { get "label"() { return ui("Monthly"); }, value: 'monthly' },
+  { get "label"() { return ui("Yearly"); }, value: 'yearly' },
+  { get "label"() { return ui("Quarterly"); }, value: 'quarterly' },
 ];
 
 const numberOptions = [
-  { label: 'Any', value: '' },
+  { get "label"() { return ui("Any"); }, value: '' },
   { label: '1+', value: '1' },
   { label: '2+', value: '2' },
   { label: '3+', value: '3' },
@@ -59,6 +61,7 @@ const normalise = (source = {}) => ({
 });
 
 const PropertyFilters = ({ visible, onClose, onApply, initialFilters = {} }) => {
+  useInterfaceLanguage();
   const [filters, setFilters] = useState(normalise(initialFilters));
   const [showPicker, setShowPicker] = useState(null);
 
@@ -96,7 +99,7 @@ const PropertyFilters = ({ visible, onClose, onApply, initialFilters = {} }) => 
         <View>
           <AppText style={styles.selectLabel}>{label}</AppText>
           <AppText style={[styles.selectValue, !value && styles.placeholder]}>
-            {selected?.label || `Any ${label.toLowerCase()}`}
+            {selected?.label || ui("Any {value0}", {value0: (label.toLowerCase())})}
           </AppText>
         </View>
         <Icon name="chevron-down" size={18} color={colors.muted} />
@@ -116,11 +119,11 @@ const PropertyFilters = ({ visible, onClose, onApply, initialFilters = {} }) => 
           style={styles.keyboardView}>
           <View style={styles.header}>
             <View>
-              <AppText style={styles.eyebrow}>REFINE RESULTS</AppText>
-              <AppText style={styles.title}>Property filters</AppText>
+              <AppText style={styles.eyebrow}>{ui("REFINE RESULTS")}</AppText>
+              <AppText style={styles.title}>{ui("Property filters")}</AppText>
             </View>
             <TouchableOpacity
-              accessibilityLabel="Close filters"
+              accessibilityLabel={ui("Close filters")}
               onPress={onClose}
               style={styles.closeButton}>
               <Icon name="close" size={22} color={colors.navy} />
@@ -131,14 +134,14 @@ const PropertyFilters = ({ visible, onClose, onApply, initialFilters = {} }) => 
             contentContainerStyle={styles.body}
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}>
-            <AppText style={styles.sectionTitle}>Budget</AppText>
+            <AppText style={styles.sectionTitle}>{ui("Budget")}</AppText>
             <View style={styles.priceRow}>
               <View style={styles.priceField}>
                 <AppText style={styles.currency}>₦</AppText>
                 <TextInput
                   keyboardType="numeric"
                   onChangeText={(value) => updateFilter('min_price', value)}
-                  placeholder="Minimum"
+                  placeholder={ui("Minimum")}
                   placeholderTextColor="#96A2B8"
                   style={styles.priceInput}
                   value={filters.min_price}
@@ -149,7 +152,7 @@ const PropertyFilters = ({ visible, onClose, onApply, initialFilters = {} }) => 
                 <TextInput
                   keyboardType="numeric"
                   onChangeText={(value) => updateFilter('max_price', value)}
-                  placeholder="Maximum"
+                  placeholder={ui("Maximum")}
                   placeholderTextColor="#96A2B8"
                   style={styles.priceInput}
                   value={filters.max_price}
@@ -157,7 +160,7 @@ const PropertyFilters = ({ visible, onClose, onApply, initialFilters = {} }) => 
               </View>
             </View>
 
-            <AppText style={styles.sectionTitle}>Property</AppText>
+            <AppText style={styles.sectionTitle}>{ui("Property")}</AppText>
             {renderSelect('Property type', filters.property_type, propertyTypes, 'property_type')}
             <View style={styles.twoColumn}>
               <View style={styles.column}>
@@ -174,12 +177,12 @@ const PropertyFilters = ({ visible, onClose, onApply, initialFilters = {} }) => 
               'payment_frequency'
             )}
 
-            <AppText style={styles.sectionTitle}>Location</AppText>
+            <AppText style={styles.sectionTitle}>{ui("Location")}</AppText>
             <View style={styles.textField}>
               <Icon name="location-outline" size={19} color={colors.muted} />
               <TextInput
                 onChangeText={(value) => updateFilter('city', value)}
-                placeholder="City or area"
+                placeholder={ui("City or area")}
                 placeholderTextColor="#96A2B8"
                 style={styles.textInput}
                 value={filters.city}
@@ -189,7 +192,7 @@ const PropertyFilters = ({ visible, onClose, onApply, initialFilters = {} }) => 
               <Icon name="map-outline" size={19} color={colors.muted} />
               <TextInput
                 onChangeText={(value) => updateFilter('state', value)}
-                placeholder="State"
+                placeholder={ui("State")}
                 placeholderTextColor="#96A2B8"
                 style={styles.textInput}
                 value={filters.state}
@@ -201,10 +204,10 @@ const PropertyFilters = ({ visible, onClose, onApply, initialFilters = {} }) => 
             <TouchableOpacity
               onPress={() => setFilters(emptyFilters)}
               style={styles.resetButton}>
-              <AppText style={styles.resetText}>Reset all</AppText>
+              <AppText style={styles.resetText}>{ui("Reset all")}</AppText>
             </TouchableOpacity>
             <Button
-              title={`Show properties${activeCount ? ` (${activeCount})` : ''}`}
+              title={ui("Show properties{value0}", {value0: (activeCount ? ui(" ({value0})", {value0: (activeCount)}) : '')})}
               onPress={handleApply}
               style={styles.applyButton}
             />
@@ -215,12 +218,12 @@ const PropertyFilters = ({ visible, onClose, onApply, initialFilters = {} }) => 
           visible={Boolean(showPicker)}
           title={
             showPicker === 'property_type'
-              ? 'Property type'
+              ? ui("Property type")
               : showPicker === 'payment_frequency'
                 ? 'Payment schedule'
-                : showPicker === 'bedrooms'
-                  ? 'Bedrooms'
-                  : 'Bathrooms'
+                : showPicker === "bedrooms"
+                  ? ui("Bedrooms")
+                  : ui("Bathrooms")
           }
           options={
             showPicker === 'property_type'

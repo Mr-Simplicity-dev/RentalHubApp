@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import { typeScale } from '../../theme';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -11,6 +13,7 @@ import { getErrorMessage, pickList } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
 const TenancyGracePanel = ({ userType = 'tenant' }) => {
+  useInterfaceLanguage();
   const isTenant = userType === 'tenant';
   const isLandlord = userType === 'landlord';
 
@@ -46,7 +49,7 @@ const TenancyGracePanel = ({ userType = 'tenant' }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Grace period',
+        text1: ui("Grace period"),
         text2: getErrorMessage(error, 'Could not load grace data'),
       });
     } finally {
@@ -62,7 +65,7 @@ const TenancyGracePanel = ({ userType = 'tenant' }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Grace requests',
+        text1: ui("Grace requests"),
         text2: getErrorMessage(error, 'Could not load requests'),
       });
     } finally {
@@ -78,11 +81,11 @@ const TenancyGracePanel = ({ userType = 'tenant' }) => {
 
   const submitTenantRequest = async () => {
     if (!form.payment_id) {
-      Toast.show({ type: 'error', text1: 'Select a tenancy payment' });
+      Toast.show({ type: 'error', text1: ui("Select a tenancy payment") });
       return;
     }
     if (!form.requested_duration_days && !form.requested_duration_months) {
-      Toast.show({ type: 'error', text1: 'Enter requested duration (days or months)' });
+      Toast.show({ type: 'error', text1: ui("Enter requested duration (days or months)") });
       return;
     }
 
@@ -97,7 +100,7 @@ const TenancyGracePanel = ({ userType = 'tenant' }) => {
       if (response.success === false) {
         throw new Error(response.message || 'Request failed');
       }
-      Toast.show({ type: 'success', text1: 'Grace request submitted' });
+      Toast.show({ type: 'success', text1: ui("Grace request submitted") });
       setForm({
         payment_id: '',
         requested_duration_days: '',
@@ -108,7 +111,7 @@ const TenancyGracePanel = ({ userType = 'tenant' }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Request failed',
+        text1: ui("Request failed"),
         text2: getErrorMessage(error, 'Could not submit grace request'),
       });
     } finally {
@@ -118,7 +121,7 @@ const TenancyGracePanel = ({ userType = 'tenant' }) => {
 
   const respondLandlord = async (requestId, action) => {
     if (action === 'reject' && !rejectNote.trim()) {
-      Toast.show({ type: 'error', text1: 'Enter a rejection reason' });
+      Toast.show({ type: 'error', text1: ui("Enter a rejection reason") });
       return;
     }
 
@@ -138,7 +141,7 @@ const TenancyGracePanel = ({ userType = 'tenant' }) => {
       if (response.success === false) {
         throw new Error(response.message || 'Action failed');
       }
-      Toast.show({ type: 'success', text1: `Request ${action}d` });
+      Toast.show({ type: 'success', text1: ui("Request {value0}d", {value0: (ui(action))}) });
       setActiveRequestId(null);
       setRejectNote('');
       setApproveForm({
@@ -150,7 +153,7 @@ const TenancyGracePanel = ({ userType = 'tenant' }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Action failed',
+        text1: ui("Action failed"),
         text2: getErrorMessage(error, 'Could not update request'),
       });
     } finally {
@@ -166,13 +169,13 @@ const TenancyGracePanel = ({ userType = 'tenant' }) => {
 
   return (
     <View style={styles.wrap}>
-      <AppText style={styles.heading}>Tenancy Grace Period</AppText>
+      <AppText style={styles.heading}>{ui("Tenancy Grace Period")}</AppText>
 
       {isTenant ? (
         <>
-          <AppText style={styles.subheading}>Request extra time after tenancy expiry.</AppText>
+          <AppText style={styles.subheading}>{ui("Request extra time after tenancy expiry.")}</AppText>
           <SelectField
-            label="Tenancy payment"
+            label={ui("Tenancy payment")}
             value={
               selectedPayment
                 ? `${selectedPayment.property_title || 'Property'} · ${new Date(
@@ -180,19 +183,19 @@ const TenancyGracePanel = ({ userType = 'tenant' }) => {
                   ).toLocaleDateString()}`
                 : ''
             }
-            placeholder="Select payment"
+            placeholder={ui("Select payment")}
             onPress={() => setShowPaymentPicker(true)}
           />
           <TextInput
             style={styles.input}
-            placeholder="Requested days"
+            placeholder={ui("Requested days")}
             keyboardType="number-pad"
             value={form.requested_duration_days}
             onChangeText={(value) => setForm((prev) => ({ ...prev, requested_duration_days: value }))}
           />
           <TextInput
             style={styles.input}
-            placeholder="Requested months"
+            placeholder={ui("Requested months")}
             keyboardType="number-pad"
             value={form.requested_duration_months}
             onChangeText={(value) =>
@@ -201,19 +204,19 @@ const TenancyGracePanel = ({ userType = 'tenant' }) => {
           />
           <TextInput
             style={styles.input}
-            placeholder="Note to landlord (optional)"
+            placeholder={ui("Note to landlord (optional)")}
             value={form.tenant_note}
             onChangeText={(value) => setForm((prev) => ({ ...prev, tenant_note: value }))}
           />
-          <Button title="Submit Grace Request" onPress={submitTenantRequest} loading={loading} />
+          <Button title={ui("Submit Grace Request")} onPress={submitTenantRequest} loading={loading} />
 
           {myRequests.length > 0 ? (
             <>
-              <AppText style={styles.sectionTitle}>Your requests</AppText>
+              <AppText style={styles.sectionTitle}>{ui("Your requests")}</AppText>
               {myRequests.map((item) => (
                 <View key={item.id} style={styles.card}>
-                  <AppText style={styles.cardTitle}>{item.property_title || 'Property'}</AppText>
-                  <AppText style={styles.meta}>Status: {item.status}</AppText>
+                  <AppText style={styles.cardTitle}>{item.property_title || ui("Property")}</AppText>
+                  <AppText style={styles.meta}>{ui("Status: ")}{item.status}</AppText>
                 </View>
               ))}
             </>
@@ -221,7 +224,7 @@ const TenancyGracePanel = ({ userType = 'tenant' }) => {
 
           <OptionPickerModal
             visible={showPaymentPicker}
-            title="Select tenancy"
+            title={ui("Select tenancy")}
             options={eligiblePayments}
             selectedValue={form.payment_id}
             getOptionLabel={(item) =>
@@ -245,7 +248,7 @@ const TenancyGracePanel = ({ userType = 'tenant' }) => {
                 style={[styles.chip, landlordFilter === filter && styles.chipActive]}
                 onPress={() => setLandlordFilter(filter)}
               >
-                <AppText 
+                <AppText
                   style={[styles.chipText, landlordFilter === filter && styles.chipTextActive]}
                 >
                   {filter.replace(/_/g, ' ')}
@@ -253,18 +256,18 @@ const TenancyGracePanel = ({ userType = 'tenant' }) => {
               </TouchableOpacity>
             ))}
           </View>
-          <Button title="Refresh" onPress={loadLandlordData} loading={loading} />
+          <Button title={ui("Refresh")} onPress={loadLandlordData} loading={loading} />
           {landlordRequests.map((item) => (
             <View key={item.id} style={styles.card}>
               <AppText style={styles.cardTitle}>
-                {item.tenant_name || 'Tenant'} · {item.property_title || 'Property'}
+                {item.tenant_name || ui("Tenant")} · {item.property_title || ui("Property")}
               </AppText>
-              <AppText style={styles.meta}>Status: {item.status}</AppText>
+              <AppText style={styles.meta}>{ui("Status: ")}{item.status}</AppText>
               {activeRequestId === item.id ? (
                 <>
                   <TextInput
                     style={styles.input}
-                    placeholder="Approved days"
+                    placeholder={ui("Approved days")}
                     keyboardType="number-pad"
                     value={approveForm.approved_duration_days}
                     onChangeText={(value) =>
@@ -273,7 +276,7 @@ const TenancyGracePanel = ({ userType = 'tenant' }) => {
                   />
                   <TextInput
                     style={styles.input}
-                    placeholder="Approved months"
+                    placeholder={ui("Approved months")}
                     keyboardType="number-pad"
                     value={approveForm.approved_duration_months}
                     onChangeText={(value) =>
@@ -282,7 +285,7 @@ const TenancyGracePanel = ({ userType = 'tenant' }) => {
                   />
                   <TextInput
                     style={styles.input}
-                    placeholder="Landlord note"
+                    placeholder={ui("Landlord note")}
                     value={approveForm.landlord_note}
                     onChangeText={(value) =>
                       setApproveForm((prev) => ({ ...prev, landlord_note: value }))
@@ -290,25 +293,25 @@ const TenancyGracePanel = ({ userType = 'tenant' }) => {
                   />
                   <TextInput
                     style={styles.input}
-                    placeholder="Rejection reason"
+                    placeholder={ui("Rejection reason")}
                     value={rejectNote}
                     onChangeText={setRejectNote}
                   />
                   <View style={styles.row}>
                     <TouchableOpacity onPress={() => respondLandlord(item.id, 'approve')}>
-                      <AppText style={styles.link}>Approve</AppText>
+                      <AppText style={styles.link}>{ui("Approve")}</AppText>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => respondLandlord(item.id, 'reject')}>
-                      <AppText style={styles.danger}>Reject</AppText>
+                      <AppText style={styles.danger}>{ui("Reject")}</AppText>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => setActiveRequestId(null)}>
-                      <AppText style={styles.meta}>Cancel</AppText>
+                      <AppText style={styles.meta}>{ui("Cancel")}</AppText>
                     </TouchableOpacity>
                   </View>
                 </>
               ) : (
                 <TouchableOpacity onPress={() => setActiveRequestId(item.id)}>
-                  <AppText style={styles.link}>Review</AppText>
+                  <AppText style={styles.link}>{ui("Review")}</AppText>
                 </TouchableOpacity>
               )}
             </View>
