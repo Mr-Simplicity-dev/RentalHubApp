@@ -1,3 +1,5 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Alert, FlatList, Image, Modal, ScrollView, StyleSheet, Switch, TouchableOpacity, View } from 'react-native';
 import TextInput from '../../components/common/AppTextInput';
@@ -68,92 +70,92 @@ const sections = [
 // An item either switches an inline section (`section`) or opens a separate screen (`route`).
 const WORKSPACE_GROUPS = [
   {
-    title: 'People & Verification',
+    get "title"() { return ui("People & Verification"); },
     icon: 'people-outline',
     items: [
-      { label: 'Users', section: 'users', icon: 'people-outline' },
-      { label: 'Verifications', section: 'verifications', icon: 'shield-checkmark-outline' },
-      { label: 'Lawyer Invites', section: 'lawyer_invites', icon: 'mail-outline' },
-      { label: 'Admin Management', section: 'admin_management', icon: 'construct-outline' },
-      { label: 'Pending Approvals', section: 'pending_approvals', icon: 'hourglass-outline' },
-      { label: 'Assisted registration', route: 'AssistedRegistration', icon: 'person-add-outline' },
-      { label: 'Admin Accounts & Reminders', route: 'AdminAccounts', icon: 'person-add-outline' },
+      { get "label"() { return ui("Users"); }, section: 'users', icon: 'people-outline' },
+      { get "label"() { return ui("Verifications"); }, section: 'verifications', icon: 'shield-checkmark-outline' },
+      { get "label"() { return ui("Lawyer Invites"); }, section: 'lawyer_invites', icon: 'mail-outline' },
+      { get "label"() { return ui("Admin Management"); }, section: 'admin_management', icon: 'construct-outline' },
+      { get "label"() { return ui("Pending Approvals"); }, section: 'pending_approvals', icon: 'hourglass-outline' },
+      { get "label"() { return ui("Assisted registration"); }, route: 'AssistedRegistration', icon: 'person-add-outline' },
+      { get "label"() { return ui("Admin Accounts & Reminders"); }, route: 'AdminAccounts', icon: 'person-add-outline' },
     ],
   },
   {
-    title: 'Properties & Trust',
+    get "title"() { return ui("Properties & Trust"); },
     icon: 'home-outline',
     items: [
-      { label: 'Properties', section: 'properties', icon: 'home-outline' },
-      { label: 'Property Requests', section: 'property_requests', icon: 'document-text-outline' },
-      { label: 'Moderation', section: 'moderation', icon: 'shield-outline' },
-      { label: 'Content Moderation', route: 'ContentModeration', icon: 'images-outline' },
-      { label: 'Ratings & Credentials', route: 'ModerationHub', icon: 'star-outline' },
-      { label: 'Reports', section: 'reports', icon: 'flag-outline' },
-      { label: 'Fraud', section: 'fraud', icon: 'alert-circle-outline' },
+      { get "label"() { return ui("Properties"); }, section: 'properties', icon: 'home-outline' },
+      { get "label"() { return ui("Property Requests"); }, section: 'property_requests', icon: 'document-text-outline' },
+      { get "label"() { return ui("Moderation"); }, section: 'moderation', icon: 'shield-outline' },
+      { get "label"() { return ui("Content Moderation"); }, route: 'ContentModeration', icon: 'images-outline' },
+      { get "label"() { return ui("Ratings & Credentials"); }, route: 'ModerationHub', icon: 'star-outline' },
+      { get "label"() { return ui("Reports"); }, section: 'reports', icon: 'flag-outline' },
+      { get "label"() { return ui("Fraud"); }, section: 'fraud', icon: 'alert-circle-outline' },
     ],
   },
   {
-    title: 'Money',
+    get "title"() { return ui("Money"); },
     icon: 'cash-outline',
     items: [
-      { label: 'Pricing', section: 'pricing', icon: 'pricetags-outline' },
-      { label: 'Rent Savings Setup Fees', route: 'RentSavingsSetupFees', icon: 'cash-outline' },
-      { label: 'Rent Savings Withdrawals', route: 'RentSavingsAdmin', icon: 'wallet-outline' },
-      { label: 'Rent Calculator Fees', route: 'RentCalculatorFeesAdmin', icon: 'calculator-outline' },
-      { label: 'Agent Commissions', route: 'AgentCommissionAdmin', icon: 'trending-up-outline' },
-      { label: 'Registration Access', section: 'registration_access', icon: 'key-outline' },
-      { label: 'SFA Permissions', section: 'sfa_permissions', icon: 'lock-open-outline' },
+      { get "label"() { return ui("Pricing"); }, section: 'pricing', icon: 'pricetags-outline' },
+      { get "label"() { return ui("Rent Savings Setup Fees"); }, route: 'RentSavingsSetupFees', icon: 'cash-outline' },
+      { get "label"() { return ui("Rent Savings Withdrawals"); }, route: 'RentSavingsAdmin', icon: 'wallet-outline' },
+      { get "label"() { return ui("Rent Calculator Fees"); }, route: 'RentCalculatorFeesAdmin', icon: 'calculator-outline' },
+      { get "label"() { return ui("Agent Commissions"); }, route: 'AgentCommissionAdmin', icon: 'trending-up-outline' },
+      { get "label"() { return ui("Registration Access"); }, section: 'registration_access', icon: 'key-outline' },
+      { get "label"() { return ui("SFA Permissions"); }, section: 'sfa_permissions', icon: 'lock-open-outline' },
     ],
   },
   {
-    title: 'Growth & Marketing',
+    get "title"() { return ui("Growth & Marketing"); },
     icon: 'trending-up-outline',
     items: [
-      { label: 'Analytics', section: 'analytics', icon: 'analytics-outline' },
-      { label: 'Survey Analytics', route: 'SurveyAnalytics', icon: 'clipboard-outline' },
-      { label: 'Tour Analytics', route: 'TourAnalytics', icon: 'map-outline' },
-      { label: 'Email & SMS Marketing', route: 'MarketingOps', icon: 'mail-outline' },
-      { label: 'WhatsApp Marketing', route: 'WhatsappMarketing', icon: 'logo-whatsapp' },
-      { label: 'Campaign Builder', route: 'MarketingBuilder', icon: 'megaphone-outline' },
-      { label: 'Email Template Editor', route: 'EmailTemplateEditor', icon: 'code-outline' },
-      { label: 'SEO Tools', route: 'SeoTools', icon: 'search-outline' },
-      { label: 'Diaspora Desk', route: 'DiasporaDesk', icon: 'globe-outline' },
-      { label: 'Broadcasts', section: 'broadcasts', icon: 'radio-outline' },
-      { label: 'Ad Spaces', section: 'ad_spaces', icon: 'image-outline' },
+      { get "label"() { return ui("Analytics"); }, section: 'analytics', icon: 'analytics-outline' },
+      { get "label"() { return ui("Survey Analytics"); }, route: 'SurveyAnalytics', icon: 'clipboard-outline' },
+      { get "label"() { return ui("Tour Analytics"); }, route: 'TourAnalytics', icon: 'map-outline' },
+      { get "label"() { return ui("Email & SMS Marketing"); }, route: 'MarketingOps', icon: 'mail-outline' },
+      { get "label"() { return ui("WhatsApp Marketing"); }, route: 'WhatsappMarketing', icon: 'logo-whatsapp' },
+      { get "label"() { return ui("Campaign Builder"); }, route: 'MarketingBuilder', icon: 'megaphone-outline' },
+      { get "label"() { return ui("Email Template Editor"); }, route: 'EmailTemplateEditor', icon: 'code-outline' },
+      { get "label"() { return ui("SEO Tools"); }, route: 'SeoTools', icon: 'search-outline' },
+      { get "label"() { return ui("Diaspora Desk"); }, route: 'DiasporaDesk', icon: 'globe-outline' },
+      { get "label"() { return ui("Broadcasts"); }, section: 'broadcasts', icon: 'radio-outline' },
+      { get "label"() { return ui("Ad Spaces"); }, section: 'ad_spaces', icon: 'image-outline' },
     ],
   },
   {
-    title: 'Operations',
+    get "title"() { return ui("Operations"); },
     icon: 'construct-outline',
     items: [
-      { label: 'Fumigation Oversight', route: 'SuperAdminFumigationDashboard', icon: 'sparkles-outline' },
-      { label: 'Transport Oversight', route: 'SuperAdminTransportationDashboard', icon: 'car-outline' },
-      { label: 'Support Governance', route: 'SuperAdminSupportGovernance', icon: 'headset-outline' },
-      { label: 'Notifications', route: 'Notifications', icon: 'notifications-outline' },
-      { label: 'Appeals', route: 'AdminAppeals', icon: 'git-compare-outline' },
-      { label: 'Voice Monitor', route: 'VoiceMonitor', icon: 'call-outline' },
-      { label: 'Court Bundle', route: 'CourtBundle', icon: 'briefcase-outline' },
-      { label: 'State Admin Management', route: 'FinanceStateAdmins', icon: 'business-outline' },
-      { label: 'Service Bookings', route: 'ServiceBookings', icon: 'calendar-outline' },
+      { get "label"() { return ui("Fumigation Oversight"); }, route: 'SuperAdminFumigationDashboard', icon: 'sparkles-outline' },
+      { get "label"() { return ui("Transport Oversight"); }, route: 'SuperAdminTransportationDashboard', icon: 'car-outline' },
+      { get "label"() { return ui("Support Governance"); }, route: 'SuperAdminSupportGovernance', icon: 'headset-outline' },
+      { get "label"() { return ui("Notifications"); }, route: 'Notifications', icon: 'notifications-outline' },
+      { get "label"() { return ui("Appeals"); }, route: 'AdminAppeals', icon: 'git-compare-outline' },
+      { get "label"() { return ui("Voice Monitor"); }, route: 'VoiceMonitor', icon: 'call-outline' },
+      { get "label"() { return ui("Court Bundle"); }, route: 'CourtBundle', icon: 'briefcase-outline' },
+      { get "label"() { return ui("State Admin Management"); }, route: 'FinanceStateAdmins', icon: 'business-outline' },
+      { get "label"() { return ui("Service Bookings"); }, route: 'ServiceBookings', icon: 'calendar-outline' },
     ],
   },
   {
-    title: 'Platform',
+    get "title"() { return ui("Platform"); },
     icon: 'server-outline',
     items: [
-      { label: 'Platform Lawyers', section: 'platform_lawyers', icon: 'briefcase-outline' },
-      { label: 'Platform Agents', section: 'platform_agents', icon: 'people-circle-outline' },
-      { label: 'Lawyer Activity', section: 'lawyer_activity', icon: 'pulse-outline' },
-      { label: 'Flags', section: 'flags', icon: 'toggle-outline' },
-      { label: 'Logs', section: 'logs', icon: 'list-outline' },
+      { get "label"() { return ui("Platform Lawyers"); }, section: 'platform_lawyers', icon: 'briefcase-outline' },
+      { get "label"() { return ui("Platform Agents"); }, section: 'platform_agents', icon: 'people-circle-outline' },
+      { get "label"() { return ui("Lawyer Activity"); }, section: 'lawyer_activity', icon: 'pulse-outline' },
+      { get "label"() { return ui("Flags"); }, section: 'flags', icon: 'toggle-outline' },
+      { get "label"() { return ui("Logs"); }, section: 'logs', icon: 'list-outline' },
     ],
   },
 ];
 
 const sectionOptions = [
-  { value: '__home', label: 'Home', __header: true },
-  { value: 'overview', label: 'Overview', section: 'overview', icon: 'grid-outline' },
+  { value: '__home', get "label"() { return ui("Home"); }, __header: true },
+  { value: 'overview', get "label"() { return ui("Overview"); }, section: 'overview', icon: 'grid-outline' },
   ...WORKSPACE_GROUPS.flatMap((group) => [
     { value: `__header_${group.title}`, label: group.title, __header: true },
     ...group.items.map((item) => ({
@@ -225,12 +227,12 @@ const defaultPricingForm = {
 };
 
 const fallbackAdPlacements = [
-  { value: 'home_top', label: 'Home top banner' },
-  { value: 'home_featured', label: 'Home featured section' },
-  { value: 'dashboard_top', label: 'Dashboard top banner' },
-  { value: 'dashboard_inline', label: 'Dashboard inline banner' },
-  { value: 'properties_top', label: 'Properties top banner' },
-  { value: 'properties_inline', label: 'Properties inline banner' },
+  { value: 'home_top', get "label"() { return ui("Home top banner"); } },
+  { value: 'home_featured', get "label"() { return ui("Home featured section"); } },
+  { value: 'dashboard_top', get "label"() { return ui("Dashboard top banner"); } },
+  { value: 'dashboard_inline', get "label"() { return ui("Dashboard inline banner"); } },
+  { value: 'properties_top', get "label"() { return ui("Properties top banner"); } },
+  { value: 'properties_inline', get "label"() { return ui("Properties inline banner"); } },
 ];
 
 const defaultAdSpaceForm = {
@@ -240,7 +242,7 @@ const defaultAdSpaceForm = {
   sponsor_name: '',
   image_url: '',
   target_url: '',
-  cta_label: 'Learn more',
+  get "cta_label"() { return ui("Learn more"); },
   background_color: '#ffffff',
   text_color: '#111827',
   is_active: true,
@@ -249,13 +251,12 @@ const defaultAdSpaceForm = {
   ends_at: '',
 };
 
-const FilterChip = ({ label, active, onPress }) => (
-  <TouchableOpacity style={[styles.filterChip, active && styles.filterChipActive]} onPress={onPress}>
+const FilterChip = ({ label, active, onPress }) => { useInterfaceLanguage(); return (<TouchableOpacity style={[styles.filterChip, active && styles.filterChipActive]} onPress={onPress}>
     <AppText style={[styles.filterChipText, active && styles.filterChipTextActive]}>{label}</AppText>
-  </TouchableOpacity>
-);
+  </TouchableOpacity>); };
 
 const SuperAdminDashboardScreen = ({ navigation, route }) => {
+  useInterfaceLanguage();
   const { beginImpersonation } = useContext(AuthContext);
   const { reduceMotion } = useAccessibilityPreferences();
   const tourScroll = useTourScrollController({ animated: !reduceMotion });
@@ -272,7 +273,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
           : () => (
               <TouchableOpacity
                 accessibilityRole="button"
-                accessibilityLabel="Back to overview"
+                accessibilityLabel={ui("Back to overview")}
                 activeOpacity={0.7}
                 onPress={() => setSection('overview')}
                 style={styles.headerBack}
@@ -348,10 +349,32 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
     return navigation.addListener('focus', applyRequestedSection);
   }, [navigation, route?.params?.initialPanel]);
 
+  useLayoutEffect(() => {
+    navigation.setOptions({ headerRight: () => (
+          <TouchableOpacity
+            accessibilityRole="button"
+            accessibilityLabel={ui("Notifications{value0}", {value0: (unreadCount ? `, ${unreadCount} unread` : '')})}
+            activeOpacity={0.85}
+            onPress={() => navigation.navigate('Notifications')}
+            style={styles.headerBell}
+          >
+            <Icon name="notifications-outline" size={20} color={colors.white} />
+            {unreadCount > 0 ? (
+              <View style={styles.headerBellBadge}>
+                <AppText style={styles.headerBellBadgeText}>
+                  {unreadCount > 99 ? '99+' : unreadCount}
+                </AppText>
+              </View>
+            ) : null}
+          </TouchableOpacity>
+    ) });
+    return () => navigation.setOptions({ headerRight: undefined });
+  }, [navigation, unreadCount]);
+
   const loadUnreadCount = async () => {
     try {
-      const response = await notificationService.getUnreadCount();
-      setUnreadCount(Number(response?.data?.unread_count || 0));
+      const response = await notificationService.getUnreadActivity();
+      setUnreadCount(Number(response?.data?.total || 0));
     } catch (error) {
       // keep the previous count
     }
@@ -467,7 +490,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(error, 'Could not load admin state users'),
       });
     } finally {
@@ -557,7 +580,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(error, 'Could not load super admin data'),
       });
     } finally {
@@ -671,7 +694,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
+        text1: ui("Failed"),
         text2: getErrorMessage(error, 'Could not load this workspace'),
       });
     } finally {
@@ -699,8 +722,8 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Failed',
-        text2: getErrorMessage(error, 'Action failed'),
+        text1: ui("Failed"),
+        text2: getErrorMessage(error, ui("Action failed")),
       });
       return false;
     } finally {
@@ -713,8 +736,8 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
   const openOperationPrompt = (config) => {
     setOperationPrompt({
       variant: 'primary',
-      label: 'Reason',
-      confirmText: 'Confirm action',
+      label: ui("Reason"),
+      confirmText: ui("Confirm action"),
       icon: 'document-text-outline',
       ...config,
     });
@@ -739,12 +762,12 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
 
   const handleSavePricingRule = async () => {
     if (!pricingForm.state_id) {
-      Toast.show({ type: 'error', text1: 'Select a state' });
+      Toast.show({ type: 'error', text1: ui("Select a state") });
       return;
     }
 
     if (!pricingForm.amount) {
-      Toast.show({ type: 'error', text1: 'Enter the amount to charge' });
+      Toast.show({ type: 'error', text1: ui("Enter the amount to charge") });
       return;
     }
 
@@ -781,7 +804,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
     sponsor_name: form.sponsor_name.trim(),
     image_url: form.image_url.trim(),
     target_url: form.target_url.trim(),
-    cta_label: form.cta_label.trim() || 'Learn more',
+    cta_label: form.cta_label.trim() || ui("Learn more"),
     background_color: form.background_color.trim() || '#ffffff',
     text_color: form.text_color.trim() || '#111827',
     is_active: Boolean(form.is_active),
@@ -799,7 +822,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
       sponsor_name: ad.sponsor_name || '',
       image_url: ad.image_url || '',
       target_url: ad.target_url || '',
-      cta_label: ad.cta_label || 'Learn more',
+      cta_label: ad.cta_label || ui("Learn more"),
       background_color: ad.background_color || '#ffffff',
       text_color: ad.text_color || '#111827',
       is_active: ad.is_active === true,
@@ -811,12 +834,12 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
 
   const handleSaveAdSpace = async () => {
     if (!adSpaceForm.title.trim()) {
-      Toast.show({ type: 'error', text1: 'Ad title is required' });
+      Toast.show({ type: 'error', text1: ui("Ad title is required") });
       return;
     }
 
     if (!adSpaceForm.target_url.trim()) {
-      Toast.show({ type: 'error', text1: 'Target URL is required' });
+      Toast.show({ type: 'error', text1: ui("Target URL is required") });
       return;
     }
 
@@ -851,10 +874,10 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
   };
 
   const handleDeleteAdSpace = (adId) => {
-    Alert.alert('Delete ad space', 'Delete this ad space permanently?', [
-      { text: 'Cancel', style: 'cancel' },
+    Alert.alert(ui("Delete ad space"), ui("Delete this ad space permanently?"), [
+      { text: ui("Cancel"), style: 'cancel' },
       {
-        text: 'Delete',
+        text: ui("Delete"),
         style: 'destructive',
         onPress: () =>
           runAction(
@@ -904,28 +927,28 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
     const summaryCards = [
       {
         key: 'properties',
-        label: 'Total Properties',
+        label: ui("Total Properties"),
         icon: 'home-outline',
         section: 'properties',
         value: Number(analytics.totalProperties ?? properties.length) || 0,
       },
       {
         key: 'applications',
-        label: 'Applications',
+        label: ui("Applications"),
         icon: 'documents-outline',
         section: 'property_requests',
         value: Number(analytics.totalApplications ?? 0) || 0,
       },
       {
         key: 'verified',
-        label: 'Verified Users',
+        label: ui("Verified Users"),
         icon: 'shield-checkmark-outline',
         section: 'verifications',
         value: Number(analytics.verifiedUsers ?? 0) || 0,
       },
       {
         key: 'notifications',
-        label: 'Notifications',
+        label: ui("Notifications"),
         icon: 'notifications-outline',
         route: 'Notifications',
         value: unreadCount,
@@ -936,10 +959,8 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
     return (
       <View>
         <View style={styles.card}>
-          <AppText style={styles.cardTitle}>Analytics Overview</AppText>
-          <AppText style={styles.meta}>
-            Quick platform statistics at a glance. Use the Analytics tab for detailed metrics.
-          </AppText>
+          <AppText style={styles.cardTitle}>{ui("Analytics Overview")}</AppText>
+          <AppText style={styles.meta}>{ui("Quick platform statistics at a glance. Use the Analytics tab for detailed metrics.")}</AppText>
         </View>
 
         <View style={styles.summaryGrid}>
@@ -947,7 +968,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
             <TouchableOpacity
               key={card.key}
               accessibilityRole="button"
-              accessibilityLabel={`${card.label}: ${card.value.toLocaleString()}`}
+              accessibilityLabel={ui("{value0}: {value1}", {value0: (card.label), value1: (card.value.toLocaleString())})}
               activeOpacity={0.85}
               onPress={() =>
                 card.section
@@ -972,7 +993,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                 </View>
               </View>
               <AppText style={styles.summaryCardValue}>{card.value.toLocaleString()}</AppText>
-              <AppText style={styles.summaryCardHint}>Tap to view →</AppText>
+              <AppText style={styles.summaryCardHint}>{ui("Tap to view →")}</AppText>
             </TouchableOpacity>
           ))}
         </View>
@@ -982,8 +1003,8 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
         {analyticEntries.length === 0 ? (
           <EmptyState
             icon="stats-chart-outline"
-            title="No analytics data"
-            message="Data will populate once users interact with the platform."
+            title={ui("No analytics data")}
+            message={ui("Data will populate once users interact with the platform.")}
           />
         ) : (
           <View style={styles.analyticsGrid}>
@@ -1018,16 +1039,16 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
 
         {users.length > 0 && (
           <View style={styles.card}>
-            <AppText style={styles.cardTitle}>Quick Stats</AppText>
-            <AppText style={styles.meta}>Total Users: {users.length}</AppText>
-            <AppText style={styles.meta}>Total Properties: {properties.length}</AppText>
-            <AppText style={styles.meta}>Total Reports: {reports.length}</AppText>
-            <AppText style={styles.meta}>Active Lawyers: {platformLawyers.length}</AppText>
-            <AppText style={styles.meta}>Pending Admins: {pendingAdmins.length}</AppText>
+            <AppText style={styles.cardTitle}>{ui("Quick Stats")}</AppText>
+            <AppText style={styles.meta}>{ui("Total Users: ")}{users.length}</AppText>
+            <AppText style={styles.meta}>{ui("Total Properties: ")}{properties.length}</AppText>
+            <AppText style={styles.meta}>{ui("Total Reports: ")}{reports.length}</AppText>
+            <AppText style={styles.meta}>{ui("Active Lawyers: ")}{platformLawyers.length}</AppText>
+            <AppText style={styles.meta}>{ui("Pending Admins: ")}{pendingAdmins.length}</AppText>
           </View>
         )}
 
-        <TenancyWorkflowSection title="National Tenancy Grace and Refund Enablement" />
+        <TenancyWorkflowSection title={ui("National Tenancy Grace and Refund Enablement")} />
       </View>
     );
   };
@@ -1040,27 +1061,25 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
 
   const handleBulkUserAction = async () => {
     if (selectedUserIds.length === 0) {
-      Toast.show({ type: 'error', text1: 'Select at least one user' });
+      Toast.show({ type: 'error', text1: ui("Select at least one user") });
       return;
     }
     if (!bulkAction) {
-      Toast.show({ type: 'error', text1: 'Select a bulk action' });
+      Toast.show({ type: 'error', text1: ui("Select a bulk action") });
       return;
     }
     const bulkUserCount = selectedUserIds.length;
     openOperationPrompt({
       type: 'bulk_users',
       target: { id: 'bulk-users' },
-      title: `Bulk ${bulkAction} users`,
-      message: `${bulkAction} will be applied to ${bulkUserCount} selected user${
-        bulkUserCount === 1 ? '' : 's'
-      }.`,
-      label: 'Reason',
-      placeholder: 'Explain why this bulk action is needed',
-      confirmText: `Apply to ${bulkUserCount}`,
+      title: ui("Bulk {value0} users", {value0: (bulkAction)}),
+      message: ui("{value0} will be applied to {value1} selected user{value2}.", {value0: (bulkAction), value1: (bulkUserCount), value2: (bulkUserCount === 1 ? '' : ui("s"))}),
+      label: ui("Reason"),
+      placeholder: ui("Explain why this bulk action is needed"),
+      confirmText: ui("Apply to {value0}", {value0: (bulkUserCount)}),
       icon: 'people-outline',
       variant: bulkAction === 'ban' || bulkAction === 'delete' ? 'danger' : 'primary',
-      successMessage: `Bulk action "${bulkAction}" completed on ${bulkUserCount} users`,
+      successMessage: ui("Bulk action \"{value0}\" completed on {value1} users", {value0: (bulkAction), value1: (bulkUserCount)}),
       run: async (note) => {
         await superAdminService.bulkUserAction(selectedUserIds, bulkAction, note);
         setSelectedUserIds([]);
@@ -1072,13 +1091,11 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
   const renderUsers = () => (
     <>
       <View style={styles.card}>
-        <AppText style={styles.cardTitle}>Users ({users.length})</AppText>
-        <AppText style={styles.meta}>
-          Select multiple users for bulk actions (ban, unban, promote, delete).
-        </AppText>
+        <AppText style={styles.cardTitle}>{ui("Users (")}{users.length})</AppText>
+        <AppText style={styles.meta}>{ui("Select multiple users for bulk actions (ban, unban, promote, delete).")}</AppText>
         {selectedUserIds.length > 0 && (
           <View style={styles.bulkActions}>
-            <AppText style={styles.filterLabel}>{selectedUserIds.length} selected</AppText>
+            <AppText style={styles.filterLabel}>{selectedUserIds.length}{ui(" selected")}</AppText>
             <View style={styles.filtersRow}>
               {['ban', 'unban', 'promote', 'delete'].map((action) => (
                 <FilterChip
@@ -1091,13 +1108,13 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
             </View>
             <View style={styles.row}>
               <Button
-                title={`Apply to ${selectedUserIds.length}`}
+                title={ui("Apply to {value0}", {value0: (selectedUserIds.length)})}
                 onPress={handleBulkUserAction}
                 loading={submitting}
                 size="sm"
               />
               <TouchableOpacity onPress={() => setSelectedUserIds([])}>
-                <AppText style={styles.warnText}>Clear Selection</AppText>
+                <AppText style={styles.warnText}>{ui("Clear Selection")}</AppText>
               </TouchableOpacity>
             </View>
           </View>
@@ -1107,8 +1124,8 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
       {users.length === 0 ? (
         <EmptyState
           icon="people-outline"
-          title="No users"
-          message="Registered users will appear here."
+          title={ui("No users")}
+          message={ui("Registered users will appear here.")}
         />
       ) : (
         users.map((item) => (
@@ -1124,13 +1141,13 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                 </View>
               </View>
             </TouchableOpacity>
-            <AppText style={styles.meta}>Role: {item.user_type}</AppText>
-            {item.state_name ? <AppText style={styles.meta}>State: {item.state_name}</AppText> : null}
+            <AppText style={styles.meta}>{ui("Role: ")}{item.user_type}</AppText>
+            {item.state_name ? <AppText style={styles.meta}>{ui("State: ")}{item.state_name}</AppText> : null}
             {item.is_banned !== undefined && <StatusBadge status={item.is_banned ? 'banned' : 'active'} />}
             <View style={styles.row}>
               {item.is_banned ? (
                 <TouchableOpacity onPress={() => runAction(() => superAdminService.unbanUser(item.id), 'User unbanned')}>
-                  <AppText style={styles.linkText}>Unban</AppText>
+                  <AppText style={styles.linkText}>{ui("Unban")}</AppText>
                 </TouchableOpacity>
               ) : (
                 <TouchableOpacity
@@ -1138,26 +1155,26 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                     openOperationPrompt({
                       type: 'ban_user',
                       target: item,
-                      title: 'Ban user account',
-                      message: `${item.full_name || item.email || 'This user'} will be blocked from accessing RentalHub.`,
-                      label: 'Ban reason',
-                      placeholder: 'Explain why this user must be banned',
-                      confirmText: 'Ban user',
+                      title: ui("Ban user account"),
+                      message: ui("{value0} will be blocked from accessing RentalHub.", {value0: (item.full_name || item.email || 'This user')}),
+                      label: ui("Ban reason"),
+                      placeholder: ui("Explain why this user must be banned"),
+                      confirmText: ui("Ban user"),
                       icon: 'ban-outline',
                       variant: 'danger',
-                      successMessage: 'User banned',
+                      successMessage: ui("User banned"),
                       run: (note) => superAdminService.banUser(item.id, note),
                     })
                   }
                 >
-                  <AppText style={styles.warnText}>Ban</AppText>
+                  <AppText style={styles.warnText}>{ui("Ban")}</AppText>
                 </TouchableOpacity>
               )}
               <TouchableOpacity onPress={() => runAction(() => superAdminService.promoteUser(item.id), 'User promoted')}>
-                <AppText style={styles.linkText}>Promote</AppText>
+                <AppText style={styles.linkText}>{ui("Promote")}</AppText>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => runAction(() => superAdminService.deleteUser(item.id), 'User deleted')}>
-                <AppText style={styles.warnText}>Delete</AppText>
+                <AppText style={styles.warnText}>{ui("Delete")}</AppText>
               </TouchableOpacity>
             </View>
           </View>
@@ -1182,8 +1199,8 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Could not open passport photo',
-        text2: getErrorMessage(error, 'Please try again.'),
+        text1: ui("Could not open passport photo"),
+        text2: getErrorMessage(error, ui("Please try again.")),
       });
     }
   };
@@ -1191,16 +1208,16 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
   const renderVerifications = () => (
     <>
       <View style={styles.card}>
-        <AppText style={styles.cardTitle}>Verification Filters</AppText>
+        <AppText style={styles.cardTitle}>{ui("Verification Filters")}</AppText>
         <Input
-          label="Search"
+          label={ui("Search")}
           value={verificationFilters.search}
           onChangeText={(value) =>
             setVerificationFilters((prev) => ({ ...prev, search: value }))
           }
-          placeholder="Name, email, NIN, passport"
+          placeholder={ui("Name, email, NIN, passport")}
         />
-        <AppText style={styles.filterLabel}>Status</AppText>
+        <AppText style={styles.filterLabel}>{ui("Status")}</AppText>
         <View style={styles.filtersRow}>
           {['pending', 'verified', 'rejected', 'all'].map((value) => (
             <FilterChip
@@ -1214,7 +1231,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
           ))}
         </View>
 
-        <AppText style={styles.filterLabel}>Role</AppText>
+        <AppText style={styles.filterLabel}>{ui("Role")}</AppText>
         <View style={styles.filtersRow}>
           {[
             'all',
@@ -1234,7 +1251,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
         </View>
 
         <Button
-          title="Apply Filters"
+          title={ui("Apply Filters")}
           onPress={() => runAction(() => loadVerificationData(), 'Verification filters applied', null)}
         />
       </View>
@@ -1250,20 +1267,20 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
           <View key={item.id} style={styles.card}>
             <AppText style={styles.cardTitle}>{item.full_name}</AppText>
             <AppText style={styles.meta}>{item.email}</AppText>
-            <AppText style={styles.meta}>Role: {item.user_type}</AppText>
-            <AppText style={styles.meta}>Document: {item.identity_document_type || 'nin'}</AppText>
-            <AppText style={styles.meta}>Number: {documentNumber || '-'}</AppText>
-            <AppText style={styles.meta}>Status: {reviewStatus}</AppText>
-            <AppText style={styles.meta}>Verified By: {item.identity_verified_by_name || '-'}</AppText>
+            <AppText style={styles.meta}>{ui("Role: ")}{item.user_type}</AppText>
+            <AppText style={styles.meta}>{ui("Document: ")}{item.identity_document_type || ui("nin")}</AppText>
+            <AppText style={styles.meta}>{ui("Number: ")}{documentNumber || '-'}</AppText>
+            <AppText style={styles.meta}>{ui("Status: ")}{reviewStatus}</AppText>
+            <AppText style={styles.meta}>{ui("Verified By: ")}{item.identity_verified_by_name || '-'}</AppText>
             {item.passport_photo_url ? (
               <TouchableOpacity
                 onPress={() => openPassportPhoto(item)}
               >
-                <AppText style={styles.linkText}>Open passport photo</AppText>
+                <AppText style={styles.linkText}>{ui("Open passport photo")}</AppText>
               </TouchableOpacity>
             ) : null}
             <View style={styles.row}>
-              {(reviewStatus === 'pending' || reviewStatus === 'rejected') ? (
+              {(reviewStatus === "pending" || reviewStatus === "rejected") ? (
                 <TouchableOpacity
                   onPress={() =>
                     runAction(
@@ -1272,50 +1289,50 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                     )
                   }
                 >
-                  <AppText style={styles.linkText}>Approve</AppText>
+                  <AppText style={styles.linkText}>{ui("Approve")}</AppText>
                 </TouchableOpacity>
               ) : null}
-              {reviewStatus === 'pending' ? (
+              {reviewStatus === "pending" ? (
                 <TouchableOpacity
                   onPress={() =>
                     openOperationPrompt({
                       type: 'reject_verification',
                       target: item,
-                      title: 'Reject verification',
-                      message: `${item.full_name || item.email || 'This user'}'s identity verification will be rejected.`,
-                      label: 'Rejection reason',
-                      placeholder: 'Explain why this verification is rejected',
-                      confirmText: 'Reject verification',
+                      title: ui("Reject verification"),
+                      message: ui("{value0}'s identity verification will be rejected.", {value0: (item.full_name || item.email || 'This user')}),
+                      label: ui("Rejection reason"),
+                      placeholder: ui("Explain why this verification is rejected"),
+                      confirmText: ui("Reject verification"),
                       icon: 'close-circle-outline',
                       variant: 'danger',
-                      successMessage: 'Verification rejected',
+                      successMessage: ui("Verification rejected"),
                       run: (note) => superAdminService.rejectVerification(item.id, note),
                     })
                   }
                 >
-                  <AppText style={styles.warnText}>Reject</AppText>
+                  <AppText style={styles.warnText}>{ui("Reject")}</AppText>
                 </TouchableOpacity>
               ) : null}
-              {reviewStatus === 'rejected' ? (
+              {reviewStatus === "rejected" ? (
                 <TouchableOpacity
                   onPress={() =>
                     openOperationPrompt({
                       type: 'delete_verification',
                       target: item,
-                      title: 'Delete rejected verification',
-                      message: `${item.full_name || item.email || 'This record'}'s rejected verification will be removed.`,
-                      label: 'Delete reason',
-                      placeholder: 'Explain why this record is being deleted',
-                      confirmText: 'Delete record',
+                      title: ui("Delete rejected verification"),
+                      message: ui("{value0}'s rejected verification will be removed.", {value0: (item.full_name || item.email || 'This record')}),
+                      label: ui("Delete reason"),
+                      placeholder: ui("Explain why this record is being deleted"),
+                      confirmText: ui("Delete record"),
                       icon: 'trash-outline',
                       variant: 'danger',
-                      successMessage: 'Rejected verification deleted',
+                      successMessage: ui("Rejected verification deleted"),
                       run: (note) =>
                         superAdminService.deleteRejectedVerification(item.id, note),
                     })
                   }
                 >
-                  <AppText style={styles.warnText}>Delete</AppText>
+                  <AppText style={styles.warnText}>{ui("Delete")}</AppText>
                 </TouchableOpacity>
               ) : null}
             </View>
@@ -1326,23 +1343,22 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
       {verifications.length === 0 ? (
         <EmptyState
           icon="shield-checkmark-outline"
-          title="No verifications found"
-          message="No users match these filters. Try a different status or role."
+          title={ui("No verifications found")}
+          message={ui("No users match these filters. Try a different status or role.")}
         />
       ) : null}
 
       <View style={styles.card}>
-        <AppText style={styles.cardTitle}>Admin Verification Performance</AppText>
+        <AppText style={styles.cardTitle}>{ui("Admin Verification Performance")}</AppText>
         {adminPerformance.length === 0 ? (
-          <AppText style={styles.meta}>No admin verification activity yet.</AppText>
+          <AppText style={styles.meta}>{ui("No admin verification activity yet.")}</AppText>
         ) : (
           adminPerformance.map((item) => (
             <View key={item.id} style={styles.listRow}>
               <AppText style={styles.listTitle}>{item.full_name}</AppText>
               <AppText style={styles.meta}>{item.email}</AppText>
-              <AppText style={styles.meta}>Verified: {item.credentials_verified_count ?? 0}</AppText>
-              <AppText style={styles.meta}>
-                Last activity:{' '}
+              <AppText style={styles.meta}>{ui("Verified: ")}{item.credentials_verified_count ?? 0}</AppText>
+              <AppText style={styles.meta}>{ui("Last activity:")}{' '}
                 {item.last_verification_at
                   ? new Date(item.last_verification_at).toLocaleString()
                   : 'No activity'}
@@ -1395,46 +1411,44 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
   const renderLawyerInvites = () => (
     <>
       <View style={styles.card}>
-        <AppText style={styles.cardTitle}>Lawyer Invite Search</AppText>
+        <AppText style={styles.cardTitle}>{ui("Lawyer Invite Search")}</AppText>
         <Input
-          label="Search"
+          label={ui("Search")}
           value={lawyerInviteSearch}
           onChangeText={setLawyerInviteSearch}
-          placeholder="Client or lawyer email"
+          placeholder={ui("Client or lawyer email")}
         />
         <Button
-          title="Apply Search"
+          title={ui("Apply Search")}
           onPress={() => runAction(() => loadLawyerInvites(), 'Lawyer invites refreshed', null)}
         />
       </View>
 
       {lawyerInvites.length === 0 ? (
         <View style={styles.card}>
-          <AppText style={styles.meta}>No lawyer invites found.</AppText>
+          <AppText style={styles.meta}>{ui("No lawyer invites found.")}</AppText>
         </View>
       ) : null}
 
       {lawyerInvites.map((invite) => (
         <View key={invite.id} style={styles.card}>
           <AppText style={styles.cardTitle}>{invite.client_name}</AppText>
-          <AppText style={styles.meta}>Assigned By: {invite.assigned_by_name || invite.client_name || '-'}</AppText>
-          <AppText style={styles.meta}>Role: {invite.client_role}</AppText>
-          <AppText style={styles.meta}>Lawyer Email: {invite.lawyer_email}</AppText>
-          <AppText style={styles.meta}>Status: {getInviteStatusLabel(invite)}</AppText>
-          <AppText style={styles.meta}>
-            Expires:{' '}
+          <AppText style={styles.meta}>{ui("Assigned By: ")}{invite.assigned_by_name || invite.client_name || '-'}</AppText>
+          <AppText style={styles.meta}>{ui("Role: ")}{invite.client_role}</AppText>
+          <AppText style={styles.meta}>{ui("Lawyer Email: ")}{invite.lawyer_email}</AppText>
+          <AppText style={styles.meta}>{ui("Status: ")}{getInviteStatusLabel(invite)}</AppText>
+          <AppText style={styles.meta}>{ui("Expires:")}{' '}
             {invite.expires_at ? new Date(invite.expires_at).toLocaleString() : '-'}
           </AppText>
-          <AppText style={styles.meta}>
-            Last Sent:{' '}
+          <AppText style={styles.meta}>{ui("Last Sent:")}{' '}
             {invite.last_sent_at ? new Date(invite.last_sent_at).toLocaleString() : '-'}
           </AppText>
-          <AppText style={styles.meta}>Resends: {invite.resent_count ?? 0}</AppText>
+          <AppText style={styles.meta}>{ui("Resends: ")}{invite.resent_count ?? 0}</AppText>
 
           {editingInviteId === invite.id ? (
             <>
               <Input
-                label="New Lawyer Email"
+                label={ui("New Lawyer Email")}
                 value={editingInviteEmail}
                 onChangeText={setEditingInviteEmail}
                 placeholder="lawyer@email.com"
@@ -1456,7 +1470,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                     )
                   }
                 >
-                  <AppText style={styles.linkText}>Save Email</AppText>
+                  <AppText style={styles.linkText}>{ui("Save Email")}</AppText>
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => {
@@ -1464,13 +1478,13 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                     setEditingInviteEmail('');
                   }}
                 >
-                  <AppText style={styles.warnText}>Cancel</AppText>
+                  <AppText style={styles.warnText}>{ui("Cancel")}</AppText>
                 </TouchableOpacity>
               </View>
             </>
           ) : null}
 
-          {invite.status !== 'accepted' ? (
+          {invite.status !== "accepted" ? (
             <View style={styles.row}>
               <TouchableOpacity
                 onPress={() =>
@@ -1484,7 +1498,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                   )
                 }
               >
-                <AppText style={styles.linkText}>Resend Invite</AppText>
+                <AppText style={styles.linkText}>{ui("Resend Invite")}</AppText>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {
@@ -1492,7 +1506,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                   setEditingInviteEmail(invite.lawyer_email || '');
                 }}
               >
-                <AppText style={styles.linkText}>Change Email</AppText>
+                <AppText style={styles.linkText}>{ui("Change Email")}</AppText>
               </TouchableOpacity>
             </View>
           ) : null}
@@ -1504,16 +1518,13 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
   const renderPricing = () => (
     <>
       <View style={styles.card}>
-        <AppText style={styles.cardTitle}>Location Pricing Rules</AppText>
-        <AppText style={styles.meta}>
-          Configure final amounts by state or local government area. LGA rules override state rules.
-        </AppText>
+        <AppText style={styles.cardTitle}>{ui("Location Pricing Rules")}</AppText>
+        <AppText style={styles.meta}>{ui("Configure final amounts by state or local government area. LGA rules override state rules.")}</AppText>
         <View style={styles.targetGrid}>
           {pricingTargets.map((target) => (
             <View key={target.key} style={styles.targetCard}>
               <AppText style={styles.listTitle}>{target.label}</AppText>
-              <AppText style={styles.meta}>
-                Base fee: ₦{Number(target.base_amount || 0).toLocaleString()}
+              <AppText style={styles.meta}>{ui("Base fee: ₦")}{Number(target.base_amount || 0).toLocaleString()}
               </AppText>
             </View>
           ))}
@@ -1538,31 +1549,31 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
         </View>
 
         <Input
-          label="Amount (NGN)"
+          label={ui("Amount (NGN)")}
           value={pricingForm.amount}
           onChangeText={(value) => setPricingForm((prev) => ({ ...prev, amount: value }))}
           keyboardType="numeric"
-          placeholder="Enter final amount"
+          placeholder={ui("Enter final amount")}
         />
 
         <SelectField
-          label="State"
+          label={ui("State")}
           value={selectedPricingState?.state_name}
-          placeholder="Select state"
+          placeholder={ui("Select state")}
           onPress={() => setShowPricingStatePicker(true)}
         />
 
         <SelectField
-          label="Local Government Area"
+          label={ui("Local Government Area")}
           value={pricingForm.lga_name}
           placeholder={selectedPricingState ? 'Whole state or choose LGA' : 'Choose state first'}
           onPress={() => setShowPricingLgaPicker(true)}
           disabled={!selectedPricingState}
-          helperText="Leave empty to apply the amount to the whole state."
+          helperText={ui("Leave empty to apply the amount to the whole state.")}
         />
 
         <View style={styles.switchRow}>
-          <AppText style={styles.meta}>Rule is active</AppText>
+          <AppText style={styles.meta}>{ui("Rule is active")}</AppText>
           <Switch
             value={pricingForm.is_active}
             onValueChange={(value) =>
@@ -1578,7 +1589,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
         />
         {editingPricingRuleId ? (
           <Button
-            title="Cancel Edit"
+            title={ui("Cancel Edit")}
             variant="outline"
             onPress={resetPricingForm}
             style={styles.marginTop}
@@ -1592,12 +1603,11 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
         return (
           <View key={rule.id} style={styles.card}>
             <AppText style={styles.cardTitle}>{target?.label || rule.applies_to}</AppText>
-            <AppText style={styles.meta}>State: {rule.state_name}</AppText>
-            <AppText style={styles.meta}>LGA: {rule.lga_name || 'Whole state'}</AppText>
-            <AppText style={styles.meta}>
-              Amount: ₦{Number(rule.amount || 0).toLocaleString()}
+            <AppText style={styles.meta}>{ui("State: ")}{rule.state_name}</AppText>
+            <AppText style={styles.meta}>{ui("LGA: ")}{rule.lga_name || 'Whole state'}</AppText>
+            <AppText style={styles.meta}>{ui("Amount: ₦")}{Number(rule.amount || 0).toLocaleString()}
             </AppText>
-            <AppText style={styles.meta}>Status: {rule.is_active ? 'Active' : 'Inactive'}</AppText>
+            <AppText style={styles.meta}>{ui("Status: ")}{rule.is_active ? ui("Active") : ui("Inactive")}</AppText>
             <View style={styles.row}>
               <TouchableOpacity
                 onPress={() => {
@@ -1612,7 +1622,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                   setSection('pricing');
                 }}
               >
-                <AppText style={styles.linkText}>Edit</AppText>
+                <AppText style={styles.linkText}>{ui("Edit")}</AppText>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() =>
@@ -1629,7 +1639,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                   )
                 }
               >
-                <AppText style={styles.linkText}>{rule.is_active ? 'Disable' : 'Enable'}</AppText>
+                <AppText style={styles.linkText}>{rule.is_active ? 'Disable' : ui("Enable")}</AppText>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() =>
@@ -1639,7 +1649,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                   )
                 }
               >
-                <AppText style={styles.warnText}>Delete</AppText>
+                <AppText style={styles.warnText}>{ui("Delete")}</AppText>
               </TouchableOpacity>
             </View>
           </View>
@@ -1656,27 +1666,25 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
 
   const handleBulkPropertyAction = async () => {
     if (selectedPropertyIds.length === 0) {
-      Toast.show({ type: 'error', text1: 'Select at least one property' });
+      Toast.show({ type: 'error', text1: ui("Select at least one property") });
       return;
     }
     if (!bulkAction) {
-      Toast.show({ type: 'error', text1: 'Select a bulk action' });
+      Toast.show({ type: 'error', text1: ui("Select a bulk action") });
       return;
     }
     const bulkPropertyCount = selectedPropertyIds.length;
     openOperationPrompt({
       type: 'bulk_properties',
       target: { id: 'bulk-properties' },
-      title: `Bulk ${bulkAction} properties`,
-      message: `${bulkAction} will be applied to ${bulkPropertyCount} selected propert${
-        bulkPropertyCount === 1 ? 'y' : 'ies'
-      }.`,
-      label: 'Reason',
-      placeholder: 'Explain why this bulk action is needed',
-      confirmText: `Apply to ${bulkPropertyCount}`,
+      title: ui("Bulk {value0} properties", {value0: (bulkAction)}),
+      message: ui("{value0} will be applied to {value1} selected propert{value2}.", {value0: (bulkAction), value1: (bulkPropertyCount), value2: (bulkPropertyCount === 1 ? 'y' : 'ies')}),
+      label: ui("Reason"),
+      placeholder: ui("Explain why this bulk action is needed"),
+      confirmText: ui("Apply to {value0}", {value0: (bulkPropertyCount)}),
       icon: 'home-outline',
       variant: 'danger',
-      successMessage: `Bulk action "${bulkAction}" completed on ${bulkPropertyCount} properties`,
+      successMessage: ui("Bulk action \"{value0}\" completed on {value1} properties", {value0: (bulkAction), value1: (bulkPropertyCount)}),
       run: async (note) => {
         await superAdminService.bulkPropertyAction(selectedPropertyIds, bulkAction, note);
         setSelectedPropertyIds([]);
@@ -1688,13 +1696,11 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
   const renderProperties = () => (
     <>
       <View style={styles.card}>
-        <AppText style={styles.cardTitle}>Properties ({properties.length})</AppText>
-        <AppText style={styles.meta}>
-          Select multiple properties for bulk actions, or manage individually below.
-        </AppText>
+        <AppText style={styles.cardTitle}>{ui("Properties (")}{properties.length})</AppText>
+        <AppText style={styles.meta}>{ui("Select multiple properties for bulk actions, or manage individually below.")}</AppText>
         {selectedPropertyIds.length > 0 && (
           <View style={styles.bulkActions}>
-            <AppText style={styles.filterLabel}>{selectedPropertyIds.length} selected</AppText>
+            <AppText style={styles.filterLabel}>{selectedPropertyIds.length}{ui(" selected")}</AppText>
             <View style={styles.filtersRow}>
               {['unlist', 'feature', 'unfeature', 'delete'].map((action) => (
                 <FilterChip
@@ -1707,13 +1713,13 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
             </View>
             <View style={styles.row}>
               <Button
-                title={`Apply to ${selectedPropertyIds.length}`}
+                title={ui("Apply to {value0}", {value0: (selectedPropertyIds.length)})}
                 onPress={handleBulkPropertyAction}
                 loading={submitting}
                 size="sm"
               />
               <TouchableOpacity onPress={() => setSelectedPropertyIds([])}>
-                <AppText style={styles.warnText}>Clear Selection</AppText>
+                <AppText style={styles.warnText}>{ui("Clear Selection")}</AppText>
               </TouchableOpacity>
             </View>
           </View>
@@ -1723,8 +1729,8 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
       {properties.length === 0 ? (
         <EmptyState
           icon="home-outline"
-          title="No properties"
-          message="Properties will appear here once listed."
+          title={ui("No properties")}
+          message={ui("Properties will appear here once listed.")}
         />
       ) : (
         properties.map((item) => (
@@ -1743,9 +1749,9 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
               )}
             </View>
             <AppText style={styles.meta}>{item.landlord_name || 'No landlord'}</AppText>
-            {item.state_name ? <AppText style={styles.meta}>State: {item.state_name}</AppText> : null}
-            {item.city ? <AppText style={styles.meta}>City: {item.city}</AppText> : null}
-            {item.price ? <AppText style={styles.meta}>Price: ₦{Number(item.price).toLocaleString()}</AppText> : null}
+            {item.state_name ? <AppText style={styles.meta}>{ui("State: ")}{item.state_name}</AppText> : null}
+            {item.city ? <AppText style={styles.meta}>{ui("City: ")}{item.city}</AppText> : null}
+            {item.price ? <AppText style={styles.meta}>{ui("Price: ₦")}{Number(item.price).toLocaleString()}</AppText> : null}
             <StatusBadge status={item.status || 'active'} />
             <View style={styles.row}>
               <TouchableOpacity
@@ -1753,19 +1759,19 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                   openOperationPrompt({
                     type: 'unlist_property',
                     target: item,
-                    title: 'Unlist property',
-                    message: `${item.title || 'This property'} will be hidden from listings.`,
-                    label: 'Unlist reason',
-                    placeholder: 'Explain why this property is being unlisted',
-                    confirmText: 'Unlist property',
+                    title: ui("Unlist property"),
+                    message: ui("{value0} will be hidden from listings.", {value0: (item.title || 'This property')}),
+                    label: ui("Unlist reason"),
+                    placeholder: ui("Explain why this property is being unlisted"),
+                    confirmText: ui("Unlist property"),
                     icon: 'eye-off-outline',
                     variant: 'danger',
-                    successMessage: 'Property unlisted',
+                    successMessage: ui("Property unlisted"),
                     run: (note) => superAdminService.unlistProperty(item.id, note),
                   })
                 }
               >
-                <AppText style={styles.warnText}>Unlist</AppText>
+                <AppText style={styles.warnText}>{ui("Unlist")}</AppText>
               </TouchableOpacity>
               {item.is_featured ? (
                 <TouchableOpacity
@@ -1773,19 +1779,19 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                     openOperationPrompt({
                       type: 'unfeature_property',
                       target: item,
-                      title: 'Remove from featured',
-                      message: `${item.title || 'This property'} will no longer be featured.`,
-                      label: 'Unfeature reason',
-                      placeholder: 'Explain why this property is being unfeatured',
-                      confirmText: 'Unfeature property',
+                      title: ui("Remove from featured"),
+                      message: ui("{value0} will no longer be featured.", {value0: (item.title || 'This property')}),
+                      label: ui("Unfeature reason"),
+                      placeholder: ui("Explain why this property is being unfeatured"),
+                      confirmText: ui("Unfeature property"),
                       icon: 'star-outline',
                       variant: 'danger',
-                      successMessage: 'Property unfeatured',
+                      successMessage: ui("Property unfeatured"),
                       run: (note) => superAdminService.unfeatureProperty(item.id, note),
                     })
                   }
                 >
-                  <AppText style={styles.linkText}>Unfeature</AppText>
+                  <AppText style={styles.linkText}>{ui("Unfeature")}</AppText>
                 </TouchableOpacity>
               ) : (
                 <TouchableOpacity
@@ -1793,18 +1799,18 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                     openOperationPrompt({
                       type: 'feature_property',
                       target: item,
-                      title: 'Feature property',
-                      message: `${item.title || 'This property'} will be highlighted as featured.`,
-                      label: 'Feature reason',
-                      placeholder: 'Explain why this property should be featured',
-                      confirmText: 'Feature property',
+                      title: ui("Feature property"),
+                      message: ui("{value0} will be highlighted as featured.", {value0: (item.title || 'This property')}),
+                      label: ui("Feature reason"),
+                      placeholder: ui("Explain why this property should be featured"),
+                      confirmText: ui("Feature property"),
                       icon: 'star-outline',
-                      successMessage: 'Property featured',
+                      successMessage: ui("Property featured"),
                       run: (note) => superAdminService.featureProperty(item.id, note),
                     })
                   }
                 >
-                  <AppText style={styles.linkText}>Feature</AppText>
+                  <AppText style={styles.linkText}>{ui("Feature")}</AppText>
                 </TouchableOpacity>
               )}
             </View>
@@ -1833,14 +1839,14 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
     openOperationPrompt({
       type: 'report_status',
       target: { id: reportId },
-      title: `Mark report ${status}`,
-      message: `This report will be marked as ${status}.`,
-      label: 'Investigation note',
-      placeholder: 'Summarise what the investigation found',
-      confirmText: `Mark ${status}`,
+      title: ui("Mark report {value0}", {value0: (status)}),
+      message: ui("This report will be marked as {value0}.", {value0: (status)}),
+      label: ui("Investigation note"),
+      placeholder: ui("Summarise what the investigation found"),
+      confirmText: ui("Mark {value0}", {value0: (status)}),
       icon: 'document-text-outline',
       variant: status === 'dismissed' ? 'danger' : 'primary',
-      successMessage: `Report status changed to ${status}`,
+      successMessage: ui("Report status changed to {value0}", {value0: (status)}),
       run: (note) => applyStatus(note),
     });
   };
@@ -1869,29 +1875,27 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
         <View style={styles.card}>
           <View style={styles.rowBetween}>
             <View style={styles.flex1}>
-              <AppText style={styles.cardTitle}>Live Moderation Queue</AppText>
-              <AppText style={styles.meta}>
-                Review identity checks, user reports, and fraud flags from one native screen.
-              </AppText>
+              <AppText style={styles.cardTitle}>{ui("Live Moderation Queue")}</AppText>
+              <AppText style={styles.meta}>{ui("Review identity checks, user reports, and fraud flags from one native screen.")}</AppText>
             </View>
             <View style={styles.liveDot} />
           </View>
           <View style={styles.analyticsGrid}>
             <View style={styles.analyticsCard}>
               <AppText style={styles.analyticsValue}>{pendingVerifications.length}</AppText>
-              <AppText style={styles.analyticsLabel}>Verifications</AppText>
+              <AppText style={styles.analyticsLabel}>{ui("Verifications")}</AppText>
             </View>
             <View style={styles.analyticsCard}>
               <AppText style={styles.analyticsValue}>{openReports.length}</AppText>
-              <AppText style={styles.analyticsLabel}>Reports</AppText>
+              <AppText style={styles.analyticsLabel}>{ui("Reports")}</AppText>
             </View>
             <View style={styles.analyticsCard}>
               <AppText style={styles.analyticsValue}>{openFraud.length}</AppText>
-              <AppText style={styles.analyticsLabel}>Fraud Flags</AppText>
+              <AppText style={styles.analyticsLabel}>{ui("Fraud Flags")}</AppText>
             </View>
           </View>
           <Button
-            title="Refresh Moderation"
+            title={ui("Refresh Moderation")}
             onPress={() =>
               runAction(
                 async () => {
@@ -1905,9 +1909,9 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
           />
         </View>
 
-        <AppText style={styles.sectionTitle}>Pending Verifications</AppText>
+        <AppText style={styles.sectionTitle}>{ui("Pending Verifications")}</AppText>
         {pendingVerifications.length === 0 ? (
-          <AppText style={styles.meta}>No pending identity verifications.</AppText>
+          <AppText style={styles.meta}>{ui("No pending identity verifications.")}</AppText>
         ) : (
           pendingVerifications.slice(0, 6).map((item) => (
             <View key={`verification-${item.id}`} style={styles.card}>
@@ -1922,89 +1926,87 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                     )
                   }
                 >
-                  <AppText style={styles.linkText}>Approve</AppText>
+                  <AppText style={styles.linkText}>{ui("Approve")}</AppText>
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() =>
                     openOperationPrompt({
                       type: 'reject_verification',
                       target: item,
-                      title: 'Reject verification',
-                      message: `${item.full_name || item.email || 'This user'}'s identity verification will be rejected.`,
-                      label: 'Rejection reason',
-                      placeholder: 'Explain why this verification is rejected',
-                      confirmText: 'Reject verification',
+                      title: ui("Reject verification"),
+                      message: ui("{value0}'s identity verification will be rejected.", {value0: (item.full_name || item.email || 'This user')}),
+                      label: ui("Rejection reason"),
+                      placeholder: ui("Explain why this verification is rejected"),
+                      confirmText: ui("Reject verification"),
                       icon: 'close-circle-outline',
                       variant: 'danger',
-                      successMessage: 'Verification rejected',
+                      successMessage: ui("Verification rejected"),
                       run: (note) => superAdminService.rejectVerification(item.id, note),
                     })
                   }
                 >
-                  <AppText style={styles.warnText}>Reject</AppText>
+                  <AppText style={styles.warnText}>{ui("Reject")}</AppText>
                 </TouchableOpacity>
               </View>
             </View>
           ))
         )}
 
-        <AppText style={styles.sectionTitle}>Open Reports</AppText>
+        <AppText style={styles.sectionTitle}>{ui("Open Reports")}</AppText>
         {openReports.length === 0 ? (
-          <AppText style={styles.meta}>No open reports.</AppText>
+          <AppText style={styles.meta}>{ui("No open reports.")}</AppText>
         ) : (
           openReports.slice(0, 6).map((item) => (
             <View key={`report-${item.id}`} style={styles.card}>
-              <AppText style={styles.cardTitle}>{item.reason || item.report_reason || `Report #${item.id}`}</AppText>
+              <AppText style={styles.cardTitle}>{item.reason || item.report_reason || ui("Report #{value0}", {value0: (item.id)})}</AppText>
               <StatusBadge status={item.status || 'open'} />
               <TouchableOpacity
                 onPress={() =>
                   openOperationPrompt({
                     type: 'resolve_report',
                     target: item,
-                    title: 'Resolve report',
-                    message: `${
-                      item.reason || item.report_reason || `Report #${item.id}`
-                    } will be marked resolved.`,
-                    label: 'Investigation note',
-                    placeholder: 'Summarise what the investigation found',
-                    confirmText: 'Resolve report',
+                    title: ui("Resolve report"),
+                    message: ui("{value0} will be marked resolved.", {value0: (item.reason || item.report_reason || ui("Report #{value0}", {value0: (item.id)}))}),
+                    label: ui("Investigation note"),
+                    placeholder: ui("Summarise what the investigation found"),
+                    confirmText: ui("Resolve report"),
                     icon: 'checkmark-circle-outline',
-                    successMessage: 'Report resolved',
+                    successMessage: ui("Report resolved"),
                     run: (note) => superAdminService.resolveReport(item.id, note),
                   })
                 }
               >
-                <AppText style={styles.linkText}>Resolve</AppText>
+                <AppText style={styles.linkText}>{ui("Resolve")}</AppText>
               </TouchableOpacity>
             </View>
           ))
         )}
 
-        <AppText style={styles.sectionTitle}>Fraud Flags</AppText>
+        <AppText style={styles.sectionTitle}>{ui("Fraud Flags")}</AppText>
         {openFraud.length === 0 ? (
-          <AppText style={styles.meta}>No open fraud flags.</AppText>
+          <AppText style={styles.meta}>{ui("No open fraud flags.")}</AppText>
         ) : (
           openFraud.slice(0, 6).map((item) => (
             <View key={`fraud-${item.id}`} style={styles.card}>
               <AppText style={styles.cardTitle}>{item.rule || 'Fraud flag'}</AppText>
-              <AppText style={styles.meta}>Score: {item.score ?? '-'}</AppText>
+              <AppText style={styles.meta}>{ui("Score: ")}{item.score ?? '-'}</AppText>
               <TouchableOpacity
                 onPress={() =>
                   openOperationPrompt({
                     type: 'resolve_fraud',
                     target: item,
-                    title: 'Resolve fraud flag',
-                    message: `${item.rule || 'This fraud flag'} will be marked resolved.`,
-                    label: 'Resolution note',
-                    placeholder: 'Explain how this flag was investigated and resolved',
-                    confirmText: 'Resolve flag',
+                    title: ui("Resolve fraud flag"),
+                    message: ui("{value0} will be marked resolved.", {value0: (item.rule || 'This fraud flag')}),
+                    label: ui("Resolution note"),
+                    placeholder: ui("Explain how this flag was investigated and resolved"),
+                    confirmText: ui("Resolve flag"),
                     icon: 'shield-checkmark-outline',
-                    successMessage: 'Fraud flag resolved',
+                    successMessage: ui("Fraud flag resolved"),
                     run: (note) => superAdminService.resolveFraudFlag(item.id, note),
                   })
                 }
               >
-                <AppText style={styles.linkText}>Resolve</AppText>
+                <AppText style={styles.linkText}>{ui("Resolve")}</AppText>
               </TouchableOpacity>
             </View>
           ))
@@ -2019,49 +2021,46 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
     return (
       <>
         <View style={styles.card}>
-          <AppText style={styles.cardTitle}>Reports ({reports.length})</AppText>
-          <AppText style={styles.meta}>
-            Manage reported content. Update status to track investigation progress.
-          </AppText>
+          <AppText style={styles.cardTitle}>{ui("Reports (")}{reports.length})</AppText>
+          <AppText style={styles.meta}>{ui("Manage reported content. Update status to track investigation progress.")}</AppText>
         </View>
 
         {reports.length === 0 ? (
           <EmptyState
             icon="flag-outline"
-            title="No reports"
-            message="User reports will appear here."
+            title={ui("No reports")}
+            message={ui("User reports will appear here.")}
           />
         ) : (
           reports.map((item) => (
             <View key={item.id} style={styles.card}>
-              <AppText style={styles.cardTitle}>{item.reason || item.report_reason || `Report #${item.id}`}</AppText>
+              <AppText style={styles.cardTitle}>{item.reason || item.report_reason || ui("Report #{value0}", {value0: (item.id)})}</AppText>
               <View style={styles.rowBetween}>
                 <StatusBadge status={item.status || 'open'} />
                 <TouchableOpacity onPress={() => toggleReportStatusPicker(item.id)}>
-                  <AppText style={styles.linkText}>Change Status</AppText>
+                  <AppText style={styles.linkText}>{ui("Change Status")}</AppText>
                 </TouchableOpacity>
               </View>
               {item.reporter_name ? (
-                <AppText style={styles.meta}>Reported by: {item.reporter_name}</AppText>
+                <AppText style={styles.meta}>{ui("Reported by: ")}{item.reporter_name}</AppText>
               ) : null}
               {item.reported_user_name ? (
-                <AppText style={styles.meta}>Against: {item.reported_user_name}</AppText>
+                <AppText style={styles.meta}>{ui("Against: ")}{item.reported_user_name}</AppText>
               ) : null}
               {item.property_title ? (
-                <AppText style={styles.meta}>Property: {item.property_title}</AppText>
+                <AppText style={styles.meta}>{ui("Property: ")}{item.property_title}</AppText>
               ) : null}
               {item.description ? (
-                <AppText style={styles.meta}>Details: {item.description}</AppText>
+                <AppText style={styles.meta}>{ui("Details: ")}{item.description}</AppText>
               ) : null}
               {item.created_at ? (
-                <AppText style={styles.meta}>
-                  Created: {new Date(item.created_at).toLocaleString()}
+                <AppText style={styles.meta}>{ui("Created:")}{new Date(item.created_at).toLocaleString()}
                 </AppText>
               ) : null}
 
               {reportStatusTargets[item.id] && (
                 <View style={styles.statusOptions}>
-                  <AppText style={styles.filterLabel}>Set Status:</AppText>
+                  <AppText style={styles.filterLabel}>{ui("Set Status:")}</AppText>
                   <View style={styles.filtersRow}>
                     {reportStatusOptions.map((status) => (
                       <FilterChip
@@ -2081,20 +2080,18 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                     openOperationPrompt({
                       type: 'resolve_report',
                       target: item,
-                      title: 'Resolve report',
-                      message: `${
-                        item.reason || item.report_reason || `Report #${item.id}`
-                      } will be marked resolved.`,
-                      label: 'Investigation note',
-                      placeholder: 'Summarise what the investigation found',
-                      confirmText: 'Resolve report',
+                      title: ui("Resolve report"),
+                      message: ui("{value0} will be marked resolved.", {value0: (item.reason || item.report_reason || ui("Report #{value0}", {value0: (item.id)}))}),
+                      label: ui("Investigation note"),
+                      placeholder: ui("Summarise what the investigation found"),
+                      confirmText: ui("Resolve report"),
                       icon: 'checkmark-circle-outline',
-                      successMessage: 'Report resolved',
+                      successMessage: ui("Report resolved"),
                       run: (note) => superAdminService.resolveReport(item.id, note),
                     })
                   }
                 >
-                  <AppText style={styles.linkText}>Resolve</AppText>
+                  <AppText style={styles.linkText}>{ui("Resolve")}</AppText>
                 </TouchableOpacity>
               </View>
             </View>
@@ -2107,29 +2104,29 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
   const renderBroadcasts = () => (
     <>
       <View style={styles.card}>
-        <AppText style={styles.cardTitle}>Send Broadcast</AppText>
+        <AppText style={styles.cardTitle}>{ui("Send Broadcast")}</AppText>
         <Input
-          label="Title"
+          label={ui("Title")}
           value={broadcastForm.title}
           onChangeText={(value) => setBroadcastForm((prev) => ({ ...prev, title: value }))}
         />
         <Input
-          label="Message"
+          label={ui("Message")}
           value={broadcastForm.message}
           onChangeText={(value) => setBroadcastForm((prev) => ({ ...prev, message: value }))}
           multiline
           numberOfLines={4}
         />
         <Input
-          label="Target Role"
+          label={ui("Target Role")}
           value={broadcastForm.target_role}
           onChangeText={(value) =>
             setBroadcastForm((prev) => ({ ...prev, target_role: value }))
           }
-          placeholder="tenant, landlord, admin, lawyer"
+          placeholder={ui("tenant, landlord, admin, lawyer")}
         />
         <Button
-          title="Send Broadcast"
+          title={ui("Send Broadcast")}
           onPress={() =>
             runAction(() => superAdminService.createBroadcast(broadcastForm), 'Broadcast sent')
           }
@@ -2139,15 +2136,15 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
       {broadcasts.length === 0 ? (
         <EmptyState
           icon="megaphone-outline"
-          title="No broadcasts yet"
-          message="Broadcasts you send will be listed here."
+          title={ui("No broadcasts yet")}
+          message={ui("Broadcasts you send will be listed here.")}
         />
       ) : (
         broadcasts.map((item) => (
           <View key={item.id} style={styles.card}>
             <AppText style={styles.cardTitle}>{item.title}</AppText>
             <AppText style={styles.meta}>{item.message}</AppText>
-            <AppText style={styles.meta}>Target: {item.target_role || 'all'}</AppText>
+            <AppText style={styles.meta}>{ui("Target: ")}{item.target_role || ui("all")}</AppText>
           </View>
         ))
       )}
@@ -2161,14 +2158,14 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
         openOperationPrompt({
           type: 'toggle_flag',
           target: { id: key },
-          title: `${enabled ? 'Enable' : 'Disable'} feature flag`,
-          message: `${key} will be turned ${enabled ? 'on' : 'off'}.`,
-          label: 'Change reason',
-          placeholder: 'Explain why this flag is changing',
-          confirmText: enabled ? 'Enable flag' : 'Disable flag',
+          title: ui("{value0} feature flag", {value0: (enabled ? ui("Enable") : 'Disable')}),
+          message: ui("{value0} will be turned {value1}.", {value0: (key), value1: (enabled ? ui("on") : 'off')}),
+          label: ui("Change reason"),
+          placeholder: ui("Explain why this flag is changing"),
+          confirmText: enabled ? ui("Enable flag") : ui("Disable flag"),
           icon: 'toggle-outline',
           variant: enabled ? 'primary' : 'danger',
-          successMessage: 'Flag updated',
+          successMessage: ui("Flag updated"),
           run: (note) => superAdminService.updateFlag(key, enabled, note),
         })
       }
@@ -2178,19 +2175,19 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
   const renderRegistrationAccess = () => <RegistrationAccessSection />;
 
   const renderPropertyRequests = () => (
-    <PropertyRequestWorkflowSection mode="support" title="Tenant Property Requests" />
+    <PropertyRequestWorkflowSection mode="support" title={ui("Tenant Property Requests")} />
   );
 
   const renderSfaPermissions = () => (
     <>
-      <AppText style={styles.sectionTitle}>Super Financial Admin Permissions</AppText>
+      <AppText style={styles.sectionTitle}>{ui("Super Financial Admin Permissions")}</AppText>
       {sfaList.length === 0 ? (
-        <AppText style={styles.meta}>No SFA records found.</AppText>
+        <AppText style={styles.meta}>{ui("No SFA records found.")}</AppText>
       ) : (
         sfaList.map((item) => (
           <View key={item.id || item.super_financial_admin_id} style={styles.card}>
             <AppText style={styles.cardTitle}>{item.full_name || item.email}</AppText>
-            <AppText style={styles.meta}>Approve admins: {String(item.can_approve_admins)}</AppText>
+            <AppText style={styles.meta}>{ui("Approve admins: ")}{String(item.can_approve_admins)}</AppText>
             <TouchableOpacity
               onPress={() =>
                 runAction(
@@ -2203,7 +2200,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                 )
               }
             >
-              <AppText style={styles.linkText}>Toggle approve admins</AppText>
+              <AppText style={styles.linkText}>{ui("Toggle approve admins")}</AppText>
             </TouchableOpacity>
           </View>
         ))
@@ -2213,15 +2210,15 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
 
   const renderPlatformAgents = () => (
     <>
-      <AppText style={styles.sectionTitle}>Platform Agents</AppText>
+      <AppText style={styles.sectionTitle}>{ui("Platform Agents")}</AppText>
       {platformAgents.length === 0 ? (
-        <AppText style={styles.meta}>No platform agents loaded.</AppText>
+        <AppText style={styles.meta}>{ui("No platform agents loaded.")}</AppText>
       ) : (
         platformAgents.map((agent) => (
           <View key={agent.id} style={styles.card}>
             <AppText style={styles.cardTitle}>{agent.full_name || agent.email}</AppText>
             <AppText style={styles.meta}>{agent.email}</AppText>
-            <AppText style={styles.meta}>Status: {agent.status || 'active'}</AppText>
+            <AppText style={styles.meta}>{ui("Status: ")}{agent.status || ui("active")}</AppText>
           </View>
         ))
       )}
@@ -2232,9 +2229,9 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
     <>
       <View style={styles.card}>
         <AppText style={styles.sectionTitle}>{editingAdSpaceId ? 'Edit Ad Space' : 'Create Ad Space'}</AppText>
-        <AppText style={styles.meta}>Create, update, pause, and delete sponsored placements from mobile.</AppText>
+        <AppText style={styles.meta}>{ui("Create, update, pause, and delete sponsored placements from mobile.")}</AppText>
 
-        <AppText style={styles.filterLabel}>Placement</AppText>
+        <AppText style={styles.filterLabel}>{ui("Placement")}</AppText>
         <View style={styles.filtersRow}>
           {adPlacements.map((placement) => (
             <FilterChip
@@ -2249,49 +2246,49 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
         </View>
 
         <Input
-          label="Title"
+          label={ui("Title")}
           value={adSpaceForm.title}
           onChangeText={(value) => setAdSpaceForm((prev) => ({ ...prev, title: value }))}
-          placeholder="Ad headline"
+          placeholder={ui("Ad headline")}
         />
         <Input
-          label="Sponsor"
+          label={ui("Sponsor")}
           value={adSpaceForm.sponsor_name}
           onChangeText={(value) => setAdSpaceForm((prev) => ({ ...prev, sponsor_name: value }))}
-          placeholder="Sponsor name"
+          placeholder={ui("Sponsor name")}
         />
-        <AppText style={styles.filterLabel}>Description</AppText>
+        <AppText style={styles.filterLabel}>{ui("Description")}</AppText>
         <TextInput
           value={adSpaceForm.description}
           onChangeText={(value) => setAdSpaceForm((prev) => ({ ...prev, description: value }))}
-          placeholder="Short ad message"
+          placeholder={ui("Short ad message")}
           multiline
           style={styles.textArea}
         />
         <Input
-          label="Image URL"
+          label={ui("Image URL")}
           value={adSpaceForm.image_url}
           onChangeText={(value) => setAdSpaceForm((prev) => ({ ...prev, image_url: value }))}
           placeholder="https://... or /uploads/ad-spaces/image.jpg"
           autoCapitalize="none"
         />
         <Input
-          label="Target URL"
+          label={ui("Target URL")}
           value={adSpaceForm.target_url}
           onChangeText={(value) => setAdSpaceForm((prev) => ({ ...prev, target_url: value }))}
-          placeholder="/register, /properties/123, or https://..."
+          placeholder={ui("/register, /properties/123, or https://...")}
           autoCapitalize="none"
         />
         <Input
-          label="CTA Label"
+          label={ui("CTA Label")}
           value={adSpaceForm.cta_label}
           onChangeText={(value) => setAdSpaceForm((prev) => ({ ...prev, cta_label: value }))}
-          placeholder="Learn more"
+          placeholder={ui("Learn more")}
         />
         <View style={styles.row}>
           <View style={styles.flex1}>
             <Input
-              label="Background Color"
+              label={ui("Background Color")}
               value={adSpaceForm.background_color}
               onChangeText={(value) => setAdSpaceForm((prev) => ({ ...prev, background_color: value }))}
               placeholder="#ffffff"
@@ -2300,7 +2297,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
           </View>
           <View style={styles.flex1}>
             <Input
-              label="Text Color"
+              label={ui("Text Color")}
               value={adSpaceForm.text_color}
               onChangeText={(value) => setAdSpaceForm((prev) => ({ ...prev, text_color: value }))}
               placeholder="#111827"
@@ -2309,28 +2306,28 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
           </View>
         </View>
         <Input
-          label="Sort Order"
+          label={ui("Sort Order")}
           value={adSpaceForm.sort_order}
           onChangeText={(value) => setAdSpaceForm((prev) => ({ ...prev, sort_order: value }))}
           keyboardType="number-pad"
         />
         <Input
-          label="Starts At"
+          label={ui("Starts At")}
           value={adSpaceForm.starts_at}
           onChangeText={(value) => setAdSpaceForm((prev) => ({ ...prev, starts_at: value }))}
-          placeholder="YYYY-MM-DDTHH:mm or leave blank"
+          placeholder={ui("YYYY-MM-DDTHH:mm or leave blank")}
           autoCapitalize="none"
         />
         <Input
-          label="Ends At"
+          label={ui("Ends At")}
           value={adSpaceForm.ends_at}
           onChangeText={(value) => setAdSpaceForm((prev) => ({ ...prev, ends_at: value }))}
-          placeholder="YYYY-MM-DDTHH:mm or leave blank"
+          placeholder={ui("YYYY-MM-DDTHH:mm or leave blank")}
           autoCapitalize="none"
         />
 
         <View style={styles.switchRow}>
-          <AppText style={styles.filterLabel}>Active</AppText>
+          <AppText style={styles.filterLabel}>{ui("Active")}</AppText>
           <Switch
             value={adSpaceForm.is_active}
             onValueChange={(value) => setAdSpaceForm((prev) => ({ ...prev, is_active: value }))}
@@ -2359,37 +2356,37 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
             size="sm"
           />
           {editingAdSpaceId ? (
-            <Button title="New Ad" variant="outline" onPress={resetAdSpaceForm} size="sm" />
+            <Button title={ui("New Ad")} variant="outline" onPress={resetAdSpaceForm} size="sm" />
           ) : null}
         </View>
       </View>
 
-      <AppText style={styles.sectionTitle}>Ad Spaces</AppText>
+      <AppText style={styles.sectionTitle}>{ui("Ad Spaces")}</AppText>
       {adSpaces.length === 0 ? (
         <EmptyState
           icon="megaphone-outline"
-          title="No ad spaces configured"
-          message="Create a sponsored placement above."
+          title={ui("No ad spaces configured")}
+          message={ui("Create a sponsored placement above.")}
         />
       ) : (
         adSpaces.map((ad) => (
           <View key={ad.id} style={styles.card}>
             <AppText style={styles.cardTitle}>{ad.title || ad.placement}</AppText>
-            <AppText style={styles.meta}>Placement: {ad.placement}</AppText>
-            <AppText style={styles.meta}>Sponsor: {ad.sponsor_name || '-'}</AppText>
-            <AppText style={styles.meta}>Target: {ad.target_url || '-'}</AppText>
-            <AppText style={styles.meta}>Active: {ad.is_active ? 'Yes' : 'No'}</AppText>
-            <AppText style={styles.meta}>Impressions: {ad.impression_count ?? 0}</AppText>
-            <AppText style={styles.meta}>Clicks: {ad.click_count ?? 0}</AppText>
+            <AppText style={styles.meta}>{ui("Placement: ")}{ad.placement}</AppText>
+            <AppText style={styles.meta}>{ui("Sponsor: ")}{ad.sponsor_name || '-'}</AppText>
+            <AppText style={styles.meta}>{ui("Target: ")}{ad.target_url || '-'}</AppText>
+            <AppText style={styles.meta}>{ui("Active: ")}{ad.is_active ? ui("Yes") : ui("No")}</AppText>
+            <AppText style={styles.meta}>{ui("Impressions: ")}{ad.impression_count ?? 0}</AppText>
+            <AppText style={styles.meta}>{ui("Clicks: ")}{ad.click_count ?? 0}</AppText>
             <View style={styles.row}>
               <TouchableOpacity onPress={() => handleEditAdSpace(ad)}>
-                <AppText style={styles.linkText}>Edit</AppText>
+                <AppText style={styles.linkText}>{ui("Edit")}</AppText>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => handleToggleAdSpace(ad)}>
                 <AppText style={styles.linkText}>{ad.is_active ? 'Pause' : 'Activate'}</AppText>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => handleDeleteAdSpace(ad.id)}>
-                <AppText style={styles.warnText}>Delete</AppText>
+                <AppText style={styles.warnText}>{ui("Delete")}</AppText>
               </TouchableOpacity>
             </View>
           </View>
@@ -2402,31 +2399,31 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
     fraud.length === 0 ? (
       <EmptyState
         icon="alert-circle-outline"
-        title="No fraud flags"
-        message="Suspicious activity flagged by the rules engine will appear here."
+        title={ui("No fraud flags")}
+        message={ui("Suspicious activity flagged by the rules engine will appear here.")}
       />
     ) : (
       fraud.map((item) => (
         <View key={item.id} style={styles.card}>
           <AppText style={styles.cardTitle}>{item.rule || 'Fraud rule'}</AppText>
-          <AppText style={styles.meta}>Score: {item.score}</AppText>
+          <AppText style={styles.meta}>{ui("Score: ")}{item.score}</AppText>
           <TouchableOpacity
             onPress={() =>
               openOperationPrompt({
                 type: 'resolve_fraud',
                 target: item,
-                title: 'Resolve fraud flag',
-                message: `${item.rule || 'This fraud flag'} will be marked resolved.`,
-                label: 'Resolution note',
-                placeholder: 'Explain how this flag was investigated and resolved',
-                confirmText: 'Resolve flag',
+                title: ui("Resolve fraud flag"),
+                message: ui("{value0} will be marked resolved.", {value0: (item.rule || 'This fraud flag')}),
+                label: ui("Resolution note"),
+                placeholder: ui("Explain how this flag was investigated and resolved"),
+                confirmText: ui("Resolve flag"),
                 icon: 'shield-checkmark-outline',
-                successMessage: 'Fraud flag resolved',
+                successMessage: ui("Fraud flag resolved"),
                 run: (note) => superAdminService.resolveFraudFlag(item.id, note),
               })
             }
           >
-            <AppText style={styles.linkText}>Resolve</AppText>
+            <AppText style={styles.linkText}>{ui("Resolve")}</AppText>
           </TouchableOpacity>
         </View>
       ))
@@ -2453,22 +2450,20 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
     return (
       <>
         <View style={styles.card}>
-          <AppText style={styles.cardTitle}>Audit Logs</AppText>
+          <AppText style={styles.cardTitle}>{ui("Audit Logs")}</AppText>
           <Input
-            label="Search"
+            label={ui("Search")}
             value={logSearch}
             onChangeText={setLogSearch}
-            placeholder="Action, user or target"
+            placeholder={ui("Action, user or target")}
           />
-          <AppText style={styles.meta}>
-            Showing {filteredLogs.length} of {logs.length} entries
-          </AppText>
+          <AppText style={styles.meta}>{ui("Showing")}{filteredLogs.length}{ui(" of ")}{logs.length}{ui("entries")}</AppText>
         </View>
 
         {filteredLogs.length === 0 ? (
           <EmptyState
             icon="document-text-outline"
-            title="No audit logs found"
+            title={ui("No audit logs found")}
             message={
               logs.length === 0
                 ? 'Activity will appear here as admins use the platform.'
@@ -2482,7 +2477,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                 {item.action || item.event_type || 'Audit log'}
               </AppText>
               <AppText style={styles.meta}>
-                {item.user_name || item.actor_name || 'System'}
+                {item.user_name || item.actor_name || ui("System")}
               </AppText>
               <AppText style={styles.meta}>
                 {item.created_at ? new Date(item.created_at).toLocaleString() : ''}
@@ -2498,10 +2493,10 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
   const renderStructuredAnalytics = () => {
     const analyticEntries = Object.entries(analytics);
     const timeRangeOptions = [
-      { label: 'Today', value: 'today' },
-      { label: 'This Week', value: 'week' },
-      { label: 'This Month', value: 'month' },
-      { label: 'All Time', value: 'all' },
+      { label: ui("Today"), value: 'today' },
+      { label: ui("This Week"), value: 'week' },
+      { label: ui("This Month"), value: 'month' },
+      { label: ui("All Time"), value: 'all' },
     ];
 
     const fetchAnalytics = async (range) => {
@@ -2517,8 +2512,8 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
     return (
       <View>
         <View style={styles.card}>
-          <AppText style={styles.cardTitle}>Analytics Dashboard</AppText>
-          <AppText style={styles.filterLabel}>Time Range</AppText>
+          <AppText style={styles.cardTitle}>{ui("Analytics Dashboard")}</AppText>
+          <AppText style={styles.filterLabel}>{ui("Time Range")}</AppText>
           <View style={styles.filtersRow}>
             {timeRangeOptions.map((opt) => (
               <FilterChip
@@ -2530,7 +2525,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
             ))}
           </View>
           <Button
-            title="Refresh Analytics"
+            title={ui("Refresh Analytics")}
             onPress={() =>
               runAction(
                 () => fetchAnalytics(analyticsTimeRange),
@@ -2545,8 +2540,8 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
         {analyticEntries.length === 0 ? (
           <EmptyState
             icon="analytics-outline"
-            title="No analytics data"
-            message="Data will appear once users interact with the platform."
+            title={ui("No analytics data")}
+            message={ui("Data will appear once users interact with the platform.")}
           />
         ) : (
           <View style={styles.analyticsGrid}>
@@ -2598,7 +2593,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
 
   const handleSaveLawyer = async () => {
     if (!lawyerForm.full_name || !lawyerForm.email) {
-      Toast.show({ type: 'error', text1: 'Full name and email are required' });
+      Toast.show({ type: 'error', text1: ui("Full name and email are required") });
       return;
     }
 
@@ -2620,25 +2615,25 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
 
   const handleDeleteLawyer = (lawyerId, lawyerName) => {
     Alert.alert(
-      'Delete Platform Lawyer',
+      ui("Delete Platform Lawyer"),
       `Are you sure you want to remove ${lawyerName} from platform lawyers?`,
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: ui("Cancel"), style: 'cancel' },
         {
-          text: 'Delete',
+          text: ui("Delete"),
           style: 'destructive',
           onPress: () =>
             openOperationPrompt({
               type: 'delete_platform_lawyer',
               target: { id: lawyerId, full_name: lawyerName },
-              title: 'Delete platform lawyer',
-              message: `${lawyerName || 'This lawyer'} will be removed from the platform lawyer list.`,
-              label: 'Deletion reason',
-              placeholder: 'Explain why this lawyer is being removed',
-              confirmText: 'Delete lawyer',
+              title: ui("Delete platform lawyer"),
+              message: ui("{value0} will be removed from the platform lawyer list.", {value0: (lawyerName || 'This lawyer')}),
+              label: ui("Deletion reason"),
+              placeholder: ui("Explain why this lawyer is being removed"),
+              confirmText: ui("Delete lawyer"),
               icon: 'trash-outline',
               variant: 'danger',
-              successMessage: 'Platform lawyer removed',
+              successMessage: ui("Platform lawyer removed"),
               reload: null,
               run: async (note) => {
                 await superAdminService.deletePlatformLawyer(lawyerId, note);
@@ -2683,7 +2678,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
     <>
       <View style={styles.card}>
         <View style={styles.rowBetween}>
-          <AppText style={styles.cardTitle}>Platform Lawyers</AppText>
+          <AppText style={styles.cardTitle}>{ui("Platform Lawyers")}</AppText>
           <TouchableOpacity
             style={styles.smallBtn}
             onPress={() => {
@@ -2691,7 +2686,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
               setShowAddLawyerModal(true);
             }}
           >
-            <AppText style={styles.smallBtnText}>+ Add Lawyer</AppText>
+            <AppText style={styles.smallBtnText}>{ui("+ Add Lawyer")}</AppText>
           </TouchableOpacity>
         </View>
         <TouchableOpacity
@@ -2701,31 +2696,30 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
           }}
         >
           <AppText style={styles.linkText}>
-            {showLawyerApplications ? 'Hide' : 'View'} Pending Applications
-          </AppText>
+            {showLawyerApplications ? ui("Hide") : 'View'}{ui("Pending Applications")}</AppText>
         </TouchableOpacity>
       </View>
 
       {showLawyerApplications && (
         <>
           {lawyerApplications.length === 0 ? (
-            <EmptyState title="No pending applications" message="No lawyer applications awaiting review." />
+            <EmptyState title={ui("No pending applications")} message={ui("No lawyer applications awaiting review.")} />
           ) : (
             lawyerApplications.map((app) => (
               <View key={app.id} style={styles.card}>
                 <AppText style={styles.cardTitle}>{app.full_name || app.name}</AppText>
-                {app.email ? <AppText style={styles.meta}>Email: {app.email}</AppText> : null}
-                {app.phone ? <AppText style={styles.meta}>Phone: {app.phone}</AppText> : null}
-                {app.specialization ? <AppText style={styles.meta}>Specialization: {app.specialization}</AppText> : null}
-                {app.license_number ? <AppText style={styles.meta}>License: {app.license_number}</AppText> : null}
-                {app.state_name ? <AppText style={styles.meta}>State: {app.state_name}</AppText> : null}
-                {app.notes ? <AppText style={styles.meta}>Notes: {app.notes}</AppText> : null}
+                {app.email ? <AppText style={styles.meta}>{ui("Email: ")}{app.email}</AppText> : null}
+                {app.phone ? <AppText style={styles.meta}>{ui("Phone: ")}{app.phone}</AppText> : null}
+                {app.specialization ? <AppText style={styles.meta}>{ui("Specialization: ")}{app.specialization}</AppText> : null}
+                {app.license_number ? <AppText style={styles.meta}>{ui("License: ")}{app.license_number}</AppText> : null}
+                {app.state_name ? <AppText style={styles.meta}>{ui("State: ")}{app.state_name}</AppText> : null}
+                {app.notes ? <AppText style={styles.meta}>{ui("Notes: ")}{app.notes}</AppText> : null}
                 <View style={styles.row}>
                   <TouchableOpacity onPress={() => handleReviewApplication(app.id, 'approve')}>
-                    <AppText style={styles.linkText}>Approve</AppText>
+                    <AppText style={styles.linkText}>{ui("Approve")}</AppText>
                   </TouchableOpacity>
                   <TouchableOpacity onPress={() => handleReviewApplication(app.id, 'reject')}>
-                    <AppText style={styles.warnText}>Reject</AppText>
+                    <AppText style={styles.warnText}>{ui("Reject")}</AppText>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -2737,8 +2731,8 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
       {platformLawyers.length === 0 ? (
         <EmptyState
           icon="briefcase-outline"
-          title="No platform lawyers"
-          message="Add a lawyer manually or review pending applications."
+          title={ui("No platform lawyers")}
+          message={ui("Add a lawyer manually or review pending applications.")}
         />
       ) : (
         platformLawyers.map((lawyer) => (
@@ -2747,14 +2741,14 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
               <AppText style={styles.cardTitle}>{lawyer.full_name || lawyer.name}</AppText>
               <StatusBadge status={lawyer.status || lawyer.invite_status || 'active'} />
             </View>
-            {lawyer.email ? <AppText style={styles.meta}>Email: {lawyer.email}</AppText> : null}
-            {lawyer.phone ? <AppText style={styles.meta}>Phone: {lawyer.phone}</AppText> : null}
-            {lawyer.specialization ? <AppText style={styles.meta}>Specialization: {lawyer.specialization}</AppText> : null}
-            {lawyer.license_number ? <AppText style={styles.meta}>License: {lawyer.license_number}</AppText> : null}
-            {lawyer.state_name ? <AppText style={styles.meta}>State: {lawyer.state_name}</AppText> : null}
+            {lawyer.email ? <AppText style={styles.meta}>{ui("Email: ")}{lawyer.email}</AppText> : null}
+            {lawyer.phone ? <AppText style={styles.meta}>{ui("Phone: ")}{lawyer.phone}</AppText> : null}
+            {lawyer.specialization ? <AppText style={styles.meta}>{ui("Specialization: ")}{lawyer.specialization}</AppText> : null}
+            {lawyer.license_number ? <AppText style={styles.meta}>{ui("License: ")}{lawyer.license_number}</AppText> : null}
+            {lawyer.state_name ? <AppText style={styles.meta}>{ui("State: ")}{lawyer.state_name}</AppText> : null}
 
             <View style={styles.row}>
-              {lawyer.invite_status !== 'accepted' ? (
+              {lawyer.invite_status !== "accepted" ? (
                 <TouchableOpacity
                   onPress={() =>
                     runAction(
@@ -2767,7 +2761,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                     )
                   }
                 >
-                  <AppText style={styles.linkText}>Resend Invite</AppText>
+                  <AppText style={styles.linkText}>{ui("Resend Invite")}</AppText>
                 </TouchableOpacity>
               ) : null}
               <TouchableOpacity
@@ -2784,10 +2778,10 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                   setShowAddLawyerModal(true);
                 }}
               >
-                <AppText style={styles.linkText}>Edit</AppText>
+                <AppText style={styles.linkText}>{ui("Edit")}</AppText>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => handleDeleteLawyer(lawyer.id, lawyer.full_name || lawyer.name)}>
-                <AppText style={styles.warnText}>Remove</AppText>
+                <AppText style={styles.warnText}>{ui("Remove")}</AppText>
               </TouchableOpacity>
             </View>
           </View>
@@ -2799,8 +2793,8 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
         visible={showAddLawyerModal}
         title={editingLawyerId ? 'Edit Platform Lawyer' : 'Add Platform Lawyer'}
         message=""
-        confirmText={editingLawyerId ? 'Update' : 'Add Lawyer'}
-        cancelText="Cancel"
+        confirmText={editingLawyerId ? ui("Update") : 'Add Lawyer'}
+        cancelText={ui("Cancel")}
         onConfirm={handleSaveLawyer}
         onCancel={() => {
           setShowAddLawyerModal(false);
@@ -2814,13 +2808,13 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
           <View style={styles.modalContent}>
             <AppText style={styles.cardTitle}>{editingLawyerId ? 'Edit Platform Lawyer' : 'Add Platform Lawyer'}</AppText>
             <Input
-              label="Full Name"
+              label={ui("Full Name")}
               value={lawyerForm.full_name}
               onChangeText={(v) => setLawyerForm((prev) => ({ ...prev, full_name: v }))}
-              placeholder="Enter lawyer name"
+              placeholder={ui("Enter lawyer name")}
             />
             <Input
-              label="Email"
+              label={ui("Email")}
               value={lawyerForm.email}
               onChangeText={(v) => setLawyerForm((prev) => ({ ...prev, email: v }))}
               placeholder="lawyer@email.com"
@@ -2828,39 +2822,39 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
               autoCapitalize="none"
             />
             <Input
-              label="Phone"
+              label={ui("Phone")}
               value={lawyerForm.phone}
               onChangeText={(v) => setLawyerForm((prev) => ({ ...prev, phone: v }))}
-              placeholder="Phone number"
+              placeholder={ui("Phone number")}
               keyboardType="phone-pad"
             />
             <Input
-              label="Specialization"
+              label={ui("Specialization")}
               value={lawyerForm.specialization}
               onChangeText={(v) => setLawyerForm((prev) => ({ ...prev, specialization: v }))}
-              placeholder="e.g. Property Law, Litigation"
+              placeholder={ui("e.g. Property Law, Litigation")}
             />
             <Input
-              label="License Number"
+              label={ui("License Number")}
               value={lawyerForm.license_number}
               onChangeText={(v) => setLawyerForm((prev) => ({ ...prev, license_number: v }))}
-              placeholder="License number"
+              placeholder={ui("License number")}
             />
             <SelectField
-              label="State"
+              label={ui("State")}
               value={lawyerForm.state_id ? pricingLocations.find((s) => String(s.id) === lawyerForm.state_id)?.state_name : ''}
-              placeholder="Select state"
+              placeholder={ui("Select state")}
               onPress={() => setShowPricingStatePicker(true)}
             />
             <View style={styles.row}>
               <Button
-                title={editingLawyerId ? 'Update' : 'Add Lawyer'}
+                title={editingLawyerId ? ui("Update") : 'Add Lawyer'}
                 onPress={handleSaveLawyer}
                 loading={submitting}
                 style={styles.flex1}
               />
               <Button
-                title="Cancel"
+                title={ui("Cancel")}
                 variant="outline"
                 onPress={() => {
                   setShowAddLawyerModal(false);
@@ -2876,10 +2870,10 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
       {/* Review Application Dialog */}
       <ConfirmDialog
         visible={showReviewDialog}
-        title={reviewAction === 'approve' ? 'Approve Application' : 'Reject Application'}
-        message={reviewAction === 'approve' ? 'Add a review note (optional):' : 'Provide a reason for rejection:'}
-        confirmText={reviewAction === 'approve' ? 'Approve' : 'Reject'}
-        cancelText="Cancel"
+        title={reviewAction === "approve" ? ui("Approve Application") : ui("Reject Application")}
+        message={reviewAction === "approve" ? 'Add a review note (optional):' : 'Provide a reason for rejection:'}
+        confirmText={reviewAction === "approve" ? ui("Approve") : ui("Reject")}
+        cancelText={ui("Cancel")}
         onConfirm={confirmReviewApplication}
         onCancel={() => {
           setShowReviewDialog(false);
@@ -2894,26 +2888,26 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <AppText style={styles.cardTitle}>
-              {reviewAction === 'approve' ? 'Approve Application' : 'Reject Application'}
+              {reviewAction === "approve" ? ui("Approve Application") : ui("Reject Application")}
             </AppText>
             <TextInput
               style={styles.textArea}
               value={reviewNote}
               onChangeText={setReviewNote}
-              placeholder={reviewAction === 'approve' ? 'Review note (optional)...' : 'Reason for rejection...'}
+              placeholder={reviewAction === "approve" ? 'Review note (optional)...' : 'Reason for rejection...'}
               multiline
               numberOfLines={4}
             />
             <View style={styles.row}>
               <Button
-                title={reviewAction === 'approve' ? 'Approve' : 'Reject'}
+                title={reviewAction === "approve" ? ui("Approve") : ui("Reject")}
                 variant={reviewAction === 'approve' ? 'primary' : 'danger'}
                 onPress={confirmReviewApplication}
                 loading={submitting}
                 style={styles.flex1}
               />
               <Button
-                title="Cancel"
+                title={ui("Cancel")}
                 variant="outline"
                 onPress={() => {
                   setShowReviewDialog(false);
@@ -2933,17 +2927,17 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
   // ===================== NEW: LAWYER ACTIVITY TAB =====================
   const renderLawyerActivity = () => {
     const timeRangeOptions = [
-      { label: '24 Hours', value: '24hours' },
-      { label: '7 Days', value: '7days' },
-      { label: '30 Days', value: '30days' },
-      { label: '90 Days', value: '90days' },
+      { label: ui("24 Hours"), value: '24hours' },
+      { label: ui("7 Days"), value: '7days' },
+      { label: ui("30 Days"), value: '30days' },
+      { label: ui("90 Days"), value: '90days' },
     ];
 
     return (
       <View>
         <View style={styles.card}>
-          <AppText style={styles.cardTitle}>Lawyer Activity Stats</AppText>
-          <AppText style={styles.filterLabel}>Time Range</AppText>
+          <AppText style={styles.cardTitle}>{ui("Lawyer Activity Stats")}</AppText>
+          <AppText style={styles.filterLabel}>{ui("Time Range")}</AppText>
           <View style={styles.filtersRow}>
             {timeRangeOptions.map((opt) => (
               <FilterChip
@@ -2962,53 +2956,52 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
         {lawyerActivities.length === 0 ? (
           <EmptyState
             icon="pulse-outline"
-            title="No activity data"
-            message="Lawyer activity statistics will appear here."
+            title={ui("No activity data")}
+            message={ui("Lawyer activity statistics will appear here.")}
           />
         ) : (
           lawyerActivities.map((activity, index) => (
             <View key={activity.id || index} style={styles.card}>
-              <AppText style={styles.cardTitle}>{activity.lawyer_name || activity.full_name || 'Lawyer'}</AppText>
-              {activity.email ? <AppText style={styles.meta}>Email: {activity.email}</AppText> : null}
+              <AppText style={styles.cardTitle}>{activity.lawyer_name || activity.full_name || ui("Lawyer")}</AppText>
+              {activity.email ? <AppText style={styles.meta}>{ui("Email: ")}{activity.email}</AppText> : null}
               <View style={styles.activityStatRow}>
                 {activity.properties_managed !== undefined && (
                   <View style={styles.activityStat}>
                     <AppText style={styles.analyticsValue}>{activity.properties_managed}</AppText>
-                    <AppText style={styles.analyticsLabel}>Properties</AppText>
+                    <AppText style={styles.analyticsLabel}>{ui("Properties")}</AppText>
                   </View>
                 )}
                 {activity.clients_served !== undefined && (
                   <View style={styles.activityStat}>
                     <AppText style={styles.analyticsValue}>{activity.clients_served}</AppText>
-                    <AppText style={styles.analyticsLabel}>Clients</AppText>
+                    <AppText style={styles.analyticsLabel}>{ui("Clients")}</AppText>
                   </View>
                 )}
                 {activity.documents_filed !== undefined && (
                   <View style={styles.activityStat}>
                     <AppText style={styles.analyticsValue}>{activity.documents_filed}</AppText>
-                    <AppText style={styles.analyticsLabel}>Documents</AppText>
+                    <AppText style={styles.analyticsLabel}>{ui("Documents")}</AppText>
                   </View>
                 )}
                 {activity.disputes_handled !== undefined && (
                   <View style={styles.activityStat}>
                     <AppText style={styles.analyticsValue}>{activity.disputes_handled}</AppText>
-                    <AppText style={styles.analyticsLabel}>Disputes</AppText>
+                    <AppText style={styles.analyticsLabel}>{ui("Disputes")}</AppText>
                   </View>
                 )}
                 {activity.agreements_generated !== undefined && (
                   <View style={styles.activityStat}>
                     <AppText style={styles.analyticsValue}>{activity.agreements_generated}</AppText>
-                    <AppText style={styles.analyticsLabel}>Agreements</AppText>
+                    <AppText style={styles.analyticsLabel}>{ui("Agreements")}</AppText>
                   </View>
                 )}
               </View>
               {activity.last_active_at ? (
-                <AppText style={styles.meta}>
-                  Last active: {new Date(activity.last_active_at).toLocaleString()}
+                <AppText style={styles.meta}>{ui("Last active:")}{new Date(activity.last_active_at).toLocaleString()}
                 </AppText>
               ) : null}
               {activity.total_hours_logged ? (
-                <AppText style={styles.meta}>Total hours logged: {activity.total_hours_logged}</AppText>
+                <AppText style={styles.meta}>{ui("Total hours logged: ")}{activity.total_hours_logged}</AppText>
               ) : null}
             </View>
           ))
@@ -3020,12 +3013,12 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
   // ===================== NEW: ADMIN MANAGEMENT TAB =====================
   const handleImpersonateAdmin = async (adminId, adminName) => {
     Alert.alert(
-      'Impersonate Admin',
+      ui("Impersonate Admin"),
       `You are about to impersonate ${adminName}. This will log you in as this admin. Continue?`,
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: ui("Cancel"), style: 'cancel' },
         {
-          text: 'Impersonate',
+          text: ui("Impersonate"),
           onPress: async () => {
             try {
               setSubmitting(true);
@@ -3037,11 +3030,11 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                 );
               }
               await beginImpersonation(response.data);
-              Toast.show({ type: 'success', text1: `Now impersonating ${adminName}` });
+              Toast.show({ type: 'success', text1: ui("Now impersonating {value0}", {value0: (adminName)}) });
             } catch (error) {
               Toast.show({
                 type: 'error',
-                text1: 'Failed',
+                text1: ui("Failed"),
                 text2: getErrorMessage(error, 'Could not impersonate admin'),
               });
             } finally {
@@ -3055,7 +3048,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
 
   const handleUpdateJurisdiction = async (adminId) => {
     if (!jurisdictionForm.state) {
-      Toast.show({ type: 'error', text1: 'State is required' });
+      Toast.show({ type: 'error', text1: ui("State is required") });
       return;
     }
 
@@ -3067,7 +3060,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
     ) {
       Toast.show({
         type: 'error',
-        text1: 'Local government is required for this LGA role',
+        text1: ui("Local government is required for this LGA role"),
       });
       return;
     }
@@ -3080,15 +3073,13 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
     openOperationPrompt({
       type: 'update_jurisdiction',
       target: targetAdmin,
-      title: 'Update admin jurisdiction',
-      message: `${targetAdmin.full_name || targetAdmin.email || 'This admin'} will be assigned to ${
-        jurisdiction.city ? `${jurisdiction.city}, ` : ''
-      }${jurisdiction.state}.`,
-      label: 'Change reason',
-      placeholder: 'Explain why this jurisdiction is changing',
-      confirmText: 'Update jurisdiction',
+      title: ui("Update admin jurisdiction"),
+      message: ui("{value0} will be assigned to {value1}{value2}.", {value0: (targetAdmin.full_name || targetAdmin.email || 'This admin'), value1: (jurisdiction.city ? `${jurisdiction.city}, ` : ''), value2: (jurisdiction.state)}),
+      label: ui("Change reason"),
+      placeholder: ui("Explain why this jurisdiction is changing"),
+      confirmText: ui("Update jurisdiction"),
       icon: 'location-outline',
-      successMessage: 'Admin jurisdiction updated',
+      successMessage: ui("Admin jurisdiction updated"),
       reload: null,
       run: async (note) => {
         await superAdminService.updateAdminJurisdiction(
@@ -3117,17 +3108,15 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
   const renderAdminManagement = () => (
     <>
       <View style={styles.card}>
-        <AppText style={styles.cardTitle}>Admin Management</AppText>
-        <AppText style={styles.meta}>
-          Manage admin accounts, impersonate admins, and edit jurisdictions.
-        </AppText>
+        <AppText style={styles.cardTitle}>{ui("Admin Management")}</AppText>
+        <AppText style={styles.meta}>{ui("Manage admin accounts, impersonate admins, and edit jurisdictions.")}</AppText>
       </View>
 
       {admins.length === 0 ? (
         <EmptyState
           icon="shield-checkmark-outline"
-          title="No admins found"
-          message="Admin accounts will appear here once they are created."
+          title={ui("No admins found")}
+          message={ui("Admin accounts will appear here once they are created.")}
         />
       ) : (
         admins.map((admin) => (
@@ -3138,24 +3127,21 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                 <AppText style={styles.meta}>{expandedAdminId === admin.id ? '▲' : '▼'}</AppText>
               </View>
             </TouchableOpacity>
-            <AppText style={styles.meta}>Email: {admin.email}</AppText>
+            <AppText style={styles.meta}>{ui("Email: ")}{admin.email}</AppText>
             {admin.assigned_state ? (
-              <AppText style={styles.meta}>Jurisdiction: {admin.assigned_state}{admin.assigned_city ? ` - ${admin.assigned_city}` : ''}</AppText>
+              <AppText style={styles.meta}>{ui("Jurisdiction: ")}{admin.assigned_state}{admin.assigned_city ? ui(" - {value0}", {value0: (admin.assigned_city)}) : ''}</AppText>
             ) : (
-              <AppText style={styles.meta}>Jurisdiction: Not assigned</AppText>
+              <AppText style={styles.meta}>{ui("Jurisdiction: Not assigned")}</AppText>
             )}
-            <AppText style={styles.meta}>
-              Verified: {admin.credentials_verified_count ?? 0} users
-            </AppText>
+            <AppText style={styles.meta}>{ui("Verified:")}{admin.credentials_verified_count ?? 0}{ui("users")}</AppText>
             {admin.last_verification_at ? (
-              <AppText style={styles.meta}>
-                Last activity: {new Date(admin.last_verification_at).toLocaleString()}
+              <AppText style={styles.meta}>{ui("Last activity:")}{new Date(admin.last_verification_at).toLocaleString()}
               </AppText>
             ) : null}
 
             <View style={styles.row}>
               <TouchableOpacity onPress={() => handleImpersonateAdmin(admin.id, admin.full_name)}>
-                <AppText style={styles.linkText}>Impersonate</AppText>
+                <AppText style={styles.linkText}>{ui("Impersonate")}</AppText>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {
@@ -3166,23 +3152,23 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                   });
                 }}
               >
-                <AppText style={styles.linkText}>Edit Jurisdiction</AppText>
+                <AppText style={styles.linkText}>{ui("Edit Jurisdiction")}</AppText>
               </TouchableOpacity>
             </View>
 
             {expandedAdminId === admin.id && (
               <View style={styles.expandedSection}>
-                <AppText style={styles.filterLabel}>State Users</AppText>
+                <AppText style={styles.filterLabel}>{ui("State Users")}</AppText>
                 {loadingStateUsers ? (
-                  <AppText style={styles.meta}>Loading...</AppText>
+                  <AppText style={styles.meta}>{ui("Loading...")}</AppText>
                 ) : adminStateUsers.length === 0 ? (
-                  <AppText style={styles.meta}>No users in this admin's jurisdiction.</AppText>
+                  <AppText style={styles.meta}>{ui("No users in this admin's jurisdiction.")}</AppText>
                 ) : (
                   adminStateUsers.map((user) => (
                     <View key={user.id} style={styles.listRow}>
                       <AppText style={styles.listTitle}>{user.full_name || user.name}</AppText>
                       <AppText style={styles.meta}>{user.email}</AppText>
-                      <AppText style={styles.meta}>Role: {user.user_type}</AppText>
+                      <AppText style={styles.meta}>{ui("Role: ")}{user.user_type}</AppText>
                     </View>
                   ))
                 )}
@@ -3192,10 +3178,10 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
             {editingJurisdiction === admin.id && (
               <View style={styles.inlineForm}>
                 <Input
-                  label="State"
+                  label={ui("State")}
                   value={jurisdictionForm.state}
                   onChangeText={(v) => setJurisdictionForm((prev) => ({ ...prev, state: v }))}
-                  placeholder="Enter state name"
+                  placeholder={ui("Enter state name")}
                 />
                 <Input
                   label={
@@ -3205,17 +3191,17 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                   }
                   value={jurisdictionForm.city}
                   onChangeText={(v) => setJurisdictionForm((prev) => ({ ...prev, city: v }))}
-                  placeholder="Enter city or LGA name"
+                  placeholder={ui("Enter city or LGA name")}
                 />
                 <View style={styles.row}>
                   <Button
-                    title="Save"
+                    title={ui("Save")}
                     onPress={() => handleUpdateJurisdiction(admin.id)}
                     loading={submitting}
                     size="sm"
                   />
                   <Button
-                    title="Cancel"
+                    title={ui("Cancel")}
                     variant="outline"
                     onPress={() => {
                       setEditingJurisdiction(null);
@@ -3236,12 +3222,10 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
   const renderPendingApprovals = () => (
     <>
       <View style={styles.card}>
-        <AppText style={styles.cardTitle}>Pending Admin Approvals</AppText>
-        <AppText style={styles.meta}>
-          Review and approve/reject admin account requests.
-        </AppText>
+        <AppText style={styles.cardTitle}>{ui("Pending Admin Approvals")}</AppText>
+        <AppText style={styles.meta}>{ui("Review and approve/reject admin account requests.")}</AppText>
         <Button
-          title="Refresh"
+          title={ui("Refresh")}
           onPress={() => runAction(() => loadPendingAdmins(), 'Pending admins refreshed', null)}
           loading={submitting}
           size="sm"
@@ -3251,29 +3235,28 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
       {pendingAdmins.length === 0 ? (
         <EmptyState
           icon="checkmark-circle-outline"
-          title="No pending approvals"
-          message="All admin requests have been processed."
+          title={ui("No pending approvals")}
+          message={ui("All admin requests have been processed.")}
         />
       ) : (
         pendingAdmins.map((admin) => (
           <View key={admin.id} style={styles.card}>
-            <AppText style={styles.cardTitle}>{admin.full_name || admin.name || 'Unknown'}</AppText>
-            <AppText style={styles.meta}>Email: {admin.email}</AppText>
-            {admin.phone ? <AppText style={styles.meta}>Phone: {admin.phone}</AppText> : null}
+            <AppText style={styles.cardTitle}>{admin.full_name || admin.name || ui("Unknown")}</AppText>
+            <AppText style={styles.meta}>{ui("Email: ")}{admin.email}</AppText>
+            {admin.phone ? <AppText style={styles.meta}>{ui("Phone: ")}{admin.phone}</AppText> : null}
             {admin.state_name || admin.state ? (
-              <AppText style={styles.meta}>State: {admin.state_name || admin.state}</AppText>
+              <AppText style={styles.meta}>{ui("State: ")}{admin.state_name || admin.state}</AppText>
             ) : null}
-            {admin.city ? <AppText style={styles.meta}>City: {admin.city}</AppText> : null}
+            {admin.city ? <AppText style={styles.meta}>{ui("City: ")}{admin.city}</AppText> : null}
             {admin.role_requested ? (
-              <AppText style={styles.meta}>Role requested: {admin.role_requested}</AppText>
+              <AppText style={styles.meta}>{ui("Role requested: ")}{admin.role_requested}</AppText>
             ) : null}
             {admin.created_at ? (
-              <AppText style={styles.meta}>
-                Requested: {new Date(admin.created_at).toLocaleDateString()}
+              <AppText style={styles.meta}>{ui("Requested:")}{new Date(admin.created_at).toLocaleDateString()}
               </AppText>
             ) : null}
             {admin.reason ? (
-              <AppText style={styles.meta}>Reason: {admin.reason}</AppText>
+              <AppText style={styles.meta}>{ui("Reason: ")}{admin.reason}</AppText>
             ) : null}
             <StatusBadge status={admin.status || 'pending'} />
 
@@ -3290,21 +3273,21 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                   )
                 }
               >
-                <AppText style={styles.linkText}>Approve</AppText>
+                <AppText style={styles.linkText}>{ui("Approve")}</AppText>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() =>
                   openOperationPrompt({
                     type: 'reject_admin',
                     target: admin,
-                    title: 'Reject admin request',
-                    message: `${admin.full_name || admin.email || 'This applicant'} will be rejected and the pending account removed.`,
-                    label: 'Rejection reason',
-                    placeholder: 'Explain why this admin request is rejected',
-                    confirmText: 'Reject admin',
+                    title: ui("Reject admin request"),
+                    message: ui("{value0} will be rejected and the pending account removed.", {value0: (admin.full_name || admin.email || 'This applicant')}),
+                    label: ui("Rejection reason"),
+                    placeholder: ui("Explain why this admin request is rejected"),
+                    confirmText: ui("Reject admin"),
                     icon: 'close-circle-outline',
                     variant: 'danger',
-                    successMessage: 'Admin rejected',
+                    successMessage: ui("Admin rejected"),
                     reload: null,
                     run: async (note) => {
                       await superAdminService.rejectPendingAdmin(admin.id, note);
@@ -3313,7 +3296,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                   })
                 }
               >
-                <AppText style={styles.warnText}>Reject</AppText>
+                <AppText style={styles.warnText}>{ui("Reject")}</AppText>
               </TouchableOpacity>
             </View>
           </View>
@@ -3362,51 +3345,34 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
       scrollEventThrottle={16}
     >
       <DashboardHero
-        eyebrow="PLATFORM OPERATIONS"
-        title="Super Admin"
-        subtitle="Choose one focused workspace at a time. Data is loaded only when that workspace is opened."
+        eyebrow={ui("PLATFORM OPERATIONS")}
+        title={ui("Super Admin")}
+        subtitle={ui("Choose one focused workspace at a time. Data is loaded only when that workspace is opened.")}
         icon="shield-checkmark-outline"
         onRefresh={() => loadSection(section, true)}
         tourTarget="super_overview"
-        headerRight={(
-          <TouchableOpacity
-            accessibilityRole="button"
-            accessibilityLabel={`Notifications${unreadCount ? `, ${unreadCount} unread` : ''}`}
-            activeOpacity={0.85}
-            onPress={() => navigation.navigate('Notifications')}
-            style={styles.headerBell}
-          >
-            <Icon name="notifications-outline" size={20} color={colors.white} />
-            {unreadCount > 0 ? (
-              <View style={styles.headerBellBadge}>
-                <AppText style={styles.headerBellBadgeText}>
-                  {unreadCount > 99 ? '99+' : unreadCount}
-                </AppText>
-              </View>
-            ) : null}
-          </TouchableOpacity>
-        )}
+
       />
       <AdminAccountActions navigation={navigation} />
       <ActionRow
-        title={selectedSection?.label || 'Choose workspace'}
-        subtitle="Tap to switch administrative workspace"
+        title={selectedSection?.label || ui("Choose workspace")}
+        subtitle={ui("Tap to switch administrative workspace")}
         icon="apps-outline"
         badge="Workspace"
         tourTarget="super_workspace"
         onPress={() => setShowSectionPicker(true)}
       />
 
-      {section !== 'overview' ? (
+      {section !== "overview" ? (
         <TouchableOpacity
           accessibilityRole="button"
-          accessibilityLabel="Back to overview"
+          accessibilityLabel={ui("Back to overview")}
           activeOpacity={0.85}
           onPress={() => setSection('overview')}
           style={styles.backToOverview}
         >
           <Icon name="arrow-back" size={18} color={colors.blue} />
-          <AppText style={styles.backToOverviewText}>Back to Overview</AppText>
+          <AppText style={styles.backToOverviewText}>{ui("Back to Overview")}</AppText>
         </TouchableOpacity>
       ) : null}
 
@@ -3426,16 +3392,16 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
         </View>
       </TourTarget>
       <View>
-        {loading ? <AppText style={styles.meta}>Loading...</AppText> : renderedSection}
+        {loading ? <AppText style={styles.meta}>{ui("Loading...")}</AppText> : renderedSection}
       </View>
 
       <OperationNoteModal
         visible={Boolean(operationPrompt)}
-        title={operationPrompt?.title || 'Confirm action'}
+        title={operationPrompt?.title || ui("Confirm action")}
         message={operationPrompt?.message}
-        label={operationPrompt?.label || 'Reason'}
+        label={operationPrompt?.label || ui("Reason")}
         placeholder={operationPrompt?.placeholder}
-        confirmText={operationPrompt?.confirmText || 'Confirm action'}
+        confirmText={operationPrompt?.confirmText || ui("Confirm action")}
         icon={operationPrompt?.icon || 'document-text-outline'}
         variant={operationPrompt?.variant || 'primary'}
         loading={submitting}
@@ -3445,11 +3411,11 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
 
       <OptionPickerModal
         visible={showSectionPicker}
-        title="Choose workspace"
+        title={ui("Choose workspace")}
         options={sectionOptions}
         selectedValue={section}
         searchable
-        searchPlaceholder="Search workspaces"
+        searchPlaceholder={ui("Search workspaces")}
         getOptionLabel={(item) => item?.label || String(item?.value ?? '')}
         onClose={() => setShowSectionPicker(false)}
         onSelect={(item) => {
@@ -3461,11 +3427,11 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
 
       <OptionPickerModal
         visible={showPricingStatePicker}
-        title="Select State"
+        title={ui("Select State")}
         options={pricingLocations}
         selectedValue={pricingForm.state_id}
         searchable
-        searchPlaceholder="Search states"
+        searchPlaceholder={ui("Search states")}
         getOptionLabel={(item) => item.state_name}
         getOptionValue={(item) => item.id}
         onClose={() => setShowPricingStatePicker(false)}
@@ -3480,11 +3446,11 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
 
       <OptionPickerModal
         visible={showPricingLgaPicker}
-        title="Select Local Government Area"
+        title={ui("Select Local Government Area")}
         options={availablePricingLgas}
         selectedValue={pricingForm.lga_name}
         searchable
-        searchPlaceholder="Search LGAs"
+        searchPlaceholder={ui("Search LGAs")}
         getOptionLabel={(item) => String(item)}
         getOptionValue={(item) => String(item)}
         onClose={() => setShowPricingLgaPicker(false)}
