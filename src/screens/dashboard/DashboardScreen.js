@@ -864,8 +864,8 @@ const DashboardScreen = ({ navigation }) => {
               <AppText style={styles.locationTitle}>{ui("Property Location")}</AppText>
               <AppText style={styles.locationHint}>
                 {hasActivePropertyLocation
-                  ? 'Tap any active property card to open its location in Google Maps.'
-                  : 'This card becomes clickable after your rent payment is confirmed.'}
+                  ? ui('Tap any active property card to open its location in Google Maps.')
+                  : ui('This card becomes clickable after your rent payment is confirmed.')}
               </AppText>
             </View>
           </View>
@@ -887,15 +887,15 @@ const DashboardScreen = ({ navigation }) => {
                   </AppText>
                   <AppText style={styles.locationAddress}>
                     {getPropertyMapAddress(property) ||
-                      (isActive ? 'Location available' : 'Pay rent to activate Google Maps location')}
+                      (isActive ? ui('Location available') : ui('Pay rent to activate Google Maps location'))}
                   </AppText>
                   <View style={styles.locationBadges}>
                     <AppText style={[styles.locationBadge, !isActive && styles.locationBadgeLocked]}>
-                      {isActive ? 'Rent paid' : 'Rent not paid'}
+                      {isActive ? ui('Rent paid') : ui('Rent not paid')}
                     </AppText>
                     {isActive ? (
                       <AppText style={styles.locationBadgeAlt}>
-                        {property.latitude && property.longitude ? 'Map pin ready' : 'Address search'}
+                        {property.latitude && property.longitude ? ui('Map pin ready') : ui('Address search')}
                       </AppText>
                     ) : (
                       <AppText style={styles.locationBadgeWarning}>{ui("Locked until confirmed")}</AppText>
@@ -1295,7 +1295,7 @@ const DashboardScreen = ({ navigation }) => {
           </View>
           <View style={{ flex: 1 }}>
             <AppText style={{ color: '#fff', fontFamily: typography.bold, fontSize: typeScale.reading, lineHeight: 22 }}>
-              {surveyStatus.part_a_done ? ui("Continue survey") : 'Market research survey'}
+              {surveyStatus.part_a_done ? ui("Continue survey") : ui('Market research survey')}
             </AppText>
             <AppText
               style={{
@@ -1307,8 +1307,8 @@ const DashboardScreen = ({ navigation }) => {
               }}
             >
               {surveyStatus.part_a_done
-                ? 'You have one more step to finish the survey.'
-                : 'Please complete Part A — this survey is required.'}
+                ? ui('You have one more step to finish the survey.')
+                : ui('Please complete Part A — this survey is required.')}
             </AppText>
           </View>
           <Icon name="chevron-forward" size={20} color="#fff" />
@@ -1327,7 +1327,7 @@ const DashboardScreen = ({ navigation }) => {
           <View key={`${item.type}-${item.id}`} style={styles.activityItem}>
             <AppText style={styles.activityType}>{String(item.type || 'activity').toUpperCase()}</AppText>
             <AppText style={styles.activityText}>
-              {item.property_title || item.message_text || 'Activity update'}
+              {item.property_title || item.message_text || ui('Activity update')}
             </AppText>
             <AppText style={styles.activityDate}>
               {item.activity_date ? new Date(item.activity_date).toLocaleString() : ''}

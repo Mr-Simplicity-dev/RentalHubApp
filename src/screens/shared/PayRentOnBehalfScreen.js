@@ -105,7 +105,7 @@ const PayRentOnBehalfScreen = ({ route, navigation }) => {
           </View>
         ) : (
           <>
-            <AppText style={styles.lead}>{ui("You are about to pay rent on behalf of")}<AppText style={styles.leadStrong}>{info?.tenant_name || 'a tenant'}</AppText>.
+            <AppText style={styles.lead}>{ui("You are about to pay rent on behalf of")}<AppText style={styles.leadStrong}>{info?.tenant_name || ui('a tenant')}</AppText>.
             </AppText>
 
             <View style={styles.amountCard}>

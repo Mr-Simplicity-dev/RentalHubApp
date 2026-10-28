@@ -228,7 +228,7 @@ const MarketingAgentScreen = ({ navigation }) => {
                     </AppText>
                     <AppText style={styles.code}>
                       {row.account_type} ·{' '}
-                      {row.stage === "verified" ? ui("verified") : 'registration paid'} ·{' '}
+                      {row.stage === "verified" ? ui("verified") : ui('registration paid')} ·{' '}
                       {row.status}
                     </AppText>
                   </View>

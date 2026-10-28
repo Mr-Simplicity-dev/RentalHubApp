@@ -184,7 +184,7 @@ const LawyerDashboardScreen = ({ navigation }) => {
               <View key={item.id} style={styles.card}>
                 <AppText style={styles.cardTitle}>{ui("Dispute #")}{item.id}</AppText>
                 <AppText style={styles.cardMeta}>{ui("Status: ")}{item.status || ui("open")}</AppText>
-                <AppText style={styles.cardText}>{item.description || 'No description available'}</AppText>
+                <AppText style={styles.cardText}>{item.description || ui('No description available')}</AppText>
                 <View style={styles.row}>
                   <TouchableOpacity
                     onPress={() => navigation.navigate('VerifyCase', { disputeId: item.id })}

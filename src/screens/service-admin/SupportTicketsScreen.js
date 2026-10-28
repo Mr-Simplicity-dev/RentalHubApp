@@ -1,5 +1,5 @@
-import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
-import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
+
+
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import {ActivityIndicator, StyleSheet, TouchableOpacity, View} from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -25,7 +25,7 @@ const STATUS_COLORS = {
 };
 
 const SupportTicketsScreen = ({ navigation }) => {
-  const interfaceLanguage = useInterfaceLanguage();
+  const interfaceLanguage = 'en';
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -41,7 +41,7 @@ const SupportTicketsScreen = ({ navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: ui("Support unavailable"),
+        text1: "Support unavailable",
         text2: getErrorMessage(error, 'Could not load support tickets'),
       });
     } finally {
@@ -57,25 +57,25 @@ const SupportTicketsScreen = ({ navigation }) => {
     <DashboardScreen refreshing={loading} onRefresh={loadTickets}>
       <TourTarget id="support_tickets" padding={6} radius={18}>
         <DashboardHero
-          eyebrow={ui("SUPPORT DESK")}
-          title={ui("Ticket queue")}
-          subtitle={ui("Review open conversations, unread customer replies and escalation status from a mobile-first queue.")}
+          eyebrow={"SUPPORT DESK"}
+          title={"Ticket queue"}
+          subtitle={"Review open conversations, unread customer replies and escalation status from a mobile-first queue."}
           icon="headset-outline"
           onRefresh={loadTickets}
         />
       </TourTarget>
 
       <DashboardNotice
-        title={ui("Conversation tools")}
-        message={ui("Open any ticket for native replies, attachments, assignment, escalation, resolution and internal notes.")}
+        title={"Conversation tools"}
+        message={"Open any ticket for native replies, attachments, assignment, escalation, resolution and internal notes."}
       />
 
-      <DashboardSection title={ui("Latest tickets")}>
+      <DashboardSection title={"Latest tickets"}>
         {loading && !tickets.length ? (
           <ActivityIndicator color={colors.blue} />
         ) : null}
         {!loading && !tickets.length ? (
-          <AppText style={styles.empty}>{ui("No support tickets in your current queue.")}</AppText>
+          <AppText style={styles.empty}>{"No support tickets in your current queue."}</AppText>
         ) : null}
         {tickets.map((ticket) => (
           <TouchableOpacity
@@ -91,10 +91,10 @@ const SupportTicketsScreen = ({ navigation }) => {
           >
             <View style={styles.cardTop}>
               <AppText numberOfLines={1} style={styles.title}>
-                {ticket.subject || ui("Support ticket #{value0}", {value0: (ticket.id)})}
+                {ticket.subject || `Support ticket #${ticket.id ?? "{value0}"}`}
               </AppText>
               <View style={[styles.badge, { backgroundColor: STATUS_COLORS[ticket.status] || colors.muted }]}>
-                <AppText style={styles.badgeText}>{ticket.status || ui("open")}</AppText>
+                <AppText style={styles.badgeText}>{ticket.status || "open"}</AppText>
               </View>
             </View>
             <AppText numberOfLines={2} style={styles.description}>
@@ -103,17 +103,17 @@ const SupportTicketsScreen = ({ navigation }) => {
             <View style={styles.metaRow}>
               <Icon name="person-outline" size={14} color={colors.muted} />
               <AppText numberOfLines={1} style={styles.meta}>
-                {ticket.user_name || ticket.user_email || ui("Customer")}
+                {ticket.user_name || ticket.user_email || "Customer"}
               </AppText>
               {ticket.unread_user_replies ? (
-                <AppText style={styles.unread}>{ticket.unread_user_replies}{ui(" unread")}</AppText>
+                <AppText style={styles.unread}>{ticket.unread_user_replies}{" unread"}</AppText>
               ) : null}
             </View>
             {ticket.escalation_department ? (
-              <AppText style={styles.escalation}>{ui("Escalated to")}{String(ticket.escalation_department).replace(/_/g, ' ')}
+              <AppText style={styles.escalation}>{"Escalated to"}{String(ticket.escalation_department).replace(/_/g, ' ')}
               </AppText>
             ) : null}
-            <AppText style={styles.openNative}>{ui("Open native conversation")}</AppText>
+            <AppText style={styles.openNative}>{"Open native conversation"}</AppText>
           </TouchableOpacity>
         ))}
       </DashboardSection>

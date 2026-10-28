@@ -168,7 +168,7 @@ const RefundRequestsScreen = ({ navigation }) => {
               <View style={styles.cardHeader}>
                 <View style={styles.cardCopy}>
                   <AppText style={styles.cardTitle}>
-                    {item.property_title || 'Rental property'}
+                    {item.property_title || ui('Rental property')}
                   </AppText>
                   {isLandlord ? (
                     <AppText style={styles.cardMeta}>
@@ -229,7 +229,7 @@ const RefundRequestsScreen = ({ navigation }) => {
           <View style={styles.modalOverlay}>
             <View style={styles.modalCard}>
               <AppText style={styles.modalTitle}>
-                {decision.action === "approve" ? 'Approve full refund' : 'Reject refund'}
+                {decision.action === "approve" ? ui('Approve full refund') : ui('Reject refund')}
               </AppText>
               <AppText style={styles.modalSubtitle}>
                 {decision.item.property_title || ui("Property")} · {formatNaira(decision.item.amount)}

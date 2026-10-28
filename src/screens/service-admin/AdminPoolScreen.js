@@ -1,5 +1,5 @@
-import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
-import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
+
+
 import React, { useCallback, useContext, useEffect, useLayoutEffect, useState } from 'react';
 import {FlatList, StyleSheet, TouchableOpacity, View} from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -10,7 +10,7 @@ import { getErrorMessage } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
 const AdminPoolScreen = ({ navigation }) => {
-  const interfaceLanguage = useInterfaceLanguage();
+  const interfaceLanguage = 'en';
   const { user } = useContext(AuthContext);
   const [pool, setPool] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -27,7 +27,7 @@ const AdminPoolScreen = ({ navigation }) => {
       const res = await supportService.getAdminPool();
       if (res.success) setPool(res.data || []);
     } catch (err) {
-      Toast.show({ type: 'error', text1: ui("Failed"), text2: getErrorMessage(err) });
+      Toast.show({ type: 'error', text1: "Failed", text2: getErrorMessage(err) });
     } finally {
       setLoading(false);
     }
@@ -45,12 +45,12 @@ const AdminPoolScreen = ({ navigation }) => {
       if (res.success) {
         Toast.show({
           type: 'success',
-          text1: nextLeadStatus ? ui("Lead assigned") : ui("Lead role removed"),
+          text1: nextLeadStatus ? "Lead assigned" : "Lead role removed",
         });
         await load();
       }
     } catch (err) {
-      Toast.show({ type: 'error', text1: ui("Failed"), text2: getErrorMessage(err) });
+      Toast.show({ type: 'error', text1: "Failed", text2: getErrorMessage(err) });
     } finally {
       setUpdatingId(null);
     }
@@ -62,16 +62,16 @@ const AdminPoolScreen = ({ navigation }) => {
         <AppText style={styles.name}>{item.full_name}</AppText>
         <AppText style={styles.meta}>
           {item.user_type} · {item.assigned_state || 'No state'}
-          {item.assigned_city ? ui(" / {value0}", {value0: (item.assigned_city)}) : ''}
+          {item.assigned_city ? ` / ${item.assigned_city ?? "{value0}"}` : ''}
         </AppText>
       </View>
       <View style={styles.stats}>
         <AppText style={styles.count}>{item.open_tickets}</AppText>
-        <AppText style={styles.label}>{ui("open")}</AppText>
+        <AppText style={styles.label}>{"open"}</AppText>
       </View>
       {!canManageLeads && item.is_lead ? (
         <View style={styles.leadBadge}>
-          <AppText style={styles.leadText}>{ui("Lead")}</AppText>
+          <AppText style={styles.leadText}>{"Lead"}</AppText>
         </View>
       ) : canManageLeads ? (
         <TouchableOpacity
@@ -89,9 +89,9 @@ const AdminPoolScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <AppText style={styles.title}>{ui("Admin Pool")}</AppText>
+      <AppText style={styles.title}>{"Admin Pool"}</AppText>
       <TouchableOpacity onPress={load} style={styles.refresh}>
-        <AppText style={styles.refreshText}>{ui("Refresh")}</AppText>
+        <AppText style={styles.refreshText}>{"Refresh"}</AppText>
       </TouchableOpacity>
       <FlatList
         data={pool}
@@ -99,7 +99,7 @@ const AdminPoolScreen = ({ navigation }) => {
         renderItem={renderItem}
         refreshing={loading}
         onRefresh={load}
-        ListEmptyComponent={<AppText style={styles.empty}>{ui("No support admins found")}</AppText>}
+        ListEmptyComponent={<AppText style={styles.empty}>{"No support admins found"}</AppText>}
       />
     </View>
   );

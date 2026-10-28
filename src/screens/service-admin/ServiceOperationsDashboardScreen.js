@@ -1,5 +1,5 @@
-import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
-import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
+
+
 import React, { useContext, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import Toast from 'react-native-toast-message';
 import { AuthContext } from '../../context/AuthContext';
@@ -19,14 +19,14 @@ import WorkspaceBoard from '../../components/dashboard/WorkspaceBoard';
 
 const money = (value) => `₦${Number(value || 0).toLocaleString()}`;
 
-const roleLabel = (role = '') => ui(String(role).replace(/_/g, ' '));
+const roleLabel = (role = '') => String(role).replace(/_/g, ' ');
 
 const getRoleProfile = (role = '') => {
   if (role.includes('transportation')) {
     return {
       family: 'transportation',
-      title: role.includes('super') ? ui("Transport command centre") : role.includes('state') ? ui("State transport operations") : ui("Transportation desk"),
-      eyebrow: ui("TRANSPORT OPERATIONS"),
+      title: role.includes('super') ? "Transport command centre" : role.includes('state') ? "State transport operations" : "Transportation desk",
+      eyebrow: "TRANSPORT OPERATIONS",
       icon: 'car-outline',
       bookingsType: role.includes('state')
         ? 'transportation_state'
@@ -39,8 +39,8 @@ const getRoleProfile = (role = '') => {
   if (role.includes('fumigation')) {
     return {
       family: 'fumigation',
-      title: role.includes('super') ? ui("Fumigation command centre") : role.includes('state') ? ui("State service operations") : ui("Fumigation & cleaning desk"),
-      eyebrow: ui("FUMIGATION & CLEANING"),
+      title: role.includes('super') ? "Fumigation command centre" : role.includes('state') ? "State service operations" : "Fumigation & cleaning desk",
+      eyebrow: "FUMIGATION & CLEANING",
       icon: 'sparkles-outline',
       bookingsType: 'fumigation',
     };
@@ -48,14 +48,14 @@ const getRoleProfile = (role = '') => {
 
   return {
     family: 'support',
-    title: role.includes('super') ? ui("Support command centre") : role.includes('state') ? ui("State support desk") : ui("Support desk"),
-    eyebrow: ui("CUSTOMER SUPPORT"),
+    title: role.includes('super') ? "Support command centre" : role.includes('state') ? "State support desk" : "Support desk",
+    eyebrow: "CUSTOMER SUPPORT",
     icon: 'headset-outline',
   };
 };
 
 const ServiceOperationsDashboardScreen = ({ navigation }) => {
-  const interfaceLanguage = useInterfaceLanguage();
+  const interfaceLanguage = 'en';
   const { user } = useContext(AuthContext);
   const profile = useMemo(() => getRoleProfile(user?.user_type), [user?.user_type, interfaceLanguage]);
   const [overview, setOverview] = useState(null);
@@ -94,7 +94,7 @@ const ServiceOperationsDashboardScreen = ({ navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: ui("Dashboard unavailable"),
+        text1: "Dashboard unavailable",
         text2: getErrorMessage(error, 'Could not load service dashboard'),
       });
     } finally {
@@ -117,15 +117,15 @@ const ServiceOperationsDashboardScreen = ({ navigation }) => {
 
   const cards = profile.family === 'support'
     ? [
-        { label: ui("Tickets"), value: stats.total_bookings ?? 0, icon: 'chatbubbles-outline', color: colors.blue },
-        { label: ui("Open"), value: stats.pending_bookings ?? 0, icon: 'alert-circle-outline', color: '#A66B00' },
-        { label: ui("Resolved"), value: stats.completed_bookings ?? 0, icon: 'checkmark-circle-outline', color: colors.success },
+        { label: "Tickets", value: stats.total_bookings ?? 0, icon: 'chatbubbles-outline', color: colors.blue },
+        { label: "Open", value: stats.pending_bookings ?? 0, icon: 'alert-circle-outline', color: '#A66B00' },
+        { label: "Resolved", value: stats.completed_bookings ?? 0, icon: 'checkmark-circle-outline', color: colors.success },
       ]
     : [
-        { label: ui("Bookings"), value: stats.total_bookings ?? stats.totalBookings ?? 0, icon: 'calendar-outline', color: colors.blue },
-        { label: ui("Pending"), value: stats.pending_bookings ?? stats.pendingBookings ?? 0, icon: 'time-outline', color: '#A66B00' },
-        { label: ui("Completed"), value: stats.completed_bookings ?? stats.completedBookings ?? 0, icon: 'checkmark-circle-outline', color: colors.success },
-        { id: 'revenue', label: ui("Revenue"), value: money(stats.total_revenue ?? stats.totalRevenue), icon: 'cash-outline', color: '#7C3AED' },
+        { label: "Bookings", value: stats.total_bookings ?? stats.totalBookings ?? 0, icon: 'calendar-outline', color: colors.blue },
+        { label: "Pending", value: stats.pending_bookings ?? stats.pendingBookings ?? 0, icon: 'time-outline', color: '#A66B00' },
+        { label: "Completed", value: stats.completed_bookings ?? stats.completedBookings ?? 0, icon: 'checkmark-circle-outline', color: colors.success },
+        { id: 'revenue', label: "Revenue", value: money(stats.total_revenue ?? stats.totalRevenue), icon: 'cash-outline', color: '#7C3AED' },
       ];
 
   return (
@@ -133,7 +133,7 @@ const ServiceOperationsDashboardScreen = ({ navigation }) => {
       <DashboardHero
         eyebrow={profile.eyebrow}
         title={profile.title}
-        subtitle={ui("Native mobile workspace for {value0}. Quick numbers and queues are now inside the APK.", {value0: (roleLabel(user?.user_type))})}
+        subtitle={`Native mobile workspace for ${roleLabel(user?.user_type) ?? "{value0}"}. Quick numbers and queues are now inside the APK.`}
         icon={profile.icon}
         onRefresh={loadOverview}
       />
@@ -141,7 +141,7 @@ const ServiceOperationsDashboardScreen = ({ navigation }) => {
 
       <MetricGrid
         tourTarget={profile.family === 'support' ? undefined : 'service_dashboard'}
-        tourLabel={ui("Service operations overview")}
+        tourLabel={"Service operations overview"}
       >
         {cards.map((card) => (
           <MetricCard
@@ -156,36 +156,36 @@ const ServiceOperationsDashboardScreen = ({ navigation }) => {
         ))}
       </MetricGrid>
 
-      <DashboardSection title={ui("Mobile workspaces")}>
+      <DashboardSection title={"Mobile workspaces"}>
         <WorkspaceBoard
           collapsible
           groups={[
             {
-              title: ui("Daily queue"),
+              title: "Daily queue",
               icon: profile.icon,
               items: [
-                ...(profile.family==='support'?[{label:ui("Assisted registration"),icon:'person-add-outline',onPress:()=>navigation.navigate('AssistedRegistration')}]:[]),
+                ...(profile.family==='support'?[{label:"Assisted registration",icon:'person-add-outline',onPress:()=>navigation.navigate('AssistedRegistration')}]:[]),
                 profile.family === 'support'
                   ? {
-                      label: ui("Support Tickets"),
+                      label: "Support Tickets",
                       icon: 'chatbox-ellipses-outline',
                       tourTarget: 'support_tickets',
                       onPress: () => navigation.navigate('SupportTickets'),
                     }
                   : {
-                      label: ui("Booking Queue"),
+                      label: "Booking Queue",
                       icon: profile.icon,
                       tourTarget: 'service_bookings',
                       onPress: () =>
                         navigation.navigate('ServiceBookings', { type: profile.bookingsType }),
                     },
                 {
-                  label: ui("Messages"),
+                  label: "Messages",
                   icon: 'chatbubbles-outline',
                   onPress: () => navigation.navigate('Messages'),
                 },
                 {
-                  label: ui("Notifications"),
+                  label: "Notifications",
                   icon: 'notifications-outline',
                   onPress: () => navigation.navigate('Notifications'),
                 },
@@ -196,32 +196,32 @@ const ServiceOperationsDashboardScreen = ({ navigation }) => {
       </DashboardSection>
 
       <DashboardSection
-        title={ui("Native operations")}
-        subtitle={ui("The daily service-admin controls now stay inside the mobile app.")}
+        title={"Native operations"}
+        subtitle={"The daily service-admin controls now stay inside the mobile app."}
       >
         <WorkspaceBoard
           collapsible
           groups={[
             {
-              title: ui("Service controls"),
+              title: "Service controls",
               icon: 'construct-outline',
               items: [
                 ...(profile.family === 'support'
                   ? [
                       {
-                        label: ui("Admin Pool"),
+                        label: "Admin Pool",
                         icon: 'people-outline',
                         tourTarget: profile.family === 'support' ? 'support_operations' : undefined,
                         onPress: () => navigation.navigate('AdminPool'),
                       },
                       {
-                        label: ui("Activity Feed"),
+                        label: "Activity Feed",
                         icon: 'reader-outline',
                         tourTarget: 'support_audit',
                         onPress: () => navigation.navigate('ActivityFeed'),
                       },
                       {
-                        label: ui("Support Dashboard"),
+                        label: "Support Dashboard",
                         icon: 'analytics-outline',
                         onPress: () => navigation.navigate('AdminSupportDashboard'),
                       },
@@ -230,7 +230,7 @@ const ServiceOperationsDashboardScreen = ({ navigation }) => {
                 ...(profile.family === 'support' && isSuperSupport
                   ? [
                       {
-                        label: ui("All Activity"),
+                        label: "All Activity",
                         icon: 'list-outline',
                         onPress: () => navigation.navigate('AllActivity'),
                       },
@@ -239,7 +239,7 @@ const ServiceOperationsDashboardScreen = ({ navigation }) => {
                 ...(profile.family === 'transportation'
                   ? [
                       {
-                        label: ui("Transport Oversight"),
+                        label: "Transport Oversight",
                         icon: 'speedometer-outline',
                         onPress: () =>
                           navigation.navigate(
@@ -254,7 +254,7 @@ const ServiceOperationsDashboardScreen = ({ navigation }) => {
                 ...(profile.family === 'fumigation'
                   ? [
                       {
-                        label: ui("Fumigation Oversight"),
+                        label: "Fumigation Oversight",
                         icon: 'shield-checkmark-outline',
                         onPress: () =>
                           navigation.navigate(

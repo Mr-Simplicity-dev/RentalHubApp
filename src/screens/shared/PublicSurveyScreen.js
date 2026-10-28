@@ -267,7 +267,7 @@ const PublicSurveyScreen = ({ navigation }) => {
           </TouchableOpacity>
           <TouchableOpacity activeOpacity={0.85} style={styles.pickerRow} disabled={!stateName} onPress={() => setShowLgaPicker(true)}>
             <AppText style={styles.pickerRowText}>
-              {lgaName || (stateName ? ui("Select local government area") : 'Select a state first')}
+              {lgaName || (stateName ? ui("Select local government area") : ui('Select a state first'))}
             </AppText>
           </TouchableOpacity>
           {error ? <AppText style={styles.error}>{error}</AppText> : null}

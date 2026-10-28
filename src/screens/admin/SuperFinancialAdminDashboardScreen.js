@@ -1,5 +1,5 @@
-import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
-import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
+
+
 import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import Toast from 'react-native-toast-message';
 import { financialAdminService } from '../../services/financialAdminService';
@@ -20,7 +20,7 @@ import { AuthContext } from '../../context/AuthContext';
 const formatCurrency = (value) => `₦${Number(value || 0).toLocaleString()}`;
 
 const SuperFinancialAdminDashboardScreen = ({ navigation }) => {
-  const interfaceLanguage = useInterfaceLanguage();
+  const interfaceLanguage = 'en';
   const { user } = useContext(AuthContext);
   const [overview, setOverview] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -37,7 +37,7 @@ const SuperFinancialAdminDashboardScreen = ({ navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: ui("Failed"),
+        text1: "Failed",
         text2: getErrorMessage(error, 'Could not load financial overview'),
       });
     } finally {
@@ -55,49 +55,49 @@ const SuperFinancialAdminDashboardScreen = ({ navigation }) => {
   const frozenFunds = overview?.frozen_funds ?? overview?.frozenFunds ?? 0;
 
   const summaryCards = [
-    { label: ui("Total Revenue"), value: formatCurrency(totalRevenue), icon: 'trending-up-outline', color: colors.blue },
-    { label: ui("Pending Settlements"), value: formatCurrency(pendingSettlements), icon: 'time-outline', color: '#A66B00' },
-    { label: ui("Completed"), value: String(completedTransactions), icon: 'checkmark-circle-outline', color: colors.success },
-    { label: ui("Frozen Funds"), value: formatCurrency(frozenFunds), icon: 'snow-outline', color: colors.danger },
+    { label: "Total Revenue", value: formatCurrency(totalRevenue), icon: 'trending-up-outline', color: colors.blue },
+    { label: "Pending Settlements", value: formatCurrency(pendingSettlements), icon: 'time-outline', color: '#A66B00' },
+    { label: "Completed", value: String(completedTransactions), icon: 'checkmark-circle-outline', color: colors.success },
+    { label: "Frozen Funds", value: formatCurrency(frozenFunds), icon: 'snow-outline', color: colors.danger },
   ];
 
   const actionCards = [
-    { label: ui("Revenue Reports"), subtitle: ui("Track income and settlement trends"), icon: 'trending-up-outline', route: 'FinancialRevenueReport' },
-    { label: ui("Transactions"), subtitle: ui("Review individual payment activity"), icon: 'swap-horizontal-outline', route: 'FinancialTransactions' },
-    { label: ui("Withdrawals"), subtitle: ui("Approve and monitor payout requests"), icon: 'cash-outline', route: 'FinancialWithdrawals' },
-    { label: ui("Commissions"), subtitle: ui("Manage agent and platform commissions"), icon: 'people-outline', route: 'FinancialCommissions' },
-    { label: ui("Controls & Reconciliation"), subtitle: ui("Audit trails, frozen funds, settlement health and exports"), icon: 'shield-checkmark-outline', route: 'FinancialControls' },
+    { label: "Revenue Reports", subtitle: "Track income and settlement trends", icon: 'trending-up-outline', route: 'FinancialRevenueReport' },
+    { label: "Transactions", subtitle: "Review individual payment activity", icon: 'swap-horizontal-outline', route: 'FinancialTransactions' },
+    { label: "Withdrawals", subtitle: "Approve and monitor payout requests", icon: 'cash-outline', route: 'FinancialWithdrawals' },
+    { label: "Commissions", subtitle: "Manage agent and platform commissions", icon: 'people-outline', route: 'FinancialCommissions' },
+    { label: "Controls & Reconciliation", subtitle: "Audit trails, frozen funds, settlement health and exports", icon: 'shield-checkmark-outline', route: 'FinancialControls' },
   ];
 
   const workspaceGroups = [
     {
-      title: ui("Financial operations"),
+      title: "Financial operations",
       icon: 'cash-outline',
       items: [
         {
-          label: ui("Revenue Reports"),
+          label: "Revenue Reports",
           icon: 'trending-up-outline',
           tourTarget: 'financial_reports',
           onPress: () => navigation.navigate('FinancialRevenueReport'),
         },
         {
-          label: ui("Transactions"),
+          label: "Transactions",
           icon: 'swap-horizontal-outline',
           tourTarget: 'financial_transactions',
           onPress: () => navigation.navigate('FinancialTransactions'),
         },
         {
-          label: ui("Withdrawals"),
+          label: "Withdrawals",
           icon: 'cash-outline',
           onPress: () => navigation.navigate('FinancialWithdrawals'),
         },
         {
-          label: ui("Commissions"),
+          label: "Commissions",
           icon: 'people-outline',
           onPress: () => navigation.navigate('FinancialCommissions'),
         },
         {
-          label: ui("Controls & Reconciliation"),
+          label: "Controls & Reconciliation",
           icon: 'shield-checkmark-outline',
           tourTarget: 'financial_settlements',
           onPress: () => navigation.navigate('FinancialControls'),
@@ -107,11 +107,11 @@ const SuperFinancialAdminDashboardScreen = ({ navigation }) => {
     ...(user?.is_recruitment_admin === true
       ? [
           {
-            title: ui("People operations"),
+            title: "People operations",
             icon: 'people-outline',
             items: [
               {
-                label: ui("Recruitment"),
+                label: "Recruitment",
                 icon: 'people-outline',
                 onPress: () => navigation.navigate('RecruitmentAdmin'),
               },
@@ -124,23 +124,23 @@ const SuperFinancialAdminDashboardScreen = ({ navigation }) => {
   return (
     <DashboardScreen refreshing={loading} onRefresh={loadOverview}>
       <DashboardHero
-        eyebrow={ui("SUPER FINANCIAL")}
-        title={ui("National financial control")}
-        subtitle={ui("Oversee revenue, settlements, frozen funds and commission activity nationwide.")}
+        eyebrow={"SUPER FINANCIAL"}
+        title={"National financial control"}
+        subtitle={"Oversee revenue, settlements, frozen funds and commission activity nationwide."}
         icon="analytics-outline"
         onRefresh={loadOverview}
       />
       <AdminAccountActions navigation={navigation} />
 
-      <MetricGrid tourTarget="financial_overview" tourLabel={ui("National financial overview")}>
+      <MetricGrid tourTarget="financial_overview" tourLabel={"National financial overview"}>
         {summaryCards.map((card) => (
           <MetricCard key={card.label} {...card} />
         ))}
       </MetricGrid>
 
       <DashboardSection
-        title={ui("Financial operations")}
-        subtitle={ui("Open a focused workspace instead of managing everything on one page.")}
+        title={"Financial operations"}
+        subtitle={"Open a focused workspace instead of managing everything on one page."}
       >
         <WorkspaceBoard groups={workspaceGroups} collapsible />
       </DashboardSection>

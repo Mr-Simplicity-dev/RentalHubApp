@@ -9,13 +9,13 @@ const catalog=require('../src/i18n/catalog.cjs');
 const compile=file=>transformSync(fs.readFileSync(path.join(root,file),'utf8'),{configFile:false,babelrc:false,plugins:['@babel/plugin-transform-modules-commonjs','@babel/plugin-transform-react-jsx']}).code;
 const flush=()=>new Promise(resolve=>setImmediate(resolve));
 const flatten=style=>Array.isArray(style)?Object.assign({},...style.map(flatten)):style||{};
-function providerHarness({nativeRTL=false,stored='en',failRead=false,failWrite=false}={}){
+function providerHarness({nativeRTL=false,stored='en',failRead=false,failWrite=false,user=null}={}){
  const slots=[];let cursor=0,effects=[];const calls=[],writes=[];
- const react={...React,useState(initial){const index=cursor++;if(!(index in slots))slots[index]=typeof initial==='function'?initial():initial;return[slots[index],value=>{slots[index]=typeof value==='function'?value(slots[index]):value;}];},useRef(initial){const [ref]=this.useState({current:initial});return ref;},useEffect(fn,deps){const index=cursor++,previous=slots[index];if(!previous||deps.some((value,i)=>value!==previous[i]))effects.push(fn);slots[index]=deps;},useMemo:fn=>fn(),useCallback:fn=>fn};
+ const react={...React,useContext:()=>({user}),useState(initial){const index=cursor++;if(!(index in slots))slots[index]=typeof initial==='function'?initial():initial;return[slots[index],value=>{slots[index]=typeof value==='function'?value(slots[index]):value;}];},useRef(initial){const [ref]=this.useState({current:initial});return ref;},useEffect(fn,deps){const index=cursor++,previous=slots[index];if(!previous||deps.some((value,i)=>value!==previous[i]))effects.push(fn);slots[index]=deps;},useMemo:fn=>fn(),useCallback:fn=>fn};
  react.useRef=initial=>{const index=cursor++;if(!(index in slots))slots[index]={current:initial};return slots[index];};
  const storage={getItem:async()=>{if(failRead)throw Error('read');return stored;},setItem:async(key,value)=>{await flush();if(failWrite)throw Error('write');stored=value;writes.push(value);}};
  const manager={isRTL:nativeRTL,allowRTL:value=>calls.push(['allowRTL',value]),forceRTL:value=>calls.push(['forceRTL',value]),swapLeftAndRightInRTL:value=>calls.push(['swap',value])};
- const module={exports:{}};vm.runInNewContext(compile('src/context/LanguageContext.js'),{exports:module.exports,module,require:name=>name.includes('interfaceRuntime')?require('../src/i18n/interfaceRuntime.cjs'):name==='react'?react:name==='react-native'?{I18nManager:manager,View:'View'}:name.includes('async-storage')?{__esModule:true,default:storage}:catalog});
+ const module={exports:{}};vm.runInNewContext(compile('src/context/LanguageContext.js'),{exports:module.exports,module,require:name=>name.includes('AuthContext')?{AuthContext:{}}:name.includes('interfaceRuntime')?require('../src/i18n/interfaceRuntime.cjs'):name==='react'?react:name==='react-native'?{I18nManager:manager,View:'View'}:name.includes('async-storage')?{__esModule:true,default:storage}:catalog});
  const render=()=>{cursor=0;effects=[];const tree=module.exports.LanguageProvider({children:React.createElement('Form',{value:'preserved'})});effects.forEach(fn=>fn());return tree;};
  return{render,calls,writes,getStored:()=>stored};
 }
@@ -62,6 +62,7 @@ function welcome(language,width=375){
   const pending=['ar','fr','en'].map(code=>tree.props.value.setLanguage(code));tree=harness.render();assert.equal(tree.props.value.language,'en');await Promise.all(pending);assert.equal(harness.getStored(),'en');assert.deepEqual(harness.calls,[['allowRTL',false],['forceRTL',false],['swap',false]]);
  }
  for(const options of [{failRead:true},{failWrite:true}]){const harness=providerHarness(options);harness.render();await flush();let tree=harness.render();await tree.props.value.setLanguage('ar');tree=harness.render();assert.equal(tree.props.value.language,'ar');}
+ for(const role of ['admin','super_admin','state_support_admin','recruitment_admin']){const harness=providerHarness({stored:'yo',user:{user_type:role}});harness.render();await flush();let tree=harness.render();assert.equal(tree.props.value.language,'en');assert.equal(tree.props.value.languageSelectionEnabled,false);await tree.props.value.setLanguage('ha');tree=harness.render();assert.equal(tree.props.value.language,'en');assert.equal(harness.getStored(),'yo');}
  for(const width of [320,375,390,768])for(const {code}of catalog.SUPPORTED_LANGUAGES)welcome(code,width);
  assert.equal(JSON.stringify(welcome('en')),JSON.stringify(welcome('ar')));assert.equal(JSON.stringify(welcome('ar')),JSON.stringify(welcome('en')));
  const android=fs.readFileSync(path.join(root,'android/app/src/main/java/com/rentalhubng/MainApplication.kt'),'utf8');const ios=fs.readFileSync(path.join(root,'ios/RentalHubMobile/AppDelegate.mm'),'utf8');

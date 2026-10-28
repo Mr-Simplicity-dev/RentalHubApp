@@ -1,5 +1,5 @@
-import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
-import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
+
+
 import React, { useEffect, useState } from 'react';
 import {StyleSheet, View} from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -28,7 +28,7 @@ const getStatusColor = (status) => {
 };
 
 const AdminAgentAssignmentsScreen = () => {
-  useInterfaceLanguage();
+
   const [loading, setLoading] = useState(false);
   const [actionId, setActionId] = useState(null);
   const [assignments, setAssignments] = useState([]);
@@ -43,7 +43,7 @@ const AdminAgentAssignmentsScreen = () => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: ui("Failed"),
+        text1: "Failed",
         text2: getErrorMessage(error, 'Could not load assignments'),
       });
     } finally {
@@ -57,7 +57,7 @@ const AdminAgentAssignmentsScreen = () => {
 
   const createAssignment = async () => {
     if (!form.landlordId || !form.agentId) {
-      Toast.show({ type: 'error', text1: ui("Landlord ID and Agent ID are required") });
+      Toast.show({ type: 'error', text1: "Landlord ID and Agent ID are required" });
       return;
     }
 
@@ -67,13 +67,13 @@ const AdminAgentAssignmentsScreen = () => {
         landlordId: Number(form.landlordId),
         agentId: Number(form.agentId),
       });
-      Toast.show({ type: 'success', text1: ui("Assignment created") });
+      Toast.show({ type: 'success', text1: "Assignment created" });
       setForm({ landlordId: '', agentId: '' });
       await loadAssignments();
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: ui("Create failed"),
+        text1: "Create failed",
         text2: getErrorMessage(error, 'Could not create assignment'),
       });
     } finally {
@@ -98,12 +98,12 @@ const AdminAgentAssignmentsScreen = () => {
       await loadAssignments();
       Toast.show({
         type: 'success',
-        text1: ui("Assignment {value0}", {value0: (action === 'reactivate' ? ui("reactivated") : `${action}d`)}),
+        text1: `Assignment ${(action === 'reactivate' ? "reactivated" : `${action}d`) ?? "{value0}"}`,
       });
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: ui("Action failed"),
+        text1: "Action failed",
         text2: getErrorMessage(error, 'Could not update assignment status'),
       });
     } finally {
@@ -121,30 +121,30 @@ const AdminAgentAssignmentsScreen = () => {
     <>
       <PremiumScreen>
       <PremiumHero
-        eyebrow={ui("Admin delegation")}
-        title={ui("Agent assignments")}
-        subtitle={ui("Assign agents to landlords and manage delegated account access from a premium native workflow.")}
+        eyebrow={"Admin delegation"}
+        title={"Agent assignments"}
+        subtitle={"Assign agents to landlords and manage delegated account access from a premium native workflow."}
         icon="people-circle-outline"
       />
 
       <PremiumCard>
-        <AppText style={styles.formTitle}>{ui("Create assignment")}</AppText>
+        <AppText style={styles.formTitle}>{"Create assignment"}</AppText>
         <Input
-          label={ui("Landlord user ID")}
+          label={"Landlord user ID"}
           value={form.landlordId}
           keyboardType="number-pad"
           onChangeText={(value) => setForm((prev) => ({ ...prev, landlordId: value }))}
           icon="home-outline"
         />
         <Input
-          label={ui("Agent user ID")}
+          label={"Agent user ID"}
           value={form.agentId}
           keyboardType="number-pad"
           onChangeText={(value) => setForm((prev) => ({ ...prev, agentId: value }))}
           icon="person-add-outline"
         />
         <PremiumButton
-          title={ui("Assign agent")}
+          title={"Assign agent"}
           onPress={createAssignment}
           loading={actionId === 'create'}
           icon="link-outline"
@@ -152,15 +152,15 @@ const AdminAgentAssignmentsScreen = () => {
       </PremiumCard>
 
       <PremiumSectionTitle
-        title={ui("Current assignments")}
-        subtitle={ui("Active and recoverable delegation records.")}
+        title={"Current assignments"}
+        subtitle={"Active and recoverable delegation records."}
       />
 
-      {loading ? <PremiumCenter loading title={ui("Loading assignments")} /> : null}
+      {loading ? <PremiumCenter loading title={"Loading assignments"} /> : null}
       {!loading && assignments.length === 0 ? (
         <EmptyPanel
-          title={ui("No assignments found")}
-          message={ui("Create an assignment above to connect a landlord with an agent.")}
+          title={"No assignments found"}
+          message={"Create an assignment above to connect a landlord with an agent."}
           icon="people-outline"
         />
       ) : null}
@@ -171,25 +171,25 @@ const AdminAgentAssignmentsScreen = () => {
           <PremiumCard key={String(item.id)}>
             <View style={styles.rowHeader}>
               <View style={styles.rowTitleBlock}>
-                <AppText style={styles.name}>{item.agent_name || ui("Agent #{value0}", {value0: (item.agent_user_id)})}</AppText>
-                <AppText style={styles.meta}>{ui("Landlord: ")}{item.landlord_name || item.landlord_user_id}</AppText>
+                <AppText style={styles.name}>{item.agent_name || `Agent #${item.agent_user_id ?? "{value0}"}`}</AppText>
+                <AppText style={styles.meta}>{"Landlord: "}{item.landlord_name || item.landlord_user_id}</AppText>
               </View>
               <StatusPill label={status} color={getStatusColor(status)} />
             </View>
-            <InfoRow icon="finger-print-outline" label={ui("Assignment ID")} value={item.id} />
+            <InfoRow icon="finger-print-outline" label={"Assignment ID"} value={item.id} />
 
             <View style={styles.actions}>
               {status === "active" ? (
                 <>
                   <PremiumButton
-                    title={ui("Deactivate")}
+                    title={"Deactivate"}
                     variant="secondary"
                     onPress={() => setPendingAction({ item, action: 'deactivate' })}
                     loading={actionId === `${item.id}-deactivate`}
                     style={styles.actionButton}
                   />
                   <PremiumButton
-                    title={ui("Revoke")}
+                    title={"Revoke"}
                     variant="ghost"
                     onPress={() => setPendingAction({ item, action: 'revoke' })}
                     loading={actionId === `${item.id}-revoke`}
@@ -198,7 +198,7 @@ const AdminAgentAssignmentsScreen = () => {
                 </>
               ) : (
                 <PremiumButton
-                  title={ui("Reactivate")}
+                  title={"Reactivate"}
                   onPress={() => setPendingAction({ item, action: 'reactivate' })}
                   loading={actionId === `${item.id}-reactivate`}
                   style={styles.fullButton}
@@ -211,11 +211,11 @@ const AdminAgentAssignmentsScreen = () => {
       </PremiumScreen>
       <OperationNoteModal
         visible={Boolean(pendingAction)}
-        title={ui("{value0} agent assignment", {value0: (actionLabel)})}
-        message={ui("Record why access for {value0} is being {value1}d.", {value0: (pendingAction?.item?.agent_name || ui("this agent")), value1: (actionLabel.toLowerCase())})}
-        label={ui("Governance note")}
-        placeholder={ui("Enter the operational reason for this change")}
-        confirmText={ui("{value0} assignment", {value0: (actionLabel)})}
+        title={`${actionLabel ?? "{value0}"} agent assignment`}
+        message={`Record why access for ${(pendingAction?.item?.agent_name || "this agent") ?? "{value0}"} is being ${actionLabel.toLowerCase() ?? "{value1}"}d.`}
+        label={"Governance note"}
+        placeholder={"Enter the operational reason for this change"}
+        confirmText={`${actionLabel ?? "{value0}"} assignment`}
         icon={pendingAction?.action === 'reactivate' ? 'refresh-circle-outline' : 'shield-outline'}
         variant={pendingAction?.action === 'reactivate' ? 'primary' : 'danger'}
         loading={Boolean(actionId)}

@@ -190,12 +190,12 @@ const MyPropertiesScreen = ({ navigation }) => {
                 <Icon name="home-outline" size={31} color={colors.blue} />
               </View>
               <AppText style={styles.emptyTitle}>
-                {filter === "all" ? 'Build your property portfolio' : ui("No {value0} properties", {value0: (filter)})}
+                {filter === "all" ? ui('Build your property portfolio') : ui("No {value0} properties", {value0: (filter)})}
               </AppText>
               <AppText style={styles.emptyText}>
                 {filter === "all"
-                  ? 'Add your first property and submit it for verification.'
-                  : 'Try another portfolio filter.'}
+                  ? ui('Add your first property and submit it for verification.')
+                  : ui('Try another portfolio filter.')}
               </AppText>
               {filter === "all" ? (
                 <TouchableOpacity
@@ -240,7 +240,7 @@ const MyPropertiesScreen = ({ navigation }) => {
                   <AppText style={[styles.statusText, { color: statusColor }]}>{status}</AppText>
                 </View>
                 <View style={styles.cardBody}>
-                  <AppText style={styles.cardTitle}>{item.title || 'Rental property'}</AppText>
+                  <AppText style={styles.cardTitle}>{item.title || ui('Rental property')}</AppText>
                   <AppText style={styles.cardMeta}>
                     {[item.area, item.city, item.state_name].filter(Boolean).join(', ') ||
                       ui("Location unavailable")}
@@ -254,7 +254,7 @@ const MyPropertiesScreen = ({ navigation }) => {
                   onPress={() => updateAvailability(item)}
                   style={styles.action}>
                   <Icon name={item.is_available ? 'pause-circle-outline' : 'play-circle-outline'} size={18} color={colors.blue} />
-                  <AppText style={styles.actionText}>{item.is_available ? 'Pause' : 'Activate'}</AppText>
+                  <AppText style={styles.actionText}>{item.is_available ? ui('Pause') : ui('Activate')}</AppText>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => setDamagePropertyId(item.id)} style={styles.action}>
                   <Icon name="construct-outline" size={18} color={colors.blue} />

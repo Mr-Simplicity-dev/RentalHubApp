@@ -130,7 +130,7 @@ const DisputeDetailsScreen = ({ navigation, route }) => {
           <View style={styles.statusPill}><AppText style={styles.statusText}>{dispute.status || ui("open")}</AppText></View>
         </View>
         <AppText style={styles.eyebrow}>{ui("DISPUTE #")}{dispute.id}</AppText>
-        <AppText style={styles.title}>{dispute.property_title || 'Property dispute'}</AppText>
+        <AppText style={styles.title}>{dispute.property_title || ui('Property dispute')}</AppText>
         <View style={styles.partyBlock}>
           <View style={styles.partyRow}><AppText style={styles.partyLabel}>{ui("Opened by")}</AppText><AppText style={styles.partyValue}>{dispute.opened_by_name || ui("Unknown")}</AppText></View>
           <View style={styles.partyRow}><AppText style={styles.partyLabel}>{ui("Against")}</AppText><AppText style={styles.partyValue}>{dispute.against_name || dispute.against_email || ui("Unknown")}</AppText></View>
@@ -202,7 +202,7 @@ const DisputeDetailsScreen = ({ navigation, route }) => {
               <Icon name="cloud-upload-outline" size={16} color={colors.white} />
             )}
             <AppText style={styles.uploadButtonText}>
-              {uploadingEvidence ? 'Uploading…' : ui("Upload evidence")}
+              {uploadingEvidence ? ui('Uploading…') : ui("Upload evidence")}
             </AppText>
           </TouchableOpacity>
         ) : null}
@@ -266,7 +266,7 @@ const DisputeDetailsScreen = ({ navigation, route }) => {
         ) : (
           messages.map((item) => (
             <View key={item.id} style={styles.listRow}>
-              <AppText style={styles.listTitle}>{item.sender_name || 'Unknown sender'}</AppText>
+              <AppText style={styles.listTitle}>{item.sender_name || ui('Unknown sender')}</AppText>
               <AppText style={styles.listMeta}>
                 {item.created_at ? new Date(item.created_at).toLocaleString() : ''}
               </AppText>
@@ -283,7 +283,7 @@ const DisputeDetailsScreen = ({ navigation, route }) => {
         ) : (
           audit_logs.map((item) => (
             <View key={item.id} style={styles.listRow}>
-              <AppText style={styles.listTitle}>{item.action || 'Audit log'}</AppText>
+              <AppText style={styles.listTitle}>{item.action || ui('Audit log')}</AppText>
               <AppText style={styles.listMeta}>{item.actor_name || ui("System")}</AppText>
               <AppText style={styles.listMeta}>
                 {item.created_at ? new Date(item.created_at).toLocaleString() : ''}

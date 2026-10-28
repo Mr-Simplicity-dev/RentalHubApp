@@ -1,3 +1,4 @@
+import { AuthContext } from './AuthContext';
 import { setInterfaceLanguage } from '../i18n/interfaceRuntime.cjs';
 import React, {
   createContext,
@@ -41,7 +42,10 @@ const interpolate = (value, variables = {}) => String(value).replace(
 export const LanguageContext = createContext(null);
 
 export const LanguageProvider = ({ children }) => {
-  const [language, setLanguageState] = useState(detectDeviceLanguage);
+  const { user } = useContext(AuthContext) || {};
+  const isAdmin = /(^|_)admin($|_)/.test(String(user?.user_type || '')) || user?.is_recruitment_admin === true;
+  const [preferredLanguage, setLanguageState] = useState(detectDeviceLanguage);
+  const language = isAdmin ? 'en' : preferredLanguage;
   const [ready, setReady] = useState(false);
   const languageWrites = useRef(Promise.resolve());
 
@@ -77,6 +81,7 @@ export const LanguageProvider = ({ children }) => {
   useEffect(() => { setInterfaceLanguage(language); }, [language]);
 
   const setLanguage = useCallback(async (nextLanguage) => {
+    if (isAdmin) return { language: 'en', restartRequired: false };
     const normalized = normalizeLanguage(nextLanguage);
     setLanguageState(normalized);
     try {
@@ -85,7 +90,7 @@ export const LanguageProvider = ({ children }) => {
     } catch {
     }
     return { language: normalized, restartRequired: false };
-  }, []);
+  }, [isAdmin]);
 
   const t = useCallback((key, variables) => {
     const localized = UI_COPY[language]?.[key];
@@ -98,13 +103,15 @@ export const LanguageProvider = ({ children }) => {
     textDirection: isRTL ? 'rtl' : 'ltr',
     isRTL,
     language,
-    languages: SUPPORTED_LANGUAGES,
+    languages: isAdmin ? SUPPORTED_LANGUAGES.filter(item => item.code === 'en') : SUPPORTED_LANGUAGES,
+    languageSelectionEnabled: !isAdmin,
     ready,
     rtlRestartRequired: false,
     setLanguage,
     t,
     textAlign: isRTL ? 'right' : 'left',
   }), [
+    isAdmin,
     isRTL,
     language,
     ready,

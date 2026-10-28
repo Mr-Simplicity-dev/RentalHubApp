@@ -219,8 +219,8 @@ export default function BankTransferCheckout({
               <AppText style={styles.successTitle}>{ui("Payment confirmed")}</AppText>
               <AppText style={styles.successText}>
                 {mode === 'registration'
-                  ? 'Your transfer was received. Your account is being created.'
-                  : 'Your transfer was received and your wallet has been credited.'}
+                  ? ui('Your transfer was received. Your account is being created.')
+                  : ui('Your transfer was received and your wallet has been credited.')}
               </AppText>
               <Button title={ui("Close")} onPress={handleClose} style={styles.cta} />
             </View>
@@ -271,12 +271,12 @@ export default function BankTransferCheckout({
 
           <View style={styles.body}>
             <View style={styles.amountCard}>
-              <AppText style={styles.amountLabel}>{virtualAccount ? ui("Transfer to this account") : 'Amount to pay'}</AppText>
+              <AppText style={styles.amountLabel}>{virtualAccount ? ui("Transfer to this account") : ui('Amount to pay')}</AppText>
               <AppText style={styles.amountValue}>
                 {virtualAccount && amount ? ui("₦{value0}", {value0: (formatNumber(amount))}) : ui("₦{value0}", {value0: (formatNumber(amount || 0))})}
               </AppText>
               <AppText style={styles.amountNote}>
-                {virtualAccount ? 'This account belongs to you. The bank confirms automatically.' : 'Send exactly this amount to the account below and upload your screenshot.'}
+                {virtualAccount ? ui('This account belongs to you. The bank confirms automatically.') : ui('Send exactly this amount to the account below and upload your screenshot.')}
               </AppText>
             </View>
 

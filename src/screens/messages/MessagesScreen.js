@@ -444,11 +444,11 @@ const MessagesScreen = ({ navigation, route }) => {
             </View>
             <View style={styles.threadHeaderCopy}>
               <AppText style={styles.threadName} numberOfLines={1}>
-                {selected.other_user_name || 'RentalHub user'}
+                {selected.other_user_name || ui('RentalHub user')}
               </AppText>
               <AppText style={styles.threadRole}>
                 {typingUserId
-                  ? 'Typing…'
+                  ? ui('Typing…')
                   : isUserOnline(selected.other_user_id)
                     ? ui("Online")
                     : String(selected.other_user_type || 'member').replace(/_/g, ' ')}
@@ -496,8 +496,8 @@ const MessagesScreen = ({ navigation, route }) => {
                   <AppText style={styles.emptyThreadTitle}>{ui("Start of the conversation")}</AppText>
                   <AppText style={styles.emptyThreadText}>
                     {canCompose
-                      ? 'Send a clear message to begin.'
-                      : 'Messages from RentalHub support will appear here.'}
+                      ? ui('Send a clear message to begin.')
+                      : ui('Messages from RentalHub support will appear here.')}
                   </AppText>
                 </View>
               )
@@ -657,12 +657,12 @@ const MessagesScreen = ({ navigation, route }) => {
               <Icon name="chatbubbles-outline" size={31} color={colors.blue} />
             </View>
             <AppText style={styles.emptyTitle}>
-              {query ? 'No conversations match' : 'No conversations yet'}
+              {query ? ui('No conversations match') : ui('No conversations yet')}
             </AppText>
             <AppText style={styles.emptyText}>
               {canCompose
-                ? 'Start a secure internal conversation with an eligible RentalHub user.'
-                : 'Official RentalHub messages and support updates will appear here.'}
+                ? ui('Start a secure internal conversation with an eligible RentalHub user.')
+                : ui('Official RentalHub messages and support updates will appear here.')}
             </AppText>
             {canCompose && !query ? (
               <TouchableOpacity
@@ -693,7 +693,7 @@ const MessagesScreen = ({ navigation, route }) => {
             <View style={styles.conversationBody}>
               <View style={styles.conversationHeading}>
                 <AppText style={styles.conversationName} numberOfLines={1}>
-                  {item.other_user_name || 'RentalHub user'}
+                  {item.other_user_name || ui('RentalHub user')}
                 </AppText>
                 <AppText style={styles.conversationTime}>
                   {item.created_at

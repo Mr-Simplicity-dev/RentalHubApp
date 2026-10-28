@@ -1,4 +1,4 @@
-import { translateUi as ui } from '../i18n/interfaceRuntime.cjs';
+
 import api from './api';
 import { requestWithOfflineQueue } from './offlineActionQueueService';
 
@@ -97,7 +97,7 @@ export const financialAdminService = {
         amount,
         reason,
       },
-      label: ui("Freeze funds for user #{value0}", {value0: (userId)}),
+      label: `Freeze funds for user #${userId ?? "{value0}"}`,
     });
   },
 

@@ -295,7 +295,7 @@ const LivePropertyCapture = ({
             <AppText style={styles.promptStep}>{ui("Clip")}{clips.length + 1}{ui(" of ")}{MAX_PROPERTY_CLIPS}
             </AppText>
             <AppText style={styles.promptTitle}>
-              {recording ? ui("Recording... {value0}s / {value1}s", {value0: (seconds), value1: (MAX_CLIP_SECONDS)}) : 'Film a short clip'}
+              {recording ? ui("Recording... {value0}s / {value1}s", {value0: (seconds), value1: (MAX_CLIP_SECONDS)}) : ui('Film a short clip')}
             </AppText>
             <AppText style={styles.promptHint}>{ui("Clips are slowed down and woven into your automatic tour video.")}</AppText>
           </View>

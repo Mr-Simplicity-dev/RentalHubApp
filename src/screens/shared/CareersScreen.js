@@ -216,9 +216,9 @@ const CareersScreen = ({ navigation, route }) => {
       />
 
       <View style={styles.noticeCard}>
-        <AppText style={styles.noticeTitle}>{intakeOpen ? copy.opportunities_title : 'Recruitment is currently closed'}</AppText>
+        <AppText style={styles.noticeTitle}>{intakeOpen ? copy.opportunities_title : ui('Recruitment is currently closed')}</AppText>
         <AppText style={styles.noticeText}>
-          {status?.message || (intakeOpen ? 'Applications are currently being accepted.' : 'Please check back later for the next opportunities.')}
+          {status?.message || (intakeOpen ? ui('Applications are currently being accepted.') : ui('Please check back later for the next opportunities.'))}
         </AppText>
       </View>
 
@@ -252,7 +252,7 @@ const CareersScreen = ({ navigation, route }) => {
         <View style={styles.selectionCard}>
           <AppText style={styles.selectionTitle}>{ui("Selected role")}</AppText>
           <AppText style={styles.selectionText}>{selectedRole.title}</AppText>
-          <AppText style={styles.roleMeta}>{selectedRole.description || 'A professional role in the RentalHub team.'}</AppText>
+          <AppText style={styles.roleMeta}>{selectedRole.description || ui('A professional role in the RentalHub team.')}</AppText>
         </View>
       ) : null}
 
@@ -343,7 +343,7 @@ const CareersScreen = ({ navigation, route }) => {
           <AppText style={styles.successTitle}>{submittedApplication.opportunity_type==="volunteer"?copy.volunteer_received:ui("Application started")}</AppText>
           <AppText style={styles.successText}>{ui("Reference: ")}{submittedApplication.reference_number}</AppText>
           <AppText style={styles.successText}>{ui("Status: ")}{submittedApplication.status}</AppText>
-          <AppText style={styles.successText}>{submittedApplication.opportunity_type==="volunteer"?copy.volunteer_confirmation:'Next: complete payment and upload your supporting documents.'}</AppText>
+          <AppText style={styles.successText}>{submittedApplication.opportunity_type==="volunteer"?copy.volunteer_confirmation:ui('Next: complete payment and upload your supporting documents.')}</AppText>
           <TouchableOpacity style={styles.secondaryButton} onPress={()=>navigation.navigate('RecruitmentApplication',{application:submittedApplication})}><AppText style={styles.secondaryButtonText}>{submittedApplication.opportunity_type==="volunteer"?copy.optional_cv:ui("Application progress")}</AppText></TouchableOpacity>
         </View>
       ) : null}

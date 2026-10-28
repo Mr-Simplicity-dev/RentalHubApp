@@ -1,5 +1,5 @@
-import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
-import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
+
+
 import React, { useContext } from 'react';
 import {Alert, StyleSheet, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -9,7 +9,7 @@ import { useAccessibilityPreferences } from '../../hooks/useAccessibilityPrefere
 
 import AppText from '../../components/common/AppText';
 const AdminActionPill = ({ label, icon, color = colors.blue, onPress }) => {
-  useInterfaceLanguage();
+
   const { scaleFont, hitSlop } = useAccessibilityPreferences();
 
   return (
@@ -29,7 +29,7 @@ const AdminActionPill = ({ label, icon, color = colors.blue, onPress }) => {
 };
 
 const AdminAccountActions = ({ navigation }) => {
-  useInterfaceLanguage();
+
   const {
     exitImpersonation,
     isImpersonating,
@@ -39,17 +39,17 @@ const AdminAccountActions = ({ navigation }) => {
   const confirmSessionAction = () => {
     if (isImpersonating) {
       Alert.alert(
-        ui("Exit impersonation"),
-        ui("Return to your original super-admin dashboard?"),
+        "Exit impersonation",
+        "Return to your original super-admin dashboard?",
         [
-          { text: ui("Cancel"), style: 'cancel' },
+          { text: "Cancel", style: 'cancel' },
           {
-            text: ui("Exit admin"),
+            text: "Exit admin",
             onPress: () => {
               exitImpersonation().catch((error) => {
                 Alert.alert(
-                  ui("Could not exit impersonation"),
-                  error?.message || ui("Please sign out and sign in again.")
+                  "Could not exit impersonation",
+                  error?.message || "Please sign out and sign in again."
                 );
               });
             },
@@ -59,27 +59,27 @@ const AdminAccountActions = ({ navigation }) => {
       return;
     }
 
-    Alert.alert(ui("Logout"), ui("Do you want to sign out of this admin session?"), [
-      { text: ui("Cancel"), style: 'cancel' },
-      { text: ui("Logout"), style: 'destructive', onPress: logout },
+    Alert.alert("Logout", "Do you want to sign out of this admin session?", [
+      { text: "Cancel", style: 'cancel' },
+      { text: "Logout", style: 'destructive', onPress: logout },
     ]);
   };
 
   return (
     <View style={styles.container}>
       <AdminActionPill
-        label={ui("Profile")}
+        label={"Profile"}
         icon="person-circle-outline"
         onPress={() => navigation.navigate('Profile')}
       />
       <AdminActionPill
-        label={ui("Settings")}
+        label={"Settings"}
         icon="settings-outline"
         color={colors.navy}
         onPress={() => navigation.navigate('Settings')}
       />
       <AdminActionPill
-        label={isImpersonating ? ui("Exit admin") : ui("Logout")}
+        label={isImpersonating ? "Exit admin" : "Logout"}
         icon={isImpersonating ? 'return-up-back-outline' : 'log-out-outline'}
         color={isImpersonating ? colors.warning : colors.danger}
         onPress={confirmSessionAction}

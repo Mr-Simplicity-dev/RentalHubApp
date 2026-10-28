@@ -358,17 +358,17 @@ const PropertyAlertRequestScreen = ({ route, navigation }) => {
             />
           </View>
           <AppText style={styles.priceLabel}>
-            {config.payment_required ? 'Current request fee' : 'Request status'}
+            {config.payment_required ? ui('Current request fee') : ui('Request status')}
           </AppText>
           <AppText style={styles.priceAmount}>
             {config.payment_required
               ? ui("₦{value0}", {value0: (Number(config.amount || 0).toLocaleString())})
-              : 'No payment required'}
+              : ui('No payment required')}
           </AppText>
           <AppText style={styles.priceMeta}>
             {config.payment_required
-              ? 'A one-time payment is required before the request is processed.'
-              : 'Requests currently go through immediately without payment.'}
+              ? ui('A one-time payment is required before the request is processed.')
+              : ui('Requests currently go through immediately without payment.')}
           </AppText>
           {config.payment_required && !config.location_complete ? (
             <AppText style={styles.priceMeta}>{ui("Select both state and local government area to confirm the exact fee.")}</AppText>

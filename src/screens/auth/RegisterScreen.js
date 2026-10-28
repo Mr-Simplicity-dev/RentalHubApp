@@ -150,33 +150,6 @@ const RegisterScreen = ({ navigation, route }) => {
       : 0) +
     (requiresLawyerPayment ? LAWYER_ACCESS_FEE : 0) +
     (requiresAgentPayment ? AGENT_ACCESS_FEE : 0);
-  const isFormComplete = Boolean(
-    acceptedTerms &&
-      registrationFlags.loaded &&
-      registrationFlags.registration_allowed &&
-      form.full_name.trim() &&
-      emailPattern.test(form.email.trim()) &&
-      form.phone.trim() &&
-      emailPattern.test(form.lawyer_email.trim()) &&
-      passwordPattern.test(form.password) &&
-      form.password === form.confirm_password &&
-      (userType !== 'landlord' ||
-        !form.add_agent ||
-        form.use_rentalhub_agents ||
-        (form.agent_full_name.trim() &&
-          emailPattern.test(form.agent_email.trim()) &&
-          form.agent_phone.trim())) &&
-      (!registrationFlags.registration_location_restricted ||
-        (form.state_id && form.lga_name.trim())) &&
-      (!requiresRegistrationPayment ||
-        isForeigner ||
-        (form.state_id && form.lga_name.trim() && registrationPricing.location_complete)) &&
-      (isForeigner
-        ? (!registrationFlags.passport_number ||
-            (passportPattern.test(form.international_passport_number.trim()) &&
-              form.nationality.trim()))
-        : (!registrationFlags.nin_number || /^\d{11}$/.test(form.nin.trim())))
-  );
 
   useEffect(() => {
     let active = true;
@@ -806,12 +779,12 @@ const RegisterScreen = ({ navigation, route }) => {
         <AppText style={styles.title}>{steps[currentStep].title}</AppText>
         <AppText style={styles.subtitle}>
           {currentStep === 0
-            ? 'Choose how youâ€™ll use RentalHub and tell us how to reach you.'
+            ? ui('Choose how youâ€™ll use RentalHub and tell us how to reach you.')
             : currentStep === 1
-              ? 'Choose the legal and agent support that fits your rental journey.'
+              ? ui('Choose the legal and agent support that fits your rental journey.')
               : currentStep === 2
-                ? 'Add your location and the identity details required for verification.'
-                : 'Create a secure password and review everything before continuing.'}
+                ? ui('Add your location and the identity details required for verification.')
+                : ui('Create a secure password and review everything before continuing.')}
         </AppText>
 
         {!registrationFlags.loaded ? (
@@ -833,7 +806,7 @@ const RegisterScreen = ({ navigation, route }) => {
         !registrationFlags.registration_global_allowed ? (
           <View style={styles.warningCard}>
             <AppText style={styles.warningTitle}>
-              {userType === "landlord" ? 'Landlord registration disabled' : 'Tenant registration disabled'}
+              {userType === "landlord" ? ui('Landlord registration disabled') : ui('Tenant registration disabled')}
             </AppText>
           </View>
         ) : null}
@@ -886,11 +859,11 @@ const RegisterScreen = ({ navigation, route }) => {
           <AppText style={styles.priceAmount}>
             {requiresPayment
               ? ui("₦{value0}", {value0: (Number(displayedRegistrationAmount || 0).toLocaleString())})
-              : 'No payment required'}
+              : ui('No payment required')}
           </AppText>
           <AppText style={styles.priceMeta}>
             {requiresPayment
-              ? 'Includes registration and any selected Amana RentalHub NG lawyer or agent access fees.'
+              ? ui('Includes registration and any selected Amana RentalHub NG lawyer or agent access fees.')
               : ui("No payment required for {value0} registration right now.", {value0: (ui(userType))})}
           </AppText>
           <AppText style={styles.priceMeta}>{ui("Pricing scope:")}{String(registrationPricing.rule_scope || 'base').replace(/_/g, ' ')}
@@ -948,8 +921,8 @@ const RegisterScreen = ({ navigation, route }) => {
         >
           <AppText style={styles.agentToggleLabel}>
             {form.use_rentalhub_lawyers
-              ? 'Using Amana RentalHub NG lawyers (₦2,000)'
-              : 'Use Amana RentalHub NG lawyers instead (₦2,000)'}
+              ? ui('Using Amana RentalHub NG lawyers (₦2,000)')
+              : ui('Use Amana RentalHub NG lawyers instead (₦2,000)')}
           </AppText>
         </TouchableOpacity>
 
@@ -976,8 +949,8 @@ const RegisterScreen = ({ navigation, route }) => {
           >
             <AppText style={styles.agentToggleLabel}>
               {form.use_rentalhub_agents
-                ? 'Using Amana RentalHub NG agents (₦5,000)'
-                : 'Use Amana RentalHub NG agents instead (₦5,000)'}
+                ? ui('Using Amana RentalHub NG agents (₦5,000)')
+                : ui('Use Amana RentalHub NG agents instead (₦5,000)')}
             </AppText>
           </TouchableOpacity>
         ) : null}
@@ -1008,7 +981,7 @@ const RegisterScreen = ({ navigation, route }) => {
               onPress={() => onChange('add_agent', !form.add_agent)}
             >
               <AppText style={styles.agentToggleLabel}>
-                {form.add_agent ? 'Remove optional agent setup' : 'Add optional agent setup'}
+                {form.add_agent ? ui('Remove optional agent setup') : ui('Add optional agent setup')}
               </AppText>
             </TouchableOpacity>
 
@@ -1107,7 +1080,7 @@ const RegisterScreen = ({ navigation, route }) => {
               <View>
                 <AppText style={styles.reviewEyebrow}>{ui("ACCOUNT SUMMARY")}</AppText>
                 <AppText style={styles.reviewTitle}>
-                  {form.full_name || 'Your RentalHub account'}
+                  {form.full_name || ui('Your RentalHub account')}
                 </AppText>
               </View>
               <TouchableOpacity onPress={() => changeStep(0)} style={styles.editButton}>
@@ -1122,12 +1095,12 @@ const RegisterScreen = ({ navigation, route }) => {
             </View>
             <View style={styles.reviewRow}>
               <Icon name="mail-outline" size={17} color={colors.muted} />
-              <AppText style={styles.reviewText}>{form.email || 'Email not entered'}</AppText>
+              <AppText style={styles.reviewText}>{form.email || ui('Email not entered')}</AppText>
             </View>
             <View style={styles.reviewRow}>
               <Icon name="location-outline" size={17} color={colors.muted} />
               <AppText style={styles.reviewText}>
-                {[form.lga_name, selectedState?.state_name].filter(Boolean).join(', ') || 'Location not required'}
+                {[form.lga_name, selectedState?.state_name].filter(Boolean).join(', ') || ui('Location not required')}
               </AppText>
             </View>
             <TouchableOpacity onPress={() => changeStep(1)} style={styles.reviewSupport}>
@@ -1194,7 +1167,7 @@ const RegisterScreen = ({ navigation, route }) => {
           onPress={() => handleRegister()}
           loading={loading || paymentLoading}
           style={styles.cta}
-          disabled={!isFormComplete}
+          disabled={!acceptedTerms || !registrationFlags.loaded || loading || paymentLoading}
         />
 
         <TurnstileWidget
@@ -1369,7 +1342,7 @@ const RegisterScreen = ({ navigation, route }) => {
                 style={[styles.adjustPrimary, adjustmentBusy && styles.adjustDisabled]}
               >
                 <AppText style={styles.adjustPrimaryText}>
-                  {adjustmentBusy ? 'Starting paymentâ€¦' : 'Pay foreign-card adjustment'}
+                  {adjustmentBusy ? ui('Starting paymentâ€¦') : ui('Pay foreign-card adjustment')}
                 </AppText>
               </TouchableOpacity>
 

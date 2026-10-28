@@ -126,7 +126,7 @@ const RequestRentHelpScreen = () => {
                     </AppText>
                     <AppText style={styles.propertyMeta}>
                       {money(property.rent_amount)}
-                      {property.source === "approved" ? ' · approved' : ''}
+                      {property.source === "approved" ? ui(' · approved') : ''}
                     </AppText>
                   </View>
                 </TouchableOpacity>

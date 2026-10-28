@@ -220,12 +220,12 @@ const ApplicationDetailScreen = ({ route, navigation }) => {
               <AppText style={styles.heroTitle}>{pretty(applicationStatus)}</AppText>
               <AppText style={styles.heroText}>
                 {applicationStatus === "pending"
-                  ? 'This application is still active and awaiting the next step.'
+                  ? ui('This application is still active and awaiting the next step.')
                   : applicationStatus === "approved"
-                    ? 'The landlord approved this rental application.'
+                    ? ui('The landlord approved this rental application.')
                     : applicationStatus === "rejected"
-                      ? 'This application was not approved.'
-                      : 'This application has been withdrawn.'}
+                      ? ui('This application was not approved.')
+                      : ui('This application has been withdrawn.')}
               </AppText>
             </View>
           </View>
@@ -237,7 +237,7 @@ const ApplicationDetailScreen = ({ route, navigation }) => {
               </View>
               <View style={styles.propertyCopy}>
                 <AppText style={styles.propertyTitle}>
-                  {application.property_title || 'Rental property'}
+                  {application.property_title || ui('Rental property')}
                 </AppText>
                 <AppText style={styles.propertyLocation}>
                   {[application.area, application.city, application.state_name]
@@ -253,7 +253,7 @@ const ApplicationDetailScreen = ({ route, navigation }) => {
               </View>
               <View>
                 <AppText style={styles.factLabel}>
-                  {isTenant ? ui("Landlord") : 'Applicant'}
+                  {isTenant ? ui("Landlord") : ui('Applicant')}
                 </AppText>
                 <AppText style={styles.factValue}>
                   {isTenant ? application.landlord_name : application.tenant_name || '—'}
@@ -335,12 +335,12 @@ const ApplicationDetailScreen = ({ route, navigation }) => {
             <View style={styles.formCard}>
               <AppText style={styles.formTitle}>
                 {formMode === 'tenant_offer'
-                  ? 'Propose rent'
+                  ? ui('Propose rent')
                   : formMode === 'landlord_counter'
                     ? ui("Send counter-offer")
                     : formMode === "reject"
                       ? ui("Reject application")
-                      : 'Add a note'}
+                      : ui('Add a note')}
               </AppText>
               {['tenant_offer', 'landlord_counter'].includes(formMode) ? (
                 <Input

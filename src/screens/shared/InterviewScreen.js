@@ -719,12 +719,12 @@ const InterviewScreen = ({ route, navigation }) => {
       {locked && (
         <View style={styles.lockedOverlay}>
           <AppText style={styles.lockedTitle}>
-            {sessionEnded ? ui("Session ended") : 'Interview locked'}
+            {sessionEnded ? ui("Session ended") : ui('Interview locked')}
           </AppText>
           <AppText style={styles.lockedText}>
             {sessionEnded
               ? ui("This interview session is no longer active. Please contact recruitment support.")
-              : 'A proctoring violation was detected. Your answers so far have been submitted for review.'}
+              : ui('A proctoring violation was detected. Your answers so far have been submitted for review.')}
           </AppText>
           <PremiumButton
             title={ui("Back")}

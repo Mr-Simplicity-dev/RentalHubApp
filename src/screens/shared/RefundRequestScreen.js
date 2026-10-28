@@ -171,9 +171,9 @@ const RefundRequestScreen = ({ navigation }) => {
                 <PremiumCard style={[styles.paymentCard, selected && styles.paymentCardSelected]}>
                   <View style={styles.paymentHeader}>
                     <View style={styles.paymentCopy}>
-                      <AppText style={styles.paymentTitle}>{payment.property_title || 'Rental property'}</AppText>
+                      <AppText style={styles.paymentTitle}>{payment.property_title || ui('Rental property')}</AppText>
                       <AppText style={styles.paymentMeta}>
-                        {[payment.property_address, payment.landlord_name].filter(Boolean).join(' · ') || 'Rental payment'}
+                        {[payment.property_address, payment.landlord_name].filter(Boolean).join(' · ') || ui('Rental payment')}
                       </AppText>
                     </View>
                     {selected ? <StatusPill label={ui("Selected")} color={colors.blue} /> : null}

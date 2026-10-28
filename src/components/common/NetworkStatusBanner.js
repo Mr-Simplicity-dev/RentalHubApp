@@ -42,12 +42,12 @@ const NetworkStatusBanner = () => {
       />
       <AppText style={styles.text}>
         {queue.flushing
-          ? 'Connection restored. Replaying saved actions now.'
+          ? ui('Connection restored. Replaying saved actions now.')
           : queue.pendingCount
             ? ui("{value0} action{value1} saved for retry when connection returns.", {value0: (queue.pendingCount), value1: (queue.pendingCount === 1 ? '' : ui("s"))})
             : status.weak
-              ? 'Network is weak. Some updates may take longer.'
-              : 'You appear offline. We will retry when connection returns.'}
+              ? ui('Network is weak. Some updates may take longer.')
+              : ui('You appear offline. We will retry when connection returns.')}
       </AppText>
     </View>
   );

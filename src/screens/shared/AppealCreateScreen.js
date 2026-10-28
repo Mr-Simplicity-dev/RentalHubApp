@@ -197,7 +197,7 @@ const AppealCreateScreen = ({ navigation, route }) => {
                           <View style={styles.propertyCopy}>
                             <AppText style={styles.propertyTitle}>{item.title || ui("Property #{value0}", {value0: (item.id)})}</AppText>
                             <AppText style={styles.propertyMeta}>
-                              {[item.area, item.city, item.state_name || item.state].filter(Boolean).join(', ') || 'Location not available'}
+                              {[item.area, item.city, item.state_name || item.state].filter(Boolean).join(', ') || ui('Location not available')}
                             </AppText>
                           </View>
                           {selected ? <StatusPill label={ui("Selected")} color={colors.blue} /> : null}

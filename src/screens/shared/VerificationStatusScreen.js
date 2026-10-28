@@ -217,15 +217,15 @@ const VerificationStatusScreen = ({ navigation }) => {
                 />
               </View>
               <AppText style={styles.heroEyebrow}>
-                {completedCount === requiredCount ? 'FULLY VERIFIED' : 'ACCOUNT PROGRESS'}
+                {completedCount === requiredCount ? ui('FULLY VERIFIED') : ui('ACCOUNT PROGRESS')}
               </AppText>
               <AppText style={styles.heroTitle}>
-                {completedCount === requiredCount ? 'Your identity is verified' : ui("{value0} of {value1} steps complete", {value0: (completedCount), value1: (requiredCount)})}
+                {completedCount === requiredCount ? ui('Your identity is verified') : ui("{value0} of {value1} steps complete", {value0: (completedCount), value1: (requiredCount)})}
               </AppText>
               <AppText style={styles.heroText}>
                 {completedCount === requiredCount
-                  ? 'Your verified profile helps create a safer RentalHub community.'
-                  : 'Complete verification to unlock the full RentalHub workflow.'}
+                  ? ui('Your verified profile helps create a safer RentalHub community.')
+                  : ui('Complete verification to unlock the full RentalHub workflow.')}
               </AppText>
               <View style={styles.progressTrack}>
                 <View style={[styles.progressFill, { width: progress }]} />
@@ -265,7 +265,7 @@ const VerificationStatusScreen = ({ navigation }) => {
                             step.pending && styles.stepStatusPending,
                             step.rejected && styles.stepStatusRejected,
                           ]}>
-                          {step.complete ? ui("Verified") : identityInProgress ? ui("Processing") : step.pending ? ui("In review") : step.rejected ? 'Action needed' : 'Incomplete'}
+                          {step.complete ? ui("Verified") : identityInProgress ? ui("Processing") : step.pending ? ui("In review") : step.rejected ? ui('Action needed') : ui('Incomplete')}
                         </AppText>
                       </View>
                       <AppText style={styles.stepText}>{step.description}</AppText>

@@ -152,7 +152,7 @@ const AppUpdateIndicator = ({ variant = 'floating' }) => {
       </View>
       <View style={[styles.bannerCopy, isInline ? styles.bannerCopyInline : null]}>
         <AppText style={[styles.bannerEyebrow, isInline ? styles.textCenter : null]}>
-          {directApkAvailable ? 'DIRECT APK UPDATE' : 'APP UPDATE'}
+          {directApkAvailable ? ui('DIRECT APK UPDATE') : ui('APP UPDATE')}
         </AppText>
         <AppText style={[styles.bannerTitle, isInline ? styles.textCenter : null]}>{title}</AppText>
         <AppText style={[styles.bannerText, isInline ? styles.textCenter : null]}>
@@ -173,7 +173,7 @@ const AppUpdateIndicator = ({ variant = 'floating' }) => {
             </View>
             <AppText style={[styles.progressText, isInline ? styles.textCenter : null]}>
               {downloadProgress.indeterminate
-                ? 'Downloading update…'
+                ? ui('Downloading update…')
                 : ui("Downloading update… {value0}%", {value0: (downloadProgress.progress || 0)})}
             </AppText>
           </View>
@@ -191,7 +191,7 @@ const AppUpdateIndicator = ({ variant = 'floating' }) => {
               <Icon name="download-outline" size={15} color={colors.navy} />
             )}
             <AppText style={styles.primaryButtonText}>
-              {updating ? ui("Starting...") : directApkAvailable ? 'Install update' : 'Update now'}
+              {updating ? ui("Starting...") : directApkAvailable ? ui('Install update') : ui('Update now')}
             </AppText>
           </TouchableOpacity>
           <TouchableOpacity

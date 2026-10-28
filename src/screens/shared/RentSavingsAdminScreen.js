@@ -1,5 +1,5 @@
-import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
-import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
+
+
 import React, { useCallback, useState } from 'react';
 import { Modal, StyleSheet, View } from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -40,7 +40,7 @@ const STATUS_COLORS = {
 };
 
 const RentSavingsAdminScreen = () => {
-  useInterfaceLanguage();
+
   const [tab, setTab] = useState('pending');
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -59,7 +59,7 @@ const RentSavingsAdminScreen = () => {
     } catch (err) {
       Toast.show({
         type: 'error',
-        text1: ui("Failed"),
+        text1: "Failed",
         text2: getErrorMessage(err, 'Could not load withdrawal requests'),
       });
     } finally {
@@ -90,10 +90,10 @@ const RentSavingsAdminScreen = () => {
     try {
       if (modal.action === 'approve') {
         await rentSavingsAdminService.approveEarlyWithdrawal(modal.item.id);
-        Toast.show({ type: 'success', text1: ui("Withdrawal approved") });
+        Toast.show({ type: 'success', text1: "Withdrawal approved" });
       } else {
         await rentSavingsAdminService.rejectEarlyWithdrawal(modal.item.id, note.trim());
-        Toast.show({ type: 'success', text1: ui("Withdrawal rejected") });
+        Toast.show({ type: 'success', text1: "Withdrawal rejected" });
       }
       setModal(null);
       await load();
@@ -105,7 +105,7 @@ const RentSavingsAdminScreen = () => {
   };
 
   if (loading && items.length === 0) {
-    return <PremiumCenter loading title={ui("Loading requests")} />;
+    return <PremiumCenter loading title={"Loading requests"} />;
   }
 
   const tabBar = (
@@ -135,16 +135,16 @@ const RentSavingsAdminScreen = () => {
         header={
           <>
             <PremiumHero
-              eyebrow={ui("Super admin")}
-              title={ui("Rent savings withdrawals")}
-              subtitle={ui("Approve or reject tenant early-withdrawal requests from rent savings plans.")}
+              eyebrow={"Super admin"}
+              title={"Rent savings withdrawals"}
+              subtitle={"Approve or reject tenant early-withdrawal requests from rent savings plans."}
               icon="wallet-outline"
             />
             {tabBar}
           </>
         }
-        emptyTitle={ui("No {value0} requests", {value0: (tab)})}
-        emptyMessage={ui("Early withdrawal requests will appear here.")}
+        emptyTitle={`No ${tab ?? "{value0}"} requests`}
+        emptyMessage={"Early withdrawal requests will appear here."}
         emptyIcon="cash-outline"
         renderItem={({ item }) => {
           const color = STATUS_COLORS[item.status] || colors.blue;
@@ -153,31 +153,31 @@ const RentSavingsAdminScreen = () => {
               <View style={styles.cardTop}>
                 <View style={styles.cardCopy}>
                   <AppText style={styles.cardTitle}>
-                    {item.property_title || ui("Request #{value0}", {value0: (item.id)})}
+                    {item.property_title || `Request #${item.id ?? "{value0}"}`}
                   </AppText>
-                  <AppText style={styles.cardMeta}>{ui("Plan #")}{item.plan_id}{ui(" · requested ")}{formatDate(item.requested_at || item.created_at)}
+                  <AppText style={styles.cardMeta}>{"Plan #"}{item.plan_id}{" · requested "}{formatDate(item.requested_at || item.created_at)}
                   </AppText>
                 </View>
                 <StatusPill label={item.status} color={color} />
               </View>
-              <InfoRow icon="cash-outline" label={ui("Requested amount")} value={formatNaira(item.amount || item.requested_amount)} />
+              <InfoRow icon="cash-outline" label={"Requested amount"} value={formatNaira(item.amount || item.requested_amount)} />
               {item.reason ? (
-                <InfoRow icon="chatbubble-outline" label={ui("Reason")} value={item.reason} />
+                <InfoRow icon="chatbubble-outline" label={"Reason"} value={item.reason} />
               ) : null}
               {item.admin_note ? (
-                <InfoRow icon="document-text-outline" label={ui("Admin note")} value={item.admin_note} />
+                <InfoRow icon="document-text-outline" label={"Admin note"} value={item.admin_note} />
               ) : null}
 
               {tab === "pending" ? (
                 <View style={styles.actions}>
                   <PremiumButton
-                    title={ui("Approve")}
+                    title={"Approve"}
                     onPress={() => openAction(item, 'approve')}
                     icon="checkmark-circle-outline"
                     style={styles.actionButton}
                   />
                   <PremiumButton
-                    title={ui("Reject")}
+                    title={"Reject"}
                     variant="ghost"
                     onPress={() => openAction(item, 'reject')}
                     icon="close-circle-outline"
@@ -198,16 +198,16 @@ const RentSavingsAdminScreen = () => {
                 {modal.action === "approve" ? 'Approve withdrawal' : 'Reject withdrawal'}
               </AppText>
               <AppText style={styles.modalSubtitle}>
-                {modal.item.property_title || ui("Request #{value0}", {value0: (modal.item.id)})} ·{' '}
+                {modal.item.property_title || `Request #${modal.item.id ?? "{value0}"}`} ·{' '}
                 {formatNaira(modal.item.amount || modal.item.requested_amount)}
               </AppText>
 
               {modal.action === "reject" ? (
                 <Input
-                  label={ui("Rejection reason")}
+                  label={"Rejection reason"}
                   value={note}
                   onChangeText={setNote}
-                  placeholder={ui("Explain why this request is being rejected")}
+                  placeholder={"Explain why this request is being rejected"}
                   multiline
                   numberOfLines={3}
                   containerStyle={styles.fieldGap}
@@ -218,14 +218,14 @@ const RentSavingsAdminScreen = () => {
 
               <View style={styles.modalActions}>
                 <PremiumButton
-                  title={ui("Cancel")}
+                  title={"Cancel"}
                   variant="ghost"
                   onPress={() => setModal(null)}
                   disabled={busy}
                   style={styles.actionButton}
                 />
                 <PremiumButton
-                  title={busy ? 'Working…' : ui("Confirm")}
+                  title={busy ? 'Working…' : "Confirm"}
                   onPress={submit}
                   loading={busy}
                   style={styles.actionButton}

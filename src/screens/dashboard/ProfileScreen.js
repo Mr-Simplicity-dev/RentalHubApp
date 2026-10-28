@@ -357,8 +357,8 @@ const ProfileScreen = ({ navigation }) => {
             </View>
           ) : null}
         </View>
-        <AppText style={styles.title}>{user?.full_name || 'RentalHub member'}</AppText>
-        <AppText style={styles.subtitle}>{user?.email || 'No email available'}</AppText>
+        <AppText style={styles.title}>{user?.full_name || ui('RentalHub member')}</AppText>
+        <AppText style={styles.subtitle}>{user?.email || ui('No email available')}</AppText>
         <View style={styles.rolePill}>
           <AppText style={styles.roleText}>
             {String(user?.user_type || 'member').replace(/_/g, ' ')}
@@ -405,7 +405,7 @@ const ProfileScreen = ({ navigation }) => {
             <AppText style={styles.cardCaption}>{ui("Status: ")}{reviewStatusLabel}</AppText>
           </View>
         </View>
-        <AppText style={styles.statusText}>{ui("Email:")}{status?.email_required===false ? 'Not required' : status?.email ? ui("Verified") : ui("Pending")}{ui(" | Phone: ")}{status?.phone ? ui("Verified") : ui("Pending")}
+        <AppText style={styles.statusText}>{ui("Email:")}{status?.email_required===false ? ui('Not required') : status?.email ? ui("Verified") : ui("Pending")}{ui(" | Phone: ")}{status?.phone ? ui("Verified") : ui("Pending")}
         </AppText>
         <AppText style={styles.statusText}>{ui("Identity:")}{status?.identity ? ui("Verified") : ui("Pending")}{ui(" | Document: ")}{status?.identity_document_type || '-'}
         </AppText>
@@ -467,7 +467,7 @@ const ProfileScreen = ({ navigation }) => {
                 thumbColor={biometricStatus.enabled ? '#0284c7' : '#f8fafc'}
               />
             </View>
-            <AppText style={styles.helperText}>{ui("Status:")}{biometricStatus.enabled ? ui("{value0} enabled", {value0: (biometricStatus.label)}) : 'Disabled'}
+            <AppText style={styles.helperText}>{ui("Status:")}{biometricStatus.enabled ? ui("{value0} enabled", {value0: (biometricStatus.label)}) : ui('Disabled')}
             </AppText>
           </>
         ) : (
@@ -478,7 +478,7 @@ const ProfileScreen = ({ navigation }) => {
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
             <AppText style={{ color: colors.ink, fontFamily: typography.semibold, fontSize: typeScale.sm, lineHeight: 20 }}>{ui("Two-factor authentication")}</AppText>
             <AppText style={{ color: twoFa.enabled ? colors.success : colors.muted, fontFamily: typography.semibold, fontSize: typeScale.xs, lineHeight: 18 }}>
-              {twoFa.enabled ? ui("Enabled") : twoFa.checked ? ui("Off") : 'Checking…'}
+              {twoFa.enabled ? ui("Enabled") : twoFa.checked ? ui("Off") : ui('Checking…')}
             </AppText>
           </View>
 

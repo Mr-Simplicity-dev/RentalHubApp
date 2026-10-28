@@ -1,5 +1,5 @@
-import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
-import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
+
+
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Alert, Modal, Pressable, ScrollView, Share, StyleSheet, TouchableOpacity, View } from 'react-native';
 import TextInput from '../../components/common/AppTextInput';
@@ -54,18 +54,18 @@ const rowsToCsv = (rows, columns) => [
 const buildExportName = (label) =>
   `RentalHub ${label} ${new Date().toISOString().slice(0, 10)}`;
 
-const SummaryPill = ({ label, value, tone = 'blue' }) => { useInterfaceLanguage(); return (<View style={[styles.pill, tone === 'warning' && styles.warningPill]}>
+const SummaryPill = ({ label, value, tone = 'blue' }) => {  return (<View style={[styles.pill, tone === 'warning' && styles.warningPill]}>
     <AppText style={[styles.pillLabel, tone === 'warning' && styles.warningText]}>{label}</AppText>
     <AppText style={[styles.pillValue, tone === 'warning' && styles.warningText]}>{value}</AppText>
   </View>); };
 
-const EmptyState = ({ message }) => { useInterfaceLanguage(); return (<View style={styles.emptyState}>
+const EmptyState = ({ message }) => {  return (<View style={styles.emptyState}>
     <Icon name="file-tray-outline" size={24} color={colors.muted} />
     <AppText style={styles.emptyText}>{message}</AppText>
   </View>); };
 
 const FinancialControlsScreen = ({ navigation }) => {
-  const interfaceLanguage = useInterfaceLanguage();
+  const interfaceLanguage = 'en';
   const [loading, setLoading] = useState(true);
   const [auditRows, setAuditRows] = useState([]);
   const [auditBreakdown, setAuditBreakdown] = useState([]);
@@ -102,7 +102,7 @@ const FinancialControlsScreen = ({ navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: ui("Financial controls failed"),
+        text1: "Financial controls failed",
         text2: getErrorMessage(error, 'Could not load financial controls'),
       });
     } finally {
@@ -130,8 +130,8 @@ const FinancialControlsScreen = ({ navigation }) => {
     if (!rows.length) {
       Toast.show({
         type: 'info',
-        text1: ui("Nothing to export"),
-        text2: ui("{value0} has no rows in the current native data set.", {value0: (label)}),
+        text1: "Nothing to export",
+        text2: `${label ?? "{value0}"} has no rows in the current native data set.`,
       });
       return;
     }
@@ -147,12 +147,14 @@ const FinancialControlsScreen = ({ navigation }) => {
       });
       await Share.share({
         title,
-        message: ui("{value0}\n\n{value1}", {value0: (title), value1: (csv)}),
+        message: `${title ?? "{value0}"}
+
+${csv ?? "{value1}"}`,
       });
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: ui("Export failed"),
+        text1: "Export failed",
         text2: getErrorMessage(error, 'Could not open the share sheet'),
       });
     } finally {
@@ -162,56 +164,56 @@ const FinancialControlsScreen = ({ navigation }) => {
 
   const exportAuditTrail = () =>
     shareCsv({
-      label: ui("Financial Audit Trail"),
+      label: "Financial Audit Trail",
       rows: auditRows,
       columns: [
-        { label: ui("ID"), value: (row) => row.id },
-        { label: ui("Action"), value: (row) => row.action_type || row.action },
-        { label: ui("Amount"), value: (row) => row.amount },
-        { label: ui("Description"), value: (row) => row.description || row.admin_note },
-        { label: ui("Performed By"), value: (row) => row.performed_by || row.admin_name },
-        { label: ui("Created At"), value: (row) => row.created_at },
+        { label: "ID", value: (row) => row.id },
+        { label: "Action", value: (row) => row.action_type || row.action },
+        { label: "Amount", value: (row) => row.amount },
+        { label: "Description", value: (row) => row.description || row.admin_note },
+        { label: "Performed By", value: (row) => row.performed_by || row.admin_name },
+        { label: "Created At", value: (row) => row.created_at },
       ],
     });
 
   const exportFrozenFunds = () =>
     shareCsv({
-      label: ui("Frozen Funds"),
+      label: "Frozen Funds",
       rows: frozenRows,
       columns: [
-        { label: ui("ID"), value: (row) => row.id },
-        { label: ui("User ID"), value: (row) => row.user_id },
-        { label: ui("User"), value: (row) => row.user_name || row.user_email },
-        { label: ui("Amount"), value: (row) => row.amount },
-        { label: ui("Reason"), value: (row) => row.reason },
-        { label: ui("Status"), value: (row) => row.status },
-        { label: ui("Frozen At"), value: (row) => row.frozen_at || row.created_at },
+        { label: "ID", value: (row) => row.id },
+        { label: "User ID", value: (row) => row.user_id },
+        { label: "User", value: (row) => row.user_name || row.user_email },
+        { label: "Amount", value: (row) => row.amount },
+        { label: "Reason", value: (row) => row.reason },
+        { label: "Status", value: (row) => row.status },
+        { label: "Frozen At", value: (row) => row.frozen_at || row.created_at },
       ],
     });
 
   const exportStatePerformance = () =>
     shareCsv({
-      label: ui("State Admin Performance"),
+      label: "State Admin Performance",
       rows: performanceRows,
       columns: [
-        { label: ui("Admin"), value: (row) => row.admin_name || row.full_name || row.email },
-        { label: ui("State"), value: (row) => row.assigned_state },
-        { label: ui("City"), value: (row) => row.assigned_city },
-        { label: ui("Total Paid"), value: (row) => row.total_paid },
-        { label: ui("Total Pending"), value: (row) => row.total_pending },
-        { label: ui("Total Withdrawn"), value: (row) => row.total_withdrawn },
+        { label: "Admin", value: (row) => row.admin_name || row.full_name || row.email },
+        { label: "State", value: (row) => row.assigned_state },
+        { label: "City", value: (row) => row.assigned_city },
+        { label: "Total Paid", value: (row) => row.total_paid },
+        { label: "Total Pending", value: (row) => row.total_pending },
+        { label: "Total Withdrawn", value: (row) => row.total_withdrawn },
       ],
     });
 
   const exportCommissionConfig = () =>
     shareCsv({
-      label: ui("Commission Configuration"),
+      label: "Commission Configuration",
       rows: commissionEntries.map(([key, config]) => ({ key, ...(config || {}) })),
       columns: [
-        { label: ui("Key"), value: (row) => row.key },
-        { label: ui("Value"), value: (row) => row.value },
-        { label: ui("Description"), value: (row) => row.description },
-        { label: ui("Updated At"), value: (row) => row.updated_at },
+        { label: "Key", value: (row) => row.key },
+        { label: "Value", value: (row) => row.value },
+        { label: "Description", value: (row) => row.description },
+        { label: "Updated At", value: (row) => row.updated_at },
       ],
     });
 
@@ -228,13 +230,13 @@ const FinancialControlsScreen = ({ navigation }) => {
     setSavingComm(true);
     try {
       await financialAdminService.updateCommissionConfig(commEditValues);
-      Toast.show({ type: 'success', text1: ui("Commission config saved") });
+      Toast.show({ type: 'success', text1: "Commission config saved" });
       setCommEditVisible(false);
       loadControls();
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: ui("Save failed"),
+        text1: "Save failed",
         text2: getErrorMessage(error, 'Could not update commission config'),
       });
     } finally {
@@ -248,22 +250,22 @@ const FinancialControlsScreen = ({ navigation }) => {
       const response = await financialAdminService.getTransactionHistory({ limit: 100 });
       const rows = parseRows(response, 'transactions');
       await shareCsv({
-        label: ui("Transaction Reconciliation"),
+        label: "Transaction Reconciliation",
         rows,
         columns: [
-          { label: ui("ID"), value: (row) => row.id || row.transaction_id },
-          { label: ui("Reference"), value: (row) => row.reference || row.payment_reference },
-          { label: ui("User"), value: (row) => row.user_name || row.email || row.user_email },
-          { label: ui("Amount"), value: (row) => row.amount || row.total_amount },
-          { label: ui("Status"), value: (row) => row.status || row.payment_status },
-          { label: ui("Type"), value: (row) => row.payment_type || row.transaction_type },
-          { label: ui("Created At"), value: (row) => row.created_at || row.payment_date },
+          { label: "ID", value: (row) => row.id || row.transaction_id },
+          { label: "Reference", value: (row) => row.reference || row.payment_reference },
+          { label: "User", value: (row) => row.user_name || row.email || row.user_email },
+          { label: "Amount", value: (row) => row.amount || row.total_amount },
+          { label: "Status", value: (row) => row.status || row.payment_status },
+          { label: "Type", value: (row) => row.payment_type || row.transaction_type },
+          { label: "Created At", value: (row) => row.created_at || row.payment_date },
         ],
       });
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: ui("Transactions unavailable"),
+        text1: "Transactions unavailable",
         text2: getErrorMessage(error, 'Could not fetch transaction rows for export'),
       });
     } finally {
@@ -279,32 +281,32 @@ const FinancialControlsScreen = ({ navigation }) => {
     if (!userId || !amount || amount <= 0 || !reason) {
       Toast.show({
         type: 'error',
-        text1: ui("Complete the freeze form"),
-        text2: ui("User ID, amount and reason are required."),
+        text1: "Complete the freeze form",
+        text2: "User ID, amount and reason are required.",
       });
       return;
     }
 
     Alert.alert(
-      ui("Freeze user funds?"),
+      "Freeze user funds?",
       `This will request a freeze of ${formatCurrency(amount)} for user #${userId}.`,
       [
-        { text: ui("Cancel"), style: 'cancel' },
+        { text: "Cancel", style: 'cancel' },
         {
-          text: ui("Freeze funds"),
+          text: "Freeze funds",
           style: 'destructive',
           onPress: async () => {
             setSubmittingFreeze(true);
             try {
               await financialAdminService.freezeFunds({ userId, amount, reason });
-              Toast.show({ type: 'success', text1: ui("Funds freeze submitted") });
+              Toast.show({ type: 'success', text1: "Funds freeze submitted" });
               setFreezeForm({ userId: '', amount: '', reason: '' });
               setFreezeModalVisible(false);
               loadControls();
             } catch (error) {
               Toast.show({
                 type: 'error',
-                text1: ui("Freeze failed"),
+                text1: "Freeze failed",
                 text2: getErrorMessage(error, 'Could not freeze funds'),
               });
             } finally {
@@ -320,34 +322,34 @@ const FinancialControlsScreen = ({ navigation }) => {
     <>
       <DashboardScreen refreshing={loading} onRefresh={loadControls}>
         <DashboardHero
-          eyebrow={ui("ADVANCED FINANCE")}
-          title={ui("Controls and reconciliation")}
-          subtitle={ui("Audit money movement, settlement health, frozen funds, commission rules and export handoff from a native workspace.")}
+          eyebrow={"ADVANCED FINANCE"}
+          title={"Controls and reconciliation"}
+          subtitle={"Audit money movement, settlement health, frozen funds, commission rules and export handoff from a native workspace."}
           icon="shield-checkmark-outline"
           onRefresh={loadControls}
         />
 
         <MetricGrid>
           <MetricCard
-            label={ui("Audit rows")}
+            label={"Audit rows"}
             value={String(auditRows.length || auditTotal || 0)}
             icon="receipt-outline"
             color={colors.blue}
           />
           <MetricCard
-            label={ui("Frozen funds")}
+            label={"Frozen funds"}
             value={formatCurrency(frozenTotal)}
             icon="lock-closed-outline"
             color={colors.danger}
           />
           <MetricCard
-            label={ui("State admins")}
+            label={"State admins"}
             value={String(performanceStats?.total_admins || performanceRows.length || 0)}
             icon="people-outline"
             color={colors.success}
           />
           <MetricCard
-            label={ui("Config keys")}
+            label={"Config keys"}
             value={String(commissionEntries.length)}
             icon="options-outline"
             color="#A66B00"
@@ -355,41 +357,41 @@ const FinancialControlsScreen = ({ navigation }) => {
         </MetricGrid>
 
         <DashboardSection
-          title={ui("Settlement workbench")}
-          subtitle={ui("The important settlement queues are now reachable as native screens.")}
+          title={"Settlement workbench"}
+          subtitle={"The important settlement queues are now reachable as native screens."}
         >
           <ActionRow
-            title={ui("Withdrawal approvals")}
-            subtitle={ui("Approve, reject and review pending payout requests.")}
+            title={"Withdrawal approvals"}
+            subtitle={"Approve, reject and review pending payout requests."}
             icon="cash-outline"
             onPress={() => navigation.navigate('FinancialWithdrawals')}
           />
           <ActionRow
-            title={ui("Transaction reconciliation")}
-            subtitle={ui("Filter payment history and compare status, wallet credit and commission rows.")}
+            title={"Transaction reconciliation"}
+            subtitle={"Filter payment history and compare status, wallet credit and commission rows."}
             icon="swap-horizontal-outline"
             onPress={() => navigation.navigate('FinancialTransactions')}
           />
           <ActionRow
-            title={ui("Revenue reports")}
-            subtitle={ui("Review revenue summary and recent transaction movement.")}
+            title={"Revenue reports"}
+            subtitle={"Review revenue summary and recent transaction movement."}
             icon="trending-up-outline"
             onPress={() => navigation.navigate('FinancialRevenueReport')}
           />
         </DashboardSection>
 
         <DashboardSection
-          title={ui("Freeze controls")}
-          subtitle={ui("High-risk fund actions require confirmation before they touch the backend.")}
+          title={"Freeze controls"}
+          subtitle={"High-risk fund actions require confirmation before they touch the backend."}
         >
           <DashboardNotice
             variant="warning"
-            title={ui("Sensitive finance action")}
-            message={ui("Freeze requests are protected by the server role checks and still require a confirmation prompt in the app.")}
+            title={"Sensitive finance action"}
+            message={"Freeze requests are protected by the server role checks and still require a confirmation prompt in the app."}
           />
           <ActionRow
-            title={ui("Freeze user funds")}
-            subtitle={ui("Open a native confirmation form for super-financial review.")}
+            title={"Freeze user funds"}
+            subtitle={"Open a native confirmation form for super-financial review."}
             icon="lock-closed-outline"
             badge="Protected"
             onPress={() => setFreezeModalVisible(true)}
@@ -398,20 +400,20 @@ const FinancialControlsScreen = ({ navigation }) => {
             {frozenRows.slice(0, 4).map((item) => (
               <View key={String(item.id)} style={styles.recordCard}>
                 <View style={styles.recordTop}>
-                  <AppText style={styles.recordTitle}>{item.user_name || item.user_email || ui("User #{value0}", {value0: (item.user_id)})}</AppText>
+                  <AppText style={styles.recordTitle}>{item.user_name || item.user_email || `User #${item.user_id ?? "{value0}"}`}</AppText>
                   <AppText style={styles.dangerValue}>{formatCurrency(item.amount)}</AppText>
                 </View>
                 <AppText style={styles.recordMeta}>{item.reason || 'No freeze reason recorded'}</AppText>
-                <AppText style={styles.recordDate}>{ui("Frozen ")}{compactDate(item.frozen_at || item.created_at)}</AppText>
+                <AppText style={styles.recordDate}>{"Frozen "}{compactDate(item.frozen_at || item.created_at)}</AppText>
               </View>
             ))}
-            {frozenRows.length === 0 ? <EmptyState message={ui("No frozen funds found.")} /> : null}
+            {frozenRows.length === 0 ? <EmptyState message={"No frozen funds found."} /> : null}
           </View>
         </DashboardSection>
 
         <DashboardSection
-          title={ui("Audit trail")}
-          subtitle={ui("Recent money-impacting actions and reconciliation categories.")}
+          title={"Audit trail"}
+          subtitle={"Recent money-impacting actions and reconciliation categories."}
         >
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.pillRow}>
             {auditBreakdown.slice(0, 8).map((item) => (
@@ -421,7 +423,7 @@ const FinancialControlsScreen = ({ navigation }) => {
                 value={String(item.count || 0)}
               />
             ))}
-            {auditBreakdown.length === 0 ? <SummaryPill label={ui("audit")} value="0" tone="warning" /> : null}
+            {auditBreakdown.length === 0 ? <SummaryPill label={"audit"} value="0" tone="warning" /> : null}
           </ScrollView>
 
           <View style={styles.cardStack}>
@@ -433,48 +435,48 @@ const FinancialControlsScreen = ({ navigation }) => {
                 </View>
                 <AppText style={styles.recordMeta}>{item.description || item.user_email || 'No description recorded'}</AppText>
                 <AppText style={styles.recordDate}>
-                  {item.performed_by_name || item.admin_name || ui("System")} • {compactDate(item.performed_at || item.created_at)}
+                  {item.performed_by_name || item.admin_name || "System"} • {compactDate(item.performed_at || item.created_at)}
                 </AppText>
               </View>
             ))}
-            {auditRows.length === 0 ? <EmptyState message={ui("No audit activity returned.")} /> : null}
+            {auditRows.length === 0 ? <EmptyState message={"No audit activity returned."} /> : null}
           </View>
         </DashboardSection>
 
         <DashboardSection
-          title={ui("Admin performance")}
-          subtitle={ui("Native view of pending, paid and withdrawn commission pressure by admin.")}
+          title={"Admin performance"}
+          subtitle={"Native view of pending, paid and withdrawn commission pressure by admin."}
         >
           <View style={styles.statsGrid}>
-            <SummaryPill label={ui("Pending")} value={formatCurrency(performanceStats?.total_pending_commissions)} tone="warning" />
-            <SummaryPill label={ui("Paid")} value={formatCurrency(performanceStats?.total_paid_commissions)} />
-            <SummaryPill label={ui("Withdrawn")} value={formatCurrency(performanceStats?.total_withdrawn_amount)} />
+            <SummaryPill label={"Pending"} value={formatCurrency(performanceStats?.total_pending_commissions)} tone="warning" />
+            <SummaryPill label={"Paid"} value={formatCurrency(performanceStats?.total_paid_commissions)} />
+            <SummaryPill label={"Withdrawn"} value={formatCurrency(performanceStats?.total_withdrawn_amount)} />
           </View>
           <View style={styles.cardStack}>
             {performanceRows.slice(0, 5).map((item) => (
               <View key={String(item.admin_id || item.id)} style={styles.recordCard}>
                 <View style={styles.recordTop}>
-                  <AppText style={styles.recordTitle}>{item.full_name || item.admin_name || ui("Admin #{value0}", {value0: (item.admin_id)})}</AppText>
+                  <AppText style={styles.recordTitle}>{item.full_name || item.admin_name || `Admin #${item.admin_id ?? "{value0}"}`}</AppText>
                   <AppText style={styles.recordAmount}>{formatCurrency(item.total_pending)}</AppText>
                 </View>
                 <AppText style={styles.recordMeta}>
-                  {(item.assigned_state || 'Unassigned state')} {item.assigned_city ? ui("• {value0}", {value0: (item.assigned_city)}) : ''}
+                  {(item.assigned_state || 'Unassigned state')} {item.assigned_city ? `• ${item.assigned_city ?? "{value0}"}` : ''}
                 </AppText>
-                <AppText style={styles.recordDate}>{ui("Paid")}{formatCurrency(item.total_paid)}{ui(" • Withdrawn ")}{formatCurrency(item.total_withdrawn)}
+                <AppText style={styles.recordDate}>{"Paid"}{formatCurrency(item.total_paid)}{" • Withdrawn "}{formatCurrency(item.total_withdrawn)}
                 </AppText>
               </View>
             ))}
-            {performanceRows.length === 0 ? <EmptyState message={ui("No admin performance rows found.")} /> : null}
+            {performanceRows.length === 0 ? <EmptyState message={"No admin performance rows found."} /> : null}
           </View>
         </DashboardSection>
 
         <DashboardSection
-          title={ui("Commission configuration")}
-          subtitle={ui("Current finance rules are visible in-app; changing them remains server-protected.")}
+          title={"Commission configuration"}
+          subtitle={"Current finance rules are visible in-app; changing them remains server-protected."}
         >
           <ActionRow
-            title={ui("Edit commission config")}
-            subtitle={ui("Modify commission rates and finance rules.")}
+            title={"Edit commission config"}
+            subtitle={"Modify commission rates and finance rules."}
             icon="create-outline"
             badge="Edit"
             onPress={openCommEdit}
@@ -487,48 +489,48 @@ const FinancialControlsScreen = ({ navigation }) => {
                   <AppText style={styles.recordAmount}>{Number(config?.value || 0).toLocaleString()}</AppText>
                 </View>
                 <AppText style={styles.recordMeta}>{config?.description || 'No description'}</AppText>
-                <AppText style={styles.recordDate}>{ui("Updated ")}{compactDate(config?.updated_at)}</AppText>
+                <AppText style={styles.recordDate}>{"Updated "}{compactDate(config?.updated_at)}</AppText>
               </View>
             ))}
-            {commissionEntries.length === 0 ? <EmptyState message={ui("Commission config is not available for this role.")} /> : null}
+            {commissionEntries.length === 0 ? <EmptyState message={"Commission config is not available for this role."} /> : null}
           </View>
         </DashboardSection>
 
         <DashboardSection
-          title={ui("Exports")}
-          subtitle={ui("Generate CSV-style exports from the native finance data and share them through the device share sheet.")}
+          title={"Exports"}
+          subtitle={"Generate CSV-style exports from the native finance data and share them through the device share sheet."}
         >
           <ActionRow
-            title={ui("Export transaction reconciliation")}
-            subtitle={ui("Fetch the latest 100 transaction rows and share as CSV text.")}
+            title={"Export transaction reconciliation"}
+            subtitle={"Fetch the latest 100 transaction rows and share as CSV text."}
             icon="download-outline"
             badge={exporting === 'Transaction Reconciliation' ? 'Preparing' : 'CSV'}
             onPress={exportTransactions}
           />
           <ActionRow
-            title={ui("Export audit trail")}
-            subtitle={ui("Share the currently loaded financial audit rows.")}
+            title={"Export audit trail"}
+            subtitle={"Share the currently loaded financial audit rows."}
             icon="receipt-outline"
             badge={exporting === 'Financial Audit Trail' ? 'Preparing' : 'CSV'}
             onPress={exportAuditTrail}
           />
           <ActionRow
-            title={ui("Export frozen funds")}
-            subtitle={ui("Share frozen fund records visible in this workspace.")}
+            title={"Export frozen funds"}
+            subtitle={"Share frozen fund records visible in this workspace."}
             icon="lock-closed-outline"
             badge={exporting === 'Frozen Funds' ? 'Preparing' : 'CSV'}
             onPress={exportFrozenFunds}
           />
           <ActionRow
-            title={ui("Export state performance")}
-            subtitle={ui("Share state-admin settlement and withdrawal performance rows.")}
+            title={"Export state performance"}
+            subtitle={"Share state-admin settlement and withdrawal performance rows."}
             icon="people-outline"
             badge={exporting === 'State Admin Performance' ? 'Preparing' : 'CSV'}
             onPress={exportStatePerformance}
           />
           <ActionRow
-            title={ui("Export commission config")}
-            subtitle={ui("Share the active commission settings snapshot.")}
+            title={"Export commission config"}
+            subtitle={"Share the active commission settings snapshot."}
             icon="options-outline"
             badge={exporting === 'Commission Configuration' ? 'Preparing' : 'CSV'}
             onPress={exportCommissionConfig}
@@ -540,17 +542,17 @@ const FinancialControlsScreen = ({ navigation }) => {
         <Pressable style={styles.modalBackdrop} onPress={() => setFreezeModalVisible(false)}>
           <Pressable style={styles.modalCard}>
             <View style={styles.modalHeader}>
-              <AppText style={styles.modalTitle}>{ui("Freeze user funds")}</AppText>
+              <AppText style={styles.modalTitle}>{"Freeze user funds"}</AppText>
               <TouchableOpacity accessibilityRole="button" onPress={() => setFreezeModalVisible(false)}>
                 <Icon name="close" size={22} color={colors.muted} />
               </TouchableOpacity>
             </View>
-            <AppText style={styles.modalSubtitle}>{ui("Enter the user ID, amount and finance reason. The backend will still reject this if your role is not allowed.")}</AppText>
+            <AppText style={styles.modalSubtitle}>{"Enter the user ID, amount and finance reason. The backend will still reject this if your role is not allowed."}</AppText>
             <TextInput
               style={styles.input}
               value={freezeForm.userId}
               onChangeText={(userId) => setFreezeForm((current) => ({ ...current, userId }))}
-              placeholder={ui("User ID")}
+              placeholder={"User ID"}
               keyboardType="number-pad"
               placeholderTextColor={colors.muted}
             />
@@ -558,7 +560,7 @@ const FinancialControlsScreen = ({ navigation }) => {
               style={styles.input}
               value={freezeForm.amount}
               onChangeText={(amount) => setFreezeForm((current) => ({ ...current, amount }))}
-              placeholder={ui("Amount")}
+              placeholder={"Amount"}
               keyboardType="decimal-pad"
               placeholderTextColor={colors.muted}
             />
@@ -566,7 +568,7 @@ const FinancialControlsScreen = ({ navigation }) => {
               style={[styles.input, styles.reasonInput]}
               value={freezeForm.reason}
               onChangeText={(reason) => setFreezeForm((current) => ({ ...current, reason }))}
-              placeholder={ui("Reason")}
+              placeholder={"Reason"}
               multiline
               placeholderTextColor={colors.muted}
             />
@@ -576,7 +578,7 @@ const FinancialControlsScreen = ({ navigation }) => {
               style={[styles.freezeButton, submittingFreeze && styles.disabledButton]}
               onPress={confirmFreezeFunds}
             >
-              {submittingFreeze ? <ActivityIndicator color={colors.white} /> : <AppText style={styles.freezeButtonText}>{ui("Confirm freeze")}</AppText>}
+              {submittingFreeze ? <ActivityIndicator color={colors.white} /> : <AppText style={styles.freezeButtonText}>{"Confirm freeze"}</AppText>}
             </TouchableOpacity>
           </Pressable>
         </Pressable>
@@ -586,7 +588,7 @@ const FinancialControlsScreen = ({ navigation }) => {
         <Pressable style={styles.modalBackdrop} onPress={() => setCommEditVisible(false)}>
           <Pressable style={styles.modalCard}>
             <View style={styles.modalHeader}>
-              <AppText style={styles.modalTitle}>{ui("Edit commission config")}</AppText>
+              <AppText style={styles.modalTitle}>{"Edit commission config"}</AppText>
               <TouchableOpacity accessibilityRole="button" onPress={() => setCommEditVisible(false)}>
                 <Icon name="close" size={22} color={colors.muted} />
               </TouchableOpacity>
@@ -611,7 +613,7 @@ const FinancialControlsScreen = ({ navigation }) => {
               style={[styles.freezeButton, savingComm && styles.disabledButton]}
               onPress={saveCommissionConfig}
             >
-              {savingComm ? <ActivityIndicator color={colors.white} /> : <AppText style={styles.freezeButtonText}>{ui("Save changes")}</AppText>}
+              {savingComm ? <ActivityIndicator color={colors.white} /> : <AppText style={styles.freezeButtonText}>{"Save changes"}</AppText>}
             </TouchableOpacity>
           </Pressable>
         </Pressable>

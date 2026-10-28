@@ -92,7 +92,7 @@ const MyDamageReportsScreen = ({ navigation }) => {
           </View>
           <View style={styles.cardHeader}>
             <AppText style={styles.cardTitle} numberOfLines={1}>
-              {item.property_name || 'Untitled Property'}
+              {item.property_name || ui('Untitled Property')}
             </AppText>
             <View style={[styles.statusBadge, { backgroundColor: status.bg }]}>
               <AppText style={[styles.statusText, { color: status.color }]}>{status.label}</AppText>

@@ -433,8 +433,8 @@ const NativeCallOverlay = () => {
                   )}
                   <AppText style={styles.remotePlaceholderText}>
                     {mediaStatus === "connected"
-                      ? videoCall ? 'Waiting for remote video…' : 'Audio session connected'
-                      : 'Connecting media…'}
+                      ? videoCall ? ui('Waiting for remote video…') : ui('Audio session connected')
+                      : ui('Connecting media…')}
                   </AppText>
                 </View>
               )}
@@ -501,7 +501,7 @@ const NativeCallOverlay = () => {
           )}
 
           <AppText style={[styles.eyebrow, isAccepted && styles.liveEyebrow]}>
-            {isAccepted ? String(mediaStatus).replace(/_/g, ' ') : activeCall.status || 'RINGING'}
+            {isAccepted ? String(mediaStatus).replace(/_/g, ' ') : activeCall.status || ui('RINGING')}
           </AppText>
           <AppText style={[styles.title, isAccepted && styles.liveTitle]}>{participantSummary}</AppText>
           <AppText style={[styles.subtitle, isAccepted && styles.liveSubtitle]}>
@@ -524,7 +524,7 @@ const NativeCallOverlay = () => {
                 <View key={event.id || `${event.callId}-${event.createdAt}`} style={styles.historyRow}>
                   <AppText style={styles.historyAction}>{String(event.action || '').replace(/_/g, ' ')}</AppText>
                   <AppText style={styles.historyMeta}>
-                    {event.actorName || 'Someone'} → {event.targetName || ui("Room")}
+                    {event.actorName || ui('Someone')} → {event.targetName || ui("Room")}
                   </AppText>
                 </View>
               ))}

@@ -189,7 +189,7 @@ const ApplicationsScreen = ({ navigation }) => {
             <View style={styles.summaryRow}>
               <View style={styles.summaryCard}>
                 <AppText style={styles.summaryValue}>{items.length}</AppText>
-                <AppText style={styles.summaryLabel}>{isTenant ? ui("Submitted") : 'Received'}</AppText>
+                <AppText style={styles.summaryLabel}>{isTenant ? ui("Submitted") : ui('Received')}</AppText>
               </View>
               <View style={styles.summaryCard}>
                 <AppText style={[styles.summaryValue, styles.pendingValue]}>{counts.pending || 0}</AppText>
@@ -230,8 +230,8 @@ const ApplicationsScreen = ({ navigation }) => {
               </AppText>
               <AppText style={styles.emptyText}>
                 {isTenant
-                  ? 'When you apply for a verified home, its progress will appear here.'
-                  : 'Applications from prospective tenants will appear here.'}
+                  ? ui('When you apply for a verified home, its progress will appear here.')
+                  : ui('Applications from prospective tenants will appear here.')}
               </AppText>
               {isTenant && filter === "all" ? (
                 <TouchableOpacity
@@ -267,7 +267,7 @@ const ApplicationsScreen = ({ navigation }) => {
                   </View>
                   <View style={styles.cardHeading}>
                     <AppText style={styles.cardTitle} numberOfLines={2}>
-                      {item.property_title || 'Rental property'}
+                      {item.property_title || ui('Rental property')}
                     </AppText>
                     <AppText style={styles.cardMeta}>
                       {isTenant
@@ -293,7 +293,7 @@ const ApplicationsScreen = ({ navigation }) => {
                 <AppText style={styles.detailText}>
                   {item.created_at
                     ? ui("Submitted {value0}", {value0: (new Date(item.created_at).toLocaleDateString())})
-                    : 'Submission date unavailable'}
+                    : ui('Submission date unavailable')}
                 </AppText>
               </View>
 

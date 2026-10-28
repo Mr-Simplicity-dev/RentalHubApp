@@ -1,5 +1,5 @@
-import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
-import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
+
+
 import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import Toast from 'react-native-toast-message';
 import { AuthContext } from '../../context/AuthContext';
@@ -20,7 +20,7 @@ import {
 import WorkspaceBoard from '../../components/dashboard/WorkspaceBoard';
 
 const AdminDashboardScreen = ({ navigation }) => {
-  const interfaceLanguage = useInterfaceLanguage();
+  const interfaceLanguage = 'en';
   const { user } = useContext(AuthContext);
   const [stats, setStats] = useState({});
   const [loading, setLoading] = useState(true);
@@ -39,7 +39,7 @@ const AdminDashboardScreen = ({ navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: ui("Failed"),
+        text1: "Failed",
         text2: getErrorMessage(error, 'Could not load admin dashboard'),
       });
     } finally {
@@ -52,32 +52,32 @@ const AdminDashboardScreen = ({ navigation }) => {
   }, []);
 
   const cards = [
-    { label: ui("Users"), value: stats.totalUsers ?? stats.total_tenants ?? '-', route: 'AdminUsers', icon: 'people-outline', color: colors.blue },
-    { label: ui("Properties"), value: stats.totalProperties ?? stats.total_properties ?? '-', route: 'AdminProperties', icon: 'business-outline', color: '#7C3AED' },
-    { label: ui("Applications"), value: stats.applications ?? stats.total_applications ?? '-', route: 'AdminApplications', icon: 'documents-outline', color: '#A66B00' },
-    { label: ui("Verifications"), value: stats.pendingVerifications ?? stats.pending_verification ?? '-', route: 'AdminVerifications', icon: 'shield-checkmark-outline', color: colors.success },
+    { label: "Users", value: stats.totalUsers ?? stats.total_tenants ?? '-', route: 'AdminUsers', icon: 'people-outline', color: colors.blue },
+    { label: "Properties", value: stats.totalProperties ?? stats.total_properties ?? '-', route: 'AdminProperties', icon: 'business-outline', color: '#7C3AED' },
+    { label: "Applications", value: stats.applications ?? stats.total_applications ?? '-', route: 'AdminApplications', icon: 'documents-outline', color: '#A66B00' },
+    { label: "Verifications", value: stats.pendingVerifications ?? stats.pending_verification ?? '-', route: 'AdminVerifications', icon: 'shield-checkmark-outline', color: colors.success },
   ];
 
   const workspaceGroups = [
     {
-      title: ui("People & Verification"),
+      title: "People & Verification",
       icon: 'people-outline',
       items: [
         {
-          label: ui("Users"),
+          label: "Users",
           icon: 'people-outline',
           tourTarget: role === 'lga_admin' ? 'lga_admin_services' : 'admin_workspaces',
           onPress: () => navigation.navigate('AdminUsers'),
         },
         {
-          label: ui("Verifications"),
+          label: "Verifications",
           icon: 'shield-checkmark-outline',
           onPress: () => navigation.navigate('AdminVerifications'),
         },
         ...(isCoreAdmin
           ? [
               {
-                label: ui("Agent Assignments"),
+                label: "Agent Assignments",
                 icon: 'people-circle-outline',
                 onPress: () => navigation.navigate('AdminAgentAssignments'),
               },
@@ -86,7 +86,7 @@ const AdminDashboardScreen = ({ navigation }) => {
         ...(user?.is_recruitment_admin === true
           ? [
               {
-                label: ui("Recruitment"),
+                label: "Recruitment",
                 icon: 'briefcase-outline',
                 onPress: () => navigation.navigate('RecruitmentAdmin'),
               },
@@ -95,23 +95,23 @@ const AdminDashboardScreen = ({ navigation }) => {
       ],
     },
     {
-      title: ui("Properties & Trust"),
+      title: "Properties & Trust",
       icon: 'home-outline',
       items: [
         {
-          label: ui("Properties"),
+          label: "Properties",
           icon: 'business-outline',
           onPress: () => navigation.navigate('AdminProperties'),
         },
         {
-          label: ui("Applications"),
+          label: "Applications",
           icon: 'documents-outline',
           onPress: () => navigation.navigate('AdminApplications'),
         },
         ...(isCoreAdmin
           ? [
               {
-                label: ui("Compliance & Risk"),
+                label: "Compliance & Risk",
                 icon: 'shield-outline',
                 tourTarget: 'admin_compliance',
                 onPress: () => navigation.navigate('AdminCompliance'),
@@ -124,16 +124,16 @@ const AdminDashboardScreen = ({ navigation }) => {
       ? []
       : [
           {
-            title: ui("Local services"),
+            title: "Local services",
             icon: 'construct-outline',
             items: [
               {
-                label: ui("Transportation"),
+                label: "Transportation",
                 icon: 'car-outline',
                 onPress: () => navigation.navigate('AdminTransportationDashboard'),
               },
               {
-                label: ui("Fumigation & Cleaning"),
+                label: "Fumigation & Cleaning",
                 icon: 'sparkles-outline',
                 onPress: () => navigation.navigate('AdminFumigationDashboard'),
               },
@@ -145,9 +145,9 @@ const AdminDashboardScreen = ({ navigation }) => {
   return (
     <DashboardScreen refreshing={loading} onRefresh={loadStats}>
       <DashboardHero
-        eyebrow={ui("OPERATIONS")}
+        eyebrow={"OPERATIONS"}
         title={role === 'lga_admin' ? 'LGA administration hub' : 'Administration hub'}
-        subtitle={ui("Monitor users, listings, verification and local workflows.")}
+        subtitle={"Monitor users, listings, verification and local workflows."}
         icon="settings-outline"
         onRefresh={loadStats}
       />
@@ -155,7 +155,7 @@ const AdminDashboardScreen = ({ navigation }) => {
 
       <MetricGrid
         tourTarget={role === 'lga_admin' ? 'lga_admin_overview' : 'admin_metrics'}
-        tourLabel={ui("Administration metrics")}
+        tourLabel={"Administration metrics"}
       >
         {cards.map((card) => (
           <MetricCard
@@ -167,24 +167,24 @@ const AdminDashboardScreen = ({ navigation }) => {
       </MetricGrid>
 
       <DashboardSection
-        title={ui("Priority workspaces")}
-        subtitle={ui("Choose a task area instead of navigating a desktop-style control panel.")}
+        title={"Priority workspaces"}
+        subtitle={"Choose a task area instead of navigating a desktop-style control panel."}
       >
         <WorkspaceBoard groups={workspaceGroups} collapsible />
       </DashboardSection>
 
       <DashboardSection
-        title={ui("Property request workflow")}
+        title={"Property request workflow"}
         tourTarget={role === 'lga_admin' ? 'lga_admin_requests' : 'admin_workflows'}
       >
-        <PropertyRequestWorkflowSection mode="state" title={ui("Tenant Property Requests")} />
+        <PropertyRequestWorkflowSection mode="state" title={"Tenant Property Requests"} />
       </DashboardSection>
 
       <DashboardSection
-        title={ui("Tenancy controls")}
+        title={"Tenancy controls"}
         tourTarget={role === 'lga_admin' ? 'lga_admin_tenancy' : undefined}
       >
-        <TenancyWorkflowSection title={ui("LGA Tenancy Grace and Refund Enablement")} />
+        <TenancyWorkflowSection title={"LGA Tenancy Grace and Refund Enablement"} />
       </DashboardSection>
     </DashboardScreen>
   );

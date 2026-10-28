@@ -51,7 +51,7 @@ const PropertyCard = ({ property, onPress, onSave, isSaved = false }) => {
 
       <View style={styles.content}>
         <AppText style={styles.title} numberOfLines={2}>
-          {property?.title || 'Untitled Property'}
+          {property?.title || ui('Untitled Property')}
         </AppText>
 
         <View style={styles.row}>

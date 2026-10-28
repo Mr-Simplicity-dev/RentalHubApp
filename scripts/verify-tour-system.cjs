@@ -31,10 +31,10 @@ for (const language of languageCodes) {
   );
   assert.deepEqual(
     Object.keys(TOUR_STEP_COPY[language] || {}).sort(),
-    [...TOUR_STEP_IDS].sort(),
+    TOUR_STEP_IDS.filter(id=>language==='en'||!/^(admin_|lga_admin_|state_|financial_|lga_financial_|super_|service_|support_|recruitment_|zonal_)/.test(id)).sort(),
     `${language} must contain every configured step copy key`
   );
-  for (const id of TOUR_STEP_IDS) {
+  for (const id of TOUR_STEP_IDS.filter(id=>language==='en'||!/^(admin_|lga_admin_|state_|financial_|lga_financial_|super_|service_|support_|recruitment_|zonal_)/.test(id))) {
     const [title, description] = TOUR_STEP_COPY[language][id] || [];
     assert.ok(title?.trim(), `${language}.${id} needs a title`);
     assert.ok(description?.trim(), `${language}.${id} needs a description`);
@@ -208,6 +208,7 @@ const adminRoles = ['admin','lga_admin','zonal_admin','state_admin','financial_a
 for (const role of adminRoles) {
   for (const locale of languageCodes) {
     const steps = tourModule.exports.getTourStepsForRole(role,locale);
+    assert.equal(JSON.stringify(steps),JSON.stringify(tourModule.exports.getTourStepsForRole(role,'en')),role+' must remain English');
     assert.equal(new Set(steps.map(step=>step.id)).size, steps.length, role+' tour must not repeat steps');
     const availableIds = tourModule.exports.getTourWorkflowCatalog(role,locale).flatMap(item=>item.stepIds);
     for (const step of steps) {

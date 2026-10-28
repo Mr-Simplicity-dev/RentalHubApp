@@ -84,7 +84,7 @@ class AppErrorBoundary extends React.Component {
               style={[styles.button, styles.secondaryButton]}
             >
               <AppText style={styles.secondaryButtonText}>
-                {isResetting ? ui("Resetting...") : 'Sign out & reset'}
+                {isResetting ? ui("Resetting...") : ui('Sign out & reset')}
               </AppText>
             </TouchableOpacity>
           </View>
@@ -95,7 +95,7 @@ class AppErrorBoundary extends React.Component {
             style={styles.detailsToggle}
           >
             <AppText style={styles.detailsToggleText}>
-              {showDetails ? 'Hide error details' : 'Show error details'}
+              {showDetails ? ui('Hide error details') : ui('Show error details')}
             </AppText>
             <Icon
               name={showDetails ? 'chevron-up' : 'chevron-down'}

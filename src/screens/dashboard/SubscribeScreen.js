@@ -183,19 +183,19 @@ const SubscribeScreen = ({ navigation }) => {
                 />
               </View>
               <AppText style={styles.statusEyebrow}>
-                {status?.subscription_active ? 'ACTIVE MEMBERSHIP' : 'PREMIUM ACCESS'}
+                {status?.subscription_active ? ui('ACTIVE MEMBERSHIP') : ui('PREMIUM ACCESS')}
               </AppText>
               <AppText style={styles.statusTitle}>
                 {status?.subscription_active
-                  ? activePlanName || 'Your subscription is active'
-                  : 'Unlock the complete rental experience'}
+                  ? activePlanName || ui('Your subscription is active')
+                  : ui('Unlock the complete rental experience')}
               </AppText>
               <AppText style={styles.statusText}>
                 {status?.subscription_active
                   ? expiry
                     ? ui("Your access remains active until {value0}.", {value0: (new Date(expiry).toLocaleDateString())})
-                    : 'Your premium RentalHub access is currently active.'
-                  : 'View full property details, verified contacts and premium tenant tools.'}
+                    : ui('Your premium RentalHub access is currently active.')
+                  : ui('View full property details, verified contacts and premium tenant tools.')}
               </AppText>
             </View>
 
@@ -232,7 +232,7 @@ const SubscribeScreen = ({ navigation }) => {
                       <AppText style={styles.recommendedText}>{ui("RECOMMENDED")}</AppText>
                     </View>
                   ) : null}
-                  <AppText style={styles.planName}>{plan.name || 'RentalHub membership'}</AppText>
+                  <AppText style={styles.planName}>{plan.name || ui('RentalHub membership')}</AppText>
                   <View style={styles.priceRow}>
                     <AppText style={styles.planPrice}>₦{Number(plan.amount || 0).toLocaleString()}</AppText>
                     {plan.duration_days ? (
@@ -240,7 +240,7 @@ const SubscribeScreen = ({ navigation }) => {
                     ) : null}
                   </View>
                   <AppText style={styles.planDesc}>
-                    {plan.description || 'Premium tenant access and complete property information.'}
+                    {plan.description || ui('Premium tenant access and complete property information.')}
                   </AppText>
                   {(features.length ? features : ['Full property details', 'Verified contact access']).map(
                     (feature) => (

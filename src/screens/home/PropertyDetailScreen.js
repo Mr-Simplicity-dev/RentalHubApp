@@ -438,7 +438,7 @@ const PropertyDetailScreen = ({ route, navigation }) => {
         <View style={styles.content}>
           <View style={styles.headingRow}>
             <View style={styles.headingCopy}>
-              <AppText style={styles.title}>{property.title || 'Verified rental home'}</AppText>
+              <AppText style={styles.title}>{property.title || ui('Verified rental home')}</AppText>
               <View style={styles.locationRow}>
                 <Icon name="location-outline" size={16} color={colors.muted} />
                 <AppText style={styles.location}>{location}</AppText>
@@ -514,7 +514,7 @@ const PropertyDetailScreen = ({ route, navigation }) => {
           <View style={styles.section}>
             <AppText style={styles.sectionTitle}>{ui("About this home")}</AppText>
             <AppText style={styles.description}>
-              {property.description || 'The property owner has not added a description yet.'}
+              {property.description || ui('The property owner has not added a description yet.')}
             </AppText>
           </View>
 

@@ -1,5 +1,5 @@
-import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
-import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
+
+
 import React, { useEffect, useState } from 'react';
 import {StyleSheet, View} from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -18,7 +18,7 @@ import { colors, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const AdminApplicationsScreen = () => {
-  useInterfaceLanguage();
+
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [pendingAction, setPendingAction] = useState(null);
@@ -32,8 +32,8 @@ const AdminApplicationsScreen = () => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: ui("Failed"),
-        text2: getErrorMessage(error, ui("Could not load applications")),
+        text1: "Failed",
+        text2: getErrorMessage(error, "Could not load applications"),
       });
     } finally {
       setLoading(false);
@@ -59,12 +59,12 @@ const AdminApplicationsScreen = () => {
       await loadApplications();
       Toast.show({
         type: 'success',
-        text1: type === "approve" ? ui("Application approved") : ui("Application rejected"),
+        text1: type === "approve" ? "Application approved" : "Application rejected",
       });
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: ui("Failed"),
+        text1: "Failed",
         text2: getErrorMessage(
           error,
           type === "approve" ? 'Could not approve application' : 'Could not reject application'
@@ -82,40 +82,40 @@ const AdminApplicationsScreen = () => {
         refreshing={loading}
         onRefresh={loadApplications}
         keyExtractor={(item) => String(item.id)}
-        emptyTitle={ui("No applications found")}
-        emptyMessage={ui("Rental applications that need review will appear here.")}
+        emptyTitle={"No applications found"}
+        emptyMessage={"Rental applications that need review will appear here."}
         emptyIcon="document-text-outline"
         header={
           <PremiumHero
-            eyebrow={ui("Administration")}
-            title={ui("Applications")}
-            subtitle={ui("Review tenant applications with clear status and recorded decision notes.")}
+            eyebrow={"Administration"}
+            title={"Applications"}
+            subtitle={"Review tenant applications with clear status and recorded decision notes."}
             icon="document-text-outline"
-            right={<StatusPill label={ui("{value0} records", {value0: (items.length)})} color={colors.blue} />}
+            right={<StatusPill label={`${items.length ?? "{value0}"} records`} color={colors.blue} />}
           />
         }
         renderItem={({ item }) => (
           <PremiumCard>
             <View style={styles.cardHeader}>
               <View style={styles.applicationIcon}>
-                <AppText style={styles.applicationIconText}>{ui("APP")}</AppText>
+                <AppText style={styles.applicationIconText}>{"APP"}</AppText>
               </View>
               <View style={styles.cardCopy}>
                 <AppText style={styles.cardTitle}>{item.property_title || 'Property application'}</AppText>
-                <AppText style={styles.cardMeta}>{item.status || ui("pending")}</AppText>
+                <AppText style={styles.cardMeta}>{item.status || "pending"}</AppText>
               </View>
             </View>
-            <InfoRow icon="person-outline" label={ui("Tenant")} value={item.tenant_name || '—'} />
-            <InfoRow icon="home-outline" label={ui("Property")} value={item.property_title || '—'} />
+            <InfoRow icon="person-outline" label={"Tenant"} value={item.tenant_name || '—'} />
+            <InfoRow icon="home-outline" label={"Property"} value={item.property_title || '—'} />
             {String(item.status || 'pending').toLowerCase() === "pending" ? (
               <View style={styles.actions}>
                 <PremiumButton
-                  title={ui("Approve")}
+                  title={"Approve"}
                   icon="checkmark-circle-outline"
                   onPress={() => setPendingAction({ item, type: 'approve' })}
                 />
                 <PremiumButton
-                  title={ui("Reject")}
+                  title={"Reject"}
                   variant="ghost"
                   icon="close-circle-outline"
                   onPress={() => setPendingAction({ item, type: 'reject' })}
@@ -127,15 +127,15 @@ const AdminApplicationsScreen = () => {
       />
       <OperationNoteModal
         visible={Boolean(pendingAction)}
-        title={pendingAction?.type === "approve" ? ui("Approve application") : ui("Reject application")}
-        message={ui("{value0} applied for {value1}.", {value0: (pendingAction?.item?.tenant_name || ui("This tenant")), value1: (pendingAction?.item?.property_title || ui("this property"))})}
-        label={pendingAction?.type === "approve" ? ui("Approval note") : ui("Rejection reason")}
+        title={pendingAction?.type === "approve" ? "Approve application" : "Reject application"}
+        message={`${(pendingAction?.item?.tenant_name || "This tenant") ?? "{value0}"} applied for ${(pendingAction?.item?.property_title || "this property") ?? "{value1}"}.`}
+        label={pendingAction?.type === "approve" ? "Approval note" : "Rejection reason"}
         placeholder={
           pendingAction?.type === "approve"
             ? 'Record why this application is approved'
             : 'Explain why this application is rejected'
         }
-        confirmText={pendingAction?.type === "approve" ? ui("Approve application") : ui("Reject application")}
+        confirmText={pendingAction?.type === "approve" ? "Approve application" : "Reject application"}
         icon={pendingAction?.type === 'approve' ? 'checkmark-circle-outline' : 'close-circle-outline'}
         variant={pendingAction?.type === 'approve' ? 'primary' : 'danger'}
         loading={actionLoading}

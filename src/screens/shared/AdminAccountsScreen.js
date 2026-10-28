@@ -1,5 +1,5 @@
-import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
-import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
+
+
 import React, { useState } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -16,27 +16,27 @@ import { colors, radius, typography, typeScale } from '../../theme';
 import AppText from '../../components/common/AppText';
 
 const ADMIN_ROLE_OPTIONS = [
-  { value: 'lga_admin', get "label"() { return ui("LGA Admin"); } },
-  { value: 'state_admin', get "label"() { return ui("State Admin"); } },
-  { value: 'zonal_admin', get "label"() { return ui("Zonal Admin"); } },
-  { value: 'lga_financial_admin', get "label"() { return ui("LGA Financial Admin"); } },
-  { value: 'state_financial_admin', get "label"() { return ui("State Financial Admin"); } },
-  { value: 'zonal_financial_admin', get "label"() { return ui("Zonal Financial Admin"); } },
-  { value: 'zonal_lawyer', get "label"() { return ui("Zonal Lawyer"); } },
-  { value: 'zonal_fumigation_admin', get "label"() { return ui("Zonal Fumigation Admin"); } },
-  { value: 'zonal_transportation_admin', get "label"() { return ui("Zonal Transportation Admin"); } },
-  { value: 'lga_support_admin', get "label"() { return ui("LGA Support Admin"); } },
-  { value: 'state_support_admin', get "label"() { return ui("State Support Admin"); } },
-  { value: 'lga_fumigation_admin', get "label"() { return ui("LGA Fumigation Admin"); } },
-  { value: 'state_fumigation_admin', get "label"() { return ui("State Fumigation Admin"); } },
-  { value: 'lga_transportation_admin', get "label"() { return ui("LGA Transportation Admin"); } },
-  { value: 'state_transportation_admin', get "label"() { return ui("State Transportation Admin"); } },
-  { value: 'recruitment_admin', get "label"() { return ui("Recruitment Admin"); } },
-  { value: 'marketing_agent', get "label"() { return ui("Marketing Agent"); } },
+  { value: 'lga_admin', get "label"() { return "LGA Admin"; } },
+  { value: 'state_admin', get "label"() { return "State Admin"; } },
+  { value: 'zonal_admin', get "label"() { return "Zonal Admin"; } },
+  { value: 'lga_financial_admin', get "label"() { return "LGA Financial Admin"; } },
+  { value: 'state_financial_admin', get "label"() { return "State Financial Admin"; } },
+  { value: 'zonal_financial_admin', get "label"() { return "Zonal Financial Admin"; } },
+  { value: 'zonal_lawyer', get "label"() { return "Zonal Lawyer"; } },
+  { value: 'zonal_fumigation_admin', get "label"() { return "Zonal Fumigation Admin"; } },
+  { value: 'zonal_transportation_admin', get "label"() { return "Zonal Transportation Admin"; } },
+  { value: 'lga_support_admin', get "label"() { return "LGA Support Admin"; } },
+  { value: 'state_support_admin', get "label"() { return "State Support Admin"; } },
+  { value: 'lga_fumigation_admin', get "label"() { return "LGA Fumigation Admin"; } },
+  { value: 'state_fumigation_admin', get "label"() { return "State Fumigation Admin"; } },
+  { value: 'lga_transportation_admin', get "label"() { return "LGA Transportation Admin"; } },
+  { value: 'state_transportation_admin', get "label"() { return "State Transportation Admin"; } },
+  { value: 'recruitment_admin', get "label"() { return "Recruitment Admin"; } },
+  { value: 'marketing_agent', get "label"() { return "Marketing Agent"; } },
 ];
 
 const AdminAccountsScreen = () => {
-  useInterfaceLanguage();
+
   const [form, setForm] = useState({
     full_name: '',
     email: '',
@@ -77,7 +77,7 @@ const AdminAccountsScreen = () => {
         assigned_city: assigned_city.trim() || undefined,
       });
       if (response?.success) {
-        Toast.show({ type: 'success', text1: ui("Admin account created") });
+        Toast.show({ type: 'success', text1: "Admin account created" });
         setForm({
           full_name: '',
           email: '',
@@ -108,7 +108,7 @@ const AdminAccountsScreen = () => {
     try {
       const response = await adminAccountsService.sendVerificationReminder(id);
       if (response?.success) {
-        Toast.show({ type: 'success', text1: ui("Reminder sent") });
+        Toast.show({ type: 'success', text1: "Reminder sent" });
         setReminderUserId('');
       } else {
         setError(response?.message || 'Could not send the reminder.');
@@ -127,31 +127,31 @@ const AdminAccountsScreen = () => {
       showsVerticalScrollIndicator={false}
     >
       <PremiumHero
-        eyebrow={ui("Super admin")}
-        title={ui("Admin accounts")}
-        subtitle={ui("Create admin accounts and nudge users to complete identity verification.")}
+        eyebrow={"Super admin"}
+        title={"Admin accounts"}
+        subtitle={"Create admin accounts and nudge users to complete identity verification."}
         icon="shield-checkmark-outline"
       />
 
-      <PremiumSectionTitle title={ui("Create admin account")} />
+      <PremiumSectionTitle title={"Create admin account"} />
       <PremiumCard>
-        <Input label={ui("Full name")} value={form.full_name} onChangeText={setField('full_name')} />
+        <Input label={"Full name"} value={form.full_name} onChangeText={setField('full_name')} />
         <Input
-          label={ui("Email")}
+          label={"Email"}
           value={form.email}
           onChangeText={setField('email')}
           keyboardType="email-address"
           containerStyle={styles.fieldGap}
         />
         <Input
-          label={ui("Phone")}
+          label={"Phone"}
           value={form.phone}
           onChangeText={setField('phone')}
           keyboardType="phone-pad"
           containerStyle={styles.fieldGap}
         />
         <Input
-          label={ui("Role")}
+          label={"Role"}
           value={form.user_type}
           onChangeText={setField('user_type')}
           containerStyle={styles.fieldGap}
@@ -174,20 +174,20 @@ const AdminAccountsScreen = () => {
           })}
         </View>
         <Input
-          label={ui("Assigned state")}
+          label={"Assigned state"}
           value={form.assigned_state}
           onChangeText={setField('assigned_state')}
-          placeholder={ui("e.g. Lagos")}
+          placeholder={"e.g. Lagos"}
           containerStyle={styles.fieldGap}
         />
         <Input
-          label={ui("Assigned LGA/city (optional)")}
+          label={"Assigned LGA/city (optional)"}
           value={form.assigned_city}
           onChangeText={setField('assigned_city')}
           containerStyle={styles.fieldGap}
         />
         <Input
-          label={ui("Temporary password (min 8 chars)")}
+          label={"Temporary password (min 8 chars)"}
           value={form.password}
           onChangeText={setField('password')}
           secureTextEntry
@@ -195,7 +195,7 @@ const AdminAccountsScreen = () => {
         />
         {error ? <AppText style={styles.error}>{error}</AppText> : null}
         <PremiumButton
-          title={ui("Create admin account")}
+          title={"Create admin account"}
           onPress={submitCreate}
           loading={busy}
           icon="person-add-outline"
@@ -203,20 +203,20 @@ const AdminAccountsScreen = () => {
         />
       </PremiumCard>
 
-      <PremiumSectionTitle title={ui("Verification reminder")} />
+      <PremiumSectionTitle title={"Verification reminder"} />
       <PremiumCard>
         <Input
-          label={ui("User ID")}
+          label={"User ID"}
           value={reminderUserId}
           onChangeText={(value) => {
             setReminderUserId(value.replace(/\D/g, ''));
             setError('');
           }}
-          placeholder={ui("Enter the user's numeric ID")}
+          placeholder={"Enter the user's numeric ID"}
           keyboardType="number-pad"
         />
         <PremiumButton
-          title={ui("Send verification reminder")}
+          title={"Send verification reminder"}
           onPress={sendReminder}
           loading={reminderBusy}
           icon="notifications-outline"

@@ -1,5 +1,5 @@
-import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
-import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
+
+
 import React, { useEffect, useState } from 'react';
 import {StyleSheet, View} from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -17,7 +17,7 @@ import { colors, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const AdminVerificationsScreen = () => {
-  useInterfaceLanguage();
+
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -29,7 +29,7 @@ const AdminVerificationsScreen = () => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: ui("Failed"),
+        text1: "Failed",
         text2: getErrorMessage(error, 'Could not load verifications'),
       });
     } finally {
@@ -45,11 +45,11 @@ const AdminVerificationsScreen = () => {
     try {
       await adminService.approveVerification(id);
       await loadVerifications();
-      Toast.show({ type: 'success', text1: ui("Verification approved") });
+      Toast.show({ type: 'success', text1: "Verification approved" });
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: ui("Failed"),
+        text1: "Failed",
         text2: getErrorMessage(error, 'Could not approve verification'),
       });
     }
@@ -59,11 +59,11 @@ const AdminVerificationsScreen = () => {
     try {
       await adminService.rejectVerification(id);
       await loadVerifications();
-      Toast.show({ type: 'success', text1: ui("Verification rejected") });
+      Toast.show({ type: 'success', text1: "Verification rejected" });
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: ui("Failed"),
+        text1: "Failed",
         text2: getErrorMessage(error, 'Could not reject verification'),
       });
     }
@@ -75,16 +75,16 @@ const AdminVerificationsScreen = () => {
       refreshing={loading}
       onRefresh={loadVerifications}
       keyExtractor={(item) => String(item.id)}
-      emptyTitle={ui("No pending verifications")}
-      emptyMessage={ui("Identity documents awaiting review will appear here.")}
+      emptyTitle={"No pending verifications"}
+      emptyMessage={"Identity documents awaiting review will appear here."}
       emptyIcon="shield-checkmark-outline"
       header={
         <PremiumHero
-          eyebrow={ui("Compliance")}
-          title={ui("Verifications")}
-          subtitle={ui("Review identity records with clearer context and decisive actions.")}
+          eyebrow={"Compliance"}
+          title={"Verifications"}
+          subtitle={"Review identity records with clearer context and decisive actions."}
           icon="shield-checkmark-outline"
-          right={<StatusPill label={ui("{value0} pending", {value0: (items.length)})} color={colors.blue} />}
+          right={<StatusPill label={`${items.length ?? "{value0}"} pending`} color={colors.blue} />}
         />
       }
       renderItem={({ item }) => {
@@ -104,10 +104,10 @@ const AdminVerificationsScreen = () => {
                 <AppText style={styles.cardMeta}>{item.email || 'No email provided'}</AppText>
               </View>
             </View>
-            <InfoRow icon="id-card-outline" label={ui("Document")} value={documentLabel} />
+            <InfoRow icon="id-card-outline" label={"Document"} value={documentLabel} />
             <View style={styles.actions}>
-              <PremiumButton title={ui("Approve")} icon="checkmark-circle-outline" onPress={() => approve(item.id)} />
-              <PremiumButton title={ui("Reject")} variant="ghost" icon="close-circle-outline" onPress={() => reject(item.id)} />
+              <PremiumButton title={"Approve"} icon="checkmark-circle-outline" onPress={() => approve(item.id)} />
+              <PremiumButton title={"Reject"} variant="ghost" icon="close-circle-outline" onPress={() => reject(item.id)} />
             </View>
           </PremiumCard>
         );

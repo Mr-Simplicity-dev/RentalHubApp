@@ -132,7 +132,7 @@ const LocationInfoScreen = ({ navigation, route }) => {
             <View key={`${label}-${index}`} style={styles.locationCard}>
               <AppText style={styles.locationName}>{label}</AppText>
               <AppText style={styles.locationMeta}>
-                {count ? ui("{value0} listed properties", {value0: (count)}) : 'Tap property search to browse availability'}
+                {count ? ui("{value0} listed properties", {value0: (count)}) : ui('Tap property search to browse availability')}
               </AppText>
             </View>
           );

@@ -1,5 +1,5 @@
-import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
-import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
+
+
 import React, { useEffect, useState } from 'react';
 import {StyleSheet, View} from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -18,7 +18,7 @@ import { colors, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const AdminLawyerInvitesScreen = () => {
-  useInterfaceLanguage();
+
   const [invites, setInvites] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editingInviteId, setEditingInviteId] = useState(null);
@@ -37,7 +37,7 @@ const AdminLawyerInvitesScreen = () => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: ui("Failed"),
+        text1: "Failed",
         text2: getErrorMessage(error, 'Could not load lawyer invites'),
       });
     } finally {
@@ -49,12 +49,12 @@ const AdminLawyerInvitesScreen = () => {
     setBusyAction(`resend:${inviteId}`);
     try {
       await authService.resendLawyerInvite(inviteId);
-      Toast.show({ type: 'success', text1: ui("Invite resent") });
+      Toast.show({ type: 'success', text1: "Invite resent" });
       await loadInvites();
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: ui("Failed"),
+        text1: "Failed",
         text2: getErrorMessage(error, 'Could not resend invite'),
       });
     } finally {
@@ -77,8 +77,8 @@ const AdminLawyerInvitesScreen = () => {
     if (!/^\S+@\S+\.\S+$/.test(lawyerEmail)) {
       Toast.show({
         type: 'error',
-        text1: ui("Check the email"),
-        text2: ui("Enter a valid lawyer email address."),
+        text1: "Check the email",
+        text2: "Enter a valid lawyer email address.",
       });
       return;
     }
@@ -87,12 +87,12 @@ const AdminLawyerInvitesScreen = () => {
     try {
       await authService.updateLawyerInviteEmail(inviteId, lawyerEmail);
       cancelEmailEdit();
-      Toast.show({ type: 'success', text1: ui("Invite email updated") });
+      Toast.show({ type: 'success', text1: "Invite email updated" });
       await loadInvites();
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: ui("Failed"),
+        text1: "Failed",
         text2: getErrorMessage(error, 'Could not update the invite email'),
       });
     } finally {
@@ -118,44 +118,44 @@ const AdminLawyerInvitesScreen = () => {
       refreshing={loading}
       onRefresh={loadInvites}
       keyExtractor={(item) => String(item.id)}
-      emptyTitle={ui("No lawyer invites")}
-      emptyMessage={ui("Lawyer invitations will appear here once created.")}
+      emptyTitle={"No lawyer invites"}
+      emptyMessage={"Lawyer invitations will appear here once created."}
       emptyIcon="mail-outline"
       header={
         <PremiumHero
-          eyebrow={ui("Legal network")}
-          title={ui("Lawyer invites")}
-          subtitle={ui("Monitor invitations, refresh access and correct pending invite email addresses.")}
+          eyebrow={"Legal network"}
+          title={"Lawyer invites"}
+          subtitle={"Monitor invitations, refresh access and correct pending invite email addresses."}
           icon="briefcase-outline"
-          right={<StatusPill label={ui("{value0} invites", {value0: (invites.length)})} color={colors.blue} />}
+          right={<StatusPill label={`${invites.length ?? "{value0}"} invites`} color={colors.blue} />}
         />
       }
       renderItem={({ item }) => (
         <PremiumCard>
           <View style={styles.cardHeader}>
             <View style={styles.inviteIcon}>
-              <AppText style={styles.inviteIconText}>{ui("LG")}</AppText>
+              <AppText style={styles.inviteIconText}>{"LG"}</AppText>
             </View>
             <View style={styles.cardCopy}>
               <AppText style={styles.cardTitle}>{item.lawyer_email || 'No email provided'}</AppText>
               <AppText style={styles.cardMeta}>
-                {item.lawyer_name || ui("Invited by {value0}", {value0: (item.assigned_by_name || item.client_name || ui("an administrator"))})}
+                {item.lawyer_name || `Invited by ${(item.assigned_by_name || item.client_name || "an administrator") ?? "{value0}"}`}
               </AppText>
             </View>
           </View>
-          <InfoRow icon="mail-outline" label={ui("Status")} value={getStatus(item)} />
-          <InfoRow icon="person-outline" label={ui("Assigned by")} value={item.assigned_by_name || item.client_name} />
-          <InfoRow icon="time-outline" label={ui("Expires")} value={formatDate(item.expires_at)} />
-          <InfoRow icon="paper-plane-outline" label={ui("Last sent")} value={formatDate(item.last_sent_at)} />
-          <InfoRow icon="refresh-outline" label={ui("Resends")} value={String(item.resent_count ?? 0)} />
+          <InfoRow icon="mail-outline" label={"Status"} value={getStatus(item)} />
+          <InfoRow icon="person-outline" label={"Assigned by"} value={item.assigned_by_name || item.client_name} />
+          <InfoRow icon="time-outline" label={"Expires"} value={formatDate(item.expires_at)} />
+          <InfoRow icon="paper-plane-outline" label={"Last sent"} value={formatDate(item.last_sent_at)} />
+          <InfoRow icon="refresh-outline" label={"Resends"} value={String(item.resent_count ?? 0)} />
           {item.accepted_at ? (
-            <InfoRow icon="checkmark-done-outline" label={ui("Accepted")} value={formatDate(item.accepted_at)} />
+            <InfoRow icon="checkmark-done-outline" label={"Accepted"} value={formatDate(item.accepted_at)} />
           ) : null}
 
           {editingInviteId === item.id ? (
             <View style={styles.editPanel}>
               <Input
-                label={ui("New lawyer email")}
+                label={"New lawyer email"}
                 value={editingEmail}
                 onChangeText={setEditingEmail}
                 placeholder="lawyer@example.com"
@@ -166,13 +166,13 @@ const AdminLawyerInvitesScreen = () => {
               />
               <View style={styles.actions}>
                 <PremiumButton
-                  title={ui("Save and resend")}
+                  title={"Save and resend"}
                   icon="checkmark-circle-outline"
                   loading={busyAction === `email:${item.id}`}
                   onPress={() => handleEmailUpdate(item.id)}
                 />
                 <PremiumButton
-                  title={ui("Cancel")}
+                  title={"Cancel"}
                   variant="secondary"
                   icon="close-outline"
                   disabled={busyAction === `email:${item.id}`}
@@ -185,13 +185,13 @@ const AdminLawyerInvitesScreen = () => {
           {item.status !== "accepted" && editingInviteId !== item.id ? (
             <View style={styles.actions}>
               <PremiumButton
-                title={ui("Resend invite")}
+                title={"Resend invite"}
                 icon="send-outline"
                 loading={busyAction === `resend:${item.id}`}
                 onPress={() => handleResend(item.id)}
               />
               <PremiumButton
-                title={ui("Change email")}
+                title={"Change email"}
                 variant="secondary"
                 icon="create-outline"
                 disabled={Boolean(busyAction)}

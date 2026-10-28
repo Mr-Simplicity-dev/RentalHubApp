@@ -1,5 +1,5 @@
-import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
-import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
+
+
 import React, { useContext, useEffect, useState } from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -18,9 +18,9 @@ import { colors, radius, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const tabs = [
-  { key: 'pending', get "label"() { return ui("Pending"); } },
-  { key: 'approved', get "label"() { return ui("Approved"); } },
-  { key: 'rejected', get "label"() { return ui("Rejected"); } },
+  { key: 'pending', get "label"() { return "Pending"; } },
+  { key: 'approved', get "label"() { return "Approved"; } },
+  { key: 'rejected', get "label"() { return "Rejected"; } },
 ];
 
 const getStatusColor = (status) => {
@@ -30,7 +30,7 @@ const getStatusColor = (status) => {
 };
 
 const StateAdminMigrationsScreen = () => {
-  useInterfaceLanguage();
+
   const { user } = useContext(AuthContext);
   const [migrations, setMigrations] = useState([]);
   const [activeTab, setActiveTab] = useState('pending');
@@ -57,7 +57,7 @@ const StateAdminMigrationsScreen = () => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: ui("Failed"),
+        text1: "Failed",
         text2: getErrorMessage(error, 'Could not load approvals'),
       });
     } finally {
@@ -77,12 +77,12 @@ const StateAdminMigrationsScreen = () => {
       } else {
         await stateAdminService.rejectProperty(propertyId, { reason: 'Rejected by admin' });
       }
-      Toast.show({ type: 'success', text1: ui("Property {value0}d", {value0: (ui(action))}) });
+      Toast.show({ type: 'success', text1: `Property ${action ?? "{value0}"}d` });
       loadMigrations();
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: ui("Failed"),
+        text1: "Failed",
         text2: getErrorMessage(error, `Could not ${action} property`),
       });
     } finally {
@@ -93,9 +93,9 @@ const StateAdminMigrationsScreen = () => {
   const header = (
     <>
       <PremiumHero
-        eyebrow={ui("State admin")}
-        title={ui("Property approvals")}
-        subtitle={ui("Approve, reject and monitor state-level property approval requests from mobile.")}
+        eyebrow={"State admin"}
+        title={"Property approvals"}
+        subtitle={"Approve, reject and monitor state-level property approval requests from mobile."}
         icon="business-outline"
       />
       <View style={styles.tabRow}>
@@ -125,8 +125,8 @@ const StateAdminMigrationsScreen = () => {
         loadMigrations();
       }}
       header={header}
-      emptyTitle={ui("No {value0} approvals", {value0: (activeTab)})}
-      emptyMessage={ui("Property approval requests for this state will appear here.")}
+      emptyTitle={`No ${activeTab ?? "{value0}"} approvals`}
+      emptyMessage={"Property approval requests for this state will appear here."}
       emptyIcon="business-outline"
       renderItem={({ item }) => {
         const status = item.approval_status || activeTab;
@@ -134,29 +134,29 @@ const StateAdminMigrationsScreen = () => {
           <PremiumCard>
             <View style={styles.cardHeader}>
               <View style={styles.titleBlock}>
-                <AppText style={styles.cardTitle}>{item.title || item.property_name || ui("Property")}</AppText>
-                <AppText style={styles.cardOwner}>{ui("Owner: ")}{item.owner_name || item.landlord_name || ui("N/A")}</AppText>
+                <AppText style={styles.cardTitle}>{item.title || item.property_name || "Property"}</AppText>
+                <AppText style={styles.cardOwner}>{"Owner: "}{item.owner_name || item.landlord_name || "N/A"}</AppText>
               </View>
               <StatusPill label={status} color={getStatusColor(status)} />
             </View>
 
             <InfoRow
               icon="location-outline"
-              label={ui("Location")}
+              label={"Location"}
               value={[item.city, item.state_name].filter(Boolean).join(', ') || 'Not available'}
             />
 
             {activeTab === "pending" ? (
               <View style={styles.actions}>
                 <PremiumButton
-                  title={ui("Approve")}
+                  title={"Approve"}
                   onPress={() => handleAction(item.id, 'approve')}
                   loading={actionId === `${item.id}-approve`}
                   icon="checkmark-circle-outline"
                   style={styles.actionButton}
                 />
                 <PremiumButton
-                  title={ui("Reject")}
+                  title={"Reject"}
                   variant="ghost"
                   onPress={() => handleAction(item.id, 'reject')}
                   loading={actionId === `${item.id}-reject`}

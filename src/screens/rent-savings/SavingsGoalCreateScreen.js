@@ -120,9 +120,9 @@ const SavingsGoalCreateScreen = ({ navigation }) => {
             <PremiumCard style={[styles.propertyCard, selected && styles.propertyCardSelected]}>
               <View style={styles.propertyHeader}>
                 <View style={styles.propertyCopy}>
-                  <AppText style={styles.propertyTitle}>{item.property_title || 'Rental property'}</AppText>
+                  <AppText style={styles.propertyTitle}>{item.property_title || ui('Rental property')}</AppText>
                   <AppText style={styles.propertyMeta}>
-                    {[item.area, item.city, item.state_name].filter(Boolean).join(', ') || 'Location not available'}
+                    {[item.area, item.city, item.state_name].filter(Boolean).join(', ') || ui('Location not available')}
                   </AppText>
                 </View>
                 {selected ? <StatusPill label={ui("Selected")} color={colors.success} /> : null}

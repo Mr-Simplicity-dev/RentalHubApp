@@ -303,7 +303,7 @@ const AddPropertyScreen = ({ navigation }) => {
           <Icon name="camera-outline" size={19} color={colors.white} />
           <AppText style={styles.captureButtonText}>
             {images.length === 0 && clips.length === 0
-              ? 'Open live camera (Photos & Clips)'
+              ? ui('Open live camera (Photos & Clips)')
               : ui("Add more (Photos {value0}/{value1} • Clips {value2}/{value3})", {value0: (images.length), value1: (MAX_PROPERTY_PHOTOS), value2: (clips.length), value3: (MAX_PROPERTY_CLIPS)})}
           </AppText>
         </TouchableOpacity>

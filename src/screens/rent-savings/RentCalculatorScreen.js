@@ -194,7 +194,7 @@ const RentCalculatorScreen = ({ navigation, route }) => {
         <View style={styles.results}>
           <View style={styles.heroCard}>
             <AppText style={styles.heroEyebrow}>
-              {result.frequency === "yearly" ? 'Monthly equivalent of your yearly rent' : 'Monthly rent'}
+              {result.frequency === "yearly" ? ui('Monthly equivalent of your yearly rent') : ui('Monthly rent')}
             </AppText>
             <AppText style={styles.heroValue}>{formatNaira(result.monthly_equivalent)}</AppText>
             <AppText style={styles.heroCaption}>
@@ -204,7 +204,7 @@ const RentCalculatorScreen = ({ navigation, route }) => {
           {afford ? (
             <PremiumCard style={withinBudget ? styles.budgetGood : styles.budgetWarn}>
               <AppText style={styles.budgetTitle}>
-                {withinBudget ? 'Fits your income budget' : 'Above your income budget'}
+                {withinBudget ? ui('Fits your income budget') : ui('Above your income budget')}
               </AppText>
               <AppText style={styles.budgetText}>{ui("At")}{afford.ratio_pct}{ui("% of ")}{formatNaira(afford.monthly_income)}{ui("/month, you can put")}{' '}
                 {formatNaira(afford.affordable_monthly)}{ui(" toward rent monthly (~")}{formatNaira(afford.affordable_annual_rent)}{ui("/year).")}</AppText>

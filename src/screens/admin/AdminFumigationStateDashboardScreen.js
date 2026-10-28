@@ -1,5 +1,5 @@
-import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
-import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
+
+
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import Toast from 'react-native-toast-message';
 import { serviceAdminService } from '../../services/serviceAdminService';
@@ -16,7 +16,7 @@ import {
 import WorkspaceBoard from '../../components/dashboard/WorkspaceBoard';
 
 const AdminFumigationStateDashboardScreen = ({ navigation }) => {
-  const interfaceLanguage = useInterfaceLanguage();
+  const interfaceLanguage = 'en';
   const [stats, setStats] = useState({});
   const [loading, setLoading] = useState(true);
 
@@ -32,7 +32,7 @@ const AdminFumigationStateDashboardScreen = ({ navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: ui("Failed"),
+        text1: "Failed",
         text2: getErrorMessage(error, 'Could not load state fumigation dashboard'),
       });
     } finally {
@@ -45,22 +45,22 @@ const AdminFumigationStateDashboardScreen = ({ navigation }) => {
   }, []);
 
   const cards = [
-    { label: ui("Completed"), value: stats.completed_bookings ?? '-', icon: 'checkmark-circle-outline', color: colors.blue },
+    { label: "Completed", value: stats.completed_bookings ?? '-', icon: 'checkmark-circle-outline', color: colors.blue },
     {
-      label: ui("State Compliance"),
+      label: "State Compliance",
       value: stats.compliance_rate == null ? '-' : `${stats.compliance_rate}%`,
       icon: 'shield-checkmark-outline',
       color: colors.success,
     },
-    { label: ui("Total Bookings"), value: stats.total_bookings ?? stats.totalBookings ?? '-', icon: 'calendar-outline', color: '#7C3AED' },
+    { label: "Total Bookings", value: stats.total_bookings ?? stats.totalBookings ?? '-', icon: 'calendar-outline', color: '#7C3AED' },
   ];
 
   return (
     <DashboardScreen refreshing={loading} onRefresh={loadStats}>
       <DashboardHero
-        eyebrow={ui("STATE FUMIGATION")}
-        title={ui("State fumigation oversight")}
-        subtitle={ui("Oversee completed work, safety compliance and total bookings across the assigned state.")}
+        eyebrow={"STATE FUMIGATION"}
+        title={"State fumigation oversight"}
+        subtitle={"Oversee completed work, safety compliance and total bookings across the assigned state."}
         icon="sparkles-outline"
         onRefresh={loadStats}
       />
@@ -71,16 +71,16 @@ const AdminFumigationStateDashboardScreen = ({ navigation }) => {
         ))}
       </MetricGrid>
 
-      <DashboardSection title={ui("Mobile workspaces")}>
+      <DashboardSection title={"Mobile workspaces"}>
         <WorkspaceBoard
           collapsible
           groups={[
             {
-              title: ui("Fumigation & Cleaning"),
+              title: "Fumigation & Cleaning",
               icon: 'sparkles-outline',
               items: [
                 {
-                  label: ui("Booking Queue"),
+                  label: "Booking Queue",
                   icon: 'sparkles-outline',
                   onPress: () =>
                     navigation.navigate('ServiceBookings', { type: 'fumigation' }),

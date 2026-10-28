@@ -1,5 +1,5 @@
-import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
-import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
+
+
 import React, { useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Alert, KeyboardAvoidingView, Linking, Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
 import TextInput from '../../components/common/AppTextInput';
@@ -19,17 +19,17 @@ DashboardHero,
 } from '../../components/dashboard/DashboardKit';
 
 const DEPARTMENTS = [
-  { key: 'transportation', get "label"() { return ui("Transport"); }, icon: 'car-outline' },
-  { key: 'fumigation', get "label"() { return ui("Fumigation"); }, icon: 'sparkles-outline' },
-  { key: 'finance', get "label"() { return ui("Finance"); }, icon: 'card-outline' },
-  { key: 'legal', get "label"() { return ui("Legal"); }, icon: 'scale-outline' },
-  { key: 'technical', get "label"() { return ui("Technical"); }, icon: 'construct-outline' },
+  { key: 'transportation', get "label"() { return "Transport"; }, icon: 'car-outline' },
+  { key: 'fumigation', get "label"() { return "Fumigation"; }, icon: 'sparkles-outline' },
+  { key: 'finance', get "label"() { return "Finance"; }, icon: 'card-outline' },
+  { key: 'legal', get "label"() { return "Legal"; }, icon: 'scale-outline' },
+  { key: 'technical', get "label"() { return "Technical"; }, icon: 'construct-outline' },
 ];
 
 const ESCALATION_STATUSES = [
-  { key: 'acknowledged', get "label"() { return ui("Ack"); } },
-  { key: 'action_required', get "label"() { return ui("Action"); } },
-  { key: 'resolved', get "label"() { return ui("Resolved"); } },
+  { key: 'acknowledged', get "label"() { return "Ack"; } },
+  { key: 'action_required', get "label"() { return "Action"; } },
+  { key: 'resolved', get "label"() { return "Resolved"; } },
 ];
 
 const sameId = (left, right) =>
@@ -37,7 +37,7 @@ const sameId = (left, right) =>
 
 const asTicket = (response) => pickObject(response, ['data', 'ticket']) || response?.ticket || null;
 
-const ControlButton = ({ disabled, icon, label, onPress, variant = 'light' }) => { useInterfaceLanguage(); return (<TouchableOpacity
+const ControlButton = ({ disabled, icon, label, onPress, variant = 'light' }) => {  return (<TouchableOpacity
     accessibilityRole="button"
     disabled={disabled}
     onPress={onPress}
@@ -61,7 +61,7 @@ const ControlButton = ({ disabled, icon, label, onPress, variant = 'light' }) =>
   </TouchableOpacity>); };
 
 const SupportTicketDetailScreen = ({ navigation, route }) => {
-  const interfaceLanguage = useInterfaceLanguage();
+  const interfaceLanguage = 'en';
   const ticketId = route?.params?.ticketId;
   const { user } = useContext(AuthContext);
   const currentUserId = user?.id || user?.user_id;
@@ -117,7 +117,7 @@ const SupportTicketDetailScreen = ({ navigation, route }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: ui("Conversation unavailable"),
+        text1: "Conversation unavailable",
         text2: getErrorMessage(error, 'Could not load ticket conversation'),
       });
     } finally {
@@ -145,7 +145,7 @@ const SupportTicketDetailScreen = ({ navigation, route }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: ui("{value0} failed", {value0: (label)}),
+        text1: `${label ?? "{value0}"} failed`,
         text2: getErrorMessage(error, 'Could not update ticket'),
       });
     } finally {
@@ -159,10 +159,10 @@ const SupportTicketDetailScreen = ({ navigation, route }) => {
       const asset = result?.assets?.[0];
       if (asset) {
         setAttachment(asset);
-        Toast.show({ type: 'info', text1: ui("Attachment selected"), text2: asset.fileName || ui("File ready") });
+        Toast.show({ type: 'info', text1: "Attachment selected", text2: asset.fileName || "File ready" });
       }
     } catch {
-      Toast.show({ type: 'error', text1: ui("Could not pick file") });
+      Toast.show({ type: 'error', text1: "Could not pick file" });
     }
   };
 
@@ -178,7 +178,7 @@ const SupportTicketDetailScreen = ({ navigation, route }) => {
   const sendReply = async () => {
     const trimmed = message.trim();
     if (!trimmed && !attachment) {
-      Toast.show({ type: 'info', text1: ui("Type a reply or attach a file") });
+      Toast.show({ type: 'info', text1: "Type a reply or attach a file" });
       return;
     }
 
@@ -187,12 +187,12 @@ const SupportTicketDetailScreen = ({ navigation, route }) => {
       await supportService.replyToTicket(ticketId, trimmed, attachment);
       setMessage('');
       setAttachment(null);
-      Toast.show({ type: 'success', text1: ui("Reply sent") });
+      Toast.show({ type: 'success', text1: "Reply sent" });
       await refreshSoftly();
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: ui("Reply failed"),
+        text1: "Reply failed",
         text2: getErrorMessage(error, 'Could not send reply'),
       });
     } finally {
@@ -208,7 +208,7 @@ const SupportTicketDetailScreen = ({ navigation, route }) => {
   const saveReplyEdit = async () => {
     const trimmed = editingReplyText.trim();
     if (!trimmed) {
-      Toast.show({ type: 'info', text1: ui("Reply cannot be empty") });
+      Toast.show({ type: 'info', text1: "Reply cannot be empty" });
       return;
     }
 
@@ -222,10 +222,10 @@ const SupportTicketDetailScreen = ({ navigation, route }) => {
   };
 
   const confirmDeleteReply = (reply) => {
-    Alert.alert(ui("Delete reply?"), ui("This removes your reply from the support conversation."), [
-      { text: ui("Cancel"), style: 'cancel' },
+    Alert.alert("Delete reply?", "This removes your reply from the support conversation.", [
+      { text: "Cancel", style: 'cancel' },
       {
-        text: ui("Delete"),
+        text: "Delete",
         style: 'destructive',
         onPress: async () =>
           runTicketAction('Delete reply', () => supportService.deleteReply(ticketId, reply.id), 'Reply deleted'),
@@ -236,7 +236,7 @@ const SupportTicketDetailScreen = ({ navigation, route }) => {
   const addInternalNote = async () => {
     const trimmed = noteMessage.trim();
     if (!trimmed) {
-      Toast.show({ type: 'info', text1: ui("Type an internal note first") });
+      Toast.show({ type: 'info', text1: "Type an internal note first" });
       return;
     }
 
@@ -256,7 +256,7 @@ const SupportTicketDetailScreen = ({ navigation, route }) => {
   const saveNoteEdit = async () => {
     const trimmed = editingNoteText.trim();
     if (!trimmed) {
-      Toast.show({ type: 'info', text1: ui("Note cannot be empty") });
+      Toast.show({ type: 'info', text1: "Note cannot be empty" });
       return;
     }
 
@@ -270,10 +270,10 @@ const SupportTicketDetailScreen = ({ navigation, route }) => {
   };
 
   const confirmDeleteNote = (note) => {
-    Alert.alert(ui("Delete internal note?"), ui("This removes your private admin note."), [
-      { text: ui("Cancel"), style: 'cancel' },
+    Alert.alert("Delete internal note?", "This removes your private admin note.", [
+      { text: "Cancel", style: 'cancel' },
       {
-        text: ui("Delete"),
+        text: "Delete",
         style: 'destructive',
         onPress: async () =>
           runTicketAction('Delete note', () => supportService.deleteInternalNote(ticketId, note.id), 'Internal note deleted'),
@@ -285,16 +285,16 @@ const SupportTicketDetailScreen = ({ navigation, route }) => {
     const resolvedUrl = buildUploadUrl(url);
     if (!resolvedUrl) return;
     Linking.openURL(resolvedUrl).catch(() => {
-      Toast.show({ type: 'error', text1: ui("Could not open attachment") });
+      Toast.show({ type: 'error', text1: "Could not open attachment" });
     });
   };
 
   const resolveTicket = () => {
     const summary = actionNote.trim();
-    Alert.alert(ui("Resolve ticket?"), ui("This marks the ticket as resolved for support tracking."), [
-      { text: ui("Cancel"), style: 'cancel' },
+    Alert.alert("Resolve ticket?", "This marks the ticket as resolved for support tracking.", [
+      { text: "Cancel", style: 'cancel' },
       {
-        text: ui("Resolve"),
+        text: "Resolve",
         onPress: () =>
           runTicketAction(
             'Resolve',
@@ -315,42 +315,42 @@ const SupportTicketDetailScreen = ({ navigation, route }) => {
     >
       <DashboardScreen refreshing={loading} onRefresh={loadConversation} contentContainerStyle={styles.content}>
         <DashboardHero
-          eyebrow={ui("SUPPORT CONVERSATION")}
-          title={ticket?.subject || ui("Ticket #{value0}", {value0: (ticketId)})}
+          eyebrow={"SUPPORT CONVERSATION"}
+          title={ticket?.subject || `Ticket #${ticketId ?? "{value0}"}`}
           subtitle={ticket?.description || 'Review the customer conversation and manage the ticket natively.'}
           icon="chatbox-ellipses-outline"
           onRefresh={loadConversation}
         />
 
         <DashboardNotice
-          title={ui("Native support workspace")}
-          message={ui("Replies, attachments, internal notes, assignment, escalation and resolution controls now stay inside the app.")}
+          title={"Native support workspace"}
+          message={"Replies, attachments, internal notes, assignment, escalation and resolution controls now stay inside the app."}
         />
 
         <DashboardSection
-          title={ui("Ticket controls")}
-          subtitle={ui("Use the optional note as a resolution summary or escalation instruction.")}
+          title={"Ticket controls"}
+          subtitle={"Use the optional note as a resolution summary or escalation instruction."}
         >
           <View style={styles.statusGrid}>
             <View style={styles.statusCard}>
-              <AppText style={styles.statusLabel}>{ui("Ticket status")}</AppText>
+              <AppText style={styles.statusLabel}>{"Ticket status"}</AppText>
               <AppText style={styles.statusValue}>{ticketStatus.replace(/_/g, ' ')}</AppText>
             </View>
             <View style={styles.statusCard}>
-              <AppText style={styles.statusLabel}>{ui("Priority")}</AppText>
-              <AppText style={styles.statusValue}>{ticket?.priority || ui("normal")}</AppText>
+              <AppText style={styles.statusLabel}>{"Priority"}</AppText>
+              <AppText style={styles.statusValue}>{ticket?.priority || "normal"}</AppText>
             </View>
             <View style={styles.statusCard}>
-              <AppText style={styles.statusLabel}>{ui("Escalation")}</AppText>
+              <AppText style={styles.statusLabel}>{"Escalation"}</AppText>
               <AppText style={styles.statusValue}>{escalationStatus.replace(/_/g, ' ')}</AppText>
             </View>
           </View>
 
           <TextInput
-            accessibilityLabel={ui("Support action note")}
+            accessibilityLabel={"Support action note"}
             multiline
             onChangeText={setActionNote}
-            placeholder={ui("Optional note for resolution or escalation")}
+            placeholder={"Optional note for resolution or escalation"}
             placeholderTextColor={colors.muted}
             style={styles.noteInput}
             value={actionNote}
@@ -360,7 +360,7 @@ const SupportTicketDetailScreen = ({ navigation, route }) => {
             <ControlButton
               disabled={Boolean(actionBusy)}
               icon="person-add-outline"
-              label={ui("Assign to me")}
+              label={"Assign to me"}
               onPress={() =>
                 runTicketAction('Assign', () => supportService.assignTicket(ticketId), 'Ticket assigned')
               }
@@ -368,7 +368,7 @@ const SupportTicketDetailScreen = ({ navigation, route }) => {
             <ControlButton
               disabled={Boolean(actionBusy)}
               icon="hand-left-outline"
-              label={ui("Take over")}
+              label={"Take over"}
               onPress={() =>
                 runTicketAction('Take over', () => supportService.takeoverTicket(ticketId), 'Ticket taken over')
               }
@@ -376,13 +376,13 @@ const SupportTicketDetailScreen = ({ navigation, route }) => {
             <ControlButton
               disabled={Boolean(actionBusy)}
               icon="checkmark-circle-outline"
-              label={ui("Resolve")}
+              label={"Resolve"}
               onPress={resolveTicket}
               variant="primary"
             />
           </View>
 
-          <AppText style={styles.controlLabel}>{ui("Escalate to department")}</AppText>
+          <AppText style={styles.controlLabel}>{"Escalate to department"}</AppText>
           <View style={styles.controlRow}>
             {DEPARTMENTS.map((department) => (
               <ControlButton
@@ -401,7 +401,7 @@ const SupportTicketDetailScreen = ({ navigation, route }) => {
             ))}
           </View>
 
-          <AppText style={styles.controlLabel}>{ui("Escalation status")}</AppText>
+          <AppText style={styles.controlLabel}>{"Escalation status"}</AppText>
           <View style={styles.controlRow}>
             {ESCALATION_STATUSES.map((status) => (
               <ControlButton
@@ -422,15 +422,15 @@ const SupportTicketDetailScreen = ({ navigation, route }) => {
           {actionBusy ? (
             <View style={styles.busyRow}>
               <ActivityIndicator color={colors.blue} size="small" />
-              <AppText style={styles.busyText}>{actionBusy}{ui(" in progress...")}</AppText>
+              <AppText style={styles.busyText}>{actionBusy}{" in progress..."}</AppText>
             </View>
           ) : null}
         </DashboardSection>
 
-        <DashboardSection title={ui("Conversation")}>
+        <DashboardSection title={"Conversation"}>
           {loading && !replies.length ? <ActivityIndicator color={colors.blue} /> : null}
           {!loading && !replies.length ? (
-            <AppText style={styles.empty}>{ui("No replies yet. Start the conversation below.")}</AppText>
+            <AppText style={styles.empty}>{"No replies yet. Start the conversation below."}</AppText>
           ) : null}
           {replies.map((reply) => {
             const adminReply = Boolean(reply.is_admin);
@@ -445,12 +445,12 @@ const SupportTicketDetailScreen = ({ navigation, route }) => {
                 ]}
               >
                 <AppText style={styles.replyAuthor}>
-                  {reply.author_name || (adminReply ? 'Support admin' : ui("Customer"))}
+                  {reply.author_name || (adminReply ? 'Support admin' : "Customer")}
                 </AppText>
                 {editing ? (
                   <>
                     <TextInput
-                      accessibilityLabel={ui("Edit reply")}
+                      accessibilityLabel={"Edit reply"}
                       multiline
                       onChangeText={setEditingReplyText}
                       style={styles.editInput}
@@ -458,17 +458,17 @@ const SupportTicketDetailScreen = ({ navigation, route }) => {
                     />
                     <View style={styles.inlineActions}>
                       <TouchableOpacity onPress={saveReplyEdit}>
-                        <AppText style={styles.inlineActionPrimary}>{ui("Save")}</AppText>
+                        <AppText style={styles.inlineActionPrimary}>{"Save"}</AppText>
                       </TouchableOpacity>
                       <TouchableOpacity onPress={() => setEditingReplyId(null)}>
-                        <AppText style={styles.inlineAction}>{ui("Cancel")}</AppText>
+                        <AppText style={styles.inlineAction}>{"Cancel"}</AppText>
                       </TouchableOpacity>
                     </View>
                   </>
                 ) : (
                   <>
                     <AppText style={styles.replyMessage}>{reply.message}</AppText>
-                    {reply.edited_at ? <AppText style={styles.editedText}>{ui("Edited")}</AppText> : null}
+                    {reply.edited_at ? <AppText style={styles.editedText}>{"Edited"}</AppText> : null}
                   </>
                 )}
                 {reply.attachment_url ? (
@@ -484,10 +484,10 @@ const SupportTicketDetailScreen = ({ navigation, route }) => {
                 {ownReply && !editing ? (
                   <View style={styles.inlineActions}>
                     <TouchableOpacity onPress={() => startReplyEdit(reply)}>
-                      <AppText style={styles.inlineActionPrimary}>{ui("Edit")}</AppText>
+                      <AppText style={styles.inlineActionPrimary}>{"Edit"}</AppText>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => confirmDeleteReply(reply)}>
-                      <AppText style={styles.inlineActionDanger}>{ui("Delete")}</AppText>
+                      <AppText style={styles.inlineActionDanger}>{"Delete"}</AppText>
                     </TouchableOpacity>
                   </View>
                 ) : null}
@@ -497,8 +497,8 @@ const SupportTicketDetailScreen = ({ navigation, route }) => {
         </DashboardSection>
 
         <DashboardSection
-          title={ui("Internal notes")}
-          subtitle={ui("Private admin-to-admin notes for handover, escalation and audit context.")}
+          title={"Internal notes"}
+          subtitle={"Private admin-to-admin notes for handover, escalation and audit context."}
         >
           {notes.length ? (
             notes.map((note) => {
@@ -513,7 +513,7 @@ const SupportTicketDetailScreen = ({ navigation, route }) => {
                   {editing ? (
                     <>
                       <TextInput
-                        accessibilityLabel={ui("Edit internal note")}
+                        accessibilityLabel={"Edit internal note"}
                         multiline
                         onChangeText={setEditingNoteText}
                         style={styles.editInput}
@@ -521,10 +521,10 @@ const SupportTicketDetailScreen = ({ navigation, route }) => {
                       />
                       <View style={styles.inlineActions}>
                         <TouchableOpacity onPress={saveNoteEdit}>
-                          <AppText style={styles.inlineActionPrimary}>{ui("Save")}</AppText>
+                          <AppText style={styles.inlineActionPrimary}>{"Save"}</AppText>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => setEditingNoteId(null)}>
-                          <AppText style={styles.inlineAction}>{ui("Cancel")}</AppText>
+                          <AppText style={styles.inlineAction}>{"Cancel"}</AppText>
                         </TouchableOpacity>
                       </View>
                     </>
@@ -537,10 +537,10 @@ const SupportTicketDetailScreen = ({ navigation, route }) => {
                   {ownNote && !editing ? (
                     <View style={styles.inlineActions}>
                       <TouchableOpacity onPress={() => startNoteEdit(note)}>
-                        <AppText style={styles.inlineActionPrimary}>{ui("Edit")}</AppText>
+                        <AppText style={styles.inlineActionPrimary}>{"Edit"}</AppText>
                       </TouchableOpacity>
                       <TouchableOpacity onPress={() => confirmDeleteNote(note)}>
-                        <AppText style={styles.inlineActionDanger}>{ui("Delete")}</AppText>
+                        <AppText style={styles.inlineActionDanger}>{"Delete"}</AppText>
                       </TouchableOpacity>
                     </View>
                   ) : null}
@@ -548,14 +548,14 @@ const SupportTicketDetailScreen = ({ navigation, route }) => {
               );
             })
           ) : (
-            <AppText style={styles.empty}>{ui("No internal notes yet.")}</AppText>
+            <AppText style={styles.empty}>{"No internal notes yet."}</AppText>
           )}
 
           <TextInput
-            accessibilityLabel={ui("New internal note")}
+            accessibilityLabel={"New internal note"}
             multiline
             onChangeText={setNoteMessage}
-            placeholder={ui("Add a private internal note")}
+            placeholder={"Add a private internal note"}
             placeholderTextColor={colors.muted}
             style={styles.noteInput}
             value={noteMessage}
@@ -563,7 +563,7 @@ const SupportTicketDetailScreen = ({ navigation, route }) => {
           <ControlButton
             disabled={Boolean(actionBusy)}
             icon="lock-closed-outline"
-            label={ui("Add internal note")}
+            label={"Add internal note"}
             onPress={addInternalNote}
             variant="primary"
           />
@@ -572,7 +572,7 @@ const SupportTicketDetailScreen = ({ navigation, route }) => {
 
       <View style={styles.composer}>
         <TouchableOpacity
-          accessibilityLabel={ui("Attach file")}
+          accessibilityLabel={"Attach file"}
           onPress={pickAttachment}
           style={styles.attachButton}
           disabled={sending}
@@ -584,17 +584,17 @@ const SupportTicketDetailScreen = ({ navigation, route }) => {
             <AppText style={styles.attachmentLabel} numberOfLines={1}>{attachment.fileName || 'File attached'}</AppText>
           ) : null}
           <TextInput
-            accessibilityLabel={ui("Support reply message")}
+            accessibilityLabel={"Support reply message"}
             multiline
             onChangeText={handleMessageChange}
-            placeholder={ui("Type your reply...")}
+            placeholder={"Type your reply..."}
             placeholderTextColor={colors.muted}
             style={styles.input}
             value={message}
           />
         </View>
         <TouchableOpacity
-          accessibilityLabel={ui("Send reply")}
+          accessibilityLabel={"Send reply"}
           accessibilityRole="button"
           disabled={sending}
           onPress={sendReply}

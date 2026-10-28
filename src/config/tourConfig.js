@@ -239,6 +239,7 @@ const getWorkflowGroupsForRole = (role) => {
 };
 
 export const getTourStepsForRole = (role, language = 'en') => {
+  if (/(^|_)admin($|_)/.test(String(role || ''))) language = 'en';
   if (role === 'tenant' || role === 'user') return localizeSteps(tenantSteps, language);
   if (role === 'landlord') return localizeSteps(landlordSteps, language);
   if (role === 'agent') return localizeSteps(agentSteps, language);

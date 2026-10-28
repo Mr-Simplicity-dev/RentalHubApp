@@ -195,7 +195,7 @@ const TenancyAgreementsScreen = ({ navigation }) => {
               <View style={styles.detailRow}>
                 <Icon name="home-outline" size={14} color={colors.muted} />
                 <AppText style={styles.detailText} numberOfLines={1}>
-                  {item.full_address || 'Address unavailable'}
+                  {item.full_address || ui('Address unavailable')}
                 </AppText>
               </View>
               <View style={styles.detailRow}>

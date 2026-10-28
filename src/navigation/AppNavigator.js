@@ -469,30 +469,30 @@ const GuestStack = () => { useInterfaceLanguage(); return (<Stack.Navigator init
     <Stack.Screen name="FumigationCleaningCatalog" component={FumigationCleaningCatalogScreen} options={{ title: ui("Service Catalog") }} />
   </Stack.Navigator>); };
 
-const WebAdminRoot = () => { useInterfaceLanguage(); return (<Stack.Navigator screenOptions={screenOptions}>
-    <Stack.Screen name="NativeTools" component={NativeToolsScreen} options={{ title: ui("Admin Tools") }} />
+const WebAdminRoot = () => {  return (<Stack.Navigator screenOptions={screenOptions}>
+    <Stack.Screen name="NativeTools" component={NativeToolsScreen} options={{ title: "Admin Tools" }} />
     {commonInfoScreens()}
   </Stack.Navigator>); };
 
-const ServiceAdminRoot = () => { useInterfaceLanguage(); return (<Stack.Navigator screenOptions={screenOptions}>
-    <Stack.Screen name="ServiceOperationsDashboard" component={ServiceOperationsDashboardScreen} options={{ title: ui("Service Operations") }} />
-    <Stack.Screen name="ServiceBookings" component={ServiceBookingsScreen} options={{ title: ui("Bookings") }} />
-    <Stack.Screen name="FumigationCompliance" component={FumigationComplianceScreen} options={{ title: ui("Safety Compliance") }} />
-    <Stack.Screen name="SupportTickets" component={SupportTicketsScreen} options={{ title: ui("Support Tickets") }} />
-    <Stack.Screen name="SupportTicketDetail" component={SupportTicketDetailScreen} options={{ title: ui("Ticket Conversation") }} />
-    <Stack.Screen name="AdminTransportationStateDashboard" component={AdminTransportationStateDashboardScreen} options={{ title: ui("State Transport") }} />
-    <Stack.Screen name="AdminFumigationStateDashboard" component={AdminFumigationStateDashboardScreen} options={{ title: ui("State Fumigation") }} />
-    <Stack.Screen name="AdminSupportDashboard" component={AdminSupportDashboardScreen} options={{ title: ui("Support Dashboard") }} />
-    <Stack.Screen name="InternalLawyerDirectory" component={InternalLawyerDirectoryScreen} options={{ title: ui("Lawyer Directory") }} />
-    <Stack.Screen name="AdminPool" component={AdminPoolScreen} options={{ title: ui("Admin Pool") }} />
-    <Stack.Screen name="ActivityFeed" component={ActivityFeedScreen} options={{ title: ui("Activity Feed") }} />
-    <Stack.Screen name="AllActivity" component={ActivityFeedScreen} options={{ title: ui("All Activity") }} initialParams={{ all: true }} />
+const ServiceAdminRoot = () => {  return (<Stack.Navigator screenOptions={screenOptions}>
+    <Stack.Screen name="ServiceOperationsDashboard" component={ServiceOperationsDashboardScreen} options={{ title: "Service Operations" }} />
+    <Stack.Screen name="ServiceBookings" component={ServiceBookingsScreen} options={{ title: "Bookings" }} />
+    <Stack.Screen name="FumigationCompliance" component={FumigationComplianceScreen} options={{ title: "Safety Compliance" }} />
+    <Stack.Screen name="SupportTickets" component={SupportTicketsScreen} options={{ title: "Support Tickets" }} />
+    <Stack.Screen name="SupportTicketDetail" component={SupportTicketDetailScreen} options={{ title: "Ticket Conversation" }} />
+    <Stack.Screen name="AdminTransportationStateDashboard" component={AdminTransportationStateDashboardScreen} options={{ title: "State Transport" }} />
+    <Stack.Screen name="AdminFumigationStateDashboard" component={AdminFumigationStateDashboardScreen} options={{ title: "State Fumigation" }} />
+    <Stack.Screen name="AdminSupportDashboard" component={AdminSupportDashboardScreen} options={{ title: "Support Dashboard" }} />
+    <Stack.Screen name="InternalLawyerDirectory" component={InternalLawyerDirectoryScreen} options={{ title: "Lawyer Directory" }} />
+    <Stack.Screen name="AdminPool" component={AdminPoolScreen} options={{ title: "Admin Pool" }} />
+    <Stack.Screen name="ActivityFeed" component={ActivityFeedScreen} options={{ title: "Activity Feed" }} />
+    <Stack.Screen name="AllActivity" component={ActivityFeedScreen} options={{ title: "All Activity" }} initialParams={{ all: true }} />
     <Stack.Screen name="Messages" component={MessagesScreen} />
     <Stack.Screen name="Notifications" component={NotificationsScreen} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
-    <Stack.Screen name="PrivacyData" component={PrivacyDataScreen} options={{ title: ui("My Personal Data") }} />
-    <Stack.Screen name="RecruitmentAdmin" component={RecruitmentAdminScreen} options={{ title: ui("Recruitment Admin") }} />
-    <Stack.Screen name="NativeTools" component={NativeToolsScreen} options={{ title: ui("More Tools") }} />
+    <Stack.Screen name="PrivacyData" component={PrivacyDataScreen} options={{ title: "My Personal Data" }} />
+    <Stack.Screen name="RecruitmentAdmin" component={RecruitmentAdminScreen} options={{ title: "Recruitment Admin" }} />
+    <Stack.Screen name="NativeTools" component={NativeToolsScreen} options={{ title: "More Tools" }} />
     {commonInfoScreens()}
   </Stack.Navigator>); };
 
@@ -724,253 +724,253 @@ const LawyerRoot = ({ initialRouteName = 'LawyerDashboard' }) => { useInterfaceL
     <Stack.Screen name="RecruitmentApplication" component={RecruitmentApplicationScreen} options={{ title: ui("Application") }} />
   </Stack.Navigator>); };
 
-const AdminRoot = () => { useInterfaceLanguage(); return (<Stack.Navigator screenOptions={screenOptions}>
-    <Stack.Screen name="AdminDashboard" component={AdminDashboardScreen} options={{ title: ui("Admin Dashboard") }} />
-    <Stack.Screen name="AdminUsers" component={AdminUsersScreen} options={{ title: ui("Users") }} />
-    <Stack.Screen name="AgentCommissionAdmin" component={AgentCommissionAdminScreen} options={{ title: ui("Agent Commissions") }} />
-    <Stack.Screen name="AdminProperties" component={AdminPropertiesScreen} options={{ title: ui("Properties") }} />
-    <Stack.Screen name="AdminApplications" component={AdminApplicationsScreen} options={{ title: ui("Applications") }} />
-    <Stack.Screen name="AdminVerifications" component={AdminVerificationsScreen} options={{ title: ui("Verifications") }} />
-    <Stack.Screen name="AdminCompliance" component={AdminComplianceScreen} options={{ title: ui("Compliance") }} />
-    <Stack.Screen name="AdminAgentAssignments" component={AdminAgentAssignmentsScreen} options={{ title: ui("Agent Assignments") }} />
-    <Stack.Screen name="AdminLawyerInvites" component={AdminLawyerInvitesScreen} options={{ title: ui("Lawyer Invites") }} />
-    <Stack.Screen name="AdminPropertyDetail" component={AdminPropertyDetailScreen} options={{ title: ui("Property Details") }} />
-    <Stack.Screen name="AdminUserDetail" component={AdminUserDetailScreen} options={{ title: ui("User Details") }} />
-    <Stack.Screen name="PropertyList" component={PropertyListScreen} options={{ title: ui("Browse Properties") }} />
-    <Stack.Screen name="AdminApplicationDetail" component={ApplicationDetailScreen} options={{ title: ui("Application Details") }} />
-    <Stack.Screen name="AdminInspections" component={AdminInspectionsScreen} options={{ title: ui("Inspections") }} />
-    <Stack.Screen name="AdminEvidenceVerifications" component={AdminEvidenceVerificationsScreen} options={{ title: ui("Evidence Verifications") }} />
-    <Stack.Screen name="AdminLedger" component={AdminLedgerScreen} options={{ title: ui("Ledger") }} />
-    <Stack.Screen name="AdminTransportationDashboard" component={AdminTransportationDashboardScreen} options={{ title: ui("Transport Ops") }} />
-    <Stack.Screen name="AdminFumigationDashboard" component={AdminFumigationDashboardScreen} options={{ title: ui("Fumigation Ops") }} />
-    <Stack.Screen name="ServiceBookings" component={ServiceBookingsScreen} options={{ title: ui("Service Bookings") }} />
-    <Stack.Screen name="FumigationCompliance" component={FumigationComplianceScreen} options={{ title: ui("Safety Compliance") }} />
-    <Stack.Screen name="PropertyDetail" component={PropertyDetailScreen} options={{ title: ui("Property Details") }} />
-    <Stack.Screen name="LocationInfo" component={LocationInfoScreen} options={{ title: ui("Location") }} />
+const AdminRoot = () => {  return (<Stack.Navigator screenOptions={screenOptions}>
+    <Stack.Screen name="AdminDashboard" component={AdminDashboardScreen} options={{ title: "Admin Dashboard" }} />
+    <Stack.Screen name="AdminUsers" component={AdminUsersScreen} options={{ title: "Users" }} />
+    <Stack.Screen name="AgentCommissionAdmin" component={AgentCommissionAdminScreen} options={{ title: "Agent Commissions" }} />
+    <Stack.Screen name="AdminProperties" component={AdminPropertiesScreen} options={{ title: "Properties" }} />
+    <Stack.Screen name="AdminApplications" component={AdminApplicationsScreen} options={{ title: "Applications" }} />
+    <Stack.Screen name="AdminVerifications" component={AdminVerificationsScreen} options={{ title: "Verifications" }} />
+    <Stack.Screen name="AdminCompliance" component={AdminComplianceScreen} options={{ title: "Compliance" }} />
+    <Stack.Screen name="AdminAgentAssignments" component={AdminAgentAssignmentsScreen} options={{ title: "Agent Assignments" }} />
+    <Stack.Screen name="AdminLawyerInvites" component={AdminLawyerInvitesScreen} options={{ title: "Lawyer Invites" }} />
+    <Stack.Screen name="AdminPropertyDetail" component={AdminPropertyDetailScreen} options={{ title: "Property Details" }} />
+    <Stack.Screen name="AdminUserDetail" component={AdminUserDetailScreen} options={{ title: "User Details" }} />
+    <Stack.Screen name="PropertyList" component={PropertyListScreen} options={{ title: "Browse Properties" }} />
+    <Stack.Screen name="AdminApplicationDetail" component={ApplicationDetailScreen} options={{ title: "Application Details" }} />
+    <Stack.Screen name="AdminInspections" component={AdminInspectionsScreen} options={{ title: "Inspections" }} />
+    <Stack.Screen name="AdminEvidenceVerifications" component={AdminEvidenceVerificationsScreen} options={{ title: "Evidence Verifications" }} />
+    <Stack.Screen name="AdminLedger" component={AdminLedgerScreen} options={{ title: "Ledger" }} />
+    <Stack.Screen name="AdminTransportationDashboard" component={AdminTransportationDashboardScreen} options={{ title: "Transport Ops" }} />
+    <Stack.Screen name="AdminFumigationDashboard" component={AdminFumigationDashboardScreen} options={{ title: "Fumigation Ops" }} />
+    <Stack.Screen name="ServiceBookings" component={ServiceBookingsScreen} options={{ title: "Service Bookings" }} />
+    <Stack.Screen name="FumigationCompliance" component={FumigationComplianceScreen} options={{ title: "Safety Compliance" }} />
+    <Stack.Screen name="PropertyDetail" component={PropertyDetailScreen} options={{ title: "Property Details" }} />
+    <Stack.Screen name="LocationInfo" component={LocationInfoScreen} options={{ title: "Location" }} />
     <Stack.Screen name="Messages" component={MessagesScreen} />
-    <Stack.Screen name="PaymentHistory" component={PaymentHistoryScreen} options={{ title: ui("Payment History") }} />
+    <Stack.Screen name="PaymentHistory" component={PaymentHistoryScreen} options={{ title: "Payment History" }} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
-    <Stack.Screen name="PrivacyData" component={PrivacyDataScreen} options={{ title: ui("My Personal Data") }} />
+    <Stack.Screen name="PrivacyData" component={PrivacyDataScreen} options={{ title: "My Personal Data" }} />
     <Stack.Screen name="Notifications" component={NotificationsScreen} />
     {commonVerificationScreens()}
     {commonAppealScreens()}
     {commonTenancyScreens()}
-    <Stack.Screen name="NativeTools" component={NativeToolsScreen} options={{ title: ui("More Tools") }} />
+    <Stack.Screen name="NativeTools" component={NativeToolsScreen} options={{ title: "More Tools" }} />
     {commonInfoScreens()}
-    <Stack.Screen name="MyDisputes" component={MyDisputesScreen} options={{ title: ui("My Disputes") }} />
-    <Stack.Screen name="MyDamageReports" component={MyDamageReportsScreen} options={{ title: ui("Property Reports") }} />
-    <Stack.Screen name="SubscribedProperties" component={SubscribedPropertiesScreen} options={{ title: ui("My Subscriptions") }} />
-    <Stack.Screen name="Careers" component={CareersScreen} options={{ title: ui("Careers") }} />
-    <Stack.Screen name="RecruitmentAdmin" component={RecruitmentAdminScreen} options={{ title: ui("Recruitment Admin") }} />
-    <Stack.Screen name="Interview" component={InterviewScreen} options={{ title: ui("Interview") }} />
-    <Stack.Screen name="RecruitmentApplication" component={RecruitmentApplicationScreen} options={{ title: ui("Application") }} />
+    <Stack.Screen name="MyDisputes" component={MyDisputesScreen} options={{ title: "My Disputes" }} />
+    <Stack.Screen name="MyDamageReports" component={MyDamageReportsScreen} options={{ title: "Property Reports" }} />
+    <Stack.Screen name="SubscribedProperties" component={SubscribedPropertiesScreen} options={{ title: "My Subscriptions" }} />
+    <Stack.Screen name="Careers" component={CareersScreen} options={{ title: "Careers" }} />
+    <Stack.Screen name="RecruitmentAdmin" component={RecruitmentAdminScreen} options={{ title: "Recruitment Admin" }} />
+    <Stack.Screen name="Interview" component={InterviewScreen} options={{ title: "Interview" }} />
+    <Stack.Screen name="RecruitmentApplication" component={RecruitmentApplicationScreen} options={{ title: "Application" }} />
   </Stack.Navigator>); };
 
-const SuperAdminRoot = ({ initialRouteName = 'SuperAdminDashboard' }) => { useInterfaceLanguage(); return (<Stack.Navigator initialRouteName={initialRouteName} screenOptions={screenOptions}>
-    <Stack.Screen name="SuperAdminDashboard" component={SuperAdminDashboardScreen} options={{ title: ui("Super Admin") }} />
-    <Stack.Screen name="ModerationHub" component={ModerationHubScreen} options={{ title: ui("Moderation") }} />
-    <Stack.Screen name="FinanceStateAdmins" component={FinanceStateAdminScreen} options={{ title: ui("State Admin Management") }} />
-    <Stack.Screen name="RentSavingsAdmin" component={RentSavingsAdminScreen} options={{ title: ui("Rent Savings Withdrawals") }} />
-    <Stack.Screen name="RentSavingsSetupFees" component={RentSavingsSetupFeesScreen} options={{ title: ui("Rent Savings Setup Fees") }} />
-    <Stack.Screen name="RentCalculatorFeesAdmin" component={RentCalculatorFeesAdminScreen} options={{ title: ui("Rent Calculator Fees") }} />
-    <Stack.Screen name="TourAnalytics" component={TourAnalyticsScreen} options={{ title: ui("Tour Analytics") }} />
-    <Stack.Screen name="AgentCommissionAdmin" component={AgentCommissionAdminScreen} options={{ title: ui("Agent Commissions") }} />
-    <Stack.Screen name="AdminAccounts" component={AdminAccountsScreen} options={{ title: ui("Admin Accounts") }} />
-    <Stack.Screen name="SeoTools" component={SeoToolsScreen} options={{ title: ui("SEO Tools") }} />
-    <Stack.Screen name="ContentModeration" component={ContentModerationHub} options={{ title: ui("Content Moderation") }} />
-    <Stack.Screen name="VoiceMonitor" component={VoiceMonitorScreen} options={{ title: ui("Voice Monitor") }} />
-    <Stack.Screen name="CourtBundle" component={CourtBundleScreen} options={{ title: ui("Court Bundle") }} />
-    <Stack.Screen name="SurveyAnalytics" component={SurveyAnalyticsScreen} options={{ title: ui("Survey Analytics") }} />
-    <Stack.Screen name="MarketingOps" component={MarketingScreen} options={{ title: ui("Email & SMS Marketing") }} />
-    <Stack.Screen name="MarketingBuilder" component={MarketingBuilderScreen} options={{ title: ui("Campaign Builder") }} />
-    <Stack.Screen name="WhatsappMarketing" component={WhatsappMarketingScreen} options={{ title: ui("WhatsApp Marketing") }} />
-    <Stack.Screen name="EmailTemplateEditor" component={EmailTemplateEditorScreen} options={{ title: ui("Email HTML Editor") }} />
-    <Stack.Screen name="DiasporaDesk" component={DiasporaDeskScreen} options={{ title: ui("Diaspora Desk") }} />
-    <Stack.Screen name="AdminDashboard" component={AdminDashboardScreen} options={{ title: ui("Admin Dashboard") }} />
-    <Stack.Screen name="AdminUsers" component={AdminUsersScreen} options={{ title: ui("Users") }} />
-    <Stack.Screen name="AdminProperties" component={AdminPropertiesScreen} options={{ title: ui("Properties") }} />
-    <Stack.Screen name="AdminApplications" component={AdminApplicationsScreen} options={{ title: ui("Applications") }} />
-    <Stack.Screen name="AdminVerifications" component={AdminVerificationsScreen} options={{ title: ui("Verifications") }} />
-    <Stack.Screen name="AdminCompliance" component={AdminComplianceScreen} options={{ title: ui("Compliance") }} />
-    <Stack.Screen name="AdminAppeals" component={AdminAppealsScreen} options={{ title: ui("Appeals") }} />
-    <Stack.Screen name="AdminMonitor" component={AdminMonitorScreen} options={{ title: ui("Activity Monitor") }} />
-    <Stack.Screen name="AdminInspections" component={AdminInspectionsScreen} options={{ title: ui("Inspections") }} />
-    <Stack.Screen name="AdminEvidenceVerifications" component={AdminEvidenceVerificationsScreen} options={{ title: ui("Evidence Verifications") }} />
-    <Stack.Screen name="AdminLedger" component={AdminLedgerScreen} options={{ title: ui("Ledger") }} />
-    <Stack.Screen name="AdminApplicationDetail" component={ApplicationDetailScreen} options={{ title: ui("Application Details") }} />
-    <Stack.Screen name="SuperAdminSeo" component={SuperAdminSeoDashboardScreen} options={{ title: ui("SEO Dashboard") }} />
-    <Stack.Screen name="SuperAdminSeoNested" component={SuperAdminSeoDashboardScreen} options={{ title: ui("SEO Dashboard") }} />
-    <Stack.Screen name="SuperAdminSupportGovernance" component={SuperAdminSupportGovernanceScreen} options={{ title: ui("Support Governance") }} />
-    <Stack.Screen name="SuperAdminTransportationDashboard" component={SuperAdminTransportationDashboardScreen} options={{ title: ui("Transport Oversight") }} />
-    <Stack.Screen name="SuperAdminFumigationDashboard" component={SuperAdminFumigationDashboardScreen} options={{ title: ui("Fumigation Oversight") }} />
-    <Stack.Screen name="ServiceBookings" component={ServiceBookingsScreen} options={{ title: ui("Service Bookings") }} />
-    <Stack.Screen name="FumigationCompliance" component={FumigationComplianceScreen} options={{ title: ui("Safety Compliance") }} />
-    <Stack.Screen name="SuperFinancialAdminDashboard" component={SuperFinancialAdminDashboardScreen} options={{ title: ui("Super Financial") }} />
-    <Stack.Screen name="FinancialRevenueReport" component={FinancialRevenueReportScreen} options={{ title: ui("Revenue Reports") }} />
-    <Stack.Screen name="FinancialTransactions" component={FinancialTransactionsScreen} options={{ title: ui("Transactions") }} />
-    <Stack.Screen name="FinancialWithdrawals" component={FinancialWithdrawalsScreen} options={{ title: ui("Withdrawals") }} />
-    <Stack.Screen name="FinancialCommissions" component={FinancialCommissionsScreen} options={{ title: ui("Commissions") }} />
-    <Stack.Screen name="FinancialControls" component={FinancialControlsScreen} options={{ title: ui("Financial Controls") }} />
-    <Stack.Screen name="AdminAgentAssignments" component={AdminAgentAssignmentsScreen} options={{ title: ui("Agent Assignments") }} />
-    <Stack.Screen name="AdminLawyerInvites" component={AdminLawyerInvitesScreen} options={{ title: ui("Lawyer Invites") }} />
-    <Stack.Screen name="AdminPropertyDetail" component={AdminPropertyDetailScreen} options={{ title: ui("Property Details") }} />
-    <Stack.Screen name="AdminUserDetail" component={AdminUserDetailScreen} options={{ title: ui("User Details") }} />
-    <Stack.Screen name="PropertyList" component={PropertyListScreen} options={{ title: ui("Browse Properties") }} />
-    <Stack.Screen name="PropertyDetail" component={PropertyDetailScreen} options={{ title: ui("Property Details") }} />
-    <Stack.Screen name="LocationInfo" component={LocationInfoScreen} options={{ title: ui("Location") }} />
-    <Stack.Screen name="VerifyCase" component={VerifyCaseScreen} options={{ title: ui("Verify Case") }} />
+const SuperAdminRoot = ({ initialRouteName = 'SuperAdminDashboard' }) => {  return (<Stack.Navigator initialRouteName={initialRouteName} screenOptions={screenOptions}>
+    <Stack.Screen name="SuperAdminDashboard" component={SuperAdminDashboardScreen} options={{ title: "Super Admin" }} />
+    <Stack.Screen name="ModerationHub" component={ModerationHubScreen} options={{ title: "Moderation" }} />
+    <Stack.Screen name="FinanceStateAdmins" component={FinanceStateAdminScreen} options={{ title: "State Admin Management" }} />
+    <Stack.Screen name="RentSavingsAdmin" component={RentSavingsAdminScreen} options={{ title: "Rent Savings Withdrawals" }} />
+    <Stack.Screen name="RentSavingsSetupFees" component={RentSavingsSetupFeesScreen} options={{ title: "Rent Savings Setup Fees" }} />
+    <Stack.Screen name="RentCalculatorFeesAdmin" component={RentCalculatorFeesAdminScreen} options={{ title: "Rent Calculator Fees" }} />
+    <Stack.Screen name="TourAnalytics" component={TourAnalyticsScreen} options={{ title: "Tour Analytics" }} />
+    <Stack.Screen name="AgentCommissionAdmin" component={AgentCommissionAdminScreen} options={{ title: "Agent Commissions" }} />
+    <Stack.Screen name="AdminAccounts" component={AdminAccountsScreen} options={{ title: "Admin Accounts" }} />
+    <Stack.Screen name="SeoTools" component={SeoToolsScreen} options={{ title: "SEO Tools" }} />
+    <Stack.Screen name="ContentModeration" component={ContentModerationHub} options={{ title: "Content Moderation" }} />
+    <Stack.Screen name="VoiceMonitor" component={VoiceMonitorScreen} options={{ title: "Voice Monitor" }} />
+    <Stack.Screen name="CourtBundle" component={CourtBundleScreen} options={{ title: "Court Bundle" }} />
+    <Stack.Screen name="SurveyAnalytics" component={SurveyAnalyticsScreen} options={{ title: "Survey Analytics" }} />
+    <Stack.Screen name="MarketingOps" component={MarketingScreen} options={{ title: "Email & SMS Marketing" }} />
+    <Stack.Screen name="MarketingBuilder" component={MarketingBuilderScreen} options={{ title: "Campaign Builder" }} />
+    <Stack.Screen name="WhatsappMarketing" component={WhatsappMarketingScreen} options={{ title: "WhatsApp Marketing" }} />
+    <Stack.Screen name="EmailTemplateEditor" component={EmailTemplateEditorScreen} options={{ title: "Email HTML Editor" }} />
+    <Stack.Screen name="DiasporaDesk" component={DiasporaDeskScreen} options={{ title: "Diaspora Desk" }} />
+    <Stack.Screen name="AdminDashboard" component={AdminDashboardScreen} options={{ title: "Admin Dashboard" }} />
+    <Stack.Screen name="AdminUsers" component={AdminUsersScreen} options={{ title: "Users" }} />
+    <Stack.Screen name="AdminProperties" component={AdminPropertiesScreen} options={{ title: "Properties" }} />
+    <Stack.Screen name="AdminApplications" component={AdminApplicationsScreen} options={{ title: "Applications" }} />
+    <Stack.Screen name="AdminVerifications" component={AdminVerificationsScreen} options={{ title: "Verifications" }} />
+    <Stack.Screen name="AdminCompliance" component={AdminComplianceScreen} options={{ title: "Compliance" }} />
+    <Stack.Screen name="AdminAppeals" component={AdminAppealsScreen} options={{ title: "Appeals" }} />
+    <Stack.Screen name="AdminMonitor" component={AdminMonitorScreen} options={{ title: "Activity Monitor" }} />
+    <Stack.Screen name="AdminInspections" component={AdminInspectionsScreen} options={{ title: "Inspections" }} />
+    <Stack.Screen name="AdminEvidenceVerifications" component={AdminEvidenceVerificationsScreen} options={{ title: "Evidence Verifications" }} />
+    <Stack.Screen name="AdminLedger" component={AdminLedgerScreen} options={{ title: "Ledger" }} />
+    <Stack.Screen name="AdminApplicationDetail" component={ApplicationDetailScreen} options={{ title: "Application Details" }} />
+    <Stack.Screen name="SuperAdminSeo" component={SuperAdminSeoDashboardScreen} options={{ title: "SEO Dashboard" }} />
+    <Stack.Screen name="SuperAdminSeoNested" component={SuperAdminSeoDashboardScreen} options={{ title: "SEO Dashboard" }} />
+    <Stack.Screen name="SuperAdminSupportGovernance" component={SuperAdminSupportGovernanceScreen} options={{ title: "Support Governance" }} />
+    <Stack.Screen name="SuperAdminTransportationDashboard" component={SuperAdminTransportationDashboardScreen} options={{ title: "Transport Oversight" }} />
+    <Stack.Screen name="SuperAdminFumigationDashboard" component={SuperAdminFumigationDashboardScreen} options={{ title: "Fumigation Oversight" }} />
+    <Stack.Screen name="ServiceBookings" component={ServiceBookingsScreen} options={{ title: "Service Bookings" }} />
+    <Stack.Screen name="FumigationCompliance" component={FumigationComplianceScreen} options={{ title: "Safety Compliance" }} />
+    <Stack.Screen name="SuperFinancialAdminDashboard" component={SuperFinancialAdminDashboardScreen} options={{ title: "Super Financial" }} />
+    <Stack.Screen name="FinancialRevenueReport" component={FinancialRevenueReportScreen} options={{ title: "Revenue Reports" }} />
+    <Stack.Screen name="FinancialTransactions" component={FinancialTransactionsScreen} options={{ title: "Transactions" }} />
+    <Stack.Screen name="FinancialWithdrawals" component={FinancialWithdrawalsScreen} options={{ title: "Withdrawals" }} />
+    <Stack.Screen name="FinancialCommissions" component={FinancialCommissionsScreen} options={{ title: "Commissions" }} />
+    <Stack.Screen name="FinancialControls" component={FinancialControlsScreen} options={{ title: "Financial Controls" }} />
+    <Stack.Screen name="AdminAgentAssignments" component={AdminAgentAssignmentsScreen} options={{ title: "Agent Assignments" }} />
+    <Stack.Screen name="AdminLawyerInvites" component={AdminLawyerInvitesScreen} options={{ title: "Lawyer Invites" }} />
+    <Stack.Screen name="AdminPropertyDetail" component={AdminPropertyDetailScreen} options={{ title: "Property Details" }} />
+    <Stack.Screen name="AdminUserDetail" component={AdminUserDetailScreen} options={{ title: "User Details" }} />
+    <Stack.Screen name="PropertyList" component={PropertyListScreen} options={{ title: "Browse Properties" }} />
+    <Stack.Screen name="PropertyDetail" component={PropertyDetailScreen} options={{ title: "Property Details" }} />
+    <Stack.Screen name="LocationInfo" component={LocationInfoScreen} options={{ title: "Location" }} />
+    <Stack.Screen name="VerifyCase" component={VerifyCaseScreen} options={{ title: "Verify Case" }} />
     <Stack.Screen name="Messages" component={MessagesScreen} />
-    <Stack.Screen name="PaymentHistory" component={PaymentHistoryScreen} options={{ title: ui("Payment History") }} />
+    <Stack.Screen name="PaymentHistory" component={PaymentHistoryScreen} options={{ title: "Payment History" }} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
-    <Stack.Screen name="PrivacyData" component={PrivacyDataScreen} options={{ title: ui("My Personal Data") }} />
+    <Stack.Screen name="PrivacyData" component={PrivacyDataScreen} options={{ title: "My Personal Data" }} />
     <Stack.Screen name="Notifications" component={NotificationsScreen} />
     {commonVerificationScreens()}
     {commonAppealScreens()}
     {commonTenancyScreens()}
-    <Stack.Screen name="TransportationBooking" component={TransportationBookingScreen} options={{ title: ui("Transportation") }} />
-    <Stack.Screen name="TransportationBookings" component={TransportationBookingsScreen} options={{ title: ui("Bookings") }} />
-    <Stack.Screen name="TransportationBookingDetail" component={TransportationBookingDetailScreen} options={{ title: ui("Booking Details") }} />
-    <Stack.Screen name="TransportationPayment" component={TransportationPaymentScreen} options={{ title: ui("Transport Payment") }} />
-    <Stack.Screen name="FumigationCleaningBooking" component={FumigationCleaningBookingScreen} options={{ title: ui("Fumigation & Cleaning") }} />
-    <Stack.Screen name="FumigationCleaningBookings" component={FumigationCleaningBookingsScreen} options={{ title: ui("Bookings") }} />
-    <Stack.Screen name="FumigationCleaningBookingDetail" component={FumigationCleaningBookingDetailScreen} options={{ title: ui("Booking Details") }} />
-    <Stack.Screen name="FumigationCleaningPayment" component={FumigationCleaningPaymentScreen} options={{ title: ui("Payment") }} />
+    <Stack.Screen name="TransportationBooking" component={TransportationBookingScreen} options={{ title: "Transportation" }} />
+    <Stack.Screen name="TransportationBookings" component={TransportationBookingsScreen} options={{ title: "Bookings" }} />
+    <Stack.Screen name="TransportationBookingDetail" component={TransportationBookingDetailScreen} options={{ title: "Booking Details" }} />
+    <Stack.Screen name="TransportationPayment" component={TransportationPaymentScreen} options={{ title: "Transport Payment" }} />
+    <Stack.Screen name="FumigationCleaningBooking" component={FumigationCleaningBookingScreen} options={{ title: "Fumigation & Cleaning" }} />
+    <Stack.Screen name="FumigationCleaningBookings" component={FumigationCleaningBookingsScreen} options={{ title: "Bookings" }} />
+    <Stack.Screen name="FumigationCleaningBookingDetail" component={FumigationCleaningBookingDetailScreen} options={{ title: "Booking Details" }} />
+    <Stack.Screen name="FumigationCleaningPayment" component={FumigationCleaningPaymentScreen} options={{ title: "Payment" }} />
 
-    <Stack.Screen name="Faq" component={PublicInfoScreen} initialParams={{ page: 'faq' }} options={{ title: ui("FAQ") }} />
-    <Stack.Screen name="HowItWorks" component={PublicInfoScreen} initialParams={{ page: 'how' }} options={{ title: ui("How It Works") }} />
-    <Stack.Screen name="Pricing" component={PublicInfoScreen} initialParams={{ page: 'pricing' }} options={{ title: ui("Pricing") }} />
-    <Stack.Screen name="LandlordGuide" component={PublicInfoScreen} initialParams={{ page: 'landlordGuide' }} options={{ title: ui("Landlord Guide") }} />
-    <Stack.Screen name="Privacy" component={PublicInfoScreen} initialParams={{ page: 'privacy' }} options={{ title: ui("Privacy") }} />
-    <Stack.Screen name="Terms" component={PublicInfoScreen} initialParams={{ page: 'terms' }} options={{ title: ui("Terms") }} />
-    <Stack.Screen name="NigeriaPage" component={PublicInfoScreen} initialParams={{ page: 'nigeria' }} options={{ title: ui("Nigeria") }} />
-    <Stack.Screen name="AboutUs" component={AboutUsScreen} options={{ title: ui("About RentalHub") }} />
-    <Stack.Screen name="Support" component={SupportScreen} options={{ title: ui("Support") }} />
-    <Stack.Screen name="FumigationCleaningCatalog" component={FumigationCleaningCatalogScreen} options={{ title: ui("Service Catalog") }} />
-    <Stack.Screen name="NativeTools" component={NativeToolsScreen} options={{ title: ui("More Tools") }} />
+    <Stack.Screen name="Faq" component={PublicInfoScreen} initialParams={{ page: 'faq' }} options={{ title: "FAQ" }} />
+    <Stack.Screen name="HowItWorks" component={PublicInfoScreen} initialParams={{ page: 'how' }} options={{ title: "How It Works" }} />
+    <Stack.Screen name="Pricing" component={PublicInfoScreen} initialParams={{ page: 'pricing' }} options={{ title: "Pricing" }} />
+    <Stack.Screen name="LandlordGuide" component={PublicInfoScreen} initialParams={{ page: 'landlordGuide' }} options={{ title: "Landlord Guide" }} />
+    <Stack.Screen name="Privacy" component={PublicInfoScreen} initialParams={{ page: 'privacy' }} options={{ title: "Privacy" }} />
+    <Stack.Screen name="Terms" component={PublicInfoScreen} initialParams={{ page: 'terms' }} options={{ title: "Terms" }} />
+    <Stack.Screen name="NigeriaPage" component={PublicInfoScreen} initialParams={{ page: 'nigeria' }} options={{ title: "Nigeria" }} />
+    <Stack.Screen name="AboutUs" component={AboutUsScreen} options={{ title: "About RentalHub" }} />
+    <Stack.Screen name="Support" component={SupportScreen} options={{ title: "Support" }} />
+    <Stack.Screen name="FumigationCleaningCatalog" component={FumigationCleaningCatalogScreen} options={{ title: "Service Catalog" }} />
+    <Stack.Screen name="NativeTools" component={NativeToolsScreen} options={{ title: "More Tools" }} />
     {commonInfoScreens()}
-    <Stack.Screen name="MyDisputes" component={MyDisputesScreen} options={{ title: ui("My Disputes") }} />
-    <Stack.Screen name="MyDamageReports" component={MyDamageReportsScreen} options={{ title: ui("Property Reports") }} />
-    <Stack.Screen name="SubscribedProperties" component={SubscribedPropertiesScreen} options={{ title: ui("My Subscriptions") }} />
-    <Stack.Screen name="Careers" component={CareersScreen} options={{ title: ui("Careers") }} />
-    <Stack.Screen name="RecruitmentAdmin" component={RecruitmentAdminScreen} options={{ title: ui("Recruitment Admin") }} />
-    <Stack.Screen name="Interview" component={InterviewScreen} options={{ title: ui("Interview") }} />
-    <Stack.Screen name="RecruitmentApplication" component={RecruitmentApplicationScreen} options={{ title: ui("Application") }} />
+    <Stack.Screen name="MyDisputes" component={MyDisputesScreen} options={{ title: "My Disputes" }} />
+    <Stack.Screen name="MyDamageReports" component={MyDamageReportsScreen} options={{ title: "Property Reports" }} />
+    <Stack.Screen name="SubscribedProperties" component={SubscribedPropertiesScreen} options={{ title: "My Subscriptions" }} />
+    <Stack.Screen name="Careers" component={CareersScreen} options={{ title: "Careers" }} />
+    <Stack.Screen name="RecruitmentAdmin" component={RecruitmentAdminScreen} options={{ title: "Recruitment Admin" }} />
+    <Stack.Screen name="Interview" component={InterviewScreen} options={{ title: "Interview" }} />
+    <Stack.Screen name="RecruitmentApplication" component={RecruitmentApplicationScreen} options={{ title: "Application" }} />
   </Stack.Navigator>); };
 
-const FinancialAdminRoot = ({ initialRouteName = 'FinancialAdminDashboard' }) => { useInterfaceLanguage(); return (<Stack.Navigator initialRouteName={initialRouteName} screenOptions={screenOptions}>
-    <Stack.Screen name="FinancialAdminDashboard" component={FinancialAdminDashboardScreen} options={{ title: ui("Financial Admin") }} />
-    <Stack.Screen name="FinanceStateAdmins" component={FinanceStateAdminScreen} options={{ title: ui("State Admin Management") }} />
-    <Stack.Screen name="LgaFinancialAdminDashboard" component={LgaFinancialAdminDashboardScreen} options={{ title: ui("LGA Financial Admin") }} />
-    <Stack.Screen name="ZonalFinancialAdminDashboard" component={ZonalFinancialAdminDashboardScreen} options={{ title: ui("Zonal Financial Admin") }} />
-    <Stack.Screen name="FinancialRevenueReport" component={FinancialRevenueReportScreen} options={{ title: ui("Revenue Reports") }} />
-    <Stack.Screen name="FinancialTransactions" component={FinancialTransactionsScreen} options={{ title: ui("Transactions") }} />
-    <Stack.Screen name="FinancialWithdrawals" component={FinancialWithdrawalsScreen} options={{ title: ui("Withdrawals") }} />
-    <Stack.Screen name="FinancialCommissions" component={FinancialCommissionsScreen} options={{ title: ui("Commissions") }} />
-    <Stack.Screen name="FinancialControls" component={FinancialControlsScreen} options={{ title: ui("Financial Controls") }} />
-    <Stack.Screen name="PropertyList" component={PropertyListScreen} options={{ title: ui("Browse Properties") }} />
-    <Stack.Screen name="SuperFinancialAdminDashboard" component={SuperFinancialAdminDashboardScreen} options={{ title: ui("Super Financial") }} />
-    <Stack.Screen name="PropertyDetail" component={PropertyDetailScreen} options={{ title: ui("Property Details") }} />
-    <Stack.Screen name="LocationInfo" component={LocationInfoScreen} options={{ title: ui("Location") }} />
+const FinancialAdminRoot = ({ initialRouteName = 'FinancialAdminDashboard' }) => {  return (<Stack.Navigator initialRouteName={initialRouteName} screenOptions={screenOptions}>
+    <Stack.Screen name="FinancialAdminDashboard" component={FinancialAdminDashboardScreen} options={{ title: "Financial Admin" }} />
+    <Stack.Screen name="FinanceStateAdmins" component={FinanceStateAdminScreen} options={{ title: "State Admin Management" }} />
+    <Stack.Screen name="LgaFinancialAdminDashboard" component={LgaFinancialAdminDashboardScreen} options={{ title: "LGA Financial Admin" }} />
+    <Stack.Screen name="ZonalFinancialAdminDashboard" component={ZonalFinancialAdminDashboardScreen} options={{ title: "Zonal Financial Admin" }} />
+    <Stack.Screen name="FinancialRevenueReport" component={FinancialRevenueReportScreen} options={{ title: "Revenue Reports" }} />
+    <Stack.Screen name="FinancialTransactions" component={FinancialTransactionsScreen} options={{ title: "Transactions" }} />
+    <Stack.Screen name="FinancialWithdrawals" component={FinancialWithdrawalsScreen} options={{ title: "Withdrawals" }} />
+    <Stack.Screen name="FinancialCommissions" component={FinancialCommissionsScreen} options={{ title: "Commissions" }} />
+    <Stack.Screen name="FinancialControls" component={FinancialControlsScreen} options={{ title: "Financial Controls" }} />
+    <Stack.Screen name="PropertyList" component={PropertyListScreen} options={{ title: "Browse Properties" }} />
+    <Stack.Screen name="SuperFinancialAdminDashboard" component={SuperFinancialAdminDashboardScreen} options={{ title: "Super Financial" }} />
+    <Stack.Screen name="PropertyDetail" component={PropertyDetailScreen} options={{ title: "Property Details" }} />
+    <Stack.Screen name="LocationInfo" component={LocationInfoScreen} options={{ title: "Location" }} />
     <Stack.Screen name="Messages" component={MessagesScreen} />
-    <Stack.Screen name="PaymentHistory" component={PaymentHistoryScreen} options={{ title: ui("Payment History") }} />
+    <Stack.Screen name="PaymentHistory" component={PaymentHistoryScreen} options={{ title: "Payment History" }} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
-    <Stack.Screen name="PrivacyData" component={PrivacyDataScreen} options={{ title: ui("My Personal Data") }} />
+    <Stack.Screen name="PrivacyData" component={PrivacyDataScreen} options={{ title: "My Personal Data" }} />
     <Stack.Screen name="Notifications" component={NotificationsScreen} />
     {commonVerificationScreens()}
     {commonAppealScreens()}
     {commonTenancyScreens()}
-    <Stack.Screen name="TransportationBooking" component={TransportationBookingScreen} options={{ title: ui("Transportation") }} />
-    <Stack.Screen name="TransportationBookings" component={TransportationBookingsScreen} options={{ title: ui("Bookings") }} />
-    <Stack.Screen name="TransportationBookingDetail" component={TransportationBookingDetailScreen} options={{ title: ui("Booking Details") }} />
-    <Stack.Screen name="TransportationPayment" component={TransportationPaymentScreen} options={{ title: ui("Transport Payment") }} />
-    <Stack.Screen name="FumigationCleaningBooking" component={FumigationCleaningBookingScreen} options={{ title: ui("Fumigation & Cleaning") }} />
-    <Stack.Screen name="FumigationCleaningBookings" component={FumigationCleaningBookingsScreen} options={{ title: ui("Bookings") }} />
-    <Stack.Screen name="FumigationCleaningBookingDetail" component={FumigationCleaningBookingDetailScreen} options={{ title: ui("Booking Details") }} />
-    <Stack.Screen name="FumigationCleaningPayment" component={FumigationCleaningPaymentScreen} options={{ title: ui("Payment") }} />
+    <Stack.Screen name="TransportationBooking" component={TransportationBookingScreen} options={{ title: "Transportation" }} />
+    <Stack.Screen name="TransportationBookings" component={TransportationBookingsScreen} options={{ title: "Bookings" }} />
+    <Stack.Screen name="TransportationBookingDetail" component={TransportationBookingDetailScreen} options={{ title: "Booking Details" }} />
+    <Stack.Screen name="TransportationPayment" component={TransportationPaymentScreen} options={{ title: "Transport Payment" }} />
+    <Stack.Screen name="FumigationCleaningBooking" component={FumigationCleaningBookingScreen} options={{ title: "Fumigation & Cleaning" }} />
+    <Stack.Screen name="FumigationCleaningBookings" component={FumigationCleaningBookingsScreen} options={{ title: "Bookings" }} />
+    <Stack.Screen name="FumigationCleaningBookingDetail" component={FumigationCleaningBookingDetailScreen} options={{ title: "Booking Details" }} />
+    <Stack.Screen name="FumigationCleaningPayment" component={FumigationCleaningPaymentScreen} options={{ title: "Payment" }} />
 
-    <Stack.Screen name="Faq" component={PublicInfoScreen} initialParams={{ page: 'faq' }} options={{ title: ui("FAQ") }} />
-    <Stack.Screen name="HowItWorks" component={PublicInfoScreen} initialParams={{ page: 'how' }} options={{ title: ui("How It Works") }} />
-    <Stack.Screen name="Pricing" component={PublicInfoScreen} initialParams={{ page: 'pricing' }} options={{ title: ui("Pricing") }} />
-    <Stack.Screen name="LandlordGuide" component={PublicInfoScreen} initialParams={{ page: 'landlordGuide' }} options={{ title: ui("Landlord Guide") }} />
-    <Stack.Screen name="Privacy" component={PublicInfoScreen} initialParams={{ page: 'privacy' }} options={{ title: ui("Privacy") }} />
-    <Stack.Screen name="Terms" component={PublicInfoScreen} initialParams={{ page: 'terms' }} options={{ title: ui("Terms") }} />
-    <Stack.Screen name="NigeriaPage" component={PublicInfoScreen} initialParams={{ page: 'nigeria' }} options={{ title: ui("Nigeria") }} />
-    <Stack.Screen name="AboutUs" component={AboutUsScreen} options={{ title: ui("About RentalHub") }} />
-    <Stack.Screen name="Support" component={SupportScreen} options={{ title: ui("Support") }} />
-    <Stack.Screen name="FumigationCleaningCatalog" component={FumigationCleaningCatalogScreen} options={{ title: ui("Service Catalog") }} />
-    <Stack.Screen name="NativeTools" component={NativeToolsScreen} options={{ title: ui("More Tools") }} />
+    <Stack.Screen name="Faq" component={PublicInfoScreen} initialParams={{ page: 'faq' }} options={{ title: "FAQ" }} />
+    <Stack.Screen name="HowItWorks" component={PublicInfoScreen} initialParams={{ page: 'how' }} options={{ title: "How It Works" }} />
+    <Stack.Screen name="Pricing" component={PublicInfoScreen} initialParams={{ page: 'pricing' }} options={{ title: "Pricing" }} />
+    <Stack.Screen name="LandlordGuide" component={PublicInfoScreen} initialParams={{ page: 'landlordGuide' }} options={{ title: "Landlord Guide" }} />
+    <Stack.Screen name="Privacy" component={PublicInfoScreen} initialParams={{ page: 'privacy' }} options={{ title: "Privacy" }} />
+    <Stack.Screen name="Terms" component={PublicInfoScreen} initialParams={{ page: 'terms' }} options={{ title: "Terms" }} />
+    <Stack.Screen name="NigeriaPage" component={PublicInfoScreen} initialParams={{ page: 'nigeria' }} options={{ title: "Nigeria" }} />
+    <Stack.Screen name="AboutUs" component={AboutUsScreen} options={{ title: "About RentalHub" }} />
+    <Stack.Screen name="Support" component={SupportScreen} options={{ title: "Support" }} />
+    <Stack.Screen name="FumigationCleaningCatalog" component={FumigationCleaningCatalogScreen} options={{ title: "Service Catalog" }} />
+    <Stack.Screen name="NativeTools" component={NativeToolsScreen} options={{ title: "More Tools" }} />
     {commonInfoScreens()}
-    <Stack.Screen name="MyDisputes" component={MyDisputesScreen} options={{ title: ui("My Disputes") }} />
-    <Stack.Screen name="MyDamageReports" component={MyDamageReportsScreen} options={{ title: ui("Property Reports") }} />
-    <Stack.Screen name="SubscribedProperties" component={SubscribedPropertiesScreen} options={{ title: ui("My Subscriptions") }} />
-    <Stack.Screen name="Careers" component={CareersScreen} options={{ title: ui("Careers") }} />
-    <Stack.Screen name="RecruitmentAdmin" component={RecruitmentAdminScreen} options={{ title: ui("Recruitment Admin") }} />
-    <Stack.Screen name="Interview" component={InterviewScreen} options={{ title: ui("Interview") }} />
-    <Stack.Screen name="RecruitmentApplication" component={RecruitmentApplicationScreen} options={{ title: ui("Application") }} />
+    <Stack.Screen name="MyDisputes" component={MyDisputesScreen} options={{ title: "My Disputes" }} />
+    <Stack.Screen name="MyDamageReports" component={MyDamageReportsScreen} options={{ title: "Property Reports" }} />
+    <Stack.Screen name="SubscribedProperties" component={SubscribedPropertiesScreen} options={{ title: "My Subscriptions" }} />
+    <Stack.Screen name="Careers" component={CareersScreen} options={{ title: "Careers" }} />
+    <Stack.Screen name="RecruitmentAdmin" component={RecruitmentAdminScreen} options={{ title: "Recruitment Admin" }} />
+    <Stack.Screen name="Interview" component={InterviewScreen} options={{ title: "Interview" }} />
+    <Stack.Screen name="RecruitmentApplication" component={RecruitmentApplicationScreen} options={{ title: "Application" }} />
   </Stack.Navigator>); };
 
-const StateAdminRoot = () => { useInterfaceLanguage(); return (<Stack.Navigator screenOptions={screenOptions}>
-    <Stack.Screen name="StateAdminDashboard" component={StateAdminDashboardScreen} options={{ title: ui("State Admin") }} />
-    <Stack.Screen name="StateAdminFinance" component={StateAdminFinanceScreen} options={{ title: ui("Commissions & Withdrawals") }} />
-    <Stack.Screen name="StateAdminMigrations" component={StateAdminMigrationsScreen} options={{ title: ui("Property Approvals") }} />
+const StateAdminRoot = () => {  return (<Stack.Navigator screenOptions={screenOptions}>
+    <Stack.Screen name="StateAdminDashboard" component={StateAdminDashboardScreen} options={{ title: "State Admin" }} />
+    <Stack.Screen name="StateAdminFinance" component={StateAdminFinanceScreen} options={{ title: "Commissions & Withdrawals" }} />
+    <Stack.Screen name="StateAdminMigrations" component={StateAdminMigrationsScreen} options={{ title: "Property Approvals" }} />
     {/* State admins had a narrower mobile surface than the web (which exposes users,
         transactions, oversight and calculator fees). Registered here so the dashboard
         board can reach them. */}
-    <Stack.Screen name="AdminUsers" component={AdminUsersScreen} options={{ title: ui("Users") }} />
-    <Stack.Screen name="AdminUserDetail" component={AdminUserDetailScreen} options={{ title: ui("User") }} />
-    <Stack.Screen name="FinancialTransactions" component={FinancialTransactionsScreen} options={{ title: ui("Transactions") }} />
-    <Stack.Screen name="AdminCompliance" component={AdminComplianceScreen} options={{ title: ui("Oversight") }} />
-    <Stack.Screen name="RentCalculatorFeesAdmin" component={RentCalculatorFeesAdminScreen} options={{ title: ui("Calculator Fees") }} />
-    <Stack.Screen name="AdminAppeals" component={AdminAppealsScreen} options={{ title: ui("Appeals") }} />
-    <Stack.Screen name="RecruitmentAdmin" component={RecruitmentAdminScreen} options={{ title: ui("Recruitment Admin") }} />
-    <Stack.Screen name="AdminTransportationStateDashboard" component={AdminTransportationStateDashboardScreen} options={{ title: ui("State Transport") }} />
-    <Stack.Screen name="AdminFumigationStateDashboard" component={AdminFumigationStateDashboardScreen} options={{ title: ui("State Fumigation") }} />
-    <Stack.Screen name="ServiceBookings" component={ServiceBookingsScreen} options={{ title: ui("Service Bookings") }} />
-    <Stack.Screen name="FumigationCompliance" component={FumigationComplianceScreen} options={{ title: ui("Safety Compliance") }} />
-    <Stack.Screen name="PropertyList" component={PropertyListScreen} options={{ title: ui("Browse Properties") }} />
-    <Stack.Screen name="PropertyDetail" component={PropertyDetailScreen} options={{ title: ui("Property Details") }} />
-    <Stack.Screen name="LocationInfo" component={LocationInfoScreen} options={{ title: ui("Location") }} />
-    <Stack.Screen name="VerifyCase" component={VerifyCaseScreen} options={{ title: ui("Verify Case") }} />
+    <Stack.Screen name="AdminUsers" component={AdminUsersScreen} options={{ title: "Users" }} />
+    <Stack.Screen name="AdminUserDetail" component={AdminUserDetailScreen} options={{ title: "User" }} />
+    <Stack.Screen name="FinancialTransactions" component={FinancialTransactionsScreen} options={{ title: "Transactions" }} />
+    <Stack.Screen name="AdminCompliance" component={AdminComplianceScreen} options={{ title: "Oversight" }} />
+    <Stack.Screen name="RentCalculatorFeesAdmin" component={RentCalculatorFeesAdminScreen} options={{ title: "Calculator Fees" }} />
+    <Stack.Screen name="AdminAppeals" component={AdminAppealsScreen} options={{ title: "Appeals" }} />
+    <Stack.Screen name="RecruitmentAdmin" component={RecruitmentAdminScreen} options={{ title: "Recruitment Admin" }} />
+    <Stack.Screen name="AdminTransportationStateDashboard" component={AdminTransportationStateDashboardScreen} options={{ title: "State Transport" }} />
+    <Stack.Screen name="AdminFumigationStateDashboard" component={AdminFumigationStateDashboardScreen} options={{ title: "State Fumigation" }} />
+    <Stack.Screen name="ServiceBookings" component={ServiceBookingsScreen} options={{ title: "Service Bookings" }} />
+    <Stack.Screen name="FumigationCompliance" component={FumigationComplianceScreen} options={{ title: "Safety Compliance" }} />
+    <Stack.Screen name="PropertyList" component={PropertyListScreen} options={{ title: "Browse Properties" }} />
+    <Stack.Screen name="PropertyDetail" component={PropertyDetailScreen} options={{ title: "Property Details" }} />
+    <Stack.Screen name="LocationInfo" component={LocationInfoScreen} options={{ title: "Location" }} />
+    <Stack.Screen name="VerifyCase" component={VerifyCaseScreen} options={{ title: "Verify Case" }} />
     <Stack.Screen name="Messages" component={MessagesScreen} />
-    <Stack.Screen name="PaymentHistory" component={PaymentHistoryScreen} options={{ title: ui("Payment History") }} />
+    <Stack.Screen name="PaymentHistory" component={PaymentHistoryScreen} options={{ title: "Payment History" }} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
-    <Stack.Screen name="PrivacyData" component={PrivacyDataScreen} options={{ title: ui("My Personal Data") }} />
+    <Stack.Screen name="PrivacyData" component={PrivacyDataScreen} options={{ title: "My Personal Data" }} />
     <Stack.Screen name="Notifications" component={NotificationsScreen} />
     {commonVerificationScreens()}
     {commonAppealScreens()}
     {commonTenancyScreens()}
-    <Stack.Screen name="TransportationBooking" component={TransportationBookingScreen} options={{ title: ui("Transportation") }} />
-    <Stack.Screen name="TransportationBookings" component={TransportationBookingsScreen} options={{ title: ui("Bookings") }} />
-    <Stack.Screen name="TransportationBookingDetail" component={TransportationBookingDetailScreen} options={{ title: ui("Booking Details") }} />
-    <Stack.Screen name="TransportationPayment" component={TransportationPaymentScreen} options={{ title: ui("Transport Payment") }} />
-    <Stack.Screen name="FumigationCleaningBooking" component={FumigationCleaningBookingScreen} options={{ title: ui("Fumigation & Cleaning") }} />
-    <Stack.Screen name="FumigationCleaningBookings" component={FumigationCleaningBookingsScreen} options={{ title: ui("Bookings") }} />
-    <Stack.Screen name="FumigationCleaningBookingDetail" component={FumigationCleaningBookingDetailScreen} options={{ title: ui("Booking Details") }} />
-    <Stack.Screen name="FumigationCleaningPayment" component={FumigationCleaningPaymentScreen} options={{ title: ui("Payment") }} />
+    <Stack.Screen name="TransportationBooking" component={TransportationBookingScreen} options={{ title: "Transportation" }} />
+    <Stack.Screen name="TransportationBookings" component={TransportationBookingsScreen} options={{ title: "Bookings" }} />
+    <Stack.Screen name="TransportationBookingDetail" component={TransportationBookingDetailScreen} options={{ title: "Booking Details" }} />
+    <Stack.Screen name="TransportationPayment" component={TransportationPaymentScreen} options={{ title: "Transport Payment" }} />
+    <Stack.Screen name="FumigationCleaningBooking" component={FumigationCleaningBookingScreen} options={{ title: "Fumigation & Cleaning" }} />
+    <Stack.Screen name="FumigationCleaningBookings" component={FumigationCleaningBookingsScreen} options={{ title: "Bookings" }} />
+    <Stack.Screen name="FumigationCleaningBookingDetail" component={FumigationCleaningBookingDetailScreen} options={{ title: "Booking Details" }} />
+    <Stack.Screen name="FumigationCleaningPayment" component={FumigationCleaningPaymentScreen} options={{ title: "Payment" }} />
 
-    <Stack.Screen name="Faq" component={PublicInfoScreen} initialParams={{ page: 'faq' }} options={{ title: ui("FAQ") }} />
-    <Stack.Screen name="HowItWorks" component={PublicInfoScreen} initialParams={{ page: 'how' }} options={{ title: ui("How It Works") }} />
-    <Stack.Screen name="Pricing" component={PublicInfoScreen} initialParams={{ page: 'pricing' }} options={{ title: ui("Pricing") }} />
-    <Stack.Screen name="LandlordGuide" component={PublicInfoScreen} initialParams={{ page: 'landlordGuide' }} options={{ title: ui("Landlord Guide") }} />
-    <Stack.Screen name="Privacy" component={PublicInfoScreen} initialParams={{ page: 'privacy' }} options={{ title: ui("Privacy") }} />
-    <Stack.Screen name="Terms" component={PublicInfoScreen} initialParams={{ page: 'terms' }} options={{ title: ui("Terms") }} />
-    <Stack.Screen name="NigeriaPage" component={PublicInfoScreen} initialParams={{ page: 'nigeria' }} options={{ title: ui("Nigeria") }} />
-    <Stack.Screen name="AboutUs" component={AboutUsScreen} options={{ title: ui("About RentalHub") }} />
-    <Stack.Screen name="Support" component={SupportScreen} options={{ title: ui("Support") }} />
-    <Stack.Screen name="FumigationCleaningCatalog" component={FumigationCleaningCatalogScreen} options={{ title: ui("Service Catalog") }} />
-    <Stack.Screen name="NativeTools" component={NativeToolsScreen} options={{ title: ui("More Tools") }} />
+    <Stack.Screen name="Faq" component={PublicInfoScreen} initialParams={{ page: 'faq' }} options={{ title: "FAQ" }} />
+    <Stack.Screen name="HowItWorks" component={PublicInfoScreen} initialParams={{ page: 'how' }} options={{ title: "How It Works" }} />
+    <Stack.Screen name="Pricing" component={PublicInfoScreen} initialParams={{ page: 'pricing' }} options={{ title: "Pricing" }} />
+    <Stack.Screen name="LandlordGuide" component={PublicInfoScreen} initialParams={{ page: 'landlordGuide' }} options={{ title: "Landlord Guide" }} />
+    <Stack.Screen name="Privacy" component={PublicInfoScreen} initialParams={{ page: 'privacy' }} options={{ title: "Privacy" }} />
+    <Stack.Screen name="Terms" component={PublicInfoScreen} initialParams={{ page: 'terms' }} options={{ title: "Terms" }} />
+    <Stack.Screen name="NigeriaPage" component={PublicInfoScreen} initialParams={{ page: 'nigeria' }} options={{ title: "Nigeria" }} />
+    <Stack.Screen name="AboutUs" component={AboutUsScreen} options={{ title: "About RentalHub" }} />
+    <Stack.Screen name="Support" component={SupportScreen} options={{ title: "Support" }} />
+    <Stack.Screen name="FumigationCleaningCatalog" component={FumigationCleaningCatalogScreen} options={{ title: "Service Catalog" }} />
+    <Stack.Screen name="NativeTools" component={NativeToolsScreen} options={{ title: "More Tools" }} />
     {commonInfoScreens()}
   </Stack.Navigator>); };
 
-const RecruitmentAdminRoot = () => { useInterfaceLanguage(); return (<Stack.Navigator screenOptions={screenOptions}>
-    <Stack.Screen name="RecruitmentAdmin" component={RecruitmentAdminScreen} options={{ title: ui("Recruitment Admin") }} />
+const RecruitmentAdminRoot = () => {  return (<Stack.Navigator screenOptions={screenOptions}>
+    <Stack.Screen name="RecruitmentAdmin" component={RecruitmentAdminScreen} options={{ title: "Recruitment Admin" }} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
-    <Stack.Screen name="PrivacyData" component={PrivacyDataScreen} options={{ title: ui("My Personal Data") }} />
+    <Stack.Screen name="PrivacyData" component={PrivacyDataScreen} options={{ title: "My Personal Data" }} />
     <Stack.Screen name="Messages" component={MessagesScreen} />
     <Stack.Screen name="Notifications" component={NotificationsScreen} />
-    <Stack.Screen name="Careers" component={CareersScreen} options={{ title: ui("Careers") }} />
-    <Stack.Screen name="Interview" component={InterviewScreen} options={{ title: ui("Interview") }} />
-    <Stack.Screen name="RecruitmentApplication" component={RecruitmentApplicationScreen} options={{ title: ui("Application") }} />
+    <Stack.Screen name="Careers" component={CareersScreen} options={{ title: "Careers" }} />
+    <Stack.Screen name="Interview" component={InterviewScreen} options={{ title: "Interview" }} />
+    <Stack.Screen name="RecruitmentApplication" component={RecruitmentApplicationScreen} options={{ title: "Application" }} />
     {commonVerificationScreens()}
     {commonAppealScreens()}
     {commonTenancyScreens()}
@@ -988,9 +988,9 @@ const MarketingAgentRoot = () => { useInterfaceLanguage(); return (<Stack.Naviga
     {commonInfoScreens()}
   </Stack.Navigator>); };
 
-const ZonalAdminRoot = () => { useInterfaceLanguage(); return (<Stack.Navigator screenOptions={screenOptions}>
-    <Stack.Screen name="ZonalDashboard" component={ZonalAdminScreen} options={{ title: ui("Zone Overview") }} />
-    <Stack.Screen name="ZonalList" component={ZonalListScreen} options={{ title: ui("Zone Records") }} />
+const ZonalAdminRoot = () => {  return (<Stack.Navigator screenOptions={screenOptions}>
+    <Stack.Screen name="ZonalDashboard" component={ZonalAdminScreen} options={{ title: "Zone Overview" }} />
+    <Stack.Screen name="ZonalList" component={ZonalListScreen} options={{ title: "Zone Records" }} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
     {commonVerificationScreens()}
     {commonAppealScreens()}

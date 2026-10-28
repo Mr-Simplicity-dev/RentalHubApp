@@ -372,7 +372,7 @@ const PropertyListScreen = ({ route, navigation }) => {
           </AppText>
           <AppText style={styles.accessText}>
             {locationAccessRequirement.message ||
-              'Pay once to browse verified homes outside your registered location.'}
+              ui('Pay once to browse verified homes outside your registered location.')}
           </AppText>
           {homeLocationLabel ? (
             <AppText style={styles.accessMeta}>{ui("Your registered area: ")}{homeLocationLabel}</AppText>
@@ -394,7 +394,7 @@ const PropertyListScreen = ({ route, navigation }) => {
               <>
                 <AppText style={styles.accessButtonText}>
                   {pendingLocationAccessReference
-                    ? 'Confirm payment'
+                    ? ui('Confirm payment')
                     : ui("Unlock for {value0}", {value0: (accessFeeLabel)})}
                 </AppText>
                 <Icon name="arrow-forward" size={18} color={colors.navy} />
@@ -407,7 +407,7 @@ const PropertyListScreen = ({ route, navigation }) => {
       {!locationAccessRequirement && !loading ? (
         <View style={styles.resultRow}>
           <AppText style={styles.resultText}>
-            {items.length ? ui("{value0}{value1} homes found", {value0: (items.length), value1: (hasMore ? '+' : '')}) : 'No homes found'}
+            {items.length ? ui("{value0}{value1} homes found", {value0: (items.length), value1: (hasMore ? '+' : '')}) : ui('No homes found')}
           </AppText>
           {activeFilterCount ? (
             <AppText style={styles.filterSummary}>{activeFilterCount}{ui(" filters active")}</AppText>

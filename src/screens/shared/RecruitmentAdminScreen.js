@@ -1,5 +1,5 @@
-import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
-import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
+
+
 import RecruitmentOpportunityManager from '../../components/admin/RecruitmentOpportunityManager';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Alert, ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -37,7 +37,7 @@ const getObject = (response) => {
   return pickObject(response?.data || response, ['data']);
 };
 
-const Chip = ({ label, active, onPress }) => { useInterfaceLanguage(); return (<TouchableOpacity
+const Chip = ({ label, active, onPress }) => {  return (<TouchableOpacity
     accessibilityRole="button"
     style={[styles.chip, active && styles.chipActive]}
     onPress={onPress}
@@ -46,7 +46,7 @@ const Chip = ({ label, active, onPress }) => { useInterfaceLanguage(); return (<
   </TouchableOpacity>); };
 
 const ApplicantCard = ({ applicant, onDecision, onReport }) => {
-  useInterfaceLanguage();
+
   const score = applicant.interview_score ?? applicant.score;
   const hasViolation = applicant.violation_detected || applicant.status === 'disqualified';
 
@@ -64,24 +64,24 @@ const ApplicantCard = ({ applicant, onDecision, onReport }) => {
       </View>
 
       <View style={styles.detailGrid}>
-        <AppText style={styles.detailText}>{ui("Role: ")}{applicant.role_title || ui("N/A")} {applicant.opportunity_type==="volunteer"?'· VOLUNTEER':''}</AppText>
-        <AppText style={styles.detailText}>{ui("Payment: ")}{applicant.opportunity_type==="volunteer"?'Not Applicable':(applicant.payment_status||ui("pending"))}</AppText>
-        <AppText style={styles.detailText}>{ui("Location: ")}{[applicant.state_name, applicant.lga_name].filter(Boolean).join(', ') || ui("N/A")}</AppText>
-        <AppText style={styles.detailText}>{ui("Interview: ")}{score != null ? ui("{value0}%", {value0: (Math.round(Number(score)))}) : 'Not completed'}</AppText>
+        <AppText style={styles.detailText}>{"Role: "}{applicant.role_title || "N/A"} {applicant.opportunity_type==="volunteer"?'· VOLUNTEER':''}</AppText>
+        <AppText style={styles.detailText}>{"Payment: "}{applicant.opportunity_type==="volunteer"?'Not Applicable':(applicant.payment_status||"pending")}</AppText>
+        <AppText style={styles.detailText}>{"Location: "}{[applicant.state_name, applicant.lga_name].filter(Boolean).join(', ') || "N/A"}</AppText>
+        <AppText style={styles.detailText}>{"Interview: "}{score != null ? `${Math.round(Number(score)) ?? "{value0}"}%` : 'Not completed'}</AppText>
       </View>
 
       <View style={styles.actions}>
         <TouchableOpacity style={styles.actionButton} onPress={() => onDecision(applicant, 'shortlist')}>
-          <AppText style={styles.actionText}>{ui("Shortlist")}</AppText>
+          <AppText style={styles.actionText}>{"Shortlist"}</AppText>
         </TouchableOpacity>
         <TouchableOpacity style={styles.actionButton} onPress={() => onDecision(applicant, 'approve')}>
-          <AppText style={styles.approveText}>{ui("Approve")}</AppText>
+          <AppText style={styles.approveText}>{"Approve"}</AppText>
         </TouchableOpacity>
         <TouchableOpacity style={styles.actionButton} onPress={() => onDecision(applicant, 'reject')}>
-          <AppText style={styles.rejectText}>{ui("Reject")}</AppText>
+          <AppText style={styles.rejectText}>{"Reject"}</AppText>
         </TouchableOpacity>
         <TouchableOpacity style={styles.actionButton} onPress={() => onReport(applicant)}>
-          <AppText style={styles.reportText}>{ui("Report")}</AppText>
+          <AppText style={styles.reportText}>{"Report"}</AppText>
         </TouchableOpacity>
       </View>
     </View>
@@ -89,7 +89,7 @@ const ApplicantCard = ({ applicant, onDecision, onReport }) => {
 };
 
 const RecruitmentAdminScreen = ({ navigation }) => {
-  const interfaceLanguage = useInterfaceLanguage();
+  const interfaceLanguage = 'en';
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [status, setStatus] = useState(null);
@@ -146,7 +146,7 @@ const RecruitmentAdminScreen = ({ navigation }) => {
     } catch (err) {
       Toast.show({
         type: 'error',
-        text1: ui("Recruitment admin failed"),
+        text1: "Recruitment admin failed",
         text2: getErrorMessage(err, 'Could not load recruitment admin overview'),
       });
     } finally {
@@ -172,9 +172,9 @@ const RecruitmentAdminScreen = ({ navigation }) => {
     const actionLabel = action === 'shortlist' ? 'shortlist' : action;
     Alert.alert(
       `${actionLabel.charAt(0).toUpperCase()}${actionLabel.slice(1)} applicant?`,
-      `${applicant.full_name || applicant.reference_number || ui("This applicant")} will be marked ${actionLabel}.`,
+      `${applicant.full_name || applicant.reference_number || "This applicant"} will be marked ${actionLabel}.`,
       [
-        { text: ui("Cancel"), style: 'cancel' },
+        { text: "Cancel", style: 'cancel' },
         {
           text: actionLabel,
           style: action === 'reject' ? 'destructive' : 'default',
@@ -184,12 +184,12 @@ const RecruitmentAdminScreen = ({ navigation }) => {
               if (action === 'approve') await recruitmentService.approveApplicant(applicant.id, payload);
               if (action === 'reject') await recruitmentService.rejectApplicant(applicant.id, { ...payload, reason: 'Rejected from mobile recruitment admin' });
               if (action === 'shortlist') await recruitmentService.shortlistApplicant(applicant.id, payload);
-              Toast.show({ type: 'success', text1: ui("Applicant {value0}ed", {value0: (actionLabel)}) });
+              Toast.show({ type: 'success', text1: `Applicant ${actionLabel ?? "{value0}"}ed` });
               loadData({ soft: true });
             } catch (err) {
               Toast.show({
                 type: 'error',
-                text1: ui("Decision failed"),
+                text1: "Decision failed",
                 text2: getErrorMessage(err, 'Could not update applicant'),
               });
             }
@@ -219,7 +219,7 @@ const RecruitmentAdminScreen = ({ navigation }) => {
       setDetailModal({ applicant, loading: false, visible: true });
       Toast.show({
         type: 'error',
-        text1: ui("Applicant details unavailable"),
+        text1: "Applicant details unavailable",
         text2: getErrorMessage(err, 'Could not load the full applicant record'),
       });
     }
@@ -227,23 +227,23 @@ const RecruitmentAdminScreen = ({ navigation }) => {
 
   const sendExportEmail = () => {
     Alert.alert(
-      ui("Email recruitment export?"),
-      ui("This sends a CSV export for the current filters to the configured recruitment email."),
+      "Email recruitment export?",
+      "This sends a CSV export for the current filters to the configured recruitment email.",
       [
-        { text: ui("Cancel"), style: 'cancel' },
+        { text: "Cancel", style: 'cancel' },
         {
-          text: ui("Send export"),
+          text: "Send export",
           onPress: async () => {
             try {
               await recruitmentService.emailDocuments({
                 ...queryParams,
                 application_ids: applicants.map((applicant) => applicant.id).filter(Boolean),
               });
-              Toast.show({ type: 'success', text1: ui("Recruitment export sent") });
+              Toast.show({ type: 'success', text1: "Recruitment export sent" });
             } catch (err) {
               Toast.show({
                 type: 'error',
-                text1: ui("Export failed"),
+                text1: "Export failed",
                 text2: getErrorMessage(err, 'Could not send recruitment export'),
               });
             }
@@ -256,25 +256,25 @@ const RecruitmentAdminScreen = ({ navigation }) => {
   return (
     <DashboardScreen refreshing={loading || refreshing} onRefresh={() => loadData({ soft: true })}>
       <DashboardHero
-        eyebrow={ui("RECRUITMENT ADMIN")}
-        title={ui("Hiring command centre")}
-        subtitle={ui("Filter candidates, review interview/payment health, make decisions and export reports natively.")}
+        eyebrow={"RECRUITMENT ADMIN"}
+        title={"Hiring command centre"}
+        subtitle={"Filter candidates, review interview/payment health, make decisions and export reports natively."}
         icon="briefcase-outline"
         onRefresh={() => loadData({ soft: true })}
       />
 
       <AdminAccountActions navigation={navigation} />
 
-      <MetricGrid tourTarget="recruitment_overview" tourLabel={ui("Recruitment overview")}>
-        <MetricCard label={ui("Volunteers")} value={String(analytics?.volunteer_applicants||0)} icon="heart-outline" color={colors.success} />
-        <MetricCard label={ui("Applicants")} value={String(analytics?.total_applicants || pagination?.total || applicants.length)} icon="people-outline" color={colors.blue} />
-        <MetricCard label={ui("Fees")} value={formatCurrency(paidFees)} icon="card-outline" color={colors.success} />
-        <MetricCard label={ui("Interviews")} value={String(completedInterviews)} icon="videocam-outline" color="#A66B00" />
-        <MetricCard label={ui("Avg score")} value={`${Math.round(Number(averageScore || 0))}%`} icon="school-outline" color={colors.navy} />
+      <MetricGrid tourTarget="recruitment_overview" tourLabel={"Recruitment overview"}>
+        <MetricCard label={"Volunteers"} value={String(analytics?.volunteer_applicants||0)} icon="heart-outline" color={colors.success} />
+        <MetricCard label={"Applicants"} value={String(analytics?.total_applicants || pagination?.total || applicants.length)} icon="people-outline" color={colors.blue} />
+        <MetricCard label={"Fees"} value={formatCurrency(paidFees)} icon="card-outline" color={colors.success} />
+        <MetricCard label={"Interviews"} value={String(completedInterviews)} icon="videocam-outline" color="#A66B00" />
+        <MetricCard label={"Avg score"} value={`${Math.round(Number(averageScore || 0))}%`} icon="school-outline" color={colors.navy} />
       </MetricGrid>
 
       <RecruitmentOpportunityManager status={status} cycles={cycles} roles={roles} onSaved={loadData} />
-      <DashboardSection title={ui("Recruitment status")}>
+      <DashboardSection title={"Recruitment status"}>
         <DashboardNotice
           title={status?.is_active ? 'Recruitment is open' : 'Recruitment is closed'}
           message={status?.message || 'Use this workspace to monitor cycles, roles, applicants and hiring decisions.'}
@@ -283,53 +283,53 @@ const RecruitmentAdminScreen = ({ navigation }) => {
       </DashboardSection>
 
       <DashboardSection
-        title={ui("Filters")}
-        subtitle={ui("Narrow candidates by status, payment, cycle, role, and search text.")}
+        title={"Filters"}
+        subtitle={"Narrow candidates by status, payment, cycle, role, and search text."}
         tourTarget="recruitment_filters"
       >
         <TextInput
           value={filters.search}
           onChangeText={(search) => updateFilter('search', search)}
-          placeholder={ui("Search name, email, phone or reference")}
+          placeholder={"Search name, email, phone or reference"}
           placeholderTextColor={colors.muted}
           style={styles.searchInput}
         />
 
-        <AppText style={styles.filterLabel}>{ui("Opportunity type")}</AppText><View style={styles.chipRow}>{['','employment','volunteer'].map(type=><Chip key={type||'all'} label={type||'All opportunities'} active={filters.opportunity_type===type} onPress={()=>{updateFilter('opportunity_type',type);updateFilter('payment_status','all');}}/>)}</View>
-        <AppText style={styles.filterLabel}>{ui("Status")}</AppText>
+        <AppText style={styles.filterLabel}>{"Opportunity type"}</AppText><View style={styles.chipRow}>{['','employment','volunteer'].map(type=><Chip key={type||'all'} label={type||'All opportunities'} active={filters.opportunity_type===type} onPress={()=>{updateFilter('opportunity_type',type);updateFilter('payment_status','all');}}/>)}</View>
+        <AppText style={styles.filterLabel}>{"Status"}</AppText>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipRow}>
           {statusOptions.map((option) => (
             <Chip key={option} label={option} active={filters.status === option} onPress={() => updateFilter('status', option)} />
           ))}
         </ScrollView>
 
-        <AppText style={styles.filterLabel}>{ui("Payment")}</AppText>
+        <AppText style={styles.filterLabel}>{"Payment"}</AppText>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipRow}>
           {paymentOptions.map((option) => (
             <Chip key={option} label={option} active={filters.payment_status === option} onPress={() => updateFilter('payment_status', option)} />
           ))}
         </ScrollView>
 
-        <AppText style={styles.filterLabel}>{ui("Cycles")}</AppText>
+        <AppText style={styles.filterLabel}>{"Cycles"}</AppText>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipRow}>
-          <Chip label={ui("All cycles")} active={!filters.cycle_id} onPress={() => updateFilter('cycle_id', '')} />
+          <Chip label={"All cycles"} active={!filters.cycle_id} onPress={() => updateFilter('cycle_id', '')} />
           {cycles.map((cycle) => (
             <Chip
               key={String(cycle.id)}
-              label={cycle.title || cycle.name || ui("Cycle {value0}", {value0: (cycle.id)})}
+              label={cycle.title || cycle.name || `Cycle ${cycle.id ?? "{value0}"}`}
               active={String(filters.cycle_id) === String(cycle.id)}
               onPress={() => updateFilter('cycle_id', String(cycle.id))}
             />
           ))}
         </ScrollView>
 
-        <AppText style={styles.filterLabel}>{ui("Roles")}</AppText>
+        <AppText style={styles.filterLabel}>{"Roles"}</AppText>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipRow}>
-          <Chip label={ui("All roles")} active={!filters.role_id} onPress={() => updateFilter('role_id', '')} />
+          <Chip label={"All roles"} active={!filters.role_id} onPress={() => updateFilter('role_id', '')} />
           {roles.map((role) => (
             <Chip
               key={String(role.id)}
-              label={role.title || ui("Role {value0}", {value0: (role.id)})}
+              label={role.title || `Role ${role.id ?? "{value0}"}`}
               active={String(filters.role_id) === String(role.id)}
               onPress={() => updateFilter('role_id', String(role.id))}
             />
@@ -338,8 +338,8 @@ const RecruitmentAdminScreen = ({ navigation }) => {
       </DashboardSection>
 
       <DashboardSection
-        title={ui("Hiring funnel")}
-        subtitle={ui("Status breakdown from the current analytics set.")}
+        title={"Hiring funnel"}
+        subtitle={"Status breakdown from the current analytics set."}
       >
         <View style={styles.funnelGrid}>
           {funnel.length ? funnel.map((item) => (
@@ -349,7 +349,7 @@ const RecruitmentAdminScreen = ({ navigation }) => {
             </View>
           )) : (
             <View style={styles.funnelCard}>
-              <AppText style={styles.funnelLabel}>{ui("No funnel data")}</AppText>
+              <AppText style={styles.funnelLabel}>{"No funnel data"}</AppText>
               <AppText style={styles.funnelValue}>0</AppText>
             </View>
           )}
@@ -357,8 +357,8 @@ const RecruitmentAdminScreen = ({ navigation }) => {
       </DashboardSection>
 
       <DashboardSection
-        title={ui("Candidates")}
-        subtitle={ui("{value0} matching applicants", {value0: (pagination?.total || applicants.length)})}
+        title={"Candidates"}
+        subtitle={`${(pagination?.total || applicants.length) ?? "{value0}"} matching applicants`}
         tourTarget="recruitment_candidates"
       >
         {applicants.map((applicant) => (
@@ -372,19 +372,19 @@ const RecruitmentAdminScreen = ({ navigation }) => {
         {!applicants.length ? (
           <View style={styles.emptyCard}>
             <Icon name="search-outline" size={24} color={colors.muted} />
-            <AppText style={styles.emptyText}>{ui("No applicants match the current filters.")}</AppText>
+            <AppText style={styles.emptyText}>{"No applicants match the current filters."}</AppText>
           </View>
         ) : null}
       </DashboardSection>
 
       <DashboardSection
-        title={ui("Reports and exports")}
-        subtitle={ui("Candidate reports, filtered CSV email exports and hiring decisions stay inside the mobile workflow.")}
+        title={"Reports and exports"}
+        subtitle={"Candidate reports, filtered CSV email exports and hiring decisions stay inside the mobile workflow."}
         tourTarget="recruitment_reports"
       >
         <ActionRow
-          title={ui("Email filtered CSV export")}
-          subtitle={ui("Send applicant summary for the current filters.")}
+          title={"Email filtered CSV export"}
+          subtitle={"Send applicant summary for the current filters."}
           icon="mail-outline"
           onPress={sendExportEmail}
         />
@@ -400,7 +400,7 @@ const RecruitmentAdminScreen = ({ navigation }) => {
           <Pressable style={styles.modalCard}>
             <View style={styles.modalHeader}>
               <View>
-                <AppText style={styles.modalEyebrow}>{ui("APPLICANT REPORT")}</AppText>
+                <AppText style={styles.modalEyebrow}>{"APPLICANT REPORT"}</AppText>
                 <AppText style={styles.modalTitle}>
                   {detailModal.applicant?.full_name || 'Applicant details'}
                 </AppText>
@@ -413,7 +413,7 @@ const RecruitmentAdminScreen = ({ navigation }) => {
             {detailModal.loading ? (
               <View style={styles.modalLoading}>
                 <ActivityIndicator color={colors.blue} />
-                <AppText style={styles.modalMuted}>{ui("Loading applicant record…")}</AppText>
+                <AppText style={styles.modalMuted}>{"Loading applicant record…"}</AppText>
               </View>
             ) : (
               <ScrollView contentContainerStyle={styles.detailList}>
@@ -435,12 +435,12 @@ const RecruitmentAdminScreen = ({ navigation }) => {
                 ].map(([label, value]) => (
                   <View key={label} style={styles.detailRow}>
                     <AppText style={styles.detailLabel}>{label}</AppText>
-                    <AppText style={styles.detailValue}>{value || ui("N/A")}</AppText>
+                    <AppText style={styles.detailValue}>{value || "N/A"}</AppText>
                   </View>
                 ))}
                 {detailModal.applicant?.suitability_reason ? (
                   <View style={styles.detailBlock}>
-                    <AppText style={styles.detailLabel}>{ui("Suitability note")}</AppText>
+                    <AppText style={styles.detailLabel}>{"Suitability note"}</AppText>
                     <AppText style={styles.detailValue}>{detailModal.applicant.suitability_reason}</AppText>
                   </View>
                 ) : null}

@@ -1,5 +1,5 @@
-import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
-import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
+
+
 import React, { useEffect, useState } from 'react';
 import Toast from 'react-native-toast-message';
 import {
@@ -15,7 +15,7 @@ import { getErrorMessage, pickList, pickObject } from '../../utils/http';
 import { colors } from '../../theme';
 
 const AdminComplianceScreen = () => {
-  useInterfaceLanguage();
+
   const [overview, setOverview] = useState(null);
   const [trend, setTrend] = useState([]);
 
@@ -30,7 +30,7 @@ const AdminComplianceScreen = () => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: ui("Failed"),
+        text1: "Failed",
         text2: getErrorMessage(error, 'Could not load compliance data'),
       });
     }
@@ -43,38 +43,38 @@ const AdminComplianceScreen = () => {
   return (
     <PremiumScreen>
       <PremiumHero
-        eyebrow={ui("Risk operations")}
-        title={ui("Compliance & risk")}
-        subtitle={ui("Monitor disputes, escalations, evidence coverage and risk signals from a native admin cockpit.")}
+        eyebrow={"Risk operations"}
+        title={"Compliance & risk"}
+        subtitle={"Monitor disputes, escalations, evidence coverage and risk signals from a native admin cockpit."}
         icon="shield-checkmark-outline"
-        right={<StatusPill label={ui("Risk {value0}", {value0: (overview?.riskScore ?? '-')})} color={colors.warning} />}
+        right={<StatusPill label={`Risk ${overview?.riskScore ?? '-' ?? "{value0}"}`} color={colors.warning} />}
       />
 
       <PremiumSectionTitle
-        title={ui("Overview")}
-        subtitle={ui("Key signals that need admin attention.")}
+        title={"Overview"}
+        subtitle={"Key signals that need admin attention."}
       />
       <PremiumCard>
-        <InfoRow icon="warning-outline" label={ui("Open disputes")} value={overview?.totalOpen ?? '-'} />
-        <InfoRow icon="arrow-up-circle-outline" label={ui("Escalated")} value={overview?.escalated ?? '-'} />
-        <InfoRow icon="hourglass-outline" label={ui("Aging cases")} value={overview?.aging ?? '-'} />
-        <InfoRow icon="document-lock-outline" label={ui("No evidence")} value={overview?.withoutEvidence ?? '-'} />
-        <InfoRow icon="briefcase-outline" label={ui("Lawyer activity")} value={overview?.lawyerActivity ?? '-'} />
+        <InfoRow icon="warning-outline" label={"Open disputes"} value={overview?.totalOpen ?? '-'} />
+        <InfoRow icon="arrow-up-circle-outline" label={"Escalated"} value={overview?.escalated ?? '-'} />
+        <InfoRow icon="hourglass-outline" label={"Aging cases"} value={overview?.aging ?? '-'} />
+        <InfoRow icon="document-lock-outline" label={"No evidence"} value={overview?.withoutEvidence ?? '-'} />
+        <InfoRow icon="briefcase-outline" label={"Lawyer activity"} value={overview?.lawyerActivity ?? '-'} />
       </PremiumCard>
 
       <PremiumSectionTitle
-        title={ui("Risk trend")}
-        subtitle={ui("Recent day-by-day risk scoring.")}
+        title={"Risk trend"}
+        subtitle={"Recent day-by-day risk scoring."}
       />
       <PremiumCard>
         {trend.length === 0 ? (
-          <InfoRow icon="analytics-outline" label={ui("Trend")} value="No trend data available" />
+          <InfoRow icon="analytics-outline" label={"Trend"} value="No trend data available" />
         ) : (
           trend.map((item, index) => (
             <InfoRow
               key={`${item.day}-${index}`}
               icon="pulse-outline"
-              label={item.day || ui("Day {value0}", {value0: (index + 1)})}
+              label={item.day || `Day ${index + 1 ?? "{value0}"}`}
               value={item.risk_score ?? item.riskScore ?? '-'}
             />
           ))

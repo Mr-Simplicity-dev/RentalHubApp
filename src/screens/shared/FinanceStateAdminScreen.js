@@ -1,5 +1,5 @@
-import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
-import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
+
+
 import React, { useCallback, useContext, useState } from 'react';
 import { Modal, ScrollView, StyleSheet, View } from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -22,7 +22,7 @@ import AppText from '../../components/common/AppText';
 const formatNaira = (value) => `₦${Number(value || 0).toLocaleString()}`;
 
 const FinanceStateAdminScreen = () => {
-  useInterfaceLanguage();
+
   const { user } = useContext(AuthContext);
   const isSuperAdmin = user?.user_type === 'super_admin';
 
@@ -53,7 +53,7 @@ const FinanceStateAdminScreen = () => {
     } catch (err) {
       Toast.show({
         type: 'error',
-        text1: ui("Failed"),
+        text1: "Failed",
         text2: getErrorMessage(err, 'Could not load state admins'),
       });
     } finally {
@@ -86,7 +86,7 @@ const FinanceStateAdminScreen = () => {
         admin_id: rateModal.id,
         commission_rate: pct / 100,
       });
-      Toast.show({ type: 'success', text1: ui("Commission rate updated") });
+      Toast.show({ type: 'success', text1: "Commission rate updated" });
       setRateModal(null);
       await load();
     } catch (err) {
@@ -117,7 +117,7 @@ const FinanceStateAdminScreen = () => {
       });
       Toast.show({
         type: 'success',
-        text1: fundsModal.action === "freeze" ? ui("Funds frozen") : ui("Funds unfrozen"),
+        text1: fundsModal.action === "freeze" ? "Funds frozen" : "Funds unfrozen",
       });
       setFundsModal(null);
       await load();
@@ -157,7 +157,7 @@ const FinanceStateAdminScreen = () => {
         assigned_city: assigned_city.trim() || undefined,
         commission_rate: commission_rate ? Number(commission_rate) / 100 : undefined,
       });
-      Toast.show({ type: 'success', text1: ui("State admin created") });
+      Toast.show({ type: 'success', text1: "State admin created" });
       setCreateOpen(false);
       setCreateForm({ full_name: '', email: '', phone: '', password: '', assigned_state: '', assigned_city: '', commission_rate: '' });
       await load();
@@ -169,7 +169,7 @@ const FinanceStateAdminScreen = () => {
   };
 
   if (loading) {
-    return <PremiumCenter loading title={ui("Loading state admins")} />;
+    return <PremiumCenter loading title={"Loading state admins"} />;
   }
 
   return (
@@ -180,15 +180,15 @@ const FinanceStateAdminScreen = () => {
         showsVerticalScrollIndicator={false}
       >
         <PremiumHero
-          eyebrow={ui("Super finance")}
-          title={ui("State admin management")}
-          subtitle={ui("Manage state financial admins, their commission rates and fund freezes.")}
+          eyebrow={"Super finance"}
+          title={"State admin management"}
+          subtitle={"Manage state financial admins, their commission rates and fund freezes."}
           icon="people-outline"
         />
 
         {isSuperAdmin ? (
           <PremiumButton
-            title={ui("Create state admin")}
+            title={"Create state admin"}
             onPress={() => {
               setCreateOpen(true);
               setError('');
@@ -200,7 +200,7 @@ const FinanceStateAdminScreen = () => {
 
         {admins.length === 0 ? (
           <PremiumCard>
-            <AppText style={styles.empty}>{ui("No state admins found.")}</AppText>
+            <AppText style={styles.empty}>{"No state admins found."}</AppText>
           </PremiumCard>
         ) : (
           admins.map((admin) => (
@@ -209,34 +209,34 @@ const FinanceStateAdminScreen = () => {
                 <View style={styles.cardCopy}>
                   <AppText style={styles.cardTitle}>{admin.full_name}</AppText>
                   <AppText style={styles.cardMeta}>
-                    {admin.assigned_state || ui("Unassigned")}
-                    {admin.assigned_city ? ui(" · {value0}", {value0: (admin.assigned_city)}) : ''}
+                    {admin.assigned_state || "Unassigned"}
+                    {admin.assigned_city ? ` · ${admin.assigned_city ?? "{value0}"}` : ''}
                   </AppText>
                 </View>
                 {admin.is_funds_frozen ? (
-                  <StatusPill label={ui("Frozen")} color={colors.danger} />
+                  <StatusPill label={"Frozen"} color={colors.danger} />
                 ) : (
-                  <StatusPill label={admin.is_active ? ui("Active") : ui("Inactive")} color={admin.is_active ? colors.success : colors.muted} />
+                  <StatusPill label={admin.is_active ? "Active" : "Inactive"} color={admin.is_active ? colors.success : colors.muted} />
                 )}
               </View>
-              <InfoRow icon="wallet-outline" label={ui("Wallet")} value={formatNaira(admin.admin_wallet_balance)} />
+              <InfoRow icon="wallet-outline" label={"Wallet"} value={formatNaira(admin.admin_wallet_balance)} />
               <InfoRow
                 icon="percent-outline"
-                label={ui("Commission rate")}
+                label={"Commission rate"}
                 value={`${Number(admin.admin_commission_rate || 0) * 100}%`}
               />
-              <InfoRow icon="cash-outline" label={ui("Paid commissions")} value={formatNaira(admin.paid_commission)} />
-              <InfoRow icon="receipt-outline" label={ui("Pending commission")} value={formatNaira(admin.pending_commission)} />
+              <InfoRow icon="cash-outline" label={"Paid commissions"} value={formatNaira(admin.paid_commission)} />
+              <InfoRow icon="receipt-outline" label={"Pending commission"} value={formatNaira(admin.pending_commission)} />
 
               <View style={styles.actions}>
                 <PremiumButton
-                  title={ui("Set rate")}
+                  title={"Set rate"}
                   onPress={() => openRate(admin)}
                   icon="options-outline"
                   style={styles.actionButton}
                 />
                 <PremiumButton
-                  title={admin.is_funds_frozen ? 'Unfreeze' : ui("Freeze")}
+                  title={admin.is_funds_frozen ? 'Unfreeze' : "Freeze"}
                   variant={admin.is_funds_frozen ? 'primary' : 'danger'}
                   onPress={() => openFunds(admin, admin.is_funds_frozen ? 'unfreeze' : 'freeze')}
                   icon={admin.is_funds_frozen ? 'lock-open-outline' : 'lock-closed-outline'}
@@ -252,10 +252,10 @@ const FinanceStateAdminScreen = () => {
         <Modal transparent visible animationType="fade" onRequestClose={() => setRateModal(null)}>
           <View style={styles.overlay}>
             <View style={styles.modalCard}>
-              <AppText style={styles.modalTitle}>{ui("Set commission rate")}</AppText>
+              <AppText style={styles.modalTitle}>{"Set commission rate"}</AppText>
               <AppText style={styles.modalSubtitle}>{rateModal.full_name}</AppText>
               <Input
-                label={ui("Rate (%)")}
+                label={"Rate (%)"}
                 value={rateValue}
                 onChangeText={setRateValue}
                 placeholder="1 – 20"
@@ -264,8 +264,8 @@ const FinanceStateAdminScreen = () => {
               />
               {error ? <AppText style={styles.error}>{error}</AppText> : null}
               <View style={styles.modalActions}>
-                <PremiumButton title={ui("Cancel")} variant="ghost" onPress={() => setRateModal(null)} disabled={busy} style={styles.actionButton} />
-                <PremiumButton title={busy ? 'Saving…' : ui("Save")} onPress={submitRate} loading={busy} style={styles.actionButton} />
+                <PremiumButton title={"Cancel"} variant="ghost" onPress={() => setRateModal(null)} disabled={busy} style={styles.actionButton} />
+                <PremiumButton title={busy ? 'Saving…' : "Save"} onPress={submitRate} loading={busy} style={styles.actionButton} />
               </View>
             </View>
           </View>
@@ -277,22 +277,22 @@ const FinanceStateAdminScreen = () => {
           <View style={styles.overlay}>
             <View style={styles.modalCard}>
               <AppText style={styles.modalTitle}>
-                {fundsModal.action === "freeze" ? ui("Freeze funds") : 'Unfreeze funds'}
+                {fundsModal.action === "freeze" ? "Freeze funds" : 'Unfreeze funds'}
               </AppText>
               <AppText style={styles.modalSubtitle}>{fundsModal.admin.full_name}</AppText>
               <Input
-                label={ui("Reason")}
+                label={"Reason"}
                 value={reason}
                 onChangeText={setReason}
-                placeholder={ui("Why are you changing this admin's funds status?")}
+                placeholder={"Why are you changing this admin's funds status?"}
                 multiline
                 numberOfLines={3}
                 containerStyle={styles.fieldGap}
               />
               {error ? <AppText style={styles.error}>{error}</AppText> : null}
               <View style={styles.modalActions}>
-                <PremiumButton title={ui("Cancel")} variant="ghost" onPress={() => setFundsModal(null)} disabled={busy} style={styles.actionButton} />
-                <PremiumButton title={busy ? 'Working…' : ui("Confirm")} onPress={submitFunds} loading={busy} style={styles.actionButton} />
+                <PremiumButton title={"Cancel"} variant="ghost" onPress={() => setFundsModal(null)} disabled={busy} style={styles.actionButton} />
+                <PremiumButton title={busy ? 'Working…' : "Confirm"} onPress={submitFunds} loading={busy} style={styles.actionButton} />
               </View>
             </View>
           </View>
@@ -304,15 +304,15 @@ const FinanceStateAdminScreen = () => {
           <View style={styles.overlay}>
             <ScrollView style={styles.createScroll}>
               <View style={styles.modalCard}>
-                <AppText style={styles.modalTitle}>{ui("Create state admin")}</AppText>
-                <Input label={ui("Full name")} value={createForm.full_name} onChangeText={setCreateField('full_name')} />
-                <Input label={ui("Email")} value={createForm.email} onChangeText={setCreateField('email')} keyboardType="email-address" containerStyle={styles.fieldGap} />
-                <Input label={ui("Phone")} value={createForm.phone} onChangeText={setCreateField('phone')} keyboardType="phone-pad" containerStyle={styles.fieldGap} />
-                <Input label={ui("Assigned state")} value={createForm.assigned_state} onChangeText={setCreateField('assigned_state')} containerStyle={styles.fieldGap} />
-                <Input label={ui("Assigned LGA/city (optional)")} value={createForm.assigned_city} onChangeText={setCreateField('assigned_city')} containerStyle={styles.fieldGap} />
-                <Input label={ui("Commission rate % (1–20, optional)")} value={createForm.commission_rate} onChangeText={setCreateField('commission_rate')} keyboardType="numeric" containerStyle={styles.fieldGap} />
+                <AppText style={styles.modalTitle}>{"Create state admin"}</AppText>
+                <Input label={"Full name"} value={createForm.full_name} onChangeText={setCreateField('full_name')} />
+                <Input label={"Email"} value={createForm.email} onChangeText={setCreateField('email')} keyboardType="email-address" containerStyle={styles.fieldGap} />
+                <Input label={"Phone"} value={createForm.phone} onChangeText={setCreateField('phone')} keyboardType="phone-pad" containerStyle={styles.fieldGap} />
+                <Input label={"Assigned state"} value={createForm.assigned_state} onChangeText={setCreateField('assigned_state')} containerStyle={styles.fieldGap} />
+                <Input label={"Assigned LGA/city (optional)"} value={createForm.assigned_city} onChangeText={setCreateField('assigned_city')} containerStyle={styles.fieldGap} />
+                <Input label={"Commission rate % (1–20, optional)"} value={createForm.commission_rate} onChangeText={setCreateField('commission_rate')} keyboardType="numeric" containerStyle={styles.fieldGap} />
                 <Input
-                  label={ui("Temporary password")}
+                  label={"Temporary password"}
                   value={createForm.password}
                   onChangeText={setCreateField('password')}
                   secureTextEntry
@@ -320,7 +320,7 @@ const FinanceStateAdminScreen = () => {
                 />
                 {error ? <AppText style={styles.error}>{error}</AppText> : null}
                 <View style={styles.modalActions}>
-                  <PremiumButton title={ui("Cancel")} variant="ghost" onPress={() => setCreateOpen(false)} disabled={busy} style={styles.actionButton} />
+                  <PremiumButton title={"Cancel"} variant="ghost" onPress={() => setCreateOpen(false)} disabled={busy} style={styles.actionButton} />
                   <PremiumButton title={busy ? 'Creating…' : 'Create'} onPress={submitCreate} loading={busy} style={styles.actionButton} />
                 </View>
               </View>

@@ -1,5 +1,5 @@
-import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
-import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
+
+
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Alert, ScrollView, StyleSheet, Switch, View } from 'react-native';
 import { File, Paths } from 'expo-file-system';
@@ -31,7 +31,7 @@ const money = n => '₦' + Number(n || 0).toLocaleString('en-NG', {
   minimumFractionDigits: 2
 });
 export default function AssistedRegistrationScreen() {
-  useInterfaceLanguage();
+
   const {
     user
   } = useContext(AuthContext);
@@ -110,11 +110,11 @@ export default function AssistedRegistrationScreen() {
     await refresh();
     await requestId();
   });
-  const cash = row => Alert.alert(ui("Confirm cash received"), row.full_name + ' — ' + money(row.amount_due) + ui("\nConfirm only if you received the full amount in cash. You must remit this money. An unconfirmed transfer is not cash."), [{
-    text: ui("Cancel"),
+  const cash = row => Alert.alert("Confirm cash received", row.full_name + ' — ' + money(row.amount_due) + "\nConfirm only if you received the full amount in cash. You must remit this money. An unconfirmed transfer is not cash.", [{
+    text: "Cancel",
     style: 'cancel'
   }, {
-    text: ui("I received the cash"),
+    text: "I received the cash",
     onPress: () => run(async () => {
       await api.post('/assisted-registration/staff/' + encodeURIComponent(row.reference) + '/cash', {
         amount: row.amount_due,
@@ -134,7 +134,7 @@ export default function AssistedRegistrationScreen() {
       if (await Sharing.isAvailableAsync()) await Sharing.shareAsync(file.uri, {
         mimeType: 'application/pdf',
         UTI: 'com.adobe.pdf',
-        dialogTitle: ui("Registration receipt")
+        dialogTitle: "Registration receipt"
       });else throw new Error('Receipt sharing is unavailable on this device. Use the web workspace.');
     } finally {
       try {
@@ -142,7 +142,7 @@ export default function AssistedRegistrationScreen() {
       } catch {}
     }
   });
-  if (!roles.includes(user?.user_type)) return <View style={styles.card}><AppText>{ui("Support registration access required.")}</AppText></View>;
+  if (!roles.includes(user?.user_type)) return <View style={styles.card}><AppText>{"Support registration access required."}</AppText></View>;
   const state = locations.find(s => String(s.id) === String(form.state_id));
   const field = (key, label, extra = {}) => <Input key={key} label={label} value={form[key]} onChangeText={v => update(key, v)} editable={!busy} {...extra} />;
   const toggle = (key, label) => <View style={styles.toggle}><AppText style={styles.toggleText}>{label}</AppText><Switch value={form[key]} disabled={busy} onValueChange={v => update(key, v)} accessibilityLabel={label} /></View>;
@@ -151,11 +151,11 @@ export default function AssistedRegistrationScreen() {
     title,
     options
   });
-  return <><ScrollView contentContainerStyle={styles.page} keyboardShouldPersistTaps="handled"><AppText style={styles.title}>{ui("Assisted account registration")}</AppText><AppText>{ui("Explain the account, identity checks and fee to the customer. Customer passwords and verification codes remain private.")}</AppText>{message ? <AppText accessibilityLiveRegion="polite">{message}</AppText> : null}<View style={styles.card}><AppText style={styles.heading}>{ui("Customer details")}</AppText><SelectField label={ui("Account type")} value={form.user_type === 'tenant' ? 'Tenant' : 'Landlord'} disabled={busy} onPress={() => choose('user_type', 'Account type', [{
-          label: ui("Tenant"),
+  return <><ScrollView contentContainerStyle={styles.page} keyboardShouldPersistTaps="handled"><AppText style={styles.title}>{"Assisted account registration"}</AppText><AppText>{"Explain the account, identity checks and fee to the customer. Customer passwords and verification codes remain private."}</AppText>{message ? <AppText accessibilityLiveRegion="polite">{message}</AppText> : null}<View style={styles.card}><AppText style={styles.heading}>{"Customer details"}</AppText><SelectField label={"Account type"} value={form.user_type === 'tenant' ? 'Tenant' : 'Landlord'} disabled={busy} onPress={() => choose('user_type', 'Account type', [{
+          label: "Tenant",
           value: 'tenant'
         }, {
-          label: ui("Landlord"),
+          label: "Landlord",
           value: 'landlord'
         }])} />{field('full_name', 'Full name')}{field('phone', 'Customer phone number', {
           keyboardType: 'phone-pad'
@@ -167,25 +167,25 @@ export default function AssistedRegistrationScreen() {
             maxLength: 11
           })}{field('date_of_birth', 'Date of birth (YYYY-MM-DD)', {
             placeholder: '1990-01-31'
-          })}</>}<SelectField label={ui("State")} value={state?.state_name} disabled={busy} onPress={() => choose('state_id', 'State', locations.map(s => ({
+          })}</>}<SelectField label={"State"} value={state?.state_name} disabled={busy} onPress={() => choose('state_id', 'State', locations.map(s => ({
           label: s.state_name,
           value: s.id
-        })))} /><SelectField label={ui("Local government area")} value={form.lga_name} disabled={busy || !state} onPress={() => choose('lga_name', 'Local government area', (state?.lgas || []).map(s => ({
+        })))} /><SelectField label={"Local government area"} value={form.lga_name} disabled={busy || !state} onPress={() => choose('lga_name', 'Local government area', (state?.lgas || []).map(s => ({
           label: s,
           value: s
         })))} />{toggle('use_rentalhub_lawyers', 'Use platform coverage assistance (fee included in quote)')}{!form.use_rentalhub_lawyers && field('lawyer_email', 'Customer’s own lawyer email', {
           keyboardType: 'email-address',
           autoCapitalize: 'none'
-        })}{form.user_type === "landlord" && toggle('use_rentalhub_agents', 'Use a platform property agent (fee included in quote)')}{toggle('consent_confirmed', 'I explained registration and obtained the customer’s agreement.')}{pricing && <View style={styles.quote}><AppText>{ui("Registration: ")}{money(pricing.base_amount)}</AppText><AppText>{ui("Coverage assistance: ")}{money(pricing.lawyer_amount)}</AppText><AppText>{ui("Property agent: ")}{money(pricing.agent_amount)}</AppText><AppText style={styles.heading}>{ui("Total: ")}{money(pricing.amount)}</AppText><AppText>{ui("Account is created unpaid. Record cash only after receiving it, or let the customer pay after sign-in.")}</AppText></View>}<Button title={pricing ? 'Create customer account' : 'Review registration fee'} onPress={submit} loading={busy} /></View><View style={styles.card}><AppText style={styles.heading}>{ui("Registrations and receipts")}</AppText><Input label={ui("Search name, phone or reference")} value={search} onChangeText={setSearch} /><Button title={ui("Search / refresh")} variant="outline" onPress={() => run(refresh)} disabled={busy} />{records.map(row => <View key={row.reference} style={styles.record}><AppText style={styles.heading}>{row.full_name}</AppText><AppText>{row.user_type} · {row.phone}</AppText><AppText>{row.state_name}, {row.lga_name}</AppText><AppText>{row.reference}</AppText><AppText>{money(row.amount_due)} — {row.collection_method === 'waived' ? 'Fee waived' : row.status === "paid" ? ui("Paid") : ui("Unpaid")}</AppText>{row.collection_method === 'cash' && <AppText>{ui("Cash remittance: ")}{row.remittance_status}</AppText>}{row.status === "paid" ? <Button title={row.collection_method === 'waived' ? 'Download acknowledgement' : 'Generate receipt'} variant="outline" disabled={busy} onPress={() => receipt(row)} /> : <Button title={ui("Record cash received")} disabled={busy} onPress={() => cash(row)} />} {['super_admin', 'super_support_admin'].includes(user.user_type) && row.remittance_status === 'outstanding' && <Button title={ui("Acknowledge cash remittance")} variant="outline" disabled={busy} onPress={() => Alert.alert(ui("Acknowledge cash remittance"), ui("Confirm that you received this collected money. You cannot acknowledge your own collection."), [{
-            text: ui("Cancel"),
+        })}{form.user_type === "landlord" && toggle('use_rentalhub_agents', 'Use a platform property agent (fee included in quote)')}{toggle('consent_confirmed', 'I explained registration and obtained the customer’s agreement.')}{pricing && <View style={styles.quote}><AppText>{"Registration: "}{money(pricing.base_amount)}</AppText><AppText>{"Coverage assistance: "}{money(pricing.lawyer_amount)}</AppText><AppText>{"Property agent: "}{money(pricing.agent_amount)}</AppText><AppText style={styles.heading}>{"Total: "}{money(pricing.amount)}</AppText><AppText>{"Account is created unpaid. Record cash only after receiving it, or let the customer pay after sign-in."}</AppText></View>}<Button title={pricing ? 'Create customer account' : 'Review registration fee'} onPress={submit} loading={busy} /></View><View style={styles.card}><AppText style={styles.heading}>{"Registrations and receipts"}</AppText><Input label={"Search name, phone or reference"} value={search} onChangeText={setSearch} /><Button title={"Search / refresh"} variant="outline" onPress={() => run(refresh)} disabled={busy} />{records.map(row => <View key={row.reference} style={styles.record}><AppText style={styles.heading}>{row.full_name}</AppText><AppText>{row.user_type} · {row.phone}</AppText><AppText>{row.state_name}, {row.lga_name}</AppText><AppText>{row.reference}</AppText><AppText>{money(row.amount_due)} — {row.collection_method === 'waived' ? 'Fee waived' : row.status === "paid" ? "Paid" : "Unpaid"}</AppText>{row.collection_method === 'cash' && <AppText>{"Cash remittance: "}{row.remittance_status}</AppText>}{row.status === "paid" ? <Button title={row.collection_method === 'waived' ? 'Download acknowledgement' : 'Generate receipt'} variant="outline" disabled={busy} onPress={() => receipt(row)} /> : <Button title={"Record cash received"} disabled={busy} onPress={() => cash(row)} />} {['super_admin', 'super_support_admin'].includes(user.user_type) && row.remittance_status === 'outstanding' && <Button title={"Acknowledge cash remittance"} variant="outline" disabled={busy} onPress={() => Alert.alert("Acknowledge cash remittance", "Confirm that you received this collected money. You cannot acknowledge your own collection.", [{
+            text: "Cancel",
             style: 'cancel'
           }, {
-            text: ui("Confirm received"),
+            text: "Confirm received",
             onPress: () => run(async () => {
               await api.post('/assisted-registration/staff/' + encodeURIComponent(row.reference) + '/remittance');
               await refresh();
             })
-          }])} />}</View>)}</View><View style={styles.card}><AppText style={styles.heading}>{ui("Office fingerprint verification")}</AppText><AppText>{ui("Unavailable until a licensed matching engine and secure enrollment service are configured. The reader software alone cannot safely match an account. No fingerprints are collected or stored.")}</AppText></View></ScrollView><OptionPickerModal visible={Boolean(picker)} title={picker?.title} options={picker?.options || []} searchable onClose={() => setPicker(null)} onSelect={item => {
+          }])} />}</View>)}</View><View style={styles.card}><AppText style={styles.heading}>{"Office fingerprint verification"}</AppText><AppText>{"Unavailable until a licensed matching engine and secure enrollment service are configured. The reader software alone cannot safely match an account. No fingerprints are collected or stored."}</AppText></View></ScrollView><OptionPickerModal visible={Boolean(picker)} title={picker?.title} options={picker?.options || []} searchable onClose={() => setPicker(null)} onSelect={item => {
       update(picker.key, item.value);
       setPicker(null);
     }} /></>;

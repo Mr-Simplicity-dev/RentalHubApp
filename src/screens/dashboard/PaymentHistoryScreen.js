@@ -261,7 +261,7 @@ const PaymentHistoryScreen = ({ navigation }) => {
               <AppText style={styles.emptyTitle}>{ui("No transactions here")}</AppText>
               <AppText style={styles.emptyText}>
                 {filter === "all"
-                  ? 'Your RentalHub payments will appear here.'
+                  ? ui('Your RentalHub payments will appear here.')
                   : ui("You don’t have any {value0} transactions.", {value0: (filter)})}
               </AppText>
             </View>
@@ -289,7 +289,7 @@ const PaymentHistoryScreen = ({ navigation }) => {
               <View style={styles.paymentBody}>
                 <AppText style={styles.type}>{formatPaymentType(item.payment_type)}</AppText>
                 <AppText style={styles.meta} numberOfLines={1}>
-                  {item.property_title || item.payment_method || 'RentalHub transaction'}
+                  {item.property_title || item.payment_method || ui('RentalHub transaction')}
                 </AppText>
                 <AppText style={styles.date}>
                   {item.created_at ? new Date(item.created_at).toLocaleString() : ''}
@@ -350,7 +350,7 @@ const PaymentHistoryScreen = ({ navigation }) => {
                           || ui("ARH-RCPT-{value0}", {value0: (String(selectedReceipt.id || 0).padStart(6, '0'))})}
                       </AppText>
                       <AppText style={styles.receiptDocType}>
-                        {receiptData?.documentType || 'OFFICIAL PAYMENT RECEIPT'}
+                        {receiptData?.documentType || ui('OFFICIAL PAYMENT RECEIPT')}
                       </AppText>
                       <AppText style={styles.receiptType}>
                         {formatPaymentType(selectedReceipt.payment_type)}

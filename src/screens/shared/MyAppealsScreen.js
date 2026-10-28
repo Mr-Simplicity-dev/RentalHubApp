@@ -104,7 +104,7 @@ const MyAppealsScreen = ({ navigation }) => {
             <View style={styles.cardHeader}>
               <View style={styles.titleBlock}>
                 <AppText style={styles.cardTitle}>
-                  {item.appeal_type === "property" ? 'Property appeal' : 'Verification appeal'}
+                  {item.appeal_type === "property" ? ui('Property appeal') : ui('Verification appeal')}
                 </AppText>
                 {item.property_title ? (
                   <AppText style={styles.propertyTitle}>{item.property_title}</AppText>

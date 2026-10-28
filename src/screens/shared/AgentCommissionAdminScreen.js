@@ -1,5 +1,5 @@
-import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
-import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
+
+
 import React, { useCallback, useState } from 'react';
 import { Modal, StyleSheet, View } from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -46,7 +46,7 @@ const STATUS_COLORS = {
 const STATUS_TABS = ['pending_verification', 'verified', 'paid', 'reversed'];
 
 const AgentCommissionAdminScreen = () => {
-  useInterfaceLanguage();
+
   const [tab, setTab] = useState('pending_verification');
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -63,7 +63,7 @@ const AgentCommissionAdminScreen = () => {
     } catch (err) {
       Toast.show({
         type: 'error',
-        text1: ui("Failed"),
+        text1: "Failed",
         text2: getErrorMessage(err, 'Could not load commissions'),
       });
     } finally {
@@ -90,13 +90,13 @@ const AgentCommissionAdminScreen = () => {
     try {
       if (modal.action === 'verify') {
         await agentCommissionAdminService.verifyCommission(modal.item.id);
-        Toast.show({ type: 'success', text1: ui("Commission verified") });
+        Toast.show({ type: 'success', text1: "Commission verified" });
       } else {
         await agentCommissionAdminService.reverseCommission(
           modal.item.id,
           reason.trim()
         );
-        Toast.show({ type: 'success', text1: ui("Commission reversed") });
+        Toast.show({ type: 'success', text1: "Commission reversed" });
       }
       setModal(null);
       await load();
@@ -108,7 +108,7 @@ const AgentCommissionAdminScreen = () => {
   };
 
   if (loading && items.length === 0) {
-    return <PremiumCenter loading title={ui("Loading commissions")} />;
+    return <PremiumCenter loading title={"Loading commissions"} />;
   }
 
   const tabBar = (
@@ -138,16 +138,16 @@ const AgentCommissionAdminScreen = () => {
         header={
           <>
             <PremiumHero
-              eyebrow={ui("Super admin")}
-              title={ui("Agent commissions")}
-              subtitle={ui("Verify, monitor and reverse agent commission ledger entries.")}
+              eyebrow={"Super admin"}
+              title={"Agent commissions"}
+              subtitle={"Verify, monitor and reverse agent commission ledger entries."}
               icon="cash-outline"
             />
             {tabBar}
           </>
         }
-        emptyTitle={ui("No {value0} commissions", {value0: (tab.replace(/_/g, ' '))})}
-        emptyMessage={ui("Commission ledger entries will appear here.")}
+        emptyTitle={`No ${tab.replace(/_/g, ' ') ?? "{value0}"} commissions`}
+        emptyMessage={"Commission ledger entries will appear here."}
         emptyIcon="cash-outline"
         renderItem={({ item }) => {
           const color = STATUS_COLORS[item.status] || colors.blue;
@@ -156,7 +156,7 @@ const AgentCommissionAdminScreen = () => {
             <PremiumCard>
               <View style={styles.cardTop}>
                 <View style={styles.cardCopy}>
-                  <AppText style={styles.cardTitle}>{item.agent_name || ui("Agent #{value0}", {value0: (item.agent_user_id)})}</AppText>
+                  <AppText style={styles.cardTitle}>{item.agent_name || `Agent #${item.agent_user_id ?? "{value0}"}`}</AppText>
                   <AppText style={styles.cardMeta}>
                     {String(item.transaction_type || 'commission').replace(/_/g, ' ')} ·{' '}
                     {formatDate(item.created_at)}
@@ -166,21 +166,21 @@ const AgentCommissionAdminScreen = () => {
               </View>
               <InfoRow
                 icon="cash-outline"
-                label={ui("Amount")}
+                label={"Amount"}
                 value={`${signed ? '-' : ''}${formatNaira(item.amount)}`}
               />
               {item.description ? (
-                <InfoRow icon="chatbubble-outline" label={ui("Description")} value={item.description} />
+                <InfoRow icon="chatbubble-outline" label={"Description"} value={item.description} />
               ) : null}
               {item.landlord_name ? (
-                <InfoRow icon="business-outline" label={ui("Landlord")} value={item.landlord_name} />
+                <InfoRow icon="business-outline" label={"Landlord"} value={item.landlord_name} />
               ) : null}
-              {item.notes ? <InfoRow icon="document-text-outline" label={ui("Notes")} value={item.notes} /> : null}
+              {item.notes ? <InfoRow icon="document-text-outline" label={"Notes"} value={item.notes} /> : null}
 
               <View style={styles.actions}>
                 {item.status === 'pending_verification' ? (
                   <PremiumButton
-                    title={ui("Verify")}
+                    title={"Verify"}
                     onPress={() => openAction(item, 'verify')}
                     icon="shield-checkmark-outline"
                     style={styles.actionButton}
@@ -188,7 +188,7 @@ const AgentCommissionAdminScreen = () => {
                 ) : null}
                 {item.status !== "reversed" ? (
                   <PremiumButton
-                    title={ui("Reverse")}
+                    title={"Reverse"}
                     variant="ghost"
                     onPress={() => openAction(item, 'reverse')}
                     icon="arrow-undo-outline"
@@ -209,15 +209,15 @@ const AgentCommissionAdminScreen = () => {
                 {modal.action === "verify" ? 'Verify commission' : 'Reverse commission'}
               </AppText>
               <AppText style={styles.modalSubtitle}>
-                {modal.item.agent_name || ui("Commission #{value0}", {value0: (modal.item.id)})} · {formatNaira(modal.item.amount)}
+                {modal.item.agent_name || `Commission #${modal.item.id ?? "{value0}"}`} · {formatNaira(modal.item.amount)}
               </AppText>
 
               {modal.action === "reverse" ? (
                 <Input
-                  label={ui("Reason (optional)")}
+                  label={"Reason (optional)"}
                   value={reason}
                   onChangeText={setReason}
-                  placeholder={ui("Why is this commission being reversed?")}
+                  placeholder={"Why is this commission being reversed?"}
                   multiline
                   numberOfLines={3}
                   containerStyle={styles.fieldGap}
@@ -228,14 +228,14 @@ const AgentCommissionAdminScreen = () => {
 
               <View style={styles.modalActions}>
                 <PremiumButton
-                  title={ui("Cancel")}
+                  title={"Cancel"}
                   variant="ghost"
                   onPress={() => setModal(null)}
                   disabled={busy}
                   style={styles.actionButton}
                 />
                 <PremiumButton
-                  title={busy ? 'Working…' : ui("Confirm")}
+                  title={busy ? 'Working…' : "Confirm"}
                   onPress={submit}
                   loading={busy}
                   style={styles.actionButton}

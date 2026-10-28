@@ -17,7 +17,8 @@
     "test:language": "node scripts/verify-language-layout.cjs",
     "test:tour": "node scripts/verify-tour-system.cjs",
     "test:typography": "node scripts/verify-typography.cjs",
-    "test:localization": "node scripts/verify-login-language.cjs && node scripts/verify-interface-localization.cjs"
+    "test:localization": "node scripts/verify-login-language.cjs && node scripts/verify-interface-localization.cjs --customer && node scripts/audit-customer-inline-copy.cjs --check && node scripts/verify-customer-catalogues.cjs",
+    "test:registration": "node scripts/verify-registration-action.cjs"
   },
   "dependencies": {
     "@expo-google-fonts/inter": "^0.4.2",

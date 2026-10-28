@@ -1,5 +1,5 @@
-import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
-import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
+
+
 import React, { useEffect, useState } from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -26,7 +26,7 @@ const getStatusColor = (status) => {
 };
 
 const FinancialRevenueReportScreen = () => {
-  useInterfaceLanguage();
+
   const [revenueData, setRevenueData] = useState(null);
   const [transactions, setTransactions] = useState([]);
   const [period, setPeriod] = useState('monthly');
@@ -42,7 +42,7 @@ const FinancialRevenueReportScreen = () => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: ui("Failed"),
+        text1: "Failed",
         text2: getErrorMessage(error, 'Could not load revenue data'),
       });
     } finally {
@@ -59,9 +59,9 @@ const FinancialRevenueReportScreen = () => {
     <>
       <TourTarget id="financial_reports" padding={6} radius={18}>
         <PremiumHero
-          eyebrow={ui("Financial admin")}
-          title={ui("Revenue command centre")}
-          subtitle={ui("Monitor RentalHub revenue trends and the latest payment flow with a native executive summary.")}
+          eyebrow={"Financial admin"}
+          title={"Revenue command centre"}
+          subtitle={"Monitor RentalHub revenue trends and the latest payment flow with a native executive summary."}
           icon="analytics-outline"
         />
       </TourTarget>
@@ -84,22 +84,22 @@ const FinancialRevenueReportScreen = () => {
       {revenueData ? (
         <View style={styles.summaryRow}>
           <PremiumCard style={styles.summaryCard}>
-            <AppText style={styles.summaryLabel}>{ui("Total revenue")}</AppText>
+            <AppText style={styles.summaryLabel}>{"Total revenue"}</AppText>
             <AppText style={styles.summaryValue}>{formatNaira(revenueData.total_revenue || 0)}</AppText>
           </PremiumCard>
           <PremiumCard style={styles.summaryCard}>
-            <AppText style={styles.summaryLabel}>{ui("Growth")}</AppText>
+            <AppText style={styles.summaryLabel}>{"Growth"}</AppText>
             <AppText style={[
               styles.summaryValue,
               { color: (growth || 0) >= 0 ? colors.success : colors.danger },
             ]}>
-              {growth != null ? ui("{value0}%", {value0: (growth.toFixed(1))}) : ui("N/A")}
+              {growth != null ? `${growth.toFixed(1) ?? "{value0}"}%` : "N/A"}
             </AppText>
           </PremiumCard>
         </View>
       ) : null}
 
-      <AppText style={styles.sectionTitle}>{ui("Recent transactions")}</AppText>
+      <AppText style={styles.sectionTitle}>{"Recent transactions"}</AppText>
     </>
   );
 
@@ -113,8 +113,8 @@ const FinancialRevenueReportScreen = () => {
         loadData();
       }}
       header={header}
-      emptyTitle={ui("No transactions found")}
-      emptyMessage={ui("Revenue-linked transactions will appear here after payments are processed.")}
+      emptyTitle={"No transactions found"}
+      emptyMessage={"Revenue-linked transactions will appear here after payments are processed."}
       emptyIcon="trending-up-outline"
       renderItem={({ item }) => {
         const status = item.status || item.payment_status || 'pending';
@@ -129,12 +129,12 @@ const FinancialRevenueReportScreen = () => {
             </View>
             <InfoRow
               icon="card-outline"
-              label={ui("Method")}
+              label={"Method"}
               value={item.payment_method || item.method || 'N/A'}
             />
             <InfoRow
               icon="calendar-outline"
-              label={ui("Date")}
+              label={"Date"}
               value={item.created_at ? new Date(item.created_at).toLocaleDateString() : 'Not available'}
             />
           </PremiumCard>

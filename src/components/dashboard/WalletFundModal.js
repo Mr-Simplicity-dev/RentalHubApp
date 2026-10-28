@@ -133,8 +133,8 @@ const WalletFundModal = ({
               <Icon name="shield-checkmark-outline" size={18} color="#16a34a" />
               <AppText style={styles.noteText}>
                 {paymentMethod === 'bank_transfer'
-                  ? 'Transfer from your bank app, then upload the transfer screenshot. Your wallet is credited after confirmation.'
-                  : 'Payment is processed securely via Paystack. Your wallet is credited after successful payment.'}
+                  ? ui('Transfer from your bank app, then upload the transfer screenshot. Your wallet is credited after confirmation.')
+                  : ui('Payment is processed securely via Paystack. Your wallet is credited after successful payment.')}
               </AppText>
             </View>
 

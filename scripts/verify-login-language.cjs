@@ -29,7 +29,20 @@ function render(){cursor=0;nodes.length=0;visit(mod.exports.default({navigation:
  const signIn=nodes.find(n=>n.props.title==='تسجيل الدخول');await signIn.props.onPress();assert.equal(notice.text1,'خطأ');assert.equal(notice.text2,'يرجى ملء جميع الحقول');
  inputs[0].props.onChangeText('user@example.com');inputs[1].props.onChangeText('Password');
  for(const lang of ['en','ar','en','ar']){runtime.setInterfaceLanguage(lang);render();const fields=nodes.filter(n=>typeof n.props.onChangeText==='function');assert.equal(fields[0].props.value,'user@example.com');assert.equal(fields[1].props.value,'Password');assert.equal(fields[1].props.label,lang==='ar'?'كلمة المرور':'Password');}
+ for(const lang of ['ha','yo','ig']){
+  runtime.setInterfaceLanguage(lang);render();
+  const fields=nodes.filter(n=>typeof n.props.onChangeText==='function');
+  assert.equal(fields[0].props.value,'user@example.com');assert.equal(fields[1].props.value,'Password');
+  assert.notEqual(fields[1].props.label,'Password');
+  const values=nodes.flatMap(n=>typeof n.props.children==='string'?[n.props.children.trim()]:[]);
+  assert.ok(values.includes(runtime.translateUi('Good to see you again.')));
+  assert.ok(!values.includes('Good to see you again.'));
+  fields[0].props.onChangeText('');fields[1].props.onChangeText('');render();
+  const submit=nodes.find(n=>n.props.title===runtime.translateUi('Sign in'));await submit.props.onPress();
+  assert.equal(notice.text2,runtime.translateUi('Please fill in all fields'));assert.notEqual(notice.text2,'Please fill in all fields');
+  const cleared=nodes.filter(n=>typeof n.props.onChangeText==='function');cleared[0].props.onChangeText('user@example.com');cleared[1].props.onChangeText('Password');
+ }
  let changes=0;const unsubscribe=runtime.subscribeInterfaceLanguage(()=>changes++);runtime.setInterfaceLanguage('en');runtime.setInterfaceLanguage('en');assert.equal(changes,1);unsubscribe();
  assert.ok(fs.readFileSync('src/components/common/TurnstileWidget.js','utf8').includes("language: '${language}'"));
- console.log('Arabic Login labels, validation, English round trips, live subscriptions, preserved email/password values and security-widget language passed.');
+ console.log('Arabic, Hausa, Yoruba and Igbo Login labels, validation, English round trips, live subscriptions, preserved email/password values and security-widget language passed.');
 })().catch(error=>{console.error(error);process.exitCode=1;});

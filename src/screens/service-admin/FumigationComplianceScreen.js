@@ -1,5 +1,5 @@
-import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
-import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
+
+
 import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Alert, StyleSheet, Switch, TouchableOpacity, View } from 'react-native';
 import TextInput from '../../components/common/AppTextInput';
@@ -38,7 +38,7 @@ const buildInitialChecks = () =>
 const formatDateInput = () => new Date().toISOString().slice(0, 10);
 
 const FumigationComplianceScreen = ({ navigation, route }) => {
-  const interfaceLanguage = useInterfaceLanguage();
+  const interfaceLanguage = 'en';
   const booking = route?.params?.booking || {};
   const bookingId = route?.params?.bookingId || booking.id || booking.booking_id;
   const provider = route?.params?.provider || booking.provider || {};
@@ -88,7 +88,7 @@ const FumigationComplianceScreen = ({ navigation, route }) => {
     } catch (error) {
       Toast.show({
         type: 'info',
-        text1: ui("No compliance record loaded"),
+        text1: "No compliance record loaded",
         text2: getErrorMessage(error, 'You can submit a new safety record.'),
       });
     } finally {
@@ -106,15 +106,15 @@ const FumigationComplianceScreen = ({ navigation, route }) => {
 
   const submitCompliance = async () => {
     if (!providerId && !record?.provider_id) {
-      Alert.alert(ui("Provider required"), ui("Assign a provider before submitting safety compliance."));
+      Alert.alert("Provider required", "Assign a provider before submitting safety compliance.");
       return;
     }
     if (!officerName.trim()) {
-      Alert.alert(ui("Officer required"), ui("Enter the compliance officer name."));
+      Alert.alert("Officer required", "Enter the compliance officer name.");
       return;
     }
     if (!/^\d{4}-\d{2}-\d{2}/.test(inspectionDate)) {
-      Alert.alert(ui("Date required"), ui("Enter inspection date as YYYY-MM-DD."));
+      Alert.alert("Date required", "Enter inspection date as YYYY-MM-DD.");
       return;
     }
 
@@ -130,14 +130,14 @@ const FumigationComplianceScreen = ({ navigation, route }) => {
       setRecord(response?.data || null);
       Toast.show({
         type: 'success',
-        text1: ui("Compliance submitted"),
-        text2: ui("Safety record saved and booking marked in progress."),
+        text1: "Compliance submitted",
+        text2: "Safety record saved and booking marked in progress.",
       });
       navigation.goBack();
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: ui("Submission failed"),
+        text1: "Submission failed",
         text2: getErrorMessage(error, 'Could not submit compliance record'),
       });
     } finally {
@@ -148,9 +148,9 @@ const FumigationComplianceScreen = ({ navigation, route }) => {
   return (
     <DashboardScreen refreshing={loading} onRefresh={loadRecord}>
       <DashboardHero
-        eyebrow={ui("SAFETY COMPLIANCE")}
-        title={ui("Booking #{value0}", {value0: (bookingId)})}
-        subtitle={ui("Complete the native safety checklist for {value0}.", {value0: (providerName)})}
+        eyebrow={"SAFETY COMPLIANCE"}
+        title={`Booking #${bookingId ?? "{value0}"}`}
+        subtitle={`Complete the native safety checklist for ${providerName ?? "{value0}"}.`}
         icon="shield-checkmark-outline"
         onRefresh={loadRecord}
       />
@@ -164,7 +164,7 @@ const FumigationComplianceScreen = ({ navigation, route }) => {
         }
       />
 
-      <DashboardSection title={ui("Checklist {value0}/{value1}", {value0: (completionCount), value1: (CHECK_ITEMS.length)})}>
+      <DashboardSection title={`Checklist ${completionCount ?? "{value0}"}/${CHECK_ITEMS.length ?? "{value1}"}`}>
         {loading ? <ActivityIndicator color={colors.blue} /> : null}
         {CHECK_ITEMS.map(([key, title, subtitle]) => (
           <View key={key} style={styles.checkRow}>
@@ -183,32 +183,32 @@ const FumigationComplianceScreen = ({ navigation, route }) => {
         ))}
       </DashboardSection>
 
-      <DashboardSection title={ui("Inspection details")}>
-        <AppText style={styles.label}>{ui("Compliance officer")}</AppText>
+      <DashboardSection title={"Inspection details"}>
+        <AppText style={styles.label}>{"Compliance officer"}</AppText>
         <TextInput
-          accessibilityLabel={ui("Compliance officer name")}
+          accessibilityLabel={"Compliance officer name"}
           value={officerName}
           onChangeText={setOfficerName}
-          placeholder={ui("Officer full name")}
+          placeholder={"Officer full name"}
           placeholderTextColor={colors.muted}
           style={styles.input}
         />
-        <AppText style={styles.label}>{ui("Inspection date")}</AppText>
+        <AppText style={styles.label}>{"Inspection date"}</AppText>
         <TextInput
-          accessibilityLabel={ui("Inspection date")}
+          accessibilityLabel={"Inspection date"}
           value={inspectionDate}
           onChangeText={setInspectionDate}
-          placeholder={ui("YYYY-MM-DD")}
+          placeholder={"YYYY-MM-DD"}
           placeholderTextColor={colors.muted}
           style={styles.input}
         />
-        <AppText style={styles.label}>{ui("Notes")}</AppText>
+        <AppText style={styles.label}>{"Notes"}</AppText>
         <TextInput
-          accessibilityLabel={ui("Compliance notes")}
+          accessibilityLabel={"Compliance notes"}
           value={notes}
           onChangeText={setNotes}
           multiline
-          placeholder={ui("Add inspection observations, risks or handover notes")}
+          placeholder={"Add inspection observations, risks or handover notes"}
           placeholderTextColor={colors.muted}
           style={[styles.input, styles.textArea]}
         />
@@ -216,13 +216,13 @@ const FumigationComplianceScreen = ({ navigation, route }) => {
 
       <TouchableOpacity
         accessibilityRole="button"
-        accessibilityLabel={ui("Submit safety compliance")}
+        accessibilityLabel={"Submit safety compliance"}
         disabled={submitting}
         onPress={submitCompliance}
         style={[styles.submitButton, submitting ? styles.disabled : null]}
       >
         {submitting ? <ActivityIndicator color={colors.white} /> : <Icon name="send-outline" size={18} color={colors.white} />}
-        <AppText style={styles.submitText}>{submitting ? ui("Submitting...") : 'Submit compliance'}</AppText>
+        <AppText style={styles.submitText}>{submitting ? "Submitting..." : 'Submit compliance'}</AppText>
       </TouchableOpacity>
     </DashboardScreen>
   );

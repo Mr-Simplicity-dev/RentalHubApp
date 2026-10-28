@@ -118,8 +118,8 @@ const FumigationCleaningBookingsScreen = ({ navigation }) => {
             <PremiumCard>
               <View style={styles.bookingHeader}>
                 <View style={styles.titleBlock}>
-                  <AppText style={styles.serviceName}>{item.service_name || 'Fumigation/Cleaning'}</AppText>
-                  <AppText style={styles.serviceMeta}>{item.property_title || item.address || 'Service booking'}</AppText>
+                  <AppText style={styles.serviceName}>{item.service_name || ui('Fumigation/Cleaning')}</AppText>
+                  <AppText style={styles.serviceMeta}>{item.property_title || item.address || ui('Service booking')}</AppText>
                 </View>
                 <StatusPill label={STATUS_LABELS[status] || status} color={STATUS_COLORS[status] || colors.muted} />
               </View>

@@ -94,7 +94,7 @@ const SavingsGoalListScreen = ({ navigation }) => {
             <PremiumCard>
               <View style={styles.cardHeader}>
                 <View style={styles.titleBlock}>
-                  <AppText style={styles.cardTitle}>{item.property_title || 'Rent savings plan'}</AppText>
+                  <AppText style={styles.cardTitle}>{item.property_title || ui('Rent savings plan')}</AppText>
                   <AppText style={styles.cardTarget}>{formatNaira(item.target_savings_amount)}</AppText>
                 </View>
                 <StatusPill label={status} color={status === 'active' ? colors.blue : colors.muted} />

@@ -363,7 +363,7 @@ const WhatsAppBotScreen = ({ navigation, embedded=false, onHumanRequest }) => {
         )}
         <View style={[styles.bubble, isUser ? styles.bubbleUser : styles.bubbleBot]}>
           {!isUser && (
-            <AppText style={styles.botLabel}>RentalHub{msg.engine==='ai'?' · AI guidance':msg.engine==="verified"?' · Account record':''}</AppText>
+            <AppText style={styles.botLabel}>RentalHub{msg.engine==='ai'?ui(' · AI guidance'):msg.engine==="verified"?ui(' · Account record'):''}</AppText>
           )}
           <AppText style={[styles.bubbleText, isUser && styles.bubbleTextUser]}>
             {msg.text}
@@ -374,7 +374,7 @@ const WhatsAppBotScreen = ({ navigation, embedded=false, onHumanRequest }) => {
             </AppText>
           )}
           {msg.ticketDraft && <TouchableOpacity disabled={requestPending} style={styles.qrChip} onPress={()=>submitTicket(msg)}><AppText style={styles.qrChipText}>{ui("Submit ticket")}</AppText></TouchableOpacity>}
-          {msg.link && <TouchableOpacity style={styles.qrChip} onPress={()=>openCard(msg.link)}><AppText style={styles.qrChipText}>{msg.linkText || 'Open page'}</AppText></TouchableOpacity>}
+          {msg.link && <TouchableOpacity style={styles.qrChip} onPress={()=>openCard(msg.link)}><AppText style={styles.qrChipText}>{msg.linkText || ui('Open page')}</AppText></TouchableOpacity>}
           {msg.showQuickReplies && (
             <View style={styles.quickRepliesWrap}>
               {quickReplies.map((qr, i) => (

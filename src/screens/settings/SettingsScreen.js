@@ -50,7 +50,7 @@ const SettingsScreen = ({ navigation }) => {
   const interfaceLanguage = useInterfaceLanguage();
   const { user, logout } = useContext(AuthContext);
   const { replayTour } = useTour();
-  const { language, languages, setLanguage, t } = useLanguage();
+  const { language, languages, setLanguage, t, languageSelectionEnabled } = useLanguage();
   const [settings, setSettings] = useState(DEFAULT_APP_SETTINGS);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [deletePassword, setDeletePassword] = useState('');
@@ -279,7 +279,7 @@ const SettingsScreen = ({ navigation }) => {
         message={ui("Notification switches are saved on this device and synced to your account when the server is reachable.")}
       />
 
-      <DashboardSection
+      {languageSelectionEnabled !== false && <DashboardSection
         title={t('settings.languageSection')}
         subtitle={t('settings.languageHelp')}
       >
@@ -313,7 +313,7 @@ const SettingsScreen = ({ navigation }) => {
             );
           })}
         </View>
-      </DashboardSection>
+      </DashboardSection>}
 
       <DashboardSection title={ui("Notification preferences")}>
         {notificationKeys.map((key) => (
@@ -461,12 +461,12 @@ const SettingsScreen = ({ navigation }) => {
                   ? ui("Required")
                   : versionState?.update_available
                     ? ui("Update")
-                    : 'Current'}
+                    : ui('Current')}
               </AppText>
             </View>
           </View>
           <AppText style={styles.versionMessage}>
-            {versionState?.message || 'Check whether a newer app version is available before release testing.'}
+            {versionState?.message || ui('Check whether a newer app version is available before release testing.')}
           </AppText>
           <View style={styles.versionActions}>
             <TouchableOpacity
@@ -476,13 +476,13 @@ const SettingsScreen = ({ navigation }) => {
               style={styles.versionButton}
             >
               {checkingVersion ? <ActivityIndicator color={colors.blue} /> : <Icon name="refresh-outline" size={15} color={colors.blue} />}
-              <AppText style={styles.versionButtonText}>{checkingVersion ? 'Checking...' : 'Check update'}</AppText>
+              <AppText style={styles.versionButtonText}>{checkingVersion ? ui('Checking...') : ui('Check update')}</AppText>
             </TouchableOpacity>
             {versionState?.update_available ? (
               <TouchableOpacity accessibilityRole="button" onPress={openStoreLink} style={styles.versionButtonPrimary}>
                 <Icon name="download-outline" size={15} color={colors.white} />
                 <AppText style={styles.versionButtonPrimaryText}>
-                  {getDirectApkUrl(versionState) ? 'Install update' : 'Update now'}
+                  {getDirectApkUrl(versionState) ? ui('Install update') : ui('Update now')}
                 </AppText>
               </TouchableOpacity>
             ) : null}

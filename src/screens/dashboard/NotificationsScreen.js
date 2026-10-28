@@ -192,7 +192,7 @@ const NotificationsScreen = ({ navigation }) => {
                   </AppText>
                   {!item.is_read ? <View style={styles.unreadDot} /> : null}
                 </View>
-                <AppText style={styles.cardMessage}>{item.message || 'No message available'}</AppText>
+                <AppText style={styles.cardMessage}>{item.message || ui('No message available')}</AppText>
                 <AppText style={styles.cardDate}>
                   {item.created_at ? new Date(item.created_at).toLocaleString() : ''}
                 </AppText>

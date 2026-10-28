@@ -1,5 +1,5 @@
-import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
-import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
+
+
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import Toast from 'react-native-toast-message';
 import { serviceAdminService } from '../../services/serviceAdminService';
@@ -16,7 +16,7 @@ import {
 import WorkspaceBoard from '../../components/dashboard/WorkspaceBoard';
 
 const SuperAdminFumigationDashboardScreen = ({ navigation }) => {
-  const interfaceLanguage = useInterfaceLanguage();
+  const interfaceLanguage = 'en';
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -32,7 +32,7 @@ const SuperAdminFumigationDashboardScreen = ({ navigation }) => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: ui("Failed"),
+        text1: "Failed",
         text2: getErrorMessage(error, 'Could not load fumigation dashboard'),
       });
     } finally {
@@ -49,54 +49,54 @@ const SuperAdminFumigationDashboardScreen = ({ navigation }) => {
   const activeProviders = stats?.active_providers ?? stats?.activeProviders ?? 0;
 
   const summaryCards = [
-    { label: ui("Nationwide Bookings"), value: String(totalBookings), icon: 'calendar-outline', color: colors.blue },
+    { label: "Nationwide Bookings", value: String(totalBookings), icon: 'calendar-outline', color: colors.blue },
     {
-      label: ui("Compliance %"),
+      label: "Compliance %",
       value: compliancePercent == null ? '-' : `${compliancePercent}%`,
       icon: 'shield-checkmark-outline',
       color: colors.success,
     },
-    { label: ui("Active Providers"), value: String(activeProviders), icon: 'people-outline', color: '#7C3AED' },
+    { label: "Active Providers", value: String(activeProviders), icon: 'people-outline', color: '#7C3AED' },
   ];
 
   return (
     <DashboardScreen refreshing={loading} onRefresh={loadStats}>
       <DashboardHero
-        eyebrow={ui("FUMIGATION")}
-        title={ui("National fumigation oversight")}
-        subtitle={ui("Monitor nationwide bookings, provider compliance and active service providers.")}
+        eyebrow={"FUMIGATION"}
+        title={"National fumigation oversight"}
+        subtitle={"Monitor nationwide bookings, provider compliance and active service providers."}
         icon="sparkles-outline"
         onRefresh={loadStats}
       />
 
-      <MetricGrid tourTarget="service_dashboard" tourLabel={ui("National service overview")}>
+      <MetricGrid tourTarget="service_dashboard" tourLabel={"National service overview"}>
         {summaryCards.map((card) => (
           <MetricCard key={card.label} {...card} />
         ))}
       </MetricGrid>
 
-      <DashboardSection title={ui("Mobile workspaces")}>
+      <DashboardSection title={"Mobile workspaces"}>
         <WorkspaceBoard
           collapsible
           groups={[
             {
-              title: ui("Fumigation & Cleaning"),
+              title: "Fumigation & Cleaning",
               icon: 'sparkles-outline',
               items: [
                 {
-                  label: ui("Booking Queue"),
+                  label: "Booking Queue",
                   tourTarget: 'service_bookings',
                   icon: 'sparkles-outline',
                   onPress: () =>
                     navigation.navigate('ServiceBookings', { type: 'fumigation' }),
                 },
                 {
-                  label: ui("Messages"),
+                  label: "Messages",
                   icon: 'chatbubbles-outline',
                   onPress: () => navigation.navigate('Messages'),
                 },
                 {
-                  label: ui("Notifications"),
+                  label: "Notifications",
                   icon: 'notifications-outline',
                   onPress: () => navigation.navigate('Notifications'),
                 },

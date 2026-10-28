@@ -117,7 +117,7 @@ const MyDisputesScreen = ({ navigation }) => {
           </View>
           <View style={styles.cardHeader}>
             <AppText style={styles.cardTitle} numberOfLines={1}>
-              {item.title || 'Untitled Dispute'}
+              {item.title || ui('Untitled Dispute')}
             </AppText>
             <View style={[styles.statusBadge, { backgroundColor: status.bg }]}>
               <AppText style={[styles.statusText, { color: status.color }]}>{status.label}</AppText>

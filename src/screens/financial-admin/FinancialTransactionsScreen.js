@@ -1,5 +1,5 @@
-import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
-import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
+
+
 import React, { useEffect, useState } from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -26,7 +26,7 @@ const getStatusColor = (status) => {
 };
 
 const FinancialTransactionsScreen = () => {
-  useInterfaceLanguage();
+
   const [transactions, setTransactions] = useState([]);
   const [filter, setFilter] = useState('all');
   const [refreshing, setRefreshing] = useState(false);
@@ -41,7 +41,7 @@ const FinancialTransactionsScreen = () => {
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: ui("Failed"),
+        text1: "Failed",
         text2: getErrorMessage(error, 'Could not load transactions'),
       });
     } finally {
@@ -57,9 +57,9 @@ const FinancialTransactionsScreen = () => {
     <>
       <TourTarget id="financial_transactions" padding={6} radius={18}>
         <PremiumHero
-          eyebrow={ui("Financial admin")}
-          title={ui("Transaction ledger")}
-          subtitle={ui("Search the pulse of RentalHub payments by status with clean native ledger cards.")}
+          eyebrow={"Financial admin"}
+          title={"Transaction ledger"}
+          subtitle={"Search the pulse of RentalHub payments by status with clean native ledger cards."}
           icon="receipt-outline"
         />
       </TourTarget>
@@ -90,8 +90,8 @@ const FinancialTransactionsScreen = () => {
         loadTransactions();
       }}
       header={header}
-      emptyTitle={ui("No transactions found")}
-      emptyMessage={ui("Try another status filter or refresh when new payments come in.")}
+      emptyTitle={"No transactions found"}
+      emptyMessage={"Try another status filter or refresh when new payments come in."}
       emptyIcon="receipt-outline"
       renderItem={({ item }) => {
         const status = item.status || item.payment_status || 'pending';
@@ -107,17 +107,17 @@ const FinancialTransactionsScreen = () => {
 
             <InfoRow
               icon="card-outline"
-              label={ui("Method")}
+              label={"Method"}
               value={item.payment_method || item.method || 'N/A'}
             />
             <InfoRow
               icon="person-outline"
-              label={ui("Customer")}
+              label={"Customer"}
               value={item.user_name || item.email || 'Not available'}
             />
             <InfoRow
               icon="calendar-outline"
-              label={ui("Date")}
+              label={"Date"}
               value={item.created_at ? new Date(item.created_at).toLocaleString() : 'Not available'}
             />
           </PremiumCard>

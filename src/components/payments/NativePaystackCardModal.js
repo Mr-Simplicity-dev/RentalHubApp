@@ -115,7 +115,7 @@ const NativePaystackCardModal = ({
               <Icon name="information-circle-outline" size={22} color="#0A66C2" />
               <AppText style={styles.fallbackTitle}>{ui("Native Paystack sheet is not active here")}</AppText>
               <AppText style={styles.fallbackText}>
-                {nativeStatus.reason || 'Use Paystack checkout to complete this payment.'}
+                {nativeStatus.reason || ui('Use Paystack checkout to complete this payment.')}
               </AppText>
             </View>
           )}
