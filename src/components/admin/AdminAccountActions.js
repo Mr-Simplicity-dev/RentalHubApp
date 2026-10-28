@@ -10,7 +10,7 @@ import { useAccessibilityPreferences } from '../../hooks/useAccessibilityPrefere
 import AppText from '../../components/common/AppText';
 const AdminActionPill = ({ label, icon, color = colors.blue, onPress }) => {
   useInterfaceLanguage();
-  const { scaleFont, hitSlop } = useAccessibilityPreferences();
+  const { hitSlop } = useAccessibilityPreferences();
 
   return (
     <TouchableOpacity
@@ -23,7 +23,7 @@ const AdminActionPill = ({ label, icon, color = colors.blue, onPress }) => {
       <View style={[styles.iconWrap, { backgroundColor: `${color}16` }]}>
         <Icon name={icon} size={18} color={color} />
       </View>
-      <AppText style={[styles.label, { color, fontSize: scaleFont(12) }]}>{label}</AppText>
+      <AppText style={[styles.label, { color, fontSize: 12 }]}>{label}</AppText>
     </TouchableOpacity>
   );
 };

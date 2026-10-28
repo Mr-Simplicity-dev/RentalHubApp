@@ -13,7 +13,7 @@ for (const platform of ['android', 'ios', 'web']) {
     assert.equal(name, 'react-native');
     return { Platform: { OS: platform, select: (values) => values[platform] ?? values.default } };
   } });
-  const { resolveTextStyle, typography, textStyles, fontWeightToFamily } = module.exports;
+  const { applyResponsiveTextStyle, createTypographyMetrics, resolveTextStyle, typography, textStyles, fontWeightToFamily } = module.exports;
   const body = resolveTextStyle();
   assert.equal(body.fontFamily, typography.regular);
   assert.equal(body.fontSize, 16);
@@ -33,6 +33,21 @@ for (const platform of ['android', 'ios', 'web']) {
   assert.equal(override.color, '#ffffff');
   assert.ok(resolveTextStyle({fontSize: 28}, 'caption').lineHeight >= 35);
   for (const style of Object.values(textStyles)) assert.ok(style.lineHeight >= style.fontSize * 1.2);
+
+  const compact = createTypographyMetrics({ width: 320 });
+  assert.equal(compact.headingScale, 0.92);
+  const compactTitle = applyResponsiveTextStyle({ fontSize: 28, lineHeight: 36 }, compact);
+  assert.equal(compactTitle.fontSize, 26);
+  assert.ok(compactTitle.lineHeight >= 33);
+  const compactBody = applyResponsiveTextStyle({ fontSize: 16, lineHeight: 24 }, compact);
+  assert.equal(compactBody.fontSize, 16);
+  assert.equal(compactBody.lineHeight, 24);
+
+  const larger = createTypographyMetrics({ width: 390, largerText: true });
+  assert.equal(larger.textScale, 1.12);
+  const largerBody = applyResponsiveTextStyle({ fontSize: 16, lineHeight: 24 }, larger);
+  assert.equal(largerBody.fontSize, 18);
+  assert.ok(largerBody.lineHeight >= 27);
 }
 function files(dir) {return fs.readdirSync(dir, {withFileTypes:true}).flatMap(e => e.isDirectory() ? files(path.join(dir,e.name)) : e.name.endsWith('.js') ? [path.join(dir,e.name)] : []);}
 let count = 0;
@@ -68,6 +83,7 @@ const inputCompiled = transformSync(inputSource, {configFile:false,babelrc:false
 vm.runInNewContext(inputCompiled, {exports:inputModule.exports,module:inputModule,require: name => {
   if (name === 'react') return require('react');
   if (name === 'react-native') return {TextInput:'NativeTextInput',StyleSheet:{flatten: values => Array.isArray(values) ? Object.assign({},...values) : values}};
+  if (name === '../../context/TypographyContext') return {useTypography: () => ({headingScale: 1, textScale: 1, maxFontSizeMultiplier: 1.3})};
   if (name === '../../theme') return themeModule.exports;
   throw Error(name);
 }});

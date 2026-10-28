@@ -392,7 +392,6 @@ const WelcomeModal = ({
   resumeAvailable,
   resumeStep,
   reduceMotion,
-  scaleFont,
   t,
   isRTL,
   onStart,
@@ -474,7 +473,7 @@ const WelcomeModal = ({
             style={[
               styles.welcomeEyebrow,
               isRTL && styles.rtlText,
-              { fontSize: scaleFont(11) },
+              { fontSize: 11 },
             ]}
           >
             {t('tour.guideEyebrow')}
@@ -485,8 +484,8 @@ const WelcomeModal = ({
               styles.welcomeTitle,
               isRTL && styles.rtlText,
               {
-                fontSize: scaleFont(27),
-                lineHeight: scaleFont(34),
+                fontSize: 27,
+                lineHeight: 34,
               },
             ]}
           >
@@ -499,8 +498,8 @@ const WelcomeModal = ({
               styles.welcomeText,
               isRTL && styles.rtlText,
               {
-                fontSize: scaleFont(14),
-                lineHeight: scaleFont(22),
+                fontSize: 14,
+                lineHeight: 22,
               },
             ]}
           >
@@ -617,7 +616,6 @@ const CoachMarkOverlay = ({
   stepIndex,
   stepCount,
   reduceMotion,
-  scaleFont,
   isRTL,
   t,
   measureTarget,
@@ -1106,8 +1104,8 @@ const CoachMarkOverlay = ({
                     styles.walkthroughTitle,
                     isRTL && styles.rtlText,
                     {
-                      fontSize: scaleFont(23),
-                      lineHeight: scaleFont(29),
+                      fontSize: 23,
+                      lineHeight: 29,
                     },
                   ]}
                 >
@@ -1121,8 +1119,8 @@ const CoachMarkOverlay = ({
                 styles.walkthroughText,
                 isRTL && styles.rtlText,
                 {
-                  fontSize: scaleFont(14),
-                  lineHeight: scaleFont(22),
+                  fontSize: 14,
+                  lineHeight: 22,
                 },
               ]}
             >
@@ -1146,8 +1144,8 @@ const CoachMarkOverlay = ({
                   styles.targetHint,
                   isRTL && styles.rtlText,
                   {
-                    fontSize: scaleFont(12),
-                    lineHeight: scaleFont(18),
+                    fontSize: 12,
+                    lineHeight: 18,
                   },
                 ]}
               >
@@ -1243,7 +1241,7 @@ const NativeTourManager = ({ prepareStep }) => {
   const firstName = String(user?.full_name || '')
     .trim()
     .split(/\s+/)[0];
-  const { reduceMotion, scaleFont } = useAccessibilityPreferences();
+  const { reduceMotion } = useAccessibilityPreferences();
 
   const handlePrepareStep = useCallback(async (step, options) => {
     if (typeof prepareStep === 'function') {
@@ -1261,7 +1259,6 @@ const NativeTourManager = ({ prepareStep }) => {
         reduceMotion={reduceMotion}
         resumeAvailable={resumeAvailable}
         resumeStep={resumeStep}
-        scaleFont={scaleFont}
         stepCount={steps.length}
         t={t}
         isRTL={isRTL}
@@ -1280,7 +1277,6 @@ const NativeTourManager = ({ prepareStep }) => {
         onSkip={skipTour}
         prepareStep={handlePrepareStep}
         reduceMotion={reduceMotion}
-        scaleFont={scaleFont}
         step={steps[currentStep]}
         stepCount={steps.length}
         stepIndex={currentStep}

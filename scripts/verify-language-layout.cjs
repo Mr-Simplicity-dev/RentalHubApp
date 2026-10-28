@@ -20,9 +20,9 @@ function providerHarness({nativeRTL=false,stored='en',failRead=false,failWrite=f
  return{render,calls,writes,getStored:()=>stored};
 }
 const visit=(node,fn)=>{if(!node||typeof node!=='object')return;if(Array.isArray(node))return node.forEach(child=>visit(child,fn));if(!node.props)return;fn(node);visit(node.props.children,fn);};
-function welcome(language,width=375){
+function welcome(language,width=375,height=812){
  const isRTL=language==='ar';const t=key=>catalog.UI_COPY[language]?.[key]||catalog.UI_COPY.en[key]||key;
- const native={Animated:{Value:class{constructor(value){this.value=value;}interpolate(){return this.value;}},View:'AnimatedView'},StyleSheet:{create:styles=>styles},useWindowDimensions:()=>({width,height:812})};
+ const native={Animated:{Value:class{constructor(value){this.value=value;}interpolate(){return this.value;}},View:'AnimatedView'},StyleSheet:{create:styles=>styles},useWindowDimensions:()=>({width,height})};
  for(const name of ['Image','StatusBar','ScrollView','TouchableOpacity','View'])native[name]=name;
  const react={...React,useEffect:()=>{},useCallback:fn=>fn,useRef:value=>({current:value}),useState:value=>[value,()=>{}]};
  const module={exports:{}};vm.runInNewContext(compile('src/screens/auth/WelcomeScreen.js'),{exports:module.exports,module,setTimeout,clearTimeout,require:name=>{
@@ -46,12 +46,13 @@ function welcome(language,width=375){
  const apply=nodes.find(node=>node.props.children===copy.apply);
  for(const node of [title,create,careerTitle,apply])assert.equal(flatten(node.props.style).textAlign,'center');
  const createButton=nodes.find(node=>node.props.accessibilityLabel===t('welcome.createAccount'));
+ const careerButton=nodes.find(node=>node.props.accessibilityLabel===copy.opportunities_title+'. '+copy.apply);
  assert.equal(flatten(createButton.props.style).justifyContent,'center');
  assert.equal(flatten(createButton.props.style).minHeight,58);
  assert.equal(flatten(tree.props.style).direction,'ltr');
  assert.equal(flatten(explore.props.style).flexDirection,'row');
  assert.ok(nodes.some(node=>node.props.children===t('welcome.exploreHint')));
- return {rootDirection:flatten(tree.props.style).direction,exploreStyle:flatten(explore.props.style),hintStyles:hints.map(node=>{const {transform,...style}=flatten(node.props.style);return style;}),icons};
+ return {rootDirection:flatten(tree.props.style).direction,exploreStyle:flatten(explore.props.style),hintStyles:hints.map(node=>{const {transform,...style}=flatten(node.props.style);return style;}),icons,careerMinHeight:flatten(careerButton.props.style).minHeight};
 }
 (async()=>{
  for(const nativeRTL of [false,true]){
@@ -63,6 +64,9 @@ function welcome(language,width=375){
  }
  for(const options of [{failRead:true},{failWrite:true}]){const harness=providerHarness(options);harness.render();await flush();let tree=harness.render();await tree.props.value.setLanguage('ar');tree=harness.render();assert.equal(tree.props.value.language,'ar');}
  for(const width of [320,375,390,768])for(const {code}of catalog.SUPPORTED_LANGUAGES)welcome(code,width);
+ assert.equal(welcome('en',390,800).careerMinHeight,92);
+ assert.equal(welcome('en',360,720).careerMinHeight,82);
+ assert.equal(welcome('en',320,640).careerMinHeight,74);
  assert.equal(JSON.stringify(welcome('en')),JSON.stringify(welcome('ar')));assert.equal(JSON.stringify(welcome('ar')),JSON.stringify(welcome('en')));
  const android=fs.readFileSync(path.join(root,'android/app/src/main/java/com/rentalhubng/MainApplication.kt'),'utf8');const ios=fs.readFileSync(path.join(root,'ios/RentalHubMobile/AppDelegate.mm'),'utf8');
  assert.ok(android.indexOf('forceRTL(this@MainApplication, false)')<android.indexOf('SoLoader.init'));assert.ok(ios.indexOf('forceRTL:NO')<ios.indexOf('return [super application:'));

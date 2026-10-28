@@ -396,7 +396,7 @@ const SettingsScreen = ({ navigation }) => {
         <View style={styles.switchRow}>
           <View style={styles.switchCopy}>
             <AppText style={styles.switchTitle}>{labels.largerText}</AppText>
-            <AppText style={styles.switchSubtitle}>{ui("Increase key dashboard, tour and control text across the app.")}</AppText>
+            <AppText style={styles.switchSubtitle}>{ui("Increase text size throughout the app.")}</AppText>
           </View>
           <Switch
             value={settings.largerText}
