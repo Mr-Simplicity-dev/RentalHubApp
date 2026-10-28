@@ -42,6 +42,13 @@ export const registerForPushNotifications = async () => {
       importance: Notifications.AndroidImportance.DEFAULT,
       sound: 'default',
     });
+    await Notifications.setNotificationChannelAsync('unread-activity', {
+      name: 'Unread activity',
+      importance: Notifications.AndroidImportance.LOW,
+      showBadge: true,
+      sound: null,
+      enableVibrate: false,
+    });
   }
 
   let permissions = await Notifications.getPermissionsAsync();

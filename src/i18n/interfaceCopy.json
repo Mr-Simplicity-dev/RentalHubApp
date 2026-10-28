@@ -43528,6 +43528,16 @@
     "ig": "Mụbaa dashboard igodo, njem na njikwa ederede n'ofe ngwa ahụ.",
     "ha": "Ƙara dashboard na maɓalli, yawon shakatawa da sarrafa rubutu a cikin ƙa'idar."
   },
+  "increase text size throughout the app.": {
+    "en": "Increase text size throughout the app.",
+    "ar": "زيادة حجم النص في جميع أنحاء التطبيق.",
+    "fr": "Augmentez la taille du texte dans toute l'application.",
+    "ru": "Увеличьте размер текста во всём приложении.",
+    "zh": "增大整个应用中的文字大小。",
+    "ha": "Ƙara girman rubutu a cikin app ɗin gaba ɗaya.",
+    "yo": "Ìwọn ọ̀rọ̀ pọ̀ sii kárí app náà.",
+    "ig": "Bawanye nha ederede na ngwa niile."
+  },
   "reduce splash and guided-tour animations for calmer navigation.": {
     "en": "Reduce splash and guided-tour animations for calmer navigation.",
     "ar": "قم بتقليل الرسوم المتحركة للجولات المصحوبة بمرشدين من أجل تنقل أكثر هدوءًا.",

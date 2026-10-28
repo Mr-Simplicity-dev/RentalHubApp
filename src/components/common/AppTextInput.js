@@ -1,15 +1,30 @@
 import React, { forwardRef } from 'react';
 import { TextInput, StyleSheet } from 'react-native';
-import { colors, resolveTextStyle } from '../../theme';
+import { applyResponsiveTextStyle, colors, resolveTextStyle } from '../../theme';
+import { useTypography } from '../../context/TypographyContext';
 
-const AppTextInput = forwardRef(({ style, placeholderTextColor = colors.muted, ...props }, ref) => (
-  <TextInput
-    {...props}
-    ref={ref}
-    placeholderTextColor={placeholderTextColor}
-    style={resolveTextStyle({...StyleSheet.flatten(style),minHeight:Math.max(44,Number(StyleSheet.flatten(style)?.minHeight) || 0),fontSize:Math.max(16,Number(StyleSheet.flatten(style)?.fontSize) || 16)})}
-  />
-));
+const AppTextInput = forwardRef(({ style, placeholderTextColor = colors.muted, ...props }, ref) => {
+  const metrics = useTypography();
+  const flatStyle = StyleSheet.flatten(style) || {};
+  const inputStyle = applyResponsiveTextStyle(
+    resolveTextStyle({
+      ...flatStyle,
+      minHeight: Math.max(44, Number(flatStyle.minHeight) || 0),
+      fontSize: Math.max(16, Number(flatStyle.fontSize) || 16),
+    }),
+    metrics
+  );
+
+  return (
+    <TextInput
+      {...props}
+      ref={ref}
+      maxFontSizeMultiplier={metrics.maxFontSizeMultiplier}
+      placeholderTextColor={placeholderTextColor}
+      style={inputStyle}
+    />
+  );
+});
 
 AppTextInput.displayName = 'AppTextInput';
 

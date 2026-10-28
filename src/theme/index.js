@@ -94,6 +94,36 @@ export const spacing = {
   xl: 32,
 };
 
+export const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+
+export const createTypographyMetrics = ({ width = 390, fontScale = 1, largerText = false } = {}) => {
+  const viewportWidth = Number(width) > 0 ? Number(width) : 390;
+  const systemFontScale = Number(fontScale) > 0 ? Number(fontScale) : 1;
+  return {
+    width: viewportWidth,
+    systemFontScale,
+    headingScale: clamp(viewportWidth / 390, 0.92, 1.06),
+    textScale: largerText ? 1.12 : 1,
+    maxFontSizeMultiplier: 1.3,
+  };
+};
+
+export const applyResponsiveTextStyle = (style = {}, metrics = {}) => {
+  const fontSize = Number(style.fontSize) || typeScale.base;
+  const headingScale = Number(metrics.headingScale) > 0 ? Number(metrics.headingScale) : 1;
+  const textScale = Number(metrics.textScale) > 0 ? Number(metrics.textScale) : 1;
+  const scale = (fontSize >= 20 ? headingScale : 1) * textScale;
+  if (Math.abs(scale - 1) < 0.001) return style;
+
+  const nextFontSize = Math.max(typeScale.xs, Math.round(fontSize * scale));
+  const currentLineHeight = Number(style.lineHeight) || Math.round(fontSize * (fontSize >= 24 ? 1.25 : 1.45));
+  return {
+    ...style,
+    fontSize: nextFontSize,
+    lineHeight: Math.max(Math.ceil(nextFontSize * 1.2), Math.round(currentLineHeight * scale)),
+  };
+};
+
 export const textStyles = {
   h1: { fontSize: typeScale.hero, fontFamily: typography.semibold, letterSpacing: letterSpacing.tight, lineHeight: 40 },
   h2: { fontSize: typeScale.xxl, fontFamily: typography.semibold, letterSpacing: letterSpacing.snug, lineHeight: 36 },

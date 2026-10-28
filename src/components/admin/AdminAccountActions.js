@@ -1,5 +1,6 @@
 
 
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useContext } from 'react';
 import {Alert, StyleSheet, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -9,8 +10,8 @@ import { useAccessibilityPreferences } from '../../hooks/useAccessibilityPrefere
 
 import AppText from '../../components/common/AppText';
 const AdminActionPill = ({ label, icon, color = colors.blue, onPress }) => {
-
-  const { scaleFont, hitSlop } = useAccessibilityPreferences();
+  useInterfaceLanguage();
+  const { hitSlop } = useAccessibilityPreferences();
 
   return (
     <TouchableOpacity
@@ -23,7 +24,7 @@ const AdminActionPill = ({ label, icon, color = colors.blue, onPress }) => {
       <View style={[styles.iconWrap, { backgroundColor: `${color}16` }]}>
         <Icon name={icon} size={18} color={color} />
       </View>
-      <AppText style={[styles.label, { color, fontSize: scaleFont(12) }]}>{label}</AppText>
+      <AppText style={[styles.label, { color, fontSize: 12 }]}>{label}</AppText>
     </TouchableOpacity>
   );
 };

@@ -63,7 +63,7 @@ export const NotificationProvider = ({ children }) => {
         timers.add(timer);
       });
     const appStateSubscription = AppState.addEventListener('change', (state) => {
-      if (state === 'active') {
+      if (state === 'active' && active) {
         void syncAppIconBadge('app_foregrounded').catch(() => {});
       }
     });

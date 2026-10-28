@@ -7,6 +7,7 @@ import { RealtimeProvider } from './context/RealtimeContext';
 import { NotificationProvider } from './context/NotificationContext';
 import { TourProvider } from './context/TourContext';
 import { LanguageProvider } from './context/LanguageContext';
+import { TypographyProvider } from './context/TypographyContext';
 import AppNavigator from './navigation/AppNavigator';
 import Toast from 'react-native-toast-message';
 import BrandSplash from './components/brand/BrandSplash';
@@ -106,17 +107,19 @@ const App = () => {
   return (
     <AppErrorBoundary>
       <SafeAreaProvider>
-        <AuthProvider>
-          <LanguageProvider>
-            <RealtimeProvider>
-              <NotificationProvider>
-                <TourProvider>
-                  <AppContent />
-                </TourProvider>
-              </NotificationProvider>
-            </RealtimeProvider>
-          </LanguageProvider>
-        </AuthProvider>
+        <TypographyProvider>
+          <AuthProvider>
+            <LanguageProvider>
+              <RealtimeProvider>
+                <NotificationProvider>
+                  <TourProvider>
+                    <AppContent />
+                  </TourProvider>
+                </NotificationProvider>
+              </RealtimeProvider>
+            </LanguageProvider>
+          </AuthProvider>
+        </TypographyProvider>
       </SafeAreaProvider>
     </AppErrorBoundary>
   );

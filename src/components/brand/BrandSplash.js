@@ -13,7 +13,7 @@ const DEFAULT_DURATION_MS = 8000;
 
 const BrandSplash = ({ duration = DEFAULT_DURATION_MS, showProgressPercent = false }) => {
   useInterfaceLanguage();
-  const { reduceMotion, scaleFont } = useAccessibilityPreferences();
+  const { reduceMotion } = useAccessibilityPreferences();
   const scale = useRef(new Animated.Value(1)).current;
   const opacity = useRef(new Animated.Value(1)).current;
   const copyOpacity = useRef(new Animated.Value(0)).current;
@@ -170,7 +170,7 @@ const BrandSplash = ({ duration = DEFAULT_DURATION_MS, showProgressPercent = fal
             resizeMode="contain"
             accessibilityLabel={ui("Amana RentalHub")}
           />
-          <AppText style={[styles.tagline, { fontSize: scaleFont(13) }]}>{ui("Trusted homes. Confident living.")}</AppText>
+          <AppText style={[styles.tagline, { fontSize: 13 }]}>{ui("Trusted homes. Confident living.")}</AppText>
         </Animated.View>
       </Animated.View>
       <Animated.View
@@ -183,9 +183,9 @@ const BrandSplash = ({ duration = DEFAULT_DURATION_MS, showProgressPercent = fal
         ]}
       >
         <View style={[styles.loadingRow, !showProgressPercent && styles.loadingRowCentered]}>
-          <AppText style={[styles.loadingText, { fontSize: scaleFont(11) }]}>{ui("Loading mobile workspace")}</AppText>
+          <AppText style={[styles.loadingText, { fontSize: 11 }]}>{ui("Loading mobile workspace")}</AppText>
           {showProgressPercent ? (
-            <AppText style={[styles.loadingPercent, { fontSize: scaleFont(11) }]}>{progressPercent}%</AppText>
+            <AppText style={[styles.loadingPercent, { fontSize: 11 }]}>{progressPercent}%</AppText>
           ) : null}
         </View>
         <View style={styles.loadingTrack}>

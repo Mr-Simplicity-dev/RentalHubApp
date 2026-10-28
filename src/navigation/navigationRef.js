@@ -98,5 +98,9 @@ export const openNotificationDestination = (data = {}) => {
     return true;
   }
 
+  if (data.screen === 'Notifications') {
+    return navigateIfAvailable('Notifications');
+  }
+
   return false;
 };

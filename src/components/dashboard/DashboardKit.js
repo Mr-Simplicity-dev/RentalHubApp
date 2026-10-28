@@ -65,7 +65,7 @@ export const DashboardHero = ({
   tourTarget,
 }) => {
   useInterfaceLanguage();
-  const { scaleFont, hitSlop } = useAccessibilityPreferences();
+  const { hitSlop } = useAccessibilityPreferences();
   const tourTargetProps = useTourTarget(tourTarget, {
     label: title,
     padding: 8,
@@ -93,9 +93,9 @@ export const DashboardHero = ({
           ) : null}
         </View>
       </View>
-      <AppText style={[styles.eyebrow, { fontSize: scaleFont(10) }]}>{eyebrow}</AppText>
-      <AppText style={[styles.heroTitle, { fontSize: scaleFont(27), lineHeight: scaleFont(33) }]}>{title}</AppText>
-      <AppText style={[styles.heroSubtitle, { fontSize: scaleFont(13), lineHeight: scaleFont(20) }]}>{subtitle}</AppText>
+      <AppText style={[styles.eyebrow, { fontSize: 10 }]}>{eyebrow}</AppText>
+      <AppText style={[styles.heroTitle, { fontSize: 27, lineHeight: 33 }]}>{title}</AppText>
+      <AppText style={[styles.heroSubtitle, { fontSize: 13, lineHeight: 20 }]}>{subtitle}</AppText>
     </View>
   );
 };
@@ -121,7 +121,7 @@ export const MetricCard = ({
 }) => {
   useInterfaceLanguage();
   const Container = onPress ? TouchableOpacity : View;
-  const { scaleFont, hitSlop } = useAccessibilityPreferences();
+  const { hitSlop } = useAccessibilityPreferences();
   const tourTargetProps = useTourTarget(tourTarget, {
     label,
     onAction: onPress,
@@ -140,15 +140,14 @@ export const MetricCard = ({
       <View style={[styles.metricIcon, { backgroundColor: `${color}16` }]}>
         <Icon name={icon} size={18} color={color} />
       </View>
-      <AppText numberOfLines={1} style={[styles.metricLabel, { fontSize: scaleFont(11) }]}>{label}</AppText>
-      <AppText numberOfLines={1} adjustsFontSizeToFit style={[styles.metricValue, { fontSize: scaleFont(22) }]}>{value}</AppText>
+      <AppText numberOfLines={1} style={[styles.metricLabel, { fontSize: 11 }]}>{label}</AppText>
+      <AppText numberOfLines={1} adjustsFontSizeToFit style={[styles.metricValue, { fontSize: 22 }]}>{value}</AppText>
     </Container>
   );
 };
 
 export const DashboardSection = ({ title, subtitle, children, tourTarget }) => {
   useInterfaceLanguage();
-  const { scaleFont } = useAccessibilityPreferences();
   const tourTargetProps = useTourTarget(tourTarget, {
     label: title,
     padding: 8,
@@ -158,8 +157,8 @@ export const DashboardSection = ({ title, subtitle, children, tourTarget }) => {
   return (
     <View style={styles.section}>
       <View {...tourTargetProps}>
-        <AppText style={[styles.sectionTitle, { fontSize: scaleFont(18) }]}>{title}</AppText>
-        {subtitle ? <AppText style={[styles.sectionSubtitle, { fontSize: scaleFont(12), lineHeight: scaleFont(18) }]}>{subtitle}</AppText> : null}
+        <AppText style={[styles.sectionTitle, { fontSize: 18 }]}>{title}</AppText>
+        {subtitle ? <AppText style={[styles.sectionSubtitle, { fontSize: 12, lineHeight: 18 }]}>{subtitle}</AppText> : null}
       </View>
       <View style={styles.sectionBody}>{children}</View>
     </View>
@@ -184,7 +183,7 @@ export const ActionRow = ({
 
 const ActionRowInner = ({ title, subtitle, icon, onPress, badge, tourTarget }) => {
   useInterfaceLanguage();
-  const { scaleFont, hitSlop } = useAccessibilityPreferences();
+  const { hitSlop } = useAccessibilityPreferences();
   const tourTargetProps = useTourTarget(tourTarget, {
     label: title,
     onAction: onPress,
@@ -206,10 +205,10 @@ const ActionRowInner = ({ title, subtitle, icon, onPress, badge, tourTarget }) =
       </View>
       <View style={styles.actionCopy}>
         <View style={styles.actionTitleRow}>
-          <AppText style={[styles.actionTitle, { fontSize: scaleFont(14) }]}>{title}</AppText>
-          {badge ? <AppText style={[styles.actionBadge, { fontSize: scaleFont(10) }]}>{badge}</AppText> : null}
+          <AppText style={[styles.actionTitle, { fontSize: 14 }]}>{title}</AppText>
+          {badge ? <AppText style={[styles.actionBadge, { fontSize: 10 }]}>{badge}</AppText> : null}
         </View>
-        {subtitle ? <AppText style={[styles.actionSubtitle, { fontSize: scaleFont(12), lineHeight: scaleFont(18) }]}>{subtitle}</AppText> : null}
+        {subtitle ? <AppText style={[styles.actionSubtitle, { fontSize: 12, lineHeight: 18 }]}>{subtitle}</AppText> : null}
       </View>
       <Icon name="chevron-forward" size={18} color={colors.muted} />
     </TouchableOpacity>
@@ -219,7 +218,6 @@ const ActionRowInner = ({ title, subtitle, icon, onPress, badge, tourTarget }) =
 export const DashboardNotice = ({ title, message, variant = 'info', tourTarget }) => {
   useInterfaceLanguage();
   const warning = variant === 'warning';
-  const { scaleFont } = useAccessibilityPreferences();
   const tourTargetProps = useTourTarget(tourTarget, {
     label: title,
     padding: 6,
@@ -234,8 +232,8 @@ export const DashboardNotice = ({ title, message, variant = 'info', tourTarget }
         color={warning ? '#92400E' : colors.blue}
       />
       <View style={styles.noticeCopy}>
-        <AppText style={[styles.noticeTitle, warning && styles.noticeTitleWarning, { fontSize: scaleFont(13) }]}>{title}</AppText>
-        <AppText style={[styles.noticeMessage, warning && styles.noticeMessageWarning, { fontSize: scaleFont(12), lineHeight: scaleFont(18) }]}>{message}</AppText>
+        <AppText style={[styles.noticeTitle, warning && styles.noticeTitleWarning, { fontSize: 13 }]}>{title}</AppText>
+        <AppText style={[styles.noticeMessage, warning && styles.noticeMessageWarning, { fontSize: 12, lineHeight: 18 }]}>{message}</AppText>
       </View>
     </View>
   );
