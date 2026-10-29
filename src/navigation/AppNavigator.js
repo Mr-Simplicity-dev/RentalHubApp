@@ -991,6 +991,7 @@ const MarketingAgentRoot = () => { useInterfaceLanguage(); return (<Stack.Naviga
 const ZonalAdminRoot = () => {  return (<Stack.Navigator screenOptions={screenOptions}>
     <Stack.Screen name="ZonalDashboard" component={ZonalAdminScreen} options={{ title: "Zone Overview" }} />
     <Stack.Screen name="ZonalList" component={ZonalListScreen} options={{ title: "Zone Records" }} />
+    <Stack.Screen name="Notifications" component={NotificationsScreen} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
     {commonVerificationScreens()}
     {commonAppealScreens()}

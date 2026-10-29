@@ -17,8 +17,10 @@ import Button from '../../components/common/Button';
 import AppText from '../../components/common/AppText';
 import TourTarget from '../../components/tour/TourTarget';
 import { DashboardScreen } from '../../components/dashboard/DashboardKit';
+import useAdminNotificationHeader from '../../hooks/useAdminNotificationHeader';
 
 const ZonalAdminScreen = ({ navigation }) => {
+  useAdminNotificationHeader(navigation);
 
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);

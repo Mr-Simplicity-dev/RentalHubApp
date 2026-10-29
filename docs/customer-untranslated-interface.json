@@ -1,8 +1,8 @@
 {
   "language": "ar",
   "scope": "Static JSX text, interface properties and explicit translation calls; excludes customer content and dynamic server messages.",
-  "filesScanned": 181,
-  "translatedOccurrences": 3021,
+  "filesScanned": 182,
+  "translatedOccurrences": 3191,
   "remainingDistinctStrings": 0,
   "remaining": []
 }

@@ -1,20 +1,20 @@
 # Mobile localization verification
 
-## Current status — 28 October 2026 (supersedes historical notes below)
+## Current status — 29 October 2026 (supersedes historical notes below)
 
-Full-app Hausa, Yoruba and Igbo translation is **not complete**. Translations are bundled in the app; no translation account or runtime translation service is required. Missing text retains the existing English fallback.
+Hausa, Yoruba and Igbo catalogue completion now passes for the non-admin mobile interface. Translations are bundled in the app; no translation account or runtime translation service is required. English remains the safe fallback for future unknown text.
 
-The expanded inventory covers 181 reachable source files and 2,289 static phrases across public, tenant, landlord, agent, lawyer and marketing-agent navigation. Hausa has 1,120 translated phrases and 1,169 missing; Yoruba and Igbo each have 1,106 translated and 1,183 missing. See `mobile-nigerian-language-gaps.json`. These counts describe static coverage, not linguistic review or arbitrary user/server-provided content.
+The expanded inventory covers 182 reachable source files and 2,447 static phrases across public, tenant, landlord, agent, lawyer and marketing-agent navigation. All 2,447 have Hausa, Yoruba and Igbo entries, with zero missing in each language. See `mobile-nigerian-language-gaps.json`. The strict checker verifies 3,547 literal UI calls representing 2,433 distinct phrases plus the additional identifier/error messages, including all eight supported locales and interpolation integrity. Another 330 checks cover the separate customer, Careers, cases and consent catalogues.
 
-Direct translation batches cover additional property discovery, payments, registration, verification, appeals, refunds, rent assistance, disputes and help messages. Equivalent-phrase reuse is restricted to customer keys so it cannot restore admin-only translations. Placeholder integrity is validated before saving.
+Direct and machine-assisted translation batches cover property discovery, payments, registration, verification, appeals, refunds, rent assistance, disputes, help, policies and professional-account screens. Banking consent and retained English service/property labels received direct corrections. Equivalent-phrase reuse is restricted to customer keys. Another 170 conditional/fallback labels across 47 customer files were connected to the translation runtime; a new regression checks these expressions. The expanded static screen audit reports zero remaining strings in its defined scope.
 
 Admin and Super Admin interfaces now use English. `LanguageContext` forces English for admin accounts and disables their language selector, while retaining the saved customer preference. Admin translation wrappers and admin tour translations were removed. Shared customer translations remain available.
 
 The registration action no longer silently depends on the optional location-pricing completeness flag. Accepting terms enables the action after settings load. Clicking still validates required fields, password, identity details, location restrictions and the security challenge before opening payment selection. Server pricing and payment requirements are unchanged.
 
-Current passing checks: registration regression; language round trips and English-only admins; Arabic/Hausa/Yoruba/Igbo Login; tours (87 steps, 21 admin roles, 32 navigation roles); typography (204 files, Android/iOS/web). The strict full-customer localization check still fails on missing translations and has not been bypassed.
+Current passing checks: strict customer localization; registration regression; language round trips and English-only admins; Arabic/Hausa/Yoruba/Igbo Login; tours (87 steps, 21 admin roles, 32 navigation roles); typography (204 files, Android/iOS/web); support centre; public cases; notification badges; account assistant. `git diff --check` passes. No coverage assertion has been bypassed.
 
-Fresh Android/iOS export passed: 1,424 modules and an 8.2 MB Hermes bundle per platform, output `.codex-tmp/customer-language-verification`. The first restricted attempt failed to write a temporary bytecode file; the permitted retry succeeded. Metro retained its existing WebRTC `event-target-shim` file-resolution warning. `git diff --check` also passed. No signed APK/IPA or deployment has been produced by this work. Physical-device and fluent-speaker checks remain outstanding. No complete web translation claim is made.
+Final Android/iOS export passed into `.codex-tmp/customer-localization-complete`: 1,425 modules and an 8.5 MB Hermes bundle per platform. Metro reported the existing WebRTC `event-target-shim` export warning and successfully used file-based resolution. No signed APK/IPA or deployment has been produced by this work. Static coverage is not a fluent-speaker review or a visual inspection of every screen. Physical-device checks and fluent-speaker review remain recommended. Names, entered details, user-written messages and arbitrary server content are deliberately not automatically translated. No complete web translation claim is made.
 
 ## Historical results
 

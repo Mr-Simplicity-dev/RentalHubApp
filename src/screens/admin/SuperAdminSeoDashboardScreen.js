@@ -1,6 +1,6 @@
 
 
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {ActivityIndicator, FlatList, StyleSheet, TouchableOpacity, View} from 'react-native';
 import Toast from 'react-native-toast-message';
 import api from '../../services/api';
@@ -15,16 +15,14 @@ ActionRow,
   MetricCard,
   MetricGrid,
 } from '../../components/dashboard/DashboardKit';
+import useAdminNotificationHeader from '../../hooks/useAdminNotificationHeader';
 
 const SuperAdminSeoDashboardScreen = ({ navigation }) => {
-  const interfaceLanguage = 'en';
   const [dashboard, setDashboard] = useState(null);
   const [loading, setLoading] = useState(true);
   const [pinging, setPinging] = useState(false);
 
-  useLayoutEffect(() => {
-    navigation.setOptions({ headerShown: navigation.canGoBack() });
-  }, [navigation, interfaceLanguage]);
+  useAdminNotificationHeader(navigation);
 
   const loadDashboard = async () => {
     setLoading(true);

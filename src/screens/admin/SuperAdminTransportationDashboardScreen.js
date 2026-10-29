@@ -1,6 +1,6 @@
 
 
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Toast from 'react-native-toast-message';
 import { serviceAdminService } from '../../services/serviceAdminService';
 import { colors } from '../../theme';
@@ -14,17 +14,15 @@ import {
   MetricGrid,
 } from '../../components/dashboard/DashboardKit';
 import WorkspaceBoard from '../../components/dashboard/WorkspaceBoard';
+import useAdminNotificationHeader from '../../hooks/useAdminNotificationHeader';
 
 const formatCurrency = (value) => `₦${Number(value || 0).toLocaleString()}`;
 
 const SuperAdminTransportationDashboardScreen = ({ navigation }) => {
-  const interfaceLanguage = 'en';
   const [dashboard, setDashboard] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useLayoutEffect(() => {
-    navigation.setOptions({ headerShown: navigation.canGoBack() });
-  }, [navigation, interfaceLanguage]);
+  useAdminNotificationHeader(navigation);
 
   const loadDashboard = async () => {
     setLoading(true);

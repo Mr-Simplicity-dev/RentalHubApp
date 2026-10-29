@@ -1,6 +1,6 @@
 
 
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {FlatList, StyleSheet, View} from 'react-native';
 import Toast from 'react-native-toast-message';
 import api from '../../services/api';
@@ -14,15 +14,13 @@ DashboardHero,
   MetricCard,
   MetricGrid,
 } from '../../components/dashboard/DashboardKit';
+import useAdminNotificationHeader from '../../hooks/useAdminNotificationHeader';
 
 const SuperAdminSupportGovernanceScreen = ({ navigation }) => {
-  const interfaceLanguage = 'en';
   const [dashboard, setDashboard] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useLayoutEffect(() => {
-    navigation.setOptions({ headerShown: navigation.canGoBack() });
-  }, [navigation, interfaceLanguage]);
+  useAdminNotificationHeader(navigation);
 
   const loadDashboard = async () => {
     setLoading(true);

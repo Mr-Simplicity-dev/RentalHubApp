@@ -1,8 +1,9 @@
 
 
-import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Toast from 'react-native-toast-message';
 import { AuthContext } from '../../context/AuthContext';
+import useAdminNotificationHeader from '../../hooks/useAdminNotificationHeader';
 import { stateAdminService } from '../../services/stateAdminService';
 import { colors } from '../../theme';
 import { getErrorMessage, pickObject } from '../../utils/http';
@@ -23,7 +24,6 @@ import WorkspaceBoard from '../../components/dashboard/WorkspaceBoard';
 const formatCurrency = (value) => `₦${Number(value || 0).toLocaleString()}`;
 
 const StateAdminDashboardScreen = ({ navigation }) => {
-  const interfaceLanguage = 'en';
   const { user } = useContext(AuthContext);
   const [dashboard, setDashboard] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -37,9 +37,7 @@ const StateAdminDashboardScreen = ({ navigation }) => {
   const hasRecruitmentAccess =
     user?.user_type === 'recruitment_admin' || user?.is_recruitment_admin === true;
 
-  useLayoutEffect(() => {
-    navigation.setOptions({ headerShown: navigation.canGoBack() });
-  }, [navigation, interfaceLanguage]);
+  useAdminNotificationHeader(navigation);
 
   const loadDashboard = async () => {
     if (!stateId) {

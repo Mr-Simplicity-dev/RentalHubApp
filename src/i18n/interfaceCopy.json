@@ -2784,9 +2784,9 @@
     "ar": "شقة",
     "ru": "Квартира",
     "zh": "公寓",
-    "ha": "Apartment",
-    "yo": "Apartment",
-    "ig": "Ụlọ Apatamenti"
+    "ha": "Gidan zama",
+    "yo": "Yàrá ilé gbígbé",
+    "ig": "Ụlọ obibi"
   },
   "house": {
     "en": "House",
@@ -2804,9 +2804,9 @@
     "ar": "دوبلكس",
     "ru": "Дуплекс",
     "zh": "复式",
-    "ha": "Duplex",
-    "yo": "Duplex",
-    "ig": "Ụlọ Dịplaks"
+    "ha": "Gida mai hawa biyu",
+    "yo": "Ilé alájà méjì",
+    "ig": "Ụlọ okpukpu abụọ"
   },
   "studio": {
     "en": "Studio",
@@ -2814,9 +2814,9 @@
     "ar": "استوديو",
     "ru": "Студия",
     "zh": "单间",
-    "ha": "Studio",
-    "yo": "Studio",
-    "ig": "Ụlọ Studio"
+    "ha": "Ɗaki ɗaya mai kayan zama",
+    "yo": "Yàrá kan fún gbogbo ohun",
+    "ig": "Ụlọ nwere otu ime ụlọ"
   },
   "bungalow": {
     "en": "Bungalow",
@@ -2824,9 +2824,9 @@
     "ar": "بنغالو",
     "ru": "Бунгало",
     "zh": "平房",
-    "ha": "Bungalow",
-    "yo": "Bungalow",
-    "ig": "Ụlọ Bungalọ"
+    "ha": "Gida marar hawa",
+    "yo": "Ilé alájà kan",
+    "ig": "Ụlọ na-enweghị elu ụlọ"
   },
   "flat": {
     "en": "Flat",
@@ -2834,9 +2834,9 @@
     "ar": "شقة",
     "ru": "Квартира",
     "zh": "公寓",
-    "ha": "Flat",
-    "yo": "Flat",
-    "ig": "Ụlọ Flat"
+    "ha": "Sashen gidan zama",
+    "yo": "Àpá ilé gbígbé",
+    "ig": "Otu ebe obibi n’ụlọ"
   },
   "room": {
     "en": "Room",
@@ -4602,9 +4602,9 @@
     "ar": "القائمة",
     "ru": "Меню",
     "zh": "菜单",
-    "ha": "Menu",
-    "yo": "Àkójọ",
-    "ig": "Menu"
+    "ha": "Jerin zaɓuɓɓuka",
+    "yo": "Àtòjọ àṣàyàn",
+    "ig": "Ndepụta nhọrọ"
   },
   "alright! feel free to come back anytime.": {
     "en": "Alright! Feel free to come back anytime.",
@@ -6565,9 +6565,9 @@
     "ar": "Basic",
     "ru": "Basic",
     "zh": "Basic",
-    "ha": "Basic",
+    "ha": "Na asali",
     "yo": "Ìpìlẹ̀",
-    "ig": "Ntọala"
+    "ig": "Nke isi"
   },
   "per listing / year": {
     "en": "per listing / year",
@@ -6655,9 +6655,9 @@
     "ar": "بريميوم",
     "ru": "Премиум",
     "zh": "溢价",
-    "ha": "Premium",
-    "yo": "Premium",
-    "ig": "Ọkachasị"
+    "ha": "Na musamman",
+    "yo": "Pàtàkì",
+    "ig": "Pụrụ iche"
   },
   "unlimited properties": {
     "en": "Unlimited properties",
@@ -10278,9 +10278,9 @@
     "ar": "أخرى",
     "ru": "Другое",
     "zh": "其他",
-    "ha": "Other",
-    "yo": "Other",
-    "ig": "Other"
+    "ha": "Sauran",
+    "yo": "Mìíràn",
+    "ig": "Ọzọ"
   },
   "sending otp...": {
     "en": "Sending OTP...",
@@ -12219,7 +12219,14 @@
     "ig": "Usoro: "
   },
   "n/a": {
-    "en": "N/A"
+    "en": "N/A",
+    "fr": "N/A",
+    "ar": "N/A",
+    "ru": "N/A",
+    "zh": "N/A",
+    "ha": "N/A",
+    "yo": "N/A",
+    "ig": "N/A"
   },
   "ref:": {
     "en": "Ref: ",
@@ -12227,9 +12234,9 @@
     "ar": "Ref: ",
     "ru": "Ref: ",
     "zh": "Ref: ",
-    "ha": "Ref: ",
-    "yo": "Ref: ",
-    "ig": "Ref: "
+    "ha": "Shaida: ",
+    "yo": "Ìtọ́kasí: ",
+    "ig": "Ntụaka: "
   },
   "pay now": {
     "en": "Pay Now",
@@ -14574,9 +14581,9 @@
     "ar": "اختر الخدمة",
     "ru": "Выберите услугу",
     "zh": "选择服务",
-    "ha": "Select Service",
-    "yo": "Select Service",
-    "ig": "Select Service"
+    "ha": "Zaɓi sabis",
+    "yo": "Yan iṣẹ́",
+    "ig": "Họrọ ọrụ"
   },
   "property details": {
     "en": "Property Details",
@@ -14584,9 +14591,9 @@
     "ar": "تفاصيل العقار",
     "ru": "Property Details",
     "zh": "Property Details",
-    "ha": "Property Details",
-    "yo": "Property Details",
-    "ig": "Property Details"
+    "ha": "Bayanan kadara",
+    "yo": "Àlàyé ilé",
+    "ig": "Nkọwa ụlọ"
   },
   "date & time": {
     "en": "Date & Time",
@@ -14604,9 +14611,9 @@
     "ar": "Addons",
     "ru": "Addons",
     "zh": "Addons",
-    "ha": "Addons",
-    "yo": "Addons",
-    "ig": "Addons"
+    "ha": "Ƙarin abubuwa",
+    "yo": "Àwọn àfikún",
+    "ig": "Ihe mgbakwunye"
   },
   "instructions": {
     "en": "Instructions",
@@ -19413,9 +19420,9 @@
     "ar": "المحفظة",
     "ru": "Кошелек",
     "zh": "钱包",
-    "ha": "Wallet",
-    "yo": "Àpamọ́wó",
-    "ig": "Akpa Ego"
+    "ha": "Walat",
+    "yo": "Àpamọ́wọ́",
+    "ig": "Obere akpa ego"
   },
   "cheque": {
     "en": "Cheque",
@@ -19856,9 +19863,9 @@
     "ar": "Chamber: ",
     "ru": "Chamber: ",
     "zh": "Chamber: ",
-    "ha": "Chamber: ",
-    "yo": "Chamber: ",
-    "ig": "Ụlọ Ọka Iwu: "
+    "ha": "Ofishin lauya: ",
+    "yo": "Ọ́fíìsì agbẹjọ́rò: ",
+    "ig": "Ọfịs onye ọka iwu: "
   },
   "no chamber provided": {
     "en": "No chamber provided",
@@ -24611,9 +24618,9 @@
     "ar": "إذا اخترت التحويل المصرفي، فقد يفتح شريكنا المصرفي الخاضع للرقابة حساب تحصيل باسمك. لهذا الغرض فقط، يتلقى اسمك ورقم هويتك الوطنية من سجل هويتك الموثّق إذا طلبه البنك الشريك. هذا الحساب لا يحتفظ برصيد محفظتك.",
     "ru": "Если вы выберете банковский перевод, наш регулируемый банковский партнер может открыть на ваше имя расчетный счет. Только для этой цели он получает имя и, если этого требует банк-партнер, NIN из вашей подтвержденной идентификационной записи. Он не удерживает баланс вашего кошелька.",
     "zh": "如果您选择银行转账，我们的受监管银行合作伙伴可能会以您的名义开设收款账户。仅出于此目的，它会从您经过验证的身份记录中接收姓名以及合作伙伴银行要求的 NIN。它不会保留您的钱包余额。",
-    "ha": "If you choose bank transfer, a collection account may be opened in your name by our regulated banking partner. For that purpose only, it receives the name and, where the partner bank requires it, the NIN from your verified identity record. It does not hold your wallet balance.",
-    "yo": "If you choose bank transfer, a collection account may be opened in your name by our regulated banking partner. For that purpose only, it receives the name and, where the partner bank requires it, the NIN from your verified identity record. It does not hold your wallet balance.",
-    "ig": "If you choose bank transfer, a collection account may be opened in your name by our regulated banking partner. For that purpose only, it receives the name and, where the partner bank requires it, the NIN from your verified identity record. It does not hold your wallet balance."
+    "ha": "Idan ka zaɓi tura kuɗi ta banki, abokin aikinmu na banki da ke ƙarƙashin kulawar hukumomi zai iya buɗe asusun karɓar kuɗi da sunanka. Don wannan dalili kaɗai, yana karɓar sunanka da kuma NIN daga bayanan shaidarka da aka tantance idan bankin ya bukace shi. Wannan asusun ba ya riƙe kuɗin walat ɗinka.",
+    "yo": "Bí o bá yan ìfiránṣẹ́ owó báńkì, alábàáṣiṣẹ́ báńkì wa tí ó wà lábẹ́ ìṣàkóso lè ṣí àkọọ́lẹ̀ gbígba owó ní orúkọ rẹ. Fún ète yìí nìkan, ó gba orúkọ rẹ àti NIN láti inú àkọsílẹ̀ ìdánimọ̀ rẹ tí a ti jẹ́rìí, bí báńkì alábàáṣiṣẹ́ bá béèrè rẹ̀. Àkọọ́lẹ̀ yìí kì í tọ́jú iye owó tó wà nínú àpamọ́wọ́ rẹ.",
+    "ig": "Ọ bụrụ na ị họrọ nnyefe ego ụlọ akụ, ụlọ akụ anyị na ya na-arụkọ ọrụ nke nọ n’okpuru nlekọta iwu nwere ike imeghe akaụntụ nnata ego n’aha gị. Maka ebumnuche a naanị, ọ na-anata aha gị na NIN sitere na ndekọ njirimara gị enyochara ma ọ bụrụ na ụlọ akụ ahụ chọrọ ya. Akaụntụ a anaghị ejide ego dị na obere akpa gị."
   },
   "enter a valid 11-digit nin.": {
     "en": "Enter a valid 11-digit NIN.",
@@ -27504,9 +27511,9 @@
     "ar": "منزل متلاصق",
     "ru": "Терраса",
     "zh": "联排",
-    "ha": "Terrace",
-    "yo": "Ilé Tí Ó Jọ̀wọ́n",
-    "ig": "Ụlọ Teras"
+    "ha": "Gida mai jere",
+    "yo": "Ilé tó wà ní ìlà",
+    "ig": "Ụlọ ndị jikọtara n’ahịrị"
   },
   "land": {
     "en": "Land",
@@ -34064,9 +34071,9 @@
     "fr": "N° DEMANDE",
     "ru": "ПРИЛОЖЕНИЕ #",
     "zh": "申请#",
-    "yo": "ÌṢEṢẸ #",
-    "ig": "NKWUKWU #",
-    "ha": "APPLICATION #"
+    "yo": "ÌBÉÈRÈ #",
+    "ig": "AKWỤKWỌ ANAMACHỌIHE #",
+    "ha": "BUƘATA #"
   },
   "application details": {
     "en": "Application details",
@@ -34711,8 +34718,8 @@
     "ru": "Все",
     "zh": "全部",
     "yo": "Gbogbo",
-    "ig": "All",
-    "ha": "Duk"
+    "ig": "Niile",
+    "ha": "Duka"
   },
   "inactive": {
     "en": "Inactive"
@@ -35465,7 +35472,8 @@
     "ru": "Помощь в регистрации",
     "zh": "辅助注册",
     "yo": "Iforukọsilẹ iranlọwọ",
-    "ig": "Ndebanye aha enyere aka"
+    "ig": "Ndebanye aha enyere aka",
+    "ha": "Taimakon rajista"
   },
   "admin accounts & reminders": {
     "en": "Admin Accounts & Reminders",
@@ -38526,9 +38534,9 @@
     "fr": "PORTEFEUILLE",
     "ru": "ПОРТФОЛИО",
     "zh": "投资组合",
-    "yo": "PORTFOLIO",
-    "ig": "PORTFOLIO",
-    "ha": "PORTFOLIO"
+    "yo": "ÀKÓJỌPỌ̀ ILÉ",
+    "ig": "NCHỊKỌTA ỤLỌ",
+    "ha": "TARIN KADARORI"
   },
   "total portfolio": {
     "en": "TOTAL PORTFOLIO",
@@ -38973,9 +38981,9 @@
     "fr": "Biographie",
     "ru": "Биография",
     "zh": "生物",
-    "yo": "Bio",
-    "ig": "Bio",
-    "ha": "Bio"
+    "yo": "Àlàyé ara ẹni",
+    "ig": "Nkọwa onwe",
+    "ha": "Taƙaitaccen tarihin kai"
   },
   "tell us about yourself...": {
     "en": "Tell us about yourself...",
@@ -39585,7 +39593,8 @@
     "ru": "Идентификатор пользователя",
     "zh": "用户ID",
     "yo": "ID olumulo",
-    "ig": "NJ onye ọrụ"
+    "ig": "NJ onye ọrụ",
+    "ha": "ID mai amfani"
   },
   "frozen at": {
     "en": "Frozen At"
@@ -40134,9 +40143,9 @@
     "fr": "Durée : ~",
     "ru": "Продолжительность: ~",
     "zh": "持续时间：〜",
-    "yo": "Iye akoko: ~",
+    "yo": "Àkókò: ~",
     "ig": "Ogologo oge: ~",
-    "ha": "Duration: ~"
+    "ha": "Tsawon lokaci: ~"
   },
   "mins": {
     "en": "mins",
@@ -42426,9 +42435,9 @@
     "fr": "/month, you can put",
     "ru": "/month, you can put",
     "zh": "/month, you can put",
-    "ha": "/month, you can put",
-    "yo": "/month, you can put",
-    "ig": "/month, you can put"
+    "ha": "/wata, za ka iya saka",
+    "yo": "/oṣù, o lè fi sílẹ̀",
+    "ig": "/ọnwa, ị nwere ike itinye"
   },
   "toward rent monthly (~": {
     "en": " toward rent monthly (~",
@@ -42446,9 +42455,9 @@
     "fr": "/year).",
     "ru": "/year).",
     "zh": "/year).",
-    "ha": "/year).",
-    "yo": "/year).",
-    "ig": "/year)."
+    "ha": "/shekara).",
+    "yo": "/ọdún).",
+    "ig": "/afọ)."
   },
   "money needed on day one": {
     "en": "Money needed on day one",
@@ -42496,9 +42505,9 @@
     "fr": "/month",
     "ru": "/month",
     "zh": "/month",
-    "ha": "/month",
-    "yo": "/month",
-    "ig": "/month"
+    "ha": "/wata",
+    "yo": "/oṣù",
+    "ig": "/ọnwa"
   },
   "saving this monthly for": {
     "en": "Saving this monthly for",
@@ -43594,9 +43603,9 @@
     "fr": "Version de l'application RentalHub",
     "ru": "Версия приложения RentalHub",
     "zh": "RentalHub 应用程序版本",
-    "yo": "RentalHub app version",
-    "ig": "Ụdị ngwa RentalHub",
-    "ha": "Sigar aikace-aikacen RentalHub"
+    "yo": "Ẹ̀yà app RentalHub",
+    "ig": "Nsụgharị ngwa RentalHub",
+    "ha": "Sigar manhajar RentalHub"
   },
   "installed:": {
     "en": "Installed:",
@@ -46015,7 +46024,8 @@
     "ru": "Рейтинги",
     "zh": "收视率",
     "yo": "Awọn idiyele",
-    "ig": "Ogo"
+    "ig": "Ogo",
+    "ha": "Ma'auni"
   },
   "credential revalidation": {
     "en": "Credential revalidation",
@@ -46308,7 +46318,7 @@
     "fr": "Catalogue Fumigation & Nettoyage",
     "ru": "Каталог фумигации и очистки",
     "zh": "熏蒸和清洁目录",
-    "yo": "Fumigation & Cleaning Catalog",
+    "yo": "Àtòjọ iṣẹ́ pípa kòkòrò àti ìmọ́tótó",
     "ig": "Katalọgụ mkpochapụ & nhicha",
     "ha": "Kasuwar Fumigation & Tsaftacewa"
   },
@@ -46728,9 +46738,9 @@
     "fr": "Tableau de bord des agents",
     "ru": "Панель управления агента",
     "zh": "代理仪表板",
-    "yo": "Dasibodu Aṣoju",
+    "yo": "Ojú ìṣàkóso aṣojú",
     "ig": "Dashboard onye nnọchi anya",
-    "ha": "Agent Dashboard"
+    "ha": "Shafin gudanarwar wakili"
   },
   "agent earnings": {
     "en": "Agent Earnings",
@@ -50890,9 +50900,9 @@
     "fr": "Assistant Amana RentalHub",
     "ru": "Помощник Amana RentalHub",
     "zh": "阿马那租赁中心助理",
-    "yo": "Amana RentalHub Iranlọwọ",
-    "ig": "Amana RentalHub Assistant",
-    "ha": "Amana RentalHub Assistant"
+    "yo": "Olùrànlọ́wọ́ Amana RentalHub",
+    "ig": "Onye enyemaka Amana RentalHub",
+    "ha": "Mataimakin Amana RentalHub"
   },
   "whatsapp opened": {
     "en": "WhatsApp opened",
@@ -52774,7 +52784,8 @@
     "ru": "Недавняя активность в комнате",
     "zh": "最近的房间活动",
     "yo": "Iṣẹ ṣiṣe yara aipẹ",
-    "ig": "Ihe omume ime ụlọ na nso nso a"
+    "ig": "Ihe omume ime ụlọ na nso nso a",
+    "ha": "Ayyukan ɗakin kwanan nan"
   },
   "add participant": {
     "en": "Add participant",
@@ -52783,7 +52794,8 @@
     "ru": "Добавить участника",
     "zh": "添加参与者",
     "yo": "Fi alabaṣe kun",
-    "ig": "Tinye onye so na ya"
+    "ig": "Tinye onye so na ya",
+    "ha": "Ƙara ɗan takara"
   },
   "add": {
     "en": "Add",
@@ -52792,7 +52804,8 @@
     "ru": "Добавить",
     "zh": "添加",
     "yo": "Fi kun",
-    "ig": "Tinye"
+    "ig": "Tinye",
+    "ha": "Ƙara"
   },
   "reject call": {
     "en": "Reject call",
@@ -52801,7 +52814,8 @@
     "ru": "Отклонить вызов",
     "zh": "拒绝来电",
     "yo": "Kọ ipe",
-    "ig": "Jụ oku"
+    "ig": "Jụ oku",
+    "ha": "Karɓar kira"
   },
   "accept call": {
     "en": "Accept call",
@@ -52810,7 +52824,8 @@
     "ru": "Принять вызов",
     "zh": "接听电话",
     "yo": "Gba ipe",
-    "ig": "Nabata oku"
+    "ig": "Nabata oku",
+    "ha": "Karɓi kira"
   },
   "cancel request": {
     "en": "Cancel request",
@@ -52819,7 +52834,8 @@
     "ru": "Отменить запрос",
     "zh": "取消请求",
     "yo": "Fagilee ìbéèrè",
-    "ig": "Kagbuo arịrịọ"
+    "ig": "Kagbuo arịrịọ",
+    "ha": "Soke buƙatar"
   },
   "could not open ad link": {
     "en": "Could not open ad link",
@@ -52848,7 +52864,8 @@
     "ru": "Что-то нужно быстро обновить",
     "zh": "有些东西需要快速刷新",
     "yo": "Nkankan nilo isọdọtun yara",
-    "ig": "Ihe chọrọ ume ọhụrụ ngwa ngwa"
+    "ig": "Ihe chọrọ ume ọhụrụ ngwa ngwa",
+    "ha": "Wani abu yana buƙatar wartsakewa cikin sauri"
   },
   "the app hit an unexpected issue. we have saved a diagnostic report so the team can trace it.": {
     "en": "The app hit an unexpected issue. We have saved a diagnostic report so the team can trace it.",
@@ -52857,7 +52874,8 @@
     "ru": "В приложении возникла непредвиденная проблема. Мы сохранили диагностический отчет, чтобы команда могла его отследить.",
     "zh": "应用程序遇到了意外问题。我们保存了一份诊断报告，以便团队可以追踪。",
     "yo": "Ìfilọlẹ naa kọlu ọran airotẹlẹ kan. A ti fipamọ ijabọ iwadii kan ki ẹgbẹ le wa kakiri rẹ.",
-    "ig": "Ngwa ahụ nwetara nsogbu a na-atụghị anya ya. Anyị echekwala akụkọ nyocha ka ndị otu ahụ wee nwee ike ịchọta ya."
+    "ig": "Ngwa ahụ nwetara nsogbu a na-atụghị anya ya. Anyị echekwala akụkọ nyocha ka ndị otu ahụ wee nwee ike ịchọta ya.",
+    "ha": "Manhajar ta ci karo da lamarin da ba a zata ba. Mun adana rahoton bincike don ƙungiyar ta iya gano ta."
   },
   "error:": {
     "en": "Error:",
@@ -52876,7 +52894,8 @@
     "ru": "Стек компонентов:",
     "zh": "组件堆栈：",
     "yo": "Akopọ paati:",
-    "ig": "Nchịkọta akụrụngwa:"
+    "ig": "Nchịkọta akụrụngwa:",
+    "ha": "Tari na Bangaren:"
   },
   "app update available": {
     "en": "App update available",
@@ -52925,7 +52944,8 @@
     "ru": "Двухфакторная проверка",
     "zh": "两因素检查",
     "yo": "Ayẹwo ifosiwewe meji",
-    "ig": "Nlele nke ihe abụọ"
+    "ig": "Nlele nke ihe abụọ",
+    "ha": "Takaddun abubuwa biyu"
   },
   "this screen is protected by two-factor authentication. enter the 6-digit code from your authenticator app (e.g. google authenticator) to unlock it.": {
     "en": "This screen is protected by two-factor authentication. Enter the 6-digit code from your authenticator app (e.g. Google Authenticator) to unlock it.",
@@ -52934,7 +52954,8 @@
     "ru": "Этот экран защищен двухфакторной аутентификацией. Введите 6-значный код из приложения для аутентификации (например, Google Authenticator), чтобы разблокировать его.",
     "zh": "此屏幕受双因素身份验证保护。输入验证器应用程序（例如 Google Authenticator）中的 6 位代码以解锁。",
     "yo": "Iboju yii jẹ aabo nipasẹ ijẹrisi ifosiwewe meji. Tẹ koodu oni-nọmba 6 sii lati inu ohun elo afọwọsi rẹ (fun apẹẹrẹ Google Authenticator) lati ṣii.",
-    "ig": "A na-echekwa ihuenyo a site na nyocha ihe abụọ. Tinye koodu ọnụọgụ isii site na ngwa nyocha gị (dịka Google Authenticator) iji kpọghee ya."
+    "ig": "A na-echekwa ihuenyo a site na nyocha ihe abụọ. Tinye koodu ọnụọgụ isii site na ngwa nyocha gị (dịka Google Authenticator) iji kpọghee ya.",
+    "ha": "Wannan allon yana da kariya ta hanyar tantance abubuwa biyu. Shigar da lambar lambobi 6 daga aikace-aikacen tabbatarwa (misali Google Authenticator) don buɗe ta."
   },
   "that code was not accepted. codes change every 30 seconds, so try the next one.": {
     "en": "That code was not accepted. Codes change every 30 seconds, so try the next one.",
@@ -52943,7 +52964,8 @@
     "ru": "Этот код не был принят. Коды меняются каждые 30 секунд, поэтому попробуйте следующий.",
     "zh": "该代码未被接受。代码每 30 秒更改一次，因此请尝试下一个。",
     "yo": "A ko gba koodu yẹn. Awọn koodu yipada ni gbogbo iṣẹju-aaya 30, nitorinaa gbiyanju atẹle naa.",
-    "ig": "Anabataghị koodu ahụ. Koodu na-agbanwe kwa sekọnd 30 ọ bụla, yabụ nwaa nke na-esote."
+    "ig": "Anabataghị koodu ahụ. Koodu na-agbanwe kwa sekọnd 30 ọ bụla, yabụ nwaa nke na-esote.",
+    "ha": "Ba a karɓi waccan lambar ba. Lambobi suna canzawa kowane sakan 30, don haka gwada na gaba."
   },
   "unlock": {
     "en": "Unlock",
@@ -52952,7 +52974,8 @@
     "ru": "Разблокировать",
     "zh": "解锁",
     "yo": "Ṣii silẹ",
-    "ig": "Kpọghe"
+    "ig": "Kpọghe",
+    "ha": "Buɗe"
   },
   "refresh dashboard": {
     "en": "Refresh dashboard",
@@ -53271,7 +53294,8 @@
     "ru": "NIN проверен",
     "zh": "NIN 已验证",
     "yo": "NIN jẹri",
-    "ig": "NIN kwadoro"
+    "ig": "NIN kwadoro",
+    "ha": "NIN ta tabbata"
   },
   "your identity has been updated.": {
     "en": "Your identity has been updated.",
@@ -53280,7 +53304,8 @@
     "ru": "Ваша личность обновлена.",
     "zh": "您的身份已更新。",
     "yo": "Idanimọ rẹ ti ni imudojuiwọn.",
-    "ig": "Emelitela njirimara gị."
+    "ig": "Emelitela njirimara gị.",
+    "ha": "An sabunta ainihin ku."
   },
   "add your nin": {
     "en": "Add your NIN",
@@ -53289,7 +53314,8 @@
     "ru": "Добавьте свой NIN",
     "zh": "添加您的 NIN",
     "yo": "Fi NIN rẹ kun",
-    "ig": "Tinye NIN gị"
+    "ig": "Tinye NIN gị",
+    "ha": "Ƙara NIN naku"
   },
   "your account was created before nin was required. enter your 11-digit nin and date of birth to complete identity verification.": {
     "en": "Your account was created before NIN was required. Enter your 11-digit NIN and date of birth to complete identity verification.",
@@ -53298,7 +53324,8 @@
     "ru": "Ваша учетная запись была создана до того, как потребовался NIN. Введите свой 11-значный NIN и дату рождения, чтобы завершить проверку личности.",
     "zh": "您的帐户是在需要 NIN 之前创建的。输入您的 11 位 NIN 和出生日期以完成身份验证。",
     "yo": "A ti ṣẹda akọọlẹ rẹ ṣaaju ki o to nilo NIN. Tẹ NIN oni-nọmba 11 rẹ ati ọjọ ibi lati pari ijẹrisi idanimọ.",
-    "ig": "Emebere akaụntụ gị tupu achọrọ NIN. Tinye NIN ọnụọgụ iri na otu gị na ụbọchị ọmụmụ iji mezue nkwenye njirimara."
+    "ig": "Emebere akaụntụ gị tupu achọrọ NIN. Tinye NIN ọnụọgụ iri na otu gị na ụbọchị ọmụmụ iji mezue nkwenye njirimara.",
+    "ha": "An ƙirƙiri asusun ku kafin a buƙaci NIN. Shigar da lambar NIN ku mai lamba 11 da ranar haihuwa don kammala tantancewa."
   },
   "verify nin": {
     "en": "Verify NIN",
@@ -53307,7 +53334,8 @@
     "ru": "Проверьте NIN",
     "zh": "验证NIN",
     "yo": "Jẹrisi NIN",
-    "ig": "Chọpụta NIN"
+    "ig": "Chọpụta NIN",
+    "ha": "Tabbatar da NIN"
   },
   "payment not completed": {
     "en": "Payment not completed",
@@ -53465,8 +53493,8 @@
     "fr": "Moule",
     "ru": "Плесень",
     "zh": "模具",
-    "ha": "Mold",
-    "yo": "Mọ́ọ̀dì",
+    "ha": "Ƙwayar danshi",
+    "yo": "Ìmọ́dù",
     "ig": "Ebu"
   },
   "minor": {
@@ -53772,9 +53800,9 @@
     "fr": "Chambre",
     "ru": "Спальня",
     "zh": "卧室",
-    "yo": "Yara yara",
-    "ig": "Ime ụlọ",
-    "ha": "Bedroom"
+    "yo": "Yàrá ìsùn",
+    "ig": "Ime ụlọ ihi ụra",
+    "ha": "Ɗakin kwana"
   },
   "bathroom": {
     "en": "Bathroom",
@@ -54042,7 +54070,7 @@
     "fr": "Manoir",
     "ru": "Особняк",
     "zh": "豪宅",
-    "ha": "Mansion",
+    "ha": "Ƙaton gida",
     "yo": "Ilé ńlá",
     "ig": "Nnukwu ụlọ"
   },
@@ -54203,7 +54231,8 @@
     "ru": "Запросить возврат средств",
     "zh": "请求退款",
     "yo": "Beere Agbapada",
-    "ig": "Rịọ nkwụghachi"
+    "ig": "Rịọ nkwụghachi",
+    "ha": "Nemi Kuɗi"
   },
   "dispute trace": {
     "en": "Dispute Trace",
@@ -54212,7 +54241,8 @@
     "ru": "Отслеживание спора",
     "zh": "争议追踪",
     "yo": "Àríyànjiyàn Trace",
-    "ig": "Mkparịta ụka"
+    "ig": "Mkparịta ụka",
+    "ha": "Ra'ayin Rigima"
   },
   "information": {
     "en": "Information",
@@ -54221,7 +54251,8 @@
     "ru": "Информация",
     "zh": "信息",
     "yo": "Alaye",
-    "ig": "Ozi"
+    "ig": "Ozi",
+    "ha": "Bayani"
   },
   "verify case": {
     "en": "Verify Case",
@@ -54230,7 +54261,8 @@
     "ru": "Проверка случая",
     "zh": "验证案例",
     "yo": "Jẹrisi Ọran",
-    "ig": "Nyochaa Okwu"
+    "ig": "Nyochaa Okwu",
+    "ha": "Tabbatar da Harka"
   },
   "resolved cases": {
     "en": "Resolved cases",
@@ -54239,7 +54271,8 @@
     "ru": "Решенные случаи",
     "zh": "已解决的案例",
     "yo": "Awọn ọran ti o yanju",
-    "ig": "Okwu ikpeziri"
+    "ig": "Okwu ikpeziri",
+    "ha": "Abubuwan da aka warware"
   },
   "assistance": {
     "en": "Assistance",
@@ -54248,7 +54281,8 @@
     "ru": "Помощь",
     "zh": "协助",
     "yo": "Iranlọwọ",
-    "ig": "Enyemaka"
+    "ig": "Enyemaka",
+    "ha": "Taimako"
   },
   "whatsapp assistant": {
     "en": "WhatsApp Assistant",
@@ -54257,7 +54291,8 @@
     "ru": "WhatsApp Ассистент",
     "zh": "WhatsApp 助手",
     "yo": "Oluranlọwọ WhatsApp",
-    "ig": "Onye enyemaka WhatsApp"
+    "ig": "Onye enyemaka WhatsApp",
+    "ha": "Mataimakin WhatsApp"
   },
   "lawyer invite": {
     "en": "Lawyer Invite",
@@ -54266,7 +54301,8 @@
     "ru": "Приглашение юриста",
     "zh": "律师邀请",
     "yo": "Agbẹjọro ifiwepe",
-    "ig": "Onye ọka iwu kpọrọ òkù"
+    "ig": "Onye ọka iwu kpọrọ òkù",
+    "ha": "Gayyatar Lauya"
   },
   "agent invite": {
     "en": "Agent Invite",
@@ -54275,7 +54311,8 @@
     "ru": "Приглашение агента",
     "zh": "代理邀请",
     "yo": "Olupe Aṣoju",
-    "ig": "Onye nnọchite anya oku"
+    "ig": "Onye nnọchite anya oku",
+    "ha": "Gayyatar Wakili"
   },
   "application": {
     "en": "Application",
@@ -54294,7 +54331,8 @@
     "ru": "Дополнительные инструменты",
     "zh": "更多工具",
     "yo": "Awọn irinṣẹ diẹ sii",
-    "ig": "Ngwa ndị ọzọ"
+    "ig": "Ngwa ndị ọzọ",
+    "ha": "Ƙarin Kayan aiki"
   },
   "transport payment": {
     "en": "Transport Payment",
@@ -54303,7 +54341,8 @@
     "ru": "Транспортный платеж",
     "zh": "交通费",
     "yo": "Isanwo Ọkọ",
-    "ig": "Ụgwọ njem"
+    "ig": "Ụgwọ njem",
+    "ha": "Biyan Sufuri"
   },
   "service catalog": {
     "en": "Service Catalog",
@@ -54312,7 +54351,8 @@
     "ru": "Каталог услуг",
     "zh": "服务目录",
     "yo": "Katalogi iṣẹ",
-    "ig": "Katalọgụ ọrụ"
+    "ig": "Katalọgụ ọrụ",
+    "ha": "Kas ɗin sabis"
   },
   "admin tools": {
     "en": "Admin Tools",
@@ -54342,7 +54382,8 @@
     "ru": "Подробности плана",
     "zh": "计划详情",
     "yo": "Awọn alaye Eto",
-    "ig": "Nkọwa atụmatụ"
+    "ig": "Nkọwa atụmatụ",
+    "ha": "Cikakken Bayanin Tsari"
   },
   "my transport bookings": {
     "en": "My Transport Bookings",
@@ -54351,7 +54392,8 @@
     "ru": "Мои заказы на транспорт",
     "zh": "我的交通预订",
     "yo": "Awọn iwe gbigbe ọkọ mi",
-    "ig": "Ndokwa ụgbọ njem m"
+    "ig": "Ndokwa ụgbọ njem m",
+    "ha": "Littattafan Sufurina"
   },
   "user details": {
     "en": "User Details",
@@ -56715,7 +56757,8 @@
     "ru": "{value0} запрашивает этот сеанс.",
     "zh": "{value0} 正在请求此会话。",
     "yo": "{value0} n beere igba yii.",
-    "ig": "{value0} na-arịọ nnọkọ a."
+    "ig": "{value0} na-arịọ nnọkọ a.",
+    "ha": "{value0} yana neman wannan zaman."
   },
   "{value0} active participants in this call room.": {
     "en": "{value0} active participants in this call room.",
@@ -56724,7 +56767,8 @@
     "ru": "{value0} активных участников в этой переговорной.",
     "zh": "{value0} 此呼叫室中的活跃参与者。",
     "yo": "{value0} olukopa lọwọ ninu yara ipe yi.",
-    "ig": "{value0} so na-arụsi ọrụ ike n'ime ụlọ oku a."
+    "ig": "{value0} so na-arụsi ọrụ ike n'ime ụlọ oku a.",
+    "ha": "{value0} mahalarta masu taka rawa a cikin wannan dakin kira."
   },
   "with {value0}": {
     "en": "With {value0}",
@@ -56733,7 +56777,8 @@
     "ru": "С {value0}",
     "zh": "与 {value0}",
     "yo": "Pẹlu {value0}",
-    "ig": "Ya na {value0}"
+    "ig": "Ya na {value0}",
+    "ha": "Tare da {value0}"
   },
   "unknown update error": {
     "en": "Unknown update error",
@@ -57142,9 +57187,9 @@
     "fr": "Biométrique",
     "ru": "Биометрический",
     "zh": "生物识别",
-    "yo": "Biometric",
-    "ig": "Biometric",
-    "ha": "Biometric"
+    "yo": "Ìdánimọ̀ ara",
+    "ig": "Njirimara ahụ",
+    "ha": "Shaidar halitta"
   },
   "view this verified home": {
     "en": "View this verified home",
@@ -57555,140 +57600,200 @@
     "ar": "الاسم الكامل والبريد الإلكتروني ورقم الهاتف وكلمة المرور مطلوبة.",
     "ha": "Ana buƙatar cikakken suna, imel, waya, da kalmar wucewa.",
     "yo": "Orúkọ kíkún, ímeèlì, fóònù àti ọ̀rọ̀ aṣínà jẹ́ dandan.",
-    "ig": "A chọrọ aha zuru ezu, iimel, ekwentị na okwuntughe."
+    "ig": "A chọrọ aha zuru ezu, iimel, ekwentị na okwuntughe.",
+    "fr": "Le nom complet, l'adresse e-mail, le téléphone et le mot de passe sont requis.",
+    "ru": "Требуется полное имя, адрес электронной почты, телефон и пароль.",
+    "zh": "需要全名、电子邮件、电话和密码。"
   },
   "enter the lawyer email to use for registration.": {
     "en": "Enter the lawyer email to use for registration.",
     "ar": "أدخل البريد الإلكتروني للمحامي لاستخدامه في التسجيل.",
     "ha": "Shigar da imel ɗin lauya don amfani da rajista.",
     "yo": "Tẹ ímeèlì agbẹjọ́rò tí a ó lò fún ìforúkọsílẹ̀.",
-    "ig": "Tinye iimel onye ọka iwu a ga-eji debanye aha."
+    "ig": "Tinye iimel onye ọka iwu a ga-eji debanye aha.",
+    "fr": "Saisissez l'adresse e-mail de l'avocat à utiliser pour l'inscription.",
+    "ru": "Введите адрес электронной почты адвоката, который будет использоваться для регистрации.",
+    "zh": "输入用于注册的律师电子邮件。"
   },
   "accept the terms and privacy policy to continue.": {
     "en": "Accept the Terms and Privacy Policy to continue.",
     "ar": "وافق على الشروط وسياسة الخصوصية للمتابعة.",
     "ha": "Yarda da Sharuɗɗa da Dokar Keɓanta don ci gaba.",
     "yo": "Gba Àwọn Òfin àti Ìlànà Àṣírí láti tẹ̀síwájú.",
-    "ig": "Nabata Usoro na Iwu Nzuzo iji gaa n'ihu."
+    "ig": "Nabata Usoro na Iwu Nzuzo iji gaa n'ihu.",
+    "fr": "Acceptez les conditions et la politique de confidentialité pour continuer.",
+    "ru": "Чтобы продолжить, примите Условия и Политику конфиденциальности.",
+    "zh": "接受条款和隐私政策以继续。"
   },
   "enter a valid lawyer email.": {
     "en": "Enter a valid lawyer email.",
     "ar": "أدخل بريدًا إلكترونيًا صالحًا للمحامي.",
     "ha": "Shigar da ingantaccen imel na lauya.",
     "yo": "Tẹ ímeèlì agbẹjọ́rò tó tọ́.",
-    "ig": "Tinye iimel onye ọka iwu ziri ezi."
+    "ig": "Tinye iimel onye ọka iwu ziri ezi.",
+    "fr": "Saisissez l'adresse e-mail d'un avocat valide.",
+    "ru": "Введите действительный адрес электронной почты юриста.",
+    "zh": "输入有效的律师电子邮件。"
   },
   "agent full name is required when adding an agent.": {
     "en": "Agent full name is required when adding an agent.",
     "ar": "الاسم الكامل للوكيل مطلوب عند إضافة وكيل.",
     "ha": "Ana buƙatar cikakken sunan wakili lokacin ƙara wakili.",
     "yo": "Orúkọ kíkún aṣojú jẹ́ dandan nígbà fífi aṣojú kún un.",
-    "ig": "A chọrọ aha onye nnọchi anya zuru ezu mgbe ị na-agbakwunye onye nnọchi anya."
+    "ig": "A chọrọ aha onye nnọchi anya zuru ezu mgbe ị na-agbakwunye onye nnọchi anya.",
+    "fr": "Le nom complet de l'agent est requis lors de l'ajout d'un agent.",
+    "ru": "При добавлении агента необходимо указать полное имя агента.",
+    "zh": "添加代理时需要代理全名。"
   },
   "enter a valid agent email.": {
     "en": "Enter a valid agent email.",
     "ar": "أدخل بريدًا إلكترونيًا صالحًا للوكيل.",
     "ha": "Shigar da ingantaccen imel na wakili.",
     "yo": "Tẹ ímeèlì aṣojú tó tọ́.",
-    "ig": "Tinye iimel onye nnọchi anya ziri ezi."
+    "ig": "Tinye iimel onye nnọchi anya ziri ezi.",
+    "fr": "Saisissez une adresse e-mail d'agent valide.",
+    "ru": "Введите действительный адрес электронной почты агента.",
+    "zh": "输入有效的代理电子邮件。"
   },
   "agent phone is required when adding an agent.": {
     "en": "Agent phone is required when adding an agent.",
     "ar": "رقم هاتف الوكيل مطلوب عند إضافة وكيل.",
     "ha": "Ana buƙatar wayar wakili lokacin ƙara wakili.",
     "yo": "Nọ́ńbà fóònù aṣojú jẹ́ dandan nígbà fífi aṣojú kún un.",
-    "ig": "A chọrọ nọmba ekwentị onye nnọchi anya mgbe ị na-agbakwunye ya."
+    "ig": "A chọrọ nọmba ekwentị onye nnọchi anya mgbe ị na-agbakwunye ya.",
+    "fr": "Le téléphone de l'agent est requis lors de l'ajout d'un agent.",
+    "ru": "При добавлении агента требуется телефон агента.",
+    "zh": "添加代理时需要代理电话。"
   },
   "local users must provide exactly 11 digits nin.": {
     "en": "Local users must provide exactly 11 digits NIN.",
     "ar": "يجب على المستخدمين المحليين تقديم رقم هوية وطنية مكوّن من 11 رقمًا بالضبط.",
     "ha": "Dole ne masu amfani da gida su samar da daidai lambobi 11 NIN.",
     "yo": "Àwọn olùlò abẹ́lé gbọ́dọ̀ pèsè NIN oní nọ́ńbà 11 gangan.",
-    "ig": "Ndị ọrụ obodo ga-enye NIN nwere ọnụọgụ 11 kpọmkwem."
+    "ig": "Ndị ọrụ obodo ga-enye NIN nwere ọnụọgụ 11 kpọmkwem.",
+    "fr": "Les utilisateurs locaux doivent fournir exactement 11 chiffres NIN.",
+    "ru": "Локальные пользователи должны указать ровно 11 цифр NIN.",
+    "zh": "本地用户必须提供正好 11 位的 NIN。"
   },
   "enter a valid international passport number.": {
     "en": "Enter a valid international passport number.",
     "ar": "أدخل رقم جواز سفر دولي صالحًا.",
     "ha": "Shigar da ingantacciyar lambar fasfo ta duniya.",
     "yo": "Tẹ nọ́ńbà ìwé ìrìnnà àgbáyé tó tọ́.",
-    "ig": "Tinye nọmba paspọtụ mba ụwa ziri ezi."
+    "ig": "Tinye nọmba paspọtụ mba ụwa ziri ezi.",
+    "fr": "Saisissez un numéro de passeport international valide.",
+    "ru": "Введите действительный номер загранпаспорта.",
+    "zh": "输入有效的国际护照号码。"
   },
   "nationality is required for foreign registrations.": {
     "en": "Nationality is required for foreign registrations.",
     "ar": "الجنسية مطلوبة لتسجيل الأجانب.",
     "ha": "Ana buƙatar ɗan ƙasa don rajistar ƙasashen waje.",
     "yo": "Orílẹ̀-èdè jẹ́ dandan fún ìforúkọsílẹ̀ àjèjì.",
-    "ig": "A chọrọ obodo onye si maka ndebanye aha ndị mba ọzọ."
+    "ig": "A chọrọ obodo onye si maka ndebanye aha ndị mba ọzọ.",
+    "fr": "La nationalité est requise pour les inscriptions étrangères.",
+    "ru": "Для иностранной регистрации требуется гражданство.",
+    "zh": "外国注册需要国籍。"
   },
   "select your state to calculate the registration fee.": {
     "en": "Select your state to calculate the registration fee.",
     "ar": "اختر ولايتك لحساب رسوم التسجيل.",
     "ha": "Zaɓi jihar ku don ƙididdige kuɗin rajista.",
     "yo": "Yan ìpínlẹ̀ rẹ láti ṣe ìṣirò owó ìforúkọsílẹ̀.",
-    "ig": "Họrọ steeti gị iji gbakọọ ụgwọ ndebanye aha."
+    "ig": "Họrọ steeti gị iji gbakọọ ụgwọ ndebanye aha.",
+    "fr": "Sélectionnez votre état pour calculer les frais d'inscription.",
+    "ru": "Выберите свой штат для расчета регистрационного сбора.",
+    "zh": "选择您所在的州来计算注册费。"
   },
   "select your local government area to calculate the registration fee.": {
     "en": "Select your local government area to calculate the registration fee.",
     "ar": "اختر منطقة الحكومة المحلية لحساب رسوم التسجيل.",
     "ha": "Zaɓi karamar hukumar ku don ƙididdige kuɗin rajista.",
     "yo": "Yan ìjọba ìbílẹ̀ rẹ láti ṣe ìṣirò owó ìforúkọsílẹ̀.",
-    "ig": "Họrọ ọchịchị ime obodo gị iji gbakọọ ụgwọ ndebanye aha."
+    "ig": "Họrọ ọchịchị ime obodo gị iji gbakọọ ụgwọ ndebanye aha.",
+    "fr": "Sélectionnez votre zone d'administration locale pour calculer les frais d'inscription.",
+    "ru": "Выберите регион своего местного самоуправления, чтобы рассчитать регистрационный сбор.",
+    "zh": "选择您当地的政府区域来计算注册费。"
   },
   "referral code can only contain letters, numbers, - or _": {
     "en": "Referral code can only contain letters, numbers, - or _",
     "ar": "يمكن أن يحتوي رمز الإحالة على أحرف وأرقام و - أو _ فقط",
     "ha": "Lambar mikawa zata iya ƙunsar haruffa, lambobi, - ko _",
     "yo": "Kóòdù ìfihàn lè ní lẹ́tà, nọ́ńbà, - tàbí _ nìkan",
-    "ig": "Koodu ntinye nwere ike inwe naanị mkpụrụedemede, ọnụọgụ, - ma ọ bụ _"
+    "ig": "Koodu ntinye nwere ike inwe naanị mkpụrụedemede, ọnụọgụ, - ma ọ bụ _",
+    "fr": "Le code de parrainage ne peut contenir que des lettres, des chiffres - ou _",
+    "ru": "Реферальный код может содержать только буквы, цифры или _.",
+    "zh": "推荐码只能包含字母、数字、- 或 _"
   },
   "enter your full name, email address and phone number.": {
     "en": "Enter your full name, email address and phone number.",
     "ar": "أدخل اسمك الكامل وبريدك الإلكتروني ورقم هاتفك.",
     "ha": "Shigar da cikakken sunan ku, adireshin imel da lambar waya.",
     "yo": "Tẹ orúkọ kíkún rẹ, àdírẹ́sì ímeèlì àti nọ́ńbà fóònù.",
-    "ig": "Tinye aha gị zuru ezu, adreesị iimel na nọmba ekwentị."
+    "ig": "Tinye aha gị zuru ezu, adreesị iimel na nọmba ekwentị.",
+    "fr": "Saisissez votre nom complet, votre adresse e-mail et votre numéro de téléphone.",
+    "ru": "Введите свое полное имя, адрес электронной почты и номер телефона.",
+    "zh": "输入您的全名、电子邮件地址和电话号码。"
   },
   "referral code can only contain letters, numbers, - or _.": {
     "en": "Referral code can only contain letters, numbers, - or _.",
     "ar": "يمكن أن يحتوي رمز الإحالة على أحرف وأرقام و - أو _ فقط.",
     "ha": "Lambar mikawa zata iya ƙunsar haruffa, lambobi, - ko _.",
     "yo": "Kóòdù ìfihàn lè ní lẹ́tà, nọ́ńbà, - tàbí _ nìkan.",
-    "ig": "Koodu ntinye nwere ike inwe naanị mkpụrụedemede, ọnụọgụ, - ma ọ bụ _."
+    "ig": "Koodu ntinye nwere ike inwe naanị mkpụrụedemede, ọnụọgụ, - ma ọ bụ _.",
+    "fr": "Le code de parrainage ne peut contenir que des lettres, des chiffres - ou _.",
+    "ru": "Реферальный код может содержать только буквы, цифры или _.",
+    "zh": "推荐码只能包含字母、数字、- 或 _。"
   },
   "enter the agentâ€™s full name.": {
     "en": "Enter the agentâ€™s full name.",
     "ar": "أدخل الاسم الكامل للوكيل.",
     "ha": "Shigar da cikakken sunan wakilin.",
     "yo": "Tẹ orúkọ kíkún aṣojú náà.",
-    "ig": "Tinye aha onye nnọchi anya ahụ zuru ezu."
+    "ig": "Tinye aha onye nnọchi anya ahụ zuru ezu.",
+    "fr": "Saisissez le nom complet de l'agent.",
+    "ru": "Введите полное имя агента.",
+    "zh": "输入代理的全名。"
   },
   "enter the agentâ€™s phone number.": {
     "en": "Enter the agentâ€™s phone number.",
     "ar": "أدخل رقم هاتف الوكيل.",
     "ha": "Shigar da lambar wayar wakili.",
     "yo": "Tẹ nọ́ńbà fóònù aṣojú náà.",
-    "ig": "Tinye nọmba ekwentị onye nnọchi anya ahụ."
+    "ig": "Tinye nọmba ekwentị onye nnọchi anya ahụ.",
+    "fr": "Saisissez le numéro de téléphone de l'agent.",
+    "ru": "Введите номер телефона агента.",
+    "zh": "输入代理的电话号码。"
   },
   "enter your 11-digit nin.": {
     "en": "Enter your 11-digit NIN.",
     "ar": "أدخل رقم هويتك الوطنية المكوّن من 11 رقمًا.",
     "ha": "Shigar da lambar NIN ku mai lamba 11.",
     "yo": "Tẹ NIN rẹ oní nọ́ńbà 11",
-    "ig": "Tinye NIN gị nke nwere ọnụọgụ 11"
+    "ig": "Tinye NIN gị nke nwere ọnụọgụ 11",
+    "fr": "Saisissez votre NIN à 11 chiffres.",
+    "ru": "Введите свой 11-значный NIN.",
+    "zh": "输入您的 11 位 NIN。"
   },
   "enter your nationality.": {
     "en": "Enter your nationality.",
     "ar": "أدخل جنسيتك.",
     "ha": "Shigar da ƙasar ku.",
     "yo": "Tẹ orílẹ̀-èdè rẹ",
-    "ig": "Tinye obodo gị"
+    "ig": "Tinye obodo gị",
+    "fr": "Saisissez votre nationalité.",
+    "ru": "Введите свое гражданство.",
+    "zh": "输入您的国籍。"
   },
   "payment link was not returned.": {
     "en": "Payment link was not returned.",
     "ar": "لم يتم إرجاع رابط الدفع.",
     "ha": "Ba a dawo da hanyar biyan kuɗi ba.",
     "yo": "A kò dá ìjápọ̀ ìsanwó padà.",
-    "ig": "Eweghachighị njikọ ịkwụ ụgwọ."
+    "ig": "Eweghachighị njikọ ịkwụ ụgwọ.",
+    "fr": "Le lien de paiement n'a pas été renvoyé.",
+    "ru": "Ссылка на оплату не возвращена.",
+    "zh": "付款链接未返回。"
   },
   "payment link unavailable": {
     "en": "Payment link unavailable",
@@ -57707,70 +57812,100 @@
     "ar": "الاسم والبريد الإلكتروني ونوع العقار مطلوبة.",
     "ha": "Ana buƙatar suna, imel da nau'in kadara.",
     "yo": "Orúkọ, iméèlì àti irúfẹ́ ohun-inì nílò",
-    "ig": "Aha, email na ụdị ụlọ dị mkpa"
+    "ig": "Aha, email na ụdị ụlọ dị mkpa",
+    "fr": "Le nom, l'e-mail et le type de propriété sont requis.",
+    "ru": "Требуется имя, адрес электронной почты и тип свойства.",
+    "zh": "姓名、电子邮件和财产类型为必填项。"
   },
   "maximum price must be greater than minimum price.": {
     "en": "Maximum price must be greater than minimum price.",
     "ar": "يجب أن يكون السعر الأقصى أكبر من السعر الأدنى.",
     "ha": "Matsakaicin farashi dole ne ya zama mafi ƙarancin farashi.",
     "yo": "Iye tó pọ̀ jù gbọ́dọ̀ ju iye tó kéré jù lọ.",
-    "ig": "Ọnụ ego kacha elu ga-adị ukwuu karịa nke kacha nta."
+    "ig": "Ọnụ ego kacha elu ga-adị ukwuu karịa nke kacha nta.",
+    "fr": "Le prix maximum doit être supérieur au prix minimum.",
+    "ru": "Максимальная цена должна быть больше минимальной цены.",
+    "zh": "最高价格必须大于最低价格。"
   },
   "budget, bedroom and bathroom values must be valid positive numbers.": {
     "en": "Budget, bedroom and bathroom values must be valid positive numbers.",
     "ar": "يجب أن تكون الميزانية وأعداد غرف النوم والحمامات أرقامًا موجبة صالحة.",
     "ha": "Kasafin kuɗi, ɗakin kwana da ƙimar gidan wanka dole ne su kasance ingantattun lambobi masu inganci.",
     "yo": "Ìsúná, iye yàrá àti balùwẹ̀ gbọ́dọ̀ jẹ́ nọ́ńbà tó tọ́ tí ó ju òdo lọ.",
-    "ig": "Ego mmefu, ọnụ ụlọ ihi ụra na ụlọ ịsa ahụ ga-abụ ọnụọgụ ziri ezi karịrị efu."
+    "ig": "Ego mmefu, ọnụ ụlọ ihi ụra na ụlọ ịsa ahụ ga-abụ ọnụọgụ ziri ezi karịrị efu.",
+    "fr": "Les valeurs du budget, des chambres et de la salle de bain doivent être des nombres positifs valides.",
+    "ru": "Значения бюджета, спальни и ванной комнаты должны быть допустимыми положительными числами.",
+    "zh": "预算、卧室和浴室值必须是有效的正数。"
   },
   "select your preferred state to calculate the request fee.": {
     "en": "Select your preferred state to calculate the request fee.",
     "ar": "اختر الولاية المفضلة لحساب رسوم الطلب.",
     "ha": "Zaɓi jihar da kuka fi so don ƙididdige kuɗin nema.",
     "yo": "Yan ìpínlẹ̀ tó fẹ́ láti ṣiṣẹ́ iye owó ìbéèrè",
-    "ig": "Họrọ steeti masịrị gị iji gbakọọ ego arịrịọ"
+    "ig": "Họrọ steeti masịrị gị iji gbakọọ ego arịrịọ",
+    "fr": "Sélectionnez votre état préféré pour calculer les frais de demande.",
+    "ru": "Выберите предпочтительный штат для расчета платы за запрос.",
+    "zh": "选择您首选的州来计算请求费用。"
   },
   "select your preferred local government area to calculate the request fee.": {
     "en": "Select your preferred local government area to calculate the request fee.",
     "ar": "اختر منطقة الحكومة المحلية المفضلة لحساب رسوم الطلب.",
     "ha": "Zaɓi yankin ƙaramar hukumar da kuka fi so don ƙididdige kuɗin buƙatun.",
     "yo": "Yan ìjọba ìbílẹ̀ tó fẹ́ láti ṣiṣẹ́ iye owó ìbéèrè",
-    "ig": "Họrọ mpaghara ọchịchị ime obodo masịrị gị iji gbakọọ ego arịrịọ"
+    "ig": "Họrọ mpaghara ọchịchị ime obodo masịrị gị iji gbakọọ ego arịrịọ",
+    "fr": "Sélectionnez votre zone de gouvernement local préférée pour calculer les frais de demande.",
+    "ru": "Выберите предпочитаемый вами район местного самоуправления, чтобы рассчитать плату за запрос.",
+    "zh": "选择您首选的地方政府区域来计算请求费用。"
   },
   "could not start the survey": {
     "en": "Could not start the survey",
     "ar": "تعذّر بدء الاستبيان",
     "yo": "Ko le bẹrẹ iwadi naa",
     "ig": "Enweghị ike ịmalite nyocha ahụ",
-    "ha": "An kasa fara binciken"
+    "ha": "An kasa fara binciken",
+    "fr": "Impossible de démarrer l'enquête",
+    "ru": "Не удалось начать опрос.",
+    "zh": "无法开始调查"
   },
   "invalid assistant response": {
     "en": "Invalid assistant response",
     "ar": "استجابة المساعد غير صالحة",
     "yo": "Idahun oluranlọwọ ti ko tọ",
     "ig": "Nzaghachi enyemaka na ezighi ezi",
-    "ha": "Martani mara inganci"
+    "ha": "Martani mara inganci",
+    "fr": "Réponse de l'assistant invalide",
+    "ru": "Неверный ответ помощника.",
+    "zh": "助理响应无效"
   },
   "ticket creation could not be confirmed": {
     "en": "Ticket creation could not be confirmed",
     "ar": "تعذّر تأكيد إنشاء تذكرة الدعم",
     "yo": "Ṣiṣẹda tikẹti ko le ṣe idaniloju",
     "ig": "Enweghị ike ikwenye imepụta tiketi",
-    "ha": "Ba a iya tabbatar da ƙirƙirar tikitin ba"
+    "ha": "Ba a iya tabbatar da ƙirƙirar tikitin ba",
+    "fr": "La création du ticket n'a pas pu être confirmée",
+    "ru": "Не удалось подтвердить создание заявки.",
+    "zh": "无法确认票证创建"
   },
   "no native session token available.": {
     "en": "No native session token available.",
     "ar": "لا يوجد رمز جلسة متاح للتطبيق.",
     "ha": "Babu alamar zaman ɗan ƙasa da akwai.",
     "yo": "Kò sí àmì àkókò ìwọlé àpù.",
-    "ig": "Enweghị akara nnọkọ ngwa."
+    "ig": "Enweghị akara nnọkọ ngwa.",
+    "fr": "Aucun jeton de session natif disponible.",
+    "ru": "Нет доступного собственного токена сеанса.",
+    "zh": "没有可用的本机会话令牌。"
   },
   "unread counts unavailable": {
     "en": "Unread counts unavailable",
     "ar": "أعداد الإشعارات غير المقروءة غير متاحة",
     "ha": "Babu ƙidaya marasa karantawa",
     "yo": "Iye ohun tí a kò tíì kà kò sí",
-    "ig": "Ọnụọgụ ihe a na-agụbeghị adịghị"
+    "ig": "Ọnụọgụ ihe a na-agụbeghị adịghị",
+    "fr": "Nombres non lus indisponibles",
+    "ru": "Количество непрочитанных сообщений недоступно",
+    "zh": "未读计数不可用"
   },
   "no active super admin recipient found for escalation": {
     "en": "No active super admin recipient found for escalation",
@@ -57786,35 +57921,50 @@
     "ar": "لم يُرجع الخادم رمز الوصول إلى Paystack.",
     "ha": "Sabar ba ta dawo da lambar samun biyan kuɗi ba.",
     "yo": "Ẹ̀rọ ìpèsè kò dá kóòdù ìwọlé Paystack padà.",
-    "ig": "Sava eweghachighị koodu nnweta Paystack."
+    "ig": "Sava eweghachighị koodu nnweta Paystack.",
+    "fr": "Le code d'accès Paystack n'a pas été renvoyé par le serveur.",
+    "ru": "Код доступа к Paystack не был возвращен сервером.",
+    "zh": "服务器未返回 Paystack 访问代码。"
   },
   "native paystack checkout is not available on this build.": {
     "en": "Native Paystack checkout is not available on this build.",
     "ar": "الدفع عبر Paystack غير متاح في هذا الإصدار من التطبيق.",
     "ha": "Babu rajistan biyan kuɗi na asali akan wannan ginin.",
     "yo": "Ìsanwó Paystack abiníbí kò sí nínú ẹ̀yà yìí.",
-    "ig": "Ụzọ ịkwụ ụgwọ Paystack nke ngwaọrụ adịghị na nsụgharị a."
+    "ig": "Ụzọ ịkwụ ụgwọ Paystack nke ngwaọrụ adịghị na nsụgharị a.",
+    "fr": "Le paiement Native Paystack n'est pas disponible sur cette version.",
+    "ru": "В этой сборке недоступна встроенная проверка Paystack.",
+    "zh": "本机 Paystack 结帐在此版本上不可用。"
   },
   "payment was cancelled.": {
     "en": "Payment was cancelled.",
     "ar": "تم إلغاء الدفع.",
     "ha": "An soke biyan kuɗi.",
     "yo": "A ti fagilé ìsanwó.",
-    "ig": "Akagbuola ịkwụ ụgwọ."
+    "ig": "Akagbuola ịkwụ ụgwọ.",
+    "fr": "Le paiement a été annulé.",
+    "ru": "Платеж отменен.",
+    "zh": "付款已取消。"
   },
   "no paystack checkout link was returned.": {
     "en": "No Paystack checkout link was returned.",
     "ar": "لم يتم إرجاع رابط الدفع عبر Paystack.",
     "ha": "Ba a dawo da hanyar biyan kuɗi ba.",
     "yo": "A kò rí ojú-òpó ìsanwó Paystack.",
-    "ig": "Enweghị njikọ ịkwụ ụgwọ Paystack e weghachiri."
+    "ig": "Enweghị njikọ ịkwụ ụgwọ Paystack e weghachiri.",
+    "fr": "Aucun lien de paiement Paystack n'a été renvoyé.",
+    "ru": "Ссылка для оплаты Paystack не возвращена.",
+    "zh": "未返回 Paystack 结账链接。"
   },
   "a verified signed-in session is required to save an offline action.": {
     "en": "A verified signed-in session is required to save an offline action.",
     "ar": "يلزم تسجيل الدخول بجلسة موثّقة لحفظ إجراء دون اتصال.",
     "yo": "Apeere igba ifiwole ti ifọwọsi lati ṣafipamọ iṣẹ aisinipo kan.",
     "ig": "Achọrọ nnọkọ mbibanyere ekwenyesiri ike iji chekwaa mmemme na-anọghị n'ịntanetị.",
-    "ha": "Ana buƙatar tabbataccen zaman shiga don adana aikin layi."
+    "ha": "Ana buƙatar tabbataccen zaman shiga don adana aikin layi.",
+    "fr": "Une session de connexion vérifiée est requise pour enregistrer une action hors ligne.",
+    "ru": "Для сохранения автономного действия требуется подтвержденный сеанс входа.",
+    "zh": "需要经过验证的登录会话才能保存离线操作。"
   },
   "an original administrator session is required.": {
     "en": "An original administrator session is required.",
@@ -57831,7 +57981,10 @@
     "ar": "نجح تسجيل الدخول، لكن الخادم لم يُرجع جلسة كاملة للتطبيق.",
     "ha": "Shiga yayi nasara amma uwar garken bai dawo da cikakken zaman wayar hannu ba.",
     "yo": "Ìwọlé ṣàṣeyọrí ṣùgbọ́n ẹ̀rọ ìpèsè kò dá gbogbo àlàyé àkókò ìwọlé alágbèéká padà.",
-    "ig": "Ịbanye gara nke ọma mana sava eweghachighị nnọkọ mkpanaka zuru ezu."
+    "ig": "Ịbanye gara nke ọma mana sava eweghachighị nnọkọ mkpanaka zuru ezu.",
+    "fr": "La connexion a réussi mais le serveur n'a pas renvoyé une session mobile complète.",
+    "ru": "Вход выполнен успешно, но сервер не вернул полный мобильный сеанс.",
+    "zh": "登录成功，但服务器未返回完整的移动会话。"
   },
   "the server did not return a complete impersonation session.": {
     "en": "The server did not return a complete impersonation session.",
@@ -57868,7 +58021,10 @@
     "ar": "الاتصال المباشر غير متاح",
     "ha": "Babu haɗin kai tsaye",
     "yo": "Ìsopọ̀ lẹ́sẹ̀kẹsẹ̀ kò sí",
-    "ig": "Njikọ ozugbo adịghị"
+    "ig": "Njikọ ozugbo adịghị",
+    "fr": "La connexion en temps réel n'est pas disponible",
+    "ru": "Соединение в реальном времени недоступно",
+    "zh": "实时连接不可用"
   },
   "userealtime must be used inside realtimeprovider": {
     "en": "useRealtime must be used inside RealtimeProvider",
@@ -57885,964 +58041,1609 @@
     "ar": "تم حفظ {value0} وستتم إعادة المحاولة عند عودة الاتصال.",
     "ha": "An adana {value0} kuma za a sake gwadawa idan haɗin ya dawo.",
     "yo": "A ti fi {value0} pamọ́, a ó tún gbìyànjú nígbà tí ìsopọ̀ bá padà.",
-    "ig": "Echekwara {value0}, a ga-anwa ọzọ mgbe njikọ laghachiri."
+    "ig": "Echekwara {value0}, a ga-anwa ọzọ mgbe njikọ laghachiri.",
+    "fr": "{value0} a été enregistré et réessayera lorsque la connexion sera rétablie.",
+    "ru": "{value0} сохранен и повторит попытку при восстановлении соединения.",
+    "zh": "{value0} 已保存，连接返回时将重试。"
   },
   "this action": {
     "en": "This action",
     "ar": "هذا الإجراء",
     "ha": "Wannan aikin",
     "yo": "Ìṣe yìí",
-    "ig": "Omume a"
+    "ig": "Omume a",
+    "fr": "Cette action",
+    "ru": "Это действие",
+    "zh": "这个动作"
   },
   "password must be at least 10 characters and include uppercase, lowercase, a number, and a special character.": {
     "en": "Password must be at least 10 characters and include uppercase, lowercase, a number, and a special character.",
     "ar": "يجب أن تتكون كلمة المرور من 10 أحرف على الأقل وأن تتضمن حرفًا كبيرًا وحرفًا صغيرًا ورقمًا ورمزًا خاصًا.",
     "ha": "Dole ne kalmar wucewa ta zama aƙalla haruffa 10 kuma ta haɗa da babban baƙaƙe, ƙananan baƙaƙe, lamba, da harafi na musamman.",
     "yo": "Ọrọigbaniwọle gbọdọ jẹ o kere ju awọn ohun kikọ 10 ati pẹlu awọn lẹta nla, kekere, nọmba kan, ati ohun kikọ pataki kan.",
-    "ig": "Okwuntughe ga-abụrịrị opekata mpe mkpụrụedemede 10 ma gụnye mkpụrụedemede ukwu, obere mkpụrụedemede, nọmba na agwa pụrụ iche."
+    "ig": "Okwuntughe ga-abụrịrị opekata mpe mkpụrụedemede 10 ma gụnye mkpụrụedemede ukwu, obere mkpụrụedemede, nọmba na agwa pụrụ iche.",
+    "fr": "Le mot de passe doit comporter au moins 10 caractères et inclure des majuscules, des minuscules, un chiffre et un caractère spécial.",
+    "ru": "Пароль должен содержать не менее 10 символов и включать заглавные и строчные буквы, цифры и специальные символы.",
+    "zh": "密码必须至少为 10 个字符，并包含大写字母、小写字母、数字和特殊字符。"
   },
   "direct apk update": {
     "en": "DIRECT APK UPDATE",
     "yo": "Imudojuiwọn apk taara",
     "ig": "Nwelite ngwa ngwa ozugbo",
-    "ha": "KYAUTA APK"
+    "ha": "KYAUTA APK",
+    "ar": "تحديث APK المباشر",
+    "fr": "MISE À JOUR DIRECTE DE L'APK",
+    "ru": "ПРЯМОЕ ОБНОВЛЕНИЕ APK",
+    "zh": "直接 APK 更新"
   },
   "app update": {
     "en": "APP UPDATE",
     "yo": "APP imudojuiwọn",
     "ig": "APP Nwelite",
-    "ha": "KYAUTA APP"
+    "ha": "KYAUTA APP",
+    "ar": "تحديث التطبيق",
+    "fr": "MISE À JOUR DE L'APPLICATION",
+    "ru": "ОБНОВЛЕНИЕ ПРИЛОЖЕНИЯ",
+    "zh": "应用程序更新"
   },
   "downloading update…": {
     "en": "Downloading update…",
     "yo": "Gbigba imudojuiwọn…",
     "ig": "Na-ebudata mmelite…",
-    "ha": "Ana saukewa…"
+    "ha": "Ana saukewa…",
+    "ar": "جارٍ تنزيل التحديث...",
+    "fr": "Téléchargement de la mise à jour…",
+    "ru": "Загрузка обновления…",
+    "zh": "正在下载更新..."
   },
   "install update": {
     "en": "Install update",
     "yo": "Fi sori ẹrọ imudojuiwọn",
     "ig": "Wụnye mmelite",
-    "ha": "Sanya sabuntawa"
+    "ha": "Sanya sabuntawa",
+    "ar": "قم بتثبيت التحديث",
+    "fr": "Installer la mise à jour",
+    "ru": "Установить обновление",
+    "zh": "安装更新"
   },
   "update now": {
     "en": "Update now",
     "yo": "Imudojuiwọn ni bayi",
     "ig": "Melite ugbu a",
-    "ha": "Sabuntawa yanzu"
+    "ha": "Sabuntawa yanzu",
+    "ar": "قم بالتحديث الآن",
+    "fr": "Mettre à jour maintenant",
+    "ru": "Обновить сейчас",
+    "zh": "立即更新"
   },
   "untitled property": {
     "en": "Untitled Property",
     "yo": "Ohun-ini ti ko ni akole",
     "ig": "Ngwongwo enweghị aha",
-    "ha": "Dukiya mara suna"
+    "ha": "Dukiya mara suna",
+    "ar": "ملكية بدون عنوان",
+    "fr": "Propriété sans titre",
+    "ru": "Свойство без названия",
+    "zh": "无权财产"
   },
   "pay once to browse verified homes outside your registered location.": {
     "en": "Pay once to browse verified homes outside your registered location.",
     "yo": "Sanwo lẹẹkan lati lọ kiri lori awọn ile ti a rii daju ni ita ipo ti o forukọsilẹ.",
     "ig": "kwụọ ụgwọ otu ugboro iji chọgharịa n'ụlọ ndị ekwenyesiri ike na mpụga ebe ị debanyere aha.",
-    "ha": "Biya sau ɗaya don bincika gidajen da aka tabbatar a wajen wurin da kuka yi rajista."
+    "ha": "Biya sau ɗaya don bincika gidajen da aka tabbatar a wajen wurin da kuka yi rajista.",
+    "ar": "ادفع مرة واحدة لتصفح المنازل التي تم التحقق منها خارج موقعك المسجل.",
+    "fr": "Payez une fois pour parcourir les maisons vérifiées en dehors de votre emplacement enregistré.",
+    "ru": "Заплатите один раз и просмотрите проверенные дома за пределами вашего зарегистрированного местоположения.",
+    "zh": "支付一次即可浏览您注册位置之外经过验证的房屋。"
   },
   "confirm payment": {
     "en": "Confirm payment",
     "yo": "Jẹrisi sisanwo",
     "ig": "Kwenye ego",
-    "ha": "Tabbatar da biyan kuɗi"
+    "ha": "Tabbatar da biyan kuɗi",
+    "ar": "تأكيد الدفع",
+    "fr": "Confirmer le paiement",
+    "ru": "Подтвердите платеж",
+    "zh": "确认付款"
   },
   "no homes found": {
     "en": "No homes found",
     "yo": "Ko si awọn ile ti a rii",
     "ig": "Enweghị ụlọ ahụrụ",
-    "ha": "Ba a sami gidaje ba"
+    "ha": "Ba a sami gidaje ba",
+    "ar": "لم يتم العثور على منازل",
+    "fr": "Aucune maison trouvée",
+    "ru": "Дома не найдены",
+    "zh": "未找到房屋"
   },
   "use paystack checkout to complete this payment.": {
     "en": "Use Paystack checkout to complete this payment.",
     "yo": "Lo isanwo Paystack lati pari isanwo yii.",
     "ig": "Jiri ndenye ego akwụ ụgwọ iji mezuo ugwo a.",
-    "ha": "Yi amfani da wurin biya don kammala wannan biyan kuɗi."
+    "ha": "Yi amfani da wurin biya don kammala wannan biyan kuɗi.",
+    "ar": "استخدم Paystack checkout لإكمال هذه الدفعة.",
+    "fr": "Utilisez le paiement Paystack pour effectuer ce paiement.",
+    "ru": "Используйте кассу Paystack, чтобы завершить этот платеж.",
+    "zh": "使用 Paystack 结帐来完成此付款。"
   },
   "verified rental home": {
     "en": "Verified rental home",
     "yo": "Ile iyalo ti idanimọ",
     "ig": "Ụlọ mgbazinye egosiri",
-    "ha": "Tabbatar da gidan haya"
+    "ha": "Tabbatar da gidan haya",
+    "ar": "تم التحقق من تأجير المنزل",
+    "fr": "Maison de location vérifiée",
+    "ru": "Проверенный дом для сдачи в аренду",
+    "zh": "已验证出租房屋"
   },
   "the property owner has not added a description yet.": {
     "en": "The property owner has not added a description yet.",
     "yo": "Ẹniti o ni ohun-ini ko tii fikun apejuwe kan sibẹsibẹ.",
     "ig": "Onye nwe ụlọ etinyebeghị nkọwapụta.",
-    "ha": "Mai gidan bai ƙara bayanin ba tukuna."
+    "ha": "Mai gidan bai ƙara bayanin ba tukuna.",
+    "ar": "لم يقم مالك العقار بإضافة وصف بعد.",
+    "fr": "Le propriétaire n'a pas encore ajouté de description.",
+    "ru": "Владелец недвижимости еще не добавил описание.",
+    "zh": "业主尚未添加描述。"
   },
   "monthly equivalent of your yearly rent": {
     "en": "Monthly equivalent of your yearly rent",
     "yo": "Oṣooṣu deede ti iyalo ọdọọdun rẹ",
     "ig": "Kwa ọnwa nke ụgwọ ụlọ gị kwa afọ",
-    "ha": "Daidai da kuɗin haya na wata-wata"
+    "ha": "Daidai da kuɗin haya na wata-wata",
+    "ar": "المعادل الشهري لإيجارك السنوي",
+    "fr": "Equivalent mensuel de votre loyer annuel",
+    "ru": "Ежемесячный эквивалент годовой арендной платы",
+    "zh": "每月相当于您的年租金"
   },
   "monthly rent": {
     "en": "Monthly rent",
     "yo": "Iyalo oṣooṣu",
     "ig": "Mgbazinye kwa ọnwa",
-    "ha": "Hayar wata-wata"
+    "ha": "Hayar wata-wata",
+    "ar": "الإيجار الشهري",
+    "fr": "Loyer mensuel",
+    "ru": "Ежемесячная арендная плата",
+    "zh": "月租"
   },
   "fits your income budget": {
     "en": "Fits your income budget",
     "yo": "Ni ibamu si isuna owo-wiwọle rẹ",
     "ig": "Dabara na mmefu ego gị",
-    "ha": "Ya dace da kasafin kuɗin shiga ku"
+    "ha": "Ya dace da kasafin kuɗin shiga ku",
+    "ar": "يناسب ميزانية دخلك",
+    "fr": "Convient à votre budget de revenus",
+    "ru": "Соответствует вашему бюджету доходов",
+    "zh": "适合您的收入预算"
   },
   "above your income budget": {
     "en": "Above your income budget",
     "yo": "Loke isuna owo-wiwọle rẹ",
     "ig": "Karịrị mmefu ego gị",
-    "ha": "Sama da kasafin kuɗin shiga"
+    "ha": "Sama da kasafin kuɗin shiga",
+    "ar": "أعلى من ميزانية دخلك",
+    "fr": "Au-dessus de votre budget de revenus",
+    "ru": "Выше вашего бюджета доходов",
+    "zh": "超出您的收入预算"
   },
   "select a state first": {
     "en": "Select a state first",
     "yo": "Yan ipinlẹ ni akọkọ",
     "ig": "Họrọ steeti buru ụzọ",
-    "ha": "Zaɓi jiha tukuna"
+    "ha": "Zaɓi jiha tukuna",
+    "ar": "حدد الولاية أولاً",
+    "fr": "Sélectionnez d'abord un état",
+    "ru": "Сначала выберите штат",
+    "zh": "首先选择一个州"
   },
   "current request fee": {
     "en": "Current request fee",
     "yo": "Owo ibeere lọwọlọwọ",
     "ig": "Ụgwọ arịrịọ ugbu a",
-    "ha": "Kudin nema na yanzu"
+    "ha": "Kudin nema na yanzu",
+    "ar": "رسوم الطلب الحالية",
+    "fr": "Frais de demande actuelle",
+    "ru": "Текущая плата за запрос",
+    "zh": "当前请求费用"
   },
   "request status": {
     "en": "Request status",
     "yo": "Ipo ibeere",
     "ig": "Ọkwa arịrịọ",
-    "ha": "Matsayin nema"
+    "ha": "Matsayin nema",
+    "ar": "حالة الطلب",
+    "fr": "Statut de la demande",
+    "ru": "Статус запроса",
+    "zh": "请求状态"
   },
   "no payment required": {
     "en": "No payment required",
     "yo": "Ko si sisanwo ti a beere",
     "ig": "Enweghị ịkwụ ụgwọ achọrọ",
-    "ha": "Babu biya da ake bukata"
+    "ha": "Babu biya da ake bukata",
+    "ar": "لا يوجد دفع مطلوب",
+    "fr": "Aucun paiement requis",
+    "ru": "Оплата не требуется",
+    "zh": "无需付款"
   },
   "a one-time payment is required before the request is processed.": {
     "en": "A one-time payment is required before the request is processed.",
     "yo": "A nilo isanwo-akoko kan ṣaaju ṣiṣe ilana.",
     "ig": "A chọrọ ịkwụ ụgwọ otu oge tupu ahazi arịrịọ ahụ.",
-    "ha": "Ana buƙatar biyan kuɗi na lokaci ɗaya kafin a aiwatar da buƙatar."
+    "ha": "Ana buƙatar biyan kuɗi na lokaci ɗaya kafin a aiwatar da buƙatar.",
+    "ar": "يلزم الدفع لمرة واحدة قبل معالجة الطلب.",
+    "fr": "Un paiement unique est requis avant le traitement de la demande.",
+    "ru": "Перед обработкой запроса требуется единоразовый платеж.",
+    "zh": "在处理请求之前需要一次性付款。"
   },
   "requests currently go through immediately without payment.": {
     "en": "Requests currently go through immediately without payment.",
     "yo": "Awọn ibeere lọwọlọwọ lọ nipasẹ lẹsẹkẹsẹ laisi isanwo.",
     "ig": "Arịrịọ na-aga ugbu a ozugbo na-akwụghị ụgwọ.",
-    "ha": "A halin yanzu buƙatun suna gudana kai tsaye ba tare da biya ba."
+    "ha": "A halin yanzu buƙatun suna gudana kai tsaye ba tare da biya ba.",
+    "ar": "تتم حاليًا الطلبات على الفور دون دفع.",
+    "fr": "Les demandes sont actuellement traitées immédiatement sans paiement.",
+    "ru": "В настоящее время запросы выполняются немедленно и без оплаты.",
+    "zh": "目前，请求无需付款即可立即处理。"
   },
   "tap property search to browse availability": {
     "en": "Tap property search to browse availability",
     "yo": "Fọwọ ba wiwa ohun-ini lati ṣe lilọ kiri lori wiwa",
     "ig": "Kpatụ ihe onwunwe iji chọgharịa na nnweta",
-    "ha": "Matsa binciken dukiya don bincika samuwa"
+    "ha": "Matsa binciken dukiya don bincika samuwa",
+    "ar": "اضغط على بحث عن العقارات لتصفح مدى التوفر",
+    "fr": "Appuyez sur la recherche de propriété pour parcourir la disponibilité",
+    "ru": "Нажмите «Поиск недвижимости», чтобы просмотреть наличие мест.",
+    "zh": "点击房产搜索以浏览空房情况"
   },
   "choose how youâ€™ll use rentalhub and tell us how to reach you.": {
     "en": "Choose how youâ€™ll use RentalHub and tell us how to reach you.",
     "yo": "Yan bi o ṣe le lo RentalHub ki o sọ fun wa bi o ṣe le de ọdọ rẹ.",
     "ig": "Họrọ otu ị ga-esi jiri RentalHub gwa anyị ka anyị ga-esi nweta gị.",
-    "ha": "Zaɓi yadda za ku yi amfani da RentalHub kuma ku gaya mana yadda za ku same ku."
+    "ha": "Zaɓi yadda za ku yi amfani da RentalHub kuma ku gaya mana yadda za ku same ku.",
+    "ar": "اختر الطريقة التي ستستخدم بها RentalHub وأخبرنا بكيفية الوصول إليك.",
+    "fr": "Choisissez comment vous utiliserez RentalHub et dites-nous comment vous joindre.",
+    "ru": "Выберите, как вы будете использовать RentalHub, и сообщите нам, как с вами связаться.",
+    "zh": "选择您使用 RentalHub 的方式并告诉我们如何联系您。"
   },
   "choose the legal and agent support that fits your rental journey.": {
     "en": "Choose the legal and agent support that fits your rental journey.",
     "yo": "Yan atilẹyin ofin ati aṣoju ti o baamu irin-ajo iyalo rẹ.",
     "ig": "Họrọ nkwado iwu na onye nnọchite nke dabara njem mgbazinye gị.",
-    "ha": "Zaɓi tallafin doka da wakili wanda ya dace da tafiyar hayar ku."
+    "ha": "Zaɓi tallafin doka da wakili wanda ya dace da tafiyar hayar ku.",
+    "ar": "اختر الدعم القانوني ودعم الوكيل الذي يناسب رحلتك الإيجارية.",
+    "fr": "Choisissez le support juridique et agent qui correspond à votre parcours de location.",
+    "ru": "Выберите юридическую и агентскую поддержку, подходящую для вашего путешествия по аренде.",
+    "zh": "选择适合您租赁旅程的法律和代理支持。"
   },
   "add your location and the identity details required for verification.": {
     "en": "Add your location and the identity details required for verification.",
     "yo": "Ṣafikun ipo rẹ ati awọn alaye idanimọ ti o nilo fun ijẹrisi.",
     "ig": "Tinye ọnọdụ gị yana nkọwa njirimara achọrọ maka nkwenye.",
-    "ha": "Ƙara wurin ku da bayanan sirri da ake buƙata don tabbatarwa."
+    "ha": "Ƙara wurin ku da bayanan sirri da ake buƙata don tabbatarwa.",
+    "ar": "أضف موقعك وتفاصيل الهوية المطلوبة للتحقق.",
+    "fr": "Ajoutez votre emplacement et les détails d'identité requis pour la vérification.",
+    "ru": "Добавьте свое местоположение и идентификационные данные, необходимые для проверки.",
+    "zh": "添加您的位置和验证所需的身份详细信息。"
   },
   "create a secure password and review everything before continuing.": {
     "en": "Create a secure password and review everything before continuing.",
     "yo": "Ṣẹda ọrọ igbaniwọle to ni aabo ati ṣayẹwo ohun gbogbo ṣaaju ki o to tẹsiwaju.",
     "ig": "Mepụta paswọọdụ echekwara wee nyochaa ihe niile tupu ịga n'ihu.",
-    "ha": "Ƙirƙiri amintaccen kalmar sirri kuma duba komai kafin ci gaba."
+    "ha": "Ƙirƙiri amintaccen kalmar sirri kuma duba komai kafin ci gaba.",
+    "ar": "أنشئ كلمة مرور آمنة وراجع كل شيء قبل المتابعة.",
+    "fr": "Créez un mot de passe sécurisé et vérifiez tout avant de continuer.",
+    "ru": "Создайте надежный пароль и проверьте все, прежде чем продолжить.",
+    "zh": "创建一个安全密码并在继续之前检查所有内容。"
   },
   "landlord registration disabled": {
     "en": "Landlord registration disabled",
     "yo": "Iforukọsilẹ onile jẹ alaabo",
     "ig": "Agbanyụrụ ndebanye aha onye nwe ụlọ",
-    "ha": "An kashe rajistar mai gida"
+    "ha": "An kashe rajistar mai gida",
+    "ar": "تم تعطيل تسجيل المالك",
+    "fr": "Inscription du propriétaire désactivée",
+    "ru": "Регистрация арендодателя отключена",
+    "zh": "房东注册已禁用"
   },
   "tenant registration disabled": {
     "en": "Tenant registration disabled",
     "yo": "Iforukọsilẹ agbatọju jẹ alaabo",
     "ig": "Agbanyụrụ ndebanye aha onye nwe ụlọ",
-    "ha": "An kashe rajistar ɗan haya"
+    "ha": "An kashe rajistar ɗan haya",
+    "ar": "تم تعطيل تسجيل المستأجر",
+    "fr": "Inscription des locataires désactivée",
+    "ru": "Регистрация арендатора отключена",
+    "zh": "租户注册已禁用"
   },
   "includes registration and any selected amana rentalhub ng lawyer or agent access fees.": {
     "en": "Includes registration and any selected Amana RentalHub NG lawyer or agent access fees.",
     "yo": "Pẹlu iforukọsilẹ ati eyikeyi ti a yan Amana RentalHub NG agbẹjọro tabi awọn idiyele wiwọle aṣoju.",
     "ig": "Gụnyere ndebanye aha yana onye ọka iwu Amana RentalHub NG ọ bụla ahọpụtara ma ọ bụ ụgwọ ohere ndị nnọchite anya.",
-    "ha": "Ya haɗa da rajista da kowane zaɓaɓɓen lauya Amana RentalHub NG ko kuɗin shiga wakili."
+    "ha": "Ya haɗa da rajista da kowane zaɓaɓɓen lauya Amana RentalHub NG ko kuɗin shiga wakili.",
+    "ar": "يشمل التسجيل وأي رسوم وصول محددة لمحامي أو وكيل Amana RentalHub NG.",
+    "fr": "Comprend l'inscription et tous les frais d'accès des avocats ou agents d'Amana RentalHub NG sélectionnés.",
+    "ru": "Включает регистрацию и любые выбранные сборы за доступ к адвокату или агенту Amana RentalHub NG.",
+    "zh": "包括注册费和任何选定的 Amana RentalHub NG 律师或代理使用费。"
   },
   "using amana rentalhub ng lawyers (₦2,000)": {
     "en": "Using Amana RentalHub NG lawyers (₦2,000)",
     "yo": "Lilo awọn agbẹjọro Amana RentalHub NG (₦2,000)",
     "ig": "Iji Amana RentalHub NG ọkaiwu (₦2,000)",
-    "ha": "Amfani da lauyoyin Amana RentalHub NG (₦2,000)"
+    "ha": "Amfani da lauyoyin Amana RentalHub NG (₦2,000)",
+    "ar": "الاستعانة بمحامي Amana RentalHub NG (₦2,000)",
+    "fr": "Utilisation des avocats d'Amana RentalHub NG (₦2 000)",
+    "ru": "С помощью юристов Amana RentalHub NG (2 000 ₦)",
+    "zh": "使用 Amana RentalHub NG 律师（₦2,000）"
   },
   "use amana rentalhub ng lawyers instead (₦2,000)": {
     "en": "Use Amana RentalHub NG lawyers instead (₦2,000)",
     "yo": "Lo awọn agbẹjọro Amana RentalHub NG dipo (₦2,000)",
     "ig": "Jiri ndị ọka iwu Amana RentalHub NG kama (₦2,000)",
-    "ha": "Yi amfani da lauyoyin Amana RentalHub NG maimakon (₦2,000)"
+    "ha": "Yi amfani da lauyoyin Amana RentalHub NG maimakon (₦2,000)",
+    "ar": "استخدم محامي Amana RentalHub NG بدلاً من ذلك (₦2,000)",
+    "fr": "Faites plutôt appel aux avocats d'Amana RentalHub NG (2 000 ₦)",
+    "ru": "Вместо этого воспользуйтесь услугами юристов Amana RentalHub NG (2000 ₦)",
+    "zh": "使用 Amana RentalHub NG 律师代替 (₦2,000)"
   },
   "using amana rentalhub ng agents (₦5,000)": {
     "en": "Using Amana RentalHub NG agents (₦5,000)",
     "yo": "Lilo awọn aṣoju Amana RentalHub NG (₦5,000)",
     "ig": "Iji ndị nnọchi anya Amana RentalHub NG (₦5,000)",
-    "ha": "Amfani da wakilan Amana RentalHub NG (₦5,000)"
+    "ha": "Amfani da wakilan Amana RentalHub NG (₦5,000)",
+    "ar": "استخدام وكلاء Amana RentalHub NG (₦5,000)",
+    "fr": "Utilisation des agents Amana RentalHub NG (₦5 000)",
+    "ru": "Использование агентов Amana RentalHub NG (5 000 фунтов стерлингов)",
+    "zh": "使用 Amana RentalHub NG 代理（₦5,000）"
   },
   "use amana rentalhub ng agents instead (₦5,000)": {
     "en": "Use Amana RentalHub NG agents instead (₦5,000)",
     "yo": "Lo awọn aṣoju Amana RentalHub NG dipo (₦5,000)",
     "ig": "Jiri ndị nnọchi anya Amana RentalHub NG (₦5,000)",
-    "ha": "Yi amfani da wakilan Amana RentalHub NG maimakon (₦5,000)"
+    "ha": "Yi amfani da wakilan Amana RentalHub NG maimakon (₦5,000)",
+    "ar": "استخدم وكلاء Amana RentalHub NG بدلاً من ذلك (₦5,000)",
+    "fr": "Utilisez plutôt les agents Amana RentalHub NG (₦5 000)",
+    "ru": "Вместо этого используйте агентов Amana RentalHub NG (5 000 фунтов стерлингов)",
+    "zh": "使用 Amana RentalHub NG 代理（₦5,000）"
   },
   "remove optional agent setup": {
     "en": "Remove optional agent setup",
     "yo": "Yọ iṣeto aṣoju aṣayan",
     "ig": "Wepu nhazi onye nnọchi anya nhọrọ",
-    "ha": "Cire saitin wakili na zaɓi"
+    "ha": "Cire saitin wakili na zaɓi",
+    "ar": "قم بإزالة إعداد الوكيل الاختياري",
+    "fr": "Supprimer la configuration de l'agent facultatif",
+    "ru": "Удалить необязательную настройку агента.",
+    "zh": "删除可选代理设置"
   },
   "add optional agent setup": {
     "en": "Add optional agent setup",
     "yo": "Ṣafikun iṣeto aṣoju aṣayan",
     "ig": "Tinye ntọala ntọala nhọrọ",
-    "ha": "Ƙara saitin wakili na zaɓi"
+    "ha": "Ƙara saitin wakili na zaɓi",
+    "ar": "إضافة إعداد الوكيل الاختياري",
+    "fr": "Ajouter une configuration d'agent facultative",
+    "ru": "Добавить дополнительную настройку агента",
+    "zh": "添加可选代理设置"
   },
   "your rentalhub account": {
     "en": "Your RentalHub account",
     "yo": "Akọọlẹ RentalHub rẹ",
     "ig": "Akaụntụ RentalHub gị",
-    "ha": "Asusun RentalHub"
+    "ha": "Asusun RentalHub",
+    "ar": "حساب RentalHub الخاص بك",
+    "fr": "Votre compte RentalHub",
+    "ru": "Ваш аккаунт RentalHub",
+    "zh": "您的 RentalHub 帐户"
   },
   "email not entered": {
     "en": "Email not entered",
     "yo": "Imeeli ko wọle",
     "ig": "Abanyeghị email",
-    "ha": "Ba a shigar da imel ba"
+    "ha": "Ba a shigar da imel ba",
+    "ar": "لم يتم إدخال البريد الإلكتروني",
+    "fr": "Email non renseigné",
+    "ru": "Электронная почта не введена",
+    "zh": "未输入电子邮件"
   },
   "location not required": {
     "en": "Location not required",
     "yo": "Ipo ko nilo",
     "ig": "Achọghị ebe",
-    "ha": "Ba a buƙatar wurin"
+    "ha": "Ba a buƙatar wurin",
+    "ar": "الموقع غير مطلوب",
+    "fr": "Emplacement non requis",
+    "ru": "Местоположение не требуется.",
+    "zh": "不需要位置"
   },
   "starting paymentâ€¦": {
     "en": "Starting paymentâ€¦",
     "yo": "Bibẹrẹ sisanâ€¦",
     "ig": "Ịmalite ịkwụ ụgwọâ€¦",
-    "ha": "Fara biyan kuɗiâ€¦"
+    "ha": "Fara biyan kuɗiâ€¦",
+    "ar": "بدء الدفع...",
+    "fr": "Début du paiement…",
+    "ru": "Начало платежа…",
+    "zh": "开始付款……"
   },
   "pay foreign-card adjustment": {
     "en": "Pay foreign-card adjustment",
     "yo": "San ajeji-kaadi tolesese",
     "ig": "Kwụọ mmezi kaadị mba ofesi",
-    "ha": "Biyan daidaita-katin waje"
+    "ha": "Biyan daidaita-katin waje",
+    "ar": "دفع تسوية البطاقة الأجنبية",
+    "fr": "Payer l'ajustement de la carte étrangère",
+    "ru": "Корректировка оплаты по иностранной карте",
+    "zh": "支付外卡调整"
   },
   "your transfer was received. your account is being created.": {
     "en": "Your transfer was received. Your account is being created.",
     "yo": "Gbigbe rẹ ti gba. A ṣe ṣẹda akọọlẹ rẹ.",
     "ig": "Anatara mbufe gị. A na-emepụta akaụntụ gị.",
-    "ha": "An karɓi canjin ku. Ana ƙirƙira asusun ku."
+    "ha": "An karɓi canjin ku. Ana ƙirƙira asusun ku.",
+    "ar": "تم استلام التحويل الخاص بك. جارٍ إنشاء حسابك.",
+    "fr": "Votre transfert a été reçu. Votre compte est en cours de création.",
+    "ru": "Ваш перевод получен. Ваша учетная запись создается.",
+    "zh": "您的转账已收到。正在创建您的帐户。"
   },
   "your transfer was received and your wallet has been credited.": {
     "en": "Your transfer was received and your wallet has been credited.",
     "yo": "Gbigbe rẹ ti gba ati pe o ti gba owo apamọwọ rẹ.",
     "ig": "A nabatala mbufe gị ma tinyekwa obere akpa gị.",
-    "ha": "An karɓi canjin ku kuma an ƙididdige wallet ɗin ku."
+    "ha": "An karɓi canjin ku kuma an ƙididdige wallet ɗin ku.",
+    "ar": "تم استلام تحويلك وتم إضافة المبلغ إلى محفظتك.",
+    "fr": "Votre virement a été reçu et votre portefeuille a été crédité.",
+    "ru": "Ваш перевод получен, и ваш кошелек зачислен.",
+    "zh": "您的转账已收到，您的钱包已存入。"
   },
   "amount to pay": {
     "en": "Amount to pay",
     "yo": "Iye lati san",
     "ig": "Ọnụ ego ịkwụ",
-    "ha": "Adadin da za a biya"
+    "ha": "Adadin da za a biya",
+    "ar": "المبلغ المطلوب دفعه",
+    "fr": "Montant à payer",
+    "ru": "Сумма к оплате",
+    "zh": "支付金额"
   },
   "this account belongs to you. the bank confirms automatically.": {
     "en": "This account belongs to you. The bank confirms automatically.",
     "yo": "Tirẹ ni akọọlẹ yii. Ile-ifowopamọ jẹrisi laifọwọyi.",
     "ig": "Akaụntụ a bụ nke gị. Ụlọ akụ ahụ na-akwado na-akpaghị aka.",
-    "ha": "Wannan asusun na ku ne. Bankin yana tabbatarwa ta atomatik."
+    "ha": "Wannan asusun na ku ne. Bankin yana tabbatarwa ta atomatik.",
+    "ar": "هذا الحساب ملك لك. يؤكد البنك تلقائيا.",
+    "fr": "Ce compte vous appartient. La banque confirme automatiquement.",
+    "ru": "Этот аккаунт принадлежит вам. Банк подтверждает автоматически.",
+    "zh": "该帐户属于您。银行自动确认。"
   },
   "send exactly this amount to the account below and upload your screenshot.": {
     "en": "Send exactly this amount to the account below and upload your screenshot.",
     "yo": "Firanṣẹ ni deede iye yii si akọọlẹ ti o wa ni isalẹ ki o ṣe agbejade sikirinifoto rẹ.",
     "ig": "Ziga kpọmkwem ego a na akaụntụ dị n'okpuru wee bulite nseta ihuenyo gị.",
-    "ha": "Aika daidai wannan adadin zuwa asusun da ke ƙasa sannan ku loda hoton hoton ku."
+    "ha": "Aika daidai wannan adadin zuwa asusun da ke ƙasa sannan ku loda hoton hoton ku.",
+    "ar": "أرسل هذا المبلغ بالضبط إلى الحساب أدناه وقم بتحميل لقطة الشاشة الخاصة بك.",
+    "fr": "Envoyez exactement ce montant au compte ci-dessous et téléchargez votre capture d'écran.",
+    "ru": "Отправьте именно эту сумму на счет ниже и загрузите свой скриншот.",
+    "zh": "将此金额发送至以下帐户并上传您的屏幕截图。"
   },
   "fully verified": {
     "en": "FULLY VERIFIED",
     "yo": "IṢẸRI NI kikun",
     "ig": "KWESỊRỊTA nke ọma",
-    "ha": "CIKAKKEN TABBATA"
+    "ha": "CIKAKKEN TABBATA",
+    "ar": "تم التحقق منه بالكامل",
+    "fr": "ENTIÈREMENT VÉRIFIÉ",
+    "ru": "ПОЛНОСТЬЮ ПРОВЕРЕНО",
+    "zh": "已完全验证"
   },
   "account progress": {
     "en": "ACCOUNT PROGRESS",
     "yo": "Ilọsiwaju iroyin",
     "ig": "Ọganihu Akaụntụ",
-    "ha": "CI GABATAR DA CUTAR"
+    "ha": "CI GABATAR DA CUTAR",
+    "ar": "تقدم الحساب",
+    "fr": "PROGRESSION DU COMPTE",
+    "ru": "ПРОГРЕСС СЧЕТА",
+    "zh": "账户进度"
   },
   "your identity is verified": {
     "en": "Your identity is verified",
     "yo": "Ajẹrisi idanimọ rẹ",
     "ig": "Achọpụtara njirimara gị",
-    "ha": "An tabbatar da asalin ku"
+    "ha": "An tabbatar da asalin ku",
+    "ar": "تم التحقق من هويتك",
+    "fr": "Votre identité est vérifiée",
+    "ru": "Ваша личность подтверждена",
+    "zh": "您的身份已验证"
   },
   "your verified profile helps create a safer rentalhub community.": {
     "en": "Your verified profile helps create a safer RentalHub community.",
     "yo": "Profaili ijẹrisi rẹ ṣe iranlọwọ lati ṣẹda agbegbe RentalHub ti o ni aabo.",
     "ig": "Profaịlụ gị akwadoro na-enyere aka ịmepụta obodo RentalHub dị nchebe.",
-    "ha": "Tabbataccen bayanin martaba naka yana taimakawa ƙirƙirar al'ummar RentalHub mai aminci."
+    "ha": "Tabbataccen bayanin martaba naka yana taimakawa ƙirƙirar al'ummar RentalHub mai aminci.",
+    "ar": "يساعد ملفك الشخصي الذي تم التحقق منه في إنشاء مجتمع RentalHub أكثر أمانًا.",
+    "fr": "Votre profil vérifié contribue à créer une communauté RentalHub plus sûre.",
+    "ru": "Ваш подтвержденный профиль помогает создать более безопасное сообщество RentalHub.",
+    "zh": "您经过验证的个人资料有助于创建一个更安全的 RentalHub 社区。"
   },
   "complete verification to unlock the full rentalhub workflow.": {
     "en": "Complete verification to unlock the full RentalHub workflow.",
     "yo": "Ijeri ni kikun lati ṣii ṣiṣan iṣẹ RentalHub ni kikun.",
     "ig": "Nyocha zuru oke iji kpọghee usoro ọrụ RentalHub zuru ezu.",
-    "ha": "Cikakken tabbaci don buɗe cikakken aikin RentalHub."
+    "ha": "Cikakken tabbaci don buɗe cikakken aikin RentalHub.",
+    "ar": "أكمل التحقق لفتح سير عمل RentalHub الكامل.",
+    "fr": "Terminez la vérification pour déverrouiller le flux de travail complet de RentalHub.",
+    "ru": "Завершите проверку, чтобы разблокировать полный рабочий процесс RentalHub.",
+    "zh": "完成验证以解锁完整的 RentalHub 工作流程。"
   },
   "action needed": {
     "en": "Action needed",
     "yo": "Ti nilo igbese",
     "ig": "Ihe omume achọrọ",
-    "ha": "Ana buƙatar aiki"
+    "ha": "Ana buƙatar aiki",
+    "ar": "الإجراء مطلوب",
+    "fr": "Action nécessaire",
+    "ru": "Требуется действие",
+    "zh": "需要采取行动"
   },
   "incomplete": {
     "en": "Incomplete",
     "yo": "Ti ko pe",
     "ig": "Ezubeghị",
-    "ha": "Bai cika ba"
+    "ha": "Bai cika ba",
+    "ar": "غير مكتمل",
+    "fr": "Incomplet",
+    "ru": "Неполный",
+    "zh": "不完整"
   },
   "property appeal": {
     "en": "Property appeal",
     "yo": "Afilọ ohun ini",
     "ig": "Mkpesa ihe onwunwe",
-    "ha": "Roko na dukiya"
+    "ha": "Roko na dukiya",
+    "ar": "نداء الملكية",
+    "fr": "Appel de propriété",
+    "ru": "Апелляция по поводу собственности",
+    "zh": "财产上诉"
   },
   "verification appeal": {
     "en": "Verification appeal",
     "yo": "Ijerisi afilọ",
     "ig": "Mkpegharị nkwenye",
-    "ha": "Tabbatar da roko"
+    "ha": "Tabbatar da roko",
+    "ar": "نداء التحقق",
+    "fr": "Appel de vérification",
+    "ru": "Апелляция на проверку",
+    "zh": "验证上诉"
   },
   "location not available": {
     "en": "Location not available",
     "yo": "Ibi ti ko si",
     "ig": "Ebe adịghị",
-    "ha": "Babu wurin"
+    "ha": "Babu wurin",
+    "ar": "الموقع غير متوفر",
+    "fr": "Emplacement non disponible",
+    "ru": "Местоположение недоступно.",
+    "zh": "位置不可用"
   },
   "rental property": {
     "en": "Rental property",
     "yo": "Yiyalo ohun ini",
     "ig": "Ngwongwo mgbazinye",
-    "ha": "Kayan haya"
+    "ha": "Kayan haya",
+    "ar": "تأجير العقارات",
+    "fr": "Bien locatif",
+    "ru": "Аренда недвижимости",
+    "zh": "出租物业"
   },
   "approve full refund": {
     "en": "Approve full refund",
     "yo": "Fọwọsi agbapada ni kikun",
     "ig": "Kwado nkwụghachi zuru ezu",
-    "ha": "Amince da cikakken maida kuɗi"
+    "ha": "Amince da cikakken maida kuɗi",
+    "ar": "الموافقة على استرداد كامل المبلغ",
+    "fr": "Approuver le remboursement intégral",
+    "ru": "Одобрить полный возврат средств",
+    "zh": "批准全额退款"
   },
   "reject refund": {
     "en": "Reject refund",
     "yo": "Kọ agbapada",
     "ig": "Jụ nkwụghachi",
-    "ha": "Ƙi mayar da kuɗi"
+    "ha": "Ƙi mayar da kuɗi",
+    "ar": "رفض استرداد الأموال",
+    "fr": "Rejeter le remboursement",
+    "ru": "Отклонить возврат средств",
+    "zh": "拒绝退款"
   },
   "rental payment": {
     "en": "Rental payment",
     "yo": "Owo iyalo",
     "ig": "Ịkwụ ụgwọ mgbazinye",
-    "ha": "Biyan haya"
+    "ha": "Biyan haya",
+    "ar": "دفع الإيجار",
+    "fr": "Paiement du loyer",
+    "ru": "Арендная плата",
+    "zh": "租金支付"
   },
   "· approved": {
     "en": " · approved",
     "yo": "· fọwọsi",
     "ig": "· kwadoro",
-    "ha": "· yarda"
+    "ha": "· yarda",
+    "ar": "· تمت الموافقة عليه",
+    "fr": "· approuvé",
+    "ru": "· одобрено",
+    "zh": "·已批准"
   },
   "a tenant": {
     "en": "a tenant",
     "yo": "agbatọju",
     "ig": "onye nwe ụlọ",
-    "ha": "mai haya"
+    "ha": "mai haya",
+    "ar": "مستأجر",
+    "fr": "un locataire",
+    "ru": "арендатор",
+    "zh": "一个租户"
   },
   "property dispute": {
     "en": "Property dispute",
     "yo": "Ifọrọwọrọ-ọrọ ohun-ini",
     "ig": "Esemokwu ihe onwunwe",
-    "ha": "Rigimar dukiya"
+    "ha": "Rigimar dukiya",
+    "ar": "نزاع على الملكية",
+    "fr": "Litige immobilier",
+    "ru": "Имущественный спор",
+    "zh": "财产纠纷"
   },
   "uploading…": {
     "en": "Uploading…",
     "yo": "Ikojọpọ…",
     "ig": "Na-ebugote…",
-    "ha": "Ana lodawa…"
+    "ha": "Ana lodawa…",
+    "ar": "جاري التحميل...",
+    "fr": "Téléchargement…",
+    "ru": "Загрузка…",
+    "zh": "正在上传..."
   },
   "unknown sender": {
     "en": "Unknown sender",
     "yo": "Olufiranṣẹ ti a ko mọ",
     "ig": "Onye izipu amabeghị",
-    "ha": "Wanda ba a sani ba"
+    "ha": "Wanda ba a sani ba",
+    "ar": "مرسل غير معروف",
+    "fr": "Expéditeur inconnu",
+    "ru": "Неизвестный отправитель",
+    "zh": "未知发件人"
   },
   "audit log": {
     "en": "Audit log",
     "yo": "Iwe akọọlẹ ayẹwo",
     "ig": "Ndekọ nyocha",
-    "ha": "log ɗin dubawa"
+    "ha": "log ɗin dubawa",
+    "ar": "سجل التدقيق",
+    "fr": "Journal d'audit",
+    "ru": "Журнал аудита",
+    "zh": "审核日志"
   },
   "· ai guidance": {
     "en": " · AI guidance",
     "yo": "· AI itọnisọna",
     "ig": "· nduzi AI",
-    "ha": "· Jagorar AI"
+    "ha": "· Jagorar AI",
+    "ar": "· توجيهات الذكاء الاصطناعي",
+    "fr": "· Guidage par l'IA",
+    "ru": "· Руководство ИИ",
+    "zh": "·AI引导"
   },
   "· account record": {
     "en": " · Account record",
     "yo": "· Igbasilẹ akọọlẹ",
     "ig": "· Ndekọ akaụntụ",
-    "ha": "· Rikodin asusu"
+    "ha": "· Rikodin asusu",
+    "ar": "· سجل الحساب",
+    "fr": "· Enregistrement de compte",
+    "ru": "· Запись об аккаунте",
+    "zh": "·账户记录"
   },
   "open page": {
     "en": "Open page",
     "yo": "Ṣii oju-iwe",
     "ig": "Mepee ibe",
-    "ha": "Bude shafi"
+    "ha": "Bude shafi",
+    "ar": "فتح الصفحة",
+    "fr": "Ouvrir la page",
+    "ru": "Открыть страницу",
+    "zh": "打开页面"
   },
   "current": {
     "en": "Current",
     "yo": "Lọwọlọwọ",
     "ig": "Ugbu a",
-    "ha": "Yanzu"
+    "ha": "Yanzu",
+    "ar": "الحالي",
+    "fr": "Actuel",
+    "ru": "Текущий",
+    "zh": "当前"
   },
   "check whether a newer app version is available before release testing.": {
     "en": "Check whether a newer app version is available before release testing.",
     "yo": "Ṣayẹwo boya ẹya tuntun app wa ṣaaju idanwo idasilẹ.",
     "ig": "Lelee ma ọ dị ụdị ngwa ọhụrụ tupu nnwale ewepụtara.",
-    "ha": "Bincika ko akwai sabon sigar app kafin gwajin sakin."
+    "ha": "Bincika ko akwai sabon sigar app kafin gwajin sakin.",
+    "ar": "تحقق مما إذا كان إصدار التطبيق الأحدث متاحًا قبل اختبار الإصدار.",
+    "fr": "Vérifiez si une version plus récente de l'application est disponible avant de tester la version.",
+    "ru": "Перед тестированием выпуска проверьте, доступна ли новая версия приложения.",
+    "zh": "在发布测试之前检查是否有较新的应用程序版本可用。"
   },
   "checking...": {
     "en": "Checking...",
     "yo": "Ṣiṣayẹwo...",
     "ig": "Na-enyocha...",
-    "ha": "Dubawa..."
+    "ha": "Dubawa...",
+    "ar": "جاري التحقق...",
+    "fr": "Vérification...",
+    "ru": "Проверка...",
+    "zh": "检查..."
   },
   "check update": {
     "en": "Check update",
     "yo": "Ṣayẹwo imudojuiwọn",
     "ig": "Lelee mmelite",
-    "ha": "Duba sabuntawa"
+    "ha": "Duba sabuntawa",
+    "ar": "التحقق من التحديث",
+    "fr": "Vérifier la mise à jour",
+    "ru": "Проверьте обновление",
+    "zh": "检查更新"
   },
   "connecting…": {
     "en": "Connecting…",
     "yo": "Nsopọ…",
     "ig": "Na-ejikọ…",
-    "ha": "Ana haɗawa…"
+    "ha": "Ana haɗawa…",
+    "ar": "جاري الاتصال…",
+    "fr": "Connexion…",
+    "ru": "Подключение…",
+    "zh": "正在连接..."
   },
   "call support": {
     "en": "Call support",
     "yo": "Atilẹyin ipe",
     "ig": "Nkwado oku",
-    "ha": "Tallafin kira"
+    "ha": "Tallafin kira",
+    "ar": "اتصل بالدعم",
+    "fr": "Appeler l'assistance",
+    "ru": "Позвонить в службу поддержки",
+    "zh": "致电支持"
   },
   "· sending...": {
     "en": " · Sending...",
     "yo": "· Fifiranṣẹ...",
     "ig": "· Na-eziga...",
-    "ha": "· Ana aikawa..."
+    "ha": "· Ana aikawa...",
+    "ar": "· جاري الإرسال...",
+    "fr": "· Envoi...",
+    "ru": "· Отправка...",
+    "zh": "·正在发送..."
   },
   "recruitment is currently closed": {
     "en": "Recruitment is currently closed",
     "yo": "Igbanisiṣẹ ti wa ni pipade lọwọlọwọ",
     "ig": "A na-emechi mbanye n'ọrụ ugbu a",
-    "ha": "A halin yanzu an rufe daukar ma'aikata"
+    "ha": "A halin yanzu an rufe daukar ma'aikata",
+    "ar": "التوظيف مغلق حاليًا",
+    "fr": "Le recrutement est actuellement clôturé",
+    "ru": "Набор в настоящее время закрыт",
+    "zh": "招聘现已结束"
   },
   "applications are currently being accepted.": {
     "en": "Applications are currently being accepted.",
     "yo": "Awọn ohun elo ti wa ni gbigba lọwọlọwọ.",
     "ig": "A na-anabata ngwa ugbu a.",
-    "ha": "Ana karɓar aikace-aikace a halin yanzu."
+    "ha": "Ana karɓar aikace-aikace a halin yanzu.",
+    "ar": "يتم حاليًا قبول الطلبات.",
+    "fr": "Les candidatures sont actuellement acceptées.",
+    "ru": "В настоящее время принимаются заявки.",
+    "zh": "目前正在接受申请。"
   },
   "please check back later for the next opportunities.": {
     "en": "Please check back later for the next opportunities.",
     "yo": "Jọwọ ṣayẹwo pada nigbamii fun awọn anfani atẹle.",
     "ig": "Biko lelee azụ azụ maka ohere ndị ọzọ.",
-    "ha": "Da fatan za a duba baya don dama na gaba."
+    "ha": "Da fatan za a duba baya don dama na gaba.",
+    "ar": "يرجى التحقق مرة أخرى لاحقًا للتعرف على الفرص التالية.",
+    "fr": "Veuillez revenir plus tard pour les prochaines opportunités.",
+    "ru": "Пожалуйста, зайдите позже, чтобы узнать о следующих возможностях.",
+    "zh": "请稍后再回来查看下一个机会。"
   },
   "a professional role in the rentalhub team.": {
     "en": "A professional role in the RentalHub team.",
     "yo": "Ipa alamọdaju ninu ẹgbẹ RentalHub.",
     "ig": "Ọrụ ọkachamara na otu RentalHub.",
-    "ha": "Matsayin ƙwararru a cikin ƙungiyar RentalHub."
+    "ha": "Matsayin ƙwararru a cikin ƙungiyar RentalHub.",
+    "ar": "دور احترافي في فريق RentalHub.",
+    "fr": "Un rôle professionnel au sein de l'équipe RentalHub.",
+    "ru": "Профессиональная роль в команде RentalHub.",
+    "zh": "RentalHub 团队中的专业角色。"
   },
   "next: complete payment and upload your supporting documents.": {
     "en": "Next: complete payment and upload your supporting documents.",
     "yo": "Nigbamii: isanwo pari ati gbejade awọn iwe aṣẹ atilẹyin rẹ.",
     "ig": "Na-esote: ịkwụ ụgwọ zuru ezu ma bulite akwụkwọ nkwado gị.",
-    "ha": "Na gaba: kammala biyan kuɗi da loda takaddun tallafi na ku."
+    "ha": "Na gaba: kammala biyan kuɗi da loda takaddun tallafi na ku.",
+    "ar": "التالي: أكمل الدفع وقم بتحميل المستندات الداعمة الخاصة بك.",
+    "fr": "Ensuite : effectuez le paiement et téléchargez vos pièces justificatives.",
+    "ru": "Далее: завершите оплату и загрузите подтверждающие документы.",
+    "zh": "下一步：完成付款并上传您的证明文件。"
   },
   "interview locked": {
     "en": "Interview locked",
     "yo": "Ifọrọwanilẹnuwo wa ni titiipa",
     "ig": "Akpọchiri ajụjụ ọnụ",
-    "ha": "An kulle hira"
+    "ha": "An kulle hira",
+    "ar": "المقابلة مغلقة",
+    "fr": "Entretien verrouillé",
+    "ru": "Интервью заблокировано",
+    "zh": "采访已锁定"
   },
   "a proctoring violation was detected. your answers so far have been submitted for review.": {
     "en": "A proctoring violation was detected. Your answers so far have been submitted for review.",
     "yo": "A ti ṣe awari irufin proctoring. Awọn idahun rẹ titi di isisiyi ti fi silẹ fun atunyẹwo.",
     "ig": "Achọpụtara mmebi iwu na-eme ihe. E nyefeela azịza gị maka nyocha.",
-    "ha": "An gano cin zarafi. An ƙaddamar da amsoshin ku zuwa yanzu don dubawa."
+    "ha": "An gano cin zarafi. An ƙaddamar da amsoshin ku zuwa yanzu don dubawa.",
+    "ar": "تم اكتشاف انتهاك للمراقبة. لقد تم تقديم إجاباتك حتى الآن للمراجعة.",
+    "fr": "Une violation de la surveillance a été détectée. Vos réponses jusqu’à présent ont été soumises pour examen.",
+    "ru": "Обнаружено нарушение прокторинга. Ваши ответы на данный момент отправлены на рассмотрение.",
+    "zh": "检测到监考违规行为。到目前为止，您的答案已提交供审核。"
   },
   "fumigation/cleaning": {
     "en": "Fumigation/Cleaning",
     "yo": "Imudanu / Mimọ",
     "ig": "Mgbochi/ihicha",
-    "ha": "Fumigation/Tsaftacewa"
+    "ha": "Fumigation/Tsaftacewa",
+    "ar": "التبخير/التنظيف",
+    "fr": "Fumigation/Nettoyage",
+    "ru": "Фумигация/очистка",
+    "zh": "熏蒸/清洁"
   },
   "service booking": {
     "en": "Service booking",
     "yo": "Ifiweranṣẹ iṣẹ",
     "ig": "Ndokwa ọrụ",
-    "ha": "Yin ajiyar sabis"
+    "ha": "Yin ajiyar sabis",
+    "ar": "حجز الخدمة",
+    "fr": "Réservation de prestations",
+    "ru": "Бронирование услуги",
+    "zh": "服务预订"
   },
   "tap any active property card to open its location in google maps.": {
     "en": "Tap any active property card to open its location in Google Maps.",
     "yo": "Fọwọ ba kaadi ohun ini eyikeyi ti nṣiṣe lọwọ lati ṣii ipo rẹ ni Awọn maapu Google.",
     "ig": "Kpatụ kaadị akụrụngwa ọ bụla na-arụ ọrụ iji mepee ebe ọ nọ na Google Maps.",
-    "ha": "Matsa kowane katin kadara don buɗe wurinsa a cikin Google Maps."
+    "ha": "Matsa kowane katin kadara don buɗe wurinsa a cikin Google Maps.",
+    "ar": "اضغط على أي بطاقة ملكية نشطة لفتح موقعها في خرائط جوجل.",
+    "fr": "Appuyez sur n'importe quelle carte de propriété active pour ouvrir son emplacement dans Google Maps.",
+    "ru": "Коснитесь любой активной карточки объекта, чтобы открыть его местоположение на Картах Google.",
+    "zh": "点击任何活动的财产卡即可在 Google 地图中打开其位置。"
   },
   "this card becomes clickable after your rent payment is confirmed.": {
     "en": "This card becomes clickable after your rent payment is confirmed.",
     "yo": "Kaadi yii di titẹ lẹhin isanwo iyalo rẹ ti jẹrisi.",
     "ig": "Kaadị a ga-enwe ike ịpị ma ekwenyechara ụgwọ ụlọ gị.",
-    "ha": "Wannan katin zai zama abin dannawa bayan an tabbatar da biyan kuɗin hayar ku."
+    "ha": "Wannan katin zai zama abin dannawa bayan an tabbatar da biyan kuɗin hayar ku.",
+    "ar": "تصبح هذه البطاقة قابلة للنقر بعد تأكيد دفع الإيجار.",
+    "fr": "Cette carte devient cliquable une fois le paiement de votre loyer confirmé.",
+    "ru": "Эта карточка становится доступной после подтверждения оплаты аренды.",
+    "zh": "确认您的租金付款后，此卡即可点击。"
   },
   "location available": {
     "en": "Location available",
     "yo": "Ibi ti o wa",
     "ig": "Ebe dị",
-    "ha": "Akwai wurin"
+    "ha": "Akwai wurin",
+    "ar": "الموقع متاح",
+    "fr": "Localisation disponible",
+    "ru": "Местоположение доступно",
+    "zh": "位置可用"
   },
   "pay rent to activate google maps location": {
     "en": "Pay rent to activate Google Maps location",
     "yo": "San iyalo lati mu ipo Google Maps ṣiṣẹ",
     "ig": "Kwụọ ụgwọ ụlọ iji mee ka ọnọdụ Google Maps rụọ ọrụ",
-    "ha": "Biyan haya don kunna wurin Google Maps"
+    "ha": "Biyan haya don kunna wurin Google Maps",
+    "ar": "دفع الإيجار لتفعيل الموقع على خرائط جوجل",
+    "fr": "Payer un loyer pour activer la localisation Google Maps",
+    "ru": "Заплатите арендную плату, чтобы активировать местоположение Google Maps.",
+    "zh": "支付租金以激活 Google 地图位置"
   },
   "rent paid": {
     "en": "Rent paid",
     "yo": "Iyalo ti san",
     "ig": "Akwụrụ ụgwọ ụlọ",
-    "ha": "Hayar da aka biya"
+    "ha": "Hayar da aka biya",
+    "ar": "الإيجار مدفوع",
+    "fr": "Loyer payé",
+    "ru": "Арендная плата оплачена",
+    "zh": "已付租金"
   },
   "rent not paid": {
     "en": "Rent not paid",
     "yo": "Iyalo ko san",
     "ig": "Akwụghị ụgwọ ụlọ",
-    "ha": "Ba a biya haya ba"
+    "ha": "Ba a biya haya ba",
+    "ar": "الإيجار غير مدفوع",
+    "fr": "Loyer non payé",
+    "ru": "Арендная плата не оплачена",
+    "zh": "租金未付"
   },
   "map pin ready": {
     "en": "Map pin ready",
     "yo": "Pin map ti šetan",
     "ig": "Ntụtụ map adịla njikere",
-    "ha": "An shirya fil ɗin taswira"
+    "ha": "An shirya fil ɗin taswira",
+    "ar": "دبوس الخريطة جاهز",
+    "fr": "Épingle de carte prêt",
+    "ru": "Привязка на карте готова",
+    "zh": "地图图钉就绪"
   },
   "address search": {
     "en": "Address search",
     "yo": "wiwa adirẹsi",
     "ig": "Ọchụchọ adreesị",
-    "ha": "Neman adireshi"
+    "ha": "Neman adireshi",
+    "ar": "البحث عن العناوين",
+    "fr": "Recherche d'adresse",
+    "ru": "Поиск адреса",
+    "zh": "地址搜索"
   },
   "market research survey": {
     "en": "Market research survey",
     "yo": "Iwadii iwadi ọja",
     "ig": "Nnyocha nyocha ahịa",
-    "ha": "Binciken binciken kasuwa"
+    "ha": "Binciken binciken kasuwa",
+    "ar": "مسح أبحاث السوق",
+    "fr": "Étude de marché",
+    "ru": "Исследование рынка",
+    "zh": "市场研究调查"
   },
   "you have one more step to finish the survey.": {
     "en": "You have one more step to finish the survey.",
     "yo": "O ni igbesẹ kan diẹ sii lati pari iwadi naa.",
     "ig": "Ị nwere otu nzọụkwụ ọzọ iji mechaa nyocha ahụ.",
-    "ha": "Kuna da ƙarin mataki ɗaya don kammala binciken."
+    "ha": "Kuna da ƙarin mataki ɗaya don kammala binciken.",
+    "ar": "أمامك خطوة أخرى لإنهاء الاستبيان.",
+    "fr": "Il vous reste une étape supplémentaire pour terminer l'enquête.",
+    "ru": "У вас есть еще один шаг, чтобы завершить опрос.",
+    "zh": "您还有一步来完成调查。"
   },
   "please complete part a — this survey is required.": {
     "en": "Please complete Part A — this survey is required.",
     "yo": "Jọwọ pari Apá A — o nilo iwadii yii.",
     "ig": "Biko mezue akụkụ A - a chọrọ nyocha a.",
-    "ha": "Da fatan za a cika Sashe na A - ana buƙatar wannan binciken."
+    "ha": "Da fatan za a cika Sashe na A - ana buƙatar wannan binciken.",
+    "ar": "برجاء إكمال الجزء أ — هذا الاستبيان مطلوب.",
+    "fr": "Veuillez remplir la partie A – cette enquête est obligatoire.",
+    "ru": "Пожалуйста, заполните Часть A — этот опрос является обязательным.",
+    "zh": "请填写 A 部分 — 此调查是必需的。"
   },
   "activity update": {
     "en": "Activity update",
     "yo": "Imudojuiwọn iṣẹ",
     "ig": "Mmelite mmemme",
-    "ha": "Sabunta ayyuka"
+    "ha": "Sabunta ayyuka",
+    "ar": "تحديث النشاط",
+    "fr": "Mise à jour de l'activité",
+    "ru": "Обновление активности",
+    "zh": "活动更新"
   },
   "transfer from your bank app, then upload the transfer screenshot. your wallet is credited after confirmation.": {
     "en": "Transfer from your bank app, then upload the transfer screenshot. Your wallet is credited after confirmation.",
     "yo": "Gbigbe lati inu ohun elo banki rẹ, lẹhinna gbejade sikirinifoto gbigbe naa. Owo apamọwọ rẹ ti wa ni ka lẹhin ìmúdájú.",
     "ig": "Nyefee na ngwa ụlọ akụ gị, wee bulite nseta ihuenyo mbufe. A na-akwụnye obere akpa gị mgbe nkwenye gasịrị.",
-    "ha": "Canja wurin daga app ɗin ku na banki, sannan loda hoton canja wurin. Ana ƙididdige wallet ɗin ku bayan tabbatarwa."
+    "ha": "Canja wurin daga app ɗin ku na banki, sannan loda hoton canja wurin. Ana ƙididdige wallet ɗin ku bayan tabbatarwa.",
+    "ar": "قم بالتحويل من تطبيق البنك الذي تتعامل معه، ثم قم بتحميل لقطة شاشة التحويل. يتم إضافة محفظتك بعد التأكيد.",
+    "fr": "Effectuez le virement depuis votre application bancaire, puis téléchargez la capture d'écran du transfert. Votre portefeuille est crédité après confirmation.",
+    "ru": "Переведите деньги из приложения вашего банка, затем загрузите скриншот перевода. Средства на ваш кошелек будут зачислены после подтверждения.",
+    "zh": "从您的银行应用转账，然后上传转账截图。确认后将记入您的钱包。"
   },
   "payment is processed securely via paystack. your wallet is credited after successful payment.": {
     "en": "Payment is processed securely via Paystack. Your wallet is credited after successful payment.",
     "yo": "Isanwo ti wa ni ilọsiwaju ni aabo nipasẹ Paystack. Iwe apamọwọ rẹ jẹ kika lẹhin isanwo aṣeyọri.",
     "ig": "A na-ahazi ịkwụ ụgwọ na nchekwa site na Paystack. A na-akwụnye obere akpa gị mgbe ịkwụchara nke ọma.",
-    "ha": "Ana sarrafa biyan kuɗi ta hanyar Paystack. Ana ƙididdige wallet ɗin ku bayan nasarar biya."
+    "ha": "Ana sarrafa biyan kuɗi ta hanyar Paystack. Ana ƙididdige wallet ɗin ku bayan nasarar biya.",
+    "ar": "تتم معالجة الدفع بشكل آمن عبر Paystack. يتم إضافة محفظتك بعد الدفع الناجح.",
+    "fr": "Le paiement est traité de manière sécurisée via Paystack. Votre portefeuille est crédité après un paiement réussi.",
+    "ru": "Платеж обрабатывается безопасно через Paystack. Средства на ваш кошелек зачисляются после успешной оплаты.",
+    "zh": "付款通过 Paystack 安全处理。付款成功后，您的钱包就会存入您的钱包。"
   },
   "received": {
     "en": "Received",
     "yo": "Ti gba",
     "ig": "Anatara",
-    "ha": "An karɓa"
+    "ha": "An karɓa",
+    "ar": "تم الاستلام",
+    "fr": "Reçu",
+    "ru": "Получено",
+    "zh": "已收到"
   },
   "when you apply for a verified home, its progress will appear here.": {
     "en": "When you apply for a verified home, its progress will appear here.",
     "yo": "Nigbati o ba beere fun ile ti o ni idaniloju, ilọsiwaju rẹ yoo han nibi.",
     "ig": "Mgbe itinye akwụkwọ maka ụlọ akwadoro, ọganihu ya ga-apụta ebe a.",
-    "ha": "Lokacin da kuka nemi ingantaccen gida, ci gabansa zai bayyana a nan."
+    "ha": "Lokacin da kuka nemi ingantaccen gida, ci gabansa zai bayyana a nan.",
+    "ar": "عندما تتقدم بطلب للحصول على منزل تم التحقق منه، سيظهر تقدمه هنا.",
+    "fr": "Lorsque vous postulez pour une maison vérifiée, sa progression apparaîtra ici.",
+    "ru": "Когда вы подаете заявку на подтвержденный дом, здесь будет отображаться ход ее рассмотрения.",
+    "zh": "当您申请经过验证的房屋时，其进度将显示在此处。"
   },
   "applications from prospective tenants will appear here.": {
     "en": "Applications from prospective tenants will appear here.",
     "yo": "Awọn ohun elo lati awọn ayalegbe ifojusọna yoo han nibi.",
     "ig": "Ngwa sitere n'aka ndị na-achọ ụlọ ga-apụta ebe a.",
-    "ha": "Aikace-aikace daga masu neman haya za su bayyana a nan."
+    "ha": "Aikace-aikace daga masu neman haya za su bayyana a nan.",
+    "ar": "ستظهر الطلبات المقدمة من المستأجرين المحتملين هنا.",
+    "fr": "Les candidatures des locataires potentiels apparaîtront ici.",
+    "ru": "Здесь будут появляться заявки от потенциальных арендаторов.",
+    "zh": "潜在租户的申请将显示在此处。"
   },
   "submission date unavailable": {
     "en": "Submission date unavailable",
     "yo": "Ọjọ ifisilẹ ko si",
     "ig": "Ụbọchị nnyefe adịghị",
-    "ha": "Babu ranar ƙaddamarwa"
+    "ha": "Babu ranar ƙaddamarwa",
+    "ar": "تاريخ التقديم غير متاح",
+    "fr": "Date de soumission indisponible",
+    "ru": "Дата отправки недоступна",
+    "zh": "提交日期不可用"
   },
   "rentalhub user": {
     "en": "RentalHub user",
     "yo": "olumulo RentalHub",
     "ig": "Onye ọrụ RentalHub",
-    "ha": "Mai amfani da RentalHub"
+    "ha": "Mai amfani da RentalHub",
+    "ar": "مستخدم RentalHub",
+    "fr": "Utilisateur de RentalHub",
+    "ru": "Пользователь RentalHub",
+    "zh": "RentalHub 用户"
   },
   "typing…": {
     "en": "Typing…",
     "yo": "Titẹ…",
     "ig": "Na-ede…",
-    "ha": "Ana bugawa…"
+    "ha": "Ana bugawa…",
+    "ar": "جاري الكتابة...",
+    "fr": "Saisie…",
+    "ru": "Ввод…",
+    "zh": "正在打字……"
   },
   "send a clear message to begin.": {
     "en": "Send a clear message to begin.",
     "yo": "Fi ifiranṣẹ mimọ ranṣẹ lati bẹrẹ.",
     "ig": "Zipụ ozi doro anya ka ịmalite.",
-    "ha": "Aika bayyanannen sako don farawa."
+    "ha": "Aika bayyanannen sako don farawa.",
+    "ar": "أرسل رسالة واضحة للبدء.",
+    "fr": "Envoyez un message clair pour commencer.",
+    "ru": "Для начала отправьте четкое сообщение.",
+    "zh": "发送一条明确的消息开始。"
   },
   "messages from rentalhub support will appear here.": {
     "en": "Messages from RentalHub support will appear here.",
     "yo": "Awọn ifiranṣẹ lati atilẹyin RentalHub yoo han nibi.",
     "ig": "Ozi sitere na nkwado RentalHub ga-apụta ebe a.",
-    "ha": "Saƙonni daga tallafin RentalHub zasu bayyana anan."
+    "ha": "Saƙonni daga tallafin RentalHub zasu bayyana anan.",
+    "ar": "ستظهر هنا رسائل دعم RentalHub.",
+    "fr": "Les messages du support RentalHub apparaîtront ici.",
+    "ru": "Здесь будут появляться сообщения от службы поддержки RentalHub.",
+    "zh": "来自 RentalHub 支持的消息将显示在此处。"
   },
   "no conversations match": {
     "en": "No conversations match",
     "yo": "Ko si awọn ibaraẹnisọrọ to baramu",
     "ig": "Enweghị mkparịta ụka dabara",
-    "ha": "Babu tattaunawar da ta dace"
+    "ha": "Babu tattaunawar da ta dace",
+    "ar": "لا توجد محادثات متطابقة",
+    "fr": "Aucune conversation ne correspond",
+    "ru": "Ни один разговор не соответствует",
+    "zh": "没有对话匹配"
   },
   "no conversations yet": {
     "en": "No conversations yet",
     "yo": "Ko si awọn ibaraẹnisọrọ sibẹsibẹ",
     "ig": "Enweghị mkparịta ụka",
-    "ha": "Babu tattaunawa tukuna"
+    "ha": "Babu tattaunawa tukuna",
+    "ar": "لا توجد محادثات حتى الآن",
+    "fr": "Aucune conversation pour l'instant",
+    "ru": "Пока нет обсуждений",
+    "zh": "还没有对话"
   },
   "start a secure internal conversation with an eligible rentalhub user.": {
     "en": "Start a secure internal conversation with an eligible RentalHub user.",
     "yo": "Bẹrẹ ibaraẹnisọrọ inu ti o ni aabo pẹlu olumulo RentalHub ti o yẹ.",
     "ig": "Bido mkparịta ụka dị n'ime gị na onye ọrụ RentalHub tozuru oke.",
-    "ha": "Fara amintaccen zance na ciki tare da cancantar mai amfani da RentalHub."
+    "ha": "Fara amintaccen zance na ciki tare da cancantar mai amfani da RentalHub.",
+    "ar": "ابدأ محادثة داخلية آمنة مع مستخدم RentalHub المؤهل.",
+    "fr": "Démarrez une conversation interne sécurisée avec un utilisateur RentalHub éligible.",
+    "ru": "Начните безопасный внутренний разговор с соответствующим пользователем RentalHub.",
+    "zh": "与符合条件的 RentalHub 用户开始安全的内部对话。"
   },
   "official rentalhub messages and support updates will appear here.": {
     "en": "Official RentalHub messages and support updates will appear here.",
     "yo": "Awọn ifiranṣẹ RentalHub osise ati awọn imudojuiwọn atilẹyin yoo han nibi.",
     "ig": "Ozi RentalHub gọọmentị yana mmelite nkwado ga-apụta ebe a.",
-    "ha": "Saƙonnin RentalHub na hukuma da sabuntawar tallafi za su bayyana a nan."
+    "ha": "Saƙonnin RentalHub na hukuma da sabuntawar tallafi za su bayyana a nan.",
+    "ar": "ستظهر هنا رسائل RentalHub الرسمية وتحديثات الدعم.",
+    "fr": "Les messages officiels de RentalHub et les mises à jour d'assistance apparaîtront ici.",
+    "ru": "Здесь будут появляться официальные сообщения RentalHub и обновления поддержки.",
+    "zh": "官方 RentalHub 消息和支持更新将显示在此处。"
   },
   "this application is still active and awaiting the next step.": {
     "en": "This application is still active and awaiting the next step.",
     "yo": "Ohun elo yii tun ṣiṣẹ ati nduro fun igbesẹ ti nbọ.",
     "ig": "Ngwa a ka na-arụ ọrụ ma na-eche nzọụkwụ na-esote.",
-    "ha": "Wannan aikace-aikacen har yanzu yana aiki kuma yana jiran mataki na gaba."
+    "ha": "Wannan aikace-aikacen har yanzu yana aiki kuma yana jiran mataki na gaba.",
+    "ar": "لا يزال هذا التطبيق نشطًا وينتظر الخطوة التالية.",
+    "fr": "Cette application est toujours active et attend la prochaine étape.",
+    "ru": "Это приложение все еще активно и ожидает следующего шага.",
+    "zh": "此应用程序仍处于活动状态并等待下一步。"
   },
   "the landlord approved this rental application.": {
     "en": "The landlord approved this rental application.",
     "yo": "Onile fọwọsi ohun elo yiyalo.",
     "ig": "Onye nwe ụlọ kwadoro ngwa mgbazinye a.",
-    "ha": "Mai gida ya amince da wannan aikace-aikacen haya."
+    "ha": "Mai gida ya amince da wannan aikace-aikacen haya.",
+    "ar": "وافق المالك على طلب الإيجار هذا.",
+    "fr": "Le propriétaire a approuvé cette demande de location.",
+    "ru": "Арендодатель одобрил эту заявку на аренду.",
+    "zh": "房东批准了此租赁申请。"
   },
   "this application was not approved.": {
     "en": "This application was not approved.",
     "yo": "Ohun elo yii ko fọwọsi.",
     "ig": "Achọtaghị ngwa a.",
-    "ha": "Ba a amince da wannan aikace-aikacen ba."
+    "ha": "Ba a amince da wannan aikace-aikacen ba.",
+    "ar": "لم تتم الموافقة على هذا الطلب.",
+    "fr": "Cette demande n'a pas été approuvée.",
+    "ru": "Эта заявка не была одобрена.",
+    "zh": "该申请未获批准。"
   },
   "this application has been withdrawn.": {
     "en": "This application has been withdrawn.",
     "yo": "Ohun elo yii ti yọkuro.",
     "ig": "Ewepụla ngwa a.",
-    "ha": "An cire wannan aikace-aikacen."
+    "ha": "An cire wannan aikace-aikacen.",
+    "ar": "تم سحب هذا الطلب.",
+    "fr": "Cette demande a été retirée.",
+    "ru": "Данная заявка была отозвана.",
+    "zh": "该申请已被撤回。"
   },
   "applicant": {
     "en": "Applicant",
     "yo": "Olubẹwẹ",
     "ig": "Onye anamachọihe",
-    "ha": "Mai nema"
+    "ha": "Mai nema",
+    "ar": "مقدم الطلب",
+    "fr": "Demandeur",
+    "ru": "Заявитель",
+    "zh": "申请人"
   },
   "propose rent": {
     "en": "Propose rent",
     "yo": "Dabaa iyalo",
     "ig": "Wepụta ụgwọ ụlọ",
-    "ha": "Ba da shawarar haya"
+    "ha": "Ba da shawarar haya",
+    "ar": "اقتراح الإيجار",
+    "fr": "Proposer un loyer",
+    "ru": "Предложить аренду",
+    "zh": "提议租金"
   },
   "add a note": {
     "en": "Add a note",
     "yo": "Fi akọsilẹ kun",
     "ig": "Tinye ndetu",
-    "ha": "Ƙara bayanin kula"
+    "ha": "Ƙara bayanin kula",
+    "ar": "أضف ملاحظة",
+    "fr": "Ajouter une note",
+    "ru": "Добавить примечание",
+    "zh": "添加注释"
   },
   "address unavailable": {
     "en": "Address unavailable",
     "yo": "Ko si adirẹsi",
     "ig": "Adreesị adịghị",
-    "ha": "Babu adireshi"
+    "ha": "Babu adireshi",
+    "ar": "العنوان غير متاح",
+    "fr": "Adresse indisponible",
+    "ru": "Адрес недоступен",
+    "zh": "地址不可用"
   },
   "rentalhub member": {
     "en": "RentalHub member",
     "yo": "RentalHub omo egbe",
     "ig": "Onye otu RentalHub",
-    "ha": "Memba na RentalHub"
+    "ha": "Memba na RentalHub",
+    "ar": "عضو في RentalHub",
+    "fr": "Membre RentalHub",
+    "ru": "Участник RentalHub",
+    "zh": "RentalHub 会员"
   },
   "no email available": {
     "en": "No email available",
     "yo": "Ko si imeeli ti o wa",
     "ig": "Enweghị ozi-e dị",
-    "ha": "Babu imel"
+    "ha": "Babu imel",
+    "ar": "لا يتوفر بريد إلكتروني",
+    "fr": "Aucun e-mail disponible",
+    "ru": "Нет доступного адреса электронной почты.",
+    "zh": "没有可用的电子邮件"
   },
   "not required": {
     "en": "Not required",
     "yo": "Ko nilo",
     "ig": "Ọ dịghị mkpa",
-    "ha": "Ba a buƙata"
+    "ha": "Ba a buƙata",
+    "ar": "غير مطلوب",
+    "fr": "Non requis",
+    "ru": "Не требуется",
+    "zh": "不需要"
   },
   "disabled": {
     "en": "Disabled",
     "yo": "Alaabo",
     "ig": "Agbanyụrụ",
-    "ha": "An kashe"
+    "ha": "An kashe",
+    "ar": "معطل",
+    "fr": "Désactivé",
+    "ru": "Отключено",
+    "zh": "已禁用"
   },
   "checking…": {
     "en": "Checking…",
     "yo": "Ṣiṣayẹwo…",
     "ig": "Na-enyocha…",
-    "ha": "Dubawa…"
+    "ha": "Dubawa…",
+    "ar": "جارٍ التحقق…",
+    "fr": "Vérification…",
+    "ru": "Проверка…",
+    "zh": "检查..."
   },
   "active membership": {
     "en": "ACTIVE MEMBERSHIP",
     "yo": "ÌṢẸ́ ÌṢẸ́ ÌṢẸ́",
     "ig": "NKWUKWU MMETỤTA",
-    "ha": "MATSALAR MULKI"
+    "ha": "MATSALAR MULKI",
+    "ar": "العضوية النشطة",
+    "fr": "ADHÉSION ACTIVE",
+    "ru": "АКТИВНОЕ ЧЛЕНСТВО",
+    "zh": "活跃会员"
   },
   "premium access": {
     "en": "PREMIUM ACCESS",
-    "yo": "PREMIUM ACCESS",
-    "ig": "PREMIUM ACCESS",
-    "ha": "PREMIUM ACCESS"
+    "yo": "ÀǸFÀÀNÍ PÀTÀKÌ",
+    "ig": "NNWETA PỤRỤ ICHE",
+    "ha": "SAMUN DAMA NA MUSAMMAN",
+    "ar": "وصول مميز",
+    "fr": "ACCÈS PREMIUM",
+    "ru": "ПРЕМИУМ ДОСТУП",
+    "zh": "高级访问"
   },
   "your subscription is active": {
     "en": "Your subscription is active",
     "yo": "Ṣiṣe alabapin rẹ nṣiṣẹ lọwọ",
     "ig": "Ndebanye aha gị na-arụ ọrụ",
-    "ha": "Biyan kuɗin ku yana aiki"
+    "ha": "Biyan kuɗin ku yana aiki",
+    "ar": "اشتراكك نشط",
+    "fr": "Votre abonnement est actif",
+    "ru": "Ваша подписка активна",
+    "zh": "您的订阅已激活"
   },
   "unlock the complete rental experience": {
     "en": "Unlock the complete rental experience",
     "yo": "Ṣii iriri yiyalo ni kikun",
     "ig": "Mepee ahụmịhe mgbazinye zuru oke",
-    "ha": "Buɗe cikakkiyar ƙwarewar haya"
+    "ha": "Buɗe cikakkiyar ƙwarewar haya",
+    "ar": "أطلق العنان لتجربة التأجير الكاملة",
+    "fr": "Bénéficiez de l'expérience de location complète",
+    "ru": "Откройте все возможности аренды",
+    "zh": "解锁完整的租赁体验"
   },
   "your premium rentalhub access is currently active.": {
     "en": "Your premium RentalHub access is currently active.",
     "yo": "Wiwọle RentalHub Ere rẹ n ṣiṣẹ lọwọlọwọ.",
     "ig": "Nweta RentalHub adịchaghị gị na-arụ ọrụ ugbu a.",
-    "ha": "Babban damar RentalHub na ku yana aiki a halin yanzu."
+    "ha": "Babban damar RentalHub na ku yana aiki a halin yanzu.",
+    "ar": "وصولك المميز إلى RentalHub نشط حاليًا.",
+    "fr": "Votre accès premium RentalHub est actuellement actif.",
+    "ru": "Ваш премиум-доступ к RentalHub в настоящее время активен.",
+    "zh": "您的高级 RentalHub 访问权限当前处于活动状态。"
   },
   "view full property details, verified contacts and premium tenant tools.": {
     "en": "View full property details, verified contacts and premium tenant tools.",
     "yo": "Wo awọn alaye ohun-ini ni kikun, awọn olubasọrọ ti a rii daju ati awọn irinṣẹ agbatọju Ere.",
     "ig": "Lelee nkọwa ụlọ zuru oke, kọntaktị ekwenyesiri ike na ngwa ndị nwe ụlọ dị adị.",
-    "ha": "Duba cikakkun bayanan kadarorin, ingantattun adireshi da kayan aikin haya mai ƙima."
+    "ha": "Duba cikakkun bayanan kadarorin, ingantattun adireshi da kayan aikin haya mai ƙima.",
+    "ar": "عرض تفاصيل الملكية الكاملة وجهات الاتصال التي تم التحقق منها وأدوات المستأجر المتميزة.",
+    "fr": "Affichez les détails complets de la propriété, les contacts vérifiés et les outils premium pour les locataires.",
+    "ru": "Просмотрите полную информацию об объекте недвижимости, проверенные контакты и инструменты премиум-класса для арендаторов.",
+    "zh": "查看完整的房产详细信息、经过验证的联系人和高级租户工具。"
   },
   "rentalhub membership": {
     "en": "RentalHub membership",
     "yo": "RentalHub omo egbe",
     "ig": "Ndị otu RentalHub",
-    "ha": "Memba na RentalHub"
+    "ha": "Memba na RentalHub",
+    "ar": "عضوية RentalHub",
+    "fr": "Adhésion à RentalHub",
+    "ru": "Членство в RentalHub",
+    "zh": "RentalHub 会员资格"
   },
   "premium tenant access and complete property information.": {
     "en": "Premium tenant access and complete property information.",
     "yo": "Wiwọle ayalegbe Ere ati alaye ohun-ini pipe.",
     "ig": "Nweta onye nwe ụlọ adịchaghị yana ozi akụrụngwa zuru ezu.",
-    "ha": "Samun isa ga masu haya da cikakken bayanin kadara."
+    "ha": "Samun isa ga masu haya da cikakken bayanin kadara.",
+    "ar": "الوصول المميز للمستأجر ومعلومات الملكية الكاملة.",
+    "fr": "Accès locataire Premium et informations complètes sur la propriété.",
+    "ru": "Премиум-доступ для арендаторов и полная информация о недвижимости.",
+    "zh": "高级租户访问权限和完整的财产信息。"
   },
   "your rentalhub payments will appear here.": {
     "en": "Your RentalHub payments will appear here.",
     "yo": "Awọn sisanwo RentalHub rẹ yoo han nibi.",
     "ig": "Ụgwọ RentalHub gị ga-apụta ebe a.",
-    "ha": "Kuɗin ku na RentalHub zai bayyana a nan."
+    "ha": "Kuɗin ku na RentalHub zai bayyana a nan.",
+    "ar": "ستظهر مدفوعات RentalHub هنا.",
+    "fr": "Vos paiements RentalHub apparaîtront ici.",
+    "ru": "Здесь будут отображаться ваши платежи RentalHub.",
+    "zh": "您的 RentalHub 付款将显示在此处。"
   },
   "rentalhub transaction": {
     "en": "RentalHub transaction",
     "yo": "RentalHub idunadura",
     "ig": "Azụmahịa RentalHub",
-    "ha": "Ma'amalar RentalHub"
+    "ha": "Ma'amalar RentalHub",
+    "ar": "معاملة RentalHub",
+    "fr": "Transaction RentalHub",
+    "ru": "Транзакция RentalHub",
+    "zh": "RentalHub交易"
   },
   "official payment receipt": {
     "en": "OFFICIAL PAYMENT RECEIPT",
     "yo": "GBA ISANWO Osise",
     "ig": "Nnata Nkwụghachi ụgwọ ọrụ",
-    "ha": "KARBAR BIYA HUKUNCI"
+    "ha": "KARBAR BIYA HUKUNCI",
+    "ar": "إيصال الدفع الرسمي",
+    "fr": "REÇU OFFICIEL DE PAIEMENT",
+    "ru": "ОФИЦИАЛЬНАЯ Квитанция об оплате",
+    "zh": "正式付款收据"
   },
   "no message available": {
     "en": "No message available",
     "yo": "Ko si ifiranṣẹ to wa",
     "ig": "Enweghị ozi dị",
-    "ha": "Babu sako akwai"
+    "ha": "Babu sako akwai",
+    "ar": "لا توجد رسالة متاحة",
+    "fr": "Aucun message disponible",
+    "ru": "Нет доступных сообщений",
+    "zh": "无可用消息"
   },
   "rent savings plan": {
     "en": "Rent savings plan",
     "yo": "Eto ifowopamọ iyalo",
     "ig": "Atụmatụ nchekwa ego mgbazinye",
-    "ha": "Tsarin tanadin haya"
+    "ha": "Tsarin tanadin haya",
+    "ar": "خطة التوفير للإيجار",
+    "fr": "Plan épargne loyer",
+    "ru": "План экономии на аренде",
+    "zh": "租金节省计划"
   },
   "untitled dispute": {
     "en": "Untitled Dispute",
     "yo": "Ifarakanra ti ko ni akọle",
     "ig": "Esemokwu enweghị aha",
-    "ha": "Rigima mara taken"
+    "ha": "Rigima mara taken",
+    "ar": "نزاع بدون عنوان",
+    "fr": "Litige sans titre",
+    "ru": "Спор без названия",
+    "zh": "无题争议"
   },
   "build your property portfolio": {
     "en": "Build your property portfolio",
     "yo": "Kọ ohun-ini rẹ portfolio",
     "ig": "Wulite Pọtụfoliyo ihe onwunwe gị",
-    "ha": "Gina fayil ɗin kayan ku"
+    "ha": "Gina fayil ɗin kayan ku",
+    "ar": "قم ببناء محفظتك العقارية",
+    "fr": "Construisez votre portefeuille immobilier",
+    "ru": "Создайте свой портфель недвижимости",
+    "zh": "建立您的房地产投资组合"
   },
   "add your first property and submit it for verification.": {
     "en": "Add your first property and submit it for verification.",
     "yo": "Ṣafikun ohun-ini akọkọ rẹ ki o fi silẹ fun ijẹrisi.",
     "ig": "Tinye akụrụngwa mbụ gị wee nyefee ya maka nkwenye.",
-    "ha": "Ƙara kadarorin ku na farko kuma ku ƙaddamar da ita don tabbatarwa."
+    "ha": "Ƙara kadarorin ku na farko kuma ku ƙaddamar da ita don tabbatarwa.",
+    "ar": "أضف عقارك الأول وأرسله للتحقق.",
+    "fr": "Ajoutez votre première propriété et soumettez-la pour vérification.",
+    "ru": "Добавьте свой первый ресурс и отправьте его на проверку.",
+    "zh": "添加您的第一个属性并提交以供验证。"
   },
   "try another portfolio filter.": {
     "en": "Try another portfolio filter.",
     "yo": "Gbiyanju àlẹmọ portfolio miiran.",
     "ig": "Nwaa nzacha pọtụfoliyo ọzọ.",
-    "ha": "Gwada wani tace fayil."
+    "ha": "Gwada wani tace fayil.",
+    "ar": "جرب مرشح محفظة آخر.",
+    "fr": "Essayez un autre filtre de portefeuille.",
+    "ru": "Попробуйте другой фильтр портфолио.",
+    "zh": "尝试另一个投资组合过滤器。"
   },
   "pause": {
     "en": "Pause",
     "yo": "Duro",
     "ig": "kwụsịtụ",
-    "ha": "Dakata"
+    "ha": "Dakata",
+    "ar": "وقفة",
+    "fr": "Pause",
+    "ru": "Пауза",
+    "zh": "暂停"
   },
   "activate": {
     "en": "Activate",
     "yo": "Mu ṣiṣẹ",
     "ig": "Mee ka ọ rụọ ọrụ",
-    "ha": "Kunna"
+    "ha": "Kunna",
+    "ar": "تفعيل",
+    "fr": "Activer",
+    "ru": "Активировать",
+    "zh": "激活"
   },
   "open live camera (photos & clips)": {
     "en": "Open live camera (Photos & Clips)",
     "yo": "Ṣii kamẹra laaye (Awọn fọto & Awọn agekuru)",
     "ig": "Mepee igwefoto dị ndụ (Foto na obere vidiyo)",
-    "ha": "Buɗe kamara kai tsaye (Hotuna & shirye-shiryen bidiyo)"
+    "ha": "Buɗe kamara kai tsaye (Hotuna & shirye-shiryen bidiyo)",
+    "ar": "فتح الكاميرا الحية (صور ومقاطع)",
+    "fr": "Ouvrir la caméra en direct (Photos et clips)",
+    "ru": "Открыть прямую трансляцию с камеры (фотографии и клипы)",
+    "zh": "打开实时相机（照片和剪辑）"
   },
   "film a short clip": {
     "en": "Film a short clip",
     "yo": "Fiimu agekuru kukuru kan",
     "ig": "Ihe nkiri obere vidiyo",
-    "ha": "Fim ɗan gajeren fim"
+    "ha": "Fim ɗan gajeren fim",
+    "ar": "تصوير مقطع قصير",
+    "fr": "Filmer un court clip",
+    "ru": "Снимите короткий клип",
+    "zh": "拍摄短片"
   },
   "no description available": {
     "en": "No description available",
     "yo": "Ko si apejuwe wa",
     "ig": "Enweghị nkọwa ọ bụla dị",
-    "ha": "Babu bayanin da akwai"
+    "ha": "Babu bayanin da akwai",
+    "ar": "لا يتوفر وصف",
+    "fr": "Aucune description disponible",
+    "ru": "Описание отсутствует",
+    "zh": "无可用描述"
   },
   "registration paid": {
     "en": "registration paid",
     "yo": "san owo iforukọsilẹ",
     "ig": "akwụ ụgwọ ndebanye aha",
-    "ha": "an biya rajista"
+    "ha": "an biya rajista",
+    "ar": "التسجيل مدفوع",
+    "fr": "inscription payée",
+    "ru": "регистрация оплачена",
+    "zh": "注册已付款"
   },
   "connection restored. replaying saved actions now.": {
     "en": "Connection restored. Replaying saved actions now.",
     "yo": "Asopọ pada. Atunse awọn iṣe ti o fipamọ ni bayi.",
     "ig": "eweghachite njikọ. Na-emegharị omume echekwara ugbu a.",
-    "ha": "An dawo da haɗin kai. Ana sake kunna ayyukan da aka ajiye yanzu."
+    "ha": "An dawo da haɗin kai. Ana sake kunna ayyukan da aka ajiye yanzu.",
+    "ar": "تمت استعادة الاتصال. إعادة تشغيل الإجراءات المحفوظة الآن.",
+    "fr": "Connexion rétablie. Rejouer les actions enregistrées maintenant.",
+    "ru": "Соединение восстановлено. Воспроизведение сохраненных действий сейчас.",
+    "zh": "连接已恢复。现在重播保存的动作。"
   },
   "network is weak. some updates may take longer.": {
     "en": "Network is weak. Some updates may take longer.",
     "yo": "Nẹtiwọọki ko lagbara. Diẹ ninu awọn imudojuiwọn le gba to gun.",
     "ig": "Netwọk adịghị ike. Ụfọdụ mmelite nwere ike iwe ogologo oge.",
-    "ha": "Cibiyar sadarwa tana da rauni. Wasu sabuntawa na iya ɗaukar tsawon lokaci."
+    "ha": "Cibiyar sadarwa tana da rauni. Wasu sabuntawa na iya ɗaukar tsawon lokaci.",
+    "ar": "الشبكة ضعيفة. قد تستغرق بعض التحديثات وقتًا أطول.",
+    "fr": "Le réseau est faible. Certaines mises à jour peuvent prendre plus de temps.",
+    "ru": "Слабая сеть. Некоторые обновления могут занять больше времени.",
+    "zh": "网络薄弱。某些更新可能需要更长的时间。"
   },
   "you appear offline. we will retry when connection returns.": {
     "en": "You appear offline. We will retry when connection returns.",
     "yo": "O farahan ni aisinipo. A yoo tun gbiyanju nigbati asopọ ba pada.",
     "ig": "Ị na-apụta na-anọghị n'ịntanetị. Anyị ga-anwale ọzọ mgbe njikọ gaghachiri.",
-    "ha": "Kuna bayyana a layi. Za mu sake gwadawa lokacin da haɗin ya dawo."
+    "ha": "Kuna bayyana a layi. Za mu sake gwadawa lokacin da haɗin ya dawo.",
+    "ar": "تظهر دون اتصال. سنعيد المحاولة عندما يعود الاتصال.",
+    "fr": "Vous apparaissez hors ligne. Nous réessayerons lorsque la connexion sera rétablie.",
+    "ru": "Похоже, вы не в сети. Мы повторим попытку, когда соединение восстановится.",
+    "zh": "您显示为离线。当连接恢复时我们将重试。"
   },
   "waiting for remote video…": {
     "en": "Waiting for remote video…",
     "yo": "Nduro fun fidio latọna jijin…",
     "ig": "Na-eche vidiyo dịpụrụ adịpụ…",
-    "ha": "Ana jiran bidiyo mai nisa…"
+    "ha": "Ana jiran bidiyo mai nisa…",
+    "ar": "في انتظار الفيديو عن بعد...",
+    "fr": "En attente de la vidéo distante…",
+    "ru": "Ожидание удаленного видео…",
+    "zh": "等待远程视频..."
   },
   "audio session connected": {
     "en": "Audio session connected",
     "yo": "Akopọ iwe ohun",
     "ig": "Ejikọrọ nnọkọ ọnụnụ",
-    "ha": "An haɗa zaman odiyo"
+    "ha": "An haɗa zaman odiyo",
+    "ar": "تم توصيل الجلسة الصوتية",
+    "fr": "Session audio connectée",
+    "ru": "Аудиосессия подключена",
+    "zh": "音频会话已连接"
   },
   "connecting media…": {
     "en": "Connecting media…",
     "yo": "Nsopọ media…",
     "ig": "Na-ejikọ mgbasa ozi…",
-    "ha": "Haɗa kafofin watsa labarai…"
+    "ha": "Haɗa kafofin watsa labarai…",
+    "ar": "جارٍ توصيل الوسائط...",
+    "fr": "Connexion des médias…",
+    "ru": "Подключение носителя…",
+    "zh": "正在连接媒体..."
   },
   "ringing": {
     "en": "RINGING",
     "yo": "Oruka",
     "ig": "NA-akụ",
-    "ha": "INGANTAWA"
+    "ha": "INGANTAWA",
+    "ar": "رنين",
+    "fr": "SONNERIE",
+    "ru": "ЗВОНОК",
+    "zh": "响铃"
   },
   "someone": {
     "en": "Someone",
     "yo": "Ẹnikan",
-    "ig": "Onye"
+    "ig": "Onye",
+    "ha": "Wani",
+    "ar": "شخص ما",
+    "fr": "Quelqu'un",
+    "ru": "Кто-то",
+    "zh": "某人"
   },
   "sign out & reset": {
     "en": "Sign out & reset",
     "yo": "Jade & tunto",
-    "ig": "Wepụ ma tọgharịa"
+    "ig": "Wepụ ma tọgharịa",
+    "ha": "Fita & sake saiti",
+    "ar": "تسجيل الخروج وإعادة التعيين",
+    "fr": "Déconnexion et réinitialisation",
+    "ru": "Выйти и сбросить настройки",
+    "zh": "注销并重置"
   },
   "hide error details": {
     "en": "Hide error details",
     "yo": "Tọju awọn alaye aṣiṣe",
-    "ig": "Zoo nkọwa njehie"
+    "ig": "Zoo nkọwa njehie",
+    "ha": "Boye bayanan kuskure",
+    "ar": "إخفاء تفاصيل الخطأ",
+    "fr": "Masquer les détails de l'erreur",
+    "ru": "Скрыть сведения об ошибке",
+    "zh": "隐藏错误详细信息"
   },
   "show error details": {
     "en": "Show error details",
     "yo": "Ṣafihan awọn alaye aṣiṣe",
-    "ig": "Gosi nkọwa njehie"
+    "ig": "Gosi nkọwa njehie",
+    "ha": "Nuna bayanan kuskure",
+    "ar": "إظهار تفاصيل الخطأ",
+    "fr": "Afficher les détails de l'erreur",
+    "ru": "Показать сведения об ошибке",
+    "zh": "显示错误详细信息"
   }
 }

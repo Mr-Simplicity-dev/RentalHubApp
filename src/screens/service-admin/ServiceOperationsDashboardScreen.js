@@ -1,8 +1,9 @@
 
 
-import React, { useContext, useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import Toast from 'react-native-toast-message';
 import { AuthContext } from '../../context/AuthContext';
+import useAdminNotificationHeader from '../../hooks/useAdminNotificationHeader';
 import AdminAccountActions from '../../components/admin/AdminAccountActions';
 import { serviceAdminService } from '../../services/serviceAdminService';
 import { getErrorMessage, pickObject } from '../../utils/http';
@@ -61,9 +62,7 @@ const ServiceOperationsDashboardScreen = ({ navigation }) => {
   const [overview, setOverview] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useLayoutEffect(() => {
-    navigation.setOptions({ headerShown: navigation.canGoBack() });
-  }, [navigation, interfaceLanguage]);
+  useAdminNotificationHeader(navigation);
 
   const loadOverview = async () => {
     setLoading(true);

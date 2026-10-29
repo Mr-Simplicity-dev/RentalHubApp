@@ -19,6 +19,7 @@ import {
   MetricGrid,
 } from '../../components/dashboard/DashboardKit';
 import AdminAccountActions from '../../components/admin/AdminAccountActions';
+import useAdminNotificationHeader from '../../hooks/useAdminNotificationHeader';
 
 import AppText from '../../components/common/AppText';
 const statusOptions = ['all', 'submitted', 'under_review', 'shortlisted', 'approved', 'rejected', 'disqualified'];
@@ -91,6 +92,8 @@ const ApplicantCard = ({ applicant, onDecision, onReport }) => {
 const RecruitmentAdminScreen = ({ navigation }) => {
   const interfaceLanguage = 'en';
   const [loading, setLoading] = useState(true);
+
+  useAdminNotificationHeader(navigation);
   const [refreshing, setRefreshing] = useState(false);
   const [status, setStatus] = useState(null);
   const [roles, setRoles] = useState([]);

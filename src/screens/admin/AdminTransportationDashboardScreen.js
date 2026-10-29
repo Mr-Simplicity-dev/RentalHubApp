@@ -1,6 +1,6 @@
 
 
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Toast from 'react-native-toast-message';
 import { serviceAdminService } from '../../services/serviceAdminService';
 import { getErrorMessage, pickObject } from '../../utils/http';
@@ -14,15 +14,13 @@ import {
   MetricGrid,
 } from '../../components/dashboard/DashboardKit';
 import WorkspaceBoard from '../../components/dashboard/WorkspaceBoard';
+import useAdminNotificationHeader from '../../hooks/useAdminNotificationHeader';
 
 const AdminTransportationDashboardScreen = ({ navigation }) => {
-  const interfaceLanguage = 'en';
   const [stats, setStats] = useState({});
   const [loading, setLoading] = useState(true);
 
-  useLayoutEffect(() => {
-    navigation.setOptions({ headerShown: navigation.canGoBack() });
-  }, [navigation, interfaceLanguage]);
+  useAdminNotificationHeader(navigation);
 
   const loadStats = async () => {
     setLoading(true);

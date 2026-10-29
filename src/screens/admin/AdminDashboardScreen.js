@@ -1,6 +1,6 @@
 
 
-import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Toast from 'react-native-toast-message';
 import { AuthContext } from '../../context/AuthContext';
 import { adminService } from '../../services/adminService';
@@ -18,18 +18,16 @@ import {
   MetricGrid,
 } from '../../components/dashboard/DashboardKit';
 import WorkspaceBoard from '../../components/dashboard/WorkspaceBoard';
+import useAdminNotificationHeader from '../../hooks/useAdminNotificationHeader';
 
 const AdminDashboardScreen = ({ navigation }) => {
-  const interfaceLanguage = 'en';
   const { user } = useContext(AuthContext);
   const [stats, setStats] = useState({});
   const [loading, setLoading] = useState(true);
   const role = String(user?.user_type || '').trim().toLowerCase();
   const isCoreAdmin = role === 'admin' || role === 'super_admin';
 
-  useLayoutEffect(() => {
-    navigation.setOptions({ headerShown: navigation.canGoBack() });
-  }, [navigation, interfaceLanguage]);
+  useAdminNotificationHeader(navigation);
 
   const loadStats = async () => {
     setLoading(true);

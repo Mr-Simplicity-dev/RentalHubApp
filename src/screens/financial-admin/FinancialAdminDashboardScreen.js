@@ -1,6 +1,6 @@
 
 
-import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Toast from 'react-native-toast-message';
 import { financialAdminService } from '../../services/financialAdminService';
 import AdminAccountActions from '../../components/admin/AdminAccountActions';
@@ -16,18 +16,16 @@ import {
 } from '../../components/dashboard/DashboardKit';
 import WorkspaceBoard from '../../components/dashboard/WorkspaceBoard';
 import { AuthContext } from '../../context/AuthContext';
+import useAdminNotificationHeader from '../../hooks/useAdminNotificationHeader';
 
 const formatCurrency = (value) => `₦${Number(value || 0).toLocaleString()}`;
 
 const FinancialAdminDashboardScreen = ({ navigation }) => {
-  const interfaceLanguage = 'en';
   const { user } = useContext(AuthContext);
   const [overview, setOverview] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useLayoutEffect(() => {
-    navigation.setOptions({ headerShown: navigation.canGoBack() });
-  }, [navigation, interfaceLanguage]);
+  useAdminNotificationHeader(navigation);
 
   const loadOverview = async () => {
     setLoading(true);

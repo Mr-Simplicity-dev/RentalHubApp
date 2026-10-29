@@ -1,6 +1,6 @@
 
 
-import React, { useContext, useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import {StyleSheet} from 'react-native';
 import Toast from 'react-native-toast-message';
 import api from '../../services/api';
@@ -15,6 +15,7 @@ import {
   MetricGrid,
 } from '../../components/dashboard/DashboardKit';
 import { AuthContext } from '../../context/AuthContext';
+import useAdminNotificationHeader from '../../hooks/useAdminNotificationHeader';
 
 const LABELS = {
   lga: { get "eyebrow"() { return "LGA SUPPORT"; }, get "title"() { return "Local support desk"; } },
@@ -35,9 +36,7 @@ const AdminSupportDashboardScreen = ({ navigation, route }) => {
   const [dashboard, setDashboard] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useLayoutEffect(() => {
-    navigation.setOptions({ headerShown: navigation.canGoBack() });
-  }, [navigation, interfaceLanguage]);
+  useAdminNotificationHeader(navigation);
 
   const loadDashboard = async () => {
     setLoading(true);

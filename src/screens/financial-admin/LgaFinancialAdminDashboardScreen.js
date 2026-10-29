@@ -4,7 +4,6 @@ import React, {
   useCallback,
   useContext,
   useEffect,
-  useLayoutEffect,
   useMemo,
   useState,
 } from 'react';
@@ -20,6 +19,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
 import { AuthContext } from '../../context/AuthContext';
 import AdminAccountActions from '../../components/admin/AdminAccountActions';
+import useAdminNotificationHeader from '../../hooks/useAdminNotificationHeader';
 import Input from '../../components/common/Input';
 import OptionPickerModal from '../../components/common/OptionPickerModal';
 import SelectField from '../../components/common/SelectField';
@@ -460,9 +460,7 @@ const LgaFinancialAdminDashboardScreen = ({ navigation }) => {
   const [loadError, setLoadError] = useState('');
   const [withdrawalModalVisible, setWithdrawalModalVisible] = useState(false);
 
-  useLayoutEffect(() => {
-    navigation.setOptions({ headerShown: navigation.canGoBack() });
-  }, [navigation, interfaceLanguage]);
+  useAdminNotificationHeader(navigation);
 
   const loadFinanceData = useCallback(async () => {
     setLoading(true);
