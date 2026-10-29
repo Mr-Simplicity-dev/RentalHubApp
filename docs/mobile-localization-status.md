@@ -2,6 +2,8 @@
 
 ## Current status — 29 October 2026 (supersedes historical notes below)
 
+Android release 1.0.49 (versionCode 60) is built, signed and live at `/api/downloads/app`. It includes the customer localization fixes and the shared admin notification bell. Artifact SHA-256: `36c19999735871464e2901ba53c54602157b0dc321124817bdb58379da44130c`. iOS remains 1.0.3 build 13. Physical-device visual checks remain pending. Release provenance is recorded in `../../docs/assisted-registration-deployment.md`.
+
 Hausa, Yoruba and Igbo catalogue completion now passes for the non-admin mobile interface. Translations are bundled in the app; no translation account or runtime translation service is required. English remains the safe fallback for future unknown text.
 
 The expanded inventory covers 182 reachable source files and 2,447 static phrases across public, tenant, landlord, agent, lawyer and marketing-agent navigation. All 2,447 have Hausa, Yoruba and Igbo entries, with zero missing in each language. See `mobile-nigerian-language-gaps.json`. The strict checker verifies 3,547 literal UI calls representing 2,433 distinct phrases plus the additional identifier/error messages, including all eight supported locales and interpolation integrity. Another 330 checks cover the separate customer, Careers, cases and consent catalogues.
