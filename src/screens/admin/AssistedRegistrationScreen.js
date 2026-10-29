@@ -185,7 +185,7 @@ export default function AssistedRegistrationScreen() {
               await api.post('/assisted-registration/staff/' + encodeURIComponent(row.reference) + '/remittance');
               await refresh();
             })
-          }])} />}</View>)}</View><View style={styles.card}><AppText style={styles.heading}>{"Office fingerprint verification"}</AppText><AppText>{"Unavailable until a licensed matching engine and secure enrollment service are configured. The reader software alone cannot safely match an account. No fingerprints are collected or stored."}</AppText></View></ScrollView><OptionPickerModal visible={Boolean(picker)} title={picker?.title} options={picker?.options || []} searchable onClose={() => setPicker(null)} onSelect={item => {
+          }])} />}</View>)}</View><View style={styles.card}><AppText style={styles.heading}>{"Office fingerprint verification"}</AppText><AppText>{"Use Assisted account registration on the office Windows website for fingerprint enrollment and verification with the U.are.U 4500 reader. The SourceAFIS integration requires server setup. This USB reader is not connected through the Android or iOS app."}</AppText></View></ScrollView><OptionPickerModal visible={Boolean(picker)} title={picker?.title} options={picker?.options || []} searchable onClose={() => setPicker(null)} onSelect={item => {
       update(picker.key, item.value);
       setPicker(null);
     }} /></>;
