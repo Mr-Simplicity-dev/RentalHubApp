@@ -89,6 +89,7 @@ key.properties
 # Temporary files
 tmp/
 temp/
+.codex-tmp/
 .tmp-release-assets/
 .tmp-release-index.android.bundle
 
