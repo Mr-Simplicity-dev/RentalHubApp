@@ -775,9 +775,9 @@ const RegisterScreen = ({ navigation, route }) => {
             ]}
           />
         </View>
-        <AppText style={[styles.eyebrow, currentStep === 0 && styles.aboutEyebrow]}>{steps[currentStep].short.toUpperCase()}</AppText>
-        <AppText style={[styles.title, currentStep === 0 && styles.aboutTitle, currentStep === 1 && styles.supportTitle]}>{steps[currentStep].title}</AppText>
-        <AppText style={[styles.subtitle, currentStep === 0 && styles.aboutSubtitle]}>
+        <AppText style={[styles.eyebrow, currentStep !== 1 && styles.aboutEyebrow]}>{steps[currentStep].short.toUpperCase()}</AppText>
+        <AppText style={[styles.title, currentStep !== 1 && styles.aboutTitle, currentStep === 1 && styles.supportTitle]}>{steps[currentStep].title}</AppText>
+        <AppText style={[styles.subtitle, currentStep !== 1 && styles.aboutSubtitle]}>
           {currentStep === 0
             ? ui("Choose how you'll use RentalHub and tell us how to reach you.")
             : currentStep === 1
@@ -930,7 +930,7 @@ const RegisterScreen = ({ navigation, route }) => {
             <Icon name={form.use_rentalhub_lawyers ? 'checkbox' : 'square-outline'} size={20} color={colors.blue} />
             <AppText style={[styles.agentToggleLabel, styles.supportOptionLabel]}>{ui('Enroll in legal support')}</AppText>
           </View>
-          <AppText style={styles.supportOptionDescription}>{ui('Our legal team will be assigned to assist with tenancy and property disputes (fee applies).')}</AppText>
+          <AppText style={styles.supportOptionDescription}>{ui('Our special team will be assigned to assist with tenancy and property disputes (fee applies).')}</AppText>
         </TouchableOpacity>
 
         <Input
@@ -1026,28 +1026,32 @@ const RegisterScreen = ({ navigation, route }) => {
         ) : null}
 
         {currentStep === 2 ? (
-          <View style={styles.stepCard}>
+          <View style={[styles.stepCard, styles.aboutCard]}>
         <SelectField
+          compact
           label={ui("State")}
           value={selectedState?.state_name}
           placeholder={ui("Select state")}
           onPress={() => setShowStatePicker(true)}
-          helperText={requiresRegistrationPayment ? 'Required for registration pricing.' : ''}
+          helperText={requiresRegistrationPayment ? ui('Required for registration pricing.') : ''}
         />
 
         <SelectField
           label={ui("Local Government Area")}
+          compact
           value={form.lga_name}
-          placeholder={selectedState ? ui("Select LGA") : 'Choose state first'}
+          placeholder={selectedState ? ui("Select LGA") : ui('Choose state first')}
           onPress={() => setShowLgaPicker(true)}
           disabled={!selectedState}
-          helperText={requiresRegistrationPayment ? 'Required for registration pricing.' : ''}
+          helperText={requiresRegistrationPayment ? ui('Required for registration pricing.') : ''}
         />
 
         {!isForeigner ? (
           registrationFlags.nin_number ? (
             <Input
               label={ui("NIN")}
+              compact
+              containerStyle={styles.lastAboutField}
               value={form.nin}
               onChangeText={(value) => onChange('nin', value)}
               placeholder={ui("11-digit NIN")}
@@ -1062,6 +1066,7 @@ const RegisterScreen = ({ navigation, route }) => {
           <>
             <Input
               label={ui("International Passport Number")}
+              compact
               value={form.international_passport_number}
               onChangeText={(value) => onChange('international_passport_number', value)}
               placeholder={ui("Passport number")}
@@ -1070,6 +1075,8 @@ const RegisterScreen = ({ navigation, route }) => {
             />
             <Input
               label={ui("Nationality")}
+              compact
+              containerStyle={styles.lastAboutField}
               value={form.nationality}
               onChangeText={(value) => onChange('nationality', value)}
               placeholder={ui("Country")}
@@ -1086,7 +1093,7 @@ const RegisterScreen = ({ navigation, route }) => {
           <>
           <View style={styles.reviewCard}>
             <View style={styles.reviewHeading}>
-              <View>
+              <View style={styles.reviewHeadingCopy}>
                 <AppText style={styles.reviewEyebrow}>{ui("ACCOUNT SUMMARY")}</AppText>
                 <AppText style={styles.reviewTitle}>
                   {form.full_name || ui('Your RentalHub account')}
@@ -1122,9 +1129,10 @@ const RegisterScreen = ({ navigation, route }) => {
             </TouchableOpacity>
           </View>
 
-          <View style={styles.stepCard}>
+          <View style={[styles.stepCard, styles.aboutCard]}>
         <Input
           label={ui("Password")}
+          compact
           value={form.password}
           onChangeText={(value) => onChange('password', value)}
           placeholder={ui("Minimum 10 characters")}
@@ -1134,6 +1142,7 @@ const RegisterScreen = ({ navigation, route }) => {
         <AppText style={styles.identityPaymentNotice}>{ui(passwordRequirement)}</AppText>
         <Input
           label={ui("Confirm Password")}
+          compact
           value={form.confirm_password}
           onChangeText={(value) => onChange('confirm_password', value)}
           placeholder={ui("Repeat password")}
@@ -1540,13 +1549,14 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
     marginBottom: 15,
     overflow: 'hidden',
-    padding: 18,
+    padding: 14,
   },
+  reviewHeadingCopy: { flex: 1, minWidth: 0, marginRight: 8 },
   reviewHeading: {
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 14,
+    marginBottom: 10,
   },
   reviewEyebrow: {
     color: '#9BC3F4',
@@ -1566,16 +1576,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.white,
     borderRadius: 18,
-    height: 36,
+    height: 44,
     justifyContent: 'center',
-    width: 36,
+    width: 44,
   },
   reviewRow: {
     alignItems: 'center',
     borderTopColor: 'rgba(255,255,255,0.1)',
     borderTopWidth: 1,
     flexDirection: 'row',
-    paddingVertical: 10,
+    paddingVertical: 8,
   },
   reviewText: {
     color: '#D8E4F5',
@@ -1622,6 +1632,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   termsRow: {
+    minHeight: 44,
     alignItems: 'flex-start',
     flexDirection: 'row',
     marginTop: 1,
@@ -1810,10 +1821,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     color: '#115e59',
     fontFamily: typography.regular,
-    fontSize: typeScale.reading,
-    lineHeight: 22,
+    fontSize: typeScale.xs,
+    lineHeight: 20,
     marginBottom: 12,
-    padding: 12,
+    padding: 10,
   },
   chooserOverlay: {
     flex: 1,

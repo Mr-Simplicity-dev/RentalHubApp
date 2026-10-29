@@ -1,7 +1,8 @@
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useContext, useState } from 'react';
-import { ActivityIndicator, Modal, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, KeyboardAvoidingView, Modal, Platform, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import TextInput from '../common/AppTextInput';
 import Toast from 'react-native-toast-message';
 import { AuthContext } from '../../context/AuthContext';
@@ -63,8 +64,10 @@ const NinCaptureModal = () => {
   };
 
   return (
-    <Modal visible transparent animationType="slide" onRequestClose={() => {}}>
-      <View style={styles.overlay}>
+    <Modal visible transparent animationType="fade" onRequestClose={() => {}}>
+      <KeyboardAvoidingView style={styles.overlay} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <SafeAreaView style={styles.viewport}>
+          <ScrollView style={styles.viewport} contentContainerStyle={styles.dialogContent} keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag" showsVerticalScrollIndicator={false}>
         <View style={styles.sheet}>
           <View style={styles.iconWrap}>
             <AppText style={styles.icon}>🪪</AppText>
@@ -74,6 +77,7 @@ const NinCaptureModal = () => {
 
           <AppText style={styles.label}>{ui("NIN")}</AppText>
           <TextInput
+            accessibilityLabel={ui("NIN")}
             style={styles.input}
             value={nin}
             onChangeText={(value) => { setNin(value.replace(/[^0-9]/g, '').slice(0, 11)); setError(''); }}
@@ -85,6 +89,7 @@ const NinCaptureModal = () => {
 
           <AppText style={styles.label}>{ui("Date of birth")}</AppText>
           <TextInput
+            accessibilityLabel={ui("Date of birth")}
             style={styles.input}
             value={dob}
             onChangeText={(value) => { setDob(value.trim()); setError(''); }}
@@ -95,15 +100,17 @@ const NinCaptureModal = () => {
 
           {error ? <AppText style={styles.error}>{error}</AppText> : null}
 
-          <View style={styles.submitButton}>
+          <TouchableOpacity style={styles.submitButton} onPress={handleSubmit} disabled={submitting} accessibilityRole="button" accessibilityLabel={ui("Verify NIN")} accessibilityState={{ disabled: submitting, busy: submitting }}>
             {submitting ? (
               <ActivityIndicator color={colors.white} />
             ) : (
-              <AppText style={styles.submitText} onPress={handleSubmit}>{ui("Verify NIN")}</AppText>
+              <AppText style={styles.submitText}>{ui("Verify NIN")}</AppText>
             )}
-          </View>
+          </TouchableOpacity>
         </View>
-      </View>
+          </ScrollView>
+        </SafeAreaView>
+      </KeyboardAvoidingView>
     </Modal>
   );
 };
@@ -111,15 +118,19 @@ const NinCaptureModal = () => {
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
     backgroundColor: 'rgba(7, 26, 61, 0.6)',
   },
+  viewport: { flex: 1 },
+  dialogContent: { flexGrow: 1, justifyContent: 'center', alignItems: 'center', padding: 20 },
   sheet: {
+    width: '100%',
+    maxWidth: 440,
     backgroundColor: colors.surface,
-    borderTopLeftRadius: 26,
-    borderTopRightRadius: 26,
-    padding: 22,
-    paddingBottom: 34,
+    borderRadius: 24,
+
+    padding: 20,
+
   },
   iconWrap: {
     alignItems: 'center',

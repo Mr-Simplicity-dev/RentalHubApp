@@ -11,11 +11,15 @@ const SelectField = ({
   onPress,
   disabled = false,
   helperText,
+  compact = false,
 }) => (
-  <View style={styles.container}>
-    {label ? <AppText style={styles.label}>{label}</AppText> : null}
+  <View style={[styles.container, compact && styles.compactContainer]}>
+    {label ? <AppText style={[styles.label, compact && styles.compactLabel]}>{label}</AppText> : null}
     <TouchableOpacity
-      style={[styles.field, disabled && styles.fieldDisabled]}
+      style={[styles.field, compact && styles.compactField, disabled && styles.fieldDisabled]}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityState={{ disabled }}
       onPress={onPress}
       disabled={disabled}
       activeOpacity={0.8}
@@ -34,6 +38,9 @@ const SelectField = ({
 );
 
 const styles = StyleSheet.create({
+  compactContainer: { marginBottom: 10 },
+  compactLabel: { marginBottom: 5 },
+  compactField: { minHeight: 48, paddingVertical: 9 },
   container: {
     marginBottom: 18,
   },

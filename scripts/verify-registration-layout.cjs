@@ -34,7 +34,29 @@ traverse(screen.ast, { JSXOpeningElement(p) {
   const value = p.node.attributes.find(a => a.name?.name === 'value')?.value?.expression;
   fields.push(value.property.name);
 } });
-assert.deepEqual(fields, ['full_name', 'email', 'phone', 'referral_code']);
+assert.deepEqual(fields, ['full_name', 'email', 'phone', 'referral_code', 'nin', 'international_passport_number', 'nationality', 'password', 'confirm_password']);
+const selector = inspect('src/components/common/SelectField.js');
+assert.equal(selector.styles.field.minHeight, 54);
+assert.equal(selector.styles.compactField.minHeight, 48);
+assert.equal(selector.styles.compactContainer.marginBottom, 10);
+assert.match(selector.source, /compact = false/);
+assert.equal(screen.styles.reviewCard.padding, 14);
+assert.equal(screen.styles.reviewHeadingCopy.flex, 1);
+assert.equal(screen.styles.editButton.width, 44);
+assert.equal(screen.styles.termsRow.minHeight, 44);
+assert.equal(copy['our special team will be assigned to assist with tenancy and property disputes (fee applies).'].en, 'Our special team will be assigned to assist with tenancy and property disputes (fee applies).');
+let selectors = 0;
+traverse(screen.ast, { JSXOpeningElement(p) {
+  if (p.node.name.name !== 'SelectField') return;
+  assert.ok(p.node.attributes.some(a => a.name?.name === 'compact'));
+  const label = p.node.attributes.find(a => a.name?.name === 'label');
+  if (screen.source.slice(label.start, label.end).includes('Local Government Area')) {
+    const disabled = p.node.attributes.find(a => a.name?.name === 'disabled');
+    assert.equal(screen.source.slice(disabled.value.expression.start, disabled.value.expression.end), '!selectedState');
+  }
+  selectors++;
+} });
+assert.equal(selectors, 2);
 const input = inspect('src/components/common/Input.js');
 assert.equal(input.styles.inputContainer.minHeight, 54);
 assert.equal(input.styles.compactInputContainer.minHeight, 48);

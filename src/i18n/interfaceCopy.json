@@ -23722,8 +23722,8 @@
     "yo": "Mo fẹ́ lo agbẹjọ́rò Amana RentalHub NG",
     "ig": "Achọrọ m iji ọkàiwu Amana RentalHub NG"
   },
-  "our legal team will be assigned to assist with tenancy and property disputes (fee applies).": {
-    "en": "Our legal team will be assigned to assist with tenancy and property disputes (fee applies).",
+  "Our special team will be assigned to assist with tenancy and property disputes (fee applies).": {
+    "en": "Our special team will be assigned to assist with tenancy and property disputes (fee applies).",
     "fr": "Un avocat qualifié sera désigné pour vous assister (des frais s'appliquent).",
     "ar": "سيتم تعيين محامٍ موثوق لمساعدتك (تسري رسوم).",
     "ru": "Вам будет назначен проверенный юрист для помощи (взимается плата).",
@@ -59645,5 +59645,35 @@
     "fr": "Début du paiement…",
     "ru": "Начало платежа…",
     "zh": "开始付款……"
+  },
+  "our special team will be assigned to assist with tenancy and property disputes (fee applies).": {
+    "en": "Our special team will be assigned to assist with tenancy and property disputes (fee applies).",
+    "fr": "Notre équipe spécialisée sera chargée de vous aider dans les litiges locatifs et immobiliers (des frais s’appliquent).",
+    "ar": "سيتم تكليف فريقنا المتخصص بالمساعدة في نزاعات الإيجار والعقارات (تُطبق رسوم).",
+    "ru": "Наша специализированная команда будет назначена для помощи в спорах по аренде и недвижимости (взимается плата).",
+    "zh": "我们将指派专业团队协助处理租赁和房产纠纷（需付费）。",
+    "ha": "Za a sanya ƙungiyarmu ta musamman ta taimaka wajen warware takaddamar haya da kadara (ana biyan kuɗi).",
+    "yo": "A ó yan ẹgbẹ́ àkànṣe wa láti ṣèrànwọ́ nípa àríyànjiyàn ayálégbé àti ohun-ìní (owó kan wà).",
+    "ig": "A ga-ekenye ndị otu anyị pụrụ iche ka ha nyere aka na esemokwu mgbazinye na ụlọ (a na-akwụ ụgwọ)."
+  },
+  "required for registration pricing.": {
+    "en": "Required for registration pricing.",
+    "fr": "Nécessaire pour calculer les frais d’inscription.",
+    "ar": "مطلوب لحساب رسوم التسجيل.",
+    "ru": "Требуется для расчёта стоимости регистрации.",
+    "zh": "计算注册费用时必填。",
+    "ha": "Ana bukata don lissafin kuɗin rajista.",
+    "yo": "Ó jẹ́ dandan fún ìṣirò owó ìforúkọsílẹ̀.",
+    "ig": "A chọrọ ya maka ịgbakọ ụgwọ ndebanye aha."
+  },
+  "choose state first": {
+    "en": "Choose state first",
+    "fr": "Choisissez d’abord un État",
+    "ar": "اختر الولاية أولاً",
+    "ru": "Сначала выберите штат",
+    "zh": "请先选择州",
+    "ha": "Zaɓi jiha da farko",
+    "yo": "Kọ́kọ́ yan ìpínlẹ̀",
+    "ig": "Buru ụzọ họrọ steeti"
   }
 }

@@ -1,7 +1,8 @@
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useState } from 'react';
-import { Modal, StyleSheet, View } from 'react-native';
+import { KeyboardAvoidingView, Modal, Platform, ScrollView, StyleSheet, View } from 'react-native';
 import TextInput from './AppTextInput';
 import {
   cancelMfaChallenge,
@@ -40,8 +41,10 @@ const MfaCodeModal = () => {
   if (!challenge.visible) return null;
 
   return (
-    <Modal visible transparent animationType="slide" onRequestClose={cancelMfaChallenge}>
-      <View style={styles.overlay}>
+    <Modal visible transparent animationType="fade" onRequestClose={cancelMfaChallenge}>
+      <KeyboardAvoidingView style={styles.overlay} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <SafeAreaView style={styles.viewport}>
+          <ScrollView style={styles.viewport} contentContainerStyle={styles.dialogContent} keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag" showsVerticalScrollIndicator={false}>
         <View style={styles.sheet}>
           <View style={styles.iconWrap}>
             <AppText style={styles.icon}>🔐</AppText>
@@ -51,6 +54,7 @@ const MfaCodeModal = () => {
 
           <AppText style={styles.label}>{ui("6-digit code")}</AppText>
           <TextInput
+            accessibilityLabel={ui("6-digit code")}
             style={styles.input}
             value={code}
             onChangeText={(value) => {
@@ -76,7 +80,9 @@ const MfaCodeModal = () => {
           />
           <Button title={ui("Not now")} variant="outline" onPress={cancelMfaChallenge} style={styles.cancelButton} />
         </View>
-      </View>
+          </ScrollView>
+        </SafeAreaView>
+      </KeyboardAvoidingView>
     </Modal>
   );
 };
@@ -84,15 +90,19 @@ const MfaCodeModal = () => {
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
     backgroundColor: 'rgba(7, 26, 61, 0.6)',
   },
+  viewport: { flex: 1 },
+  dialogContent: { flexGrow: 1, justifyContent: 'center', alignItems: 'center', padding: 20 },
   sheet: {
+    width: '100%',
+    maxWidth: 440,
     backgroundColor: colors.surface,
-    borderTopLeftRadius: 26,
-    borderTopRightRadius: 26,
-    padding: 22,
-    paddingBottom: 34,
+    borderRadius: 24,
+
+    padding: 20,
+
   },
   iconWrap: {
     alignItems: 'center',
