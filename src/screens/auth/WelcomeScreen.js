@@ -23,20 +23,20 @@ const logo = require('../../../assets/rentalhub-app-icon.png');
 const CAREER_GLOW_DURATION = 7200;
 
 const WelcomeScreen = ({ navigation }) => {
-  const { height, width } = useWindowDimensions();
+  const { height, width, fontScale = 1 } = useWindowDimensions();
   const { isRTL, t, textAlign, language } = useLanguage();
   const careersCopy=recruitmentCopy[language]||recruitmentCopy.en;
   const compact = height < 780 || width < 375;
   const short = height < 700;
+  const stackCareers = width < 360 || fontScale > 1.3;
   const textDirection = isRTL ? 'rtl' : 'ltr';
   const contentY = useRef(new Animated.Value(22)).current;
   const contentOpacity = useRef(new Animated.Value(0)).current;
   const hintBounce = useRef(new Animated.Value(0)).current;
   const careerGlow = useRef(new Animated.Value(0)).current;
-  const careerPulse = useRef(new Animated.Value(0)).current;
   const [reduceMotion, setReduceMotion] = useState(true);
   const [careerWidth, setCareerWidth] = useState(Math.max(width - 48, 0));
-  const [careerHeight, setCareerHeight] = useState(108);
+  const [careerHeight, setCareerHeight] = useState(68);
   const navigatingRef = useRef(false);
   const navigateTimerRef = useRef(null);
 
@@ -79,28 +79,6 @@ const WelcomeScreen = ({ navigation }) => {
     return () => loop.stop();
   }, [careerGlow, reduceMotion]);
   useEffect(() => {
-    careerPulse.setValue(0);
-    if (reduceMotion) return undefined;
-    const loop = Animated.loop(
-      Animated.sequence([
-        Animated.timing(careerPulse, {
-          toValue: 1,
-          duration: 1800,
-          easing: Easing.inOut(Easing.quad),
-          useNativeDriver: true,
-        }),
-        Animated.timing(careerPulse, {
-          toValue: 0,
-          duration: 1800,
-          easing: Easing.inOut(Easing.quad),
-          useNativeDriver: true,
-        }),
-      ])
-    );
-    loop.start();
-    return () => loop.stop();
-  }, [careerPulse, reduceMotion]);
-  useEffect(() => {
     Animated.parallel([
       Animated.timing(contentY, {
         toValue: 0,
@@ -135,14 +113,6 @@ const WelcomeScreen = ({ navigation }) => {
     inputRange: [0, 0.25, 0.5, 0.75, 1],
     outputRange: [0, 0, careerHeight, careerHeight, 0],
   });
-  const careerPulseOpacity = careerPulse.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0.26, 0.9],
-  });
-  const careerPulseScale = careerPulse.interpolate({
-    inputRange: [0, 1],
-    outputRange: [1, 1.035],
-  });
 
   return (
     <SafeAreaView style={[styles.safeArea, compact && styles.safeAreaCompact]}>
@@ -151,6 +121,10 @@ const WelcomeScreen = ({ navigation }) => {
       <View style={styles.orbTop} pointerEvents="none" />
       <View style={styles.orbBottom} pointerEvents="none" />
 
+      <ScrollView
+        style={styles.body}
+        contentContainerStyle={[styles.bodyContent, compact && styles.bodyContentCompact, short && styles.bodyContentShort]}
+        showsVerticalScrollIndicator={false}>
       <View style={[styles.top, compact && styles.topCompact]}>
         <BrandMark light compact />
         <TouchableOpacity
@@ -178,10 +152,6 @@ const WelcomeScreen = ({ navigation }) => {
         <LanguageDropdown fullWidth tone="dark" />
       </View>
 
-      <ScrollView
-        style={styles.body}
-        contentContainerStyle={[styles.bodyContent, compact && styles.bodyContentCompact, short && styles.bodyContentShort]}
-        showsVerticalScrollIndicator={false}>
       <Animated.View style={{ opacity: contentOpacity, transform: [{ translateY: contentY }] }}>
         <View style={[styles.eyebrow, compact && styles.eyebrowCompact]}>
           <View style={styles.eyebrowDot} />
@@ -216,15 +186,6 @@ const WelcomeScreen = ({ navigation }) => {
         </View>
 
         <View style={[styles.careersGlowWrap, compact && styles.careersGlowWrapCompact]}>
-          {!reduceMotion && (
-            <Animated.View
-              pointerEvents="none"
-              style={[
-                styles.careerPulseRing,
-                { opacity: careerPulseOpacity, transform: [{ scale: careerPulseScale }] },
-              ]}
-            />
-          )}
           <TouchableOpacity
             accessibilityRole="button"
             accessibilityLabel={careersCopy.opportunities_title + '. ' + careersCopy.apply}
@@ -235,7 +196,7 @@ const WelcomeScreen = ({ navigation }) => {
               setCareerHeight(Math.max(layout.height, 0));
             }}
             onPress={() => navigateOnce('Careers')}
-            style={[styles.careersButton, compact && styles.careersButtonCompact, short && styles.careersButtonShort]}>
+            style={[styles.careersButton, stackCareers && styles.careersButtonStacked]}>
             {!reduceMotion && (
               <>
                 <Animated.View pointerEvents="none" style={[styles.careerGlowAura, { transform: [{ translateX: careerGlowX }, { translateY: careerGlowY }] }]} />
@@ -243,8 +204,8 @@ const WelcomeScreen = ({ navigation }) => {
                 <Animated.View pointerEvents="none" style={[styles.careerGlowDot, { transform: [{ translateX: careerGlowX }, { translateY: careerGlowY }] }]} />
               </>
             )}
-            <AppText style={[styles.careerTitle, compact && styles.careerTitleCompact, short && styles.careerTitleShort, { writingDirection: textDirection }]}>{careersCopy.opportunities_title}</AppText>
-            <View style={[styles.careerApply, compact && styles.careerApplyCompact]}>
+            <AppText style={[styles.careerTitle, compact && styles.careerTitleCompact, stackCareers && styles.careerTitleStacked, { writingDirection: textDirection }]}>{careersCopy.opportunities_title}</AppText>
+            <View style={styles.careerApply}>
               <AppText style={[styles.careerApplyText, compact && styles.careerApplyTextCompact, { writingDirection: textDirection }]}>{careersCopy.apply}</AppText>
             </View>
           </TouchableOpacity>
@@ -266,84 +227,57 @@ const WelcomeScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   careersGlowWrap: {
-    backgroundColor: 'rgba(79,195,255,0.22)',
-    borderColor: 'rgba(127,227,255,0.82)',
-    borderRadius: radius.md + 4,
-    borderWidth: 1.5,
     marginTop: 12,
-    padding: 2,
-    position: 'relative',
-    shadowColor: '#7FE3FF',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.85,
-    shadowRadius: 24,
-    elevation: 12,
   },
   careersGlowWrapCompact: {
     marginTop: 10,
   },
-  careerPulseRing: {
-    ...StyleSheet.absoluteFillObject,
-    borderColor: 'rgba(170,239,255,0.95)',
-    borderRadius: radius.md + 4,
-    borderWidth: 2,
-  },
   careersButton: {
     alignItems: 'center',
     backgroundColor: '#0D2A63',
-    borderColor: '#7FE3FF',
+    borderColor: 'rgba(127,227,255,0.38)',
     borderRadius: radius.md,
-    borderWidth: 1.5,
+    borderWidth: 1,
+    flexDirection: 'row',
     gap: 8,
     justifyContent: 'center',
-    minHeight: 92,
-    paddingHorizontal: 18,
-    paddingVertical: 12,
+    minHeight: 68,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    overflow: 'hidden',
     position: 'relative',
   },
-  careersButtonCompact: {
-    minHeight: 82,
-    paddingVertical: 10,
-  },
-  careersButtonShort: {
-    gap: 6,
-    minHeight: 74,
-    paddingVertical: 8,
+  careersButtonStacked: {
+    flexDirection: 'column',
+    gap: 4,
+    minHeight: 72,
   },
   careerGlowAura: {
-    backgroundColor: 'rgba(127,227,255,0.24)',
-    borderRadius: 27,
-    height: 54,
-    left: -27,
+    backgroundColor: 'rgba(127,227,255,0.10)',
+    borderRadius: 16,
+    height: 32,
+    left: -16,
     position: 'absolute',
-    top: -27,
-    width: 54,
+    top: -16,
+    width: 32,
   },
   careerGlowHalo: {
-    backgroundColor: 'rgba(127,227,255,0.5)',
-    borderColor: 'rgba(225,250,255,0.8)',
-    borderRadius: 15,
-    borderWidth: 1,
-    height: 30,
-    left: -15,
+    backgroundColor: 'rgba(127,227,255,0.22)',
+    borderRadius: 8,
+    height: 16,
+    left: -8,
     position: 'absolute',
-    top: -15,
-    width: 30,
+    top: -8,
+    width: 16,
   },
   careerGlowDot: {
-    backgroundColor: '#FFFFFF',
-    borderColor: '#CFF8FF',
-    borderRadius: 5,
-    borderWidth: 1,
-    height: 10,
-    left: -5,
+    backgroundColor: 'rgba(207,248,255,0.65)',
+    borderRadius: 2,
+    height: 4,
+    left: -2,
     position: 'absolute',
-    shadowColor: '#7FE3FF',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 1,
-    shadowRadius: 12,
-    top: -5,
-    width: 10,
+    top: -2,
+    width: 4,
   },
   careerTitle: {
     color: colors.white,
@@ -351,26 +285,24 @@ const styles = StyleSheet.create({
     fontSize: typeScale.reading,
     lineHeight: 21,
     textAlign: 'center',
-    width: '100%',
+    flex: 1,
+    minWidth: 0,
   },
   careerTitleCompact: {
     fontSize: 14,
     lineHeight: 19,
   },
-  careerTitleShort: {
-    fontSize: 13,
-    lineHeight: 18,
+  careerTitleStacked: {
+    flex: 0,
+    width: '100%',
   },
   careerApply: {
-    backgroundColor: '#2270CF',
+    backgroundColor: 'rgba(34,112,207,0.30)',
     borderRadius: radius.pill,
-    maxWidth: '100%',
-    paddingHorizontal: 22,
-    paddingVertical: 6,
-  },
-  careerApplyCompact: {
-    paddingHorizontal: 18,
-    paddingVertical: 5,
+    maxWidth: '45%',
+    flexShrink: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
   },
   careerApplyText: {
     color: colors.white,
@@ -435,13 +367,13 @@ const styles = StyleSheet.create({
   languageRow: {
     alignItems: 'center',
     marginTop: 12,
-    marginBottom: 18,
+    marginBottom: 32,
     paddingHorizontal: 24,
     width: '100%',
   },
   languageRowCompact: {
     marginTop: 8,
-    marginBottom: 12,
+    marginBottom: 24,
     paddingHorizontal: 8,
   },
   exploreButton: {
@@ -500,18 +432,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   bodyContent: {
-    flexGrow: 1,
-    justifyContent: 'flex-end',
     paddingBottom: 22,
-    paddingTop: 24,
   },
   bodyContentCompact: {
     paddingBottom: 14,
-    paddingTop: 12,
   },
   bodyContentShort: {
     paddingBottom: 8,
-    paddingTop: 8,
   },
   eyebrow: {
     justifyContent: 'center',

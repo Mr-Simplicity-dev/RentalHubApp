@@ -157,8 +157,9 @@ const styles = StyleSheet.create({
   triggerCopy: { flex: 1 },
   triggerFull: {
     alignSelf: 'stretch',
+    minHeight: 56,
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingVertical: 8,
   },
   label: {
     color: colors.muted,
@@ -178,14 +179,6 @@ const styles = StyleSheet.create({
   },
   value: { color: colors.ink, fontFamily: typography.semibold, fontSize: typeScale.sm, lineHeight: 20 },
   valueOnDark: { color: colors.white, fontFamily: typography.semibold, fontSize: typeScale.sm, lineHeight: 20 },
-  restartNote: {
-    color: colors.muted,
-    fontFamily: typography.regular,
-    fontSize: typeScale.xs,
-    lineHeight: 18,
-    marginTop: 6,
-  },
-  restartNoteOnDark: { color: '#A9C9F7' },
   backdrop: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(4,12,26,0.55)',

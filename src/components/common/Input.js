@@ -19,6 +19,7 @@ const Input = ({
   multiline,
   numberOfLines,
   containerStyle,
+  compact = false,
   ...rest
 }) => {
   useInterfaceLanguage();
@@ -26,11 +27,12 @@ const Input = ({
   const [passwordVisible, setPasswordVisible] = useState(false);
 
   return (
-    <View style={[styles.container, containerStyle]}>
-      {label && <AppText style={styles.label}>{label}</AppText>}
+    <View style={[styles.container, compact && styles.compactContainer, containerStyle]}>
+      {label && <AppText style={[styles.label, compact && styles.compactLabel]}>{label}</AppText>}
       <View
         style={[
           styles.inputContainer,
+          compact && styles.compactInputContainer,
           focused && styles.inputFocused,
           error && styles.inputError,
         ]}>
@@ -45,7 +47,7 @@ const Input = ({
         <TextInput
           accessibilityLabel={rest.accessibilityLabel || label || placeholder}
           accessibilityState={{ disabled: Boolean(rest.editable === false) }}
-          style={[styles.input, icon && styles.inputWithIcon, multiline && styles.multiline]}
+          style={[styles.input, compact && styles.compactInput, icon && styles.inputWithIcon, multiline && styles.multiline]}
           value={value}
           onChangeText={onChangeText}
           placeholder={placeholder}
@@ -78,6 +80,10 @@ const Input = ({
 };
 
 const styles = StyleSheet.create({
+  compactContainer: { marginBottom: 10 },
+  compactLabel: { marginBottom: 5 },
+  compactInputContainer: { minHeight: 48 },
+  compactInput: { paddingVertical: 10 },
   container: {
     marginBottom: 18,
   },

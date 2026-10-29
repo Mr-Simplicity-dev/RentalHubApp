@@ -187,7 +187,7 @@ const HomeScreen = ({ navigation }) => {
 
         <View style={styles.intro}>
           {firstName ? <AppText style={styles.greeting}>{ui("Hello, ")}{firstName}</AppText> : null}
-          <AppText style={styles.title}>{ui("Find a place that")}{'\n'}{ui("feels like yours.")}</AppText>
+          <AppText style={styles.title}>{ui("Find a place that")}{' '}{ui("feels like yours.")}</AppText>
           <AppText style={styles.subtitle}>{ui("Search verified homes and move with confidence.")}</AppText>
         </View>
 
@@ -450,6 +450,10 @@ const styles = StyleSheet.create({
     marginBottom: 7,
   },
   title: {
+    alignSelf: 'center',
+    textAlign: 'center',
+    width: '100%',
+    maxWidth: 420,
     color: colors.ink,
     fontFamily: typography.semibold,
     fontSize: typeScale.xxl,
@@ -457,6 +461,10 @@ const styles = StyleSheet.create({
     lineHeight: 36,
   },
   subtitle: {
+    alignSelf: 'center',
+    textAlign: 'center',
+    width: '100%',
+    maxWidth: 360,
     color: colors.muted,
     fontFamily: typography.regular,
     fontSize: typeScale.base,
@@ -655,6 +663,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
   requestCard: {
+    alignItems: 'center',
     backgroundColor: colors.navy,
     borderRadius: radius.lg,
     marginHorizontal: 20,
@@ -676,6 +685,8 @@ const styles = StyleSheet.create({
     width: 38,
   },
   requestTitle: {
+    textAlign: 'center',
+    maxWidth: '100%',
     color: colors.white,
     fontFamily: typography.semibold,
     fontSize: typeScale.lg,
@@ -684,6 +695,8 @@ const styles = StyleSheet.create({
     marginTop: 18,
   },
   requestText: {
+    textAlign: 'center',
+    width: '100%',
     color: '#AFC2DF',
     fontFamily: typography.regular,
     fontSize: typeScale.xs,
@@ -693,7 +706,10 @@ const styles = StyleSheet.create({
   },
   requestAction: {
     alignItems: 'center',
-    alignSelf: 'flex-start',
+    alignSelf: 'center',
+    justifyContent: 'center',
+    maxWidth: '100%',
+    minHeight: 44,
     backgroundColor: colors.gold,
     borderRadius: radius.pill,
     flexDirection: 'row',
@@ -702,6 +718,8 @@ const styles = StyleSheet.create({
     paddingVertical: 11,
   },
   requestActionText: {
+    textAlign: 'center',
+    flexShrink: 1,
     color: colors.navy,
     fontFamily: typography.bold,
     fontSize: typeScale.xs,

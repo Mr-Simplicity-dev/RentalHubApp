@@ -397,9 +397,9 @@ const RegisterScreen = ({ navigation, route }) => {
         return ui('Enter a valid lawyer email.');
       }
       if (userType === 'landlord' && form.add_agent && !form.use_rentalhub_agents) {
-        if (!form.agent_full_name.trim()) return ui('Enter the agentâ€™s full name.');
+        if (!form.agent_full_name.trim()) return ui("Enter the agent's full name.");
         if (!emailPattern.test(form.agent_email.trim())) return ui('Enter a valid agent email.');
-        if (!form.agent_phone.trim()) return ui('Enter the agentâ€™s phone number.');
+        if (!form.agent_phone.trim()) return ui("Enter the agent's phone number.");
       }
     }
 
@@ -775,11 +775,11 @@ const RegisterScreen = ({ navigation, route }) => {
             ]}
           />
         </View>
-        <AppText style={styles.eyebrow}>{steps[currentStep].short.toUpperCase()}</AppText>
-        <AppText style={styles.title}>{steps[currentStep].title}</AppText>
-        <AppText style={styles.subtitle}>
+        <AppText style={[styles.eyebrow, currentStep === 0 && styles.aboutEyebrow]}>{steps[currentStep].short.toUpperCase()}</AppText>
+        <AppText style={[styles.title, currentStep === 0 && styles.aboutTitle, currentStep === 1 && styles.supportTitle]}>{steps[currentStep].title}</AppText>
+        <AppText style={[styles.subtitle, currentStep === 0 && styles.aboutSubtitle]}>
           {currentStep === 0
-            ? ui('Choose how youâ€™ll use RentalHub and tell us how to reach you.')
+            ? ui("Choose how you'll use RentalHub and tell us how to reach you.")
             : currentStep === 1
               ? ui('Choose the legal and agent support that fits your rental journey.')
               : currentStep === 2
@@ -821,7 +821,7 @@ const RegisterScreen = ({ navigation, route }) => {
 
         {currentStep === 0 ? (
           <>
-        <AppText style={styles.choiceLabel}>{ui("Iâ€™m registering as")}</AppText>
+        <AppText style={styles.choiceLabel}>{ui("I'm registering as")}</AppText>
         <View style={styles.toggleRow}>
           {['tenant', 'landlord'].map((role) => (
             <TouchableOpacity
@@ -880,8 +880,9 @@ const RegisterScreen = ({ navigation, route }) => {
         ) : null}
 
         {currentStep === 0 ? (
-          <View style={styles.stepCard}>
+          <View style={[styles.stepCard, styles.aboutCard]}>
         <Input
+          compact
           label={ui("Full Name")}
           value={form.full_name}
           onChangeText={(value) => onChange('full_name', value)}
@@ -890,6 +891,7 @@ const RegisterScreen = ({ navigation, route }) => {
         />
         <Input
           label={ui("Email")}
+          compact
           value={form.email}
           onChangeText={(value) => onChange('email', value)}
           placeholder="john@email.com"
@@ -899,6 +901,8 @@ const RegisterScreen = ({ navigation, route }) => {
         />
         <Input
           label={ui("Phone")}
+          compact
+          containerStyle={styles.lastAboutField}
           value={form.phone}
           onChangeText={(value) => onChange('phone', value)}
           placeholder="+2348012345678"
@@ -912,6 +916,9 @@ const RegisterScreen = ({ navigation, route }) => {
           <View style={styles.stepCard}>
         <TouchableOpacity
           style={styles.agentToggle}
+          accessibilityRole="checkbox"
+          accessibilityState={{ checked: form.use_rentalhub_lawyers }}
+          accessibilityLabel={ui('Enroll in legal support')}
           onPress={() =>
             setForm((prev) => ({
               ...prev,
@@ -919,11 +926,11 @@ const RegisterScreen = ({ navigation, route }) => {
             }))
           }
         >
-          <AppText style={styles.agentToggleLabel}>
-            {form.use_rentalhub_lawyers
-              ? ui('Using Amana RentalHub NG lawyers (₦2,000)')
-              : ui('Use Amana RentalHub NG lawyers instead (₦2,000)')}
-          </AppText>
+          <View style={styles.supportOptionHeading}>
+            <Icon name={form.use_rentalhub_lawyers ? 'checkbox' : 'square-outline'} size={20} color={colors.blue} />
+            <AppText style={[styles.agentToggleLabel, styles.supportOptionLabel]}>{ui('Enroll in legal support')}</AppText>
+          </View>
+          <AppText style={styles.supportOptionDescription}>{ui('Our legal team will be assigned to assist with tenancy and property disputes (fee applies).')}</AppText>
         </TouchableOpacity>
 
         <Input
@@ -958,9 +965,11 @@ const RegisterScreen = ({ navigation, route }) => {
         ) : null}
 
         {currentStep === 0 ? (
-          <View style={styles.stepCard}>
+          <View style={[styles.stepCard, styles.aboutCard]}>
         <Input
           label={ui("Referral Code (optional)")}
+          compact
+          containerStyle={styles.lastAboutField}
           value={form.referral_code}
           onChangeText={(value) => onChange('referral_code', value)}
           placeholder={ui("Enter invite code if you have one")}
@@ -1090,7 +1099,7 @@ const RegisterScreen = ({ navigation, route }) => {
             <View style={styles.reviewRow}>
               <Icon name="person-outline" size={17} color={colors.muted} />
               <AppText style={styles.reviewText}>
-                {userType === "landlord" ? ui("Landlord") : ui("Tenant")} Â· {isForeigner ? ui("International") : ui("Nigerian")}
+                {userType === "landlord" ? ui("Landlord") : ui("Tenant")} · {isForeigner ? ui("International") : ui("Nigerian")}
               </AppText>
             </View>
             <View style={styles.reviewRow}>
@@ -1144,7 +1153,7 @@ const RegisterScreen = ({ navigation, route }) => {
             <View style={[styles.checkbox, acceptedTerms && styles.checkboxChecked]}>
               {acceptedTerms ? <Icon name="checkmark" size={15} color={colors.white} /> : null}
             </View>
-            <AppText style={styles.termsText}>{ui("I agree to RentalHubâ€™s")}{' '}
+            <AppText style={styles.termsText}>{ui("I agree to RentalHub's")}{' '}
               <AppText
                 onPress={(event) => {
                   event.stopPropagation();
@@ -1342,7 +1351,7 @@ const RegisterScreen = ({ navigation, route }) => {
                 style={[styles.adjustPrimary, adjustmentBusy && styles.adjustDisabled]}
               >
                 <AppText style={styles.adjustPrimaryText}>
-                  {adjustmentBusy ? ui('Starting paymentâ€¦') : ui('Pay foreign-card adjustment')}
+                  {adjustmentBusy ? ui('Starting payment…') : ui('Pay foreign-card adjustment')}
                 </AppText>
               </TouchableOpacity>
 
@@ -1371,6 +1380,15 @@ const RegisterScreen = ({ navigation, route }) => {
 };
 
 const styles = StyleSheet.create({
+  supportTitle: { textAlign: 'center' },
+  supportOptionHeading: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8 },
+  supportOptionLabel: { flexShrink: 1 },
+  supportOptionDescription: { color: colors.muted, fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18, textAlign: 'center', marginTop: 4 },
+  aboutEyebrow: { textAlign: 'center', marginTop: 12 },
+  aboutTitle: { textAlign: 'center', lineHeight: 34, marginTop: 6 },
+  aboutSubtitle: { alignSelf: 'center', textAlign: 'center', maxWidth: 360, fontSize: typeScale.reading, lineHeight: 22, marginBottom: 16, marginTop: 6 },
+  aboutCard: { padding: 12, marginBottom: 12 },
+  lastAboutField: { marginBottom: 0 },
   container: { flex: 1, backgroundColor: colors.surface },
   topBar: {
     alignItems: 'center',
@@ -1471,7 +1489,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.border,
     backgroundColor: colors.white,
-    minHeight: 48,
+    minHeight: 44,
+    paddingHorizontal: 8,
+    paddingVertical: 8,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -1479,7 +1499,7 @@ const styles = StyleSheet.create({
     borderColor: colors.blue,
     backgroundColor: colors.surfaceBlue,
   },
-  toggleText: { fontFamily: typography.semibold, color: colors.text },
+  toggleText: { fontFamily: typography.semibold, color: colors.text, fontSize: typeScale.sm, lineHeight: 20, textAlign: 'center', flexShrink: 1 },
   toggleTextActive: { color: colors.blue },
   priceCard: {
     borderRadius: radius.md,
@@ -1635,19 +1655,24 @@ const styles = StyleSheet.create({
     fontFamily: typography.semibold,
   },
   noticeCard: {
+    alignItems: 'center',
     borderRadius: 14,
     borderWidth: 1,
     borderColor: '#bfdbfe',
     backgroundColor: '#eff6ff',
-    padding: 14,
-    marginBottom: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    marginBottom: 12,
   },
   noticeTitle: {
+    textAlign: 'center',
     color: '#1d4ed8',
     fontWeight: '700',
   },
   noticeText: {
-    marginTop: 6,
+    textAlign: 'center',
+    maxWidth: 360,
+    fontSize: typeScale.xs,
     color: '#1d4ed8',
     lineHeight: 18,
   },

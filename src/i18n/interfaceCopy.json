@@ -33300,16 +33300,6 @@
     "yo": "Jọ̀wọ́ tún gbìyànjú nígbà míì tàbí kàn sí ìrànlọ́wọ́ bí ó bá yẹ kí èyí ti ṣí.",
     "ig": "Biko nwaa ọzọ ma emechaa ma ọ bụ kpọtụrụ nkwado ma ọ bụrụ na nke a kwesịrị imeghe."
   },
-  "iâ€™m registering as": {
-    "en": "Iâ€™m registering as",
-    "ar": "أسجّل بصفتي",
-    "fr": "Je m'inscris en tant que",
-    "ru": "Я регистрируюсь как",
-    "zh": "我正在注册为",
-    "ha": "Ina yin rijista kamar",
-    "yo": "Mo ń forúkọsílẹ̀ gẹ́gẹ́ bí",
-    "ig": "Ana m edebanye aha dịka"
-  },
   "citizenship": {
     "en": "Citizenship",
     "ar": "الجنسية",
@@ -33449,16 +33439,6 @@
     "ha": "TAKAITACCEN ACCOUNT",
     "yo": "ÀKÓTÁN ÀKỌỌ́LẸ̀",
     "ig": "NCHỊKỌTA AKAỤNTỤ"
-  },
-  "i agree to rentalhubâ€™s": {
-    "en": "I agree to RentalHubâ€™s",
-    "ar": "أوافق على",
-    "fr": "J'accepte les conditions de RentalHub",
-    "ru": "Я согласен с Условиями RentalHub",
-    "zh": "我同意 RentalHub 的",
-    "ha": "Na yarda da RentalHubâ€™s",
-    "yo": "Mo gba ti RentalHub",
-    "ig": "Ekwenyere m na nke RentalHub"
   },
   "reference:": {
     "en": "Reference: ",
@@ -57745,26 +57725,6 @@
     "ru": "Реферальный код может содержать только буквы, цифры или _.",
     "zh": "推荐码只能包含字母、数字、- 或 _。"
   },
-  "enter the agentâ€™s full name.": {
-    "en": "Enter the agentâ€™s full name.",
-    "ar": "أدخل الاسم الكامل للوكيل.",
-    "ha": "Shigar da cikakken sunan wakilin.",
-    "yo": "Tẹ orúkọ kíkún aṣojú náà.",
-    "ig": "Tinye aha onye nnọchi anya ahụ zuru ezu.",
-    "fr": "Saisissez le nom complet de l'agent.",
-    "ru": "Введите полное имя агента.",
-    "zh": "输入代理的全名。"
-  },
-  "enter the agentâ€™s phone number.": {
-    "en": "Enter the agentâ€™s phone number.",
-    "ar": "أدخل رقم هاتف الوكيل.",
-    "ha": "Shigar da lambar wayar wakili.",
-    "yo": "Tẹ nọ́ńbà fóònù aṣojú náà.",
-    "ig": "Tinye nọmba ekwentị onye nnọchi anya ahụ.",
-    "fr": "Saisissez le numéro de téléphone de l'agent.",
-    "ru": "Введите номер телефона агента.",
-    "zh": "输入代理的电话号码。"
-  },
   "enter your 11-digit nin.": {
     "en": "Enter your 11-digit NIN.",
     "ar": "أدخل رقم هويتك الوطنية المكوّن من 11 رقمًا.",
@@ -58296,16 +58256,6 @@
     "ru": "Нажмите «Поиск недвижимости», чтобы просмотреть наличие мест.",
     "zh": "点击房产搜索以浏览空房情况"
   },
-  "choose how youâ€™ll use rentalhub and tell us how to reach you.": {
-    "en": "Choose how youâ€™ll use RentalHub and tell us how to reach you.",
-    "yo": "Yan bi o ṣe le lo RentalHub ki o sọ fun wa bi o ṣe le de ọdọ rẹ.",
-    "ig": "Họrọ otu ị ga-esi jiri RentalHub gwa anyị ka anyị ga-esi nweta gị.",
-    "ha": "Zaɓi yadda za ku yi amfani da RentalHub kuma ku gaya mana yadda za ku same ku.",
-    "ar": "اختر الطريقة التي ستستخدم بها RentalHub وأخبرنا بكيفية الوصول إليك.",
-    "fr": "Choisissez comment vous utiliserez RentalHub et dites-nous comment vous joindre.",
-    "ru": "Выберите, как вы будете использовать RentalHub, и сообщите нам, как с вами связаться.",
-    "zh": "选择您使用 RentalHub 的方式并告诉我们如何联系您。"
-  },
   "choose the legal and agent support that fits your rental journey.": {
     "en": "Choose the legal and agent support that fits your rental journey.",
     "yo": "Yan atilẹyin ofin ati aṣoju ti o baamu irin-ajo iyalo rẹ.",
@@ -58455,16 +58405,6 @@
     "fr": "Emplacement non requis",
     "ru": "Местоположение не требуется.",
     "zh": "不需要位置"
-  },
-  "starting paymentâ€¦": {
-    "en": "Starting paymentâ€¦",
-    "yo": "Bibẹrẹ sisanâ€¦",
-    "ig": "Ịmalite ịkwụ ụgwọâ€¦",
-    "ha": "Fara biyan kuɗiâ€¦",
-    "ar": "بدء الدفع...",
-    "fr": "Début du paiement…",
-    "ru": "Начало платежа…",
-    "zh": "开始付款……"
   },
   "pay foreign-card adjustment": {
     "en": "Pay foreign-card adjustment",
@@ -59645,5 +59585,65 @@
     "fr": "Afficher les détails de l'erreur",
     "ru": "Показать сведения об ошибке",
     "zh": "显示错误详细信息"
+  },
+  "enter the agent's full name.": {
+    "en": "Enter the agent's full name.",
+    "ar": "أدخل الاسم الكامل للوكيل.",
+    "ha": "Shigar da cikakken sunan wakilin.",
+    "yo": "Tẹ orúkọ kíkún aṣojú náà.",
+    "ig": "Tinye aha onye nnọchi anya ahụ zuru ezu.",
+    "fr": "Saisissez le nom complet de l'agent.",
+    "ru": "Введите полное имя агента.",
+    "zh": "输入代理的全名。"
+  },
+  "enter the agent's phone number.": {
+    "en": "Enter the agent's phone number.",
+    "ar": "أدخل رقم هاتف الوكيل.",
+    "ha": "Shigar da lambar wayar wakili.",
+    "yo": "Tẹ nọ́ńbà fóònù aṣojú náà.",
+    "ig": "Tinye nọmba ekwentị onye nnọchi anya ahụ.",
+    "fr": "Saisissez le numéro de téléphone de l'agent.",
+    "ru": "Введите номер телефона агента.",
+    "zh": "输入代理的电话号码。"
+  },
+  "choose how you'll use rentalhub and tell us how to reach you.": {
+    "en": "Choose how you'll use RentalHub and tell us how to reach you.",
+    "yo": "Yan bi o ṣe le lo RentalHub ki o sọ fun wa bi o ṣe le de ọdọ rẹ.",
+    "ig": "Họrọ otu ị ga-esi jiri RentalHub gwa anyị ka anyị ga-esi nweta gị.",
+    "ha": "Zaɓi yadda za ku yi amfani da RentalHub kuma ku gaya mana yadda za ku same ku.",
+    "ar": "اختر الطريقة التي ستستخدم بها RentalHub وأخبرنا بكيفية الوصول إليك.",
+    "fr": "Choisissez comment vous utiliserez RentalHub et dites-nous comment vous joindre.",
+    "ru": "Выберите, как вы будете использовать RentalHub, и сообщите нам, как с вами связаться.",
+    "zh": "选择您使用 RentalHub 的方式并告诉我们如何联系您。"
+  },
+  "i'm registering as": {
+    "en": "I'm registering as",
+    "ar": "أسجّل بصفتي",
+    "fr": "Je m'inscris en tant que",
+    "ru": "Я регистрируюсь как",
+    "zh": "我正在注册为",
+    "ha": "Ina yin rijista kamar",
+    "yo": "Mo ń forúkọsílẹ̀ gẹ́gẹ́ bí",
+    "ig": "Ana m edebanye aha dịka"
+  },
+  "i agree to rentalhub's": {
+    "en": "I agree to RentalHub's",
+    "ar": "أوافق على",
+    "fr": "J'accepte les conditions de RentalHub",
+    "ru": "Я согласен с Условиями RentalHub",
+    "zh": "我同意 RentalHub 的",
+    "ha": "Na yarda da RentalHub's",
+    "yo": "Mo gba ti RentalHub",
+    "ig": "Ekwenyere m na nke RentalHub"
+  },
+  "starting payment…": {
+    "en": "Starting payment…",
+    "yo": "Bibẹrẹ sisan…",
+    "ig": "Ịmalite ịkwụ ụgwọ…",
+    "ha": "Fara biyan kuɗi…",
+    "ar": "بدء الدفع...",
+    "fr": "Début du paiement…",
+    "ru": "Начало платежа…",
+    "zh": "开始付款……"
   }
 }
