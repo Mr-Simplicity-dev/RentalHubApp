@@ -47,7 +47,7 @@ export const fetchUnreadActivityCount = async () => {
     notificationService.getUnreadCount(),
   ]);
 
-  if (messageResult.status === 'rejected' && notificationResult.status === 'rejected') throw new Error('Unread counts unavailable');
+  if (messageResult.status === 'rejected' || notificationResult.status === 'rejected') throw new Error('Unread counts unavailable');
   const unreadMessages =
     messageResult.status === 'fulfilled' ? toCount(messageResult.value) : 0;
   const unreadNotifications =
@@ -63,6 +63,7 @@ export const fetchUnreadActivityCount = async () => {
 const SUMMARY_ID = 'rentalhub-unread-summary';
 const SUMMARY_CHANNEL_ID = 'unread-activity';
 let sessionVersion = 0;
+let refreshVersion = 0;
 let badgeQueue = Promise.resolve();
 
 const ensureSummaryChannel = async () => {
@@ -145,14 +146,16 @@ export const clearAppIconBadge = () => setAppIconBadgeCount(0);
 
 export const syncAppIconBadge = async (reason = 'manual') => {
   const version = sessionVersion;
+  const refresh = ++refreshVersion;
   const settings = await getAppSettings();
+  if (version !== sessionVersion || refresh !== refreshVersion) return { stale: true };
   if (settings.notificationBadges === false) {
     await clearAppIconBadge();
     return { total: 0, disabled: true };
   }
 
   const counts = await fetchUnreadActivityCount();
-  if (version !== sessionVersion) return { stale: true };
+  if (version !== sessionVersion || refresh !== refreshVersion) return { stale: true };
   await setAppIconBadgeCount(counts.total);
   trackMobileEvent('app_icon_badge_synced', {
     reason,

@@ -11,7 +11,7 @@ import BrandMark from '../../components/brand/BrandMark';
 import PropertyCard from '../../components/properties/PropertyCard';
 import { useTourTarget } from '../../components/tour/TourTarget';
 import { AuthContext } from '../../context/AuthContext';
-import { fetchUnreadActivityCount, setAppIconBadgeCount } from '../../services/appBadgeService';
+import { syncAppIconBadge } from '../../services/appBadgeService';
 import { propertyService } from '../../services/propertyService';
 import { colors, radius, shadows, typography, typeScale } from '../../theme';
 import { getErrorMessage, pickList } from '../../utils/http';
@@ -81,10 +81,9 @@ const HomeScreen = ({ navigation }) => {
     let cancelled = false;
     const refreshUnread = async () => {
       try {
-        const counts = await fetchUnreadActivityCount();
-        if (!cancelled) {
+        const counts = await syncAppIconBadge('home_refresh');
+        if (!cancelled && !counts?.stale) {
           setUnreadTotal(Number(counts?.total || 0));
-          void setAppIconBadgeCount(counts?.total || 0);
         }
       } catch {
         // Leave the previous number in place on a transient failure.
