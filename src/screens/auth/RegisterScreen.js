@@ -2,12 +2,14 @@ import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import {KeyboardAvoidingView,
+  Keyboard,
   Modal,
   Linking,
   Platform,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
+  useWindowDimensions,
   View,} from 'react-native';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -52,6 +54,10 @@ const referralCodePattern = /^[A-Za-z0-9_-]+$/;
 
 const RegisterScreen = ({ navigation, route }) => {
   const interfaceLanguage = useInterfaceLanguage();
+  const { height, width } = useWindowDimensions();
+  const compact = height < 760 || width < 360;
+  const short = height < 650;
+  const tiny = height < 600;
   const { register, establishSession } = useContext(AuthContext);
   const scrollRef = useRef(null);
   const initialReferralCode = String(
@@ -72,6 +78,10 @@ const RegisterScreen = ({ navigation, route }) => {
   const [showBankTransferModal, setShowBankTransferModal] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [passwordChecklistVisible, setPasswordChecklistVisible] = useState(false);
+  const [keyboardOpen, setKeyboardOpen] = useState(false);
+  const [contentHeight, setContentHeight] = useState(0);
+  const [viewportHeight, setViewportHeight] = useState(0);
   const [locationOptions, setLocationOptions] = useState([]);
   const [userType, setUserType] = useState('tenant');
   const [isForeigner, setIsForeigner] = useState(false);
@@ -115,6 +125,21 @@ const RegisterScreen = ({ navigation, route }) => {
   const turnstileTokenRef = useRef(null);
   const turnstileRef = useRef(null);
 
+  useEffect(() => {
+    if (currentStep !== 4) {
+      setPasswordChecklistVisible(false);
+    }
+  }, [currentStep]);
+
+  useEffect(() => {
+    const shown = Keyboard.addListener('keyboardDidShow', () => setKeyboardOpen(true));
+    const hidden = Keyboard.addListener('keyboardDidHide', () => setKeyboardOpen(false));
+    return () => {
+      shown.remove();
+      hidden.remove();
+    };
+  }, []);
+
   const selectedState = useMemo(
     () => locationOptions.find((item) => String(item.id) === String(form.state_id)),
     [form.state_id, locationOptions, interfaceLanguage]
@@ -123,13 +148,32 @@ const RegisterScreen = ({ navigation, route }) => {
   const passportPattern = /^[A-Za-z0-9]{6,20}$/;
   const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{10,}$/;
   const passwordRequirement = 'Password must be at least 10 characters and include uppercase, lowercase, a number, and a special character.';
+  const passwordChecks = [
+    { key: 'length', label: ui('At least 10 characters'), met: form.password.length >= 10 },
+    { key: 'uppercase', label: ui('One uppercase letter'), met: /[A-Z]/.test(form.password) },
+    { key: 'lowercase', label: ui('One lowercase letter'), met: /[a-z]/.test(form.password) },
+    { key: 'number', label: ui('One number'), met: /\d/.test(form.password) },
+    { key: 'special', label: ui('One special character'), met: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(form.password) },
+    { key: 'match', label: ui('Passwords match'), met: form.password.length > 0 && form.password === form.confirm_password },
+  ];
+  const passwordRulesMet = passwordChecks.every((check) => check.met);
+  const locationRegistrationBlocked =
+    Boolean(form.state_id && form.lga_name) &&
+    registrationFlags.registration_location_restricted &&
+    !registrationFlags.registration_allowed;
+  const locationRegistrationMessage =
+    registrationFlags.registration_access_message ||
+    (userType === 'landlord'
+      ? ui('Landlord registration is not available for the selected location.')
+      : ui('Tenant registration is not available for the selected location.'));
 
   const availableLgas = selectedState?.lgas || [];
   const steps = [
     { title: ui("About you"), short: 'Account' },
     { title: ui("Your support"), short: 'Support' },
     { title: ui("Identity and location"), short: 'Identity' },
-    { title: ui("Secure and review"), short: 'Review' },
+    { title: ui("Review and price"), short: 'Review' },
+    { title: ui("Secure your account"), short: 'Password' },
   ];
   const requiresRegistrationPayment =
     (userType === 'tenant' && registrationFlags.tenant_registration_payment) ||
@@ -408,6 +452,7 @@ const RegisterScreen = ({ navigation, route }) => {
         requiresRegistrationPayment || registrationFlags.registration_location_restricted;
       if (locationRequired && !form.state_id) return ui('Select your state.');
       if (locationRequired && !form.lga_name.trim()) return ui('Select your local government area.');
+      if (locationRegistrationBlocked) return locationRegistrationMessage;
       if (!isForeigner && registrationFlags.nin_number && !/^\d{11}$/.test(form.nin)) {
         return ui('Enter your 11-digit NIN.');
       }
@@ -424,9 +469,12 @@ const RegisterScreen = ({ navigation, route }) => {
     }
 
     if (step === 3) {
+      if (!acceptedTerms) return ui('Accept the Terms and Privacy Policy to continue.');
+    }
+
+    if (step === 4) {
       if (!passwordPattern.test(form.password)) return ui(passwordRequirement);
       if (form.password !== form.confirm_password) return ui('Passwords do not match.');
-      if (!acceptedTerms) return ui('Accept the Terms and Privacy Policy to continue.');
     }
 
     return null;
@@ -747,7 +795,7 @@ const RegisterScreen = ({ navigation, route }) => {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <View style={styles.topBar}>
+      <View style={[styles.topBar, compact && styles.topBarCompact]}>
         <TouchableOpacity
           accessibilityLabel={ui("Go back")}
           accessibilityRole="button"
@@ -760,14 +808,17 @@ const RegisterScreen = ({ navigation, route }) => {
       </View>
       <ScrollView
         ref={scrollRef}
-        contentContainerStyle={styles.content}
+        contentContainerStyle={[styles.content, compact && styles.contentCompact, short && styles.contentShort]}
         keyboardShouldPersistTaps="handled"
+        onContentSizeChange={(_, nextHeight) => setContentHeight(nextHeight)}
+        onLayout={(event) => setViewportHeight(event.nativeEvent.layout.height)}
+        scrollEnabled={keyboardOpen || contentHeight > viewportHeight + 2}
         showsVerticalScrollIndicator={false}>
-        <View style={styles.progressHeader}>
+        <View style={[styles.progressHeader, compact && styles.progressHeaderCompact]}>
           <AppText style={styles.stepCount}>{ui("STEP ")}{currentStep + 1}{ui(" OF ")}{steps.length}</AppText>
           <AppText style={styles.stepPercent}>{Math.round(((currentStep + 1) / steps.length) * 100)}%</AppText>
         </View>
-        <View style={styles.progressTrack}>
+        <View style={[styles.progressTrack, compact && styles.progressTrackCompact]}>
           <View
             style={[
               styles.progressFill,
@@ -775,16 +826,18 @@ const RegisterScreen = ({ navigation, route }) => {
             ]}
           />
         </View>
-        <AppText style={[styles.eyebrow, currentStep !== 1 && styles.aboutEyebrow]}>{steps[currentStep].short.toUpperCase()}</AppText>
-        <AppText style={[styles.title, currentStep !== 1 && styles.aboutTitle, currentStep === 1 && styles.supportTitle]}>{steps[currentStep].title}</AppText>
-        <AppText style={[styles.subtitle, currentStep !== 1 && styles.aboutSubtitle]}>
+        <AppText style={[styles.eyebrow, currentStep !== 1 && styles.aboutEyebrow, compact && styles.eyebrowCompact]}>{steps[currentStep].short.toUpperCase()}</AppText>
+        <AppText style={[styles.title, currentStep !== 1 && styles.aboutTitle, currentStep === 1 && styles.supportTitle, compact && styles.titleCompact, tiny && styles.titleTiny]}>{steps[currentStep].title}</AppText>
+        <AppText style={[styles.subtitle, currentStep !== 1 && styles.aboutSubtitle, compact && styles.subtitleCompact, tiny && styles.subtitleTiny]}>
           {currentStep === 0
             ? ui("Choose how you'll use RentalHub and tell us how to reach you.")
             : currentStep === 1
               ? ui('Choose the legal and agent support that fits your rental journey.')
               : currentStep === 2
                 ? ui('Add your location and the identity details required for verification.')
-                : ui('Create a secure password and review everything before continuing.')}
+                : currentStep === 3
+                  ? ui('Check your details and the amount due before setting your password.')
+                  : ui('Create a strong password to finish your registration.')}
         </AppText>
 
         {!registrationFlags.loaded ? (
@@ -811,23 +864,15 @@ const RegisterScreen = ({ navigation, route }) => {
           </View>
         ) : null}
 
-        {registrationFlags.registration_location_restricted &&
-        !registrationFlags.registration_allowed &&
-        registrationFlags.registration_access_message ? (
-          <View style={styles.noticeCard}>
-            <AppText style={styles.noticeText}>{registrationFlags.registration_access_message}</AppText>
-          </View>
-        ) : null}
-
         {currentStep === 0 ? (
           <>
-        <AppText style={styles.choiceLabel}>{ui("I'm registering as")}</AppText>
-        <View style={styles.toggleRow}>
+        <AppText style={[styles.choiceLabel, compact && styles.choiceLabelCompact]}>{ui("I'm registering as")}</AppText>
+        <View style={[styles.toggleRow, compact && styles.toggleRowCompact]}>
           {['tenant', 'landlord'].map((role) => (
             <TouchableOpacity
               key={role}
               onPress={() => setUserType(role)}
-              style={[styles.toggleBtn, userType === role && styles.toggleBtnActive]}
+              style={[styles.toggleBtn, compact && styles.toggleBtnCompact, userType === role && styles.toggleBtnActive]}
             >
               <AppText style={[styles.toggleText, userType === role && styles.toggleTextActive]}>
                 {role === "tenant" ? ui("Tenant") : ui("Landlord")}
@@ -836,13 +881,13 @@ const RegisterScreen = ({ navigation, route }) => {
           ))}
         </View>
 
-        <AppText style={styles.choiceLabel}>{ui("Citizenship")}</AppText>
-        <View style={styles.toggleRow}>
+        <AppText style={[styles.choiceLabel, compact && styles.choiceLabelCompact]}>{ui("Citizenship")}</AppText>
+        <View style={[styles.toggleRow, compact && styles.toggleRowCompact]}>
           {[false, true].map((value) => (
             <TouchableOpacity
               key={String(value)}
               onPress={() => handleApplicantTypeChange(value)}
-              style={[styles.toggleBtn, isForeigner === value && styles.toggleBtnActive]}
+              style={[styles.toggleBtn, compact && styles.toggleBtnCompact, isForeigner === value && styles.toggleBtnActive]}
             >
               <AppText style={[styles.toggleText, isForeigner === value && styles.toggleTextActive]}>
                 {value ? ui("Foreigner") : ui("Nigerian")}
@@ -880,17 +925,19 @@ const RegisterScreen = ({ navigation, route }) => {
         ) : null}
 
         {currentStep === 0 ? (
-          <View style={[styles.stepCard, styles.aboutCard]}>
+          <View style={[styles.stepCard, styles.aboutCard, compact && styles.stepCardCompact]}>
         <Input
           compact
-          label={ui("Full Name")}
+          label={tiny ? undefined : ui("Full Name")}
+          accessibilityLabel={ui("Full Name")}
           value={form.full_name}
           onChangeText={(value) => onChange('full_name', value)}
           placeholder="John Doe"
           icon="person-outline"
         />
         <Input
-          label={ui("Email")}
+          label={tiny ? undefined : ui("Email")}
+          accessibilityLabel={ui("Email")}
           compact
           value={form.email}
           onChangeText={(value) => onChange('email', value)}
@@ -900,7 +947,8 @@ const RegisterScreen = ({ navigation, route }) => {
           icon="mail-outline"
         />
         <Input
-          label={ui("Phone")}
+          label={tiny ? undefined : ui("Phone")}
+          accessibilityLabel={ui("Phone")}
           compact
           containerStyle={styles.lastAboutField}
           value={form.phone}
@@ -913,12 +961,12 @@ const RegisterScreen = ({ navigation, route }) => {
         ) : null}
 
         {currentStep === 1 ? (
-          <View style={styles.stepCard}>
+          <View style={[styles.stepCard, compact && styles.stepCardCompact]}>
         <TouchableOpacity
           style={styles.agentToggle}
           accessibilityRole="checkbox"
           accessibilityState={{ checked: form.use_rentalhub_lawyers }}
-          accessibilityLabel={ui('Enroll in legal support')}
+          accessibilityLabel={ui('Enroll in to dispute support')}
           onPress={() =>
             setForm((prev) => ({
               ...prev,
@@ -928,7 +976,7 @@ const RegisterScreen = ({ navigation, route }) => {
         >
           <View style={styles.supportOptionHeading}>
             <Icon name={form.use_rentalhub_lawyers ? 'checkbox' : 'square-outline'} size={20} color={colors.blue} />
-            <AppText style={[styles.agentToggleLabel, styles.supportOptionLabel]}>{ui('Enroll in legal support')}</AppText>
+            <AppText style={[styles.agentToggleLabel, styles.supportOptionLabel]}>{ui('Enroll in to dispute support')}</AppText>
           </View>
           <AppText style={styles.supportOptionDescription}>{ui('Our special team will be assigned to assist with tenancy and property disputes (fee applies).')}</AppText>
         </TouchableOpacity>
@@ -965,9 +1013,10 @@ const RegisterScreen = ({ navigation, route }) => {
         ) : null}
 
         {currentStep === 0 ? (
-          <View style={[styles.stepCard, styles.aboutCard]}>
+          <View style={[styles.stepCard, styles.aboutCard, compact && styles.stepCardCompact]}>
         <Input
-          label={ui("Referral Code (optional)")}
+          label={tiny ? undefined : ui("Referral Code (optional)")}
+          accessibilityLabel={ui("Referral Code (optional)")}
           compact
           containerStyle={styles.lastAboutField}
           value={form.referral_code}
@@ -1026,7 +1075,7 @@ const RegisterScreen = ({ navigation, route }) => {
         ) : null}
 
         {currentStep === 2 ? (
-          <View style={[styles.stepCard, styles.aboutCard]}>
+          <View style={[styles.stepCard, styles.aboutCard, compact && styles.stepCardCompact]}>
         <SelectField
           compact
           label={ui("State")}
@@ -1045,6 +1094,13 @@ const RegisterScreen = ({ navigation, route }) => {
           disabled={!selectedState}
           helperText={requiresRegistrationPayment ? ui('Required for registration pricing.') : ''}
         />
+
+        {locationRegistrationBlocked ? (
+          <View style={styles.locationNotice}>
+            <Icon name="alert-circle-outline" size={18} color="#B45309" />
+            <AppText style={styles.locationNoticeText}>{locationRegistrationMessage}</AppText>
+          </View>
+        ) : null}
 
         {!isForeigner ? (
           registrationFlags.nin_number ? (
@@ -1091,7 +1147,7 @@ const RegisterScreen = ({ navigation, route }) => {
 
         {currentStep === 3 ? (
           <>
-          <View style={styles.reviewCard}>
+          <View style={[styles.reviewCard, compact && styles.reviewCardCompact]}>
             <View style={styles.reviewHeading}>
               <View style={styles.reviewHeadingCopy}>
                 <AppText style={styles.reviewEyebrow}>{ui("ACCOUNT SUMMARY")}</AppText>
@@ -1129,30 +1185,7 @@ const RegisterScreen = ({ navigation, route }) => {
             </TouchableOpacity>
           </View>
 
-          <View style={[styles.stepCard, styles.aboutCard]}>
-        <Input
-          label={ui("Password")}
-          compact
-          value={form.password}
-          onChangeText={(value) => onChange('password', value)}
-          placeholder={ui("Minimum 10 characters")}
-          secureTextEntry
-          icon="lock-closed-outline"
-        />
-        <AppText style={styles.identityPaymentNotice}>{ui(passwordRequirement)}</AppText>
-        <Input
-          label={ui("Confirm Password")}
-          compact
-          value={form.confirm_password}
-          onChangeText={(value) => onChange('confirm_password', value)}
-          placeholder={ui("Repeat password")}
-          secureTextEntry
-          icon="lock-closed-outline"
-        />
-          {requiresPayment ? (
-            <AppText style={styles.identityPaymentNotice}>{ui("If you choose bank transfer, a collection account may be opened in your name by our regulated banking partner. For that purpose only, it receives the name and, where the partner bank requires it, the NIN from your verified identity record. It does not hold your wallet balance.")}</AppText>
-          ) : null}
-
+          <View style={[styles.stepCard, styles.aboutCard, compact && styles.stepCardCompact]}>
           <TouchableOpacity
             accessibilityRole="checkbox"
             accessibilityState={{ checked: acceptedTerms }}
@@ -1179,22 +1212,70 @@ const RegisterScreen = ({ navigation, route }) => {
             </AppText>
           </TouchableOpacity>
           </View>
+          </>
+        ) : null}
 
-        <Button
-          title={requiresPayment ? ui("Proceed to Payment") : ui("Create Account")}
-          onPress={() => handleRegister()}
-          loading={loading || paymentLoading}
-          style={styles.cta}
-          disabled={!acceptedTerms || !registrationFlags.loaded || loading || paymentLoading}
-        />
+        {currentStep === 4 ? (
+          <>
+          <View style={[styles.stepCard, styles.aboutCard, compact && styles.stepCardCompact]}>
+            <Input
+              label={ui("Password")}
+              compact
+              value={form.password}
+              onChangeText={(value) => onChange('password', value)}
+              onFocus={() => setPasswordChecklistVisible(true)}
+              placeholder={ui("Minimum 10 characters")}
+              secureTextEntry
+              icon="lock-closed-outline"
+            />
 
-        <TurnstileWidget
-        action="rentalhub_register"
-          ref={turnstileRef}
-          onToken={(token) => { turnstileTokenRef.current = token; }}
-          onExpire={() => { turnstileTokenRef.current = null; }}
-          onError={() => { turnstileTokenRef.current = null; }}
-        />
+            {passwordChecklistVisible ? (
+              <View accessibilityLiveRegion="polite" style={styles.passwordChecklist}>
+                <AppText style={styles.passwordChecklistTitle}>{ui('Password strength')}</AppText>
+                <View style={styles.passwordChecklistGrid}>
+                  {passwordChecks.map((check) => (
+                    <View key={check.key} style={styles.passwordChecklistItem}>
+                      <Icon
+                        name={check.met ? 'checkmark-circle' : 'ellipse-outline'}
+                        size={16}
+                        color={check.met ? colors.success : colors.muted}
+                      />
+                      <AppText style={[styles.passwordChecklistText, check.met && styles.passwordChecklistTextMet]}>
+                        {check.label}
+                      </AppText>
+                    </View>
+                  ))}
+                </View>
+              </View>
+            ) : null}
+
+            <Input
+              label={ui("Confirm Password")}
+              compact
+              value={form.confirm_password}
+              onChangeText={(value) => onChange('confirm_password', value)}
+              onFocus={() => setPasswordChecklistVisible(true)}
+              placeholder={ui("Repeat password")}
+              secureTextEntry
+              icon="lock-closed-outline"
+            />
+          </View>
+
+          <TurnstileWidget
+            action="rentalhub_register"
+            ref={turnstileRef}
+            onToken={(token) => { turnstileTokenRef.current = token; }}
+            onExpire={() => { turnstileTokenRef.current = null; }}
+            onError={() => { turnstileTokenRef.current = null; }}
+          />
+
+          <Button
+            title={requiresPayment ? ui("Proceed to Payment") : ui("Create Account")}
+            onPress={() => handleRegister()}
+            loading={loading || paymentLoading}
+            style={styles.cta}
+            disabled={!passwordRulesMet || !acceptedTerms || !registrationFlags.loaded || loading || paymentLoading}
+          />
 
         {paymentState.reference ? (
           <View style={styles.paymentCard}>
@@ -1219,7 +1300,7 @@ const RegisterScreen = ({ navigation, route }) => {
           </>
         ) : null}
 
-        <View style={styles.stepNavigation}>
+        <View style={[styles.stepNavigation, compact && styles.stepNavigationCompact]}>
           {currentStep > 0 ? (
             <Button
               title={ui("Back")}
@@ -1233,12 +1314,12 @@ const RegisterScreen = ({ navigation, route }) => {
               title={ui("Continue")}
               onPress={continueRegistration}
               style={styles.stepNavButton}
-              disabled={!registrationFlags.loaded}
+              disabled={!registrationFlags.loaded || (currentStep === 2 && locationRegistrationBlocked)}
             />
           ) : null}
         </View>
 
-        <View style={styles.footer}>
+        <View style={[styles.footer, compact && styles.footerCompact]}>
           <AppText style={styles.footerText}>{ui("Already have an account?")}</AppText>
           <TouchableOpacity onPress={() => navigation.navigate('Login')}>
             <AppText style={styles.footerLink}>{ui(" Sign in")}</AppText>
@@ -1407,6 +1488,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 22,
     paddingTop: Platform.OS === 'android' ? 14 : 8,
   },
+  topBarCompact: {
+    paddingBottom: 6,
+    paddingHorizontal: 16,
+    paddingTop: Platform.OS === 'android' ? 8 : 4,
+  },
   backButton: {
     alignItems: 'center',
     backgroundColor: colors.white,
@@ -1419,12 +1505,15 @@ const styles = StyleSheet.create({
   },
   topBarSpacer: { width: 42 },
   content: { padding: 22, paddingBottom: 42 },
+  contentCompact: { paddingHorizontal: 16, paddingBottom: 20, paddingTop: 12 },
+  contentShort: { paddingHorizontal: 14, paddingBottom: 10, paddingTop: 10 },
   progressHeader: {
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 14,
   },
+  progressHeaderCompact: { marginTop: 2 },
   stepCount: {
     color: colors.blue,
     fontFamily: typography.bold,
@@ -1445,6 +1534,10 @@ const styles = StyleSheet.create({
     marginTop: 9,
     overflow: 'hidden',
   },
+  progressTrackCompact: {
+    height: 4,
+    marginTop: 5,
+  },
   progressFill: {
     backgroundColor: colors.blue,
     borderRadius: 4,
@@ -1458,6 +1551,10 @@ const styles = StyleSheet.create({
     letterSpacing: 0.8,
     marginTop: 16,
   },
+  eyebrowCompact: {
+    lineHeight: 15,
+    marginTop: 8,
+  },
   title: {
     color: colors.ink,
     fontFamily: typography.semibold,
@@ -1466,6 +1563,16 @@ const styles = StyleSheet.create({
     letterSpacing: -0.3,
     marginTop: 9,
   },
+  titleCompact: {
+    fontSize: 24,
+    lineHeight: 29,
+    marginTop: 4,
+  },
+  titleTiny: {
+    fontSize: 21,
+    lineHeight: 25,
+    marginTop: 2,
+  },
   subtitle: {
     color: colors.muted,
     fontFamily: typography.regular,
@@ -1473,6 +1580,18 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     marginBottom: 24,
     marginTop: 9,
+  },
+  subtitleCompact: {
+    fontSize: 13,
+    lineHeight: 19,
+    marginBottom: 10,
+    marginTop: 4,
+  },
+  subtitleTiny: {
+    fontSize: 12,
+    lineHeight: 17,
+    marginBottom: 8,
+    marginTop: 3,
   },
   stepCard: {
     backgroundColor: colors.white,
@@ -1483,7 +1602,12 @@ const styles = StyleSheet.create({
     padding: 17,
     ...shadows.soft,
   },
+  stepCardCompact: {
+    marginBottom: 10,
+    padding: 12,
+  },
   toggleRow: { flexDirection: 'row', gap: 10, marginBottom: 12 },
+  toggleRowCompact: { gap: 8, marginBottom: 8 },
   choiceLabel: {
     color: colors.text,
     fontFamily: typography.semibold,
@@ -1491,6 +1615,9 @@ const styles = StyleSheet.create({
     lineHeight: 18,
     marginBottom: 8,
     marginLeft: 2,
+  },
+  choiceLabelCompact: {
+    marginBottom: 5,
   },
   toggleBtn: {
     flex: 1,
@@ -1504,6 +1631,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  toggleBtnCompact: {
+    minHeight: 42,
+    paddingVertical: 6,
+  },
   toggleBtnActive: {
     borderColor: colors.blue,
     backgroundColor: colors.surfaceBlue,
@@ -1515,29 +1646,30 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#CFE1FB',
     backgroundColor: colors.white,
-    padding: 18,
-    marginBottom: 22,
-    marginTop: 4,
+    padding: 12,
+    marginBottom: 12,
+    marginTop: 0,
     ...shadows.soft,
   },
   priceLabel: {
     color: colors.muted,
-    fontSize: typeScale.xs,
-    lineHeight: 18,
+    fontSize: 10,
+    lineHeight: 14,
     fontFamily: typography.semibold,
   },
   priceAmount: {
-    fontSize: typeScale.hero,
-    lineHeight: 40,
+    fontSize: 24,
+    lineHeight: 30,
     fontFamily: typography.bold,
     color: colors.ink,
-    marginTop: 4,
+    marginTop: 2,
   },
   priceMeta: {
-    marginTop: 6,
+    marginTop: 3,
     color: colors.muted,
     fontFamily: typography.regular,
-    lineHeight: 18,
+    fontSize: 11,
+    lineHeight: 15,
   },
   pendingMeta: {
     marginTop: 8,
@@ -1550,6 +1682,10 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     overflow: 'hidden',
     padding: 14,
+  },
+  reviewCardCompact: {
+    marginBottom: 10,
+    padding: 12,
   },
   reviewHeadingCopy: { flex: 1, minWidth: 0, marginRight: 8 },
   reviewHeading: {
@@ -1687,6 +1823,24 @@ const styles = StyleSheet.create({
     color: '#1d4ed8',
     lineHeight: 18,
   },
+  locationNotice: {
+    alignItems: 'flex-start',
+    backgroundColor: '#fffbeb',
+    borderColor: '#fcd34d',
+    borderRadius: 12,
+    borderWidth: 1,
+    flexDirection: 'row',
+    gap: 8,
+    marginBottom: 12,
+    padding: 10,
+  },
+  locationNoticeText: {
+    color: '#92400e',
+    flex: 1,
+    fontFamily: typography.regular,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
+  },
   warningCard: {
     borderRadius: 14,
     borderWidth: 1,
@@ -1717,6 +1871,9 @@ const styles = StyleSheet.create({
     gap: 10,
     marginTop: 12,
   },
+  stepNavigationCompact: {
+    marginTop: 8,
+  },
   stepNavButton: {
     flex: 1,
   },
@@ -1746,6 +1903,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'center',
+  },
+  footerCompact: {
+    marginTop: 8,
   },
   footerText: { color: colors.muted, fontFamily: typography.regular },
   footerLink: { color: colors.blue, fontFamily: typography.bold },
@@ -1825,6 +1985,46 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     marginBottom: 12,
     padding: 10,
+  },
+  passwordChecklist: {
+    backgroundColor: '#f8fafc',
+    borderColor: '#e2e8f0',
+    borderRadius: 12,
+    borderWidth: 1,
+    marginBottom: 12,
+    marginTop: -4,
+    padding: 10,
+  },
+  passwordChecklistTitle: {
+    color: colors.text,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
+    marginBottom: 6,
+  },
+  passwordChecklistGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  passwordChecklistItem: {
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+    gap: 5,
+    marginBottom: 4,
+    paddingRight: 4,
+    width: '50%',
+  },
+  passwordChecklistText: {
+    color: colors.muted,
+    flex: 1,
+    fontFamily: typography.regular,
+    fontSize: 11,
+    lineHeight: 15,
+    paddingTop: 1,
+  },
+  passwordChecklistTextMet: {
+    color: colors.success,
+    fontFamily: typography.medium,
   },
   chooserOverlay: {
     flex: 1,

@@ -5,10 +5,12 @@ import {View,
   StyleSheet,
   ScrollView,
   KeyboardAvoidingView,
+  Keyboard,
   Platform,
   TouchableOpacity,
   Alert,
-  StatusBar,} from 'react-native';
+  StatusBar,
+  useWindowDimensions,} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AuthContext } from '../../context/AuthContext';
@@ -26,7 +28,13 @@ import {useLanguage} from '../../context/LanguageContext';
 import assistedCopy from '../../i18n/assistedRegistration.json';
 const LoginScreen = ({ navigation }) => {
   useInterfaceLanguage();
+  const { height, width } = useWindowDimensions();
+  const compact = height < 760 || width < 360;
+  const short = height < 650;
   const {language}=useLanguage();const identityLabel=(assistedCopy[language]||assistedCopy.en).identity;
+  const [keyboardOpen, setKeyboardOpen] = useState(false);
+  const [contentHeight, setContentHeight] = useState(0);
+  const [viewportHeight, setViewportHeight] = useState(0);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -51,6 +59,15 @@ const LoginScreen = ({ navigation }) => {
 
     return unsubscribe;
   }, [navigation]);
+
+  useEffect(() => {
+    const shown = Keyboard.addListener('keyboardDidShow', () => setKeyboardOpen(true));
+    const hidden = Keyboard.addListener('keyboardDidHide', () => setKeyboardOpen(false));
+    return () => {
+      shown.remove();
+      hidden.remove();
+    };
+  }, []);
 
   const askToEnableBiometricLogin = (label) =>
     new Promise((resolve) => {
@@ -202,10 +219,13 @@ const LoginScreen = ({ navigation }) => {
         style={styles.keyboardView}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <ScrollView
-          contentContainerStyle={styles.scrollContent}
+          contentContainerStyle={[styles.scrollContent, compact && styles.scrollContentCompact, short && styles.scrollContentShort]}
           keyboardShouldPersistTaps="handled"
+          onContentSizeChange={(_, nextHeight) => setContentHeight(nextHeight)}
+          onLayout={(event) => setViewportHeight(event.nativeEvent.layout.height)}
+          scrollEnabled={keyboardOpen || contentHeight > viewportHeight + 2}
           showsVerticalScrollIndicator={false}>
-          <View style={styles.topBar}>
+          <View style={[styles.topBar, compact && styles.topBarCompact]}>
             <TouchableOpacity
               accessibilityLabel={ui("Go back")}
               accessibilityRole="button"
@@ -217,14 +237,15 @@ const LoginScreen = ({ navigation }) => {
             <View style={styles.topBarSpacer} />
           </View>
 
-          <View style={styles.header}>
-            <AppText style={styles.eyebrow}>{ui("WELCOME BACK")}</AppText>
-            <AppText style={styles.title}>{ui("Good to see you again.")}</AppText>
-            <AppText style={styles.subtitle}>{ui("Sign in to continue managing your RentalHub experience.")}</AppText>
+          <View style={[styles.header, compact && styles.headerCompact, short && styles.headerShort, keyboardOpen && styles.hidden]}>
+            <AppText style={[styles.eyebrow, compact && styles.eyebrowCompact]}>{ui("WELCOME BACK")}</AppText>
+            <AppText style={[styles.title, compact && styles.titleCompact, short && styles.titleShort]}>{ui("Good to see you again.")}</AppText>
+            <AppText style={[styles.subtitle, compact && styles.subtitleCompact]}>{ui("Sign in to continue managing your RentalHub experience.")}</AppText>
           </View>
 
-          <View style={styles.formCard}>
+          <View style={[styles.formCard, compact && styles.formCardCompact, short && styles.formCardShort]}>
             <Input
+              compact={compact}
               label={identityLabel}
               value={email}
               onChangeText={setEmail}
@@ -237,6 +258,7 @@ const LoginScreen = ({ navigation }) => {
             />
 
             <Input
+              compact={compact}
               label={ui("Password")}
               value={password}
               onChangeText={setPassword}
@@ -250,7 +272,7 @@ const LoginScreen = ({ navigation }) => {
 
             <TouchableOpacity
               onPress={() => navigation.navigate('ForgotPassword')}
-              style={styles.forgotPassword}>
+              style={[styles.forgotPassword, compact && styles.forgotPasswordCompact]}>
               <AppText style={styles.forgotPasswordText}>{ui("Forgot password?")}</AppText>
             </TouchableOpacity>
 
@@ -258,8 +280,8 @@ const LoginScreen = ({ navigation }) => {
               title={ui("Sign in")}
               onPress={handleLogin}
               loading={loading}
-              size="lg"
-              style={styles.loginButton}
+              size={short ? 'md' : 'lg'}
+              style={[styles.loginButton, compact && styles.loginButtonCompact]}
             />
 
         <TurnstileWidget
@@ -276,12 +298,12 @@ const LoginScreen = ({ navigation }) => {
                 onPress={handleBiometricLogin}
                 loading={biometricLoading}
                 variant="outline"
-                style={styles.biometricButton}
+                style={[styles.biometricButton, compact && styles.biometricButtonCompact]}
               />
             ) : null}
           </View>
 
-          <View style={styles.footer}>
+          <View style={[styles.footer, compact && styles.footerCompact, keyboardOpen && styles.hidden]}>
             <AppText style={styles.footerText}>{ui("New to RentalHub?")}</AppText>
             <TouchableOpacity onPress={() => navigation.navigate('Register')}>
               <AppText style={styles.signUpText}>{ui(" Create an account")}</AppText>
@@ -290,7 +312,7 @@ const LoginScreen = ({ navigation }) => {
 
           <TouchableOpacity
             onPress={() => navigation.navigate('AcceptLawyerInvite')}
-            style={styles.inviteLink}>
+            style={[styles.inviteLink, compact && styles.inviteLinkCompact, keyboardOpen && styles.hidden]}>
             <Icon name="briefcase-outline" size={16} color={colors.muted} />
             <AppText style={styles.inviteText}>{ui("I received a lawyer invitation")}</AppText>
           </TouchableOpacity>
@@ -313,11 +335,22 @@ const styles = StyleSheet.create({
     paddingBottom: 28,
     paddingHorizontal: 22,
   },
+  scrollContentCompact: {
+    paddingBottom: 14,
+    paddingHorizontal: 18,
+  },
+  scrollContentShort: {
+    paddingBottom: 8,
+    paddingHorizontal: 14,
+  },
   topBar: {
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingVertical: 12,
+  },
+  topBarCompact: {
+    paddingVertical: 6,
   },
   backButton: {
     alignItems: 'center',
@@ -336,6 +369,14 @@ const styles = StyleSheet.create({
     marginBottom: 25,
     marginTop: 35,
   },
+  headerCompact: {
+    marginBottom: 14,
+    marginTop: 12,
+  },
+  headerShort: {
+    marginBottom: 10,
+    marginTop: 6,
+  },
   eyebrow: {
     color: colors.blue,
     fontFamily: typography.bold,
@@ -344,6 +385,10 @@ const styles = StyleSheet.create({
     letterSpacing: 0.8,
     marginBottom: 10,
   },
+  eyebrowCompact: {
+    lineHeight: 14,
+    marginBottom: 5,
+  },
   title: {
     color: colors.ink,
     fontFamily: typography.semibold,
@@ -351,12 +396,25 @@ const styles = StyleSheet.create({
     letterSpacing: -0.3,
     lineHeight: 36,
   },
+  titleCompact: {
+    fontSize: 24,
+    lineHeight: 29,
+  },
+  titleShort: {
+    fontSize: 22,
+    lineHeight: 26,
+  },
   subtitle: {
     color: colors.muted,
     fontFamily: typography.regular,
     fontSize: typeScale.base,
     lineHeight: 24,
     marginTop: 10,
+  },
+  subtitleCompact: {
+    fontSize: 13,
+    lineHeight: 18,
+    marginTop: 5,
   },
   formCard: {
     backgroundColor: colors.white,
@@ -366,10 +424,20 @@ const styles = StyleSheet.create({
     padding: 20,
     ...shadows.soft,
   },
+  formCardCompact: {
+    padding: 14,
+  },
+  formCardShort: {
+    padding: 12,
+  },
   forgotPassword: {
     alignSelf: 'flex-end',
     marginBottom: 21,
     marginTop: -2,
+  },
+  forgotPasswordCompact: {
+    marginBottom: 8,
+    marginTop: 0,
   },
   forgotPasswordText: {
     color: colors.blue,
@@ -380,14 +448,24 @@ const styles = StyleSheet.create({
   loginButton: {
     marginBottom: 0,
   },
+  loginButtonCompact: {
+    minHeight: 48,
+  },
   biometricButton: {
     marginTop: 12,
+  },
+  biometricButtonCompact: {
+    marginTop: 6,
+    minHeight: 44,
   },
   footer: {
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'center',
     marginTop: 27,
+  },
+  footerCompact: {
+    marginTop: 10,
   },
   footerText: {
     color: colors.muted,
@@ -409,11 +487,18 @@ const styles = StyleSheet.create({
     marginTop: 20,
     padding: 8,
   },
+  inviteLinkCompact: {
+    marginTop: 6,
+    padding: 5,
+  },
   inviteText: {
     color: colors.muted,
     fontFamily: typography.medium,
     fontSize: typeScale.xs,
     lineHeight: 18,
+  },
+  hidden: {
+    display: 'none',
   },
 });
 

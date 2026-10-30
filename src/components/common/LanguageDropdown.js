@@ -17,7 +17,7 @@ import AppText from './AppText';
 // A compact dropdown that lets a signed-out visitor pick their language from
 // the welcome screen, before any account exists. It reads and writes the same
 // stored preference as Settings, so the choice survives sign-in.
-const LanguageDropdown = ({ tone = 'light', fullWidth = false }) => {
+const LanguageDropdown = ({ tone = 'light', fullWidth = false, compact = false }) => {
   const interfaceLanguage = useInterfaceLanguage();
   const { language, languages, setLanguage, t } = useLanguage();
   const [open, setOpen] = useState(false);
@@ -44,8 +44,8 @@ const LanguageDropdown = ({ tone = 'light', fullWidth = false }) => {
 
   const onDark = tone === 'dark';
   const triggerStyle = onDark ? styles.triggerOnDark : styles.trigger;
-  const labelStyle = onDark ? styles.labelOnDark : styles.label;
-  const valueStyle = onDark ? styles.valueOnDark : styles.value;
+  const labelStyle = [onDark ? styles.labelOnDark : styles.label, compact && styles.labelCompact];
+  const valueStyle = [onDark ? styles.valueOnDark : styles.value, compact && styles.valueCompact];
   const chevronColor = onDark ? colors.white : colors.ink;
 
   return (
@@ -55,7 +55,12 @@ const LanguageDropdown = ({ tone = 'light', fullWidth = false }) => {
         accessibilityRole="button"
         accessibilityHint={t('welcome.languageHelp')}
         onPress={() => setOpen(true)}
-        style={[triggerStyle, styles.triggerBase, fullWidth && styles.triggerFull]}
+        style={[
+          triggerStyle,
+          styles.triggerBase,
+          fullWidth && styles.triggerFull,
+          compact && styles.triggerCompact,
+        ]}
       >
         <Icon
           name="language-outline"
@@ -160,6 +165,19 @@ const styles = StyleSheet.create({
     minHeight: 56,
     paddingHorizontal: 16,
     paddingVertical: 8,
+  },
+  triggerCompact: {
+    minHeight: 46,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+  },
+  labelCompact: {
+    lineHeight: 14,
+    fontSize: 10,
+  },
+  valueCompact: {
+    lineHeight: 18,
+    fontSize: 13,
   },
   label: {
     color: colors.muted,

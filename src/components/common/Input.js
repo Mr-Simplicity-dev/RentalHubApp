@@ -20,11 +20,21 @@ const Input = ({
   numberOfLines,
   containerStyle,
   compact = false,
+  onFocus,
+  onBlur,
   ...rest
 }) => {
   useInterfaceLanguage();
   const [focused, setFocused] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const handleFocus = (event) => {
+    setFocused(true);
+    onFocus?.(event);
+  };
+  const handleBlur = (event) => {
+    setFocused(false);
+    onBlur?.(event);
+  };
 
   return (
     <View style={[styles.container, compact && styles.compactContainer, containerStyle]}>
@@ -56,8 +66,8 @@ const Input = ({
           placeholderTextColor="#6B7890"
           multiline={multiline}
           numberOfLines={numberOfLines}
-          onFocus={() => setFocused(true)}
-          onBlur={() => setFocused(false)}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
           selectionColor={colors.blue}
           {...rest}
         />

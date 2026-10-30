@@ -20,6 +20,7 @@ import { getErrorMessage, pickObject } from '../../utils/http';
 import { colors, radius, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
+import PropertyUpdateModal from '../../components/properties/PropertyUpdateModal';
 const getStatusColor = (status) => {
   if (status === 'approved' || status === 'active') return colors.success;
   if (status === 'rejected' || status === 'inactive') return colors.danger;
@@ -32,6 +33,7 @@ const AdminPropertyDetailScreen = ({ route }) => {
   const [property, setProperty] = useState(null);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
+  const [updateReview, setUpdateReview] = useState(false);
 
   useEffect(() => {
     if (propertyId) loadProperty();
@@ -106,6 +108,8 @@ const AdminPropertyDetailScreen = ({ route }) => {
 
   return (
     <PremiumScreen>
+      {updateReview && <PropertyUpdateModal admin property={{id:propertyId}} onClose={() => {setUpdateReview(false);loadProperty();}} />}
+      <PremiumButton title="Review property updates" onPress={() => setUpdateReview(true)} />
       <PremiumHero
         eyebrow={"Admin property review"}
         title={property.title || "Property"}

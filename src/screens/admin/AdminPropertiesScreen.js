@@ -73,6 +73,7 @@ const AdminPropertiesScreen = ({ navigation }) => {
             onPress={() => navigation.navigate('AdminPropertyDetail', { id: item.id })}
           >
             <PremiumCard>
+              {item.has_pending_update && <AppText style={{color:colors.blue,fontWeight:"600"}}>Update awaiting approval</AppText>}
               <View style={styles.cardHeader}>
                 <View style={styles.propertyIcon}>
                   <AppText style={styles.propertyIconText}>{"RH"}</AppText>

@@ -6,7 +6,6 @@ import {Animated,
   Image,
   StatusBar,
   StyleSheet,
-  ScrollView,
   TouchableOpacity,
   useWindowDimensions,
   View,} from 'react-native';
@@ -26,8 +25,9 @@ const WelcomeScreen = ({ navigation }) => {
   const { height, width, fontScale = 1 } = useWindowDimensions();
   const { isRTL, t, textAlign, language } = useLanguage();
   const careersCopy=recruitmentCopy[language]||recruitmentCopy.en;
-  const compact = height < 780 || width < 375;
-  const short = height < 700;
+  const compact = height < 820 || width < 380;
+  const short = height < 720;
+  const tiny = height < 600 || (height < 640 && width < 340);
   const stackCareers = width < 360 || fontScale > 1.3;
   const textDirection = isRTL ? 'rtl' : 'ltr';
   const contentY = useRef(new Animated.Value(22)).current;
@@ -121,55 +121,53 @@ const WelcomeScreen = ({ navigation }) => {
       <View style={styles.orbTop} pointerEvents="none" />
       <View style={styles.orbBottom} pointerEvents="none" />
 
-      <ScrollView
-        style={styles.body}
-        contentContainerStyle={[styles.bodyContent, compact && styles.bodyContentCompact, short && styles.bodyContentShort]}
-        showsVerticalScrollIndicator={false}>
-      <View style={[styles.top, compact && styles.topCompact]}>
+      <View style={styles.body}>
+      <View style={[styles.bodyContent, compact && styles.bodyContentCompact, short && styles.bodyContentShort, tiny && styles.bodyContentTiny]}>
+      <View style={[styles.top, compact && styles.topCompact, tiny && styles.topTiny]}>
         <BrandMark light compact />
         <TouchableOpacity
           accessibilityLabel={t('welcome.explore')}
           accessibilityRole="button"
           onPress={() => navigateOnce('Home')}
-          style={styles.exploreButton}>
-          <AppText style={[styles.exploreText, { textAlign, writingDirection: textDirection }]}>{t('welcome.explore')}</AppText>
+          style={[styles.exploreButton, short && styles.exploreButtonShort, tiny && styles.exploreButtonTiny]}>
+          <AppText style={[styles.exploreText, short && styles.exploreTextShort, { textAlign, writingDirection: textDirection }]}>{t('welcome.explore')}</AppText>
           <Icon name="arrow-forward" size={17} color={colors.white} />
         </TouchableOpacity>
       </View>
 
-      <View style={styles.exploreHintWrap} pointerEvents="none">
-        <View style={styles.exploreArrow} />
-        <Animated.View style={[styles.exploreHint, { transform: [{ translateY: hintBounce }] }]}>
+      <View style={[styles.exploreHintWrap, short && styles.exploreHintWrapShort, tiny && styles.exploreHintWrapTiny]} pointerEvents="none">
+        <View style={[styles.exploreArrow, tiny && styles.exploreArrowTiny]} />
+        <Animated.View style={[styles.exploreHint, short && styles.exploreHintShort, { transform: [{ translateY: hintBounce }] }]}>
           <Icon name="arrow-up" size={13} color={colors.navy} />
-          <AppText style={[styles.exploreHintText, { textAlign, writingDirection: textDirection }]}>{t('welcome.exploreHint')}</AppText>
+          <AppText style={[styles.exploreHintText, short && styles.exploreHintTextShort, { textAlign, writingDirection: textDirection }]}>{t('welcome.exploreHint')}</AppText>
         </Animated.View>
       </View>
 
       {/* Language choice sits before sign-in so the whole app can follow it.
           Centred on its own full-width row, below the "click here" hint and
           clear of the eyebrow, so it never crowds either. */}
-      <View style={[styles.languageRow, compact && styles.languageRowCompact]}>
-        <LanguageDropdown fullWidth tone="dark" />
+      <View style={[styles.languageRow, compact && styles.languageRowCompact, short && styles.languageRowShort, tiny && styles.languageRowTiny]}>
+        <LanguageDropdown fullWidth tone="dark" compact={short || tiny} />
       </View>
 
       <Animated.View style={{ opacity: contentOpacity, transform: [{ translateY: contentY }] }}>
-        <View style={[styles.eyebrow, compact && styles.eyebrowCompact]}>
+        <View style={[styles.eyebrow, compact && styles.eyebrowCompact, short && styles.eyebrowShort]}>
           <View style={styles.eyebrowDot} />
-          <AppText style={[styles.eyebrowText, isRTL && styles.eyebrowTextRTL, { textAlign, writingDirection: textDirection }]}>{t('welcome.eyebrow')}</AppText>
+          <AppText style={[styles.eyebrowText, short && styles.eyebrowTextShort, isRTL && styles.eyebrowTextRTL, { textAlign, writingDirection: textDirection }]}>{t('welcome.eyebrow')}</AppText>
         </View>
-        <AppText accessibilityRole="header" style={[styles.title, compact && styles.titleCompact, short && styles.titleShort, isRTL && styles.titleRTL, { textAlign: 'center', writingDirection: textDirection }]}>{t('welcome.title')}</AppText>
-        <AppText style={[styles.subtitle, compact && styles.subtitleCompact, { textAlign: 'center', writingDirection: textDirection }]}>
+        <AppText accessibilityRole="header" style={[styles.title, compact && styles.titleCompact, short && styles.titleShort, tiny && styles.titleTiny, isRTL && styles.titleRTL, { textAlign: 'center', writingDirection: textDirection }]}>{t('welcome.title')}</AppText>
+        <AppText style={[styles.subtitle, compact && styles.subtitleCompact, short && styles.subtitleShort, tiny && styles.subtitleTiny, { textAlign: 'center', writingDirection: textDirection }]}>
           {t('welcome.subtitle')}
         </AppText>
 
-        <View style={[styles.actions, compact && styles.actionsCompact]}>
+        <View style={[styles.actions, compact && styles.actionsCompact, short && styles.actionsShort, tiny && styles.actionsTiny]}>
           <TouchableOpacity
             accessibilityLabel={t('welcome.createAccount')}
             accessibilityRole="button"
             activeOpacity={0.86}
             onPress={() => navigateOnce('Register')}
-            style={[styles.primaryButton, compact && styles.primaryButtonCompact]}>
-            <AppText style={[styles.primaryText, compact && styles.buttonTextCompact, { textAlign: 'center', writingDirection: textDirection }]}>{t('welcome.createAccount')}</AppText>
+            style={[styles.primaryButton, compact && styles.primaryButtonCompact, short && styles.primaryButtonShort]}>
+            <AppText style={[styles.primaryText, compact && styles.buttonTextCompact, short && styles.buttonTextShort, { textAlign: 'center', writingDirection: textDirection }]}>{t('welcome.createAccount')}</AppText>
             <View style={styles.primaryIcon}>
               <Icon name="arrow-forward" size={19} color={colors.navy} />
             </View>
@@ -180,12 +178,12 @@ const WelcomeScreen = ({ navigation }) => {
             accessibilityRole="button"
             activeOpacity={0.82}
             onPress={() => navigateOnce('Login')}
-            style={[styles.secondaryButton, compact && styles.secondaryButtonCompact]}>
-            <AppText style={[styles.secondaryText, compact && styles.buttonTextCompact, { textAlign: 'center', writingDirection: textDirection }]}>{t('welcome.signIn')}</AppText>
+            style={[styles.secondaryButton, compact && styles.secondaryButtonCompact, short && styles.secondaryButtonShort]}>
+            <AppText style={[styles.secondaryText, compact && styles.buttonTextCompact, short && styles.buttonTextShort, { textAlign: 'center', writingDirection: textDirection }]}>{t('welcome.signIn')}</AppText>
           </TouchableOpacity>
         </View>
 
-        <View style={[styles.careersGlowWrap, compact && styles.careersGlowWrapCompact]}>
+        <View style={[styles.careersGlowWrap, compact && styles.careersGlowWrapCompact, short && styles.careersGlowWrapShort, tiny && styles.careersGlowWrapTiny]}>
           <TouchableOpacity
             accessibilityRole="button"
             accessibilityLabel={careersCopy.opportunities_title + '. ' + careersCopy.apply}
@@ -196,7 +194,7 @@ const WelcomeScreen = ({ navigation }) => {
               setCareerHeight(Math.max(layout.height, 0));
             }}
             onPress={() => navigateOnce('Careers')}
-            style={[styles.careersButton, stackCareers && styles.careersButtonStacked]}>
+            style={[styles.careersButton, stackCareers && styles.careersButtonStacked, short && styles.careersButtonShort, tiny && styles.careersButtonTiny]}>
             {!reduceMotion && (
               <>
                 <Animated.View pointerEvents="none" style={[styles.careerGlowAura, { transform: [{ translateX: careerGlowX }, { translateY: careerGlowY }] }]} />
@@ -204,20 +202,21 @@ const WelcomeScreen = ({ navigation }) => {
                 <Animated.View pointerEvents="none" style={[styles.careerGlowDot, { transform: [{ translateX: careerGlowX }, { translateY: careerGlowY }] }]} />
               </>
             )}
-            <AppText style={[styles.careerTitle, compact && styles.careerTitleCompact, stackCareers && styles.careerTitleStacked, { writingDirection: textDirection }]}>{careersCopy.opportunities_title}</AppText>
+            <AppText style={[styles.careerTitle, compact && styles.careerTitleCompact, short && styles.careerTitleShort, tiny && styles.careerTitleTiny, stackCareers && styles.careerTitleStacked, { writingDirection: textDirection }]}>{careersCopy.opportunities_title}</AppText>
             <View style={styles.careerApply}>
-              <AppText style={[styles.careerApplyText, compact && styles.careerApplyTextCompact, { writingDirection: textDirection }]}>{careersCopy.apply}</AppText>
+              <AppText style={[styles.careerApplyText, compact && styles.careerApplyTextCompact, short && styles.careerApplyTextShort, { writingDirection: textDirection }]}>{careersCopy.apply}</AppText>
             </View>
           </TouchableOpacity>
         </View>
 
-        <View style={[styles.trustRow, compact && styles.trustRowCompact]}>
+        <View style={[styles.trustRow, compact && styles.trustRowCompact, short && styles.trustRowShort, tiny && styles.trustRowTiny]}>
           <Icon name="shield-checkmark" size={15} color="#8DB9F2" />
-          <AppText style={[styles.trustText, { textAlign, writingDirection: textDirection }]}>{t('welcome.trust')}</AppText>
+          <AppText style={[styles.trustText, short && styles.trustTextShort, { textAlign, writingDirection: textDirection }]}>{t('welcome.trust')}</AppText>
         </View>
 
       </Animated.View>
-      </ScrollView>
+      </View>
+      </View>
 
       {/* App update prompt — overlays the welcome content so it never shifts layout. */}
       <AppUpdateIndicator variant="overlay" />
@@ -231,6 +230,12 @@ const styles = StyleSheet.create({
   },
   careersGlowWrapCompact: {
     marginTop: 10,
+  },
+  careersGlowWrapShort: {
+    marginTop: 7,
+  },
+  careersGlowWrapTiny: {
+    marginTop: 4,
   },
   careersButton: {
     alignItems: 'center',
@@ -251,6 +256,13 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     gap: 4,
     minHeight: 72,
+  },
+  careersButtonShort: {
+    paddingVertical: 6,
+  },
+  careersButtonTiny: {
+    minHeight: 54,
+    paddingVertical: 4,
   },
   careerGlowAura: {
     backgroundColor: 'rgba(127,227,255,0.10)',
@@ -292,6 +304,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 19,
   },
+  careerTitleShort: {
+    fontSize: 12,
+    lineHeight: 16,
+  },
+  careerTitleTiny: {
+    fontSize: 11,
+    lineHeight: 15,
+  },
   careerTitleStacked: {
     flex: 0,
     width: '100%',
@@ -314,6 +334,10 @@ const styles = StyleSheet.create({
   careerApplyTextCompact: {
     fontSize: 13,
     lineHeight: 18,
+  },
+  careerApplyTextShort: {
+    fontSize: 11,
+    lineHeight: 15,
   },
   safeArea: {
     direction: 'ltr',
@@ -364,6 +388,9 @@ const styles = StyleSheet.create({
   topCompact: {
     paddingTop: 4,
   },
+  topTiny: {
+    paddingTop: 0,
+  },
   languageRow: {
     alignItems: 'center',
     marginTop: 12,
@@ -376,6 +403,16 @@ const styles = StyleSheet.create({
     marginBottom: 24,
     paddingHorizontal: 8,
   },
+  languageRowShort: {
+    marginTop: 4,
+    marginBottom: 24,
+    paddingHorizontal: 2,
+  },
+  languageRowTiny: {
+    marginTop: 2,
+    marginBottom: 24,
+    paddingHorizontal: 0,
+  },
   exploreButton: {
     flexShrink: 1,
     maxWidth: '48%',
@@ -384,6 +421,13 @@ const styles = StyleSheet.create({
     gap: 7,
     paddingVertical: 10,
   },
+  exploreButtonShort: {
+    gap: 5,
+    paddingVertical: 5,
+  },
+  exploreButtonTiny: {
+    paddingVertical: 3,
+  },
   exploreText: {
     flexShrink: 1,
     color: '#DDEBFF',
@@ -391,12 +435,25 @@ const styles = StyleSheet.create({
     fontSize: typeScale.xs,
     lineHeight: 18,
   },
+  exploreTextShort: {
+    fontSize: 11,
+    lineHeight: 15,
+  },
   exploreHintWrap: {
     direction: 'ltr',
     alignItems: 'flex-end',
     marginTop: 4,
     marginBottom: 2,
     paddingRight: 6,
+  },
+  exploreHintWrapShort: {
+    marginTop: 0,
+    marginBottom: 1,
+    paddingRight: 4,
+  },
+  exploreHintWrapTiny: {
+    marginTop: 0,
+    marginBottom: 0,
   },
   exploreArrow: {
     borderBottomColor: colors.gold,
@@ -408,6 +465,12 @@ const styles = StyleSheet.create({
     height: 0,
     marginRight: 18,
     width: 0,
+  },
+  exploreArrowTiny: {
+    borderBottomWidth: 7,
+    borderLeftWidth: 6,
+    borderRightWidth: 6,
+    marginRight: 14,
   },
   exploreHint: {
     direction: 'ltr',
@@ -421,6 +484,11 @@ const styles = StyleSheet.create({
     paddingVertical: 7,
     ...shadows.soft,
   },
+  exploreHintShort: {
+    gap: 4,
+    paddingHorizontal: 9,
+    paddingVertical: 4,
+  },
   exploreHintText: {
     flexShrink: 1,
     color: colors.navy,
@@ -428,10 +496,15 @@ const styles = StyleSheet.create({
     fontSize: typeScale.reading,
     lineHeight: 22,
   },
+  exploreHintTextShort: {
+    fontSize: 11,
+    lineHeight: 15,
+  },
   body: {
     flex: 1,
   },
   bodyContent: {
+    flex: 1,
     paddingBottom: 22,
   },
   bodyContentCompact: {
@@ -439,6 +512,9 @@ const styles = StyleSheet.create({
   },
   bodyContentShort: {
     paddingBottom: 8,
+  },
+  bodyContentTiny: {
+    paddingBottom: 2,
   },
   eyebrow: {
     justifyContent: 'center',
@@ -448,6 +524,9 @@ const styles = StyleSheet.create({
   },
   eyebrowCompact: {
     marginBottom: 10,
+  },
+  eyebrowShort: {
+    marginBottom: 6,
   },
   eyebrowDot: {
     backgroundColor: colors.gold,
@@ -464,6 +543,10 @@ const styles = StyleSheet.create({
     fontSize: typeScale.xs,
     lineHeight: 18,
     letterSpacing: 0.8,
+  },
+  eyebrowTextShort: {
+    fontSize: 10,
+    lineHeight: 14,
   },
   eyebrowTextRTL: {
     letterSpacing: 0,
@@ -485,8 +568,12 @@ const styles = StyleSheet.create({
     lineHeight: 31,
   },
   titleShort: {
-    fontSize: 24,
-    lineHeight: 29,
+    fontSize: 22,
+    lineHeight: 27,
+  },
+  titleTiny: {
+    fontSize: 20,
+    lineHeight: 24,
   },
   subtitle: {
     alignSelf: 'center',
@@ -504,6 +591,16 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     marginTop: 10,
   },
+  subtitleShort: {
+    fontSize: 12,
+    lineHeight: 16,
+    marginTop: 6,
+  },
+  subtitleTiny: {
+    fontSize: 11,
+    lineHeight: 15,
+    marginTop: 4,
+  },
   actions: {
     gap: 12,
     marginTop: 28,
@@ -511,6 +608,14 @@ const styles = StyleSheet.create({
   actionsCompact: {
     gap: 10,
     marginTop: 20,
+  },
+  actionsShort: {
+    gap: 8,
+    marginTop: 10,
+  },
+  actionsTiny: {
+    gap: 6,
+    marginTop: 8,
   },
   primaryButton: {
     alignItems: 'center',
@@ -527,6 +632,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 46,
     paddingVertical: 10,
   },
+  primaryButtonShort: {
+    paddingHorizontal: 40,
+    paddingVertical: 8,
+  },
   primaryText: {
     width: '100%',
     textAlign: 'center',
@@ -538,6 +647,10 @@ const styles = StyleSheet.create({
   buttonTextCompact: {
     fontSize: 14,
     lineHeight: 20,
+  },
+  buttonTextShort: {
+    fontSize: 13,
+    lineHeight: 18,
   },
   primaryIcon: {
     position: 'absolute',
@@ -564,6 +677,10 @@ const styles = StyleSheet.create({
     minHeight: 50,
     paddingVertical: 10,
   },
+  secondaryButtonShort: {
+    minHeight: 46,
+    paddingVertical: 8,
+  },
   secondaryText: {
     textAlign: 'center',
     color: colors.white,
@@ -580,6 +697,12 @@ const styles = StyleSheet.create({
   trustRowCompact: {
     marginTop: 12,
   },
+  trustRowShort: {
+    marginTop: 8,
+  },
+  trustRowTiny: {
+    marginTop: 5,
+  },
   trustText: {
     flexShrink: 1,
     color: '#8FA8CA',
@@ -587,6 +710,10 @@ const styles = StyleSheet.create({
     fontSize: 12,
     lineHeight: 17,
     marginStart: 7,
+  },
+  trustTextShort: {
+    fontSize: 10,
+    lineHeight: 14,
   },
 });
 

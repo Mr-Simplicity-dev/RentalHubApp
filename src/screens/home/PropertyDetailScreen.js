@@ -37,6 +37,7 @@ import { colors, radius, shadows, typography, typeScale } from '../../theme';
 import { getErrorMessage } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
+import { summariseStructuredFeatures } from '../../data/propertyFeatureSchema';
 const formatCurrency = (value) => `₦${Number(value || 0).toLocaleString()}`;
 
 const prettyLabel = (value = '') =>
@@ -133,6 +134,11 @@ const PropertyDetailScreen = ({ route, navigation }) => {
     }
     return [];
   }, [property?.amenities, interfaceLanguage]);
+  const featureSummary = useMemo(() => {
+    let value = property?.structured_features || {};
+    if (typeof value === 'string') { try { value = JSON.parse(value); } catch { value = {}; } }
+    return summariseStructuredFeatures(value || {});
+  }, [property?.structured_features, interfaceLanguage]);
 
   const handleSave = async () => {
     if (!isAuthenticated) {
@@ -518,6 +524,11 @@ const PropertyDetailScreen = ({ route, navigation }) => {
             </AppText>
           </View>
 
+          {featureSummary.answeredCount > 0 && <View style={styles.section}>
+            <AppText style={styles.sectionTitle}>{ui("Amenities")}</AppText>
+            {featureSummary.available.map(feature => <View key={feature.key} style={{marginBottom:12}}><AppText style={styles.amenityText}>{ui(feature.label)} · {ui("Available")}</AppText>{feature.details.map(detail => <AppText key={detail.key} style={styles.description}>{ui(detail.label)}: {ui(String(detail.value))}</AppText>)}{!!feature.description && <AppText style={styles.description}>{feature.description}</AppText>}</View>)}
+            {featureSummary.unavailable.map(feature => <AppText key={feature.key} style={styles.description}>{ui(feature.label)} · {ui("Not available")}</AppText>)}
+          </View>}
           {amenities.length ? (
             <View style={styles.section}>
               <AppText style={styles.sectionTitle}>{ui("Amenities")}</AppText>

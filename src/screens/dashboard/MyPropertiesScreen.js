@@ -14,6 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import BrandImagePlaceholder from '../../components/common/BrandImagePlaceholder';
 import DamageReportCapture from '../../components/properties/DamageReportCapture';
+import PropertyUpdateModal from '../../components/properties/PropertyUpdateModal';
 import { AuthContext } from '../../context/AuthContext';
 import { propertyService } from '../../services/propertyService';
 import { colors, radius, typography, typeScale } from '../../theme';
@@ -35,6 +36,7 @@ const MyPropertiesScreen = ({ navigation }) => {
   const [items, setItems] = useState([]);
   const [filter, setFilter] = useState('all');
   const [damagePropertyId, setDamagePropertyId] = useState(null);
+  const [editingProperty, setEditingProperty] = useState(null);
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
@@ -248,6 +250,7 @@ const MyPropertiesScreen = ({ navigation }) => {
                   <AppText style={styles.price}>₦{Number(item.rent_amount || 0).toLocaleString()}</AppText>
                 </View>
               </TouchableOpacity>
+              <TouchableOpacity accessibilityRole="button" onPress={() => setEditingProperty(item)} style={{padding:14,alignItems:'center',borderTopWidth:1,borderTopColor:colors.border}}><AppText style={styles.actionText}>{ui("Update property details")}</AppText>{item.update_request_status && <AppText>{ui(item.update_request_status)}</AppText>}</TouchableOpacity>
               <View style={styles.actions}>
                 <TouchableOpacity
                   disabled={busyId === item.id || !item.is_verified}
@@ -271,6 +274,7 @@ const MyPropertiesScreen = ({ navigation }) => {
         showsVerticalScrollIndicator={false}
       />
 
+      {editingProperty && <PropertyUpdateModal property={editingProperty} onClose={() => {setEditingProperty(null);loadProperties({refresh:true});}} />}
       <DamageReportCapture
         onClose={() => setDamagePropertyId(null)}
         onSaved={() => loadProperties({ refresh: true })}

@@ -364,6 +364,7 @@ const PrivacyPolicyScreen = () => { useInterfaceLanguage(); return (<DashboardSc
       <PolicyCard>
         <AppText style={styles.paragraph}>{ui("Checkout is provided through Paystack. Full card numbers and CVVs are entered into Paystack-controlled payment flows and are not stored by RentalHub. We receive and retain transaction references, amounts, status, purpose and timing needed to provide receipts, access and reconciliation.")}</AppText>
         <AppText style={styles.paragraph}>{ui("Where a refund, withdrawal, settlement or payout is requested, RentalHub collects and stores the bank name, bank code, account number and account name needed to resolve the account and complete the transfer. Financial records may remain after account closure where accounting, fraud, dispute or legal duties require them.")}</AppText>
+        <AppText style={styles.paragraph}>{ui("If you choose bank transfer, a collection account may be opened in your name by our regulated banking partner. For that purpose only, it receives the name and, where the partner bank requires it, the NIN from your verified identity record. It does not hold your wallet balance.")}</AppText>
       </PolicyCard>
     </DashboardSection>
 

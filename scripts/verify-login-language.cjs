@@ -4,7 +4,7 @@ const runtime=require('../src/i18n/interfaceRuntime.cjs');
 const compiled=transformSync(fs.readFileSync('src/screens/auth/LoginScreen.js','utf8'),{configFile:false,babelrc:false,plugins:['@babel/plugin-transform-modules-commonjs','@babel/plugin-transform-react-jsx']}).code;
 const slots=[];let cursor=0,notice;
 const react={...React,useState(initial){const i=cursor++;if(!(i in slots))slots[i]=typeof initial==='function'?initial():initial;return [slots[i],v=>{slots[i]=typeof v==='function'?v(slots[i]):v;}];},useRef:v=>({current:v}),useEffect:()=>{},useContext:()=>({login:async()=>({success:false}),loginWithBiometrics:async()=>({success:false})})};
-const native={StyleSheet:{create:x=>x},Platform:{OS:'android'},Alert:{alert:()=>{}}};for(const name of ['View','ScrollView','KeyboardAvoidingView','TouchableOpacity','StatusBar'])native[name]=name;
+const native={StyleSheet:{create:x=>x},Platform:{OS:'android'},Alert:{alert:()=>{}},Keyboard:{addListener:()=>({remove(){}})},useWindowDimensions:()=>({height:812,width:375})};for(const name of ['View','ScrollView','KeyboardAvoidingView','TouchableOpacity','StatusBar'])native[name]=name;
 const mod={exports:{}};
 vm.runInNewContext(compiled,{exports:mod.exports,module:mod,require:name=>{
  if(name==='react')return react;if(name==='react-native')return native;

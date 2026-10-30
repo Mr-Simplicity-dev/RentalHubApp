@@ -14513,7 +14513,14 @@
     "ig": "Na-Emekarị"
   },
   "cancelled": {
-    "en": "Cancelled"
+    "en": "Withdrawn",
+    "fr": "Retiré",
+    "ar": "تم السحب",
+    "ru": "Отозвано",
+    "zh": "已撤回",
+    "ha": "An janye",
+    "yo": "A ti fà á padà",
+    "ig": "E weghachitere"
   },
   "assigned to:": {
     "en": "Assigned to: ",
@@ -23712,8 +23719,8 @@
     "yo": "Tẹ imeèlì agbẹjọ́rò rẹ",
     "ig": "Tinye email ọkàiwu gị"
   },
-  "enroll in legal support": {
-    "en": "Enroll in legal support",
+  "enroll in to dispute support": {
+    "en": "Enroll in to dispute support",
     "fr": "Je souhaite utiliser un avocat Amana RentalHub NG",
     "ar": "أريد استخدام محامي Amana RentalHub NG",
     "ru": "Я хочу воспользоваться услугами юриста Amana RentalHub NG",
@@ -53742,7 +53749,10 @@
     "ar": "| الشدة:",
     "fr": "| Gravité :",
     "ru": "| Серьезность:",
-    "zh": "|严重程度："
+    "zh": "|严重程度：",
+    "ha": "| Mummunan yanayi:",
+    "yo": "| Bùburú:",
+    "ig": "| Ogo:"
   },
   "front of the building": {
     "en": "Front of the building",
@@ -59675,5 +59685,275 @@
     "ha": "Zaɓi jiha da farko",
     "yo": "Kọ́kọ́ yan ìpínlẹ̀",
     "ig": "Buru ụzọ họrọ steeti"
+  },
+  "update property details": {
+    "en": "Update property details",
+    "fr": "Modifier les détails du logement",
+    "ar": "تحديث تفاصيل العقار",
+    "ru": "Обновить сведения об объекте",
+    "zh": "更新房源详情",
+    "ha": "Sabunta bayanan gida",
+    "yo": "Ṣàtúnṣe àlàyé ilé",
+    "ig": "Melite nkọwa ụlọ"
+  },
+  "every change requires admin approval. published details remain unchanged until approval. if the listing is no longer accurate or safe, pause it while the update is reviewed.": {
+    "en": "Every change requires admin approval. Published details remain unchanged until approval. If the listing is no longer accurate or safe, pause it while the update is reviewed.",
+    "fr": "Toute modification nécessite une approbation administrative. Les informations publiées restent inchangées avant approbation. Suspendez l’annonce si elle est inexacte ou présente un risque.",
+    "ar": "كل تغيير يحتاج إلى موافقة الإدارة. تبقى التفاصيل المنشورة كما هي حتى الموافقة. أوقف الإعلان مؤقتًا إذا لم يعد دقيقًا أو آمنًا أثناء المراجعة.",
+    "ru": "Все изменения требуют одобрения администратора. До одобрения опубликованные сведения не меняются. Приостановите объявление, если оно неточно или объект небезопасен.",
+    "zh": "所有修改均需管理员批准。批准前，已发布的详情保持不变。如果房源信息不准确或存在安全问题，请在审核期间暂停发布。",
+    "ha": "Kowane canji yana bukatar amincewar mai gudanarwa. Bayanan da aka wallafa ba za su canza ba sai an amince. Idan bayanan ba daidai ba ne ko gidan ba shi da aminci, dakatar da tallan yayin dubawa.",
+    "yo": "Gbogbo àtúnṣe nílò ìfọwọ́sí alábòójútó. Àlàyé tí a tẹ̀ jáde kò ní yí padà títí a fi fọwọ́ sí i. Dá ìpolówó dúró fún ìgbà díẹ̀ bí àlàyé kò bá pé tàbí ilé kò bá ní ààbò.",
+    "ig": "Mgbanwe ọ bụla chọrọ nkwado onye nchịkwa. Nkọwa e bipụtara agaghị agbanwe ruo mgbe a kwadoro ya. Kwụsị mgbasa ozi nwa oge ma ọ bụrụ na nkọwa adịghị mma ma ọ bụ ụlọ enweghị nchekwa."
+  },
+  "unable to load property details. close and try again.": {
+    "en": "Unable to load property details. Close and try again.",
+    "fr": "Impossible de charger les détails. Fermez et réessayez.",
+    "ar": "تعذر تحميل تفاصيل العقار. أغلق وحاول مجددًا.",
+    "ru": "Не удалось загрузить сведения. Закройте и повторите попытку.",
+    "zh": "无法加载房源详情。请关闭后重试。",
+    "ha": "An kasa loda bayanan gida. Rufe sannan ka sake gwadawa.",
+    "yo": "A kò lè ṣí àlàyé ilé. Pa á kí o sì tún gbìyànjú.",
+    "ig": "Enweghị ike ibudata nkọwa ụlọ. Mechie ma gbalịa ọzọ."
+  },
+  "unable to submit changes. please try again.": {
+    "en": "Unable to submit changes. Please try again.",
+    "fr": "Impossible d’envoyer les modifications. Réessayez.",
+    "ar": "تعذر إرسال التغييرات. حاول مجددًا.",
+    "ru": "Не удалось отправить изменения. Повторите попытку.",
+    "zh": "无法提交修改，请重试。",
+    "ha": "An kasa aika canje-canje. Sake gwadawa.",
+    "yo": "A kò lè fi àwọn àtúnṣe ránṣẹ́. Tún gbìyànjú.",
+    "ig": "Enweghị ike izipu mgbanwe. Gbalịa ọzọ."
+  },
+  "update awaiting approval": {
+    "en": "Update awaiting approval",
+    "fr": "Modification en attente d’approbation",
+    "ar": "التحديث بانتظار الموافقة",
+    "ru": "Изменение ожидает одобрения",
+    "zh": "更新待批准",
+    "ha": "Canji yana jiran amincewa",
+    "yo": "Àtúnṣe ń dúró de ìfọwọ́sí",
+    "ig": "Mgbanwe na-eche nkwado"
+  },
+  "withdraw update to edit again": {
+    "en": "Withdraw update to edit again",
+    "fr": "Retirer la demande pour la modifier",
+    "ar": "سحب التحديث لتعديله مجددًا",
+    "ru": "Отозвать запрос для редактирования",
+    "zh": "撤回更新以重新编辑",
+    "ha": "Janye canjin domin gyarawa",
+    "yo": "Fa àtúnṣe padà láti tún un ṣe",
+    "ig": "Weghachite mgbanwe ka ị dezie ọzọ"
+  },
+  "property title": {
+    "en": "Property title",
+    "fr": "Titre du logement",
+    "ar": "عنوان العقار",
+    "ru": "Название объекта",
+    "zh": "房源标题",
+    "ha": "Taken gida",
+    "yo": "Àkọlé ilé",
+    "ig": "Aha ụlọ"
+  },
+  "property description": {
+    "en": "Property description",
+    "fr": "Description du logement",
+    "ar": "وصف العقار",
+    "ru": "Описание объекта",
+    "zh": "房源描述",
+    "ha": "Bayanin gida",
+    "yo": "Àpèjúwe ilé",
+    "ig": "Nkọwa ụlọ"
+  },
+  "other amenities (separate with commas)": {
+    "en": "Other amenities (separate with commas)",
+    "fr": "Autres équipements (séparés par des virgules)",
+    "ar": "مرافق أخرى (افصل بينها بفواصل)",
+    "ru": "Другие удобства (через запятую)",
+    "zh": "其他设施（用逗号分隔）",
+    "ha": "Sauran abubuwan more rayuwa (raba da waƙafi)",
+    "yo": "Àwọn ohun èlò mìíràn (fi àmì kọ́mà yà wọ́n)",
+    "ig": "Ihe enyemaka ndị ọzọ (kewaa ha na kọma)"
+  },
+  "what changed and why?": {
+    "en": "What changed and why?",
+    "fr": "Qu’est-ce qui a changé et pourquoi ?",
+    "ar": "ما الذي تغير ولماذا؟",
+    "ru": "Что изменилось и почему?",
+    "zh": "修改了什么，为什么？",
+    "ha": "Me ya canza kuma me ya sa?",
+    "yo": "Kí ló yí padà, kí sì ni ìdí?",
+    "ig": "Gịnị gbanwere, n’ihi gịnị?"
+  },
+  "submitting…": {
+    "en": "Submitting…",
+    "fr": "Envoi…",
+    "ar": "جارٍ الإرسال…",
+    "ru": "Отправка…",
+    "zh": "正在提交…",
+    "ha": "Ana aikawa…",
+    "yo": "Ń firánṣẹ́…",
+    "ig": "Na-ezipụ…"
+  },
+  "submit for approval": {
+    "en": "Submit for approval",
+    "fr": "Envoyer pour approbation",
+    "ar": "إرسال للموافقة",
+    "ru": "Отправить на одобрение",
+    "zh": "提交审批",
+    "ha": "Aika don amincewa",
+    "yo": "Fi ránṣẹ́ fún ìfọwọ́sí",
+    "ig": "Zipu maka nkwado"
+  },
+  "update history": {
+    "en": "Update history",
+    "fr": "Historique des modifications",
+    "ar": "سجل التحديثات",
+    "ru": "История изменений",
+    "zh": "更新历史",
+    "ha": "Tarihin canje-canje",
+    "yo": "Ìtàn àwọn àtúnṣe",
+    "ig": "Akụkọ mgbanwe"
+  },
+  "additional details": {
+    "en": "Additional details",
+    "fr": "Détails supplémentaires",
+    "ar": "تفاصيل إضافية",
+    "ru": "Дополнительные сведения",
+    "zh": "其他详情",
+    "ha": "Ƙarin bayani",
+    "yo": "Àfikún àlàyé",
+    "ig": "Nkọwa ndị ọzọ"
+  },
+  "unable to withdraw update.": {
+    "en": "Unable to withdraw update.",
+    "fr": "Impossible de retirer la demande.",
+    "ar": "تعذر سحب التحديث.",
+    "ru": "Не удалось отозвать запрос.",
+    "zh": "无法撤回更新。",
+    "ha": "An kasa janye canjin.",
+    "yo": "A kò lè fa àtúnṣe padà.",
+    "ig": "Enweghị ike iweghachite mgbanwe."
+  },
+  "review and price": {
+    "en": "Review and price",
+    "fr": "Vérifier et payer",
+    "ar": "المراجعة والسعر",
+    "ru": "Проверка и оплата",
+    "zh": "核对与费用",
+    "ha": "Bita da farashi",
+    "yo": "Ṣàyẹ̀wò àti owó",
+    "ig": "Nyochaa na ọnụahịa"
+  },
+  "secure your account": {
+    "en": "Secure your account",
+    "fr": "Sécurisez votre compte",
+    "ar": "أمّن حسابك",
+    "ru": "Защитите свой аккаунт",
+    "zh": "保护您的账户",
+    "ha": "Kare asusunka",
+    "yo": "Dáàbò bo àkọsílẹ̀ rẹ",
+    "ig": "Chekwaa akaụntụ gị"
+  },
+  "check your details and the amount due before setting your password.": {
+    "en": "Check your details and the amount due before setting your password.",
+    "fr": "Vérifiez vos informations et le montant dû avant de définir votre mot de passe.",
+    "ar": "راجع بياناتك والمبلغ المستحق قبل تعيين كلمة المرور.",
+    "ru": "Проверьте свои данные и сумму к оплате, прежде чем задать пароль.",
+    "zh": "设置密码前，请核对您的信息和应付金额。",
+    "ha": "Duba bayananka da adadin da za a biya kafin sa kalmar sirri.",
+    "yo": "Ṣàyẹ̀wò àwọn àlàyé rẹ àti iye owó tí ó yẹ kí o san kí o tó ṣètò ọ̀rọ̀ ìkọ̀kọ̀.",
+    "ig": "Lelee nkọwa gị na ego ị ga-akwụ tupu ị tinye paswọọdụ."
+  },
+  "create a strong password to finish your registration.": {
+    "en": "Create a strong password to finish your registration.",
+    "fr": "Créez un mot de passe fort pour terminer votre inscription.",
+    "ar": "أنشئ كلمة مرور قوية لإكمال تسجيلك.",
+    "ru": "Создайте надежный пароль, чтобы завершить регистрацию.",
+    "zh": "创建强密码以完成注册。",
+    "ha": "Kirkiro kalmar sirri mai ƙarfi don kammala rijistar ku.",
+    "yo": "Ṣẹ̀dá ọ̀rọ̀ ìkọ̀kọ̀ tó lágbára láti parí ìforúkọsílẹ̀ rẹ.",
+    "ig": "Mepụta paswọọdụ siri ike iji mechaa ndebanye aha gị."
+  },
+  "at least 10 characters": {
+    "en": "At least 10 characters",
+    "fr": "Au moins 10 caractères",
+    "ar": "10 أحرف على الأقل",
+    "ru": "Не менее 10 символов",
+    "zh": "至少 10 个字符",
+    "ha": "Aƙalla haruffa 10",
+    "yo": "Ó kéré tán, lẹ́tà 10",
+    "ig": "Opekarịa mkpụrụedemede 10"
+  },
+  "one uppercase letter": {
+    "en": "One uppercase letter",
+    "fr": "Une lettre majuscule",
+    "ar": "حرف كبير واحد",
+    "ru": "Одна заглавная буква",
+    "zh": "一个大写字母",
+    "ha": "Babban harafi ɗaya",
+    "yo": "Lẹ́tà ńlá kan",
+    "ig": "Otu mkpụrụedemede ukwu"
+  },
+  "one lowercase letter": {
+    "en": "One lowercase letter",
+    "fr": "Une lettre minuscule",
+    "ar": "حرف صغير واحد",
+    "ru": "Одна строчная буква",
+    "zh": "一个小写字母",
+    "ha": "Ƙaramin harafi ɗaya",
+    "yo": "Lẹ́tà kékeré kan",
+    "ig": "Otu mkpụrụedemede nta"
+  },
+  "one number": {
+    "en": "One number",
+    "fr": "Un chiffre",
+    "ar": "رقم واحد",
+    "ru": "Одна цифра",
+    "zh": "一个数字",
+    "ha": "Lamba ɗaya",
+    "yo": "Nọ́mbà kan",
+    "ig": "Otu nọmba"
+  },
+  "one special character": {
+    "en": "One special character",
+    "fr": "Un caractère spécial",
+    "ar": "رمز خاص واحد",
+    "ru": "Один специальный символ",
+    "zh": "一个特殊字符",
+    "ha": "Harafi na musamman ɗaya",
+    "yo": "Àmì àkànṣe kan",
+    "ig": "Otu akara pụrụ iche"
+  },
+  "tenant registration is not available for the selected location.": {
+    "en": "Tenant registration is not available for the selected location.",
+    "fr": "L'inscription des locataires n'est pas disponible pour la zone sélectionnée.",
+    "ar": "تسجيل المستأجرين غير متاح للموقع المحدد.",
+    "ru": "Регистрация арендаторов недоступна для выбранного местоположения.",
+    "zh": "所选地区暂不支持租户注册。",
+    "ha": "Rijistar mai haya ba ta samuwa ga wurin da aka zaɓa.",
+    "yo": "Ìforúkọsílẹ̀ alágbàtà kò sí fún ipò tí o yàn.",
+    "ig": "Ndebanye aha ndị nwe ụlọ adịghị maka ebe ahọpụtara."
+  },
+  "landlord registration is not available for the selected location.": {
+    "en": "Landlord registration is not available for the selected location.",
+    "fr": "L'inscription des propriétaires n'est pas disponible pour la zone sélectionnée.",
+    "ar": "تسجيل الملاك غير متاح للموقع المحدد.",
+    "ru": "Регистрация арендодателей недоступна для выбранного местоположения.",
+    "zh": "所选地区暂不支持房东注册。",
+    "ha": "Rijistar mai gida ba ta samuwa ga wurin da aka zaɓa.",
+    "yo": "Ìforúkọsílẹ̀ onílé kò sí fún ipò tí o yàn.",
+    "ig": "Ndebanye aha ndị nwe ụlọ adịghị maka ebe ahọpụtara."
+  },
+  "not available": {
+    "en": "Not available",
+    "fr": "Non disponible",
+    "ar": "غير متاح",
+    "ru": "Недоступно",
+    "zh": "不可用",
+    "ha": "Ba ya samuwa",
+    "yo": "Kò sí",
+    "ig": "Adịghị"
   }
 }
