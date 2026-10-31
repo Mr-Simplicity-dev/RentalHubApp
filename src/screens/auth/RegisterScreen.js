@@ -21,6 +21,7 @@ import OptionPickerModal from '../../components/common/OptionPickerModal';
 import { AuthContext } from '../../context/AuthContext';
 import { authService } from '../../services/authService';
 import { propertyService } from '../../services/propertyService';
+import { storageService } from '../../services/storageService';
 import TurnstileWidget from '../../components/common/TurnstileWidget';
 import { getErrorMessage, pickList, pickObject } from '../../utils/http';
 import { colors, radius, shadows, typography, typeScale } from '../../theme';
@@ -31,6 +32,8 @@ const LAWYER_ACCESS_FEE = 2000;
 const AGENT_ACCESS_FEE = 5000;
 const TENANT_REGISTRATION_FEE = 3000;
 const LANDLORD_REGISTRATION_FEE = 5000;
+const REGISTRATION_DRAFT_STORAGE_KEY = 'rentalhub_registration_draft_v1';
+const REGISTRATION_DRAFT_TTL_MS = 24 * 60 * 60 * 1000;
 
 const defaultFlags = {
   loaded: false,
@@ -124,6 +127,113 @@ const RegisterScreen = ({ navigation, route }) => {
 
   const turnstileTokenRef = useRef(null);
   const turnstileRef = useRef(null);
+  const draftHydratedRef = useRef(false);
+
+  const clearSavedRegistrationDraft = async () => {
+    try {
+      await storageService.setItem(REGISTRATION_DRAFT_STORAGE_KEY, '');
+    } catch {}
+  };
+
+  useEffect(() => {
+    let active = true;
+
+    const hydrateRegistrationDraft = async () => {
+      try {
+        const rawDraft = await storageService.getItem(REGISTRATION_DRAFT_STORAGE_KEY);
+        if (!active || !rawDraft) {
+          draftHydratedRef.current = true;
+          return;
+        }
+
+        const parsed = JSON.parse(rawDraft);
+        const savedAt = Number(parsed?.savedAt || 0);
+        if (!savedAt || Date.now() - savedAt >= REGISTRATION_DRAFT_TTL_MS) {
+          await clearSavedRegistrationDraft();
+          draftHydratedRef.current = true;
+          return;
+        }
+
+        if (parsed.userType === 'tenant' || parsed.userType === 'landlord') {
+          setUserType(parsed.userType);
+        }
+        if (typeof parsed.isForeigner === 'boolean') {
+          setIsForeigner(parsed.isForeigner);
+        }
+        if (typeof parsed.acceptedTerms === 'boolean') {
+          setAcceptedTerms(parsed.acceptedTerms);
+        }
+
+        const draftForm = parsed?.form && typeof parsed.form === 'object' ? parsed.form : {};
+        setForm((prev) => ({
+          ...prev,
+          full_name: String(draftForm.full_name ?? prev.full_name),
+          email: String(draftForm.email ?? prev.email),
+          phone: String(draftForm.phone ?? prev.phone),
+          lawyer_email: String(draftForm.lawyer_email ?? prev.lawyer_email),
+          use_rentalhub_lawyers: Boolean(draftForm.use_rentalhub_lawyers),
+          use_rentalhub_agents: Boolean(draftForm.use_rentalhub_agents),
+          referral_code: String(initialReferralCode || draftForm.referral_code || prev.referral_code),
+          add_agent: Boolean(draftForm.add_agent),
+          agent_full_name: String(draftForm.agent_full_name ?? prev.agent_full_name),
+          agent_email: String(draftForm.agent_email ?? prev.agent_email),
+          agent_phone: String(draftForm.agent_phone ?? prev.agent_phone),
+          nationality: String(draftForm.nationality ?? prev.nationality),
+          state_id: String(draftForm.state_id ?? prev.state_id),
+          lga_name: String(draftForm.lga_name ?? prev.lga_name),
+          nin: '',
+          international_passport_number: '',
+          password: '',
+          confirm_password: '',
+        }));
+      } catch {
+        await clearSavedRegistrationDraft();
+      } finally {
+        if (active) {
+          draftHydratedRef.current = true;
+        }
+      }
+    };
+
+    hydrateRegistrationDraft();
+
+    return () => {
+      active = false;
+    };
+  }, [initialReferralCode]);
+
+  useEffect(() => {
+    if (!draftHydratedRef.current) {
+      return;
+    }
+
+    const sanitizedDraft = {
+      savedAt: Date.now(),
+      userType,
+      isForeigner,
+      acceptedTerms,
+      form: {
+        full_name: form.full_name,
+        email: form.email,
+        phone: form.phone,
+        lawyer_email: form.lawyer_email,
+        use_rentalhub_lawyers: form.use_rentalhub_lawyers,
+        use_rentalhub_agents: form.use_rentalhub_agents,
+        referral_code: form.referral_code,
+        add_agent: form.add_agent,
+        agent_full_name: form.agent_full_name,
+        agent_email: form.agent_email,
+        agent_phone: form.agent_phone,
+        nationality: form.nationality,
+        state_id: form.state_id,
+        lga_name: form.lga_name,
+      },
+    };
+
+    storageService
+      .setItem(REGISTRATION_DRAFT_STORAGE_KEY, JSON.stringify(sanitizedDraft))
+      .catch(() => {});
+  }, [acceptedTerms, form, isForeigner, userType]);
 
   useEffect(() => {
     if (currentStep !== 4) {
@@ -643,6 +753,7 @@ const RegisterScreen = ({ navigation, route }) => {
     try {
       const response = await register(payload, turnstileToken);
       if (response.success) {
+        await clearSavedRegistrationDraft();
         Toast.show({
           type: 'success',
           text1: ui("Registration complete"),
@@ -685,6 +796,7 @@ const RegisterScreen = ({ navigation, route }) => {
   };
 
   const handleBankTransferPaid = () => {
+    clearSavedRegistrationDraft();
     setShowBankTransferModal(false);
     setBankTransferData(null);
     setPaymentMethod(null);
@@ -709,6 +821,7 @@ const RegisterScreen = ({ navigation, route }) => {
         throw new Error(response.message || 'Payment completion failed');
       }
 
+      await clearSavedRegistrationDraft();
       setForeignCardAdjustment(null);
       await establishSession(response.data);
       setPaymentState({

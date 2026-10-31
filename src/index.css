@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: #F6F8FC;
+    color: #0E1C36;
+  }
+}
+
+.font-amana {
+  font-family: 'Dancing Script', cursive;
+}
