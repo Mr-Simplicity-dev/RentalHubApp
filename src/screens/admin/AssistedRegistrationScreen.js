@@ -10,6 +10,7 @@ import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
 import AppText from '../../components/common/AppText';
 import SelectField from '../../components/common/SelectField';
+import AssistedCustomerPhoto from '../../components/identity/AssistedCustomerPhoto';
 import OptionPickerModal from '../../components/common/OptionPickerModal';
 import { colors, radius, typeScale, typography } from '../../theme';
 const roles = ['super_admin', 'super_support_admin', 'zonal_admin', 'state_support_admin', 'lga_support_admin'];
@@ -43,6 +44,7 @@ export default function AssistedRegistrationScreen() {
   const [search, setSearch] = useState('');
   const [message, setMessage] = useState('');
   const [busy, setBusy] = useState(false);
+  const [photoCustomer,setPhotoCustomer] = useState(null);
   const [picker, setPicker] = useState(null);
   const request = useRef(null);
   const refresh = async () => {
@@ -104,6 +106,7 @@ export default function AssistedRegistrationScreen() {
       request_id: request.current
     });
     setMessage('Account saved: ' + r.data.data.reference + '. Customer signs in with a phone code.');
+    setPhotoCustomer(r.data.data);
     setForm(empty);
     setPricing(null);
     request.current = null;
@@ -176,7 +179,7 @@ export default function AssistedRegistrationScreen() {
         })))} />{toggle('use_rentalhub_lawyers', 'Use platform coverage assistance (fee included in quote)')}{!form.use_rentalhub_lawyers && field('lawyer_email', 'Customer’s own lawyer email', {
           keyboardType: 'email-address',
           autoCapitalize: 'none'
-        })}{form.user_type === "landlord" && toggle('use_rentalhub_agents', 'Use a platform property agent (fee included in quote)')}{toggle('consent_confirmed', 'I explained registration and obtained the customer’s agreement.')}{pricing && <View style={styles.quote}><AppText>{"Registration: "}{money(pricing.base_amount)}</AppText><AppText>{"Coverage assistance: "}{money(pricing.lawyer_amount)}</AppText><AppText>{"Property agent: "}{money(pricing.agent_amount)}</AppText><AppText style={styles.heading}>{"Total: "}{money(pricing.amount)}</AppText><AppText>{"Account is created unpaid. Record cash only after receiving it, or let the customer pay after sign-in."}</AppText></View>}<Button title={pricing ? 'Create customer account' : 'Review registration fee'} onPress={submit} loading={busy} /></View><View style={styles.card}><AppText style={styles.heading}>{"Registrations and receipts"}</AppText><Input label={"Search name, phone or reference"} value={search} onChangeText={setSearch} /><Button title={"Search / refresh"} variant="outline" onPress={() => run(refresh)} disabled={busy} />{records.map(row => <View key={row.reference} style={styles.record}><AppText style={styles.heading}>{row.full_name}</AppText><AppText>{row.user_type} · {row.phone}</AppText><AppText>{row.state_name}, {row.lga_name}</AppText><AppText>{row.reference}</AppText><AppText>{money(row.amount_due)} — {row.collection_method === 'waived' ? 'Fee waived' : row.status === "paid" ? "Paid" : "Unpaid"}</AppText>{row.collection_method === 'cash' && <AppText>{"Cash remittance: "}{row.remittance_status}</AppText>}{row.status === "paid" ? <Button title={row.collection_method === 'waived' ? 'Download acknowledgement' : 'Generate receipt'} variant="outline" disabled={busy} onPress={() => receipt(row)} /> : <Button title={"Record cash received"} disabled={busy} onPress={() => cash(row)} />} {['super_admin', 'super_support_admin'].includes(user.user_type) && row.remittance_status === 'outstanding' && <Button title={"Acknowledge cash remittance"} variant="outline" disabled={busy} onPress={() => Alert.alert("Acknowledge cash remittance", "Confirm that you received this collected money. You cannot acknowledge your own collection.", [{
+        })}{form.user_type === "landlord" && toggle('use_rentalhub_agents', 'Use a platform property agent (fee included in quote)')}{toggle('consent_confirmed', 'I explained registration and obtained the customer’s agreement.')}{pricing && <View style={styles.quote}><AppText>{"Registration: "}{money(pricing.base_amount)}</AppText><AppText>{"Coverage assistance: "}{money(pricing.lawyer_amount)}</AppText><AppText>{"Property agent: "}{money(pricing.agent_amount)}</AppText><AppText style={styles.heading}>{"Total: "}{money(pricing.amount)}</AppText><AppText>{"Account is created unpaid. Record cash only after receiving it, or let the customer pay after sign-in."}</AppText></View>}<Button title={pricing ? 'Create customer account' : 'Review registration fee'} onPress={submit} loading={busy} /></View><View style={styles.card}><AppText style={styles.heading}>{"Registrations and receipts"}</AppText><Input label={"Search name, phone or reference"} value={search} onChangeText={setSearch} /><Button title={"Search / refresh"} variant="outline" onPress={() => run(refresh)} disabled={busy} />{records.map(row => <View key={row.reference} style={styles.record}><AppText style={styles.heading}>{row.full_name}</AppText><AppText>{row.user_type} · {row.phone}</AppText><AppText>{row.state_name}, {row.lga_name}</AppText><AppText>{row.reference}</AppText><Button title="Capture customer photo" variant="outline" disabled={busy} onPress={() => setPhotoCustomer(row)} /><AppText>{money(row.amount_due)} — {row.collection_method === 'waived' ? 'Fee waived' : row.status === "paid" ? "Paid" : "Unpaid"}</AppText>{row.collection_method === 'cash' && <AppText>{"Cash remittance: "}{row.remittance_status}</AppText>}{row.status === "paid" ? <Button title={row.collection_method === 'waived' ? 'Download acknowledgement' : 'Generate receipt'} variant="outline" disabled={busy} onPress={() => receipt(row)} /> : <Button title={"Record cash received"} disabled={busy} onPress={() => cash(row)} />} {['super_admin', 'super_support_admin'].includes(user.user_type) && row.remittance_status === 'outstanding' && <Button title={"Acknowledge cash remittance"} variant="outline" disabled={busy} onPress={() => Alert.alert("Acknowledge cash remittance", "Confirm that you received this collected money. You cannot acknowledge your own collection.", [{
             text: "Cancel",
             style: 'cancel'
           }, {
@@ -185,7 +188,7 @@ export default function AssistedRegistrationScreen() {
               await api.post('/assisted-registration/staff/' + encodeURIComponent(row.reference) + '/remittance');
               await refresh();
             })
-          }])} />}</View>)}</View><View style={styles.card}><AppText style={styles.heading}>{"Office fingerprint verification"}</AppText><AppText>{"Use Assisted account registration on the office Windows website for fingerprint enrollment and verification with the U.are.U 4500 reader. The SourceAFIS integration requires server setup. This USB reader is not connected through the Android or iOS app."}</AppText></View></ScrollView><OptionPickerModal visible={Boolean(picker)} title={picker?.title} options={picker?.options || []} searchable onClose={() => setPicker(null)} onSelect={item => {
+          }])} />}</View>)}</View><View style={styles.card}><AppText style={styles.heading}>{"Office fingerprint verification"}</AppText><AppText>{"Use Assisted account registration on the office Windows website for fingerprint enrollment and verification with the U.are.U 4500 reader. The SourceAFIS integration requires server setup. This USB reader is not connected through the Android or iOS app."}</AppText></View></ScrollView>{photoCustomer && <AssistedCustomerPhoto key={photoCustomer.reference} customer={photoCustomer} onClose={() => setPhotoCustomer(null)} onSaved={() => setMessage("Photo saved for " + photoCustomer.full_name)} />}<OptionPickerModal visible={Boolean(picker)} title={picker?.title} options={picker?.options || []} searchable onClose={() => setPicker(null)} onSelect={item => {
       update(picker.key, item.value);
       setPicker(null);
     }} /></>;

@@ -7,7 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
-import {
+import LivePropertyCapture, {
   MAX_PROPERTY_PHOTOS,
   MAX_PROPERTY_CLIPS,
   GUIDED_SHOT_PROMPTS,

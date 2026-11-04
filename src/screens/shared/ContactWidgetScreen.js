@@ -495,6 +495,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
         <AppText style={styles.heroText}>{ui("Submit a support request and our team will get back to you via email.")}</AppText>
       </View>
 
+      <View style={styles.menuRowText}><AppText style={styles.menuRowTitle}>{ui("Head office")}</AppText><AppText>1, Mega Screen, Abuja, FCT, Nigeria</AppText><AppText style={styles.menuRowTitle}>{ui("Branch office")}</AppText><AppText>No. 3 Okene Street, Compensation Layout IV, Old Kutunku, Gwagwalada, FCT Abuja</AppText></View>
       <TouchableOpacity style={styles.menuRow} onPress={() => setView(isAuthenticated ? 'auth-form' : 'form')}>
         <View style={[styles.menuIcon, { backgroundColor: colors.surfaceBlue }]}>
           <Icon name="chatbubble-ellipses-outline" size={20} color={colors.blue} />

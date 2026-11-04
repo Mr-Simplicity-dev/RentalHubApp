@@ -112,6 +112,9 @@ const WhatsappMarketingScreen = () => {
   const [showContacts, setShowContacts] = useState(false);
   const [showPasteBox, setShowPasteBox] = useState(false);
   const [contactPaste, setContactPaste] = useState('');
+  const [page,setPage] = useState(1), [limit,setLimit] = useState(50), [pages,setPages] = useState(1);
+  const [batch,setBatch] = useState(''), [batchFilter,setBatchFilter] = useState(''), [batchDraft,setBatchDraft] = useState('');
+  const [editing,setEditing] = useState(null), [contactName,setContactName] = useState('');
   const [contactBusy, setContactBusy] = useState('');
 
   const load = useCallback(async () => {
@@ -120,12 +123,13 @@ const WhatsappMarketingScreen = () => {
       const [statsRes, campaignsRes, contactsRes] = await Promise.all([
         marketingOpsService.whatsappStats(),
         marketingOpsService.whatsappCampaigns(),
-        marketingOpsService.whatsappContacts().catch(() => null),
+        marketingOpsService.whatsappContacts({ page, limit, batch: batchFilter || undefined }).catch(() => null),
       ]);
       setStats(statsRes?.data || null);
       setCampaigns(pickList(campaignsRes, ['data']));
       if (contactsRes?.data) {
         setContacts(contactsRes.data.contacts || []);
+        setPages(Math.max(1,contactsRes.data.pagination?.totalPages || 1));
         setContactStats(contactsRes.data.stats || null);
       }
     } catch (err) {
@@ -139,7 +143,7 @@ const WhatsappMarketingScreen = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [page, limit, batchFilter]);
 
   useFocusEffect(
     useCallback(() => {
@@ -315,7 +319,7 @@ const WhatsappMarketingScreen = () => {
 
     setContactBusy('import');
     try {
-      const res = await marketingOpsService.whatsappImportContacts(phones);
+      const res = await marketingOpsService.whatsappImportContacts(phones, batch.trim() || undefined);
       const data = res?.data || {};
       Toast.show({
         type: 'success',
@@ -687,6 +691,8 @@ const WhatsappMarketingScreen = () => {
               />
             </PremiumCard>
 
+            <Input label="Import batch tag (optional)" value={batch} onChangeText={setBatch} />
+            {showContacts && <><Input label="Filter contacts by batch" value={batchDraft} onChangeText={setBatchDraft} /><PremiumButton title="Apply batch filter" onPress={() => { setPage(1); setBatchFilter(batchDraft.trim()); }} /><ChannelToggle value={limit} options={[25,50,100].map(value => ({ value, label: String(value) }))} onChange={n => { setPage(1); setLimit(n); }} /><AppText>Page {page} of {pages}</AppText><PremiumButton title="Previous page" disabled={page <= 1} onPress={() => setPage(p => Math.max(1,p-1))} /><PremiumButton title="Next page" disabled={page >= pages} onPress={() => setPage(p => Math.min(pages,p+1))} /></>}
             {showContacts
               ? contacts.map((c) => (
                   <PremiumCard key={c.id}>
@@ -711,6 +717,7 @@ const WhatsappMarketingScreen = () => {
                         }
                       />
                     </View>
+                    {editing === c.id ? <><Input label="Contact name" value={contactName} onChangeText={setContactName} /><PremiumButton title="Save name" disabled={Boolean(contactBusy)} onPress={async () => {setContactBusy('edit');try {await marketingOpsService.whatsappUpdateContact(c.id,contactName.trim() || null);setEditing(null);await load();} catch(e){Toast.show({type:'error',text1:getErrorMessage(e,'Could not save contact')});} finally{setContactBusy('');}}} /><PremiumButton title="Cancel" onPress={() => setEditing(null)} /></> : <PremiumButton title="Edit contact name" onPress={() => {setEditing(c.id); setContactName(c.full_name || '');}} />}
                     <View style={styles.actions}>
                       <PremiumButton
                         title={ui("Remove")}

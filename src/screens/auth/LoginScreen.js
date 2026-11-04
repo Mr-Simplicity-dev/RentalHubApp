@@ -17,6 +17,7 @@ import { AuthContext } from '../../context/AuthContext';
 import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
 import BrandMark from '../../components/brand/BrandMark';
+import GoogleCustomerLogin from '../../components/identity/GoogleCustomerLogin';
 import Toast from 'react-native-toast-message';
 import TurnstileWidget from '../../components/common/TurnstileWidget';
 import { biometricService } from '../../services/biometricService';
@@ -284,7 +285,8 @@ const LoginScreen = ({ navigation }) => {
               style={[styles.loginButton, compact && styles.loginButtonCompact]}
             />
 
-        <TurnstileWidget
+          <GoogleCustomerLogin />
+          <TurnstileWidget
         action="rentalhub_login"
               ref={turnstileRef}
               onToken={(token) => { turnstileTokenRef.current = token; }}

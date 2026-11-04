@@ -154,12 +154,13 @@ export const marketingOpsService = {
     const response = await api.post('/whatsapp-marketing/media', formData);
     return response.data;
   },
-  whatsappContacts: async () => {
-    const response = await api.get('/whatsapp-marketing/contacts');
+  whatsappUpdateContact: async (id, full_name) => (await api.patch('/whatsapp-marketing/contacts/' + encodeURIComponent(id), { full_name })).data,
+  whatsappContacts: async (params = {}) => {
+    const response = await api.get('/whatsapp-marketing/contacts', { params });
     return response.data;
   },
-  whatsappImportContacts: async (phones) => {
-    const response = await api.post('/whatsapp-marketing/contacts/import', { phones });
+  whatsappImportContacts: async (phones, import_batch) => {
+    const response = await api.post('/whatsapp-marketing/contacts/import', { phones, import_batch });
     return response.data;
   },
   whatsappCheckContacts: async (payload = { all: true }) => {

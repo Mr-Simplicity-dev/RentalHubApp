@@ -90,6 +90,7 @@ key.properties
 tmp/
 temp/
 .codex-tmp/
+android/.kotlin/
 .tmp-release-assets/
 .tmp-release-index.android.bundle
 

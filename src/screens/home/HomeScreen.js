@@ -17,6 +17,7 @@ import { colors, radius, shadows, typography, typeScale } from '../../theme';
 import { getErrorMessage, pickList } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
+const defaultLocations = [[25,'Lagos'],[1,'Abuja'],[33,'Rivers'],[31,'Oyo'],[20,'Kano'],[15,'Enugu']].map(([id,state_name]) => ({id,state_name}));
 const propertyTypes = [
   { get "label"() { return ui("Apartment"); }, value: 'apartment', icon: 'business-outline' },
   { get "label"() { return ui("House"); }, value: 'house', icon: 'home-outline' },
@@ -31,7 +32,7 @@ const HomeScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [featured, setFeatured] = useState([]);
-  const [locations, setLocations] = useState([]);
+  const [locations, setLocations] = useState(defaultLocations);
   const [unreadTotal, setUnreadTotal] = useState(0);
 
   const featuredCards = useMemo(() => featured.slice(0, 6), [featured, interfaceLanguage]);
@@ -51,10 +52,11 @@ const HomeScreen = ({ navigation }) => {
     try {
       const [featuredRes, statesRes] = await Promise.all([
         propertyService.getFeaturedProperties(8),
-        propertyService.getStates(),
+        propertyService.getPopularLocations(8).catch(() => propertyService.getStates()),
       ]);
       setFeatured(pickList(featuredRes, ['data', 'properties']));
-      setLocations(pickList(statesRes, ['data', 'states']).slice(0, 8));
+      const areas = pickList(statesRes, ['data', 'locations', 'states']);
+      setLocations(areas.length ? areas.slice(0, 8) : defaultLocations);
     } catch (error) {
       Toast.show({
         type: 'error',
@@ -290,7 +292,7 @@ const HomeScreen = ({ navigation }) => {
             <TouchableOpacity
               key={item.id || item.state_name}
               activeOpacity={0.82}
-              onPress={() => goToPropertyList({ state_id: item.id })}
+              onPress={() => goToPropertyList({ state_id: item.state_id || item.id })}
               style={[styles.locationCard, index % 2 === 1 && styles.locationCardAlt]}>
               <View style={styles.locationIcon}>
                 <Icon name="location" size={18} color={colors.white} />
