@@ -1,3 +1,4 @@
+import { createMfaVerification } from './mfaVerification.cjs';
 import { translateUi as ui } from '../i18n/interfaceRuntime.cjs';
 import { Platform } from 'react-native';
 import axios from 'axios';
@@ -176,8 +177,14 @@ const refreshNativeSession = async () => {
   return payload.token;
 };
 
+const mfaVerification = createMfaVerification({
+  requestCode: requestMfaCode,
+  verify: code => api.post('/auth/2fa/verify', { code }),
+});
+
 api.interceptors.request.use(
   async (config) => {
+    config.mfaGeneration = mfaVerification.generation();
     if (config.skipAuth) {
       if (typeof config.headers?.delete === 'function') {
         config.headers.delete('Authorization');
@@ -244,15 +251,11 @@ api.interceptors.response.use(
       }
 
       try {
-        const mfaCode = await requestMfaCode();
+        await mfaVerification.ensure(originalRequest.mfaGeneration || 0, error.response?.data?.message || '');
         originalRequest.mfaAttempts = attempts;
-        originalRequest.headers = {
-          ...(originalRequest.headers || {}),
-          'X-RentalHub-Mfa-Code': mfaCode,
-        };
         return api(originalRequest);
       } catch (promptError) {
-        return Promise.reject(error);
+        return Promise.reject(promptError);
       }
     }
 
