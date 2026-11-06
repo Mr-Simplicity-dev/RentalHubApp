@@ -263,26 +263,36 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
   const [section, setSection] = useState(
     () => normalizeRequestedSection(route?.params?.initialPanel) || 'overview'
   );
-  // Switching workspaces stays inside this screen, so the navigator has no back
-  // entry to offer. Put a real top-left back arrow in the header instead.
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerLeft:
-        section === 'overview'
-          ? undefined
-          : () => (
-              <TouchableOpacity
-                accessibilityRole="button"
-                accessibilityLabel="Back to overview"
-                activeOpacity={0.7}
-                onPress={() => setSection('overview')}
-                style={styles.headerBack}
-              >
-                <Icon name="arrow-back" size={22} color={colors.navy} />
-              </TouchableOpacity>
-            ),
+      headerLeft: () => (
+        <View style={styles.headerLeftActions}>
+          {section !== 'overview' ? (
+            <TouchableOpacity
+              accessibilityRole="button"
+              accessibilityLabel="Back to overview"
+              activeOpacity={0.7}
+              onPress={() => setSection('overview')}
+              style={styles.headerBack}
+            >
+              <Icon name="arrow-back" size={22} color={colors.navy} />
+            </TouchableOpacity>
+          ) : null}
+          <TouchableOpacity
+            accessibilityRole="button"
+            accessibilityLabel="Explore homes"
+            accessibilityHint="Browse the public property marketplace"
+            activeOpacity={0.85}
+            onPress={() => navigation.navigate('Home')}
+            style={styles.headerExplore}
+          >
+            <Icon name="compass-outline" size={22} color={colors.navy} />
+          </TouchableOpacity>
+        </View>
+      ),
     });
-  }, [navigation, section, interfaceLanguage]);
+    return () => navigation.setOptions({ headerLeft: undefined });
+  }, [navigation, section]);
 
   const [showSectionPicker, setShowSectionPicker] = useState(false);
   const loadedSections = useRef(new Set());
@@ -1276,6 +1286,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
             <AppText style={styles.meta}>Number: {documentNumber || '-'}</AppText>
             <AppText style={styles.meta}>Status: {reviewStatus}</AppText>
             <AppText style={styles.meta}>Verified By: {item.identity_verified_by_name || '-'}</AppText>
+            {(item.identity_review_flags || []).map(flag=><View key={flag.id} style={{marginVertical:6}}><AppText style={styles.meta}>{flag.reason.replace(/_/g,' ')}</AppText><TouchableOpacity onPress={()=>openOperationPrompt({title:'Record identity investigation',label:'Review note',message:'Explain the evidence reviewed. This does not approve the account.',successMessage:'Review recorded',run:note=>superAdminService.reviewIdentityFlag(item.id,flag.id,note)})}><AppText style={styles.linkText}>Record investigation</AppText></TouchableOpacity></View>)}
             {item.passport_photo_url ? (
               <TouchableOpacity
                 onPress={() => openPassportPhoto(item)}
@@ -1287,10 +1298,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
               {(reviewStatus === 'pending' || reviewStatus === 'rejected') ? (
                 <TouchableOpacity
                   onPress={() =>
-                    runAction(
-                      () => superAdminService.approveVerification(item.id),
-                      'Verification approved'
-                    )
+                    openOperationPrompt({title:'Approve identity',label:'Approval note',message:'Confirm the identity evidence and explain your decision.',successMessage:'Verification approved',run:note=>superAdminService.approveVerification(item.id,note)})
                   }
                 >
                   <AppText style={styles.linkText}>Approve</AppText>
@@ -1935,10 +1943,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
               <View style={styles.row}>
                 <TouchableOpacity
                   onPress={() =>
-                    runAction(
-                      () => superAdminService.approveVerification(item.id),
-                      'Verification approved'
-                    )
+                    openOperationPrompt({title:'Approve identity',label:'Approval note',message:'Confirm the identity evidence and explain your decision.',successMessage:'Verification approved',run:note=>superAdminService.approveVerification(item.id,note)})
                   }
                 >
                   <AppText style={styles.linkText}>Approve</AppText>
@@ -3726,6 +3731,17 @@ const styles = StyleSheet.create({
     fontSize: typeScale.reading,
     lineHeight: 22,
     marginTop: 4,
+  },
+  headerLeftActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  headerExplore: {
+    width: 44,
+    height: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   headerBack: {
     paddingHorizontal: 4,

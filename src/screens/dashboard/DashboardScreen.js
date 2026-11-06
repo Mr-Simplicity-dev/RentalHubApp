@@ -1,3 +1,4 @@
+import UserAvatar from '../../components/common/UserAvatar';
 import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import {useTour} from '../../context/TourContext';
@@ -809,9 +810,7 @@ const DashboardScreen = ({ navigation }) => {
             accessibilityLabel={ui("Open profile")}
             onPress={() => navigation.navigate('Profile')}
             style={styles.avatar}>
-            <AppText style={styles.avatarText}>
-              {String(user?.full_name || 'U').trim().charAt(0).toUpperCase()}
-            </AppText>
+            <UserAvatar user={user} size={42} />
           </TouchableOpacity>
         </View>
       </View>

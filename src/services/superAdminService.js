@@ -69,8 +69,9 @@ export const superAdminService = {
     return response.data;
   },
 
-  approveVerification: async (id) => {
-    const response = await api.patch(`/super/verifications/${id}/approve`);
+  reviewIdentityFlag: async (id,flagId,note) => { const response=await api.patch(`/admin/users/${id}/identity-flags/${flagId}/review`,{note});return response.data; },
+  approveVerification: async (id, reviewNote) => {
+    const response = await api.patch(`/super/verifications/${id}/approve`, {review_note:reviewNote});
     return response.data;
   },
 

@@ -252,7 +252,7 @@ export const authService = {
     return response.data;
   },
 
-  uploadPassport: async (imageInput, liveCaptureToken = '') => {
+  uploadPassport: async (imageInput, liveCaptureToken = '', biometricConsent = false) => {
     const formData = new FormData();
     const fileAsset =
       typeof imageInput === 'string'
@@ -270,11 +270,12 @@ export const authService = {
     }
 
     formData.append('capture_source', 'live_camera');
+    formData.append('biometric_consent', biometricConsent === true ? 'true' : 'false');
     if (liveCaptureToken) {
       formData.append('live_capture_token', liveCaptureToken);
     }
 
-    const response = await api.post('/auth/upload-passport', formData, {
+    const response = await api.post('/users/upload-passport', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
     return response.data;

@@ -726,6 +726,8 @@ const LawyerRoot = ({ initialRouteName = 'LawyerDashboard' }) => { useInterfaceL
 
 const AdminRoot = () => {  return (<Stack.Navigator screenOptions={screenOptions}>
     <Stack.Screen name="AdminDashboard" component={AdminDashboardScreen} options={{ title: "Admin Dashboard" }} />
+    <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+    <Stack.Screen name="PropertyAlertRequest" component={PropertyAlertRequestScreen} options={{ title: "Submit Request" }} />
     <Stack.Screen name="AdminUsers" component={AdminUsersScreen} options={{ title: "Users" }} />
     <Stack.Screen name="AgentCommissionAdmin" component={AgentCommissionAdminScreen} options={{ title: "Agent Commissions" }} />
     <Stack.Screen name="AdminProperties" component={AdminPropertiesScreen} options={{ title: "Properties" }} />

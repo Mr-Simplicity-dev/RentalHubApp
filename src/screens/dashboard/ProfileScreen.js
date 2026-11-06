@@ -1,3 +1,5 @@
+const identityPhotoCopy = require('../../i18n/identityPhotoCopy.cjs');
+import UserAvatar from '../../components/common/UserAvatar';
 import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import AssistedPasswordForm from '../../components/common/AssistedPasswordForm';
@@ -32,6 +34,8 @@ const ProfileScreen = ({ navigation }) => {
     label: ui("Biometrics"),
   });
   const [status, setStatus] = useState(null);
+  const [photoConsent, setPhotoConsent] = useState(false);
+  const photoCopy = identityPhotoCopy[interfaceLanguage] || identityPhotoCopy.en;
   const [passportAsset, setPassportAsset] = useState(null);
   const [form, setForm] = useState({
     full_name: user?.full_name || '',
@@ -226,13 +230,13 @@ const ProfileScreen = ({ navigation }) => {
         // session might be optional
       }
 
-      const response = await authService.uploadPassport(passportAsset, captureToken);
+      const response = await authService.uploadPassport(passportAsset, captureToken, photoConsent);
       if (response?.user) {
         await updateUser(response.user);
       }
       setPassportAsset(null);
       await loadVerificationStatus();
-      Toast.show({ type: 'success', text1: ui("Passport uploaded") });
+      Toast.show({ type: 'success', text1: response?.verification_pending ? photoCopy.pending : ui("Passport uploaded") });
     } catch (error) {
       Toast.show({
         type: 'error',
@@ -348,9 +352,7 @@ const ProfileScreen = ({ navigation }) => {
       showsVerticalScrollIndicator={false}>
       <View style={styles.profileHero}>
         <View style={styles.avatar}>
-          <AppText style={styles.avatarText}>
-            {String(user?.full_name || 'U').trim().charAt(0).toUpperCase()}
-          </AppText>
+          <UserAvatar user={user} size={72} />
           {reviewStatus === "verified" ? (
             <View style={styles.verifiedDot}>
               <Icon name="checkmark" size={11} color={colors.white} />
@@ -421,6 +423,7 @@ const ProfileScreen = ({ navigation }) => {
           </View>
         ) : null}
 
+        <View style={{flexDirection:'row',alignItems:'center',gap:12,marginTop:12}}><Switch value={photoConsent} onValueChange={setPhotoConsent} accessibilityLabel={photoCopy.consent} /><AppText style={[styles.infoText,{flex:1}]}>{photoCopy.consent}</AppText></View>
         {passportAsset?.uri ? <Image source={{ uri: passportAsset.uri }} style={styles.preview} /> : null}
         <Button
           title={Platform.OS === "web" ? 'Select Passport Photo' : 'Capture Passport Photo'}
