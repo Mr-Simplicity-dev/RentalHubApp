@@ -59,7 +59,7 @@ export default function RegistrationPhoneVerification({ pending, onVerified, onC
     try {
       let response = pending.reference
         ? await api.post(`/auth/register/payment/complete/${pending.reference}`, { otp: code }, options)
-        : await api.post(pending.flow === 'free' ? '/auth/register/verify-phone' : '/auth/register/payment/verify-phone', { ...pending.payload, phone_challenge: challenge, otp: phoneGrant.current ? undefined : code, ...(phoneGrant.current ? { phone_verification_token: phoneGrant.current } : {}) }, { ...options, timeout: 120000 });
+        : await api.post(pending.flow === 'free' ? '/auth/register/verify-phone' : '/auth/register/payment/verify-phone', { ...pending.payload, phone_challenge: challenge, phone_verification_protocol: 2, otp: phoneGrant.current ? undefined : code, ...(phoneGrant.current ? { phone_verification_token: phoneGrant.current } : {}) }, { ...options, timeout: 120000 });
       if (response.data.code === 'PHONE_VERIFIED') {
         phoneGrant.current = response.data.phone_verification_token;
         setIdentityPending(true); setStatusMessage(recoveryCopy.phone_checking_identity);
