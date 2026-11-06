@@ -20,7 +20,7 @@ import SelectField from '../../components/common/SelectField';
 import OptionPickerModal from '../../components/common/OptionPickerModal';
 import { AuthContext } from '../../context/AuthContext';
 import { authService } from '../../services/authService';
-import { openRegistrationPayment } from '../../services/registrationPaymentBrowser';
+import RegistrationCardCheckout from '../../components/RegistrationCardCheckout';
 import { propertyService } from '../../services/propertyService';
 import { storageService } from '../../services/storageService';
 import TurnstileWidget from '../../components/common/TurnstileWidget';
@@ -91,6 +91,8 @@ const RegisterScreen = ({ navigation, route }) => {
   const [showStatePicker, setShowStatePicker] = useState(false);
   const [showLgaPicker, setShowLgaPicker] = useState(false);
   const [foreignCardAdjustment, setForeignCardAdjustment] = useState(null);
+  const [checkoutUrl, setCheckoutUrl] = useState('');
+  const completionBusy = useRef(false);
   const [adjustmentBusy, setAdjustmentBusy] = useState(false);
   const [paymentState, setPaymentState] = useState({
     reference: '',
@@ -728,12 +730,12 @@ const RegisterScreen = ({ navigation, route }) => {
           authorizationUrl: paymentUrl,
         });
 
-        await openRegistrationPayment(paymentUrl);
+        setCheckoutUrl(paymentUrl);
 
         Toast.show({
           type: 'success',
           text1: ui("Payment started"),
-          text2: ui("Complete the payment, return to the app, then tap \"Complete Registration\"."),
+          text2: ui("Complete checkout. We will check your payment automatically."),
         });
       } catch (error) {
         Toast.show({
@@ -808,6 +810,8 @@ const RegisterScreen = ({ navigation, route }) => {
       return;
     }
 
+    if (completionBusy.current) return;
+    completionBusy.current = true;
     setLoading(true);
     try {
       const response = await authService.completeRegistrationPayment(reference);
@@ -816,6 +820,7 @@ const RegisterScreen = ({ navigation, route }) => {
         throw new Error(response.message || 'Payment completion failed');
       }
 
+      if (!response.data?.token || !response.data?.user) throw new Error('Payment was checked but no account session was returned. Please try again.');
       await clearSavedRegistrationDraft();
       setForeignCardAdjustment(null);
       await establishSession(response.data);
@@ -850,6 +855,7 @@ const RegisterScreen = ({ navigation, route }) => {
         text2: getErrorMessage(error, 'Could not complete paid registration'),
       });
     } finally {
+      completionBusy.current = false;
       setLoading(false);
     }
   };
@@ -863,7 +869,7 @@ const RegisterScreen = ({ navigation, route }) => {
       const response = await authService.payForeignCardAdjustment(foreignCardAdjustment.reference);
       const data = response?.data || {};
       if (data.authorization_url) {
-        await openRegistrationPayment(data.authorization_url);
+        setCheckoutUrl(data.authorization_url);
         setForeignCardAdjustment((prev) => ({
           ...prev,
           amount: data.amount || prev.amount,
@@ -871,7 +877,7 @@ const RegisterScreen = ({ navigation, route }) => {
         Toast.show({
           type: 'info',
           text1: ui("Payment started"),
-          text2: ui("After paying, return to the app and tap \"Finish registration\"."),
+          text2: ui("After paying, your payment will be checked automatically."),
         });
       } else {
         Toast.show({
@@ -1389,7 +1395,7 @@ const RegisterScreen = ({ navigation, route }) => {
           <View style={styles.paymentCard}>
             <AppText style={styles.paymentTitle}>{ui("Payment Pending")}</AppText>
             <AppText style={styles.paymentText}>{ui("Reference: ")}{paymentState.reference}</AppText>
-            <AppText style={styles.paymentText}>{ui("Finish the Paystack flow in your browser, then return here.")}</AppText>
+            <AppText style={styles.paymentText}>{ui("Complete secure checkout inside the app. Your payment will be checked automatically.")}</AppText>
             <Button
               title={ui("Complete Registration")}
               onPress={() => completePaidRegistration()}
@@ -1400,7 +1406,7 @@ const RegisterScreen = ({ navigation, route }) => {
               title={ui("Reopen Payment Page")}
               variant="outline"
               onPress={async () => {
-                try { await openRegistrationPayment(paymentState.authorizationUrl); }
+                try { setCheckoutUrl(paymentState.authorizationUrl); }
                 catch (error) { Toast.show({ type: 'error', text1: ui("Payment failed"), text2: getErrorMessage(error, 'Could not open payment checkout') }); }
               }}
               style={styles.marginTop}
@@ -1464,6 +1470,7 @@ const RegisterScreen = ({ navigation, route }) => {
         onSelect={(item) => onChange('lga_name', String(item))}
       />
 
+      {checkoutUrl ? <RegistrationCardCheckout key={checkoutUrl} url={checkoutUrl} onReturn={() => { setCheckoutUrl(''); completePaidRegistration(paymentState.reference || foreignCardAdjustment?.reference); }} /> : null}
       <Modal
         transparent
         visible={showPaymentMethodChooser}

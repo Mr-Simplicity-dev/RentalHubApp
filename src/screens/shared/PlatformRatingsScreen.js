@@ -16,7 +16,7 @@ const CONTEXT_LABELS = {
   property_secured: 'Property Secured',
   property_listed: 'Property Listed',
   property_rented: 'Property Rented',
-  legal_support: 'Legal Support',
+  legal_support: 'Dispute support',
   fumigation_cleaning: 'Fumigation & Cleaning',
   transportation: 'Transportation',
   virtual_tour: 'Virtual Tour',

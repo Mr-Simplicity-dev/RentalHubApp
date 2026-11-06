@@ -639,8 +639,8 @@
     "yo": "yá ohun-inì jáde",
     "ig": "gbazinyere ụlọ"
   },
-  "used legal support": {
-    "en": "used legal support",
+  "used Dispute support": {
+    "en": "used Dispute support",
     "fr": "utilisé l'assistance juridique",
     "ar": "استخدم الدعم القانوني",
     "ru": "воспользовался(ась) юридической поддержкой",
@@ -739,8 +739,8 @@
     "yo": "Ṣe ìdìwọ̀n ìrírí yíyá tó jáyọ rẹ",
     "ig": "Tụlee ahụmahụ mgbazinye gara nke ọma gị"
   },
-  "rate amana rentalhub ng legal support": {
-    "en": "Rate Amana RentalHub NG legal support",
+  "rate amana rentalhub ng Dispute support": {
+    "en": "Rate Amana RentalHub NG Dispute support",
     "fr": "Notez l'assistance juridique Amana RentalHub NG",
     "ar": "قيّم الدعم القانوني لـ Amana RentalHub NG",
     "ru": "Оцените юридическую поддержку Amana RentalHub NG",
@@ -839,8 +839,8 @@
     "yo": "Wọ́n yá {{source}} nípasẹ̀ Amana RentalHub NG.",
     "ig": "E gbaziri {{source}} site na Amana RentalHub NG."
   },
-  "tell us how the legal support experience helped you.": {
-    "en": "Tell us how the legal support experience helped you.",
+  "tell us how the Dispute support experience helped you.": {
+    "en": "Tell us how the Dispute support experience helped you.",
     "fr": "Dites-nous comment l'assistance juridique vous a aidé.",
     "ar": "أخبرنا كيف ساعدتك تجربة الدعم القانوني.",
     "ru": "Расскажите, как вам помогла юридическая поддержка.",
@@ -5196,12 +5196,12 @@
     "yo": "Ní Amana RentalHub NG, a gbàgbọ́ pé ẹnikẹ́ni yẹ kí ó ní ìrírí ààbò, tó ṣe kedere, àti tí kò ní wàhálà nígbà tí wọ́n ń wá ilé. Ìdí wa ni láti yọ ìdènà, jíjẹ́lẹ́ẹ̀tà, àti ìbínú kúrò nínú ọjà yíyá ilé ní Nàìjíríà.",
     "ig": "Na Amana RentalHub NG, anyị kwenyere na onye ọ bụla kwesịrị ịnweta ahụmahụ dị nchebe, nke doro anya, na nke na-adịghị egbu mgbu mgbe ọ na-achọ ụlọ. Ebumnobi anyị bụ iwepụ ihe mgbochi, aghụghọ na mkpasu iwe na ahịa mgbazinye Naịjirịa."
   },
-  "by combining technology with rigorous verification processes, legal support, and nationwide coverage, we empower tenants to find verified properties and landlords to connect with qualified tenants — all in one trusted ecosystem.": {
-    "en": "By combining technology with rigorous verification processes, legal support, and nationwide coverage, we empower tenants to find verified properties and landlords to connect with qualified tenants — all in one trusted ecosystem.",
-    "fr": "By combining technology with rigorous verification processes, legal support, and nationwide coverage, we empower tenants to find verified properties and landlords to connect with qualified tenants — all in one trusted ecosystem.",
-    "ar": "By combining technology with rigorous verification processes, legal support, and nationwide coverage, we empower tenants to find verified properties and landlords to connect with qualified tenants — all in one trusted ecosystem.",
-    "ru": "By combining technology with rigorous verification processes, legal support, and nationwide coverage, we empower tenants to find verified properties and landlords to connect with qualified tenants — all in one trusted ecosystem.",
-    "zh": "By combining technology with rigorous verification processes, legal support, and nationwide coverage, we empower tenants to find verified properties and landlords to connect with qualified tenants — all in one trusted ecosystem.",
+  "by combining technology with rigorous verification processes, Dispute support, and nationwide coverage, we empower tenants to find verified properties and landlords to connect with qualified tenants — all in one trusted ecosystem.": {
+    "en": "By combining technology with rigorous verification processes, Dispute support, and nationwide coverage, we empower tenants to find verified properties and landlords to connect with qualified tenants — all in one trusted ecosystem.",
+    "fr": "By combining technology with rigorous verification processes, Dispute support, and nationwide coverage, we empower tenants to find verified properties and landlords to connect with qualified tenants — all in one trusted ecosystem.",
+    "ar": "By combining technology with rigorous verification processes, Dispute support, and nationwide coverage, we empower tenants to find verified properties and landlords to connect with qualified tenants — all in one trusted ecosystem.",
+    "ru": "By combining technology with rigorous verification processes, Dispute support, and nationwide coverage, we empower tenants to find verified properties and landlords to connect with qualified tenants — all in one trusted ecosystem.",
+    "zh": "By combining technology with rigorous verification processes, Dispute support, and nationwide coverage, we empower tenants to find verified properties and landlords to connect with qualified tenants — all in one trusted ecosystem.",
     "ha": "Ta hanyar haɗa fasaha tare da tsauraran tsarin tabbatarwa, tallafin shari'a, da ɗaukar ƙasa baki ɗaya, muna ƙarfafa masu haya su sami gidaje da aka tabbatar da kuma masu gida su haɗu da masu haya da suka cancanta — duka a cikin amintaccen tsarin duniya ɗaya.",
     "yo": "Nípa dídapọ̀ ìmọ̀-ẹ̀rọ pẹ̀lú àwọn ìlànà ìmúdájú tó le koko, ìrànwọ́ òfin, àti ìbòpọ̀ káàkiri orílẹ̀-èdè, a gba àwọn ẹni tó ń yá ilé lọ́wọ́ láti rí àwọn ohun-inì tí a fọwọ́ sí, àti àwọn onílé láti bá àwọn ẹni tó ń yá ilé tó yẹ sopọ̀ — gbogbo rẹ̀ nínú ètò ẹ̀mí ìgbẹ́kẹ̀lé kan.",
     "ig": "Site n'ijikọta teknụzụ na usoro nyocha nkwenye siri ike, nkwado iwu, na mkpuchi mba niile, anyị na-eme ka ndị na-agbaziri ụlọ nwee ike ịchọta ụlọ enyocharala ma mee ka ndị nwe ụlọ jikọọ na ndị gbaziri ụlọ tozuru etozu — ha niile n'otu ikpo a pụrụ ịtụkwasị obi."
@@ -5366,12 +5366,12 @@
     "yo": "Gbogbo onílé, ẹni tó ń yá ilé, àti ohun-inì ń kọjá ìmúdájú ẹni. Ètò ìmúdájú wa tó dára gbọ̀ngàn yìí máa ń rí i dájú pé àwọn tó ṣàkóso lórí pẹ̀pẹ̀lẹ̀ nìkan ni ó wà.",
     "ig": "Onye nwe ụlọ ọ bụla, onye gbaziri ụlọ, na ụlọ ọ bụla na-agafe nyocha nkwenye njirimara. Usoro nyocha nkwenye anyị dị mma na-ahụ na ọ bụ naanị ndị ziri ezi nọ na ikpo."
   },
-  "legal support & dispute resolution": {
-    "en": "Legal Support & Dispute Resolution",
-    "fr": "Legal Support & Dispute Resolution",
-    "ar": "Legal Support & Dispute Resolution",
-    "ru": "Legal Support & Dispute Resolution",
-    "zh": "Legal Support & Dispute Resolution",
+  "Dispute support & dispute resolution": {
+    "en": "Dispute support & Dispute Resolution",
+    "fr": "Dispute support & Dispute Resolution",
+    "ar": "Dispute support & Dispute Resolution",
+    "ru": "Dispute support & Dispute Resolution",
+    "zh": "Dispute support & Dispute Resolution",
     "ha": "Tallafin Shari'a & Warware Rigima",
     "yo": "Ìrànwọ́ Òfin & Ìpinnu Àríyànjiyàn",
     "ig": "Nkwado Iwu & Idozi Esemokwu"
@@ -5566,12 +5566,12 @@
     "yo": "Wọ́n gbòòrò sí gbogbo ìpínlẹ̀ 36 + FCT; wọ́n sì bẹ̀rẹ̀ ìmúdájú ẹni.",
     "ig": "Gbasaa na steeti 36 niile + FCT; webata nyocha nkwenye njirimara."
   },
-  "launched legal support services, dispute resolution, and fumigation/cleaning marketplace.": {
-    "en": "Launched legal support services, dispute resolution, and fumigation/cleaning marketplace.",
-    "fr": "Launched legal support services, dispute resolution, and fumigation/cleaning marketplace.",
-    "ar": "Launched legal support services, dispute resolution, and fumigation/cleaning marketplace.",
-    "ru": "Launched legal support services, dispute resolution, and fumigation/cleaning marketplace.",
-    "zh": "Launched legal support services, dispute resolution, and fumigation/cleaning marketplace.",
+  "launched Dispute support services, dispute resolution, and fumigation/cleaning marketplace.": {
+    "en": "Launched Dispute support services, dispute resolution, and fumigation/cleaning marketplace.",
+    "fr": "Launched Dispute support services, dispute resolution, and fumigation/cleaning marketplace.",
+    "ar": "Launched Dispute support services, dispute resolution, and fumigation/cleaning marketplace.",
+    "ru": "Launched Dispute support services, dispute resolution, and fumigation/cleaning marketplace.",
+    "zh": "Launched Dispute support services, dispute resolution, and fumigation/cleaning marketplace.",
     "ha": "An ƙaddamar da sabis na tallafin shari'a, warware rigima, da kasuwar fumigation/tsaftacewa.",
     "yo": "Wọ́n bẹ̀rẹ̀ àwọn iṣẹ́ ìrànwọ́ òfin, ìpinnu àríyànjiyàn, àti ọjà ìwẹ̀ ìmọ́tótó.",
     "ig": "Wepụtara ọrụ nkwado iwu, idozi esemokwu na ahịa ịwụsị ọgwụ ụmụ ahụhụ / ihicha."
@@ -5739,12 +5739,12 @@
     "yo": "Ìmújáde Tuntun",
     "ig": "Ịmepụta Ihe Ọhụrụ"
   },
-  "leveraging cutting-edge technology including property verification, digital evidence, and legal support tools.": {
-    "en": "Leveraging cutting-edge technology including property verification, digital evidence, and legal support tools.",
-    "fr": "Leveraging cutting-edge technology including property verification, digital evidence, and legal support tools.",
-    "ar": "Leveraging cutting-edge technology including property verification, digital evidence, and legal support tools.",
-    "ru": "Leveraging cutting-edge technology including property verification, digital evidence, and legal support tools.",
-    "zh": "Leveraging cutting-edge technology including property verification, digital evidence, and legal support tools.",
+  "leveraging cutting-edge technology including property verification, digital evidence, and Dispute support tools.": {
+    "en": "Leveraging cutting-edge technology including property verification, digital evidence, and Dispute support tools.",
+    "fr": "Leveraging cutting-edge technology including property verification, digital evidence, and Dispute support tools.",
+    "ar": "Leveraging cutting-edge technology including property verification, digital evidence, and Dispute support tools.",
+    "ru": "Leveraging cutting-edge technology including property verification, digital evidence, and Dispute support tools.",
+    "zh": "Leveraging cutting-edge technology including property verification, digital evidence, and Dispute support tools.",
     "ha": "Amfani da fasaha na zamani ciki har da tabbatar da gidaje, shaidun dijital, da kayan aikin tallafin shari'a.",
     "yo": "Lílò àwọn ìmọ̀-ẹ̀rọ tó ń lọ níwájú pẹ̀lú ìmúdájú ohun-inì, ẹ̀rí oní nọ́ńbà, àti àwọn ohun èlò ìrànwọ́ òfin.",
     "ig": "Na-eji teknụzụ kachasị ọhụrụ gụnyere nyocha nkwenye ụlọ, ihe akaebe dijitalụ na ngwaọrụ nkwado iwu."
@@ -6019,12 +6019,12 @@
     "yo": "Àmúlò Fóónù RentalHub",
     "ig": "Ngwa Mkpanaka RentalHub"
   },
-  "manage your rentals, chat with landlords and tenants, and access legal support — all from your phone.": {
-    "en": "Manage your rentals, chat with landlords and tenants, and access legal support — all from your phone.",
-    "fr": "Manage your rentals, chat with landlords and tenants, and access legal support — all from your phone.",
-    "ar": "Manage your rentals, chat with landlords and tenants, and access legal support — all from your phone.",
-    "ru": "Manage your rentals, chat with landlords and tenants, and access legal support — all from your phone.",
-    "zh": "Manage your rentals, chat with landlords and tenants, and access legal support — all from your phone.",
+  "manage your rentals, chat with landlords and tenants, and access Dispute support — all from your phone.": {
+    "en": "Manage your rentals, chat with landlords and tenants, and access Dispute support — all from your phone.",
+    "fr": "Manage your rentals, chat with landlords and tenants, and access Dispute support — all from your phone.",
+    "ar": "Manage your rentals, chat with landlords and tenants, and access Dispute support — all from your phone.",
+    "ru": "Manage your rentals, chat with landlords and tenants, and access Dispute support — all from your phone.",
+    "zh": "Manage your rentals, chat with landlords and tenants, and access Dispute support — all from your phone.",
     "ha": "Sarrafa hayar ku, yi hira da masu gida da masu haya, kuma ku sami tallafin shari'a — duka daga wayarka.",
     "yo": "Ṣàkóso àwọn ilé tí o ń yá, bá àwọn onílé àti ẹni tó ń yá ilé sọ̀rọ̀, kí o sì wọ ìrànwọ́ òfin — gbogbo rẹ̀ láti fóónù rẹ.",
     "ig": "Jikwaa mgbazinye gị, kparịta ụka na ndị nwe ụlọ na ndị gbaziri ụlọ, ma nweta nkwado iwu — ha niile site na ekwentị gị."
@@ -6079,12 +6079,12 @@
     "yo": "Wá, ṣàlẹ̀mọ́, kí o sì fipamọ́ àwọn àkójọ tó wù ọ́ lọ́wọ́.",
     "ig": "Chọọ, nyochaa, ma chekwaa mbipụta ndị masịrị gị mgbe ọ bụla."
   },
-  "legal support": {
-    "en": "Legal Support",
-    "fr": "Legal Support",
-    "ar": "Legal Support",
-    "ru": "Legal Support",
-    "zh": "Legal Support",
+  "Dispute support": {
+    "en": "Dispute support",
+    "fr": "Dispute support",
+    "ar": "Dispute support",
+    "ru": "Dispute support",
+    "zh": "Dispute support",
     "ha": "Tallafin Shari'a",
     "yo": "Ìrànwọ́ Òfin",
     "ig": "Nkwado Iwu"
@@ -6469,12 +6469,12 @@
     "yo": "Ààbò Àríyànjiyàn",
     "ig": "Nchebe Esemokwu"
   },
-  "access legal support and structured dispute resolution if any issues arise with tenants.": {
-    "en": "Access legal support and structured dispute resolution if any issues arise with tenants.",
-    "fr": "Access legal support and structured dispute resolution if any issues arise with tenants.",
-    "ar": "Access legal support and structured dispute resolution if any issues arise with tenants.",
-    "ru": "Access legal support and structured dispute resolution if any issues arise with tenants.",
-    "zh": "Access legal support and structured dispute resolution if any issues arise with tenants.",
+  "access Dispute support and structured dispute resolution if any issues arise with tenants.": {
+    "en": "Access Dispute support and structured dispute resolution if any issues arise with tenants.",
+    "fr": "Access Dispute support and structured dispute resolution if any issues arise with tenants.",
+    "ar": "Access Dispute support and structured dispute resolution if any issues arise with tenants.",
+    "ru": "Access Dispute support and structured dispute resolution if any issues arise with tenants.",
+    "zh": "Access Dispute support and structured dispute resolution if any issues arise with tenants.",
     "ha": "Sami tallafin shari'a da tsarin warware rigima mai tsari idan wata matsala ta taso da masu haya.",
     "yo": "Wọ ìrànwọ́ òfin àti ìpinnu àríyànjiyàn tó ṣètò bí ìṣòro báyọ̀ pẹ̀lú àwọn ẹni tó ń yá ilé.",
     "ig": "Nweta nkwado iwu na usoro idozi esemokwu a haziri ma ọ bụrụ na nsogbu ebilite na ndị gbaziri ụlọ."
@@ -6719,12 +6719,12 @@
     "yo": "Ìrànwọ́ aṣojú tí a yà sọ́tọ̀",
     "ig": "Nkwado onye ọrụ pụrụ iche"
   },
-  "legal support access": {
-    "en": "Legal support access",
-    "fr": "Legal support access",
-    "ar": "Legal support access",
-    "ru": "Legal support access",
-    "zh": "Legal support access",
+  "Dispute support access": {
+    "en": "Dispute support access",
+    "fr": "Dispute support access",
+    "ar": "Dispute support access",
+    "ru": "Dispute support access",
+    "zh": "Dispute support access",
     "ha": "Samun tallafin shari'a",
     "yo": "Ààyè ìrànwọ́ òfin",
     "ig": "Ohere nkwado iwu"
@@ -6799,12 +6799,12 @@
     "yo": "Onílé, Kano",
     "ig": "Onye Nwe Ụlọ, Kano"
   },
-  "the legal support feature is a game-changer. i had a dispute resolved quickly without the usual stress.": {
-    "en": "The legal support feature is a game-changer. I had a dispute resolved quickly without the usual stress.",
-    "fr": "The legal support feature is a game-changer. I had a dispute resolved quickly without the usual stress.",
-    "ar": "The legal support feature is a game-changer. I had a dispute resolved quickly without the usual stress.",
-    "ru": "The legal support feature is a game-changer. I had a dispute resolved quickly without the usual stress.",
-    "zh": "The legal support feature is a game-changer. I had a dispute resolved quickly without the usual stress.",
+  "the Dispute support feature is a game-changer. i had a dispute resolved quickly without the usual stress.": {
+    "en": "The Dispute support feature is a game-changer. I had a dispute resolved quickly without the usual stress.",
+    "fr": "The Dispute support feature is a game-changer. I had a dispute resolved quickly without the usual stress.",
+    "ar": "The Dispute support feature is a game-changer. I had a dispute resolved quickly without the usual stress.",
+    "ru": "The Dispute support feature is a game-changer. I had a dispute resolved quickly without the usual stress.",
+    "zh": "The Dispute support feature is a game-changer. I had a dispute resolved quickly without the usual stress.",
     "ha": "Fasalin tallafin shari'a ya sauya komai. Na sami warware rigima cikin sauri ba tare da damuwar da aka saba ba.",
     "yo": "Ẹ̀ya ìrànwọ́ òfin náà yí eré padà. Wọ́n yanjú àríyànjiyàn kan fún mi kíákíá láìsí wàhálà tó wọ́pọ̀.",
     "ig": "Ihe nkwado iwu ahụ gbanwere egwuregwu. E doziri m esemokwu ọsọ ọsọ na-enweghị nrụgide a na-ahụkarị."
@@ -19684,12 +19684,12 @@
     "yo": "Tẹ̀ síwájú nínú àwọn ìgbélárugẹ àti ìrìrìn òfin.",
     "ig": "Gaa n'ihu na ịkwalite na nhazi iwu."
   },
-  "view legal support requests and assistance.": {
-    "en": "View legal support requests and assistance.",
-    "fr": "View legal support requests and assistance.",
-    "ar": "View legal support requests and assistance.",
-    "ru": "View legal support requests and assistance.",
-    "zh": "View legal support requests and assistance.",
+  "view Dispute support requests and assistance.": {
+    "en": "View Dispute support requests and assistance.",
+    "fr": "View Dispute support requests and assistance.",
+    "ar": "View Dispute support requests and assistance.",
+    "ru": "View Dispute support requests and assistance.",
+    "zh": "View Dispute support requests and assistance.",
     "ha": "Duba buƙatun tallafin shari'a da taimako.",
     "yo": "Wo àwọn ìbéèrè ìrànwọ́ òfin àti àwọn ìrànlọ́wọ́.",
     "ig": "Lee arịrịọ nkwado iwu na enyemaka."
@@ -23486,8 +23486,8 @@
     "yo": "Àmì Amana RentalHub NG",
     "ig": "Akara Amana RentalHub NG"
   },
-  "create your account to browse verified properties, connect with trusted landlords, and access legal support across nigeria.": {
-    "en": "Create your account to browse verified properties, connect with trusted landlords, and access legal support across Nigeria.",
+  "create your account to browse verified properties, connect with trusted landlords, and access Dispute support across nigeria.": {
+    "en": "Create your account to browse verified properties, connect with trusted landlords, and access Dispute support across Nigeria.",
     "fr": "Créez votre compte pour parcourir des biens vérifiés, entrer en contact avec des propriétaires de confiance et accéder à une assistance juridique partout au Nigeria.",
     "ar": "أنشئ حسابك لتصفح العقارات الموثقة والتواصل مع الملاك الموثوقين والحصول على دعم قانوني في جميع أنحاء نيجيريا.",
     "ru": "Создайте аккаунт, чтобы просматривать проверенные объекты, связываться с надёжными арендодателями и получать юридическую поддержку по всей Нигерии.",
@@ -23699,8 +23699,8 @@
     "yo": "Imeèlì agbẹjọ́rò rẹ",
     "ig": "Email ọkàiwu gị"
   },
-  "using amana rentalhub ng legal support": {
-    "en": "Using Amana RentalHub NG legal support",
+  "using amana rentalhub ng Dispute support": {
+    "en": "Using Amana RentalHub NG Dispute support",
     "fr": "Utilisation de l'avocat Amana RentalHub NG",
     "ar": "استخدام محامي Amana RentalHub NG",
     "ru": "Используется юрист Amana RentalHub NG",

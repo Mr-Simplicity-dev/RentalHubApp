@@ -51,7 +51,7 @@ const AboutUsScreen = ({ navigation }) => {
           icon="sparkles-outline"
         />
         <ActionRow
-          title={ui("Legal support")}
+          title={ui("Dispute support")}
           subtitle={ui("Access to verified lawyers for tenancy disputes and advice.")}
           icon="scale-outline"
         />
