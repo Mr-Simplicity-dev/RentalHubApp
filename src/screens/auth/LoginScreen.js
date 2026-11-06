@@ -285,7 +285,9 @@ const LoginScreen = ({ navigation }) => {
               style={[styles.loginButton, compact && styles.loginButtonCompact]}
             />
 
-          <GoogleCustomerLogin />
+          <View style={{ marginTop: 16, marginBottom: 12, alignSelf: 'stretch' }}>
+            <GoogleCustomerLogin />
+          </View>
           <TurnstileWidget
         action="rentalhub_login"
               ref={turnstileRef}

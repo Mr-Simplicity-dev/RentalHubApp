@@ -20,6 +20,7 @@ import SelectField from '../../components/common/SelectField';
 import OptionPickerModal from '../../components/common/OptionPickerModal';
 import { AuthContext } from '../../context/AuthContext';
 import { authService } from '../../services/authService';
+import { openRegistrationPayment } from '../../services/registrationPaymentBrowser';
 import { propertyService } from '../../services/propertyService';
 import { storageService } from '../../services/storageService';
 import TurnstileWidget from '../../components/common/TurnstileWidget';
@@ -76,7 +77,6 @@ const RegisterScreen = ({ navigation, route }) => {
   const [loading, setLoading] = useState(false);
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [showPaymentMethodChooser, setShowPaymentMethodChooser] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState(null);
   const [bankTransferData, setBankTransferData] = useState(null);
   const [showBankTransferModal, setShowBankTransferModal] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
@@ -688,7 +688,7 @@ const RegisterScreen = ({ navigation, route }) => {
     }
 
     if (requiresPayment) {
-      const chosenMethod = methodOverride || paymentMethod;
+      const chosenMethod = methodOverride;
 
       if (!chosenMethod) {
         setShowPaymentMethodChooser(true);
@@ -728,7 +728,7 @@ const RegisterScreen = ({ navigation, route }) => {
           authorizationUrl: paymentUrl,
         });
 
-        await Linking.openURL(paymentUrl);
+        await openRegistrationPayment(paymentUrl);
 
         Toast.show({
           type: 'success',
@@ -782,25 +782,20 @@ const RegisterScreen = ({ navigation, route }) => {
   };
 
   const choosePaymentMethod = (method) => {
-    setPaymentMethod(method);
     setShowPaymentMethodChooser(false);
     setTimeout(() => handleRegister(method), 200);
   };
 
   const closeBankTransfer = () => {
     setShowBankTransferModal(false);
-    setBankTransferData(null);
-    setPaymentMethod(null);
-    turnstileRef.current?.reset();
+    setBankTransferData(null);    turnstileRef.current?.reset();
     turnstileTokenRef.current = null;
   };
 
   const handleBankTransferPaid = () => {
     clearSavedRegistrationDraft();
     setShowBankTransferModal(false);
-    setBankTransferData(null);
-    setPaymentMethod(null);
-    Toast.show({
+    setBankTransferData(null);    Toast.show({
       type: 'success',
       text1: ui("Registration payment confirmed"),
       text2: ui("Your account has been created. Sign in with the password you chose."),
@@ -868,7 +863,7 @@ const RegisterScreen = ({ navigation, route }) => {
       const response = await authService.payForeignCardAdjustment(foreignCardAdjustment.reference);
       const data = response?.data || {};
       if (data.authorization_url) {
-        await Linking.openURL(data.authorization_url);
+        await openRegistrationPayment(data.authorization_url);
         setForeignCardAdjustment((prev) => ({
           ...prev,
           amount: data.amount || prev.amount,
@@ -1397,14 +1392,17 @@ const RegisterScreen = ({ navigation, route }) => {
             <AppText style={styles.paymentText}>{ui("Finish the Paystack flow in your browser, then return here.")}</AppText>
             <Button
               title={ui("Complete Registration")}
-              onPress={completePaidRegistration}
+              onPress={() => completePaidRegistration()}
               loading={loading}
               style={styles.marginTop}
             />
             <Button
               title={ui("Reopen Payment Page")}
               variant="outline"
-              onPress={() => Linking.openURL(paymentState.authorizationUrl)}
+              onPress={async () => {
+                try { await openRegistrationPayment(paymentState.authorizationUrl); }
+                catch (error) { Toast.show({ type: 'error', text1: ui("Payment failed"), text2: getErrorMessage(error, 'Could not open payment checkout') }); }
+              }}
               style={styles.marginTop}
               disabled={!paymentState.authorizationUrl}
             />

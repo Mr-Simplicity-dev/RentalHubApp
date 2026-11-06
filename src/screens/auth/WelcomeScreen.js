@@ -266,6 +266,7 @@ const WelcomeScreen = ({ navigation }) => {
             ]}
           >
             {/* Account Action Buttons */}
+            <AppUpdateIndicator variant="inline" />
             <View style={[styles.actions, compact && styles.actionsCompact, short && styles.actionsShort]}>
               {/* Primary Action: Create Account */}
               <TouchableOpacity
@@ -400,8 +401,7 @@ const WelcomeScreen = ({ navigation }) => {
         </ScrollView>
       </View>
 
-      {/* App update indicator prompt */}
-      <AppUpdateIndicator variant="overlay" />
+
     </SafeAreaView>
   );
 };

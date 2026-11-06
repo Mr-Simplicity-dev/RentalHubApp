@@ -218,7 +218,7 @@ export const authService = {
   },
 
   initializeRegistrationPayment: async (payload, turnstileToken) => {
-    const response = await api.post('/auth/register/payment', { ...payload, turnstile_token: turnstileToken });
+    const response = await api.post('/auth/register/payment', { ...payload, turnstile_token: turnstileToken }, { skipAuth: true, skipAuthRefresh: true });
     return response.data;
   },
 
