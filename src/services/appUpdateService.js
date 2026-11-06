@@ -51,7 +51,9 @@ export const getUpdateUrl = (versionState = {}) =>
 
 export const checkForAppUpdate = async () => {
   const response = await checkMobileAppVersion();
-  return response?.data || null;
+  const state = response?.data || null;
+  if (state?.update_available === false) await cancelUpdateNotification();
+  return state;
 };
 
 export const openInstallPermissionSettings = async () => {

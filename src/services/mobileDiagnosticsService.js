@@ -14,10 +14,10 @@ const getAppVersion = () =>
   null;
 
 const getBuildNumber = () => {
-  const android = Constants.expoConfig?.android || Constants.manifest?.android || {};
   const ios = Constants.expoConfig?.ios || Constants.manifest?.ios || {};
   if (Platform.OS === 'android') {
-    return String(android.versionCode || Constants.nativeBuildVersion || '').trim() || null;
+    return [Constants.nativeBuildVersion, Constants.expoConfig?.android?.versionCode, Constants.manifest?.android?.versionCode]
+      .map(value => String(value ?? '').trim()).find(Boolean) || null;
   }
   if (Platform.OS === 'ios') {
     return String(ios.buildNumber || Constants.nativeBuildVersion || '').trim() || null;
@@ -69,12 +69,11 @@ export const trackMobileEvent = async (eventName, metadata = {}, screen = '') =>
 export const getMobileAppVersion = () => getAppVersion();
 
 export const checkMobileAppVersion = async () => {
+  const sent = { platform: Platform.OS, version: getAppVersion(), buildNumber: getBuildNumber() };
+  if (__DEV__) console.debug('[app-update] installed', { ...sent, nativeAppVersion: Constants.nativeAppVersion, nativeBuildVersion: Constants.nativeBuildVersion, expoVersion: Constants.expoConfig?.version, expoAndroidVersionCode: Constants.expoConfig?.android?.versionCode });
   const response = await api.get('/mobile/app-version', {
-    params: {
-      platform: Platform.OS,
-      version: getAppVersion(),
-      buildNumber: getBuildNumber(),
-    },
+    params: sent,
   });
+  if (__DEV__) console.debug('[app-update] backend', { update_available: response.data?.data?.update_available, update_required: response.data?.data?.update_required });
   return response.data;
 };

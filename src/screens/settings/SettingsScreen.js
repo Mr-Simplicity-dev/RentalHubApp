@@ -26,11 +26,10 @@ import {
   syncNotificationPreferences,
 } from '../../services/appSettingsService';
 import {
-  checkMobileAppVersion,
   getMobileAppVersion,
   trackMobileEvent,
 } from '../../services/mobileDiagnosticsService';
-import { getDirectApkUrl, startAppUpdate } from '../../services/appUpdateService';
+import { checkForAppUpdate, getDirectApkUrl, startAppUpdate } from '../../services/appUpdateService';
 
 import AppText from '../../components/common/AppText';
 const labels = {
@@ -95,8 +94,7 @@ const SettingsScreen = ({ navigation }) => {
   const checkForUpdates = async () => {
     setCheckingVersion(true);
     try {
-      const response = await checkMobileAppVersion();
-      const nextVersionState = response?.data || null;
+      const nextVersionState = await checkForAppUpdate();
       setVersionState(nextVersionState);
       trackMobileEvent('app_version_checked', {
         screen: 'Settings',
@@ -108,6 +106,7 @@ const SettingsScreen = ({ navigation }) => {
         text1: nextVersionState?.message || ui("Version checked"),
       });
     } catch (error) {
+      setVersionState(null);
       Toast.show({
         type: 'error',
         text1: ui("Version check failed"),

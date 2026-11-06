@@ -1,6 +1,6 @@
 import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {ActivityIndicator,
   DeviceEventEmitter,
   StyleSheet,
@@ -28,6 +28,7 @@ const AppUpdateIndicator = ({ variant = 'floating' }) => {
   const insets = useSafeAreaInsets();
   const isInline = variant === 'inline' || variant === 'overlay';
   const isOverlay = variant === 'overlay';
+  const latestOfferedVersion = useRef(null);
   const [versionState, setVersionState] = useState(null);
   const [dismissed, setDismissed] = useState(false);
   const [updating, setUpdating] = useState(false);
@@ -61,9 +62,10 @@ const AppUpdateIndicator = ({ variant = 'floating' }) => {
       try {
         const nextState = await checkForAppUpdate();
         if (!active) return;
-        setVersionState(nextState?.update_available ? nextState : null);
+        setVersionState(nextState?.update_available === true ? nextState : null);
         if (nextState?.update_available) {
-          setDismissed(false);
+          setDismissed(previous => latestOfferedVersion.current === nextState.latest_version ? previous : false);
+          latestOfferedVersion.current = nextState.latest_version;
         } else {
           // Already up to date — clear any update notification left from a previous download.
           cancelUpdateNotification().catch(() => {});
