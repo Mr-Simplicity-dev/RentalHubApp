@@ -188,7 +188,12 @@ export const authService = {
   },
 
   verifyEmail: async (token) => {
-    const response = await api.get(`/auth/verify-email/${token}`);
+    const response = await api.get(`/auth/verify-email/${encodeURIComponent(token)}`, { skipAuth: true, skipAuthRefresh: true });
+    return response.data;
+  },
+
+  resendVerificationEmail: async (email) => {
+    const response = await api.post('/auth/resend-verification', { email }, { skipAuth: true, skipAuthRefresh: true });
     return response.data;
   },
 

@@ -1,6 +1,6 @@
 import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import {StyleSheet} from 'react-native';
 import Toast from 'react-native-toast-message';
 import Input from '../../components/common/Input';
@@ -11,15 +11,29 @@ import {
   PremiumScreen,
 } from '../../components/common/PremiumLayout';
 import { authService } from '../../services/authService';
+import { AuthContext } from '../../context/AuthContext';
 import { getErrorMessage } from '../../utils/http';
 import { colors, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
+const recovery = require('../../i18n/registrationRecoveryCopy.cjs');
 const VerifyEmailScreen = ({ navigation, route }) => {
-  useInterfaceLanguage();
+  const language = useInterfaceLanguage();
+  const copy = recovery[language] || recovery.en;
+  const { establishSession, user } = useContext(AuthContext);
+  const handledToken = useRef(null);
   const [token, setToken] = useState(route?.params?.token || '');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
+  const [email, setEmail] = useState(route?.params?.email || user?.email || '');
+  const [sending, setSending] = useState(false);
+  const resendEmail = async () => {
+    if (sending || !email.trim()) return;
+    setSending(true);
+    try { await authService.resendVerificationEmail(email.trim()); setMessage(copy.email_sent); }
+    catch (error) { setMessage(getErrorMessage(error, copy.email_send_failed)); }
+    finally { setSending(false); }
+  };
 
   const verifyEmail = async (nextToken = token) => {
     if (!nextToken) {
@@ -30,6 +44,9 @@ const VerifyEmailScreen = ({ navigation, route }) => {
     setLoading(true);
     try {
       const response = await authService.verifyEmail(nextToken);
+      if (!response.success) throw new Error(response.message || 'Could not verify email');
+      const session = response.data || response;
+      if (session.token && session.user) await establishSession(session);
       setMessage(response?.message || 'Email verified successfully.');
       Toast.show({ type: 'success', text1: ui("Email verified") });
     } catch (error) {
@@ -45,7 +62,8 @@ const VerifyEmailScreen = ({ navigation, route }) => {
   };
 
   useEffect(() => {
-    if (route?.params?.token) {
+    if (route?.params?.token && handledToken.current !== route.params.token) {
+      handledToken.current = route.params.token;
       verifyEmail(route.params.token);
     }
   }, [route?.params?.token]);
@@ -60,6 +78,8 @@ const VerifyEmailScreen = ({ navigation, route }) => {
       />
 
       <PremiumCard>
+        <Input label={ui('Email address')} value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" autoComplete="email" />
+        <PremiumButton title={copy.email_send} onPress={resendEmail} loading={sending} disabled={!email.trim() || loading} icon="mail-outline" />
         <Input
           label={ui("Email verification token")}
           value={token}

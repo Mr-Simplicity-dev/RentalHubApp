@@ -89,6 +89,8 @@ const VerificationStatusScreen = ({ navigation }) => {
       title: ui("Email address"),
       description: emailVerified ? ui("Your email address is confirmed.") : ui("Confirm your email address."),
       complete: emailVerified,
+      action: !emailVerified ? () => navigation.navigate('VerifyEmail') : null,
+      actionLabel: ui('Verify email'),
     },
     {
       key: 'phone',
