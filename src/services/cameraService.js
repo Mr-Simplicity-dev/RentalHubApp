@@ -45,6 +45,23 @@ const toDataUrl = (base64, type = 'image/jpeg') => {
 };
 
 export const cameraService = {
+  pickPassportDocument: async () => {
+    try {
+      if (Platform.OS === 'web') {
+        const chosen = await pickImageFromWeb('image/jpeg,image/png');
+        if (chosen.cancelled) return chosen;
+        const proofImage = await new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(String(reader.result || '')); reader.onerror = reject; reader.readAsDataURL(chosen.asset.file); });
+        if (proofImage.length > 680000) return { cancelled: true, message: ui('Choose a JPEG or PNG passport image no larger than 500 KB.') };
+        return { ...chosen, proofImage };
+      }
+      const { launchImageLibrary } = require('react-native-image-picker');
+      const result = await launchImageLibrary({ mediaType: 'photo', selectionLimit: 1, includeBase64: true, maxWidth: 1600, maxHeight: 1600, quality: 0.75 });
+      if (result.didCancel) return { cancelled: true };
+      const asset = result.assets?.[0];
+      if (!asset?.base64 || !['image/jpeg','image/png'].includes(asset.type) || asset.base64.length > 680000) return { cancelled: true, message: ui('Choose a clear JPEG or PNG passport image no larger than 500 KB.') };
+      return { cancelled: false, proofImage: toDataUrl(asset.base64, asset.type) };
+    } catch { return { cancelled: true, message: ui('The passport image could not be prepared. Please choose another image.') }; }
+  },
   pickPassportPhoto: async () => {
     if (Platform.OS === 'web') {
       return pickImageFromWeb('image/*');

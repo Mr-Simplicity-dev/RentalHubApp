@@ -1,7 +1,9 @@
+import { cameraService } from '../../services/cameraService';
+const passportCopy = require('../../i18n/passportCopy.cjs');
 import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
-import {KeyboardAvoidingView,
+import {Image, KeyboardAvoidingView,
   Keyboard,
   Modal,
   Linking,
@@ -59,6 +61,8 @@ const referralCodePattern = /^[A-Za-z0-9_-]+$/;
 
 const RegisterScreen = ({ navigation, route }) => {
   const interfaceLanguage = useInterfaceLanguage();
+  const passportText = passportCopy[interfaceLanguage] || passportCopy.en;
+  const [passportPreparing, setPassportPreparing] = useState(false);
   const { height, width } = useWindowDimensions();
   const compact = height < 760 || width < 360;
   const short = height < 650;
@@ -90,6 +94,8 @@ const RegisterScreen = ({ navigation, route }) => {
   const [userType, setUserType] = useState('tenant');
   const [isForeigner, setIsForeigner] = useState(false);
   const [showStatePicker, setShowStatePicker] = useState(false);
+  const [showPassportCountries, setShowPassportCountries] = useState(false);
+  const passportCountryNames = useMemo(() => { try { return new Intl.DisplayNames([interfaceLanguage], { type: 'region' }); } catch { return null; } }, [interfaceLanguage]);
   const [showLgaPicker, setShowLgaPicker] = useState(false);
   const [foreignCardAdjustment, setForeignCardAdjustment] = useState(null);
   const [checkoutUrl, setCheckoutUrl] = useState('');
@@ -139,6 +145,7 @@ const RegisterScreen = ({ navigation, route }) => {
     agent_phone: '',
     nin: '',
     international_passport_number: '',
+    passport_document_image: '',
     nationality: '',
     password: '',
     confirm_password: '',
@@ -371,6 +378,7 @@ const RegisterScreen = ({ navigation, route }) => {
           registration_access_message: data.registration_access_message || null,
           nin_number: data.nin_number !== false,
           passport_number: data.passport_number !== false,
+          passport_country_choices: Array.isArray(data.passport_country_choices) ? data.passport_country_choices : [],
           tenant_registration_payment: data.tenant_registration_payment === true,
           landlord_registration_payment: data.landlord_registration_payment === true,
           diaspora_registration: data.diaspora_registration === true,
@@ -463,6 +471,7 @@ const RegisterScreen = ({ navigation, route }) => {
     if (isForeigner) {
       payload.international_passport_number = form.international_passport_number.trim();
       payload.nationality = form.nationality.trim();
+      payload.passport_document_image = registrationFlags.passport_number ? form.passport_document_image : undefined;
     } else {
       payload.nin = form.nin.trim();
       payload.nationality = 'Nigeria';
@@ -533,6 +542,7 @@ const RegisterScreen = ({ navigation, route }) => {
       return ui('Enter a valid international passport number.');
     }
 
+    if (isForeigner && registrationFlags.passport_number && !form.passport_document_image) return passportText.passport_image_required;
     if (isForeigner && registrationFlags.passport_number && !form.nationality.trim()) {
       return ui('Nationality is required for foreign registrations.');
     }
@@ -1278,15 +1288,22 @@ Your legal representative's email
               autoCapitalize="characters"
               icon="document-outline"
             />
-            <Input
-              label={ui("Nationality")}
+            {registrationFlags.passport_country_choices?.length ? <SelectField label={passportText.passport_country_label} value={form.nationality} onPress={() => setShowPassportCountries(true)} /> : <Input
+              label={passportText.passport_country_label}
               compact
               containerStyle={styles.lastAboutField}
               value={form.nationality}
               onChangeText={(value) => onChange('nationality', value)}
               placeholder={ui("Country")}
               icon="globe-outline"
-            />
+            />}
+            <AppText style={styles.noticeText}>{passportText.passport_image_help}</AppText>
+            <Button title={passportText.passport_image_choose} variant="outline" loading={passportPreparing} onPress={async () => {
+              if (passportPreparing) return; setPassportPreparing(true);
+              try { const selected = await cameraService.pickPassportDocument(); if (selected.proofImage) onChange('passport_document_image', selected.proofImage); else if (selected.message) Toast.show({ type: 'error', text1: passportText.passport_image_label, text2: selected.message }); }
+              finally { setPassportPreparing(false); }
+            }} />
+            {form.passport_document_image ? <Image source={{ uri: form.passport_document_image }} accessibilityLabel={passportText.passport_image_label} style={{ width: '100%', height: 140, marginTop: 12 }} resizeMode="contain" /> : null}
           </>
         ) : (
           <AppText style={styles.helperBlock}>{ui("Passport collection is currently disabled.")}</AppText>
@@ -1423,7 +1440,7 @@ Your legal representative's email
             onPress={() => handleRegister()}
             loading={loading || paymentLoading}
             style={styles.cta}
-            disabled={!passwordRulesMet || !acceptedTerms || !registrationFlags.loaded || loading || paymentLoading}
+            disabled={!passwordRulesMet || !acceptedTerms || !registrationFlags.loaded || loading || paymentLoading || passportPreparing}
           />
 
         {paymentState.reference ? (
@@ -1479,6 +1496,7 @@ Your legal representative's email
         </View>
       </ScrollView>
 
+      <OptionPickerModal visible={showPassportCountries} title={passportText.passport_country_label} options={registrationFlags.passport_country_choices || []} selectedValue={form.nationality} searchable getOptionLabel={item => passportCountryNames?.of(item.code) || item.name} getOptionValue={item => item.name} onClose={() => setShowPassportCountries(false)} onSelect={item => onChange('nationality', item.name)} />
       <OptionPickerModal
         visible={showStatePicker}
         title={ui("Select State")}
