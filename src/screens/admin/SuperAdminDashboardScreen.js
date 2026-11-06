@@ -1421,7 +1421,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
           label="Search"
           value={lawyerInviteSearch}
           onChangeText={setLawyerInviteSearch}
-          placeholder="Client or lawyer email"
+          placeholder="Client or Your legal representative's email"
         />
         <Button
           title="Apply Search"
@@ -1440,7 +1440,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
           <AppText style={styles.cardTitle}>{invite.client_name}</AppText>
           <AppText style={styles.meta}>Assigned By: {invite.assigned_by_name || invite.client_name || '-'}</AppText>
           <AppText style={styles.meta}>Role: {invite.client_role}</AppText>
-          <AppText style={styles.meta}>Lawyer Email: {invite.lawyer_email}</AppText>
+          <AppText style={styles.meta}>Your legal representative's email: {invite.lawyer_email}</AppText>
           <AppText style={styles.meta}>Status: {getInviteStatusLabel(invite)}</AppText>
           <AppText style={styles.meta}>
             Expires:{' '}
@@ -1455,7 +1455,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
           {editingInviteId === invite.id ? (
             <>
               <Input
-                label="New Lawyer Email"
+                label="New Your legal representative's email"
                 value={editingInviteEmail}
                 onChangeText={setEditingInviteEmail}
                 placeholder="lawyer@email.com"
@@ -1472,7 +1472,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                         setEditingInviteEmail('');
                         await loadLawyerInvites();
                       },
-                      'Lawyer email updated',
+                      "Your legal representative's email updated",
                       null
                     )
                   }

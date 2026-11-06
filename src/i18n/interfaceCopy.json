@@ -33637,8 +33637,8 @@
     "yo": "Yan ìjọba ìbílẹ̀",
     "ig": "Họrọ ọchịchị ime obodo"
   },
-  "lawyer email": {
-    "en": "Lawyer Email",
+  "Your legal representative's email": {
+    "en": "Your legal representative's email",
     "ar": "البريد الإلكتروني للمحامي",
     "fr": "E-mail de l'avocat",
     "ru": "Электронная почта юриста",
@@ -35080,8 +35080,8 @@
   "check the email": {
     "en": "Check the email"
   },
-  "enter a valid lawyer email address.": {
-    "en": "Enter a valid lawyer email address."
+  "enter a valid Your legal representative's email address.": {
+    "en": "Enter a valid Your legal representative's email address."
   },
   "invite email updated": {
     "en": "Invite email updated"
@@ -35110,8 +35110,8 @@
   "resends": {
     "en": "Resends"
   },
-  "new lawyer email": {
-    "en": "New lawyer email"
+  "new Your legal representative's email": {
+    "en": "New Your legal representative's email"
   },
   "save and resend": {
     "en": "Save and resend"
@@ -36005,8 +36005,8 @@
     "ru": "Приглашение юриста Поиск",
     "zh": "律师邀请搜索"
   },
-  "client or lawyer email": {
-    "en": "Client or lawyer email",
+  "client or Your legal representative's email": {
+    "en": "Client or Your legal representative's email",
     "ar": "البريد الإلكتروني للعميل أو المحامي",
     "fr": "E-mail du client ou de l'avocat",
     "ru": "Электронная почта клиента или адвоката",
@@ -36036,8 +36036,8 @@
     "yo": "Ẹni tó yàn: ",
     "ig": "Kenye site na "
   },
-  "lawyer email:": {
-    "en": "Lawyer Email:",
+  "Your legal representative's email:": {
+    "en": "Your legal representative's email:",
     "ar": "البريد الإلكتروني للمحامي:",
     "fr": "Courriel de l'avocat :",
     "ru": "Электронная почта юриста:",
@@ -57595,8 +57595,8 @@
     "ru": "Требуется полное имя, адрес электронной почты, телефон и пароль.",
     "zh": "需要全名、电子邮件、电话和密码。"
   },
-  "enter the lawyer email to use for registration.": {
-    "en": "Enter the lawyer email to use for registration.",
+  "enter the Your legal representative's email to use for registration.": {
+    "en": "Enter the Your legal representative's email to use for registration.",
     "ar": "أدخل البريد الإلكتروني للمحامي لاستخدامه في التسجيل.",
     "ha": "Shigar da imel ɗin lauya don amfani da rajista.",
     "yo": "Tẹ ímeèlì agbẹjọ́rò tí a ó lò fún ìforúkọsílẹ̀.",
@@ -57615,8 +57615,8 @@
     "ru": "Чтобы продолжить, примите Условия и Политику конфиденциальности.",
     "zh": "接受条款和隐私政策以继续。"
   },
-  "enter a valid lawyer email.": {
-    "en": "Enter a valid lawyer email.",
+  "enter a valid Your legal representative's email.": {
+    "en": "Enter a valid Your legal representative's email.",
     "ar": "أدخل بريدًا إلكترونيًا صالحًا للمحامي.",
     "ha": "Shigar da ingantaccen imel na lauya.",
     "yo": "Tẹ ímeèlì agbẹjọ́rò tó tọ́.",

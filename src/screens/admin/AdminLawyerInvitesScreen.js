@@ -78,7 +78,7 @@ const AdminLawyerInvitesScreen = () => {
       Toast.show({
         type: 'error',
         text1: "Check the email",
-        text2: "Enter a valid lawyer email address.",
+        text2: "Enter a valid Your legal representative's email address.",
       });
       return;
     }
@@ -155,7 +155,7 @@ const AdminLawyerInvitesScreen = () => {
           {editingInviteId === item.id ? (
             <View style={styles.editPanel}>
               <Input
-                label={"New lawyer email"}
+                label={"New Your legal representative's email"}
                 value={editingEmail}
                 onChangeText={setEditingEmail}
                 placeholder="lawyer@example.com"

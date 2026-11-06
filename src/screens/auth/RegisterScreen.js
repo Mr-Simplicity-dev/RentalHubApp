@@ -21,6 +21,7 @@ import OptionPickerModal from '../../components/common/OptionPickerModal';
 import { AuthContext } from '../../context/AuthContext';
 import { authService } from '../../services/authService';
 import RegistrationCardCheckout from '../../components/RegistrationCardCheckout';
+import RegistrationPhoneVerification from '../../components/RegistrationPhoneVerification';
 import { propertyService } from '../../services/propertyService';
 import { storageService } from '../../services/storageService';
 import TurnstileWidget from '../../components/common/TurnstileWidget';
@@ -93,6 +94,24 @@ const RegisterScreen = ({ navigation, route }) => {
   const [foreignCardAdjustment, setForeignCardAdjustment] = useState(null);
   const [checkoutUrl, setCheckoutUrl] = useState('');
   const completionBusy = useRef(false);
+  const completionGrants = useRef({});
+  const [phoneVerification, setPhoneVerification] = useState(null);
+  const applyVerifiedRegistration = async data => {
+    if (data.token && data.user) {
+      await clearSavedRegistrationDraft();
+      await establishSession(data);
+      setPhoneVerification(null);
+      return;
+    }
+    if (data.completion_token && data.reference) completionGrants.current[data.reference] = data.completion_token;
+    if (data.payment_method === 'bank_transfer') {
+      setBankTransferData(data); setShowBankTransferModal(true);
+    } else if (data.authorization_url && data.reference) {
+      setPaymentState({ reference: data.reference, authorizationUrl: data.authorization_url });
+      setCheckoutUrl(data.authorization_url);
+    } else { throw new Error('Payment link was not returned.'); }
+    setPhoneVerification(null);
+  };
   const [adjustmentBusy, setAdjustmentBusy] = useState(false);
   const [paymentState, setPaymentState] = useState({
     reference: '',
@@ -465,7 +484,7 @@ const RegisterScreen = ({ navigation, route }) => {
     }
 
     if (!form.lawyer_email?.trim()) {
-      return ui('Enter the lawyer email to use for registration.');
+      return ui("Enter your legal representative's email to use for registration.");
     }
 
     if (!emailPattern.test(form.email || '')) {
@@ -485,7 +504,7 @@ const RegisterScreen = ({ navigation, route }) => {
     }
 
     if (!emailPattern.test(form.lawyer_email.trim())) {
-      return ui('Enter a valid lawyer email.');
+      return ui("Enter a valid legal representative's email.");
     }
 
     if (userType === 'landlord' && form.add_agent && !form.use_rentalhub_agents) {
@@ -550,7 +569,7 @@ const RegisterScreen = ({ navigation, route }) => {
 
     if (step === 1) {
       if (!emailPattern.test(form.lawyer_email.trim())) {
-        return ui('Enter a valid lawyer email.');
+        return ui("Enter a valid legal representative's email.");
       }
       if (userType === 'landlord' && form.add_agent && !form.use_rentalhub_agents) {
         if (!form.agent_full_name.trim()) return ui("Enter the agent's full name.");
@@ -703,6 +722,11 @@ const RegisterScreen = ({ navigation, route }) => {
           { ...payload, payment_method: chosenMethod },
           turnstileToken
         );
+        if (response.code === 'PHONE_VERIFICATION_REQUIRED') {
+          setPhoneVerification({ payload: { ...payload, payment_method: chosenMethod }, challenge: response.data.phone_challenge, flow: 'paid' });
+          turnstileRef.current?.reset(); turnstileTokenRef.current = null;
+          return;
+        }
         const responseData = pickObject(response, ['data']) || {};
 
         if (responseData.payment_method === 'bank_transfer') {
@@ -754,6 +778,11 @@ const RegisterScreen = ({ navigation, route }) => {
     setLoading(true);
     try {
       const response = await register(payload, turnstileToken);
+      if (response.code === 'PHONE_VERIFICATION_REQUIRED') {
+        setPhoneVerification({ payload, challenge: response.data.phone_challenge, flow: 'free' });
+        turnstileRef.current?.reset(); turnstileTokenRef.current = null;
+        return;
+      }
       if (response.success) {
         await clearSavedRegistrationDraft();
         Toast.show({
@@ -790,14 +819,16 @@ const RegisterScreen = ({ navigation, route }) => {
 
   const closeBankTransfer = () => {
     setShowBankTransferModal(false);
-    setBankTransferData(null);    turnstileRef.current?.reset();
+    setBankTransferData(null);
+    turnstileRef.current?.reset();
     turnstileTokenRef.current = null;
   };
 
   const handleBankTransferPaid = () => {
     clearSavedRegistrationDraft();
     setShowBankTransferModal(false);
-    setBankTransferData(null);    Toast.show({
+    setBankTransferData(null);
+    Toast.show({
       type: 'success',
       text1: ui("Registration payment confirmed"),
       text2: ui("Your account has been created. Sign in with the password you chose."),
@@ -814,7 +845,7 @@ const RegisterScreen = ({ navigation, route }) => {
     completionBusy.current = true;
     setLoading(true);
     try {
-      const response = await authService.completeRegistrationPayment(reference);
+      const response = await authService.completeRegistrationPayment(reference, completionGrants.current[reference]);
 
       if (!response.success) {
         throw new Error(response.message || 'Payment completion failed');
@@ -836,6 +867,10 @@ const RegisterScreen = ({ navigation, route }) => {
       });
     } catch (error) {
       const serverError = error?.response?.data;
+      if (serverError?.code === 'OTP_REQUIRED') {
+        setPhoneVerification({ reference });
+        return;
+      }
       if (
         error?.response?.status === 402 &&
         serverError?.code === 'FOREIGN_CARD_ADJUSTMENT' &&
@@ -1094,7 +1129,7 @@ const RegisterScreen = ({ navigation, route }) => {
           </View>
           <AppText style={styles.supportOptionDescription}>{ui('Our special team will be assigned to assist with tenancy and property disputes (fee applies).')}</AppText>
         </TouchableOpacity>
-
+Your legal representative's email
         <Input
             label={ui("Lawyer Email")}
             value={form.lawyer_email}
@@ -1470,6 +1505,7 @@ const RegisterScreen = ({ navigation, route }) => {
         onSelect={(item) => onChange('lga_name', String(item))}
       />
 
+      {phoneVerification ? <RegistrationPhoneVerification key={phoneVerification.challenge || phoneVerification.reference} pending={phoneVerification} onVerified={applyVerifiedRegistration} onClose={() => setPhoneVerification(null)} /> : null}
       {checkoutUrl ? <RegistrationCardCheckout key={checkoutUrl} url={checkoutUrl} onReturn={() => { setCheckoutUrl(''); completePaidRegistration(paymentState.reference || foreignCardAdjustment?.reference); }} /> : null}
       <Modal
         transparent

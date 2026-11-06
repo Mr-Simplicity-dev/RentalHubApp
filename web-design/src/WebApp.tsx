@@ -1923,7 +1923,7 @@ export default function WebApp() {
                 />
               </div>
               <div>
-                <label className="font-semibold text-[#33415C]">Lawyer Email</label>
+                <label className="font-semibold text-[#33415C]">Your legal representative's email</label>
                 <input
                   type="email"
                   required

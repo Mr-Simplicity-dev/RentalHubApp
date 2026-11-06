@@ -73,6 +73,8 @@ export const checkMobileAppVersion = async () => {
   if (__DEV__) console.debug('[app-update] installed', { ...sent, nativeAppVersion: Constants.nativeAppVersion, nativeBuildVersion: Constants.nativeBuildVersion, expoVersion: Constants.expoConfig?.version, expoAndroidVersionCode: Constants.expoConfig?.android?.versionCode });
   const response = await api.get('/mobile/app-version', {
     params: sent,
+    skipAuth: true,
+    skipAuthRefresh: true,
   });
   if (__DEV__) console.debug('[app-update] backend', { update_available: response.data?.data?.update_available, update_required: response.data?.data?.update_required });
   return response.data;

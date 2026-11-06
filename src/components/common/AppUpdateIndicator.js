@@ -2,6 +2,7 @@ import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useRef, useState } from 'react';
 import {ActivityIndicator,
+  AppState,
   DeviceEventEmitter,
   StyleSheet,
   TouchableOpacity,
@@ -21,6 +22,7 @@ import { colors, shadows, typography, typeScale } from '../../theme';
 import AppText from '../../components/common/AppText';
 const CHECK_DELAY_MS = 4200;
 const CHECK_INTERVAL_MS = 4 * 60 * 60 * 1000;
+const RETRY_DELAY_MS = 60 * 1000;
 const UPDATE_PROGRESS_EVENT = 'rentalHubUpdateProgress';
 
 const AppUpdateIndicator = ({ variant = 'floating' }) => {
@@ -57,8 +59,14 @@ const AppUpdateIndicator = ({ variant = 'floating' }) => {
   useEffect(() => {
     let active = true;
     let intervalId;
+    let retryId;
+    let checking = false;
+    let previousAppState = AppState.currentState;
 
     const checkForUpdate = async () => {
+      if (!active || checking) return;
+      checking = true;
+      clearTimeout(retryId);
       try {
         const nextState = await checkForAppUpdate();
         if (!active) return;
@@ -73,9 +81,18 @@ const AppUpdateIndicator = ({ variant = 'floating' }) => {
       } catch {
         if (active) {
           setVersionState(null);
+          retryId = setTimeout(checkForUpdate, RETRY_DELAY_MS);
         }
+      } finally {
+        checking = false;
       }
     };
+
+    const appStateSubscription = AppState.addEventListener('change', nextAppState => {
+      const resumed = nextAppState === 'active' && previousAppState !== 'active';
+      previousAppState = nextAppState;
+      if (resumed) checkForUpdate();
+    });
 
     const timeoutId = setTimeout(() => {
       checkForUpdate();
@@ -85,6 +102,8 @@ const AppUpdateIndicator = ({ variant = 'floating' }) => {
     return () => {
       active = false;
       clearTimeout(timeoutId);
+      clearTimeout(retryId);
+      appStateSubscription.remove();
       if (intervalId) {
         clearInterval(intervalId);
       }
@@ -420,7 +439,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   dotContainerInline: {
-    alignSelf: 'flex-start',
+    alignSelf: 'center',
     marginTop: 16,
     position: 'relative',
     right: 0,

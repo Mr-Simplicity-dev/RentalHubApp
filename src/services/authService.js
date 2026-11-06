@@ -222,8 +222,8 @@ export const authService = {
     return response.data;
   },
 
-  completeRegistrationPayment: async (reference) => {
-    const response = await api.post(`/auth/register/payment/complete/${reference}`);
+  completeRegistrationPayment: async (reference, completionToken) => {
+    const response = await api.post(`/auth/register/payment/complete/${reference}`, { completion_token: completionToken }, { skipAuth: true, skipAuthRefresh: true });
 
     if (response.data?.success) {
       await authService.hydrateSession(response.data.data);
