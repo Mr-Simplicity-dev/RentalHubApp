@@ -1,0 +1,17 @@
+import React,{useState,useEffect,useRef,useContext} from 'react';
+import {View,StyleSheet,Linking} from 'react-native';
+import {AuthContext} from '../../context/AuthContext';
+import api from '../../services/api';
+import AppText from './AppText';
+import Button from './Button';
+export default function SupportCustomerCard({ticketId}){
+ const {user}=useContext(AuthContext),allowed=['super_admin','super_support_admin','zonal_admin','state_support_admin','lga_support_admin'].includes(user?.user_type),key=String(user?.id)+':'+ticketId,sequence=useRef(0);
+ const [record,setRecord]=useState(null),[error,setError]=useState(''),[loading,setLoading]=useState(false);
+ const load=async()=>{if(!allowed||!ticketId)return;const current=++sequence.current;setLoading(true);setError('');try{const result=await api.get(`/support/tickets/${ticketId}/customer`);if(current===sequence.current)setRecord({key,data:result.data.data});}catch(e){if(current===sequence.current)setError(e.response?.data?.message||'Customer details are unavailable.');}finally{if(current===sequence.current)setLoading(false);}};
+ useEffect(()=>{setRecord(null);load();return()=>{sequence.current++;};},[key,allowed]);
+ if(!allowed||!ticketId)return null;
+ const data=record?.key===key?record.data:null,account=data?.account,contact=data?.contact;
+ const open=link=>Linking.openURL(link).catch(()=>setError('Could not open the phone or email app.'));
+ return <View style={styles.card}><AppText style={styles.title}>Customer details</AppText><Button title="Refresh" variant="outline" size="sm" onPress={load} disabled={loading}/>{loading?<AppText>Loading customer details…</AppText>:null}{error?<AppText style={styles.error}>{error}</AppText>:null}{data?<><AppText style={data.match==='linked'?styles.linked:styles.warning}>{data.match==='linked'?'Linked to the signed-in customer account.':data.match==='possible'?'Possible account match. This guest has not proved account ownership. Verify the customer before making account changes.':'Guest contact details. Account ownership has not been verified.'}</AppText><AppText selectable>Name: {contact?.name||'Not provided'}</AppText><AppText>Customer role: {account?.user_type||'Guest'}</AppText><AppText selectable>Phone: {contact?.phone||'Not provided in this older request'}</AppText><AppText selectable>Email: {contact?.email||'Not provided'}</AppText>{account?<><AppText>Account location: {[account.state_name,account.lga].filter(Boolean).join(' / ')||'Not set'}</AppText><AppText>Account status: {account.suspended?'Suspended':account.is_active===false?'Inactive':'Active'}</AppText><AppText>Phone verified: {account.phone_verified?'Yes':'No'} · Email verified: {account.email_verified?'Yes':'No'} · Identity verified: {account.identity_verified?'Yes':'No'}</AppText></>:null}{contact?.phone?<Button title="Call customer" variant="outline" onPress={()=>open('tel:'+encodeURIComponent(contact.phone))}/>:null}{contact?.email?<Button title="Email customer" variant="outline" onPress={()=>open('mailto:'+encodeURIComponent(contact.email))}/>:null}<AppText style={styles.hint}>Read-only support information. Contact details are not shared with the other party.</AppText></>:null}</View>;
+}
+const styles=StyleSheet.create({card:{marginVertical:12,padding:14,borderRadius:12,backgroundColor:'#fff',gap:10},title:{fontWeight:'700',color:'#172554'},linked:{padding:10,backgroundColor:'#f0fdf4',color:'#14532d'},warning:{padding:10,backgroundColor:'#fffbeb',color:'#78350f'},error:{color:'#b91c1c'},hint:{fontSize:12,color:'#475569'}});

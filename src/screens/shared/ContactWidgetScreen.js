@@ -1,3 +1,4 @@
+import contactCopy from '../../i18n/contactPrivacyCopy.cjs';
 import DisputeHandoverPanel from '../../components/common/DisputeHandoverPanel';
 import SupportContactForms from '../../components/common/SupportContactForms';
 import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
@@ -91,11 +92,11 @@ const STATUS_COLORS = {
 };
 
 const ContactWidgetScreen = ({ navigation, route }) => {
-  useInterfaceLanguage();
+  const interfaceLanguage=useInterfaceLanguage();
   const { user, isAuthenticated } = useContext(AuthContext);
   const identityKey=isAuthenticated?String(user?.id || ''):'guest';
   const identityRef=useRef(identityKey);identityRef.current=identityKey;
-  useEffect(()=>{setTickets([]);setActiveTicket(null);setConversation([]);setReplyText('');setForm({name:'',email:'',subject:'',message:'',state:'',lga:'',priority:'medium'});setContactConv([]);setViewingContactTicket(null);setView('assistant');},[identityKey]);
+  useEffect(()=>{setTickets([]);setActiveTicket(null);setConversation([]);setReplyText('');setForm({name:'',phone:'',email:'',subject:'',message:'',state:'',lga:'',priority:'medium'});setContactConv([]);setViewingContactTicket(null);setView('assistant');},[identityKey]);
   const { inviteSupportCall, connected } = useRealtime();
 
   const [view, setView] = useState('assistant');
@@ -105,7 +106,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
     setView(initialView==='tickets' && isAuthenticated ? 'tickets' : isAuthenticated ? 'auth-form' : 'form');
     navigation.setParams({initialView:undefined});
   }, [route?.params?.initialView, isAuthenticated, navigation]);
-  const [form, setForm] = useState({ name: '', email: '', state: '', lga: '', subject: '', message: '', priority: 'medium' });
+  const [form, setForm] = useState({ name: '', phone: '', email: '', state: '', lga: '', subject: '', message: '', priority: 'medium' });
   const [callingSupport, setCallingSupport] = useState(false);
   const [sending, setSending] = useState(false);
   const [tickets, setTickets] = useState([]);
@@ -143,7 +144,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
 
   useEffect(() => {
     if (isAuthenticated && user) {
-      setForm((p) => ({ ...p, name: user.full_name || '', email: user.email || '' }));
+      setForm((p) => ({ ...p, name: user.full_name || '', phone: user.phone || '', email: user.email || '' }));
     }
   }, [isAuthenticated, user]);
 
@@ -225,13 +226,15 @@ const ContactWidgetScreen = ({ navigation, route }) => {
   }, [viewingContactTicket, lookupEmail]);
 
   const handleSubmit = async () => {
+    if(isAuthenticated){setView('auth-form');return;}
+    if(!form.phone?.trim()){Toast.show({type:'error',text1:(contactCopy[interfaceLanguage]||contactCopy.en).phone+' *'});return;}
     if (!form.name.trim() || !form.email.trim() || !form.state || !form.message.trim()) {
       Toast.show({ type: 'error', text1: ui("Please fill in name, email, state, and message.") });
       return;
     }
     setSending(true);
     try {
-      const response = await supportService.contactSupport(form);
+      const response = await supportService.contactSupport({...form,contact_details_version:2});
       const ticket = getResponseData(response);
       await guestSupportCredentialService.save({
         ticketId: ticket?.ticketId,
@@ -442,7 +445,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
 
   const resetForm = () => {
     setForm({
-      name: user?.full_name || '', email: user?.email || '',
+      name: user?.full_name || '', phone: user?.phone || '', email: user?.email || '',
       state: '', lga: '', subject: '', message: '', priority: 'medium',
     });
     setView('menu');
@@ -596,6 +599,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
         autoCapitalize="none"
       />
 
+      <AppText style={styles.label}>{(contactCopy[interfaceLanguage]||contactCopy.en).phone} *</AppText><TextInput style={styles.input} value={form.phone||''} onChangeText={phone=>setForm(p=>({...p,phone}))} keyboardType="phone-pad" autoComplete="tel" accessibilityLabel={(contactCopy[interfaceLanguage]||contactCopy.en).phone}/>
       <AppText style={styles.label}>{ui("State *")}</AppText>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipScroll}>
         <View style={styles.chipRow}>

@@ -1,3 +1,4 @@
+import SupportCustomerCard from '../../components/common/SupportCustomerCard';
 import DisputeHandoverPanel from '../../components/common/DisputeHandoverPanel';
 import SupportContactForms from '../../components/common/SupportContactForms';
 
@@ -429,6 +430,7 @@ const SupportTicketDetailScreen = ({ navigation, route }) => {
           ) : null}
         </DashboardSection>
 
+        <SupportCustomerCard ticketId={ticket?.id}/>
         <DisputeHandoverPanel ticketId={ticket?.id} />
         <SupportContactForms ticketId={ticket?.id} peerId={ticket?.user_id} />
         <DashboardSection title={"Conversation"}>

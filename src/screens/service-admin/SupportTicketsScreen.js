@@ -1,6 +1,10 @@
+import api from '../../services/api';
+import TextInput from '../../components/common/AppTextInput';
+import Button from '../../components/common/Button';
+import {AuthContext} from '../../context/AuthContext';
 
 
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState, useContext, useRef } from 'react';
 import {ActivityIndicator, StyleSheet, TouchableOpacity, View} from 'react-native';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -33,25 +37,32 @@ const SupportTicketsScreen = ({ navigation }) => {
     navigation.setOptions({ headerShown: navigation.canGoBack() });
   }, [navigation, interfaceLanguage]);
 
+  const {user}=useContext(AuthContext);
+  const [search,setSearch]=useState('');
+  const sequence=useRef(0);
   const loadTickets = async () => {
+    const current=++sequence.current;
     setLoading(true);
     try {
-      const response = await serviceAdminService.getSupportTickets({ status: 'all' });
+      const response = search.trim()?(await api.post('/support/tickets/search',{search:search.trim()})).data:await serviceAdminService.getSupportTickets({ status: 'all' });
+      if(current!==sequence.current)return;
       setTickets(pickList(response, ['data', 'tickets']));
     } catch (error) {
+      if(current!==sequence.current)return;
       Toast.show({
         type: 'error',
         text1: "Support unavailable",
         text2: getErrorMessage(error, 'Could not load support tickets'),
       });
     } finally {
-      setLoading(false);
+      if(current===sequence.current)setLoading(false);
     }
   };
 
   useEffect(() => {
-    loadTickets();
-  }, []);
+    setTickets([]);setSearch('');loadTickets();
+    return()=>{sequence.current++;};
+  }, [user?.id]);
 
   return (
     <DashboardScreen refreshing={loading} onRefresh={loadTickets}>
@@ -70,6 +81,7 @@ const SupportTicketsScreen = ({ navigation }) => {
         message={"Open any ticket for native replies, attachments, assignment, escalation, resolution and internal notes."}
       />
 
+      <View style={{gap:8}}><AppText>Find customer queries</AppText><TextInput value={search} onChangeText={setSearch} placeholder="Name, phone, email or ticket" autoCapitalize="none" accessibilityLabel="Search customers and tickets" style={{borderWidth:1,borderColor:colors.border,borderRadius:12,padding:12,color:colors.ink}}/><Button title="Search tickets" onPress={loadTickets} disabled={loading}/></View>
       <DashboardSection title={"Latest tickets"}>
         {loading && !tickets.length ? (
           <ActivityIndicator color={colors.blue} />
