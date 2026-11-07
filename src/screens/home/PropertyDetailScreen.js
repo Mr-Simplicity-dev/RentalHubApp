@@ -581,32 +581,12 @@ const PropertyDetailScreen = ({ route, navigation }) => {
                   <Icon name="person" size={21} color={colors.white} />
                 </View>
                 <View style={styles.contactCopy}>
-                  <AppText style={styles.cardEyebrow}>{ui("VERIFIED CONTACT")}</AppText>
+                  <AppText style={styles.cardEyebrow}>{ui("Property enquiries")}</AppText>
                   <AppText style={styles.cardTitle}>{property.landlord_name}</AppText>
                 </View>
                 <Icon name="shield-checkmark" size={22} color={colors.success} />
               </View>
               <View style={styles.contactActions}>
-                {property.landlord_phone ? (
-                  <TouchableOpacity
-                    accessibilityLabel={ui("Call verified property contact")}
-                    accessibilityRole="button"
-                    onPress={() => Linking.openURL(`tel:${property.landlord_phone}`)}
-                    style={styles.contactAction}>
-                    <Icon name="call-outline" size={18} color={colors.blue} />
-                    <AppText style={styles.contactActionText}>{ui("Call")}</AppText>
-                  </TouchableOpacity>
-                ) : null}
-                {property.landlord_email ? (
-                  <TouchableOpacity
-                    accessibilityLabel={ui("Email verified property contact")}
-                    accessibilityRole="button"
-                    onPress={() => Linking.openURL(`mailto:${property.landlord_email}`)}
-                    style={styles.contactAction}>
-                    <Icon name="mail-outline" size={18} color={colors.blue} />
-                    <AppText style={styles.contactActionText}>{ui("Email")}</AppText>
-                  </TouchableOpacity>
-                ) : null}
                 <TouchableOpacity
                   accessibilityLabel={ui("Request virtual property tour")}
                   accessibilityRole="button"

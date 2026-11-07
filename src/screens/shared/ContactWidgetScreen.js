@@ -1,3 +1,5 @@
+import DisputeHandoverPanel from '../../components/common/DisputeHandoverPanel';
+import SupportContactForms from '../../components/common/SupportContactForms';
 import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import WhatsAppBotScreen from './WhatsAppBotScreen';
@@ -183,6 +185,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
     }
   }, [view, activeTicket, loadConversation]);
 
+  useEffect(()=>{const ticketId=route?.params?.ticketId;if(!ticketId||!isAuthenticated)return;let active=true;supportService.getTicketContext(ticketId).then(response=>{const context=getResponseData(response)||{};if(active&&context.ticket){setActiveTicket(context.ticket);setView('conversation');navigation.setParams({ticketId:undefined});}}).catch(()=>{});return()=>{active=false;};},[route?.params?.ticketId,isAuthenticated,navigation]);
   const scrollToBottom = useCallback(() => {
     setTimeout(() => {
       scrollRef.current?.scrollToEnd({ animated: true });
@@ -899,6 +902,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
       </View>
 
       <ScrollView style={styles.convScroll} ref={scrollRef}>
+        <DisputeHandoverPanel ticketId={activeTicket?.id}/><SupportContactForms ticketId={activeTicket?.id}/>
         {loadingConv ? (
           <ActivityIndicator color={colors.blue} style={{ marginTop: 24 }} />
         ) : conversation.length === 0 ? (

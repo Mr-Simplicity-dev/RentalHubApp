@@ -59,7 +59,7 @@ const AgentDashboardScreen = ({ navigation }) => {
         <DashboardNotice
           title={ui("Assigned to {value0}", {value0: (assignment.landlord_name || ui("your landlord"))})}
           tourTarget="agent_assignment"
-          message={[assignment.landlord_email, assignment.landlord_phone].filter(Boolean).join(' • ') || 'Contact details are not available.'}
+          message={ui("Property enquiries")}
         />
       )}
 

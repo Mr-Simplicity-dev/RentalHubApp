@@ -1,3 +1,4 @@
+import handoverCopy from '../../i18n/handoverCopy.cjs';
 import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
@@ -135,6 +136,7 @@ const DisputeDetailsScreen = ({ navigation, route }) => {
           <View style={styles.partyRow}><AppText style={styles.partyLabel}>{ui("Opened by")}</AppText><AppText style={styles.partyValue}>{dispute.opened_by_name || ui("Unknown")}</AppText></View>
           <View style={styles.partyRow}><AppText style={styles.partyLabel}>{ui("Against")}</AppText><AppText style={styles.partyValue}>{dispute.against_name || dispute.against_email || ui("Unknown")}</AppText></View>
         </View>
+        {dispute.responsible_support_name?<AppText style={styles.description}>{(handoverCopy[interfaceLanguage]||handoverCopy.en).lead}: {dispute.responsible_support_name}</AppText>:null}
         {dispute.description ? <AppText style={styles.description}>{dispute.description}</AppText> : null}
         <Button
           title={ui("Verify Evidence Integrity")}
@@ -152,7 +154,6 @@ const DisputeDetailsScreen = ({ navigation, route }) => {
           authorized_lawyers.map((lawyer) => (
             <View key={lawyer.id} style={styles.listRow}>
               <AppText style={styles.listTitle}>{lawyer.full_name}</AppText>
-              <AppText style={styles.listMeta}>{lawyer.email}</AppText>
               <AppText style={styles.listMeta}>{ui("Assigned by")}{lawyer.assigned_by_name || lawyer.client_name || ui("Unknown")}
                 {lawyer.client_name ? ui(" for {value0}", {value0: (lawyer.client_name)}) : ''}
               </AppText>

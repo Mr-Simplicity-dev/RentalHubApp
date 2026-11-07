@@ -1,3 +1,5 @@
+import DisputeHandoverPanel from '../../components/common/DisputeHandoverPanel';
+import SupportContactForms from '../../components/common/SupportContactForms';
 import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useContext, useState, useRef, useEffect, useCallback } from 'react';
@@ -421,6 +423,7 @@ const WhatsAppBotScreen = ({ navigation, embedded=false, onHumanRequest }) => {
           contentContainerStyle={styles.messagesContent}
           keyboardShouldPersistTaps="handled"
         >
+          <DisputeHandoverPanel/><SupportContactForms/>
           {messages.filter(message=>!message.owner || message.owner===authKey).map(renderBubble)}
 
           {isBotTyping && (

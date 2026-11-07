@@ -46,6 +46,10 @@ export const openRentalHubLinkInApp = (link) => {
     return navigateIfAvailable('Support') || navigateIfAvailable('ContactWidget');
   }
 
+  const disputeMatch = path.match(/^\/dispute\/(\d+)$/);
+  if (disputeMatch) return navigateIfAvailable('DisputeDetails', {disputeId:disputeMatch[1]});
+  const supportMatch = path.match(/^\/support\/tickets\/(\d+)$/);
+  if (supportMatch) return navigateIfAvailable('SupportTicketDetail', {ticketId:supportMatch[1]}) || navigateIfAvailable('ContactWidget', {initialView:'tickets',ticketId:supportMatch[1]});
   const propertyMatch = path.match(/^\/properties\/([^/]+)$/);
   if (propertyMatch) {
     return navigateIfAvailable('PropertyDetail', { id: propertyMatch[1] });

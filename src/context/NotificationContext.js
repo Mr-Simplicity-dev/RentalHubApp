@@ -1,3 +1,4 @@
+import {notificationService} from '../services/notificationService';
 import * as Notifications from 'expo-notifications';
 import React, { createContext, useContext, useEffect } from 'react';
 import { AppState, Linking } from 'react-native';
@@ -24,6 +25,7 @@ configureNotificationPresentation();
 const openResponse = (response) => {
   const data = response?.notification?.request?.content?.data || {};
   const open = () => {
+    if(/^\d+$/.test(String(data.notificationId||'')))void notificationService.markAsRead(data.notificationId).then(()=>syncAppIconBadge('push_read')).catch(()=>{});
     if (openNotificationDestination(data)) return;
     if (data.link && openRentalHubLinkInApp(data.link)) return;
     if (data.link) void Linking.openURL(String(data.link));

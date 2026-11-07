@@ -1,3 +1,5 @@
+import DisputeHandoverPanel from '../../components/common/DisputeHandoverPanel';
+import SupportContactForms from '../../components/common/SupportContactForms';
 import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useContext } from 'react';
@@ -30,6 +32,7 @@ const SupportScreen = ({ navigation }) => {
 
   return (
     <DashboardScreen>
+      <DisputeHandoverPanel/><SupportContactForms/>
       <TourTarget id={tourId} padding={6} radius={18}>
         <View style={styles.brandRow}>
           <BrandMark compact />

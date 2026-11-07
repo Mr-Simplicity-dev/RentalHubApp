@@ -1,0 +1,16 @@
+const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm'),babel=require('@babel/core');
+const calls=[];let routes=['DisputeDetails','ContactWidget'];
+const ref={isReady:()=>true,getRootState:()=>({routeNames:routes}),navigate:(...args)=>calls.push(args)};
+const moduleObject={exports:{}};
+const code=babel.transformSync(fs.readFileSync('src/navigation/navigationRef.js','utf8'),{configFile:false,babelrc:false,plugins:['@babel/plugin-transform-modules-commonjs']}).code;
+vm.runInNewContext(code,{module:moduleObject,exports:moduleObject.exports,URL,require:()=>({createNavigationContainerRef:()=>ref})});
+assert.equal(moduleObject.exports.openRentalHubLinkInApp('/dispute/23'),true);
+assert.equal(calls[0][0],'DisputeDetails');assert.equal(calls[0][1].disputeId,'23');
+assert.equal(moduleObject.exports.openRentalHubLinkInApp('/support/tickets/7'),true);
+assert.equal(calls[1][0],'ContactWidget');assert.equal(calls[1][1].ticketId,'7');
+routes=['SupportTicketDetail'];moduleObject.exports.openRentalHubLinkInApp('/support/tickets/7');assert.equal(calls[2][0],'SupportTicketDetail');
+routes=[];assert.equal(moduleObject.exports.openRentalHubLinkInApp('/dispute/23'),false);
+const source=fs.readFileSync('src/context/NotificationContext.js','utf8');const ast=babel.parseSync(source,{configFile:false,babelrc:false,parserOpts:{plugins:['jsx']}});let declaration;require('@babel/traverse').default(ast,{VariableDeclarator(p){if(p.node.id.name==='openResponse')declaration=source.slice(p.parent.start,p.parent.end);}});
+const reads=[],syncs=[];const context={module:{exports:{}},navigationRef:ref,openNotificationDestination:()=>false,openRentalHubLinkInApp:()=>true,Linking:{openURL:()=>{}},notificationService:{markAsRead:async id=>reads.push(id)},syncAppIconBadge:async reason=>syncs.push(reason),setTimeout};
+vm.runInNewContext(declaration+'\nmodule.exports=openResponse;',context);
+(async()=>{context.module.exports({notification:{request:{content:{data:{notificationId:'41',link:'/dispute/23'}}}}});await new Promise(resolve=>setImmediate(resolve));assert.equal(reads[0],'41');assert.equal(syncs[0],'push_read');context.module.exports({notification:{request:{content:{data:{badgeSummary:true}}}}});await new Promise(resolve=>setImmediate(resolve));assert.equal(reads.length,1);console.log('PASS: dispute alerts open their case, support alerts choose the correct customer/staff screen, and reading a push refreshes the real badge count.');})().catch(error=>{console.error(error);process.exitCode=1;});
