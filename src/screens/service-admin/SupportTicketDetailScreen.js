@@ -1,3 +1,4 @@
+import SupportContactForms from '../../components/common/SupportContactForms';
 
 
 import React, { useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
@@ -427,6 +428,7 @@ const SupportTicketDetailScreen = ({ navigation, route }) => {
           ) : null}
         </DashboardSection>
 
+        <SupportContactForms ticketId={ticket?.id} peerId={ticket?.user_id} />
         <DashboardSection title={"Conversation"}>
           {loading && !replies.length ? <ActivityIndicator color={colors.blue} /> : null}
           {!loading && !replies.length ? (

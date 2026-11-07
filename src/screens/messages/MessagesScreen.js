@@ -1,3 +1,4 @@
+import SupportContactForms from '../../components/common/SupportContactForms';
 import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, {
@@ -484,6 +485,7 @@ const MessagesScreen = ({ navigation, route }) => {
           ) : null}
 
           <FlatList
+            ListHeaderComponent={<SupportContactForms peerId={selected?.other_user_id} />}
             ref={threadRef}
             contentContainerStyle={styles.threadList}
             data={messages}
@@ -629,6 +631,7 @@ const MessagesScreen = ({ navigation, route }) => {
       </View>
 
       <FlatList
+        ListHeaderComponent={<SupportContactForms />}
         contentContainerStyle={[styles.list, !visibleConversations.length && styles.emptyList]}
         data={visibleConversations}
         keyExtractor={(item) => String(item.id || item.other_user_id)}

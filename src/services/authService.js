@@ -271,6 +271,7 @@ export const authService = {
 
     formData.append('capture_source', 'live_camera');
     formData.append('biometric_consent', biometricConsent === true ? 'true' : 'false');
+    formData.append('biometric_consent_version','local-face-2026-11');
     if (liveCaptureToken) {
       formData.append('live_capture_token', liveCaptureToken);
     }
