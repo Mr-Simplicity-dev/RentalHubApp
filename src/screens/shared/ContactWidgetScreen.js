@@ -185,7 +185,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
     }
   }, [view, activeTicket, loadConversation]);
 
-  useEffect(()=>{const ticketId=route?.params?.ticketId;if(!ticketId||!isAuthenticated)return;let active=true;supportService.getTicketContext(ticketId).then(response=>{const context=getResponseData(response)||{};if(active&&context.ticket){setActiveTicket(context.ticket);setView('conversation');navigation.setParams({ticketId:undefined});}}).catch(()=>{});return()=>{active=false;};},[route?.params?.ticketId,isAuthenticated,navigation]);
+  useEffect(()=>{const ticketId=route?.params?.ticketId;if(!ticketId||!isAuthenticated)return;let active=true;supportService.getTicketContext(ticketId).then(response=>{const context=getResponseData(response)||{};if(active&&context.ticket){setActiveTicket(context.ticket);setView('conversation');navigation.setParams({ticketId:undefined});}}).catch(()=>{});return()=>{active=false;};},[route?.params?.ticketId,isAuthenticated,user?.id,navigation]);
   const scrollToBottom = useCallback(() => {
     setTimeout(() => {
       scrollRef.current?.scrollToEnd({ animated: true });
