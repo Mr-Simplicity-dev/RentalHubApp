@@ -770,6 +770,7 @@ const AdminRoot = () => {  return (<Stack.Navigator screenOptions={screenOptions
 
 const SuperAdminRoot = ({ initialRouteName = 'SuperAdminDashboard' }) => {  return (<Stack.Navigator initialRouteName={initialRouteName} screenOptions={screenOptions}>
     <Stack.Screen name="SuperAdminDashboard" component={SuperAdminDashboardScreen} options={{ title: "Super Admin" }} />
+    <Stack.Screen name="Home" component={HomeScreen} options={{ title: "Explore homes" }} />
     <Stack.Screen name="ModerationHub" component={ModerationHubScreen} options={{ title: "Moderation" }} />
     <Stack.Screen name="FinanceStateAdmins" component={FinanceStateAdminScreen} options={{ title: "State Admin Management" }} />
     <Stack.Screen name="RentSavingsAdmin" component={RentSavingsAdminScreen} options={{ title: "Rent Savings Withdrawals" }} />
