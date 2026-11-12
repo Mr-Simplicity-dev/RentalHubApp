@@ -1,7 +1,7 @@
 {
   "name": "rentalhubmobile",
   "private": true,
-  "version": "1.0.62",
+  "version": "1.0.63",
   "main": "index.js",
   "scripts": {
     "android": "react-native run-android",
@@ -19,7 +19,8 @@
     "test:typography": "node scripts/verify-typography.cjs",
     "test:localization": "node scripts/verify-login-language.cjs && node scripts/verify-interface-localization.cjs --customer && node scripts/audit-customer-inline-copy.cjs --check && node scripts/verify-customer-catalogues.cjs",
     "test:registration": "node scripts/verify-registration-action.cjs",
-    "test:support": "node scripts/verify-support-centre.cjs && node --test scripts/test-whatsapp-support.cjs src/services/__tests__/*.test.cjs"
+    "test:support": "node scripts/verify-support-centre.cjs && node --test scripts/test-whatsapp-support.cjs src/services/__tests__/*.test.cjs",
+    "test:protection": "node --test scripts/test-property-protection.cjs src/services/__tests__/privatePropertyFileService.test.cjs"
   },
   "dependencies": {
     "@expo-google-fonts/inter": "^0.4.2",

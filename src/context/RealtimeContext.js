@@ -224,8 +224,9 @@ export const RealtimeProvider = ({ children }) => {
       setActiveCall({
         ...response.call,
         callType,
-        propertyId,
-        propertyTitle,
+        ...(disputeId?{disputeId}:{}),
+        propertyId:propertyId??response.call.propertyId,
+        propertyTitle:propertyTitle||response.call.propertyTitle,
         direction: 'outgoing',
       });
     }

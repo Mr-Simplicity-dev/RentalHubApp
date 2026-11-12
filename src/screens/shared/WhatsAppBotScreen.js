@@ -123,7 +123,7 @@ const isAcknowledgment = (text) => {
 const QUICK_REPLIES = [
   'How do I find a property?',
   'How do I list my property?',
-  'Tell me about Legal Protection',
+  'Tell me about Property Protection',
   'How does payment work?',
 ];
 

@@ -150,24 +150,24 @@
     "ig": "Nnọọ na nlọghachi"
   },
   "sign in to manage your properties, tenants, and legal activities securely.": {
-    "en": "Sign in to manage your properties, tenants, and legal activities securely.",
-    "fr": "Connectez-vous pour gérer vos biens, vos locataires et vos activités juridiques en toute sécurité.",
-    "ar": "سجّل الدخول لإدارة عقاراتك ومستأجريك وأنشطتك القانونية بأمان.",
-    "ru": "Войдите, чтобы безопасно управлять своей недвижимостью, арендаторами и юридическими делами.",
-    "zh": "登录后安全地管理您的房产、租客和法律活动。",
-    "ha": "Shiga don sarrafa kadarorin ku, masu haya, da ayyukan shari'a cikin aminci.",
-    "yo": "Wọlé láti ṣàkóso àwọn ilé rẹ, àwọn agbatẹ̀rù, àti àwọn iṣẹ́ òfin láìléwu.",
-    "ig": "Banye iji jikwaa ụlọ gị, ndị mgbazinye, na ọrụ iwu gị n'enweghị nsogbu."
+    "en": "Sign in to manage your property records, tenancies and cases securely.",
+    "fr": "Connectez-vous pour gérer vos biens, locations et dossiers en sécurité.",
+    "ar": "سجّل الدخول لإدارة بيانات العقارات والإيجارات والقضايا بأمان.",
+    "ru": "Войдите для безопасного управления объектами, арендой и делами.",
+    "zh": "登录以安全管理房产记录、租赁和案件。",
+    "ha": "Shiga don kula da bayanan kadara, haya da lamura cikin tsaro.",
+    "yo": "Wọlé láti bójú tó àkọsílẹ̀ ohun-ìní, yíyálò àti ọ̀ràn rẹ ní ààbò.",
+    "ig": "Banye ka ị lekọta ndekọ ihe onwunwe, mgbazinye na okwu n’enweghị nsogbu."
   },
   "trusted by landlords, tenants, and legal professionals.": {
-    "en": "Trusted by landlords, tenants, and legal professionals.",
-    "fr": "Approuvé par les propriétaires, les locataires et les professionnels du droit.",
-    "ar": "موثوق من الملاك والمستأجرين والمتخصصين القانونيين.",
-    "ru": "Доверие арендодателей, арендаторов и юридических специалистов.",
-    "zh": "深受房东、租客和法律专业人士的信赖。",
-    "ha": "Amintacce ga masu gida, masu haya, da ƙwararrun shari'a.",
-    "yo": "Ìgbẹ́kẹ̀lé àwọn onílé, agbatẹ̀rù, àti àwọn amọ̀fin.",
-    "ig": "Ntụkwasị obi nke ndị nwe ụlọ, ndị mgbazinye, na ndị ọkachamara iwu."
+    "en": "Built for tenants, landlords and approved platform staff.",
+    "fr": "Conçu pour les locataires, propriétaires et équipes autorisées.",
+    "ar": "مصمّم للمستأجرين والمُلّاك وموظفي المنصة المعتمدين.",
+    "ru": "Для арендаторов, владельцев и уполномоченных сотрудников платформы.",
+    "zh": "面向租客、房东和获准的平台工作人员。",
+    "ha": "An tsara wa masu haya, masu gida da ma’aikatan da aka amince da su.",
+    "yo": "Fún ayálégbé, onílé àti òṣìṣẹ́ pẹpẹ tí a fọwọ́ sí.",
+    "ig": "Maka ndị bi n’ụlọ mgbazinye, ndị nwe ụlọ na ndị ọrụ a kwadoro."
   },
   "language": {
     "en": "Language",
@@ -1170,14 +1170,14 @@
     "ig": "Lelee Amana RentalHub NG, ikpo a pụrụ ịtụkwasị obi maka ụlọ na Naịjirịa:"
   },
   "need legal assistance? legal protection coverage gives you access to qualified lawyers in your area.": {
-    "en": "Need legal assistance? Legal Protection Coverage gives you access to qualified lawyers in your area.",
-    "fr": "Besoin d'aide juridique ? Consultez les avocats Amana RentalHub NG et débloquez leurs coordonnées complètes après paiement.",
-    "ar": "تحتاج مساعدة قانونية؟ تمنحك تغطية الحماية القانونية الوصول إلى محامين مؤهلين في منطقتك.",
-    "ru": "Нужна юридическая помощь? Юридическое покрытие даёт вам доступ к квалифицированным юристам в вашем районе.",
-    "zh": "需要法律帮助？法律保护保障让您能够联系所在地区的合格律师。",
-    "ha": "Kuna buƙatar taimakon shari'a? Kariyar Shari'a tana ba ku damar samun ƙwararrun lauyoyi a yankinku.",
-    "yo": "Ṣé o nílò ìrànlọ́wọ́ òfin? Ìbòòrùn Ààbò Òfin fún ọ ní ààyè sí àwọn agbẹjọ́rò tó yẹ ní àgbègbè rẹ.",
-    "ig": "Ị chọrọ enyemaka iwu? Nchekwa Nkwado Iwu na-enye gị ohere ịnweta ndị ọka iwu tozuru etozu n'ógbè gị."
+    "en": "Register property records, request available checks and follow cases.",
+    "fr": "Enregistrez vos biens, demandez les contrôles disponibles et suivez vos dossiers.",
+    "ar": "سجّل بيانات العقار واطلب الفحوص المتاحة وتابع القضايا.",
+    "ru": "Регистрируйте объекты, запрашивайте доступные проверки и следите за делами.",
+    "zh": "登记房产记录、申请可用核查并跟进案件。",
+    "ha": "Yi rajistar kadara, nemi binciken da ake bayarwa, ka bibiyi lamura.",
+    "yo": "Forúkọ ohun-ìní sílẹ̀, béèrè àyẹ̀wò tó wà, kí o sì tọpa ọ̀ràn.",
+    "ig": "Debanye ihe onwunwe, rịọ nyocha dị ma soro okwu gị."
   },
   "can't find your preferred property type? submit a request on the properties page.": {
     "en": "Can't find your preferred property type? Submit a request on the properties page.",
@@ -1190,14 +1190,14 @@
     "ig": "Ị chọtaghị ụdị ụlọ masịrị gị? Zinye arịrịọ na ibe ụlọ."
   },
   "legal protection coverage": {
-    "en": "Legal Protection Coverage",
-    "fr": "Utiliser les avocats Amana RentalHub NG",
-    "ar": "تغطية الحماية القانونية",
-    "ru": "Юридическое покрытие",
-    "zh": "法律保护保障",
-    "ha": "Kariyar Shari'a",
-    "yo": "Ìbòòrùn Ààbò Òfin",
-    "ig": "Nchekwa Nkwado Iwu"
+    "en": "Case Support Coverage",
+    "fr": "Couverture d’assistance",
+    "ar": "تغطية دعم القضايا",
+    "ru": "Покрытие поддержки по делам",
+    "zh": "案件支持保障",
+    "ha": "Tsarin Taimakon Lamari",
+    "yo": "Ètò Ìrànlọ́wọ́ Ọ̀ràn",
+    "ig": "Mkpuchi Nkwado Okwu"
   },
   "verify dispute evidence": {
     "en": "Verify Dispute Evidence",
@@ -4557,14 +4557,14 @@
     "ig": "Olee otú m ga-esi depụta ụlọ m?"
   },
   "tell me about legal protection": {
-    "en": "Tell me about Legal Protection",
-    "fr": "Parlez-moi de la protection juridique",
-    "ar": "أخبرني عن الحماية القانونية",
-    "ru": "Расскажите о юр. защите",
-    "zh": "介绍法律保护服务",
-    "ha": "Faɗa mani game da Kariyar Shari'a",
-    "yo": "Sọ fún mi nípa Ààbò Òfin",
-    "ig": "Gwa m banyere Nchekwa Nkwado Iwu"
+    "en": "Tell me about Property Protection",
+    "fr": "Parlez-moi de la protection immobilière",
+    "ar": "أخبرني عن حماية العقارات",
+    "ru": "Расскажите о защите недвижимости",
+    "zh": "介绍房产保护",
+    "ha": "Faɗa mini game da Kariyar Kadarori",
+    "yo": "Sọ fún mi nípa Ààbò Ohun-ìní",
+    "ig": "Gwa m banyere Nchedo Ala na Ụlọ"
   },
   "how does payment work?": {
     "en": "How does payment work?",
@@ -5147,14 +5147,14 @@
     "ig": "Gbasara "
   },
   "nigeria's most trusted property technology platform — connecting tenants, landlords, agents, and legal professionals across all 36 states and the federal capital territory.": {
-    "en": "Nigeria's most trusted property technology platform — connecting tenants, landlords, agents, and legal professionals across all 36 states and the Federal Capital Territory.",
-    "fr": "Nigeria's most trusted property technology platform — connecting tenants, landlords, agents, and legal professionals across all 36 states and the Federal Capital Territory.",
-    "ar": "Nigeria's most trusted property technology platform — connecting tenants, landlords, agents, and legal professionals across all 36 states and the Federal Capital Territory.",
-    "ru": "Nigeria's most trusted property technology platform — connecting tenants, landlords, agents, and legal professionals across all 36 states and the Federal Capital Territory.",
-    "zh": "Nigeria's most trusted property technology platform — connecting tenants, landlords, agents, and legal professionals across all 36 states and the Federal Capital Territory.",
-    "ha": "Dandalin fasaha na gidaje da aka fi amincewa da shi a Najeriya — haɗa masu haya, masu gida, wakilai, da ƙwararrun shari'a a duk jihohi 36 da Babban Birnin Tarayya.",
-    "yo": "Pẹ̀pẹ̀lẹ̀ ìmọ̀-ẹ̀rọ ohun-inì tó gbẹ́kẹ̀lé jùlọ ní Nàìjíríà tó ń ṣopọ̀ àwọn ẹni tó ń yá ilé, onílé, aṣojú, àti àwọn amọ̀fin káàkiri gbogbo ìpínlẹ̀ 36 àti Ilẹ̀ Olú-ìlú Àpapọ̀.",
-    "ig": "Ikpo teknụzụ a pụrụ ịtụkwasị obi maka ihe onwunwe na Naịjirịa — na-ejikọ ndị na-agbaziri ụlọ, ndị nwe ụlọ, ndị ọrụ na ndị ọka iwu n'ofe steeti 36 niile na Federal Capital Territory."
+    "en": "Built for tenants, landlords and approved platform staff.",
+    "fr": "Conçu pour les locataires, propriétaires et équipes autorisées.",
+    "ar": "مصمّم للمستأجرين والمُلّاك وموظفي المنصة المعتمدين.",
+    "ru": "Для арендаторов, владельцев и уполномоченных сотрудников платформы.",
+    "zh": "面向租客、房东和获准的平台工作人员。",
+    "ha": "An tsara wa masu haya, masu gida da ma’aikatan da aka amince da su.",
+    "yo": "Fún ayálégbé, onílé àti òṣìṣẹ́ pẹpẹ tí a fọwọ́ sí.",
+    "ig": "Maka ndị bi n’ụlọ mgbazinye, ndị nwe ụlọ na ndị ọrụ a kwadoro."
   },
   "join amana rentalhub ng": {
     "en": "Join Amana RentalHub NG",
@@ -5217,14 +5217,14 @@
     "ig": "Ịkwụ ụgwọ dị nchebe"
   },
   "legal protection": {
-    "en": "Legal protection",
-    "fr": "Legal protection",
-    "ar": "Legal protection",
-    "ru": "Legal protection",
-    "zh": "Legal protection",
-    "ha": "Kariyar shari'a",
-    "yo": "Ààbò òfin",
-    "ig": "Nchekwa iwu"
+    "en": "Amana Property Protection",
+    "fr": "Protection immobilière Amana",
+    "ar": "حماية أمانا للعقارات",
+    "ru": "Защита недвижимости Amana",
+    "zh": "Amana 房产保护",
+    "ha": "Kariyar Kadarori ta Amana",
+    "yo": "Ààbò Ohun-ìní Amana",
+    "ig": "Nchedo Ala na Ụlọ Amana"
   },
   "dispute resolution": {
     "en": "Dispute resolution",
@@ -5377,14 +5377,14 @@
     "ig": "Nkwado Iwu & Idozi Esemokwu"
   },
   "access to qualified lawyers, evidence verification, and structured dispute resolution processes to protect all parties.": {
-    "en": "Access to qualified lawyers, evidence verification, and structured dispute resolution processes to protect all parties.",
-    "fr": "Access to qualified lawyers, evidence verification, and structured dispute resolution processes to protect all parties.",
-    "ar": "Access to qualified lawyers, evidence verification, and structured dispute resolution processes to protect all parties.",
-    "ru": "Access to qualified lawyers, evidence verification, and structured dispute resolution processes to protect all parties.",
-    "zh": "Access to qualified lawyers, evidence verification, and structured dispute resolution processes to protect all parties.",
-    "ha": "Samun damar ƙwararrun lauyoyi, tabbatar da shaidu, da tsarin warware rigima don kare duk ɓangarorin.",
-    "yo": "Ààyè sí àwọn agbẹjọ́rò tó yẹ, ìmúdájú ẹ̀rí, àti àwọn ìlànà ìpinnu àríyànjiyàn tó ṣètò láti dáàbò gbogbo ẹ̀gbẹ́.",
-    "ig": "Ohere ịnweta ndị ọka iwu tozuru etozu, nyocha ihe akaebe, na usoro idozi esemokwu a haziri nke ọma iji chebe akụkụ niile."
+    "en": "Assigned reviewers check documents and record findings and limitations.",
+    "fr": "Les personnes affectées examinent les documents et consignent les résultats et limites.",
+    "ar": "يراجع المكلّفون المستندات ويسجّلون النتائج وحدود الفحص.",
+    "ru": "Назначенные специалисты проверяют документы и фиксируют результаты и ограничения.",
+    "zh": "指派的审核人员核查文件并记录结果和局限。",
+    "ha": "Masu nazari da aka ware suna duba takardu su rubuta sakamako da iyakoki.",
+    "yo": "Àwọn olùyẹ̀wò tí a yàn ń ṣàyẹ̀wò ìwé, wọ́n sì ń kọ àbájáde àti ààlà rẹ̀ sílẹ̀.",
+    "ig": "Ndị e kenyere na-enyocha akwụkwọ ma dekọọ ihe ha chọpụtara na oke nyocha."
   },
   "full-service marketplace": {
     "en": "Full-Service Marketplace",
@@ -5517,24 +5517,24 @@
     "ig": "Emeka na-emepụta ikpo Amana RentalHub NG, na-ebute ihe ọhụrụ na teknụzụ ụlọ, nyocha nkwenye dijitalụ na azụmahịa dị nchebe."
   },
   "head of legal services": {
-    "en": "Head of Legal Services",
-    "fr": "Head of Legal Services",
-    "ar": "Head of Legal Services",
-    "ru": "Head of Legal Services",
-    "zh": "Head of Legal Services",
-    "ha": "Shugaban Sabis na Shari'a",
-    "yo": "Olórí Ẹ̀ka Òfin",
-    "ig": "Onye Isi Ọrụ Iwu"
+    "en": "Document Review",
+    "fr": "Examen des documents",
+    "ar": "مراجعة المستندات",
+    "ru": "Проверка документов",
+    "zh": "文件审查",
+    "ha": "Nazarin Takardu",
+    "yo": "Àyẹ̀wò Ìwé",
+    "ig": "Nyocha Akwụkwọ"
   },
   "a seasoned legal professional, fatima ensures that all property transactions comply with nigerian law and protects all parties involved.": {
-    "en": "A seasoned legal professional, Fatima ensures that all property transactions comply with Nigerian law and protects all parties involved.",
-    "fr": "A seasoned legal professional, Fatima ensures that all property transactions comply with Nigerian law and protects all parties involved.",
-    "ar": "A seasoned legal professional, Fatima ensures that all property transactions comply with Nigerian law and protects all parties involved.",
-    "ru": "A seasoned legal professional, Fatima ensures that all property transactions comply with Nigerian law and protects all parties involved.",
-    "zh": "A seasoned legal professional, Fatima ensures that all property transactions comply with Nigerian law and protects all parties involved.",
-    "ha": "Ƙwararren ma'aikacin shari'a, Fatima tana tabbatar da cewa duk cinikin gidaje ya bi dokokin Najeriya kuma tana kare duk ɓangarorin da suka shiga.",
-    "yo": "Amọ̀fin onírìírí, Fatima máa ń rí i dájú pé gbogbo àwọn ìgbéṣe ohun-inì bá òfin Nàìjíríà mu àti pé ó dáàbò gbogbo ẹ̀gbẹ́ tó ní í ṣe.",
-    "ig": "Dịka ọkachamara iwu nwere ahụmahụ, Fatima na-ahụ na azụmahịa ụlọ niile dabara na iwu Naịjirịa ma chebe akụkụ niile."
+    "en": "Assigned reviewers check documents and record findings and limitations.",
+    "fr": "Les personnes affectées examinent les documents et consignent les résultats et limites.",
+    "ar": "يراجع المكلّفون المستندات ويسجّلون النتائج وحدود الفحص.",
+    "ru": "Назначенные специалисты проверяют документы и фиксируют результаты и ограничения.",
+    "zh": "指派的审核人员核查文件并记录结果和局限。",
+    "ha": "Masu nazari da aka ware suna duba takardu su rubuta sakamako da iyakoki.",
+    "yo": "Àwọn olùyẹ̀wò tí a yàn ń ṣàyẹ̀wò ìwé, wọ́n sì ń kọ àbájáde àti ààlà rẹ̀ sílẹ̀.",
+    "ig": "Ndị e kenyere na-enyocha akwụkwọ ma dekọọ ihe ha chọpụtara na oke nyocha."
   },
   "amana rentalhub ng was founded with a vision to transform the nigerian rental market.": {
     "en": "Amana RentalHub NG was founded with a vision to transform the Nigerian rental market.",
@@ -5680,14 +5680,14 @@
     "ig": "Obodo Buru Ihe Mbụ"
   },
   "we build a supportive ecosystem where tenants, landlords, agents, and legal professionals thrive together.": {
-    "en": "We build a supportive ecosystem where tenants, landlords, agents, and legal professionals thrive together.",
-    "fr": "We build a supportive ecosystem where tenants, landlords, agents, and legal professionals thrive together.",
-    "ar": "We build a supportive ecosystem where tenants, landlords, agents, and legal professionals thrive together.",
-    "ru": "We build a supportive ecosystem where tenants, landlords, agents, and legal professionals thrive together.",
-    "zh": "We build a supportive ecosystem where tenants, landlords, agents, and legal professionals thrive together.",
-    "ha": "Muna gina tsarin tallafi inda masu haya, masu gida, wakilai, da ƙwararrun shari'a suka bunƙasa tare.",
-    "yo": "A kọ́ ètò ẹ̀mí tó ń ṣètìlẹ́yìn níbi tí àwọn ẹni tó ń yá ilé, onílé, aṣojú, àti amọ̀fin ti ń gbèrú papọ̀.",
-    "ig": "Anyị na-ewu ikpo na-akwado ebe ndị gbaziri ụlọ, ndị nwe ụlọ, ndị ọrụ na ndị ọka iwu na-aga nke ọma ọnụ."
+    "en": "Built for tenants, landlords and approved platform staff.",
+    "fr": "Conçu pour les locataires, propriétaires et équipes autorisées.",
+    "ar": "مصمّم للمستأجرين والمُلّاك وموظفي المنصة المعتمدين.",
+    "ru": "Для арендаторов, владельцев и уполномоченных сотрудников платформы.",
+    "zh": "面向租客、房东和获准的平台工作人员。",
+    "ha": "An tsara wa masu haya, masu gida da ma’aikatan da aka amince da su.",
+    "yo": "Fún ayálégbé, onílé àti òṣìṣẹ́ pẹpẹ tí a fọwọ́ sí.",
+    "ig": "Maka ndị bi n’ụlọ mgbazinye, ndị nwe ụlọ na ndị ọrụ a kwadoro."
   },
   "nationwide reach": {
     "en": "Nationwide Reach",
@@ -6090,14 +6090,14 @@
     "ig": "Nkwado Iwu"
   },
   "submit legal assistance requests and track case progress.": {
-    "en": "Submit legal assistance requests and track case progress.",
-    "fr": "Submit legal assistance requests and track case progress.",
-    "ar": "Submit legal assistance requests and track case progress.",
-    "ru": "Submit legal assistance requests and track case progress.",
-    "zh": "Submit legal assistance requests and track case progress.",
-    "ha": "Aika buƙatun taimakon shari'a kuma ku bibiyi ci gaban shari'a.",
-    "yo": "Fi àwọn ìbéèrè ìrànwọ́ òfin sílẹ̀ kí o sì tọ̀nà ìlọsíwájú ẹjọ́.",
-    "ig": "Zinye arịrịọ enyemaka iwu ma soro ọganihu ikpe."
+    "en": "Keep evidence private and follow assigned case reviews.",
+    "fr": "Conservez les preuves en privé et suivez les examens de dossier attribués.",
+    "ar": "احفظ الأدلة بسرية وتابع مراجعة القضية المكلّف بها الفريق.",
+    "ru": "Храните доказательства конфиденциально и следите за назначенной проверкой дела.",
+    "zh": "私密保存证据并跟进已分配的案件审查。",
+    "ha": "Ajiye hujjoji a sirrance, ka bibiyi nazarin lamarin da aka ware.",
+    "yo": "Pa ẹ̀rí mọ́ ní ìkọ̀kọ̀, kí o sì tọpa àyẹ̀wò ọ̀ràn tí a yàn.",
+    "ig": "Debe ihe akaebe na nzuzo ma soro nyocha e kenyere."
   },
   "everything in the app": {
     "en": "Everything in the app",
@@ -7210,14 +7210,14 @@
     "ig": "Ajụjụ Ego & Ịgba Ụgwọ"
   },
   "legal & dispute questions": {
-    "en": "Legal & Dispute Questions",
-    "fr": "Legal & Dispute Questions",
-    "ar": "Legal & Dispute Questions",
-    "ru": "Legal & Dispute Questions",
-    "zh": "Legal & Dispute Questions",
-    "ha": "Tambayoyin Shari'a & Rigima",
-    "yo": "Àwọn Ìbéèrè Òfin & Àríyànjiyàn",
-    "ig": "Ajụjụ Iwu & Esemokwu"
+    "en": "Property and Dispute Questions",
+    "fr": "Questions sur les biens et les litiges",
+    "ar": "أسئلة العقارات والنزاعات",
+    "ru": "Вопросы недвижимости и споров",
+    "zh": "房产与争议问题",
+    "ha": "Tambayoyin Kadara da Rikici",
+    "yo": "Ìbéèrè Ohun-ìní àti Àríyànjiyàn",
+    "ig": "Ajụjụ Ihe Onwunwe na Esemokwu"
   },
   "account & support questions": {
     "en": "Account & Support Questions",
@@ -8043,14 +8043,14 @@
     "ig": "A na-ahazi arịrịọ na nzikọrịta ozi n'ụzọ dị nchebe n'ime ikpo. Ọnọdụ doro anya na-echebe akụkụ niile."
   },
   "access qualified lawyers, evidence verification, and structured dispute resolution when you need it.": {
-    "en": "Access qualified lawyers, evidence verification, and structured dispute resolution when you need it.",
-    "fr": "Access qualified lawyers, evidence verification, and structured dispute resolution when you need it.",
-    "ar": "Access qualified lawyers, evidence verification, and structured dispute resolution when you need it.",
-    "ru": "Access qualified lawyers, evidence verification, and structured dispute resolution when you need it.",
-    "zh": "Access qualified lawyers, evidence verification, and structured dispute resolution when you need it.",
-    "ha": "Sami ƙwararrun lauyoyi, tabbatar da shaidu, da tsarin warware rigima mai tsari lokacin da kuke buƙata.",
-    "yo": "Wọ àwọn agbẹjọ́rò tó yẹ, ìmúdájú ẹ̀rí, àti ìpinnu àríyànjiyàn tó ṣètò nígbà tí o bá nílò rẹ̀.",
-    "ig": "Nweta ndị ọka iwu tozuru etozu, nyocha ihe akaebe na usoro idozi esemokwu a haziri mgbe ị chọrọ ya."
+    "en": "Keep evidence private and follow assigned case reviews.",
+    "fr": "Conservez les preuves en privé et suivez les examens de dossier attribués.",
+    "ar": "احفظ الأدلة بسرية وتابع مراجعة القضية المكلّف بها الفريق.",
+    "ru": "Храните доказательства конфиденциально и следите за назначенной проверкой дела.",
+    "zh": "私密保存证据并跟进已分配的案件审查。",
+    "ha": "Ajiye hujjoji a sirrance, ka bibiyi nazarin lamarin da aka ware.",
+    "yo": "Pa ẹ̀rí mọ́ ní ìkọ̀kọ̀, kí o sì tọpa àyẹ̀wò ọ̀ràn tí a yàn.",
+    "ig": "Debe ihe akaebe na nzuzo ma soro nyocha e kenyere."
   },
   "ratings & reviews": {
     "en": "Ratings & Reviews",
@@ -8563,24 +8563,24 @@
     "ig": "Bulite mbipụta gị na kacha elu nke nsonaazụ ọchụchọ maka ụbọchị 30 na akara pụrụ iche."
   },
   "legal document review": {
-    "en": "Legal Document Review",
-    "fr": "Legal Document Review",
-    "ar": "Legal Document Review",
-    "ru": "Legal Document Review",
-    "zh": "Legal Document Review",
-    "ha": "Bitar Takardun Shari'a",
-    "yo": "Àtúnyẹ̀wò Àwọn Àkọsílẹ̀ Òfin",
-    "ig": "Nyocha Akwụkwọ Iwu"
+    "en": "Document Review",
+    "fr": "Examen des documents",
+    "ar": "مراجعة المستندات",
+    "ru": "Проверка документов",
+    "zh": "文件审查",
+    "ha": "Nazarin Takardu",
+    "yo": "Àyẹ̀wò Ìwé",
+    "ig": "Nyocha Akwụkwọ"
   },
   "professional legal review of your tenancy agreement and lease documents.": {
-    "en": "Professional legal review of your tenancy agreement and lease documents.",
-    "fr": "Professional legal review of your tenancy agreement and lease documents.",
-    "ar": "Professional legal review of your tenancy agreement and lease documents.",
-    "ru": "Professional legal review of your tenancy agreement and lease documents.",
-    "zh": "Professional legal review of your tenancy agreement and lease documents.",
-    "ha": "Bitar shari'a ta ƙwararru na yarjejeniyar hayarka da takardun yarjejeniya.",
-    "yo": "Àtúnyẹ̀wò òfin ọjọgbọ́n ti àdéhùn yíyá ilé àti àwọn ìwé àdéhùn rẹ.",
-    "ig": "Nyocha iwu ọkachamara nke nkwekọrịta mgbazinye na akwụkwọ mgbazinye gị."
+    "en": "Assigned reviewers check documents and record findings and limitations.",
+    "fr": "Les personnes affectées examinent les documents et consignent les résultats et limites.",
+    "ar": "يراجع المكلّفون المستندات ويسجّلون النتائج وحدود الفحص.",
+    "ru": "Назначенные специалисты проверяют документы и фиксируют результаты и ограничения.",
+    "zh": "指派的审核人员核查文件并记录结果和局限。",
+    "ha": "Masu nazari da aka ware suna duba takardu su rubuta sakamako da iyakoki.",
+    "yo": "Àwọn olùyẹ̀wò tí a yàn ń ṣàyẹ̀wò ìwé, wọ́n sì ń kọ àbájáde àti ààlà rẹ̀ sílẹ̀.",
+    "ig": "Ndị e kenyere na-enyocha akwụkwọ ma dekọọ ihe ha chọpụtara na oke nyocha."
   },
   "inquire now": {
     "en": "Inquire Now",
@@ -12992,24 +12992,24 @@
     "ig": "Sistemụ"
   },
   "assigned lawyers": {
-    "en": "Assigned lawyers",
-    "fr": "Avocats commis d'office",
-    "ar": "المحامين المعينين",
-    "ru": "Назначенные юристы",
-    "zh": "指定律师",
-    "ha": "Lauyoyin da aka sanya",
-    "yo": "Àwọn agbẹjọ́rò tí a yàn",
-    "ig": "Ndị ọka iwu e kenye"
+    "en": "Assigned professionals",
+    "fr": "Professionnels attribués",
+    "ar": "المختصون المكلّفون",
+    "ru": "Назначенные специалисты",
+    "zh": "指派的专业人员",
+    "ha": "Ƙwararrun da aka ware",
+    "yo": "Àwọn amọ̀ṣẹ́ tí a yàn",
+    "ig": "Ndị ọkachamara e kenyere"
   },
   "no lawyer assignment found for this dispute.": {
-    "en": "No lawyer assignment found for this dispute.",
-    "fr": "No lawyer assignment found for this dispute.",
-    "ar": "No lawyer assignment found for this dispute.",
-    "ru": "No lawyer assignment found for this dispute.",
-    "zh": "No lawyer assignment found for this dispute.",
-    "ha": "Ba a sami sanyin lauya ga wannan rigima ba.",
-    "yo": "A kò rí ìyàn agbẹjọ́rò fún àríyànjiyàn yìí.",
-    "ig": "Ahụghị onye ọka iwu e kenye maka esemokwu a."
+    "en": "No professional is assigned to this case yet.",
+    "fr": "Aucun professionnel n’est encore affecté à ce dossier.",
+    "ar": "لم يُكلَّف مختص بهذه القضية بعد.",
+    "ru": "Специалист по этому делу пока не назначен.",
+    "zh": "本案尚未指派专业人员。",
+    "ha": "Ba a ware ƙwararre ga wannan lamari ba tukuna.",
+    "yo": "A kò tíì yan amọ̀ṣẹ́ fún ọ̀ràn yìí.",
+    "ig": "E kenyebeghị ọkachamara maka okwu a."
   },
   "assigned by": {
     "en": "Assigned by ",
@@ -13022,24 +13022,24 @@
     "ig": "Kenye site na "
   },
   "lawyer work progress": {
-    "en": "Lawyer Work Progress",
-    "fr": "Lawyer Work Progress",
-    "ar": "Lawyer Work Progress",
-    "ru": "Lawyer Work Progress",
-    "zh": "Lawyer Work Progress",
-    "ha": "Ci Gaban Aikin Lauya",
-    "yo": "Ìlọsíwájú Iṣẹ́ Agbẹjọ́rò",
-    "ig": "Ọganihu Ọrụ Onye Ọka Iwu"
+    "en": "Professional review progress",
+    "fr": "Avancement de l’examen professionnel",
+    "ar": "تقدّم مراجعة المختص",
+    "ru": "Ход профессиональной проверки",
+    "zh": "专业审查进度",
+    "ha": "Ci gaban nazarin ƙwararre",
+    "yo": "Ìlọsíwájú àyẹ̀wò amọ̀ṣẹ́",
+    "ig": "Ọganihu nyocha ọkachamara"
   },
   "lawyer summary": {
-    "en": "Lawyer Summary",
-    "fr": "Lawyer Summary",
-    "ar": "Lawyer Summary",
-    "ru": "Lawyer Summary",
-    "zh": "Lawyer Summary",
-    "ha": "Taƙaitaccen Lauya",
-    "yo": "Àkópọ̀ Agbẹjọ́rò",
-    "ig": "Nchịkọta Onye Ọka Iwu"
+    "en": "Professional summary",
+    "fr": "Synthèse professionnelle",
+    "ar": "ملخص المختص",
+    "ru": "Заключение специалиста",
+    "zh": "专业摘要",
+    "ha": "Taƙaitaccen bayanin ƙwararre",
+    "yo": "Àkótán amọ̀ṣẹ́",
+    "ig": "Nchịkọta ọkachamara"
   },
   "updated by": {
     "en": "Updated by ",
@@ -13052,34 +13052,34 @@
     "ig": "Melite site na "
   },
   "lawyer": {
-    "en": "lawyer",
-    "fr": "lawyer",
-    "ar": "lawyer",
-    "ru": "lawyer",
-    "zh": "lawyer",
-    "ha": "lauya",
-    "yo": "agbẹjọ́rò",
-    "ig": "onye ọka iwu"
+    "en": "Assigned professional",
+    "fr": "Professionnel attribué",
+    "ar": "المختص المكلّف",
+    "ru": "Назначенный специалист",
+    "zh": "指派的专业人员",
+    "ha": "Ƙwararren da aka ware",
+    "yo": "Amọ̀ṣẹ́ tí a yàn",
+    "ig": "Ọkachamara e kenyere"
   },
   "no lawyer summary yet.": {
-    "en": "No lawyer summary yet.",
-    "fr": "No lawyer summary yet.",
-    "ar": "No lawyer summary yet.",
-    "ru": "No lawyer summary yet.",
-    "zh": "No lawyer summary yet.",
-    "ha": "Babu taƙaitaccen lauya tukuna.",
-    "yo": "Kò sí àkópọ̀ agbẹjọ́rò síbẹ̀.",
-    "ig": "Enweghị nchịkọta onye ọka iwu."
+    "en": "No professional summary yet.",
+    "fr": "Aucune synthèse professionnelle pour le moment.",
+    "ar": "لا يوجد ملخص للمختص بعد.",
+    "ru": "Заключения специалиста пока нет.",
+    "zh": "尚无专业摘要。",
+    "ha": "Babu taƙaitaccen bayanin ƙwararre tukuna.",
+    "yo": "Kò tíì sí àkótán amọ̀ṣẹ́.",
+    "ig": "Nchịkọta ọkachamara adịbeghị."
   },
   "client-visible lawyer notes": {
-    "en": "Client-visible lawyer notes",
-    "fr": "Client-visible lawyer notes",
-    "ar": "Client-visible lawyer notes",
-    "ru": "Client-visible lawyer notes",
-    "zh": "Client-visible lawyer notes",
-    "ha": "Bayanan lauya da abokin ciniki ke gani",
-    "yo": "Àwọn àkíyèsí agbẹjọ́rò tí oníbàárà lè rí",
-    "ig": "Ihe ndetu onye ọka iwu ndị ahịa na-ahụ"
+    "en": "Notes shared with the record holder",
+    "fr": "Notes partagées avec le titulaire du dossier",
+    "ar": "ملاحظات مشتركة مع صاحب السجل",
+    "ru": "Заметки для владельца записи",
+    "zh": "与记录持有人共享的备注",
+    "ha": "Bayanan da aka raba da mai rajistar kadara",
+    "yo": "Àkọsílẹ̀ tí a pín pẹ̀lú ẹni tí ó ní àkọsílẹ̀",
+    "ig": "Ndetu e kesara onye nwe ndekọ"
   },
   "no client-visible notes yet.": {
     "en": "No client-visible notes yet.",
@@ -13092,14 +13092,14 @@
     "ig": "Enweghị ihe ndetu ndị ahịa na-ahụ."
   },
   "lawyer note": {
-    "en": "Lawyer note",
-    "fr": "Lawyer note",
-    "ar": "Lawyer note",
-    "ru": "Lawyer note",
-    "zh": "Lawyer note",
-    "ha": "Bayanin lauya",
-    "yo": "Àkíyèsí agbẹjọ́rò",
-    "ig": "Ihe ndetu onye ọka iwu"
+    "en": "Document Review",
+    "fr": "Examen des documents",
+    "ar": "مراجعة المستندات",
+    "ru": "Проверка документов",
+    "zh": "文件审查",
+    "ha": "Nazarin Takardu",
+    "yo": "Àyẹ̀wò Ìwé",
+    "ig": "Nyocha Akwụkwọ"
   },
   "evidence verification": {
     "en": "Evidence verification",
@@ -13178,14 +13178,14 @@
     "en": "Edit"
   },
   "legal audit logs": {
-    "en": "Legal audit logs",
-    "fr": "Legal audit logs",
-    "ar": "Legal audit logs",
-    "ru": "Legal audit logs",
-    "zh": "Legal audit logs",
-    "ha": "Rikodin bitar shari'a",
-    "yo": "Àwọn ìwé àyẹ̀wò òfin",
-    "ig": "Ndekọ nyocha iwu"
+    "en": "Case audit history",
+    "fr": "Historique de contrôle du dossier",
+    "ar": "سجل تدقيق القضية",
+    "ru": "История аудита дела",
+    "zh": "案件审计记录",
+    "ha": "Tarihin dubawa na lamari",
+    "yo": "Ìtàn àyẹ̀wò ọ̀ràn",
+    "ig": "Akụkọ nyocha okwu"
   },
   "no audit log entries recorded for this dispute yet.": {
     "en": "No audit log entries recorded for this dispute yet.",
@@ -13977,14 +13977,14 @@
     "ig": "Mgbazinye"
   },
   "legal": {
-    "en": "Legal",
-    "fr": "Legal",
-    "ar": "قانوني",
-    "ru": "Legal",
-    "zh": "Legal",
-    "ha": "Shari'a",
-    "yo": "Òfin",
-    "ig": "Iwu"
+    "en": "Case Support",
+    "fr": "Assistance aux dossiers",
+    "ar": "دعم القضايا",
+    "ru": "Поддержка по делам",
+    "zh": "案件支持",
+    "ha": "Taimakon Lamari",
+    "yo": "Ìrànlọ́wọ́ Ọ̀ràn",
+    "ig": "Nkwado Okwu"
   },
   "technical": {
     "en": "Technical"
@@ -14350,14 +14350,14 @@
     "ig": "Idezie dara"
   },
   "sign up for legal protection coverage during registration to get access to qualified legal assistance when you need it.": {
-    "en": "Sign up for Legal Protection Coverage during registration to get access to qualified legal assistance when you need it.",
-    "fr": "Sign up for Legal Protection Coverage during registration to get access to qualified legal assistance when you need it.",
-    "ar": "Sign up for Legal Protection Coverage during registration to get access to qualified legal assistance when you need it.",
-    "ru": "Sign up for Legal Protection Coverage during registration to get access to qualified legal assistance when you need it.",
-    "zh": "Sign up for Legal Protection Coverage during registration to get access to qualified legal assistance when you need it.",
-    "ha": "Yi rajista don Kariyar Shari'a lokacin rijista don samun damar ƙwararrun taimakon shari'a lokacin da kuke buƙata.",
-    "yo": "Forúkọ sílẹ̀ fún Ìbòòrùn Ààbò Òfin nígbà ìforúkọ sílẹ̀ láti wọ àwọn amọ̀fin tó yẹ nígbà tí o bá nílò wọn.",
-    "ig": "Debanye aha maka Nchekwa Nkwado Iwu n'oge ndebanye aha ka i nwee ohere ịnweta enyemaka iwu tozuru etozu mgbe ị chọrọ ya."
+    "en": "Paid assistance coverage is separate from free basic property registration and case reporting.",
+    "fr": "La couverture d’assistance payante est distincte de l’enregistrement de base et du signalement gratuits.",
+    "ar": "تغطية المساعدة المدفوعة منفصلة عن التسجيل الأساسي للعقار والإبلاغ عن القضايا مجانًا.",
+    "ru": "Платное покрытие помощи не относится к бесплатной базовой регистрации объектов и подаче сообщений о делах.",
+    "zh": "付费协助保障与免费的基本房产登记和案件报告相互独立。",
+    "ha": "Tsarin taimako na kuɗi ya bambanta da rajistar kadara ta asali da kai rahoton lamari kyauta.",
+    "yo": "Ètò ìrànlọ́wọ́ tí a sanwó fún yàtọ̀ sí ìforúkọsílẹ̀ ohun-ìní àkọ́kọ́ àti fífi ọ̀ràn tó wá létí lọ́fẹ̀ẹ́.",
+    "ig": "Mkpuchi enyemaka a na-akwụ ụgwọ dị iche na ndebanye isi ihe onwunwe na mkpesa okwu n’efu."
   },
   "log in to check your coverage": {
     "en": "Log In to Check Your Coverage",
@@ -14370,84 +14370,84 @@
     "ig": "Banye Iji Lelee Mkpuchi Gị"
   },
   "qualified legal assistance when you need it": {
-    "en": "Qualified legal assistance when you need it",
-    "fr": "Qualified legal assistance when you need it",
-    "ar": "Qualified legal assistance when you need it",
-    "ru": "Qualified legal assistance when you need it",
-    "zh": "Qualified legal assistance when you need it",
-    "ha": "Ƙwararren taimakon shari'a lokacin da kuke buƙata",
-    "yo": "Ìrànwọ́ òfin tó yẹ nígbà tí o bá nílò rẹ̀",
-    "ig": "Enyemaka iwu tozuru etozu mgbe ị chọrọ ya"
+    "en": "Keep evidence private and follow assigned case reviews.",
+    "fr": "Conservez les preuves en privé et suivez les examens de dossier attribués.",
+    "ar": "احفظ الأدلة بسرية وتابع مراجعة القضية المكلّف بها الفريق.",
+    "ru": "Храните доказательства конфиденциально и следите за назначенной проверкой дела.",
+    "zh": "私密保存证据并跟进已分配的案件审查。",
+    "ha": "Ajiye hujjoji a sirrance, ka bibiyi nazarin lamarin da aka ware.",
+    "yo": "Pa ẹ̀rí mọ́ ní ìkọ̀kọ̀, kí o sì tọpa àyẹ̀wò ọ̀ràn tí a yàn.",
+    "ig": "Debe ihe akaebe na nzuzo ma soro nyocha e kenyere."
   },
   "as a legal protection coverage subscriber, you can submit a request and a qualified lawyer from your area will be assigned to assist you — no directory browsing needed.": {
-    "en": "As a Legal Protection Coverage subscriber, you can submit a request and a qualified lawyer from your area will be assigned to assist you — no directory browsing needed.",
-    "fr": "As a Legal Protection Coverage subscriber, you can submit a request and a qualified lawyer from your area will be assigned to assist you — no directory browsing needed.",
-    "ar": "As a Legal Protection Coverage subscriber, you can submit a request and a qualified lawyer from your area will be assigned to assist you — no directory browsing needed.",
-    "ru": "As a Legal Protection Coverage subscriber, you can submit a request and a qualified lawyer from your area will be assigned to assist you — no directory browsing needed.",
-    "zh": "As a Legal Protection Coverage subscriber, you can submit a request and a qualified lawyer from your area will be assigned to assist you — no directory browsing needed.",
-    "ha": "A matsayin mai biyan Kariyar Shari'a, za ku iya aika buƙata kuma za a sanya ƙwararren lauya daga yankinku don taimaka muku — ba buƙatar bincika kundayen adireshi ba.",
-    "yo": "Gẹ́gẹ́ bí olùforúkọ sílẹ̀ Ìbòòrùn Ààbò Òfin, o lè fi ìbéèrè sílẹ̀, a ó sì yan agbẹjọ́rò tó yẹ láti àgbègbè rẹ láti ràn ọ́ lọ́wọ́ — kò sí nílò wíwá àtòjọ.",
-    "ig": "Dịka onye debanyere aha Nchekwa Nkwado Iwu, ị nwere ike izinye arịrịọ, a ga-ahọpụta onye ọka iwu tozuru etozu n'ógbè gị inyere gị aka — ị chọghị ịchọgharị na ndepụta."
+    "en": "Submit a private request. The team will review it and assign the right support.",
+    "fr": "Envoyez une demande privée. L’équipe l’examinera et affectera le soutien adapté.",
+    "ar": "قدّم طلبًا خاصًا. سيراجعه الفريق ويكلّف جهة الدعم المناسبة.",
+    "ru": "Подайте конфиденциальный запрос. Команда рассмотрит его и назначит подходящую помощь.",
+    "zh": "提交私密申请。团队将审核并分配适当支持。",
+    "ha": "Aika buƙata ta sirri. Ƙungiyar za ta duba ta kuma ta ware taimakon da ya dace.",
+    "yo": "Fi ìbéèrè ìkọ̀kọ̀ ránṣẹ́. Ẹgbẹ́ yóò ṣàyẹ̀wò rẹ̀, yóò sì yan ìrànlọ́wọ́ tó yẹ.",
+    "ig": "Nyefee arịrịọ nzuzo. Ndị otu ga-enyocha ya ma kenye enyemaka kwesịrị ekwesị."
   },
   "you don't have legal protection coverage yet": {
-    "en": "You don't have Legal Protection Coverage yet",
-    "fr": "You don't have Legal Protection Coverage yet",
-    "ar": "You don't have Legal Protection Coverage yet",
-    "ru": "You don't have Legal Protection Coverage yet",
-    "zh": "You don't have Legal Protection Coverage yet",
-    "ha": "Ba ku da Kariyar Shari'a tukuna",
-    "yo": "O kò tíì ní Ìbòòrùn Ààbò Òfin",
-    "ig": "I nwebeghị Nchekwa Nkwado Iwu"
+    "en": "You do not have paid case-support coverage.",
+    "fr": "Vous n’avez pas de couverture d’assistance payante.",
+    "ar": "ليست لديك تغطية مدفوعة لدعم القضايا.",
+    "ru": "У вас нет платного покрытия поддержки по делам.",
+    "zh": "您尚未购买案件支持保障。",
+    "ha": "Ba ka da tsarin taimakon lamari da aka biya.",
+    "yo": "O kò ní ètò ìrànlọ́wọ́ ọ̀ràn tí a ti sanwó fún.",
+    "ig": "Ị nweghị mkpuchi nkwado okwu a kwụrụ ụgwọ."
   },
   "legal protection coverage provides you with access to qualified legal assistance. upgrade your account from your dashboard to get covered.": {
-    "en": "Legal Protection Coverage provides you with access to qualified legal assistance. Upgrade your account from your dashboard to get covered.",
-    "fr": "Legal Protection Coverage provides you with access to qualified legal assistance. Upgrade your account from your dashboard to get covered.",
-    "ar": "Legal Protection Coverage provides you with access to qualified legal assistance. Upgrade your account from your dashboard to get covered.",
-    "ru": "Legal Protection Coverage provides you with access to qualified legal assistance. Upgrade your account from your dashboard to get covered.",
-    "zh": "Legal Protection Coverage provides you with access to qualified legal assistance. Upgrade your account from your dashboard to get covered.",
-    "ha": "Kariyar Shari'a tana ba ku damar samun ƙwararrun taimakon shari'a. Haɓaka asusunka daga allon aikinka don samun kariya.",
-    "yo": "Ìbòòrùn Ààbò Òfin ń fún ọ ní ààyè sí àwọn amọ̀fin tó yẹ. Gbé àkàánù rẹ ga láti àtòjọ ìṣàkóso rẹ láti bò ó.",
-    "ig": "Nchekwa Nkwado Iwu na-enye gị ohere ịnweta enyemaka iwu tozuru etozu. Bulite akaụntụ gị site n'ogwe njikwa ka e kpuchie gị."
+    "en": "Paid assistance coverage is separate from free basic property registration and case reporting.",
+    "fr": "La couverture d’assistance payante est distincte de l’enregistrement de base et du signalement gratuits.",
+    "ar": "تغطية المساعدة المدفوعة منفصلة عن التسجيل الأساسي للعقار والإبلاغ عن القضايا مجانًا.",
+    "ru": "Платное покрытие помощи не относится к бесплатной базовой регистрации объектов и подаче сообщений о делах.",
+    "zh": "付费协助保障与免费的基本房产登记和案件报告相互独立。",
+    "ha": "Tsarin taimako na kuɗi ya bambanta da rajistar kadara ta asali da kai rahoton lamari kyauta.",
+    "yo": "Ètò ìrànlọ́wọ́ tí a sanwó fún yàtọ̀ sí ìforúkọsílẹ̀ ohun-ìní àkọ́kọ́ àti fífi ọ̀ràn tó wá létí lọ́fẹ̀ẹ́.",
+    "ig": "Mkpuchi enyemaka a na-akwụ ụgwọ dị iche na ndebanye isi ihe onwunwe na mkpesa okwu n’efu."
   },
   "legal protection coverage is active on your account.": {
-    "en": "Legal Protection Coverage is active on your account.",
-    "fr": "Legal Protection Coverage is active on your account.",
-    "ar": "Legal Protection Coverage is active on your account.",
-    "ru": "Legal Protection Coverage is active on your account.",
-    "zh": "Legal Protection Coverage is active on your account.",
-    "ha": "Kariyar Shari'a tana aiki a asusunka.",
-    "yo": "Ìbòòrùn Ààbò Òfin ń lọ lórí àkàánù rẹ.",
-    "ig": "Nchekwa Nkwado Iwu na-arụ ọrụ na akaụntụ gị."
+    "en": "Your paid case-support coverage is active.",
+    "fr": "Votre couverture d’assistance payante est active.",
+    "ar": "تغطية دعم القضايا المدفوعة نشطة لديك.",
+    "ru": "Ваше платное покрытие поддержки активно.",
+    "zh": "您的付费案件支持保障已生效。",
+    "ha": "Tsarin taimakon lamari da ka biya yana aiki.",
+    "yo": "Ètò ìrànlọ́wọ́ ọ̀ràn tí o sanwó fún ń ṣiṣẹ́.",
+    "ig": "Mkpuchi nkwado okwu ị kwụrụ ụgwọ na-arụ ọrụ."
   },
   "submit a request below and a qualified lawyer from your area will be assigned to assist you.": {
-    "en": "Submit a request below and a qualified lawyer from your area will be assigned to assist you.",
-    "fr": "Submit a request below and a qualified lawyer from your area will be assigned to assist you.",
-    "ar": "Submit a request below and a qualified lawyer from your area will be assigned to assist you.",
-    "ru": "Submit a request below and a qualified lawyer from your area will be assigned to assist you.",
-    "zh": "Submit a request below and a qualified lawyer from your area will be assigned to assist you.",
-    "ha": "Aika buƙata a ƙasa kuma za a sanya ƙwararren lauya daga yankinku don taimaka muku.",
-    "yo": "Fi ìbéèrè sílẹ̀ nísàlẹ̀, a ó sì yan agbẹjọ́rò tó yẹ láti àgbègbè rẹ láti ràn ọ́ lọ́wọ́.",
-    "ig": "Zinye arịrịọ n'okpuru, a ga-ahọpụta onye ọka iwu tozuru etozu n'ógbè gị inyere gị aka."
+    "en": "Submit a private request. The team will review it and assign the right support.",
+    "fr": "Envoyez une demande privée. L’équipe l’examinera et affectera le soutien adapté.",
+    "ar": "قدّم طلبًا خاصًا. سيراجعه الفريق ويكلّف جهة الدعم المناسبة.",
+    "ru": "Подайте конфиденциальный запрос. Команда рассмотрит его и назначит подходящую помощь.",
+    "zh": "提交私密申请。团队将审核并分配适当支持。",
+    "ha": "Aika buƙata ta sirri. Ƙungiyar za ta duba ta kuma ta ware taimakon da ya dace.",
+    "yo": "Fi ìbéèrè ìkọ̀kọ̀ ránṣẹ́. Ẹgbẹ́ yóò ṣàyẹ̀wò rẹ̀, yóò sì yan ìrànlọ́wọ́ tó yẹ.",
+    "ig": "Nyefee arịrịọ nzuzo. Ndị otu ga-enyocha ya ma kenye enyemaka kwesịrị ekwesị."
   },
   "request legal assistance": {
-    "en": "Request Legal Assistance",
-    "fr": "Request Legal Assistance",
-    "ar": "Request Legal Assistance",
-    "ru": "Request Legal Assistance",
-    "zh": "Request Legal Assistance",
-    "ha": "Nemi Taimakon Shari'a",
-    "yo": "Béèrè Ìrànwọ́ Òfin",
-    "ig": "Rịọ Enyemaka Iwu"
+    "en": "Request Case Support",
+    "fr": "Demander une assistance",
+    "ar": "اطلب دعم القضية",
+    "ru": "Запросить поддержку по делу",
+    "zh": "申请案件支持",
+    "ha": "Nemi Taimakon Lamari",
+    "yo": "Béèrè Ìrànlọ́wọ́ Ọ̀ràn",
+    "ig": "Rịọ Nkwado Okwu"
   },
   "submit a legal assistance request": {
-    "en": "Submit a Legal Assistance Request",
-    "fr": "Submit a Legal Assistance Request",
-    "ar": "Submit a Legal Assistance Request",
-    "ru": "Submit a Legal Assistance Request",
-    "zh": "Submit a Legal Assistance Request",
-    "ha": "Aika Buƙatar Taimakon Shari'a",
-    "yo": "Fi Ìbéèrè Ìrànwọ́ Òfin Sílẹ̀",
-    "ig": "Zinye Arịrịọ Enyemaka Iwu"
+    "en": "Submit a Case Support Request",
+    "fr": "Envoyer une demande d’assistance",
+    "ar": "قدّم طلب دعم القضية",
+    "ru": "Подать запрос поддержки по делу",
+    "zh": "提交案件支持申请",
+    "ha": "Aika Buƙatar Taimakon Lamari",
+    "yo": "Fi Ìbéèrè Ìrànlọ́wọ́ Ọ̀ràn Ránṣẹ́",
+    "ig": "Nyefee Arịrịọ Nkwado Okwu"
   },
   "e.g. lease agreement review": {
     "en": "e.g. Lease agreement review",
@@ -14460,14 +14460,14 @@
     "ig": "dịka nyocha nkwekọrịta mgbazinye"
   },
   "describe your legal issue in detail...": {
-    "en": "Describe your legal issue in detail...",
-    "fr": "Describe your legal issue in detail...",
-    "ar": "Describe your legal issue in detail...",
-    "ru": "Describe your legal issue in detail...",
-    "zh": "Describe your legal issue in detail...",
-    "ha": "Bayyana matsalar shari'arka dalla-dalla...",
-    "yo": "Ṣàpèjúwe ìṣòro òfin rẹ kíkún...",
-    "ig": "Kọwaa nsogbu iwu gị n'ụzọ zuru ezu..."
+    "en": "Describe the property or tenancy issue in detail.",
+    "fr": "Décrivez précisément le problème immobilier ou locatif.",
+    "ar": "اشرح مشكلة العقار أو الإيجار بالتفصيل.",
+    "ru": "Подробно опишите вопрос недвижимости или аренды.",
+    "zh": "请详细说明房产或租赁问题。",
+    "ha": "Bayyana matsalar kadara ko haya dalla-dalla.",
+    "yo": "Ṣàlàyé ìṣòro ohun-ìní tàbí yíyálò ní kíkún.",
+    "ig": "Kọwaa nsogbu ihe onwunwe ma ọ bụ mgbazinye nke ọma."
   },
   "urgency": {
     "en": "Urgency",
@@ -14543,14 +14543,14 @@
     "ig": "Biko dejupụta ma isiokwu ma nkọwa"
   },
   "your legal assistance request has been submitted. a lawyer will reach out to you.": {
-    "en": "Your legal assistance request has been submitted. A lawyer will reach out to you.",
-    "fr": "Your legal assistance request has been submitted. A lawyer will reach out to you.",
-    "ar": "Your legal assistance request has been submitted. A lawyer will reach out to you.",
-    "ru": "Your legal assistance request has been submitted. A lawyer will reach out to you.",
-    "zh": "Your legal assistance request has been submitted. A lawyer will reach out to you.",
-    "ha": "An aika buƙatar taimakon shari'arka. Lauya zai tuntuɓe ka.",
-    "yo": "Wọ́n ti fi ìbéèrè ìrànwọ́ òfin rẹ sílẹ̀. Agbẹjọ́rò yóò kàn sí ọ.",
-    "ig": "Ezigarawo arịrịọ enyemaka iwu gị. Onye ọka iwu ga-akpọtụrụ gị."
+    "en": "Your request has been received. The team will review it and arrange the next step.",
+    "fr": "Votre demande a été reçue. L’équipe l’examinera et organisera la suite.",
+    "ar": "تم استلام طلبك. سيراجعه الفريق ويحدد الخطوة التالية.",
+    "ru": "Ваш запрос получен. Команда рассмотрит его и определит следующий шаг.",
+    "zh": "已收到您的申请。团队将审核并安排后续步骤。",
+    "ha": "An karɓi buƙatarka. Ƙungiyar za ta duba ta sannan ta tsara mataki na gaba.",
+    "yo": "A ti gba ìbéèrè rẹ. Ẹgbẹ́ yóò ṣàyẹ̀wò rẹ̀, yóò sì ṣètò ìgbésẹ̀ tó kàn.",
+    "ig": "Anyị anatala arịrịọ gị. Ndị otu ga-enyocha ya ma hazie nzọụkwụ ọzọ."
   },
   "could not submit request": {
     "en": "Could not submit request",
@@ -22160,14 +22160,14 @@
     "ig": "Ihe Omume Na-Adịbeghị Anya"
   },
   "request legal help": {
-    "en": "Request Legal Help",
-    "fr": "Request Legal Help",
-    "ar": "Request Legal Help",
-    "ru": "Request Legal Help",
-    "zh": "Request Legal Help",
-    "ha": "Nemi Taimakon Shari'a",
-    "yo": "Béèrè Ìrànwọ́ Òfin",
-    "ig": "Rịọ Enyemaka Iwu"
+    "en": "Request Case Support",
+    "fr": "Demander une assistance",
+    "ar": "اطلب دعم القضية",
+    "ru": "Запросить поддержку по делу",
+    "zh": "申请案件支持",
+    "ha": "Nemi Taimakon Lamari",
+    "yo": "Béèrè Ìrànlọ́wọ́ Ọ̀ràn",
+    "ig": "Rịọ Nkwado Okwu"
   },
   "chat support": {
     "en": "Chat Support",
@@ -22727,14 +22727,14 @@
     "ig": "Ahịa & Ọdịnaya"
   },
   "legal & trust": {
-    "en": "Legal & Trust",
-    "fr": "Legal & Trust",
-    "ar": "Legal & Trust",
-    "ru": "Legal & Trust",
-    "zh": "Legal & Trust",
-    "ha": "Shari'a & Amincewa",
-    "yo": "Òfin & Ìgbẹ́kẹ̀lé",
-    "ig": "Iwu & Ntụkwasị Obi"
+    "en": "Trust & Safety",
+    "fr": "Confiance et sécurité",
+    "ar": "الثقة والسلامة",
+    "ru": "Доверие и безопасность",
+    "zh": "信任与安全",
+    "ha": "Amincewa da Tsaro",
+    "yo": "Ìgbẹ́kẹ̀lé àti Ààbò",
+    "ig": "Ntụkwasị Obi na Nchekwa"
   },
   "complete your rental journey": {
     "en": "Complete your rental journey",
@@ -30145,14 +30145,14 @@
     "ig": "Mepụta Esemokwu Ọhụrụ"
   },
   "this dispute will be visible to authorized lawyers and the other party.": {
-    "en": "This dispute will be visible to authorized lawyers and the other party.",
-    "fr": "Ce litige sera visible par les avocats autorisés et l'autre partie.",
-    "ar": "سيكون هذا النزاع مرئيًا للمحامين المصرح لهم والطرف الآخر.",
-    "ru": "Этот спор будет виден уполномоченным юристам и другой стороне.",
-    "zh": "此纠纷将对授权律师和对方可见。",
-    "ha": "Wannan rigimar za ta kasance a bayyane ga lauyoyin da aka ba da izini da ɗayan ɓangaren.",
-    "yo": "Àwọn agbẹjọ́rò tí a fọwọ́ sí àti ẹ̀gbẹ́ kejì ni yóò rí àríyànjiyàn yìí.",
-    "ig": "Esemokwu a ga-ahụ ndị ọka iwu enyere ikike na akụkụ nke ọzọ."
+    "en": "This case is shared only with approved participants and assigned staff.",
+    "fr": "Ce dossier est partagé uniquement avec les participants autorisés et le personnel affecté.",
+    "ar": "تُشارك هذه القضية فقط مع المشاركين المعتمدين والموظفين المكلّفين.",
+    "ru": "Дело доступно только одобренным участникам и назначенным сотрудникам.",
+    "zh": "本案仅与获准参与者和指派工作人员共享。",
+    "ha": "Ana raba wannan lamari ne kawai da mahalarta da ma’aikatan da aka amince da su.",
+    "yo": "Àwọn olùkópa tí a fọwọ́ sí àti òṣìṣẹ́ tí a yàn nìkan ni a pín ọ̀ràn yìí pẹ̀lú.",
+    "ig": "A na-ekekọrịta okwu a naanị ndị sonyere a kwadoro na ndị ọrụ e kenyere."
   },
   "dispute title *": {
     "en": "Dispute Title *",
@@ -60117,5 +60117,505 @@
     "fr": "Courant",
     "ru": "Свободный",
     "zh": "流利"
+  },
+  "sign in to manage your property records, tenancies and cases securely.": {
+    "en": "Sign in to manage your property records, tenancies and cases securely.",
+    "fr": "Connectez-vous pour gérer vos biens, locations et dossiers en sécurité.",
+    "ar": "سجّل الدخول لإدارة بيانات العقارات والإيجارات والقضايا بأمان.",
+    "ru": "Войдите для безопасного управления объектами, арендой и делами.",
+    "zh": "登录以安全管理房产记录、租赁和案件。",
+    "ha": "Shiga don kula da bayanan kadara, haya da lamura cikin tsaro.",
+    "yo": "Wọlé láti bójú tó àkọsílẹ̀ ohun-ìní, yíyálò àti ọ̀ràn rẹ ní ààbò.",
+    "ig": "Banye ka ị lekọta ndekọ ihe onwunwe, mgbazinye na okwu n’enweghị nsogbu."
+  },
+  "built for tenants, landlords and approved platform staff.": {
+    "en": "Built for tenants, landlords and approved platform staff.",
+    "fr": "Conçu pour les locataires, propriétaires et équipes autorisées.",
+    "ar": "مصمّم للمستأجرين والمُلّاك وموظفي المنصة المعتمدين.",
+    "ru": "Для арендаторов, владельцев и уполномоченных сотрудников платформы.",
+    "zh": "面向租客、房东和获准的平台工作人员。",
+    "ha": "An tsara wa masu haya, masu gida da ma’aikatan da aka amince da su.",
+    "yo": "Fún ayálégbé, onílé àti òṣìṣẹ́ pẹpẹ tí a fọwọ́ sí.",
+    "ig": "Maka ndị bi n’ụlọ mgbazinye, ndị nwe ụlọ na ndị ọrụ a kwadoro."
+  },
+  "used legal support": {
+    "en": "used case support",
+    "fr": "a utilisé l’assistance",
+    "ar": "استخدم دعم القضايا",
+    "ru": "воспользовался поддержкой",
+    "zh": "使用过案件支持",
+    "ha": "ya yi amfani da taimakon lamari",
+    "yo": "lo ìrànlọ́wọ́ ọ̀ràn",
+    "ig": "jiri nkwado okwu"
+  },
+  "used case support": {
+    "en": "used case support",
+    "fr": "a utilisé l’assistance",
+    "ar": "استخدم دعم القضايا",
+    "ru": "воспользовался поддержкой",
+    "zh": "使用过案件支持",
+    "ha": "ya yi amfani da taimakon lamari",
+    "yo": "lo ìrànlọ́wọ́ ọ̀ràn",
+    "ig": "jiri nkwado okwu"
+  },
+  "rate amana rentalhub ng legal support": {
+    "en": "Rate RentalHub Case Support",
+    "fr": "Évaluer l’assistance RentalHub",
+    "ar": "قيّم دعم القضايا في RentalHub",
+    "ru": "Оцените поддержку RentalHub",
+    "zh": "评价 RentalHub 案件支持",
+    "ha": "Kimanta Taimakon Lamari na RentalHub",
+    "yo": "Ṣe àyẹ̀wò Ìrànlọ́wọ́ Ọ̀ràn RentalHub",
+    "ig": "Tụọ Nkwado Okwu RentalHub"
+  },
+  "rate rentalhub case support": {
+    "en": "Rate RentalHub Case Support",
+    "fr": "Évaluer l’assistance RentalHub",
+    "ar": "قيّم دعم القضايا في RentalHub",
+    "ru": "Оцените поддержку RentalHub",
+    "zh": "评价 RentalHub 案件支持",
+    "ha": "Kimanta Taimakon Lamari na RentalHub",
+    "yo": "Ṣe àyẹ̀wò Ìrànlọ́wọ́ Ọ̀ràn RentalHub",
+    "ig": "Tụọ Nkwado Okwu RentalHub"
+  },
+  "tell us how the legal support experience helped you.": {
+    "en": "Tell us about your case-support experience.",
+    "fr": "Décrivez votre expérience d’assistance.",
+    "ar": "أخبرنا عن تجربتك مع دعم القضايا.",
+    "ru": "Расскажите о вашем опыте поддержки по делу.",
+    "zh": "请分享您的案件支持体验。",
+    "ha": "Faɗa mana yadda taimakon lamarin ya kasance.",
+    "yo": "Sọ fún wa nípa ìrírí ìrànlọ́wọ́ ọ̀ràn rẹ.",
+    "ig": "Gwa anyị ahụmahụ nkwado okwu gị."
+  },
+  "tell us about your case-support experience.": {
+    "en": "Tell us about your case-support experience.",
+    "fr": "Décrivez votre expérience d’assistance.",
+    "ar": "أخبرنا عن تجربتك مع دعم القضايا.",
+    "ru": "Расскажите о вашем опыте поддержки по делу.",
+    "zh": "请分享您的案件支持体验。",
+    "ha": "Faɗa mana yadda taimakon lamarin ya kasance.",
+    "yo": "Sọ fún wa nípa ìrírí ìrànlọ́wọ́ ọ̀ràn rẹ.",
+    "ig": "Gwa anyị ahụmahụ nkwado okwu gị."
+  },
+  "register property records, request available checks and follow cases.": {
+    "en": "Register property records, request available checks and follow cases.",
+    "fr": "Enregistrez vos biens, demandez les contrôles disponibles et suivez vos dossiers.",
+    "ar": "سجّل بيانات العقار واطلب الفحوص المتاحة وتابع القضايا.",
+    "ru": "Регистрируйте объекты, запрашивайте доступные проверки и следите за делами.",
+    "zh": "登记房产记录、申请可用核查并跟进案件。",
+    "ha": "Yi rajistar kadara, nemi binciken da ake bayarwa, ka bibiyi lamura.",
+    "yo": "Forúkọ ohun-ìní sílẹ̀, béèrè àyẹ̀wò tó wà, kí o sì tọpa ọ̀ràn.",
+    "ig": "Debanye ihe onwunwe, rịọ nyocha dị ma soro okwu gị."
+  },
+  "case support coverage": {
+    "en": "Case Support Coverage",
+    "fr": "Couverture d’assistance",
+    "ar": "تغطية دعم القضايا",
+    "ru": "Покрытие поддержки по делам",
+    "zh": "案件支持保障",
+    "ha": "Tsarin Taimakon Lamari",
+    "yo": "Ètò Ìrànlọ́wọ́ Ọ̀ràn",
+    "ig": "Mkpuchi Nkwado Okwu"
+  },
+  "tell me about property protection": {
+    "en": "Tell me about Property Protection",
+    "fr": "Parlez-moi de la protection immobilière",
+    "ar": "أخبرني عن حماية العقارات",
+    "ru": "Расскажите о защите недвижимости",
+    "zh": "介绍房产保护",
+    "ha": "Faɗa mini game da Kariyar Kadarori",
+    "yo": "Sọ fún mi nípa Ààbò Ohun-ìní",
+    "ig": "Gwa m banyere Nchedo Ala na Ụlọ"
+  },
+  "by combining technology with rigorous verification processes, legal support, and nationwide coverage, we empower tenants to find verified properties and landlords to connect with qualified tenants — all in one trusted ecosystem.": {
+    "en": "Register property records, request available checks and follow cases.",
+    "fr": "Enregistrez vos biens, demandez les contrôles disponibles et suivez vos dossiers.",
+    "ar": "سجّل بيانات العقار واطلب الفحوص المتاحة وتابع القضايا.",
+    "ru": "Регистрируйте объекты, запрашивайте доступные проверки и следите за делами.",
+    "zh": "登记房产记录、申请可用核查并跟进案件。",
+    "ha": "Yi rajistar kadara, nemi binciken da ake bayarwa, ka bibiyi lamura.",
+    "yo": "Forúkọ ohun-ìní sílẹ̀, béèrè àyẹ̀wò tó wà, kí o sì tọpa ọ̀ràn.",
+    "ig": "Debanye ihe onwunwe, rịọ nyocha dị ma soro okwu gị."
+  },
+  "amana property protection": {
+    "en": "Amana Property Protection",
+    "fr": "Protection immobilière Amana",
+    "ar": "حماية أمانا للعقارات",
+    "ru": "Защита недвижимости Amana",
+    "zh": "Amana 房产保护",
+    "ha": "Kariyar Kadarori ta Amana",
+    "yo": "Ààbò Ohun-ìní Amana",
+    "ig": "Nchedo Ala na Ụlọ Amana"
+  },
+  "legal support & dispute resolution": {
+    "en": "Case Support",
+    "fr": "Assistance aux dossiers",
+    "ar": "دعم القضايا",
+    "ru": "Поддержка по делам",
+    "zh": "案件支持",
+    "ha": "Taimakon Lamari",
+    "yo": "Ìrànlọ́wọ́ Ọ̀ràn",
+    "ig": "Nkwado Okwu"
+  },
+  "case support": {
+    "en": "Case Support",
+    "fr": "Assistance aux dossiers",
+    "ar": "دعم القضايا",
+    "ru": "Поддержка по делам",
+    "zh": "案件支持",
+    "ha": "Taimakon Lamari",
+    "yo": "Ìrànlọ́wọ́ Ọ̀ràn",
+    "ig": "Nkwado Okwu"
+  },
+  "assigned reviewers check documents and record findings and limitations.": {
+    "en": "Assigned reviewers check documents and record findings and limitations.",
+    "fr": "Les personnes affectées examinent les documents et consignent les résultats et limites.",
+    "ar": "يراجع المكلّفون المستندات ويسجّلون النتائج وحدود الفحص.",
+    "ru": "Назначенные специалисты проверяют документы и фиксируют результаты и ограничения.",
+    "zh": "指派的审核人员核查文件并记录结果和局限。",
+    "ha": "Masu nazari da aka ware suna duba takardu su rubuta sakamako da iyakoki.",
+    "yo": "Àwọn olùyẹ̀wò tí a yàn ń ṣàyẹ̀wò ìwé, wọ́n sì ń kọ àbájáde àti ààlà rẹ̀ sílẹ̀.",
+    "ig": "Ndị e kenyere na-enyocha akwụkwọ ma dekọọ ihe ha chọpụtara na oke nyocha."
+  },
+  "document review": {
+    "en": "Document Review",
+    "fr": "Examen des documents",
+    "ar": "مراجعة المستندات",
+    "ru": "Проверка документов",
+    "zh": "文件审查",
+    "ha": "Nazarin Takardu",
+    "yo": "Àyẹ̀wò Ìwé",
+    "ig": "Nyocha Akwụkwọ"
+  },
+  "leveraging cutting-edge technology including property verification, digital evidence, and legal support tools.": {
+    "en": "Register property records, request available checks and follow cases.",
+    "fr": "Enregistrez vos biens, demandez les contrôles disponibles et suivez vos dossiers.",
+    "ar": "سجّل بيانات العقار واطلب الفحوص المتاحة وتابع القضايا.",
+    "ru": "Регистрируйте объекты, запрашивайте доступные проверки и следите за делами.",
+    "zh": "登记房产记录、申请可用核查并跟进案件。",
+    "ha": "Yi rajistar kadara, nemi binciken da ake bayarwa, ka bibiyi lamura.",
+    "yo": "Forúkọ ohun-ìní sílẹ̀, béèrè àyẹ̀wò tó wà, kí o sì tọpa ọ̀ràn.",
+    "ig": "Debanye ihe onwunwe, rịọ nyocha dị ma soro okwu gị."
+  },
+  "manage your rentals, chat with landlords and tenants, and access legal support — all from your phone.": {
+    "en": "Sign in to manage your property records, tenancies and cases securely.",
+    "fr": "Connectez-vous pour gérer vos biens, locations et dossiers en sécurité.",
+    "ar": "سجّل الدخول لإدارة بيانات العقارات والإيجارات والقضايا بأمان.",
+    "ru": "Войдите для безопасного управления объектами, арендой и делами.",
+    "zh": "登录以安全管理房产记录、租赁和案件。",
+    "ha": "Shiga don kula da bayanan kadara, haya da lamura cikin tsaro.",
+    "yo": "Wọlé láti bójú tó àkọsílẹ̀ ohun-ìní, yíyálò àti ọ̀ràn rẹ ní ààbò.",
+    "ig": "Banye ka ị lekọta ndekọ ihe onwunwe, mgbazinye na okwu n’enweghị nsogbu."
+  },
+  "legal support": {
+    "en": "Case Support",
+    "fr": "Assistance aux dossiers",
+    "ar": "دعم القضايا",
+    "ru": "Поддержка по делам",
+    "zh": "案件支持",
+    "ha": "Taimakon Lamari",
+    "yo": "Ìrànlọ́wọ́ Ọ̀ràn",
+    "ig": "Nkwado Okwu"
+  },
+  "keep evidence private and follow assigned case reviews.": {
+    "en": "Keep evidence private and follow assigned case reviews.",
+    "fr": "Conservez les preuves en privé et suivez les examens de dossier attribués.",
+    "ar": "احفظ الأدلة بسرية وتابع مراجعة القضية المكلّف بها الفريق.",
+    "ru": "Храните доказательства конфиденциально и следите за назначенной проверкой дела.",
+    "zh": "私密保存证据并跟进已分配的案件审查。",
+    "ha": "Ajiye hujjoji a sirrance, ka bibiyi nazarin lamarin da aka ware.",
+    "yo": "Pa ẹ̀rí mọ́ ní ìkọ̀kọ̀, kí o sì tọpa àyẹ̀wò ọ̀ràn tí a yàn.",
+    "ig": "Debe ihe akaebe na nzuzo ma soro nyocha e kenyere."
+  },
+  "access legal support and structured dispute resolution if any issues arise with tenants.": {
+    "en": "Keep evidence private and follow assigned case reviews.",
+    "fr": "Conservez les preuves en privé et suivez les examens de dossier attribués.",
+    "ar": "احفظ الأدلة بسرية وتابع مراجعة القضية المكلّف بها الفريق.",
+    "ru": "Храните доказательства конфиденциально и следите за назначенной проверкой дела.",
+    "zh": "私密保存证据并跟进已分配的案件审查。",
+    "ha": "Ajiye hujjoji a sirrance, ka bibiyi nazarin lamarin da aka ware.",
+    "yo": "Pa ẹ̀rí mọ́ ní ìkọ̀kọ̀, kí o sì tọpa àyẹ̀wò ọ̀ràn tí a yàn.",
+    "ig": "Debe ihe akaebe na nzuzo ma soro nyocha e kenyere."
+  },
+  "legal support access": {
+    "en": "Case Support",
+    "fr": "Assistance aux dossiers",
+    "ar": "دعم القضايا",
+    "ru": "Поддержка по делам",
+    "zh": "案件支持",
+    "ha": "Taimakon Lamari",
+    "yo": "Ìrànlọ́wọ́ Ọ̀ràn",
+    "ig": "Nkwado Okwu"
+  },
+  "property and dispute questions": {
+    "en": "Property and Dispute Questions",
+    "fr": "Questions sur les biens et les litiges",
+    "ar": "أسئلة العقارات والنزاعات",
+    "ru": "Вопросы недвижимости и споров",
+    "zh": "房产与争议问题",
+    "ha": "Tambayoyin Kadara da Rikici",
+    "yo": "Ìbéèrè Ohun-ìní àti Àríyànjiyàn",
+    "ig": "Ajụjụ Ihe Onwunwe na Esemokwu"
+  },
+  "assigned professionals": {
+    "en": "Assigned professionals",
+    "fr": "Professionnels attribués",
+    "ar": "المختصون المكلّفون",
+    "ru": "Назначенные специалисты",
+    "zh": "指派的专业人员",
+    "ha": "Ƙwararrun da aka ware",
+    "yo": "Àwọn amọ̀ṣẹ́ tí a yàn",
+    "ig": "Ndị ọkachamara e kenyere"
+  },
+  "no professional is assigned to this case yet.": {
+    "en": "No professional is assigned to this case yet.",
+    "fr": "Aucun professionnel n’est encore affecté à ce dossier.",
+    "ar": "لم يُكلَّف مختص بهذه القضية بعد.",
+    "ru": "Специалист по этому делу пока не назначен.",
+    "zh": "本案尚未指派专业人员。",
+    "ha": "Ba a ware ƙwararre ga wannan lamari ba tukuna.",
+    "yo": "A kò tíì yan amọ̀ṣẹ́ fún ọ̀ràn yìí.",
+    "ig": "E kenyebeghị ọkachamara maka okwu a."
+  },
+  "professional review progress": {
+    "en": "Professional review progress",
+    "fr": "Avancement de l’examen professionnel",
+    "ar": "تقدّم مراجعة المختص",
+    "ru": "Ход профессиональной проверки",
+    "zh": "专业审查进度",
+    "ha": "Ci gaban nazarin ƙwararre",
+    "yo": "Ìlọsíwájú àyẹ̀wò amọ̀ṣẹ́",
+    "ig": "Ọganihu nyocha ọkachamara"
+  },
+  "professional summary": {
+    "en": "Professional summary",
+    "fr": "Synthèse professionnelle",
+    "ar": "ملخص المختص",
+    "ru": "Заключение специалиста",
+    "zh": "专业摘要",
+    "ha": "Taƙaitaccen bayanin ƙwararre",
+    "yo": "Àkótán amọ̀ṣẹ́",
+    "ig": "Nchịkọta ọkachamara"
+  },
+  "assigned professional": {
+    "en": "Assigned professional",
+    "fr": "Professionnel attribué",
+    "ar": "المختص المكلّف",
+    "ru": "Назначенный специалист",
+    "zh": "指派的专业人员",
+    "ha": "Ƙwararren da aka ware",
+    "yo": "Amọ̀ṣẹ́ tí a yàn",
+    "ig": "Ọkachamara e kenyere"
+  },
+  "no professional summary yet.": {
+    "en": "No professional summary yet.",
+    "fr": "Aucune synthèse professionnelle pour le moment.",
+    "ar": "لا يوجد ملخص للمختص بعد.",
+    "ru": "Заключения специалиста пока нет.",
+    "zh": "尚无专业摘要。",
+    "ha": "Babu taƙaitaccen bayanin ƙwararre tukuna.",
+    "yo": "Kò tíì sí àkótán amọ̀ṣẹ́.",
+    "ig": "Nchịkọta ọkachamara adịbeghị."
+  },
+  "notes shared with the record holder": {
+    "en": "Notes shared with the record holder",
+    "fr": "Notes partagées avec le titulaire du dossier",
+    "ar": "ملاحظات مشتركة مع صاحب السجل",
+    "ru": "Заметки для владельца записи",
+    "zh": "与记录持有人共享的备注",
+    "ha": "Bayanan da aka raba da mai rajistar kadara",
+    "yo": "Àkọsílẹ̀ tí a pín pẹ̀lú ẹni tí ó ní àkọsílẹ̀",
+    "ig": "Ndetu e kesara onye nwe ndekọ"
+  },
+  "case audit history": {
+    "en": "Case audit history",
+    "fr": "Historique de contrôle du dossier",
+    "ar": "سجل تدقيق القضية",
+    "ru": "История аудита дела",
+    "zh": "案件审计记录",
+    "ha": "Tarihin dubawa na lamari",
+    "yo": "Ìtàn àyẹ̀wò ọ̀ràn",
+    "ig": "Akụkọ nyocha okwu"
+  },
+  "paid assistance coverage is separate from free basic property registration and case reporting.": {
+    "en": "Paid assistance coverage is separate from free basic property registration and case reporting.",
+    "fr": "La couverture d’assistance payante est distincte de l’enregistrement de base et du signalement gratuits.",
+    "ar": "تغطية المساعدة المدفوعة منفصلة عن التسجيل الأساسي للعقار والإبلاغ عن القضايا مجانًا.",
+    "ru": "Платное покрытие помощи не относится к бесплатной базовой регистрации объектов и подаче сообщений о делах.",
+    "zh": "付费协助保障与免费的基本房产登记和案件报告相互独立。",
+    "ha": "Tsarin taimako na kuɗi ya bambanta da rajistar kadara ta asali da kai rahoton lamari kyauta.",
+    "yo": "Ètò ìrànlọ́wọ́ tí a sanwó fún yàtọ̀ sí ìforúkọsílẹ̀ ohun-ìní àkọ́kọ́ àti fífi ọ̀ràn tó wá létí lọ́fẹ̀ẹ́.",
+    "ig": "Mkpuchi enyemaka a na-akwụ ụgwọ dị iche na ndebanye isi ihe onwunwe na mkpesa okwu n’efu."
+  },
+  "submit a private request. the team will review it and assign the right support.": {
+    "en": "Submit a private request. The team will review it and assign the right support.",
+    "fr": "Envoyez une demande privée. L’équipe l’examinera et affectera le soutien adapté.",
+    "ar": "قدّم طلبًا خاصًا. سيراجعه الفريق ويكلّف جهة الدعم المناسبة.",
+    "ru": "Подайте конфиденциальный запрос. Команда рассмотрит его и назначит подходящую помощь.",
+    "zh": "提交私密申请。团队将审核并分配适当支持。",
+    "ha": "Aika buƙata ta sirri. Ƙungiyar za ta duba ta kuma ta ware taimakon da ya dace.",
+    "yo": "Fi ìbéèrè ìkọ̀kọ̀ ránṣẹ́. Ẹgbẹ́ yóò ṣàyẹ̀wò rẹ̀, yóò sì yan ìrànlọ́wọ́ tó yẹ.",
+    "ig": "Nyefee arịrịọ nzuzo. Ndị otu ga-enyocha ya ma kenye enyemaka kwesịrị ekwesị."
+  },
+  "you do not have paid case-support coverage.": {
+    "en": "You do not have paid case-support coverage.",
+    "fr": "Vous n’avez pas de couverture d’assistance payante.",
+    "ar": "ليست لديك تغطية مدفوعة لدعم القضايا.",
+    "ru": "У вас нет платного покрытия поддержки по делам.",
+    "zh": "您尚未购买案件支持保障。",
+    "ha": "Ba ka da tsarin taimakon lamari da aka biya.",
+    "yo": "O kò ní ètò ìrànlọ́wọ́ ọ̀ràn tí a ti sanwó fún.",
+    "ig": "Ị nweghị mkpuchi nkwado okwu a kwụrụ ụgwọ."
+  },
+  "your paid case-support coverage is active.": {
+    "en": "Your paid case-support coverage is active.",
+    "fr": "Votre couverture d’assistance payante est active.",
+    "ar": "تغطية دعم القضايا المدفوعة نشطة لديك.",
+    "ru": "Ваше платное покрытие поддержки активно.",
+    "zh": "您的付费案件支持保障已生效。",
+    "ha": "Tsarin taimakon lamari da ka biya yana aiki.",
+    "yo": "Ètò ìrànlọ́wọ́ ọ̀ràn tí o sanwó fún ń ṣiṣẹ́.",
+    "ig": "Mkpuchi nkwado okwu ị kwụrụ ụgwọ na-arụ ọrụ."
+  },
+  "request case support": {
+    "en": "Request Case Support",
+    "fr": "Demander une assistance",
+    "ar": "اطلب دعم القضية",
+    "ru": "Запросить поддержку по делу",
+    "zh": "申请案件支持",
+    "ha": "Nemi Taimakon Lamari",
+    "yo": "Béèrè Ìrànlọ́wọ́ Ọ̀ràn",
+    "ig": "Rịọ Nkwado Okwu"
+  },
+  "submit a case support request": {
+    "en": "Submit a Case Support Request",
+    "fr": "Envoyer une demande d’assistance",
+    "ar": "قدّم طلب دعم القضية",
+    "ru": "Подать запрос поддержки по делу",
+    "zh": "提交案件支持申请",
+    "ha": "Aika Buƙatar Taimakon Lamari",
+    "yo": "Fi Ìbéèrè Ìrànlọ́wọ́ Ọ̀ràn Ránṣẹ́",
+    "ig": "Nyefee Arịrịọ Nkwado Okwu"
+  },
+  "describe the property or tenancy issue in detail.": {
+    "en": "Describe the property or tenancy issue in detail.",
+    "fr": "Décrivez précisément le problème immobilier ou locatif.",
+    "ar": "اشرح مشكلة العقار أو الإيجار بالتفصيل.",
+    "ru": "Подробно опишите вопрос недвижимости или аренды.",
+    "zh": "请详细说明房产或租赁问题。",
+    "ha": "Bayyana matsalar kadara ko haya dalla-dalla.",
+    "yo": "Ṣàlàyé ìṣòro ohun-ìní tàbí yíyálò ní kíkún.",
+    "ig": "Kọwaa nsogbu ihe onwunwe ma ọ bụ mgbazinye nke ọma."
+  },
+  "your request has been received. the team will review it and arrange the next step.": {
+    "en": "Your request has been received. The team will review it and arrange the next step.",
+    "fr": "Votre demande a été reçue. L’équipe l’examinera et organisera la suite.",
+    "ar": "تم استلام طلبك. سيراجعه الفريق ويحدد الخطوة التالية.",
+    "ru": "Ваш запрос получен. Команда рассмотрит его и определит следующий шаг.",
+    "zh": "已收到您的申请。团队将审核并安排后续步骤。",
+    "ha": "An karɓi buƙatarka. Ƙungiyar za ta duba ta sannan ta tsara mataki na gaba.",
+    "yo": "A ti gba ìbéèrè rẹ. Ẹgbẹ́ yóò ṣàyẹ̀wò rẹ̀, yóò sì ṣètò ìgbésẹ̀ tó kàn.",
+    "ig": "Anyị anatala arịrịọ gị. Ndị otu ga-enyocha ya ma hazie nzọụkwụ ọzọ."
+  },
+  "trust & safety": {
+    "en": "Trust & Safety",
+    "fr": "Confiance et sécurité",
+    "ar": "الثقة والسلامة",
+    "ru": "Доверие и безопасность",
+    "zh": "信任与安全",
+    "ha": "Amincewa da Tsaro",
+    "yo": "Ìgbẹ́kẹ̀lé àti Ààbò",
+    "ig": "Ntụkwasị Obi na Nchekwa"
+  },
+  "create your account to browse verified properties, connect with trusted landlords, and access legal support across nigeria.": {
+    "en": "Register property records, request available checks and follow cases.",
+    "fr": "Enregistrez vos biens, demandez les contrôles disponibles et suivez vos dossiers.",
+    "ar": "سجّل بيانات العقار واطلب الفحوص المتاحة وتابع القضايا.",
+    "ru": "Регистрируйте объекты, запрашивайте доступные проверки и следите за делами.",
+    "zh": "登记房产记录、申请可用核查并跟进案件。",
+    "ha": "Yi rajistar kadara, nemi binciken da ake bayarwa, ka bibiyi lamura.",
+    "yo": "Forúkọ ohun-ìní sílẹ̀, béèrè àyẹ̀wò tó wà, kí o sì tọpa ọ̀ràn.",
+    "ig": "Debanye ihe onwunwe, rịọ nyocha dị ma soro okwu gị."
+  },
+  "using amana rentalhub ng legal support": {
+    "en": "Case Support",
+    "fr": "Assistance aux dossiers",
+    "ar": "دعم القضايا",
+    "ru": "Поддержка по делам",
+    "zh": "案件支持",
+    "ha": "Taimakon Lamari",
+    "yo": "Ìrànlọ́wọ́ Ọ̀ràn",
+    "ig": "Nkwado Okwu"
+  },
+  "this case is shared only with approved participants and assigned staff.": {
+    "en": "This case is shared only with approved participants and assigned staff.",
+    "fr": "Ce dossier est partagé uniquement avec les participants autorisés et le personnel affecté.",
+    "ar": "تُشارك هذه القضية فقط مع المشاركين المعتمدين والموظفين المكلّفين.",
+    "ru": "Дело доступно только одобренным участникам и назначенным сотрудникам.",
+    "zh": "本案仅与获准参与者和指派工作人员共享。",
+    "ha": "Ana raba wannan lamari ne kawai da mahalarta da ma’aikatan da aka amince da su.",
+    "yo": "Àwọn olùkópa tí a fọwọ́ sí àti òṣìṣẹ́ tí a yàn nìkan ni a pín ọ̀ràn yìí pẹ̀lú.",
+    "ig": "A na-ekekọrịta okwu a naanị ndị sonyere a kwadoro na ndị ọrụ e kenyere."
+  },
+  "your appointed professional’s email": {
+    "en": "Your appointed professional’s email",
+    "fr": "E-mail du professionnel que vous avez nommé",
+    "ar": "البريد الإلكتروني للمختص الذي عيّنته",
+    "ru": "Электронная почта назначенного вами специалиста",
+    "zh": "您委任的专业人员邮箱",
+    "ha": "Imel na ƙwararren da ka naɗa",
+    "yo": "Ímeèlì amọ̀ṣẹ́ tí o yàn",
+    "ig": "Email ọkachamara ị họpụtara"
+  },
+  "appointed professional’s email (optional)": {
+    "en": "Appointed professional’s email (optional)",
+    "fr": "E-mail du professionnel nommé (facultatif)",
+    "ar": "بريد المختص المعيّن (اختياري)",
+    "ru": "Почта назначенного специалиста (необязательно)",
+    "zh": "委任专业人员邮箱（选填）",
+    "ha": "Imel na ƙwararren da aka naɗa (na zaɓi)",
+    "yo": "Ímeèlì amọ̀ṣẹ́ tí a yàn (bí o bá fẹ́)",
+    "ig": "Email ọkachamara a họpụtara (ọ bụrụ na ịchọrọ)"
+  },
+  "your appointed professional’s email is required.": {
+    "en": "Your appointed professional’s email is required.",
+    "fr": "L’e-mail du professionnel nommé est obligatoire.",
+    "ar": "يجب إدخال بريد المختص الذي عيّنته.",
+    "ru": "Укажите почту назначенного вами специалиста.",
+    "zh": "请填写您委任的专业人员邮箱。",
+    "ha": "Ana buƙatar imel na ƙwararren da ka naɗa.",
+    "yo": "A nílò ímeèlì amọ̀ṣẹ́ tí o yàn.",
+    "ig": "A chọrọ email ọkachamara ị họpụtara."
+  },
+  "add amana rentalhub ng case support for": {
+    "en": "Add Amana RentalHub NG case support for",
+    "fr": "Ajouter l’assistance Amana RentalHub NG pour",
+    "ar": "أضف دعم القضايا من Amana RentalHub NG مقابل",
+    "ru": "Добавить поддержку Amana RentalHub NG за",
+    "zh": "添加 Amana RentalHub NG 案件支持，费用为",
+    "ha": "Ƙara taimakon lamari na Amana RentalHub NG kan",
+    "yo": "Fi ìrànlọ́wọ́ ọ̀ràn Amana RentalHub NG kún un fún",
+    "ig": "Tinye nkwado okwu Amana RentalHub NG maka"
+  },
+  "use professionally reviewed tenancy agreements. read the terms and seek qualified advice when needed.": {
+    "en": "Use professionally reviewed tenancy agreements. Read the terms and seek qualified advice when needed.",
+    "fr": "Utilisez des contrats de location examinés par un professionnel. Lisez les conditions et demandez conseil si nécessaire.",
+    "ar": "استخدم اتفاقيات إيجار راجعها مختص. اقرأ الشروط واطلب مشورة مؤهلة عند الحاجة.",
+    "ru": "Используйте договоры аренды, проверенные специалистом. Читайте условия и при необходимости обращайтесь за квалифицированным советом.",
+    "zh": "使用经过专业审查的租赁协议。阅读条款，并在需要时寻求合格人士的建议。",
+    "ha": "Yi amfani da yarjejeniyar haya da ƙwararre ya duba. Karanta sharuɗɗa kuma ka nemi shawarar ƙwararre idan ya zama dole.",
+    "yo": "Lo àdéhùn yíyálò tí amọ̀ṣẹ́ ti ṣàyẹ̀wò. Ka àwọn òfin rẹ̀, kí o sì wá ìmọ̀ràn amọ̀ṣẹ́ bí ó bá yẹ.",
+    "ig": "Jiri nkwekọrịta mgbazinye ọkachamara nyochara. Gụọ usoro ya ma chọọ ndụmọdụ kwesịrị ekwesị mgbe ọ dị mkpa."
+  },
+  "added case support, dispute handling and the fumigation/cleaning marketplace.": {
+    "en": "Added case support, dispute handling and the fumigation/cleaning marketplace.",
+    "fr": "Ajout de l’assistance, du traitement des litiges et du marché de désinsectisation/nettoyage.",
+    "ar": "أُضيف دعم القضايا ومعالجة النزاعات وسوق مكافحة الآفات والتنظيف.",
+    "ru": "Добавлены поддержка по делам, работа со спорами и услуги дезинсекции и уборки.",
+    "zh": "增加案件支持、争议处理以及消杀和清洁服务市场。",
+    "ha": "An ƙara taimakon lamari, kula da rikici da kasuwar feshi da tsaftacewa.",
+    "yo": "A fi ìrànlọ́wọ́ ọ̀ràn, ìtọ́jú àríyànjiyàn àti ọjà iṣẹ́ fífọ́n oògùn àti ìmọ́tótó kún un.",
+    "ig": "Etinyere nkwado okwu, idozi esemokwu na ahịa ọrụ igbu ahụhụ na nhicha."
   }
 }

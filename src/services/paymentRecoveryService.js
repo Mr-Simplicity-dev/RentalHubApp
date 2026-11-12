@@ -1,3 +1,4 @@
+import api from './api';
 import { translateUi as ui } from '../i18n/interfaceRuntime.cjs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { paymentService } from './paymentService';
@@ -29,6 +30,7 @@ const getQueryParam = (url, keys) => {
 
 export const inferPaymentFlow = (reference = '') => {
   const ref = String(reference).toUpperCase();
+  if (/^ARH(?:-PP-|_PP_)/.test(ref)) return 'property_protection';
   if (ref.startsWith('TRANSPORT_') || ref.startsWith('ARH_TRANSPORT_')) return 'transportation';
   if (ref.startsWith('FUMIGATION_') || ref.startsWith('CLEANING_')) return 'fumigation';
   if (ref.includes('WALLET')) return 'wallet';
@@ -62,6 +64,7 @@ export const clearPendingPayment = async () => {
 
 const destinationForPayment = (payment = {}) => {
   switch (payment.flow) {
+    case 'property_protection':return {name:'PropertyProtection',params:{propertyId:payment.propertyId}};
     case 'transportation':
       return { name: 'TransportationBookingDetail', params: { bookingId: payment.bookingId } };
     case 'fumigation':
@@ -98,6 +101,7 @@ export const verifyPaymentForFlow = async (payment = {}) => {
   }
 
   switch (payment.flow) {
+    case 'property_protection':{const response=await api.post('/property-protection/payments/verify',{reference});return response.data;}
     case 'transportation':
       return transportationService.verifyPayment(reference);
     case 'fumigation':
@@ -157,7 +161,7 @@ export const recoverPayment = async ({ url, reference, fallbackFlow } = {}) => {
     success,
     message: verification?.message,
     data: verification?.data,
-    destination: destinationForPayment(payment),
+    destination: destinationForPayment({...payment,propertyId:payment.propertyId||verification?.data?.property_id}),
   };
 };
 

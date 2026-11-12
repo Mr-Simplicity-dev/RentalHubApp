@@ -1,3 +1,5 @@
+import * as DocumentPicker from 'expo-document-picker';
+import {openPrivatePropertyFile} from '../../services/privatePropertyFileService';
 import PropertyCaseTools from '../../components/common/PropertyCaseTools';
 import handoverCopy from '../../i18n/handoverCopy.cjs';
 import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
@@ -9,10 +11,9 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import Button from '../../components/common/Button';
-import FilePreviewCard from '../../components/common/FilePreviewCard';
 import { legalService } from '../../services/legalService';
 import { colors, radius, shadows, typography, typeScale } from '../../theme';
-import { buildUploadUrl, getErrorMessage, pickObject } from '../../utils/http';
+import { getErrorMessage, pickObject } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
 const DisputeDetailsScreen = ({ navigation, route }) => {
@@ -76,12 +77,10 @@ const DisputeDetailsScreen = ({ navigation, route }) => {
   const pickAndUploadEvidence = async () => {
     if (uploadingEvidence) return;
     try {
-      const { launchImageLibrary } = require('react-native-image-picker');
-      const result = await launchImageLibrary({ mediaType: 'mixed', selectionLimit: 1 });
-      if (result?.didCancel || !result?.assets?.length) return;
-
+      const result=await DocumentPicker.getDocumentAsync({type:['application/pdf','image/jpeg','image/png'],copyToCacheDirectory:true,multiple:false});
+      if(result.canceled)return;const asset=result.assets[0];if(asset.size>10*1024*1024)throw Error('Case evidence must be 10 MB or smaller.');
       setUploadingEvidence(true);
-      await legalService.uploadDisputeEvidence(disputeId, result.assets[0]);
+      await legalService.uploadDisputeEvidence(disputeId,{uri:asset.uri,fileName:asset.name,type:asset.mimeType});
       Toast.show({ type: 'success', text1: ui("Evidence uploaded") });
       await loadDispute();
     } catch (error) {
@@ -213,18 +212,10 @@ const DisputeDetailsScreen = ({ navigation, route }) => {
           <AppText style={styles.emptyText}>{ui("No evidence uploaded.")}</AppText>
         ) : (
           evidence.map((item) => {
-            const evidenceUrl = buildUploadUrl(item.file_path || item.file_url || item.file_name);
+
             return (
               <View key={item.id} style={styles.listRow}>
-                <FilePreviewCard
-                  title={item.file_name || ui("Evidence #{value0}", {value0: (item.id)})}
-                  subtitle={ui("Uploaded by {value0}", {value0: (item.uploaded_by_name || ui("Unknown"))})}
-                  uri={evidenceUrl}
-                  fileName={item.file_name || item.file_path || item.file_url}
-                  fileSize={item.file_size}
-                  mimeType={item.mime_type || item.file_type}
-                  actionLabel={ui("Open evidence")}
-                />
+                <AppText style={styles.description}>{item.file_name}</AppText><AppText>{ui('Uploaded by')} {item.uploaded_by_name||ui('Unknown')}</AppText><Button title={ui('Open evidence')} variant="outline" onPress={async()=>{try{await openPrivatePropertyFile('/disputes/evidence/'+item.id,{mimeType:item.mime_type,name:item.file_name});}catch(error){Toast.show({type:'error',text1:ui('Open failed'),text2:getErrorMessage(error,'The private evidence could not be opened.')});}}}/>
               </View>
             );
           })

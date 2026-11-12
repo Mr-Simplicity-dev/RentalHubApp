@@ -25,6 +25,7 @@ export const openRentalHubLinkInApp = (link) => {
   if (!navigationRef.isReady()) return false;
 
   const path = getPathFromLink(link)
+    .split(/[?#]/)[0]
     .replace(/\/+$/, '')
     .toLowerCase();
 
@@ -44,7 +45,7 @@ export const openRentalHubLinkInApp = (link) => {
 
   if (path === '/admin/whatsapp-support') return navigateIfAvailable('WhatsAppSupport');
 
-  if (path === '/property-protection') return navigateIfAvailable('PropertyProtection');
+  if (path === '/property-protection') {const property=String(link).match(/[?&]property=(\d+)/)?.[1],view=String(link).match(/[?&]view=(owner|assigned|operations)/)?.[1];return navigateIfAvailable('PropertyProtection',{propertyId:property,view});}
 
   if (path === '/support') {
     return navigateIfAvailable('Support') || navigateIfAvailable('ContactWidget');

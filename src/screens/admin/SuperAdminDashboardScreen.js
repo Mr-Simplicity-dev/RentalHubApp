@@ -1542,7 +1542,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
             <View key={target.key} style={styles.targetCard}>
               <AppText style={styles.listTitle}>{target.label}</AppText>
               <AppText style={styles.meta}>
-                Base fee: ₦{Number(target.base_amount || 0).toLocaleString()}
+                {target.base_amount==null?'No base price. Set a location price.':`Base fee: ${new Intl.NumberFormat('en-NG',{style:'currency',currency:target.currency||'NGN'}).format(Number(target.base_amount))}`}
               </AppText>
             </View>
           ))}
