@@ -96,7 +96,7 @@ const SupportTicketsScreen = ({ navigation }) => {
             accessibilityRole="button"
             style={styles.card}
             onPress={() =>
-              navigation.navigate('SupportTicketDetail', {
+              navigation.navigate(ticket.is_whatsapp?'WhatsAppSupport':'SupportTicketDetail', {
                 ticketId: ticket.id,
                 ticket,
               })

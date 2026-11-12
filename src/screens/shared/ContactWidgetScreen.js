@@ -1,3 +1,5 @@
+import supportChannelCopy from '../../i18n/supportChannelCopy.cjs';
+import WhatsAppSupportEntry from '../../components/common/WhatsAppSupportEntry';
 import contactCopy from '../../i18n/contactPrivacyCopy.cjs';
 import DisputeHandoverPanel from '../../components/common/DisputeHandoverPanel';
 import SupportContactForms from '../../components/common/SupportContactForms';
@@ -6,7 +8,7 @@ import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import WhatsAppBotScreen from './WhatsAppBotScreen';
 import LanguageSkillsField from '../../components/common/LanguageSkillsField';
 import React, { useState, useEffect, useRef, useContext, useCallback } from 'react';
-import { View, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, KeyboardAvoidingView, Platform, Linking, RefreshControl } from 'react-native';
+import { View, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, KeyboardAvoidingView, Platform, Linking, RefreshControl, AppState } from 'react-native';
 import TextInput from '../../components/common/AppTextInput';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
@@ -115,6 +117,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
   const [activeTicket, setActiveTicket] = useState(null);
   const [conversation, setConversation] = useState([]);
   const [loadingConv, setLoadingConv] = useState(false);
+  const [supportLoadError,setSupportLoadError]=useState(false);
   const [replyText, setReplyText] = useState('');
   const [sendingReply, setSendingReply] = useState(false);
   const [attachmentFile, setAttachmentFile] = useState(null);
@@ -177,8 +180,8 @@ const ContactWidgetScreen = ({ navigation, route }) => {
     setLoadingConv(true);
     try {
       const res = await supportService.getTicketConversation(ticketId, { limit: 200 });
-      if(identity===identityRef.current)setConversation(getResponseData(res) || []);
-    } catch { setConversation([]); } finally { setLoadingConv(false); }
+      if(identity===identityRef.current){setConversation(getResponseData(res) || []);setSupportLoadError(false);}
+    } catch { if(identity===identityRef.current)setSupportLoadError(true); } finally { setLoadingConv(false); }
   }, []);
 
   useEffect(() => {
@@ -225,6 +228,8 @@ const ContactWidgetScreen = ({ navigation, route }) => {
     typingPollRef.current = setInterval(poll, 3000);
     return () => clearInterval(typingPollRef.current);
   }, [viewingContactTicket, lookupEmail]);
+
+  useEffect(()=>{const sub=AppState.addEventListener('change',state=>{if(state!=='active')return;if(view==='tickets'&&isAuthenticated)fetchMyTickets();if(view==='conversation'&&activeTicket)loadConversation(activeTicket.id);});return()=>sub.remove();},[view,isAuthenticated,activeTicket,fetchMyTickets,loadConversation]);
 
   const handleSubmit = async () => {
     if(isAuthenticated){setView('auth-form');return;}
@@ -275,6 +280,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
   };
 
   const handleSendReply = async () => {
+    if(activeTicket?.is_whatsapp){Toast.show({type:"info",text1:(supportChannelCopy[interfaceLanguage]||supportChannelCopy.en).label});return;}
     const msg = replyText.trim();
     if (!msg && !attachmentFile) return;
     const tempId = `temp_${Date.now()}`;
@@ -1108,6 +1114,8 @@ const ContactWidgetScreen = ({ navigation, route }) => {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       {renderHeader()}
+      {view==="conversation"&&activeTicket?.is_whatsapp?<WhatsAppSupportEntry/>:null}
+      {supportLoadError&&activeTicket?<TouchableOpacity onPress={()=>loadConversation(activeTicket.id)} style={{padding:12}}><AppText>{ui("Could not load conversation.")} · {ui("Try again")}</AppText></TouchableOpacity>:null}
       {view==='assistant' ? <><WhatsAppBotScreen embedded navigation={navigation} onHumanRequest={({summary})=>{setForm(prev=>({...prev,subject:'Support follow-up',message:summary || ''}));setView(isAuthenticated?'auth-form':'form');}}/><View style={{flexDirection:'row',gap:12,padding:12}}><TouchableOpacity onPress={()=>setView('menu')}><AppText style={{color:colors.blue}}>{ui("Support options")}</AppText></TouchableOpacity><TouchableOpacity onPress={()=>setView(isAuthenticated?'tickets':'check-status')}><AppText style={{color:colors.blue}}>{ui("My tickets")}</AppText></TouchableOpacity></View></> : null}
 
       {view!=='assistant' && <ScrollView style={styles.body} contentContainerStyle={styles.bodyContent}>

@@ -1,3 +1,6 @@
+import api from '../../services/api';
+import channelCopy from '../../i18n/supportChannelCopy.cjs';
+import WhatsAppSupportEntry from '../../components/common/WhatsAppSupportEntry';
 import DisputeHandoverPanel from '../../components/common/DisputeHandoverPanel';
 import SupportContactForms from '../../components/common/SupportContactForms';
 import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
@@ -11,7 +14,6 @@ import { colors, radius, typography, typeScale } from '../../theme';
 import {AuthContext} from '../../context/AuthContext';
 import {askAccountAssistant,askPublicAssistant,submitAssistantTicket,needsAccount} from '../../services/accountAssistantService';
 import AppText from '../../components/common/AppText';
-const WHATSAPP_NUMBER = '2348030601238';
 const BOT_DELAY = 1000;
 
 const CONFIRM_WORDS = ['yes', 'yeah', 'yep', 'okay', 'ok', 'sure', 'alright', 'please', 'yea', 'go ahead'];
@@ -126,7 +128,7 @@ const QUICK_REPLIES = [
 ];
 
 const WhatsAppBotScreen = ({ navigation, embedded=false, onHumanRequest }) => {
-  useInterfaceLanguage();
+  const interfaceLanguage=useInterfaceLanguage();
   const {user,isAuthenticated}=useContext(AuthContext);
   const authKey=isAuthenticated?String(user?.id || '')+':'+user?.user_type:'guest';
   const authKeyRef=useRef(authKey);authKeyRef.current=authKey;
@@ -242,14 +244,12 @@ const WhatsAppBotScreen = ({ navigation, embedded=false, onHumanRequest }) => {
     }, 600);
   }, [addBotMessage]);
 
-  const handleTalkToAgent = useCallback(() => {
-    if(onHumanRequest){onHumanRequest({summary:messages.filter(m=>m.type==='user' && (!m.owner || m.owner===authKeyRef.current)).slice(-3).map(m=>m.text).join('\n')});return;}
+  const handleTalkToAgent = useCallback(async () => {
+    if(onHumanRequest){setConnectedToAgent(true);setIsBotTyping(false);onHumanRequest({summary:messages.filter(m=>m.type==='user' && (!m.owner || m.owner===authKeyRef.current)).slice(-3).map(m=>m.text).join('\n')});return;}
     setConnectedToAgent(true);
     setAwaitingResponse(null);
-    const waMsg = 'Hello Amana RentalHub NG, I need help finding a home.';
-    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(waMsg)}`;
-    Linking.openURL(url).catch(() => {});
-  }, [onHumanRequest,messages]);
+    try{const r=await api.get('/support-channels');const data=r.data.data;const c=channelCopy[interfaceLanguage]||channelCopy.en;if(!data?.whatsapp_ready||!/^https:\/\/wa\.me\/\d+$/.test(data.whatsapp_url||'')){setConnectedToAgent(false);addBotMessage(c.unavailable);return;}await Linking.openURL(data.whatsapp_url);}catch{setConnectedToAgent(false);addBotMessage((channelCopy[interfaceLanguage]||channelCopy.en).failed);}
+  }, [onHumanRequest,messages,interfaceLanguage,addBotMessage]);
 
   const tryAccountReply = useCallback(async msg => {
     if(!isAuthenticated || !['tenant','landlord'].includes(user?.user_type)) {
@@ -423,7 +423,7 @@ const WhatsAppBotScreen = ({ navigation, embedded=false, onHumanRequest }) => {
           contentContainerStyle={styles.messagesContent}
           keyboardShouldPersistTaps="handled"
         >
-          <DisputeHandoverPanel/><SupportContactForms/>
+          <WhatsAppSupportEntry/><DisputeHandoverPanel/><SupportContactForms/>
           {messages.filter(message=>!message.owner || message.owner===authKey).map(renderBubble)}
 
           {isBotTyping && (

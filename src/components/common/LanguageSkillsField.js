@@ -44,7 +44,7 @@ export default function LanguageSkillsField({
     borderColor: '#94a3b8',
     borderRadius: 12,
     marginVertical: 12
-  }}><AppText>{ui(preference ? 'Which language would you like us to use?' : 'Languages you understand and can speak')}</AppText>{!preference && <AppText>{ui('Select 2 to 5 languages, including Nigerian Pidgin. Give honest skill levels.')} ({selected.length}/5)</AppText>}
+  }}><AppText>{ui(preference ? 'Which language would you like us to use?' : 'Languages you understand and can speak')}</AppText>{!preference && <AppText>{ui('Select 2 to 5 languages, including Nigerian Pidgin. Give honest skill levels. Recruitment will check them.')} ({selected.length}/5)</AppText>}
  <TouchableOpacity accessibilityRole="button" style={button} disabled={!preference && selected.length >= 5} onPress={() => {
       setQuery('');
       setOpen(true);

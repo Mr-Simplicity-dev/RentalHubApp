@@ -1,3 +1,4 @@
+import WhatsAppSupportScreen from '../screens/shared/WhatsAppSupportScreen';
 import AdminConductScreen from '../screens/shared/AdminConductScreen';
 import SupportLanguageScreen from '../screens/shared/SupportLanguageScreen';
 import { translateUi as ui } from '../i18n/interfaceRuntime.cjs';
@@ -403,6 +404,7 @@ const commonTenancyScreens = () => (
 const commonInfoScreens = () => (
   <>
     <Stack.Screen name="AdminConduct" component={AdminConductScreen} options={{title:"Code of Conduct"}}/>
+    <Stack.Screen name="WhatsAppSupport" component={WhatsAppSupportScreen} options={{title:"WhatsApp human support"}}/>
     <Stack.Screen name="SupportLanguage" component={SupportLanguageScreen} options={{title:"Support language desk"}}/>
     <Stack.Screen name="AssistedRegistration" component={AssistedRegistrationScreen} options={{title:ui("Assisted registration")}} />
     <Stack.Screen name="PublicInfo" component={PublicInfoScreen} options={{ title: ui("Information") }} />

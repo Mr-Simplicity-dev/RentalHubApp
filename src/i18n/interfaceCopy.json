@@ -6561,13 +6561,13 @@
   },
   "basic": {
     "en": "Basic",
-    "fr": "Basic",
-    "ar": "Basic",
-    "ru": "Basic",
-    "zh": "Basic",
-    "ha": "Na asali",
-    "yo": "Ìpìlẹ̀",
-    "ig": "Nke isi"
+    "ha": "Na farko",
+    "yo": "Ìbẹ̀rẹ̀",
+    "ig": "Ntọala",
+    "ar": "أساسي",
+    "fr": "Débutant",
+    "ru": "Начальный",
+    "zh": "基础"
   },
   "per listing / year": {
     "en": "per listing / year",
@@ -51118,11 +51118,14 @@
     "zh": "模板标头媒体（可选）"
   },
   "none": {
-    "en": "None",
-    "ar": "لا شيء",
-    "fr": "Aucun",
-    "ru": "Нет",
-    "zh": "无"
+    "en": "Not yet",
+    "ha": "Ban iya ba tukuna",
+    "yo": "Kò tíì ṣeé ṣe",
+    "ig": "Amụtabeghị m ya",
+    "ar": "ليس بعد",
+    "fr": "Pas encore",
+    "ru": "Пока не владею",
+    "zh": "尚未掌握"
   },
   "image": {
     "en": "Image",
@@ -59973,7 +59976,8 @@
     "ar": "اللغات التي تفهمها ويمكنك التحدث بها",
     "fr": "Langues que vous comprenez et parlez",
     "ru": "Языки, которые вы понимаете и на которых говорите",
-    "zh": "您能理解和使用的语言"
+    "zh": "您能理解和使用的语言",
+    "en": "Languages you understand and can speak"
   },
   "select 2 to 5 languages, including nigerian pidgin. give honest skill levels. recruitment will check them.": {
     "ha": "Zaɓi harsuna 2 zuwa 5, ciki har da Pidgin na Najeriya. Faɗi matakin ƙwarewarka da gaskiya. Masu ɗaukar ma’aikata za su duba.",
@@ -59982,7 +59986,8 @@
     "ar": "اختر من لغتين إلى خمس لغات، بما فيها لغة بيدجن النيجيرية. اذكر مستواك بصدق. سيتحقق فريق التوظيف منها.",
     "fr": "Choisissez 2 à 5 langues, dont le pidgin nigérian. Indiquez honnêtement votre niveau. Le recrutement le vérifiera.",
     "ru": "Выберите от 2 до 5 языков, включая нигерийский пиджин. Честно укажите уровень. Отдел подбора персонала проверит его.",
-    "zh": "请选择2至5种语言，其中必须包括尼日利亚皮钦语。请如实填写水平，招聘团队将进行核实。"
+    "zh": "请选择2至5种语言，其中必须包括尼日利亚皮钦语。请如实填写水平，招聘团队将进行核实。",
+    "en": "Select 2 to 5 languages, including Nigerian Pidgin. Give honest skill levels. Recruitment will check them."
   },
   "search languages": {
     "ha": "Nemo harsuna",
@@ -59991,7 +59996,8 @@
     "ar": "ابحث عن اللغات",
     "fr": "Rechercher des langues",
     "ru": "Поиск языков",
-    "zh": "搜索语言"
+    "zh": "搜索语言",
+    "en": "Search languages"
   },
   "choose a language": {
     "ha": "Zaɓi harshe",
@@ -60000,7 +60006,8 @@
     "ar": "اختر لغة",
     "fr": "Choisir une langue",
     "ru": "Выберите язык",
-    "zh": "选择语言"
+    "zh": "选择语言",
+    "en": "Choose a language"
   },
   "speaking / understanding (or signing)": {
     "ha": "Magana / fahimta (ko yaren kurame)",
@@ -60009,7 +60016,8 @@
     "ar": "التحدث / الفهم (أو لغة الإشارة)",
     "fr": "Expression / compréhension (ou langue des signes)",
     "ru": "Речь / понимание (или жестовый язык)",
-    "zh": "口语／理解（或手语）"
+    "zh": "口语／理解（或手语）",
+    "en": "Speaking / understanding (or signing)"
   },
   "reading / writing": {
     "ha": "Karatu / rubutu",
@@ -60018,7 +60026,8 @@
     "ar": "القراءة / الكتابة",
     "fr": "Lecture / écriture",
     "ru": "Чтение / письмо",
-    "zh": "阅读／写作"
+    "zh": "阅读／写作",
+    "en": "Reading / writing"
   },
   "choose your level": {
     "ha": "Zaɓi matakin ƙwarewarka",
@@ -60027,7 +60036,8 @@
     "ar": "اختر مستواك",
     "fr": "Choisir votre niveau",
     "ru": "Выберите уровень",
-    "zh": "选择您的水平"
+    "zh": "选择您的水平",
+    "en": "Choose your level"
   },
   "not yet": {
     "ha": "Ban iya ba tukuna",
@@ -60036,7 +60046,8 @@
     "ar": "ليس بعد",
     "fr": "Pas encore",
     "ru": "Пока не владею",
-    "zh": "尚未掌握"
+    "zh": "尚未掌握",
+    "en": "Not yet"
   },
   "basic — simple words and sentences": {
     "ha": "Na farko — kalmomi da jimloli masu sauƙi",
@@ -60045,7 +60056,8 @@
     "ar": "أساسي — كلمات وجمل بسيطة",
     "fr": "Débutant — mots et phrases simples",
     "ru": "Начальный — простые слова и предложения",
-    "zh": "基础——简单词语和句子"
+    "zh": "基础——简单词语和句子",
+    "en": "Basic — simple words and sentences"
   },
   "conversational — everyday discussions": {
     "ha": "Tattaunawa — hirar yau da kullum",
@@ -60054,7 +60066,8 @@
     "ar": "محادثة — نقاشات يومية",
     "fr": "Conversation — échanges quotidiens",
     "ru": "Разговорный — повседневное общение",
-    "zh": "会话——日常交流"
+    "zh": "会话——日常交流",
+    "en": "Conversational — everyday discussions"
   },
   "fluent — detailed explanations": {
     "ha": "Ƙwarewa — cikakken bayani",
@@ -60063,7 +60076,8 @@
     "ar": "طلاقة — شرح مفصل",
     "fr": "Courant — explications détaillées",
     "ru": "Свободный — подробные объяснения",
-    "zh": "流利——详细解释"
+    "zh": "流利——详细解释",
+    "en": "Fluent — detailed explanations"
   },
   "which language would you like us to use?": {
     "ha": "Wane harshe kake so mu yi amfani da shi?",
@@ -60072,7 +60086,8 @@
     "ar": "ما اللغة التي تفضل أن نستخدمها؟",
     "fr": "Quelle langue souhaitez-vous utiliser ?",
     "ru": "На каком языке вы хотите общаться?",
-    "zh": "您希望我们使用哪种语言？"
+    "zh": "您希望我们使用哪种语言？",
+    "en": "Which language would you like us to use?"
   },
   "select 2 to 5 languages, including nigerian pidgin. give honest skill levels.": {
     "ha": "Zaɓi harsuna 2 zuwa 5, ciki har da Pidgin na Najeriya. Faɗi matakin ƙwarewarka da gaskiya. Masu ɗaukar ma’aikata za su duba.",
@@ -60082,5 +60097,25 @@
     "fr": "Choisissez 2 à 5 langues, dont le pidgin nigérian. Indiquez honnêtement votre niveau. Le recrutement le vérifiera.",
     "ru": "Выберите от 2 до 5 языков, включая нигерийский пиджин. Честно укажите уровень. Отдел подбора персонала проверит его.",
     "zh": "请选择2至5种语言，其中必须包括尼日利亚皮钦语。请如实填写水平，招聘团队将进行核实。"
+  },
+  "conversational": {
+    "en": "Conversational",
+    "ha": "Tattaunawa",
+    "yo": "Ìjíròrò",
+    "ig": "Mkparịta ụka",
+    "ar": "محادثة",
+    "fr": "Conversation",
+    "ru": "Разговорный",
+    "zh": "会话"
+  },
+  "fluent": {
+    "en": "Fluent",
+    "ha": "Ƙwarewa",
+    "yo": "Ìjáfáfá",
+    "ig": "Ịma nke ọma",
+    "ar": "طلاقة",
+    "fr": "Courant",
+    "ru": "Свободный",
+    "zh": "流利"
   }
 }

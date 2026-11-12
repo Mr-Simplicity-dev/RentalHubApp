@@ -1,3 +1,6 @@
+import api from '../../services/api';
+import channelCopy from '../../i18n/supportChannelCopy.cjs';
+import {Alert} from 'react-native';
 import DisputeHandoverPanel from '../../components/common/DisputeHandoverPanel';
 import SupportContactForms from '../../components/common/SupportContactForms';
 import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
@@ -18,16 +21,15 @@ import AppText from '../../components/common/AppText';
 import { AuthContext } from '../../context/AuthContext';
 import TourTarget from '../../components/tour/TourTarget';
 
-const WHATSAPP_NUMBER = '2348030601238';
 
 const SupportScreen = ({ navigation }) => {
-  useInterfaceLanguage();
+  const interfaceLanguage=useInterfaceLanguage();
   const { user, isAuthenticated } = useContext(AuthContext);
   const tourId = user?.user_type === 'landlord' ? 'landlord_support' : 'tenant_support';
 
-  const openWhatsApp = () => {
-    const message = encodeURIComponent('Hello Amana RentalHub, I need support.');
-    Linking.openURL(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`);
+  const openWhatsApp = async () => {
+    const c=channelCopy[interfaceLanguage]||channelCopy.en;
+    try{const r=await api.get('/support-channels');const data=r.data.data;if(!data?.whatsapp_ready||!/^https:\/\/wa\.me\/\d+$/.test(data.whatsapp_url||'')){Alert.alert(ui('Support'),c.unavailable);return;}await Linking.openURL(data.whatsapp_url);}catch{Alert.alert(ui('Support'),c.failed);}
   };
 
   return (
