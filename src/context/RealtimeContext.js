@@ -82,7 +82,7 @@ export const RealtimeProvider = ({ children }) => {
         reconnectionDelay: 800,
         reconnectionDelayMax: 5000,
         timeout: 12000,
-        transports: ['websocket', 'polling'],
+        transports: ['websocket'],
       });
       socketRef.current = socket;
       listenersRef.current.forEach((handlers, eventName) => {
