@@ -1,3 +1,4 @@
+import PropertyProtectionScreen from '../screens/shared/PropertyProtectionScreen';
 import WhatsAppSupportScreen from '../screens/shared/WhatsAppSupportScreen';
 import AdminConductScreen from '../screens/shared/AdminConductScreen';
 import SupportLanguageScreen from '../screens/shared/SupportLanguageScreen';
@@ -301,6 +302,7 @@ const linkingConfig = {
       FumigationCleaningPayment: 'fumigation-cleaning/payment/:bookingId',
       Support: 'support',
       MyDisputes: 'my-disputes',
+      PropertyProtection: 'property-protection',
       MyDamageReports: 'my-damage-reports',
       SubscribedProperties: 'subscribed-properties',
       VerificationStatus: 'verification-status',
@@ -403,6 +405,7 @@ const commonTenancyScreens = () => (
 
 const commonInfoScreens = () => (
   <>
+    <Stack.Screen name="PropertyProtection" component={PropertyProtectionScreen} options={{title:ui("Property Protection")}}/>
     <Stack.Screen name="AdminConduct" component={AdminConductScreen} options={{title:"Code of Conduct"}}/>
     <Stack.Screen name="WhatsAppSupport" component={WhatsAppSupportScreen} options={{title:"WhatsApp human support"}}/>
     <Stack.Screen name="SupportLanguage" component={SupportLanguageScreen} options={{title:"Support language desk"}}/>

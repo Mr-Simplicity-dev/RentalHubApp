@@ -972,6 +972,7 @@ const DashboardScreen = ({ navigation }) => {
                   tourTarget="tenant_wallet"
                   onPress={() => setShowWallet(true)}
                 />
+                <StatCard title={ui("Property Protection")} value="Private records and checks" icon="shield-checkmark-outline" onPress={()=>navigation.navigate('PropertyProtection')} />
                 <StatCard title={ui("Disputes")} tourTarget={isTenant?'tenant_disputes':'landlord_disputes'} value="Track cases" icon="shield-half-outline" onPress={() => navigation.navigate('MyDisputes')} />
                 <StatCard title={ui("Property Reports")} tourTarget={isTenant?'tenant_reports':'landlord_reports'} value="Report an issue" icon="home-outline" onPress={() => navigation.navigate('MyDamageReports')} />
                 <StatCard title={ui("Support")} value="Get help" icon="headset-outline" onPress={() => navigation.navigate('Support')} />
@@ -1033,6 +1034,7 @@ const DashboardScreen = ({ navigation }) => {
                   icon="card-outline"
                   onPress={() => navigation.navigate('Subscribe')}
                 />
+                <StatCard title={ui("Property Protection")} value="Private records and checks" icon="shield-checkmark-outline" onPress={()=>navigation.navigate('PropertyProtection')} />
                 <StatCard title={ui("Disputes")} value="Track cases" icon="shield-half-outline" onPress={() => navigation.navigate('MyDisputes')} />
                 <StatCard title={ui("Property Reports")} value="Report an issue" icon="home-outline" onPress={() => navigation.navigate('MyDamageReports')} />
                 <StatCard title={ui("Support")} value="Get help" icon="headset-outline" onPress={() => navigation.navigate('Support')} />

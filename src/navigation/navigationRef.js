@@ -44,6 +44,8 @@ export const openRentalHubLinkInApp = (link) => {
 
   if (path === '/admin/whatsapp-support') return navigateIfAvailable('WhatsAppSupport');
 
+  if (path === '/property-protection') return navigateIfAvailable('PropertyProtection');
+
   if (path === '/support') {
     return navigateIfAvailable('Support') || navigateIfAvailable('ContactWidget');
   }

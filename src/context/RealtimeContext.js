@@ -208,12 +208,14 @@ export const RealtimeProvider = ({ children }) => {
 
   const inviteCall = useCallback(async ({
     receiverId,
+    disputeId,
     callType = 'audio',
     propertyId,
     propertyTitle,
   }) => {
     const response = await emitWithAck('call:invite', {
       receiverId,
+      ...(disputeId?{disputeId}:{}),
       callType,
       propertyId,
       propertyTitle,

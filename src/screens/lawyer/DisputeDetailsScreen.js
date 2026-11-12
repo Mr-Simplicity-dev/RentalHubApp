@@ -1,3 +1,4 @@
+import PropertyCaseTools from '../../components/common/PropertyCaseTools';
 import handoverCopy from '../../i18n/handoverCopy.cjs';
 import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
@@ -116,6 +117,7 @@ const DisputeDetailsScreen = ({ navigation, route }) => {
   return (
     <SafeAreaView edges={['top']} style={styles.safeArea}>
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
+      {dispute.protection_property_id&&<PropertyCaseTools dispute={dispute} professional={payload.professional_review_allowed} notes={payload.case_notes||[]} onSaved={loadDispute}/>}
       <View style={styles.topBar}>
         <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
           <Icon name="arrow-back" size={21} color={colors.ink} />
