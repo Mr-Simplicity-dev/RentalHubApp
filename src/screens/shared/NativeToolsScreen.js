@@ -525,6 +525,8 @@ const NativeToolsScreen = ({ navigation }) => {
         icon="apps-outline"
       />
 
+      {user?.user_type && !["tenant","landlord","agent","marketing_agent"].includes(user.user_type)&&<DashboardSection title="Admin documents"><ActionRow title="Code of Conduct" subtitle="Read, sign and submit to Recruitment" icon="document-text-outline" onPress={()=>navigation.navigate("AdminConduct")}/></DashboardSection>}
+      {["lga_support_admin","state_support_admin","super_support_admin","super_admin"].includes(user?.user_type)&&<DashboardSection title="Support language desk"><ActionRow title="Languages and availability" subtitle="Approved skills and response review" icon="language-outline" onPress={()=>navigation.navigate("SupportLanguage")}/></DashboardSection>}
       <DashboardSection title={ui("Public information")}>
         {publicFeatures.map((item) => renderFeature(item, 'public'))}
       </DashboardSection>

@@ -1,3 +1,5 @@
+import AdminConductScreen from '../screens/shared/AdminConductScreen';
+import SupportLanguageScreen from '../screens/shared/SupportLanguageScreen';
 import { translateUi as ui } from '../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../i18n/useInterfaceLanguage';
 import React, { useContext, useEffect, useState } from 'react';
@@ -400,6 +402,8 @@ const commonTenancyScreens = () => (
 
 const commonInfoScreens = () => (
   <>
+    <Stack.Screen name="AdminConduct" component={AdminConductScreen} options={{title:"Code of Conduct"}}/>
+    <Stack.Screen name="SupportLanguage" component={SupportLanguageScreen} options={{title:"Support language desk"}}/>
     <Stack.Screen name="AssistedRegistration" component={AssistedRegistrationScreen} options={{title:ui("Assisted registration")}} />
     <Stack.Screen name="PublicInfo" component={PublicInfoScreen} options={{ title: ui("Information") }} />
     <Stack.Screen name="LocationInfoLga" component={LocationInfoScreen} options={{ title: ui("Location") }} />

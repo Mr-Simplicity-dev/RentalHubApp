@@ -4,6 +4,7 @@ import SupportContactForms from '../../components/common/SupportContactForms';
 import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import WhatsAppBotScreen from './WhatsAppBotScreen';
+import LanguageSkillsField from '../../components/common/LanguageSkillsField';
 import React, { useState, useEffect, useRef, useContext, useCallback } from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, KeyboardAvoidingView, Platform, Linking, RefreshControl } from 'react-native';
 import TextInput from '../../components/common/AppTextInput';
@@ -259,6 +260,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
         state: form.state,
         lga: form.lga || undefined,
         priority: form.priority,
+        preferred_language: form.preferred_language,
       };
       const res = await supportService.createTicket(payload);
       const newTicket = getResponseData(res);
@@ -556,7 +558,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
           <Icon name="headset-outline" size={20} color="#2563EB" />
         </View>
         <View style={styles.menuRowText}>
-          <AppText style={styles.menuRowTitle}>{callingSupport ? ui('Connecting…') : ui('Call support')}</AppText>
+          <AppText style={styles.menuRowTitle}>{callingSupport ? ui('Connectingâ€¦') : ui('Call support')}</AppText>
           <AppText style={styles.menuRowSub}>{ui("Talk to a support agent in-app")}</AppText>
         </View>
         <Icon name="chevron-forward" size={18} color={colors.muted} />
@@ -634,6 +636,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
         </>
       )}
 
+      <LanguageSkillsField preference value={form.preferred_language||''} onChange={preferred_language=>setForm(old=>({...old,preferred_language}))}/>
       <AppText style={styles.label}>{ui("Subject")}</AppText>
       <TextInput
         style={styles.input}
@@ -743,6 +746,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
         </>
       )}
 
+      <LanguageSkillsField preference value={form.preferred_language||''} onChange={preferred_language=>setForm(old=>({...old,preferred_language}))}/>
       <AppText style={styles.label}>{ui("Subject (optional)")}</AppText>
       <TextInput
         style={styles.input}
@@ -840,7 +844,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
                     <AppText style={[styles.statusText, { color: sc.text }]}>{ticket.status?.replace(/_/g, ' ')}</AppText>
                   </View>
                 </View>
-                <AppText style={styles.ticketMeta}>#{ticket.id} · {formatDate(ticket.created_at)}</AppText>
+                <AppText style={styles.ticketMeta}>#{ticket.id} Â· {formatDate(ticket.created_at)}</AppText>
                 {ticket.unread_admin_replies > 0 && (
                   <View style={styles.unreadBadge}>
                     <AppText style={styles.unreadText}>{ticket.unread_admin_replies}{ui(" new")}</AppText>
@@ -882,7 +886,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
           </TouchableOpacity>
         ) : null}
         <AppText style={[styles.bubbleTime, isOwn && styles.bubbleTimeOwn]}>
-          {formatTime(msg.created_at)}{msg._temp ? ui(' · Sending...') : ''}
+          {formatTime(msg.created_at)}{msg._temp ? ui(' Â· Sending...') : ''}
         </AppText>
         {msg._failed && (
           <AppText style={styles.failedText}>{ui("Failed to send")}</AppText>
@@ -1026,7 +1030,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
                             </TouchableOpacity>
                           ) : null}
                           <AppText style={styles.contactBubbleTime}>
-                            {formatDateTime(r.created_at)}{r._temp ? ui(' · Sending...') : ''}
+                            {formatDateTime(r.created_at)}{r._temp ? ui(' Â· Sending...') : ''}
                           </AppText>
                           {r._failed && <AppText style={styles.failedText}>{ui("Failed")}</AppText>}
                         </View>

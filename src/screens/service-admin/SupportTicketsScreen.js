@@ -1,3 +1,4 @@
+import languageCatalog from '../../data/nigerianLanguages.json';
 import api from '../../services/api';
 import TextInput from '../../components/common/AppTextInput';
 import Button from '../../components/common/Button';
@@ -112,6 +113,7 @@ const SupportTicketsScreen = ({ navigation }) => {
             <AppText numberOfLines={2} style={styles.description}>
               {ticket.description || ticket.category || 'No description supplied.'}
             </AppText>
+            <AppText>Language: {languageCatalog.languages.find(x=>x.id===ticket.preferred_language)?.name||'Not selected'}</AppText>
             <View style={styles.metaRow}>
               <Icon name="person-outline" size={14} color={colors.muted} />
               <AppText numberOfLines={1} style={styles.meta}>

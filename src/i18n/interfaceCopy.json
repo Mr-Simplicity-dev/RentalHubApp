@@ -59965,5 +59965,122 @@
     "fr": "Demandes sur le bien",
     "ru": "Вопросы об объекте",
     "zh": "房产咨询"
+  },
+  "languages you understand and can speak": {
+    "ha": "Harsunan da kake fahimta kuma kake iya magana",
+    "yo": "Àwọn èdè tí o gbọ́ tí o sì lè sọ",
+    "ig": "Asụsụ ndị ị na-aghọta ma nwee ike ịsụ",
+    "ar": "اللغات التي تفهمها ويمكنك التحدث بها",
+    "fr": "Langues que vous comprenez et parlez",
+    "ru": "Языки, которые вы понимаете и на которых говорите",
+    "zh": "您能理解和使用的语言"
+  },
+  "select 2 to 5 languages, including nigerian pidgin. give honest skill levels. recruitment will check them.": {
+    "ha": "Zaɓi harsuna 2 zuwa 5, ciki har da Pidgin na Najeriya. Faɗi matakin ƙwarewarka da gaskiya. Masu ɗaukar ma’aikata za su duba.",
+    "yo": "Yan èdè 2 sí 5, pẹ̀lú Pidgin Nàìjíríà. Sọ ìpele agbára rẹ ní òtítọ́. Ẹgbẹ́ ìgbàṣiṣẹ́ yóò ṣàyẹ̀wò wọn.",
+    "ig": "Họrọ asụsụ 2 ruo 5, tinyere Pidgin Naịjirịa. Kwuo ọkwa nka gị n’eziokwu. Ndị ọrụ mbanye ga-enyocha ha.",
+    "ar": "اختر من لغتين إلى خمس لغات، بما فيها لغة بيدجن النيجيرية. اذكر مستواك بصدق. سيتحقق فريق التوظيف منها.",
+    "fr": "Choisissez 2 à 5 langues, dont le pidgin nigérian. Indiquez honnêtement votre niveau. Le recrutement le vérifiera.",
+    "ru": "Выберите от 2 до 5 языков, включая нигерийский пиджин. Честно укажите уровень. Отдел подбора персонала проверит его.",
+    "zh": "请选择2至5种语言，其中必须包括尼日利亚皮钦语。请如实填写水平，招聘团队将进行核实。"
+  },
+  "search languages": {
+    "ha": "Nemo harsuna",
+    "yo": "Wa àwọn èdè",
+    "ig": "Chọọ asụsụ",
+    "ar": "ابحث عن اللغات",
+    "fr": "Rechercher des langues",
+    "ru": "Поиск языков",
+    "zh": "搜索语言"
+  },
+  "choose a language": {
+    "ha": "Zaɓi harshe",
+    "yo": "Yan èdè kan",
+    "ig": "Họrọ asụsụ",
+    "ar": "اختر لغة",
+    "fr": "Choisir une langue",
+    "ru": "Выберите язык",
+    "zh": "选择语言"
+  },
+  "speaking / understanding (or signing)": {
+    "ha": "Magana / fahimta (ko yaren kurame)",
+    "yo": "Sísọ / òye (tàbí èdè adití)",
+    "ig": "Ịsụ / ịghọta (ma ọ bụ asụsụ ogbi)",
+    "ar": "التحدث / الفهم (أو لغة الإشارة)",
+    "fr": "Expression / compréhension (ou langue des signes)",
+    "ru": "Речь / понимание (или жестовый язык)",
+    "zh": "口语／理解（或手语）"
+  },
+  "reading / writing": {
+    "ha": "Karatu / rubutu",
+    "yo": "Kíkà / kíkọ",
+    "ig": "Ịgụ / ide",
+    "ar": "القراءة / الكتابة",
+    "fr": "Lecture / écriture",
+    "ru": "Чтение / письмо",
+    "zh": "阅读／写作"
+  },
+  "choose your level": {
+    "ha": "Zaɓi matakin ƙwarewarka",
+    "yo": "Yan ìpele rẹ",
+    "ig": "Họrọ ọkwa gị",
+    "ar": "اختر مستواك",
+    "fr": "Choisir votre niveau",
+    "ru": "Выберите уровень",
+    "zh": "选择您的水平"
+  },
+  "not yet": {
+    "ha": "Ban iya ba tukuna",
+    "yo": "Kò tíì ṣeé ṣe",
+    "ig": "Amụtabeghị m ya",
+    "ar": "ليس بعد",
+    "fr": "Pas encore",
+    "ru": "Пока не владею",
+    "zh": "尚未掌握"
+  },
+  "basic — simple words and sentences": {
+    "ha": "Na farko — kalmomi da jimloli masu sauƙi",
+    "yo": "Ìbẹ̀rẹ̀ — ọ̀rọ̀ àti gbólóhùn rọrùn",
+    "ig": "Ntọala — okwu na ahịrịokwu dị mfe",
+    "ar": "أساسي — كلمات وجمل بسيطة",
+    "fr": "Débutant — mots et phrases simples",
+    "ru": "Начальный — простые слова и предложения",
+    "zh": "基础——简单词语和句子"
+  },
+  "conversational — everyday discussions": {
+    "ha": "Tattaunawa — hirar yau da kullum",
+    "yo": "Ìjíròrò — ìbánisọ̀rọ̀ ojoojúmọ́",
+    "ig": "Mkparịta ụka — okwu kwa ụbọchị",
+    "ar": "محادثة — نقاشات يومية",
+    "fr": "Conversation — échanges quotidiens",
+    "ru": "Разговорный — повседневное общение",
+    "zh": "会话——日常交流"
+  },
+  "fluent — detailed explanations": {
+    "ha": "Ƙwarewa — cikakken bayani",
+    "yo": "Ìjáfáfá — àlàyé kíkún",
+    "ig": "Ịma nke ọma — nkọwa zuru ezu",
+    "ar": "طلاقة — شرح مفصل",
+    "fr": "Courant — explications détaillées",
+    "ru": "Свободный — подробные объяснения",
+    "zh": "流利——详细解释"
+  },
+  "which language would you like us to use?": {
+    "ha": "Wane harshe kake so mu yi amfani da shi?",
+    "yo": "Èdè wo ni o fẹ́ kí a lò?",
+    "ig": "Kedu asụsụ ị chọrọ ka anyị jiri?",
+    "ar": "ما اللغة التي تفضل أن نستخدمها؟",
+    "fr": "Quelle langue souhaitez-vous utiliser ?",
+    "ru": "На каком языке вы хотите общаться?",
+    "zh": "您希望我们使用哪种语言？"
+  },
+  "select 2 to 5 languages, including nigerian pidgin. give honest skill levels.": {
+    "ha": "Zaɓi harsuna 2 zuwa 5, ciki har da Pidgin na Najeriya. Faɗi matakin ƙwarewarka da gaskiya. Masu ɗaukar ma’aikata za su duba.",
+    "yo": "Yan èdè 2 sí 5, pẹ̀lú Pidgin Nàìjíríà. Sọ ìpele agbára rẹ ní òtítọ́. Ẹgbẹ́ ìgbàṣiṣẹ́ yóò ṣàyẹ̀wò wọn.",
+    "ig": "Họrọ asụsụ 2 ruo 5, tinyere Pidgin Naịjirịa. Kwuo ọkwa nka gị n’eziokwu. Ndị ọrụ mbanye ga-enyocha ha.",
+    "ar": "اختر من لغتين إلى خمس لغات، بما فيها لغة بيدجن النيجيرية. اذكر مستواك بصدق. سيتحقق فريق التوظيف منها.",
+    "fr": "Choisissez 2 à 5 langues, dont le pidgin nigérian. Indiquez honnêtement votre niveau. Le recrutement le vérifiera.",
+    "ru": "Выберите от 2 до 5 языков, включая нигерийский пиджин. Честно укажите уровень. Отдел подбора персонала проверит его.",
+    "zh": "请选择2至5种语言，其中必须包括尼日利亚皮钦语。请如实填写水平，招聘团队将进行核实。"
   }
 }

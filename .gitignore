@@ -102,3 +102,17 @@ android/app/src/main/assets/index.android.bundle.meta
 .expo
 dist/
 web-build/
+
+# Keep audio and private release staging out of source commits
+*.wav
+*.mp3
+*.m4a
+*.aac
+*.ogg
+*.flac
+*.opus
+*.wma
+*.aif
+*.aiff
+/.release*/
+Video-Presets_290_Royalty_Free_Background_Music_Tracks/

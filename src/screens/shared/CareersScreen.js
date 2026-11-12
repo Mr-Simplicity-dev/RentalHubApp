@@ -3,6 +3,8 @@ import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import {useTourTarget} from '../../components/tour/TourTarget';
 import {useLanguage} from '../../context/LanguageContext';
 const recruitmentCopy = require('../../i18n/recruitmentCopy.cjs');
+import LanguageSkillsField from '../../components/common/LanguageSkillsField';
+const {requiresLanguages,validateSkills}=require('../../data/languagePolicy.cjs');
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, ScrollView, StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native';
 import TextInput from '../../components/common/AppTextInput';
@@ -30,6 +32,7 @@ const emptyForm = {
   suitability_reason: '',
   volunteer_motivation: '',
   availability: '',
+  language_skills: [],
   application_track: 'standard',
 };
 
@@ -119,6 +122,7 @@ const CareersScreen = ({ navigation, route }) => {
 
   const handleSubmit = async () => {
     if (!intakeOpen) return;
+    if(requiresLanguages(selectedRole)){try{validateSkills(form.language_skills);}catch(error){Toast.show({type:'error',text1:error.message});return;}}
     if(volunteer&&(!form.volunteer_motivation.trim()||!form.availability.trim())){Toast.show({type:'error',text1:copy.volunteer_fields_required});return;}
     if (!selectedRoleId) {
       Toast.show({ type: 'error', text1: ui("Choose a role"), text2: ui("Pick a role before submitting your application.") });
@@ -150,6 +154,7 @@ const CareersScreen = ({ navigation, route }) => {
         application_track: volunteer?'standard':form.application_track,
         volunteer_motivation: form.volunteer_motivation,
         availability: form.availability,
+        language_skills: form.language_skills,
         turnstile_token: turnstileToken,
       };
 
@@ -270,6 +275,7 @@ const CareersScreen = ({ navigation, route }) => {
         <TextInput style={[styles.input, styles.textarea]} placeholder={ui("Skills and qualifications")} value={form.skills_qualifications} onChangeText={(v) => updateField('skills_qualifications', v)} multiline />
         <TextInput style={[styles.input, styles.textarea]} placeholder={ui("Why you are suitable for this role")} value={form.suitability_reason} onChangeText={(v) => updateField('suitability_reason', v)} multiline />
 
+{requiresLanguages(selectedRole)&&<LanguageSkillsField value={form.language_skills||[]} onChange={v=>updateField('language_skills',v)}/>}
 <View>{volunteer&&<><AppText style={styles.noticeText}>{copy.volunteer_notice}</AppText><AppText style={styles.helperLabel}>{copy.volunteer_motivation}</AppText><TextInput accessibilityLabel={copy.volunteer_motivation} style={[styles.input,styles.textarea]} value={form.volunteer_motivation} onChangeText={v=>updateField('volunteer_motivation',v)} multiline maxLength={5000}/><AppText style={styles.helperLabel}>{copy.volunteer_availability}</AppText><TextInput accessibilityLabel={copy.volunteer_availability} style={[styles.input,styles.textarea]} value={form.availability} onChangeText={v=>updateField('availability',v)} multiline maxLength={5000}/></>}</View>
         {!volunteer && <><AppText style={styles.helperLabel}>{ui("Application track")}</AppText>
         <View style={styles.trackRow}>
@@ -332,7 +338,7 @@ const CareersScreen = ({ navigation, route }) => {
           onError={() => setTurnstileToken('')}
         />
 
-        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit} disabled={submitting}>
+        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit} disabled={submitting||(requiresLanguages(selectedRole)&&(()=>{try{validateSkills(form.language_skills);return false;}catch{return true;}})())}>
           {submitting ? <ActivityIndicator color="#ffffff" /> : <AppText style={styles.submitButtonText}>{volunteer?copy.apply_volunteer:ui("Submit application")}</AppText>}
         </TouchableOpacity>
       </View>
