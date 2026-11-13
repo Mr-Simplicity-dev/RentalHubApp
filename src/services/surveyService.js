@@ -1,5 +1,10 @@
 import api from './api';
 
+const completed = data => {
+  if (data?.success === false) throw new Error(data.message || 'Could not save the survey. Please retry.');
+  return data;
+};
+
 export const surveyService = {
   myStatus: async () => {
     const response = await api.get('/survey/my-status');
@@ -24,14 +29,14 @@ export const surveyService = {
       answers,
       consent_flags,
     });
-    return response.data;
+    return completed(response.data);
   },
 
   completePartA: async (responseId) => {
     const response = await api.post('/survey/complete-part-a', {
       response_id: responseId,
     });
-    return response.data;
+    return completed(response.data);
   },
 
   complete: async (responseId, timeSpentSeconds) => {
@@ -39,7 +44,7 @@ export const surveyService = {
       response_id: responseId,
       time_spent_seconds: timeSpentSeconds,
     });
-    return response.data;
+    return completed(response.data);
   },
 
   marketingAgentOverview: async () => {

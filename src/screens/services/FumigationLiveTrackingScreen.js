@@ -273,7 +273,7 @@ const styles = StyleSheet.create({
   loadingText: { marginTop: 12, fontSize: 14, color: '#64748b' },
   scrollContent: { padding: 16 },
   headerCard: { backgroundColor: '#ffffff', borderRadius: 16, padding: 16, marginBottom: 16, borderWidth: 1, borderColor: '#e2e8f0' },
-  headerTop: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
+  headerTop: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, flexWrap: 'wrap', gap: 8, justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
   headerRef: { fontSize: 13, fontWeight: '700', color: '#047857' },
   statusBadge: { backgroundColor: '#ecfdf5', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 6 },
   statusBadgeText: { fontSize: 13, fontWeight: '700', color: '#047857' ,lineHeight:18},

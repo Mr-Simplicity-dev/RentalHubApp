@@ -1,3 +1,4 @@
+import EmailVerificationNotice from '../../components/common/EmailVerificationNotice';
 import UserAvatar from '../../components/common/UserAvatar';
 import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
@@ -816,6 +817,7 @@ const DashboardScreen = ({ navigation }) => {
       </View>
       <AppText style={styles.subtitle}>{ui("Everything about your rental journey, in one place.")}</AppText>
 
+      <EmailVerificationNotice navigation={navigation} />
       {verificationBanner ? (
         <StatusBanner
           {...verificationBanner}
@@ -941,6 +943,9 @@ const DashboardScreen = ({ navigation }) => {
               icon="card-outline"
               onPress={() => navigation.navigate('Subscribe')}
             />
+            <StatCard title={ui("Disputes")} tourTarget={isTenant?'tenant_disputes':'landlord_disputes'} value="Track cases" icon="shield-half-outline" onPress={() => navigation.navigate('MyDisputes')} />
+            <StatCard title={ui("Property Reports")} tourTarget={isTenant?'tenant_reports':'landlord_reports'} value="Report an issue" icon="home-outline" onPress={() => navigation.navigate('MyDamageReports')} />
+            <StatCard title={ui("Support")} value="Get help" icon="headset-outline" onPress={() => navigation.navigate('Support')} />
             {showAllCards ? (
               <>
                 <StatCard
@@ -973,9 +978,6 @@ const DashboardScreen = ({ navigation }) => {
                   onPress={() => setShowWallet(true)}
                 />
                 <StatCard title={ui("Property Protection")} value="Private records and checks" icon="shield-checkmark-outline" onPress={()=>navigation.navigate('PropertyProtection')} />
-                <StatCard title={ui("Disputes")} tourTarget={isTenant?'tenant_disputes':'landlord_disputes'} value="Track cases" icon="shield-half-outline" onPress={() => navigation.navigate('MyDisputes')} />
-                <StatCard title={ui("Property Reports")} tourTarget={isTenant?'tenant_reports':'landlord_reports'} value="Report an issue" icon="home-outline" onPress={() => navigation.navigate('MyDamageReports')} />
-                <StatCard title={ui("Support")} value="Get help" icon="headset-outline" onPress={() => navigation.navigate('Support')} />
               </>
             ) : null}
             <StatCard
@@ -988,6 +990,7 @@ const DashboardScreen = ({ navigation }) => {
           </>
         ) : (
           <>
+            <StatCard title={ui("Add Property")} value={ui("Create a new listing")} icon="add-circle-outline" tourTarget="landlord_add_property" onPress={() => navigation.navigate('AddProperty')} />
             <StatCard
               title={ui("Total Properties")}
               value={stats.total_properties}
@@ -1015,6 +1018,9 @@ const DashboardScreen = ({ navigation }) => {
               tourTarget="landlord_messages"
               onPress={() => navigation.navigate('Messages')}
             />
+            <StatCard title={ui("Disputes")} value="Track cases" icon="shield-half-outline" onPress={() => navigation.navigate('MyDisputes')} />
+            <StatCard title={ui("Property Reports")} value="Report an issue" icon="home-outline" onPress={() => navigation.navigate('MyDamageReports')} />
+            <StatCard title={ui("Support")} value="Get help" icon="headset-outline" onPress={() => navigation.navigate('Support')} />
             {showAllCards ? (
               <>
                 <StatCard
@@ -1035,9 +1041,6 @@ const DashboardScreen = ({ navigation }) => {
                   onPress={() => navigation.navigate('Subscribe')}
                 />
                 <StatCard title={ui("Property Protection")} value="Private records and checks" icon="shield-checkmark-outline" onPress={()=>navigation.navigate('PropertyProtection')} />
-                <StatCard title={ui("Disputes")} value="Track cases" icon="shield-half-outline" onPress={() => navigation.navigate('MyDisputes')} />
-                <StatCard title={ui("Property Reports")} value="Report an issue" icon="home-outline" onPress={() => navigation.navigate('MyDamageReports')} />
-                <StatCard title={ui("Support")} value="Get help" icon="headset-outline" onPress={() => navigation.navigate('Support')} />
               </>
             ) : null}
             <StatCard

@@ -31,6 +31,13 @@ const SurveyScreen = ({ navigation }) => {
   const [errorMessage, setErrorMessage] = useState('');
   const startTimeRef = useRef(Date.now());
   const saveTimerRef = useRef(null);
+  const saveQueueRef = useRef(Promise.resolve());
+  const submittingRef = useRef(false);
+  const saveAnswers = (id, snapshot) => {
+    const next = saveQueueRef.current.catch(() => {}).then(() => surveyService.save({ response_id: id, answers: snapshot, consent_flags: {} }));
+    saveQueueRef.current = next;
+    return next;
+  };
 
   const current = queue[index] || null;
   const progressPct = queue.length > 1 ? Math.round(((index + 1) / queue.length) * 100) : 100;
@@ -60,8 +67,7 @@ const SurveyScreen = ({ navigation }) => {
     if (!responseId || Object.keys(answers).length === 0) return;
     clearTimeout(saveTimerRef.current);
     saveTimerRef.current = setTimeout(() => {
-      surveyService
-        .save({ response_id: responseId, answers, consent_flags: {} })
+      saveAnswers(responseId, answers)
         .catch(() => {});
     }, 1200);
   }, [answers, responseId]);
@@ -134,9 +140,8 @@ const SurveyScreen = ({ navigation }) => {
 
   const persist = async () => {
     if (!responseId) return;
-    await surveyService
-      .save({ response_id: responseId, answers, consent_flags: {} })
-      .catch(() => {});
+    clearTimeout(saveTimerRef.current);
+    await saveAnswers(responseId, answers);
   };
 
   const setValue = (key, value) => {
@@ -166,7 +171,7 @@ const SurveyScreen = ({ navigation }) => {
   };
 
   const next = async () => {
-    if (!current) return;
+    if (!current || submittingRef.current) return;
     if (current.required !== false && !answered) {
       Toast.show({ type: 'info', text1: ui("Please answer this question to continue.") });
       return;
@@ -175,16 +180,14 @@ const SurveyScreen = ({ navigation }) => {
       setIndex((i) => i + 1);
       return;
     }
-    // last question in current queue
+    // Finish only after the latest answer has been saved successfully.
+    submittingRef.current = true;
     setBusy(true);
     try {
       await persist();
       if (status && !status.part_a_done) {
         // completing the part A gate
-        const completeRes = await surveyService.completePartA(responseId).catch((err) => {
-          if (err?.response?.status === 400) throw err;
-          return { success: true };
-        });
+        const completeRes = await surveyService.completePartA(responseId);
         if (completeRes && completeRes.success === false) throw new Error(completeRes.message);
         if (screenedOut) {
           await surveyService.complete(responseId, elapsedSeconds());
@@ -202,6 +205,7 @@ const SurveyScreen = ({ navigation }) => {
         text2: getErrorMessage(err, 'Please check your answers and try again.'),
       });
     } finally {
+      submittingRef.current = false;
       setBusy(false);
     }
   };
@@ -209,11 +213,10 @@ const SurveyScreen = ({ navigation }) => {
   const elapsedSeconds = () =>
     Math.max(1, Math.round((Date.now() - startTimeRef.current) / 1000));
 
-  const continueToFull = () => {
+  const continueToFull = async () => {
     const remaining = buildRemaining(questions, answers, 'full');
     if (remaining.length === 0) {
-      surveyService.complete(responseId, elapsedSeconds()).catch(() => {});
-      setPhase('finished');
+      await finishSurvey(responseId, answers);
       return;
     }
     setQueue(remaining);
@@ -223,11 +226,13 @@ const SurveyScreen = ({ navigation }) => {
 
   const finishSurvey = async (rid, savedAnswers) => {
     try {
-      await surveyService.save({ response_id: rid, answers: savedAnswers, consent_flags: {} });
+      clearTimeout(saveTimerRef.current);
+      await saveAnswers(rid, savedAnswers);
       await surveyService.complete(rid, elapsedSeconds());
       setPhase('finished');
-    } catch {
-      setPhase('finished');
+    } catch (err) {
+      setErrorMessage(getErrorMessage(err, 'Could not save the survey. Your answers are still on this screen. Please retry.'));
+      setPhase('error');
     }
   };
 
@@ -384,6 +389,7 @@ const SurveyScreen = ({ navigation }) => {
             title={index === queue.length - 1 ? (status?.part_a_done ? 'Finish survey' : 'Complete part A') : ui("Next")}
             onPress={next}
             loading={busy}
+            disabled={busy}
             icon="arrow-forward-outline"
             style={styles.nextBtn}
           />

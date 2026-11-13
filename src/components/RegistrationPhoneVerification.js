@@ -1,3 +1,4 @@
+import emailCopy from '../i18n/registrationEmailCopy.cjs';
 import React, { useEffect, useRef, useState } from 'react';
 import { Modal, View, StyleSheet, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -17,6 +18,7 @@ export default function RegistrationPhoneVerification({ pending, onVerified, onC
   const language = useInterfaceLanguage();
   const copy = { ...phoneCopy.en, ...phoneCopy[language] };
   const recoveryCopy = recovery[language] || recovery.en;
+  const emailText=emailCopy[language]||emailCopy.en;
   const [challenge, setChallenge] = useState(pending.challenge);
   const [code, setCode] = useState('');
   const [busy, setBusy] = useState(false);
@@ -87,6 +89,7 @@ export default function RegistrationPhoneVerification({ pending, onVerified, onC
           <ScrollView contentContainerStyle={styles.cardContent} keyboardShouldPersistTaps="handled">
           <AppText accessibilityRole="header" style={styles.title}>{copy.title}</AppText>
           <AppText style={styles.copy}>{phoneGrant.current ? identityPending ? statusMessage : recoveryCopy.phone_verified_continue : sent ? pending.flow === 'paid' ? copy.body : copy.freeBody : busy ? copy.sending : copy.failed}</AppText>
+          <AppText style={styles.copy}>{emailText.before}</AppText>
           <Input label={ui('Verification code')} value={code} onChangeText={value => setCode(value.replace(/\D/g, '').slice(0, 6))} keyboardType="number-pad" maxLength={6} autoComplete="sms-otp" textContentType="oneTimeCode" editable={!busy && !phoneGrant.current} />
           {error ? <AppText accessibilityLiveRegion="polite" style={styles.error}>{error}</AppText> : null}
           <Button title={pending.reference || pending.flow === 'free' ? copy.complete : copy.payment} onPress={verify} loading={busy} disabled={busy || (!phoneGrant.current && (!sent || code.length !== 6))} />

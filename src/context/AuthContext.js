@@ -1,3 +1,4 @@
+import {announceRegistrationEmail} from '../utils/registrationEmailNotice';
 import { translateUi as ui } from '../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../i18n/useInterfaceLanguage';
 import React, { createContext, useState, useEffect, useRef } from 'react';
@@ -126,6 +127,7 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (userData, turnstileToken) => {
     const response = await authService.register(userData, turnstileToken);
+    if (response.success) announceRegistrationEmail(response.data);
     if (response.success) {
       await storageService.clearImpersonationSession();
       setUser(response.data.user);
@@ -208,6 +210,7 @@ export const AuthProvider = ({ children }) => {
   restoreOriginalSessionRef.current = restoreOriginalSession;
 
   const establishSession = async (sessionData) => {
+    announceRegistrationEmail(sessionData);
     await authService.hydrateSession(sessionData);
     setUser(sessionData?.user || null);
     setIsAuthenticated(Boolean(sessionData?.token && sessionData?.user));
