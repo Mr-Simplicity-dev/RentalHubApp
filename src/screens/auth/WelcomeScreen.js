@@ -137,7 +137,7 @@ const WelcomeScreen = ({ navigation }) => {
     outputRange: [0, 0, careerHeight, careerHeight, 0],
   });
 
-  const contentTextAlign = isRTL ? 'right' : 'left';
+  const contentTextAlign = 'center';
 
   return (
     <SafeAreaView style={[styles.safeArea, compact && styles.safeAreaCompact]}>
@@ -204,7 +204,7 @@ const WelcomeScreen = ({ navigation }) => {
             </View>
           </View>
 
-          {/* 2. MIDDLE HERO GROUP (Consistent Left-Aligned Corporate Editorial Layout) */}
+          {/* 2. MIDDLE HERO GROUP (Centered, naturally flowing content) */}
           <Animated.View
             style={[
               styles.heroGroup,
@@ -286,7 +286,7 @@ const WelcomeScreen = ({ navigation }) => {
                 >
                   {t('welcome.createAccount')}
                 </AppText>
-                <View style={[styles.primaryIcon, compact && styles.primaryIconCompact, isRTL && styles.primaryIconRTL]}>
+                <View style={[styles.primaryIcon, compact && styles.primaryIconCompact]}>
                   <Icon name="arrow-forward" size={17} color={colors.navy} />
                 </View>
               </TouchableOpacity>
@@ -450,8 +450,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   bodyScrollContent: {
-    flexGrow: 1,
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
+    gap: 12,
     paddingTop: 6,
     paddingBottom: 18,
   },
@@ -505,8 +505,8 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
   exploreTextCompact: {
-    fontSize: 12,
-    lineHeight: 16,
+    fontSize: 13,
+    lineHeight: 18,
   },
 
   // Listed-properties hint banner with arrow
@@ -565,12 +565,12 @@ const styles = StyleSheet.create({
     flexShrink: 1,
     color: colors.navy,
     fontFamily: typography.bold,
-    fontSize: 11.5,
-    lineHeight: 16,
+    fontSize: 13,
+    lineHeight: 18,
   },
   exploreHintTextCompact: {
-    fontSize: 10.5,
-    lineHeight: 14,
+    fontSize: 13,
+    lineHeight: 18,
   },
 
   // Language selector container
@@ -585,13 +585,13 @@ const styles = StyleSheet.create({
   },
   languageRowShort: {
     marginTop: 0,
-    marginBottom: 8,
+    marginBottom: 10,
   },
 
-  // 2. Middle Hero Group (Left-Aligned Corporate Editorial)
+  // 2. Centered hero content
   heroGroup: {
     width: '100%',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     paddingVertical: 8,
   },
   heroGroupCompact: {
@@ -601,13 +601,14 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
   },
   eyebrow: {
+    maxWidth: '100%',
     alignItems: 'center',
     flexDirection: 'row',
     marginBottom: 8,
-    alignSelf: 'flex-start',
+    alignSelf: 'center',
   },
   eyebrowRTL: {
-    alignSelf: 'flex-end',
+    alignSelf: 'center',
     flexDirection: 'row-reverse',
   },
   eyebrowDot: {
@@ -618,20 +619,21 @@ const styles = StyleSheet.create({
     width: 7,
   },
   eyebrowText: {
+    flexShrink: 1,
     color: '#A9C9F7',
     fontFamily: typography.bold,
-    fontSize: 11,
+    fontSize: 13,
     letterSpacing: 1.1,
-    lineHeight: 16,
+    lineHeight: 18,
     textTransform: 'uppercase',
   },
   eyebrowTextCompact: {
-    fontSize: 10,
+    fontSize: 13,
     letterSpacing: 0.9,
-    lineHeight: 14,
+    lineHeight: 18,
   },
   eyebrowTextShort: {
-    fontSize: 9.5,
+    fontSize: 13,
     letterSpacing: 0.8,
   },
   title: {
@@ -652,8 +654,8 @@ const styles = StyleSheet.create({
     lineHeight: 28,
   },
   titleTiny: {
-    fontSize: 21,
-    lineHeight: 25,
+    fontSize: 24,
+    lineHeight: 30,
   },
   subtitle: {
     width: '100%',
@@ -670,13 +672,13 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   subtitleShort: {
-    fontSize: 12,
-    lineHeight: 16,
+    fontSize: 13,
+    lineHeight: 18,
     marginTop: 6,
   },
   subtitleTiny: {
-    fontSize: 11,
-    lineHeight: 15,
+    fontSize: 13,
+    lineHeight: 18,
     marginTop: 4,
   },
 
@@ -708,7 +710,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderRadius: radius.md,
     flexDirection: 'row',
-    minHeight: 54,
+    minHeight: 60,
     justifyContent: 'center',
     paddingHorizontal: 48,
     paddingVertical: 10,
@@ -716,28 +718,28 @@ const styles = StyleSheet.create({
     ...shadows.soft,
   },
   primaryButtonCompact: {
-    minHeight: 48,
+    minHeight: 56,
     paddingHorizontal: 42,
     paddingVertical: 8,
   },
   primaryButtonShort: {
-    minHeight: 44,
+    minHeight: 52,
     paddingHorizontal: 38,
   },
   primaryText: {
     color: colors.navy,
     fontFamily: typography.bold,
-    fontSize: 15.5,
+    fontSize: 16,
     lineHeight: 20,
     textAlign: 'center',
   },
   primaryTextCompact: {
-    fontSize: 14,
+    fontSize: 16,
     lineHeight: 18,
   },
   primaryTextShort: {
-    fontSize: 13,
-    lineHeight: 17,
+    fontSize: 16,
+    lineHeight: 18,
   },
   primaryIcon: {
     position: 'absolute',
@@ -758,10 +760,6 @@ const styles = StyleSheet.create({
     height: 30,
     width: 30,
   },
-  primaryIconRTL: {
-    right: undefined,
-    left: 8,
-  },
   secondaryButton: {
     alignItems: 'center',
     borderColor: 'rgba(255,255,255,0.28)',
@@ -777,7 +775,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   secondaryButtonShort: {
-    minHeight: 42,
+    minHeight: 48,
     paddingVertical: 6,
   },
   secondaryText: {
@@ -792,8 +790,8 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
   secondaryTextShort: {
-    fontSize: 12.5,
-    lineHeight: 16,
+    fontSize: 13,
+    lineHeight: 18,
   },
 
   // Career Opportunities
@@ -815,7 +813,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 8,
     justifyContent: 'space-between',
-    minHeight: 52,
+    minHeight: 64,
     paddingHorizontal: 14,
     paddingVertical: 8,
     overflow: 'hidden',
@@ -827,12 +825,12 @@ const styles = StyleSheet.create({
     minHeight: 64,
   },
   careersButtonCompact: {
-    minHeight: 46,
+    minHeight: 64,
     paddingHorizontal: 12,
     paddingVertical: 6,
   },
   careersButtonShort: {
-    minHeight: 42,
+    minHeight: 64,
     paddingVertical: 4,
   },
   careerGlowAura: {
@@ -872,12 +870,12 @@ const styles = StyleSheet.create({
     marginEnd: 8,
   },
   careerTitleCompact: {
-    fontSize: 12.5,
-    lineHeight: 16,
+    fontSize: 13,
+    lineHeight: 18,
   },
   careerTitleShort: {
-    fontSize: 11.5,
-    lineHeight: 15,
+    fontSize: 13,
+    lineHeight: 18,
   },
   careerTitleStacked: {
     flex: 0,
@@ -898,17 +896,17 @@ const styles = StyleSheet.create({
   careerApplyText: {
     color: colors.white,
     fontFamily: typography.bold,
-    fontSize: 12,
-    lineHeight: 16,
+    fontSize: 13,
+    lineHeight: 18,
     textAlign: 'center',
   },
   careerApplyTextCompact: {
-    fontSize: 11,
-    lineHeight: 14,
+    fontSize: 13,
+    lineHeight: 18,
   },
   careerApplyTextShort: {
-    fontSize: 10,
-    lineHeight: 13,
+    fontSize: 13,
+    lineHeight: 18,
   },
 
   // Security & Trust indicator
@@ -930,17 +928,17 @@ const styles = StyleSheet.create({
     flexShrink: 1,
     color: '#8FA8CA',
     fontFamily: typography.medium,
-    fontSize: 11.5,
-    lineHeight: 16,
+    fontSize: 13,
+    lineHeight: 18,
     marginStart: 6,
   },
   trustTextCompact: {
-    fontSize: 10.5,
-    lineHeight: 14,
+    fontSize: 13,
+    lineHeight: 18,
   },
   trustTextShort: {
-    fontSize: 10,
-    lineHeight: 13,
+    fontSize: 13,
+    lineHeight: 18,
   },
 });
 

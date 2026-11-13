@@ -1,5 +1,6 @@
+import TextInput from '../common/AppTextInput';
 import React, {useEffect,useState} from 'react';
-import {Modal,ScrollView,View,TouchableOpacity,TextInput,StyleSheet,KeyboardAvoidingView,Platform,ActivityIndicator,Keyboard} from 'react-native';
+import {Modal,ScrollView,View,TouchableOpacity,StyleSheet,KeyboardAvoidingView,Platform,ActivityIndicator,Keyboard} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import AppText from '../common/AppText';
 import api from '../../services/api';

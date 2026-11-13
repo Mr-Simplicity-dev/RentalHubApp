@@ -62,6 +62,15 @@ export const PremiumCenter = ({ icon, title, message, loading = false, tone = 'i
   );
 };
 
+export const PremiumPageHeader = ({eyebrow,title,subtitle,actions}) => (
+  <View style={{gap:8,marginBottom:6}}>
+    {eyebrow?<AppText style={{color:colors.blue,fontFamily:typography.semibold,fontSize:typeScale.compact,letterSpacing:0.8,textTransform:'uppercase'}}>{eyebrow}</AppText>:null}
+    <AppText accessibilityRole="header" style={{color:colors.ink,fontFamily:typography.bold,fontSize:typeScale.xl,lineHeight:32}}>{title}</AppText>
+    {subtitle?<AppText style={{color:colors.muted,fontFamily:typography.regular,fontSize:typeScale.reading,lineHeight:23}}>{subtitle}</AppText>:null}
+    {actions?<View style={{flexDirection:'row',flexWrap:'wrap',gap:10,marginTop:4}}>{actions}</View>:null}
+  </View>
+);
+
 export const PremiumHero = ({ eyebrow, title, subtitle, icon = 'sparkles-outline', right }) => (
   <View style={styles.hero}>
     <View style={styles.heroTop}>

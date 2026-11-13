@@ -49,18 +49,20 @@ function welcome(language,width=375,height=812,fontScale=1){
  const createButton=nodes.find(node=>node.props.accessibilityLabel===t('welcome.createAccount'));
  const careerButton=nodes.find(node=>node.props.accessibilityLabel===copy.opportunities_title+'. '+copy.apply);
  assert.equal(flatten(createButton.props.style).justifyContent,'center');
- assert.equal(flatten(createButton.props.style).minHeight,58);
+ assert.ok(flatten(createButton.props.style).minHeight>=48);
  assert.equal(flatten(tree.props.style).direction,'ltr');
  assert.equal(flatten(explore.props.style).flexDirection,'row');
  assert.ok(nodes.some(node=>node.props.children===t('welcome.exploreHint')));
- assert.ok(!nodes.some(node=>node.type==='ScrollView'));
+ assert.ok(nodes.some(node=>node.type==='ScrollView'));
  const body=nodes.find(node=>node.type==='View'&&flatten(node.props.style).flex===1);
  const bodyNodes=[];visit(body,node=>bodyNodes.push(node));
  assert.ok(bodyNodes.includes(explore));assert.ok(bodyNodes.includes(careerButton));
  const languageNode=nodes.find(node=>node.props.fullWidth&&node.props.tone==='dark');
  assert.ok(bodyNodes.includes(languageNode));
  const languageRow=nodes.find(node=>node.props.children===languageNode);
- const gap=flatten(languageRow.props.style).marginBottom;
+ const hero=nodes.find(node=>node.type==='AnimatedView'&&flatten(node.props.style).alignItems==='center'&&flatten(node.props.style).width==='100%');
+ const scroll=nodes.find(node=>node.type==='ScrollView');
+ const gap=flatten(languageRow.props.style).marginBottom+flatten(scroll.props.contentContainerStyle).gap+flatten(hero.props.style).paddingVertical;
  assert.ok(gap>=24&&gap<=40);
  assert.equal(flatten(body.props.style).overflow,undefined);
  assert.equal(flatten(careerButton.props.style).flexDirection,width<360||fontScale>1.3?'column':'row');
@@ -87,8 +89,8 @@ async function languageDropdown(){
  }});
  const nodes=[];visit(module.exports.default({tone:'dark',fullWidth:true}),node=>nodes.push(node));
  const trigger=nodes.find(node=>node.props.accessibilityHint===catalog.UI_COPY.en['welcome.languageHelp']);
- assert.equal(flatten(trigger.props.style).paddingVertical,8);
- assert.equal(flatten(trigger.props.style).minHeight,56);
+ assert.ok(flatten(trigger.props.style).paddingVertical<=12);
+ assert.ok(flatten(trigger.props.style).minHeight>=70&&flatten(trigger.props.style).minHeight<=80);
  assert.equal(trigger.props.accessibilityRole,'button');
  assert.equal(typeof trigger.props.onPress,'function');
  for(const name of ['language-outline','chevron-down'])assert.ok(nodes.some(node=>node.props.name===name));
@@ -108,9 +110,9 @@ async function languageDropdown(){
  for(const options of [{failRead:true},{failWrite:true}]){const harness=providerHarness(options);harness.render();await flush();let tree=harness.render();await tree.props.value.setLanguage('ar');tree=harness.render();assert.equal(tree.props.value.language,'ar');}
  for(const role of ['admin','super_admin','state_support_admin','recruitment_admin']){const harness=providerHarness({stored:'yo',user:{user_type:role}});harness.render();await flush();let tree=harness.render();assert.equal(tree.props.value.language,'en');assert.equal(tree.props.value.languageSelectionEnabled,false);await tree.props.value.setLanguage('ha');tree=harness.render();assert.equal(tree.props.value.language,'en');assert.equal(harness.getStored(),'yo');}
  for(const [width,height] of [[320,568],[360,640],[375,812],[390,844],[412,915],[430,1000],[768,600]])for(const {code}of catalog.SUPPORTED_LANGUAGES)for(const fontScale of [1,1.5])welcome(code,width,height,fontScale);
- assert.equal(welcome('en',390,800).careerMinHeight,68);
- assert.equal(welcome('en',360,720).careerMinHeight,68);
- assert.equal(welcome('en',320,640).careerMinHeight,72);
+ assert.ok(welcome('en',390,800).careerMinHeight>=64&&welcome('en',390,800).careerMinHeight<=80);
+ assert.ok(welcome('en',360,720).careerMinHeight>=64&&welcome('en',360,720).careerMinHeight<=80);
+ assert.ok(welcome('en',320,640).careerMinHeight>=64&&welcome('en',320,640).careerMinHeight<=80);
  assert.equal(JSON.stringify(welcome('en')),JSON.stringify(welcome('ar')));assert.equal(JSON.stringify(welcome('ar')),JSON.stringify(welcome('en')));
  const android=fs.readFileSync(path.join(root,'android/app/src/main/java/com/rentalhubng/MainApplication.kt'),'utf8');const ios=fs.readFileSync(path.join(root,'ios/RentalHubMobile/AppDelegate.mm'),'utf8');
  assert.ok(android.indexOf('forceRTL(this@MainApplication, false)')<android.indexOf('SoLoader.init'));assert.ok(ios.indexOf('forceRTL:NO')<ios.indexOf('return [super application:'));

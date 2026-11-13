@@ -1,3 +1,4 @@
+import TextInput from '../../components/common/AppTextInput';
 import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
@@ -7,7 +8,6 @@ import {
   StyleSheet,
   ActivityIndicator,
   Alert,
-  TextInput,
   Switch,
   SafeAreaView
 } from 'react-native';
@@ -233,22 +233,22 @@ const styles = StyleSheet.create({
   consoleSub: { fontSize: 13, color: '#64748b', marginTop: 2, marginBottom: 12 },
   gpsRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#f0fdf4', padding: 12, borderRadius: 12 },
   gpsLabel: { fontSize: 13, fontWeight: '700', color: '#166534' },
-  gpsSub: { fontSize: 11, color: '#15803d', marginTop: 1 },
+  gpsSub: { fontSize: 13, color: '#15803d', marginTop: 1 ,lineHeight:18},
   jobCard: { backgroundColor: '#ffffff', borderRadius: 16, padding: 16, marginBottom: 16, borderWidth: 1, borderColor: '#e2e8f0' },
   jobTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 },
   jobRef: { fontSize: 13, fontWeight: '700', color: '#059669' },
   stageBadge: { backgroundColor: '#ecfdf5', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 6 },
-  stageBadgeText: { fontSize: 10, fontWeight: '700', color: '#047857' },
+  stageBadgeText: { fontSize: 13, fontWeight: '700', color: '#047857' ,lineHeight:18},
   jobTitle: { fontSize: 17, fontWeight: '700', color: '#0f172a' },
   jobAddr: { fontSize: 13, color: '#64748b', marginTop: 2, marginBottom: 16 },
   actionTitle: { fontSize: 13, fontWeight: '700', color: '#475569', marginBottom: 10, textTransform: 'uppercase' },
   buttonGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 16 },
   stageBtn: { flexBasis: '48%', backgroundColor: '#f1f5f9', padding: 12, borderRadius: 10, alignItems: 'center' },
-  stageBtnText: { fontSize: 12, fontWeight: '700', color: '#1e293b' },
+  stageBtnText: { fontSize: 13, fontWeight: '700', color: '#1e293b' ,lineHeight:18},
   completionBox: { backgroundColor: '#f8fafc', padding: 14, borderRadius: 12, borderWidth: 1, borderColor: '#e2e8f0' },
   completionTitle: { fontSize: 14, fontWeight: '700', color: '#0f172a' },
-  completionSub: { fontSize: 11, color: '#64748b', marginBottom: 12 },
-  inputLabel: { fontSize: 11, fontWeight: '600', color: '#64748b', marginBottom: 4 },
+  completionSub: { fontSize: 13, color: '#64748b', marginBottom: 12 ,lineHeight:18},
+  inputLabel: { fontSize: 13, fontWeight: '600', color: '#64748b', marginBottom: 4 ,lineHeight:18},
   input: { backgroundColor: '#ffffff', borderWidth: 1, borderColor: '#cbd5e1', borderRadius: 8, paddingHorizontal: 12, paddingVertical: 8, fontSize: 13, marginBottom: 10 },
   completeJobBtn: { backgroundColor: '#059669', padding: 14, borderRadius: 10, alignItems: 'center', marginTop: 6 },
   completeJobBtnText: { color: '#ffffff', fontSize: 14, fontWeight: '700' }

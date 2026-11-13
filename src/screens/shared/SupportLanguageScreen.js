@@ -1,77 +1,25 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { ScrollView, View, Alert } from 'react-native';
-import { AuthContext } from '../../context/AuthContext';
+import React,{useContext,useEffect,useState} from 'react';
+import {View,StyleSheet} from 'react-native';
+import {AuthContext} from '../../context/AuthContext';
 import api from '../../services/api';
 import AppText from '../../components/common/AppText';
 import Button from '../../components/common/Button';
-import Input from '../../components/common/Input';
 import LanguageSkillsField from '../../components/common/LanguageSkillsField';
-const {
-  languages
-} = require('../../data/languagePolicy.cjs');
-export default function SupportLanguageScreen() {
-  const {
-      user
-    } = useContext(AuthContext),
-    [skills, setSkills] = useState([]),
-    [rows, setRows] = useState([]),
-    [misses, setMisses] = useState([]),
-    [note, setNote] = useState(''),
-    [message, setMessage] = useState(''),
-    [busy, setBusy] = useState(false);
-  const senior = ['super_support_admin', 'super_admin'].includes(user?.user_type);
-  const load = async () => {
-    const r = await api.get('/support-languages/profile');
-    setSkills(r.data.data.skills);
-    if (senior) {
-      setRows((await api.get('/support-languages/review')).data.data);
-      setMisses((await api.get('/support-languages/monitor')).data.data);
-    }
-  };
-  useEffect(() => {
-    load().catch(() => setMessage('Could not load language desk.'));
-  }, []);
-  const run = async fn => {
-    setBusy(true);
-    try {
-      const r = await fn();
-      setMessage(r.data.message || 'Saved.');
-      await load();
-    } catch (e) {
-      setMessage(e.response?.data?.message || 'Could not save.');
-    } finally {
-      setBusy(false);
-    }
-  };
-  return <ScrollView contentContainerStyle={{
-    padding: 20,
-    gap: 12
-  }}><AppText style={{
-      fontSize: 24
-    }}>Support languages and availability</AppText><AppText>{message}</AppText><LanguageSkillsField english value={skills} onChange={setSkills} /><Button disabled={busy} title="Send skills for assessment" onPress={() => run(() => api.put('/support-languages/profile', {
-      skills
-    }))} /><Button disabled={busy} title="Available for 1 hour" onPress={() => run(() => api.put('/support-languages/availability', {
-      available: true,
-      minutes: 60
-    }))} /><Button disabled={busy} title="Unavailable / on break" onPress={() => run(() => api.put('/support-languages/availability', {
-      available: false
-    }))} />{senior && <><AppText>Language assessments</AppText><Input label="Assessment note (at least 10 characters)" value={note} onChangeText={setNote} />{rows.map(row => <View key={row.user_id + row.language_id} style={{
-        padding: 12,
-        borderWidth: 1,
-        borderColor: '#94a3b8',
-        gap: 8
-      }}><AppText>{row.full_name} — {languages.find(x => x.id === row.language_id)?.name}: speaking {row.oral}; writing {row.written}; {row.status}</AppText>{['approved', 'rejected'].map(status => <Button key={status} disabled={busy || note.trim().length < 10 || Number(row.user_id) === Number(user.id)} title={status === 'approved' ? 'Approve' : 'Reject'} onPress={() => run(() => api.post('/support-languages/review', {
-          user_id: row.user_id,
-          language_id: row.language_id,
-          status,
-          note
-        }))} />)}</View>)}<AppText>Requests that waited too long</AppText><AppText>Review the reason first. This is not proof of misconduct.</AppText>{misses.map(row => <View key={row.id} style={{
-        gap: 8,
-        padding: 12,
-        borderWidth: 1,
-        borderColor: '#94a3b8'
-      }}><AppText>Ticket #{row.ticket_id} — {row.full_name} — {row.reason} — {row.created_at} — {row.review_status || 'pending'}</AppText><AppText>{row.review_note || ''}</AppText>{['excused', 'needs_followup'].map(status => <Button key={status} title={status === 'excused' ? 'Record valid reason' : 'Needs follow-up'} disabled={busy || note.trim().length < 10 || Number(row.agent_id) === Number(user.id)} onPress={() => run(() => api.post('/support-languages/monitor/' + row.id + '/review', {
-          status,
-          note
-        }))} />)}</View>)}</>}</ScrollView>;
+import OperationNoteModal from '../../components/admin/OperationNoteModal';
+import {PremiumScreen,PremiumPageHeader,PremiumCard,PremiumSectionTitle,StatusPill,EmptyPanel,InfoRow} from '../../components/common/PremiumLayout';
+import {colors,typography,typeScale} from '../../theme';
+const {languages}=require('../../data/languagePolicy.cjs');
+const friendly=value=>String(value||'Not recorded').replace(/_/g,' ');
+export default function SupportLanguageScreen(){
+ const {user}=useContext(AuthContext),[skills,setSkills]=useState([]),[rows,setRows]=useState([]),[misses,setMisses]=useState([]),[message,setMessage]=useState(''),[busy,setBusy]=useState(false),[availableUntil,setAvailableUntil]=useState(null),[review,setReview]=useState(null);
+ const senior=['super_support_admin','super_admin'].includes(user?.user_type),allowed=['super_admin','super_support_admin','state_support_admin','lga_support_admin'].includes(user?.user_type);
+ const load=async()=>{if(user?.user_type!=='super_admin'){const r=await api.get('/support-languages/profile');setSkills(r.data.data.skills);setAvailableUntil(r.data.data.availability?.available_until||null);}if(senior){setRows((await api.get('/support-languages/review')).data.data);setMisses((await api.get('/support-languages/monitor')).data.data);}};
+ useEffect(()=>{if(allowed)load().catch(()=>setMessage('Could not load language desk.'));},[allowed,user?.id,user?.user_type]);
+ const run=async fn=>{setBusy(true);try{const r=await fn();setMessage(r.data.message||'Saved.');await load();return true;}catch(e){setMessage(e.response?.data?.message||'Could not save.');return false;}finally{setBusy(false);}};
+ if(!allowed)return <PremiumScreen><EmptyPanel title="Support staff access required"/></PremiumScreen>;
+ return <><PremiumScreen contentStyle={styles.page}><PremiumPageHeader eyebrow="Support operations" title={user?.user_type==='super_admin'?'Support language and response review':'Support languages and availability'} subtitle={user?.user_type==='super_admin'?'Review staff language skills and follow up on delayed requests.':'Keep your language skills and availability current so customer requests reach the right person.'}/>{message?<AppText accessibilityRole="alert" style={styles.notice}>{message}</AppText>:null}
+ {user?.user_type!=='super_admin'?<><PremiumCard style={styles.card}><PremiumSectionTitle title="My language skills" subtitle="Choose the languages you can use honestly. Speaking and writing are assessed separately."/><LanguageSkillsField english value={skills} onChange={setSkills}/><Button disabled={busy} title="Send skills for assessment" onPress={()=>run(()=>api.put('/support-languages/profile',{skills}))}/></PremiumCard><PremiumCard style={styles.card}><PremiumSectionTitle title="Availability" subtitle="Choose when you can take customer requests. Availability expires after one hour."/><StatusPill label={Date.parse(availableUntil)>Date.now()?'Available':'Unavailable'} color={Date.parse(availableUntil)>Date.now()?colors.success:colors.muted}/><Button disabled={busy} title="Available for 1 hour" onPress={()=>run(()=>api.put('/support-languages/availability',{available:true,minutes:60}))}/><Button variant="secondary" disabled={busy} title="Unavailable / on break" onPress={()=>run(()=>api.put('/support-languages/availability',{available:false}))}/></PremiumCard></>:null}
+ {senior?<><PremiumSectionTitle title="Language assessments" subtitle="Check speaking and writing before approval. You cannot approve yourself."/>{!rows.length?<EmptyPanel title="No language assessments to show" message="Submitted staff language skills will appear here."/>:null}{rows.map(row=><PremiumCard key={row.user_id+row.language_id} style={styles.card}><AppText style={styles.heading}>{row.full_name}</AppText><AppText style={styles.muted}>{languages.find(x=>x.id===row.language_id)?.name||friendly(row.language_id)}</AppText><StatusPill label={friendly(row.status)} color={row.status==='approved'?colors.success:colors.warning}/><InfoRow label="Speaking / understanding" value={friendly(row.oral)}/><InfoRow label="Reading / writing" value={friendly(row.written)}/><View style={styles.actions}>{['approved','rejected'].map(status=><Button key={status} style={styles.action} variant={status==='approved'?'primary':'secondary'} disabled={busy||Number(row.user_id)===Number(user.id)} title={status==='approved'?'Approve':'Reject'} onPress={()=>setReview({kind:'language',row,status})}/>)}</View></PremiumCard>)}<PremiumSectionTitle title="Requests that waited too long" subtitle="Review the reason first. This is not proof of misconduct."/>{!misses.length?<EmptyPanel title="No delayed requests to review" message="Monitoring records will appear here when a review is needed."/>:null}{misses.map(row=><PremiumCard key={row.id} style={styles.card}><AppText style={styles.heading}>Ticket #{row.ticket_id}</AppText><AppText style={styles.muted}>{row.full_name}</AppText><StatusPill label={friendly(row.review_status||'pending')} color={colors.muted}/><AppText>{friendly(row.reason)}</AppText><AppText style={styles.muted}>{new Date(row.created_at).toLocaleString()}</AppText>{row.review_note?<AppText style={styles.notice}>{row.review_note}</AppText>:null}{['excused','needs_followup'].map(status=><Button key={status} variant="secondary" title={status==='excused'?'Record valid reason':'Needs follow-up'} disabled={busy||Number(row.agent_id)===Number(user.id)} onPress={()=>setReview({kind:'response',row,status})}/>)}</PremiumCard>)}</>:null}
+ </PremiumScreen><OperationNoteModal visible={Boolean(review)} title={review?.kind==='language'?'Record language assessment':'Review delayed response'} message="Explain the evidence you checked. This note is kept with the review." label="Review note" minLength={10} maxLength={2000} confirmText="Save review" loading={busy} onCancel={()=>setReview(null)} onConfirm={async note=>{const body=review.kind==='language'?{user_id:review.row.user_id,language_id:review.row.language_id,status:review.status,note}:{status:review.status,note};if(await run(()=>api.post(review.kind==='language'?'/support-languages/review':'/support-languages/monitor/'+review.row.id+'/review',body)))setReview(null);}}/></>;
 }
+const styles=StyleSheet.create({page:{gap:16},card:{gap:12,marginBottom:0},heading:{color:colors.ink,fontFamily:typography.semibold,fontSize:typeScale.base,lineHeight:24},muted:{color:colors.muted,fontSize:typeScale.sm,lineHeight:21},notice:{color:colors.navySoft,backgroundColor:colors.surfaceBlue,padding:12,borderRadius:12,fontSize:typeScale.reading,lineHeight:23},actions:{flexDirection:'row',flexWrap:'wrap',gap:10},action:{flex:1,minWidth:100}});

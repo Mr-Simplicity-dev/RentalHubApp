@@ -1,9 +1,11 @@
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 
 import React, { useEffect, useState } from 'react';
 import {KeyboardAvoidingView,
   Modal,
   Platform,
+  ScrollView,
   StyleSheet,
   TouchableOpacity,
   View,} from 'react-native';
@@ -23,11 +25,14 @@ const OperationNoteModal = ({
   icon = 'document-text-outline',
   variant = 'primary',
   required = true,
+  minLength = 1,
+  maxLength = 1000,
   loading = false,
   onCancel,
   onConfirm,
 }) => {
 
+  const insets=useSafeAreaInsets();
   const [note, setNote] = useState('');
   const [error, setError] = useState('');
 
@@ -49,6 +54,7 @@ const OperationNoteModal = ({
       setError(`${label} is required`);
       return;
     }
+    if (normalizedNote && normalizedNote.length < minLength) { setError(`Write at least ${minLength} characters.`); return; }
     onConfirm?.(normalizedNote);
   };
 
@@ -60,14 +66,15 @@ const OperationNoteModal = ({
     <Modal
       visible={visible}
       transparent
-      animationType="slide"
+      animationType="fade"
       onRequestClose={handleCancel}
     >
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        style={styles.overlay}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={[styles.overlay,{paddingTop:Math.max(insets.top,16),paddingBottom:Math.max(insets.bottom,16)}]}
       >
         <View accessibilityViewIsModal style={styles.sheet}>
+          <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={styles.sheetContent} bounces={false}>
           <View style={styles.header}>
             <View style={styles.iconWrap}>
               <Icon
@@ -98,7 +105,7 @@ const OperationNoteModal = ({
             placeholder={placeholder}
             multiline
             numberOfLines={4}
-            maxLength={1000}
+            maxLength={maxLength}
             error={error}
             editable={!loading}
             containerStyle={styles.input}
@@ -122,6 +129,7 @@ const OperationNoteModal = ({
               style={styles.actionButton}
             />
           </View>
+          </ScrollView>
         </View>
       </KeyboardAvoidingView>
     </Modal>
@@ -132,17 +140,23 @@ const styles = StyleSheet.create({
   overlay: {
     backgroundColor: 'rgba(7, 26, 61, 0.58)',
     flex: 1,
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 16,
   },
   sheet: {
     ...shadows.soft,
     backgroundColor: colors.white,
-    borderTopLeftRadius: radius.lg,
-    borderTopRightRadius: radius.lg,
-    paddingBottom: Platform.OS === 'ios' ? 34 : 24,
-    paddingHorizontal: 20,
-    paddingTop: 18,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: colors.border,
+    width:'100%',
+    maxWidth:560,
+    maxHeight:'100%',
+    flexShrink:1,
+    overflow:'hidden',
   },
+  sheetContent:{padding:20},
   header: {
     alignItems: 'flex-start',
     flexDirection: 'row',
@@ -175,11 +189,9 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     alignItems: 'center',
-    height: 38,
+    height: 44,
     justifyContent: 'center',
-    marginRight: -8,
-    marginTop: -6,
-    width: 38,
+    width: 44,
   },
   input: {
     marginBottom: 0,

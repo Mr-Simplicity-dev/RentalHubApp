@@ -44,8 +44,8 @@ const LanguageDropdown = ({ tone = 'light', fullWidth = false, compact = false }
 
   const onDark = tone === 'dark';
   const triggerStyle = onDark ? styles.triggerOnDark : styles.trigger;
-  const labelStyle = [onDark ? styles.labelOnDark : styles.label, compact && styles.labelCompact];
-  const valueStyle = [onDark ? styles.valueOnDark : styles.value, compact && styles.valueCompact];
+  const labelStyle = [onDark ? styles.labelOnDark : styles.label, compact && styles.labelCompact, fullWidth && styles.labelFull];
+  const valueStyle = [onDark ? styles.valueOnDark : styles.value, compact && styles.valueCompact, fullWidth && styles.valueFull];
   const chevronColor = onDark ? colors.white : colors.ink;
 
   return (
@@ -58,8 +58,8 @@ const LanguageDropdown = ({ tone = 'light', fullWidth = false, compact = false }
         style={[
           triggerStyle,
           styles.triggerBase,
-          fullWidth && styles.triggerFull,
           compact && styles.triggerCompact,
+          fullWidth && styles.triggerFull,
         ]}
       >
         <Icon
@@ -141,6 +141,8 @@ const LanguageDropdown = ({ tone = 'light', fullWidth = false, compact = false }
 };
 
 const styles = StyleSheet.create({
+  labelFull:{fontSize:13,lineHeight:18},
+  valueFull:{fontSize:16,lineHeight:22},
   triggerBase: {
     alignItems: 'center',
     borderRadius: radius.md,
@@ -162,22 +164,22 @@ const styles = StyleSheet.create({
   triggerCopy: { flex: 1, justifyContent: 'center' },
   triggerFull: {
     alignSelf: 'stretch',
-    minHeight: 48,
+    minHeight: 72,
     paddingHorizontal: 14,
-    paddingVertical: 6,
+    paddingVertical: 10,
   },
   triggerCompact: {
-    minHeight: 42,
+    minHeight: 48,
     paddingHorizontal: 12,
     paddingVertical: 3,
   },
   labelCompact: {
-    lineHeight: 13,
-    fontSize: 9.5,
+    lineHeight: 18,
+    fontSize: 13,
   },
   valueCompact: {
-    lineHeight: 17,
-    fontSize: 12.5,
+    lineHeight: 20,
+    fontSize: 14,
   },
   label: {
     color: colors.muted,

@@ -1760,7 +1760,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   subtitleTiny: {
-    fontSize: 12,
+    fontSize: 13,
     lineHeight: 17,
     marginBottom: 8,
     marginTop: 3,
@@ -1825,8 +1825,8 @@ const styles = StyleSheet.create({
   },
   priceLabel: {
     color: colors.muted,
-    fontSize: 10,
-    lineHeight: 14,
+    fontSize: 13,
+    lineHeight: 19,
     fontFamily: typography.semibold,
   },
   priceAmount: {
@@ -1840,8 +1840,8 @@ const styles = StyleSheet.create({
     marginTop: 3,
     color: colors.muted,
     fontFamily: typography.regular,
-    fontSize: 11,
-    lineHeight: 15,
+    fontSize: 13,
+    lineHeight: 19,
   },
   pendingMeta: {
     marginTop: 8,
@@ -2190,8 +2190,8 @@ const styles = StyleSheet.create({
     color: colors.muted,
     flex: 1,
     fontFamily: typography.regular,
-    fontSize: 11,
-    lineHeight: 15,
+    fontSize: 13,
+    lineHeight: 19,
     paddingTop: 1,
   },
   passwordChecklistTextMet: {

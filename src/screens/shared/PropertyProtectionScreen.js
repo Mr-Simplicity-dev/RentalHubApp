@@ -1,3 +1,6 @@
+import ChoiceChips from '../../components/common/ChoiceChips';
+import {PremiumPageHeader,StatusPill,EmptyPanel} from '../../components/common/PremiumLayout';
+import {colors,typography,typeScale} from '../../theme';
 import { openPrivatePropertyFile } from "../../services/privatePropertyFileService";
 import {
   savePendingPayment,
@@ -507,14 +510,7 @@ export default function PropertyProtectionScreen({ navigation, route }) {
         contentContainerStyle={styles.page}
         keyboardShouldPersistTaps="handled"
       >
-        <AppText style={styles.title}>
-          {ui("Amana Property Protection")}
-        </AppText>
-        <AppText>
-          {ui(
-            "Basic property registration and case reporting are free. A platform check does not guarantee ownership or freeze an official land record.",
-          )}
-        </AppText>
+        <PremiumPageHeader title={ui("Amana Property Protection")} subtitle={ui("Basic property registration and case reporting are free. A platform check does not guarantee ownership or freeze an official land record.")} actions={<Button title={ui("Refresh")} disabled={busy} variant="outline" size="sm" onPress={load}/>}/>
         {error ? (
           <AppText accessibilityRole="alert" style={styles.error}>
             {ui(error)}
@@ -524,16 +520,7 @@ export default function PropertyProtectionScreen({ navigation, route }) {
         {!selected ? (
           <>
             {user?.user_type === "super_admin" && <Button title="Set protection prices by location" variant="outline" onPress={()=>navigation.navigate("SuperAdminDashboard",{initialPanel:"pricing"})}/>}
-            <View style={styles.row}>
-              {viewsFor(user).map((v) => (
-                <Button
-                  key={v}
-                  title={ui(viewLabelFor(user,v))}
-                  variant={view === v ? "primary" : "outline"}
-                  onPress={() => setView(v)}
-                />
-              ))}
-            </View>
+            <ChoiceChips accessibilityLabel={ui("Amana Property Protection")} value={view} onChange={setView} options={viewsFor(user).map(v=>({value:v,label:ui(viewLabelFor(user,v))}))}/>
             {actionsFor(null, user, view).map((a) => (
               <Button
                 key={a}
@@ -859,12 +846,7 @@ export default function PropertyProtectionScreen({ navigation, route }) {
               </Card>
             )}
           </>
-          <Button
-            title={ui("Refresh")}
-            disabled={busy}
-            variant="outline"
-            onPress={load}
-          />
+
         </>
       </ScrollView>
       <Modal
@@ -931,7 +913,7 @@ export default function PropertyProtectionScreen({ navigation, route }) {
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
-    backgroundColor: "#F5F7FB",
+    backgroundColor: colors.surface,
   },
   page: {
     padding: 16,
@@ -939,16 +921,16 @@ const styles = StyleSheet.create({
     paddingBottom: 32,
   },
   title: {
-    fontSize: 26,
-    lineHeight: 34,
-    fontWeight: "700",
-    color: "#0B2145",
+    fontSize: typeScale.xl,
+    lineHeight: 32,
+    fontFamily: typography.semibold,
+    color: colors.ink,
   },
   section: {
-    fontSize: 19,
+    fontSize: typeScale.md,
     lineHeight: 26,
-    fontWeight: "700",
-    color: "#0B2145",
+    fontFamily: typography.semibold,
+    color: colors.ink,
   },
   card: {
     backgroundColor: "#fff",
@@ -975,7 +957,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   bold: {
-    fontWeight: "700",
+    fontFamily: typography.semibold,
   },
   error: {
     color: "#A42121",
