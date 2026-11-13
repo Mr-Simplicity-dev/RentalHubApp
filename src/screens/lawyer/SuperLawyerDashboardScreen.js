@@ -1,3 +1,4 @@
+import PropertyProtectionEntry from '../../components/dashboard/PropertyProtectionEntry';
 import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
@@ -69,6 +70,7 @@ const SuperLawyerDashboardScreen = ({ navigation }) => {
         icon="scale-outline"
         onRefresh={loadDashboard}
       />
+<PropertyProtectionEntry />
 
       <MetricGrid>
         {summaryCards.map((card) => (

@@ -1,3 +1,4 @@
+import PropertyProtectionEntry from '../../components/dashboard/PropertyProtectionEntry';
 import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useContext, useMemo } from 'react';
@@ -526,9 +527,9 @@ const NativeToolsScreen = ({ navigation }) => {
         icon="apps-outline"
       />
 
-      {user?.user_type && !["tenant","landlord","agent","marketing_agent"].includes(user.user_type)&&<DashboardSection title="Admin documents"><ActionRow title="Code of Conduct" subtitle="Read, sign and submit to Recruitment" icon="document-text-outline" onPress={()=>navigation.navigate("AdminConduct")}/></DashboardSection>}
+      {user?.user_type && !["tenant","landlord","agent","marketing_agent"].includes(user.user_type)&&<DashboardSection title="Admin documents"><ActionRow title={user?.user_type === "super_admin" ? "Code of Conduct management" : "Code of Conduct"} subtitle={user?.user_type === "super_admin" ? "Approve documents and review staff submissions" : "Read, sign and submit to Recruitment"} icon="document-text-outline" onPress={()=>navigation.navigate("AdminConduct")}/></DashboardSection>}
       {["lga_support_admin","state_support_admin","super_support_admin","super_admin"].includes(user?.user_type)&&<DashboardSection title="Support language desk"><ActionRow title="WhatsApp human support" subtitle="Assigned customer conversations" icon="logo-whatsapp" onPress={()=>navigation.navigate("WhatsAppSupport")}/><ActionRow title="Languages and availability" subtitle="Approved skills and response review" icon="language-outline" onPress={()=>navigation.navigate("SupportLanguage")}/></DashboardSection>}
-      {isAuthenticated&&<DashboardSection title={ui("Property Protection")}><ActionRow title={ui("Amana Property Protection")} subtitle={ui("Private property records, checks and cases")} icon="shield-checkmark-outline" onPress={()=>navigation.navigate("PropertyProtection")}/></DashboardSection>}
+      {isAuthenticated && <PropertyProtectionEntry />}
       <DashboardSection title={ui("Public information")}>
         {publicFeatures.map((item) => renderFeature(item, 'public'))}
       </DashboardSection>

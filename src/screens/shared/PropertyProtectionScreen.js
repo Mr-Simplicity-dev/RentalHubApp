@@ -32,6 +32,7 @@ import SelectField from "../../components/common/SelectField";
 import OptionPickerModal from "../../components/common/OptionPickerModal";
 import useNativePaystackCheckout from "../../hooks/useNativePaystackCheckout";
 import {
+  resolveView, viewLabelFor,
   actionSpec,
   actionsFor,
   fieldOptions,
@@ -61,7 +62,7 @@ export default function PropertyProtectionScreen({ navigation, route }) {
     [selected, setSelected] = useState(
       route.params?.propertyId || route.params?.property || null,
     ),
-    [view, setView] = useState(route.params?.view || "owner"),
+    [requestedView, setView] = useState(route.params?.view || null),
     [rows, setRows] = useState([]),
     [hasMore, setHasMore] = useState(false),
     [data, setData] = useState(null),
@@ -78,6 +79,7 @@ export default function PropertyProtectionScreen({ navigation, route }) {
     [notice, setNotice] = useState(""),
     [picker, setPicker] = useState(null),
     [asset, setAsset] = useState(null);
+  const view = resolveView(user, requestedView);
   useEffect(() => {
     const id = route.params?.propertyId || route.params?.property;
     if (id) setSelected(id);
@@ -521,17 +523,18 @@ export default function PropertyProtectionScreen({ navigation, route }) {
         {notice ? <AppText>{ui(notice)}</AppText> : null}
         {!selected ? (
           <>
+            {user?.user_type === "super_admin" && <Button title="Set protection prices by location" variant="outline" onPress={()=>navigation.navigate("SuperAdminDashboard",{initialPanel:"pricing"})}/>}
             <View style={styles.row}>
               {viewsFor(user).map((v) => (
                 <Button
                   key={v}
-                  title={ui(labels(v))}
+                  title={ui(viewLabelFor(user,v))}
                   variant={view === v ? "primary" : "outline"}
                   onPress={() => setView(v)}
                 />
               ))}
             </View>
-            {actionsFor(null, user).map((a) => (
+            {actionsFor(null, user, view).map((a) => (
               <Button
                 key={a}
                 title={ui(forms[a]?.title || labels(a))}
@@ -568,7 +571,7 @@ export default function PropertyProtectionScreen({ navigation, route }) {
         ) : data && String(data.property.id) === String(selected) ? (
           <>
             <Button
-              title={ui("Back to properties")}
+              title={ui(view === "owner" ? "Back to properties" : "Back to work queue")}
               variant="outline"
               onPress={() => setSelected(null)}
             />

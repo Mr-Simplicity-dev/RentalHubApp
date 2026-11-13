@@ -1,3 +1,4 @@
+import PropertyProtectionEntry from '../../components/dashboard/PropertyProtectionEntry';
 
 
 import React, { useContext, useEffect, useState } from 'react';
@@ -149,6 +150,7 @@ const AdminDashboardScreen = ({ navigation }) => {
         icon="settings-outline"
         onRefresh={loadStats}
       />
+<PropertyProtectionEntry />
       <AdminAccountActions navigation={navigation} />
 
       <MetricGrid

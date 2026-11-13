@@ -1,3 +1,4 @@
+import PropertyProtectionEntry from '../../components/dashboard/PropertyProtectionEntry';
 
 
 import React, { useCallback, useState } from 'react';
@@ -71,6 +72,7 @@ const ZonalAdminScreen = ({ navigation }) => {
         subtitle={`${(scope.assignedZone || "Your zone") ?? "{value0}"}${(states.length ? ` · ${states.length} states` : '') ?? "{value1}"}`}
         icon="business-outline"
       />
+<PropertyProtectionEntry />
 
       <Button title={"Assisted registration & receipts"} onPress={()=>navigation.navigate('AssistedRegistration')} variant="outline" />
       <TourTarget id="zonal_overview" label={"Zone metrics"}><View style={styles.metricRow}>

@@ -75,6 +75,7 @@ const WORKSPACE_GROUPS = [
       { label: 'Verifications', section: 'verifications', icon: 'shield-checkmark-outline' },
       { label: 'Lawyer Invites', section: 'lawyer_invites', icon: 'mail-outline' },
       { label: 'Admin Management', section: 'admin_management', icon: 'construct-outline' },
+      { label: 'Code of Conduct management', route: 'AdminConduct', icon: 'document-text-outline' },
       { label: 'Pending Approvals', section: 'pending_approvals', icon: 'hourglass-outline' },
       { label: 'Assisted registration', route: 'AssistedRegistration', icon: 'person-add-outline' },
       { label: 'Admin Accounts & Reminders', route: 'AdminAccounts', icon: 'person-add-outline' },
@@ -85,6 +86,7 @@ const WORKSPACE_GROUPS = [
     icon: 'home-outline',
     items: [
       { label: 'Properties', section: 'properties', icon: 'home-outline' },
+      { label: 'Property Protection management', route: 'PropertyProtection', params: {view:'operations'}, icon: 'shield-checkmark-outline' },
       { label: 'Property Requests', section: 'property_requests', icon: 'document-text-outline' },
       { label: 'Moderation', section: 'moderation', icon: 'shield-outline' },
       { label: 'Content Moderation', route: 'ContentModeration', icon: 'images-outline' },
@@ -913,7 +915,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
       return;
     }
     if (item.route) {
-      navigation.navigate(item.route);
+      navigation.navigate(item.route, item.params);
     }
   };
 

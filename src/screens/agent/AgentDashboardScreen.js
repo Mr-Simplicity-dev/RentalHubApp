@@ -1,3 +1,4 @@
+import PropertyProtectionEntry from '../../components/dashboard/PropertyProtectionEntry';
 import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
@@ -47,6 +48,7 @@ const AgentDashboardScreen = ({ navigation }) => {
         subtitle={ui("Manage delegated properties, commissions and payouts.")}
         icon="briefcase-outline"
       />
+<PropertyProtectionEntry />
 
       {!assignment ? (
         <DashboardNotice

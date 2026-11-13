@@ -30,7 +30,7 @@ export default function AdminConductScreen() {
   } = useNativePaystackCheckout();
   const reviewer = user?.user_type === 'super_admin' || user?.user_type === 'recruitment_admin' || user?.is_recruitment_admin;
   const load = async () => {
-    setData((await api.get('/admin-conduct/mine')).data.data);
+    if(user?.user_type !== 'super_admin') setData((await api.get('/admin-conduct/mine')).data.data);
     if (reviewer) setQueue((await api.get('/admin-conduct/queue')).data.data);
     if (user?.user_type === 'super_admin') setDocuments((await api.get('/admin-conduct/documents')).data.data);
   };
@@ -74,7 +74,7 @@ export default function AdminConductScreen() {
     gap: 14
   }}><AppText style={{
       fontSize: 24
-    }}>Admin Code of Conduct</AppText><AppText>Physical delivery to Recruitment is free. Optional electronic signing and submission costs ₦5,000.</AppText><AppText>{message}</AppText>{!data.documents.length && <AppText>No approved document is available for your role yet. Contact Recruitment.</AppText>}{data.documents.map(d => <View key={d.id} style={{
+    }}>{user?.user_type === 'super_admin' ? 'Code of Conduct management' : 'Admin Code of Conduct'}</AppText><AppText>{user?.user_type === 'super_admin' ? 'Approve staff documents and review submissions. Super Admin does not sign these staff forms.' : 'Physical delivery to Recruitment is free. Optional electronic signing and submission costs ₦5,000.'}</AppText><AppText>{message}</AppText>{user?.user_type !== 'super_admin' && !data.documents.length && <AppText>No approved document is available for your role yet. Contact Recruitment.</AppText>}{data.documents.map(d => <View key={d.id} style={{
       gap: 12,
       padding: 14,
       borderWidth: 1,

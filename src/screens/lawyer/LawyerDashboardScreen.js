@@ -1,3 +1,4 @@
+import PropertyProtectionEntry from '../../components/dashboard/PropertyProtectionEntry';
 import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
@@ -110,6 +111,7 @@ const LawyerDashboardScreen = ({ navigation }) => {
         <AppText style={styles.title}>{ui("Cases and property access")}</AppText>
         <AppText style={styles.heroText}>{ui("Review authorised properties, trace evidence and resolve disputes.")}</AppText>
       </View>
+<PropertyProtectionEntry />
 
       <TouchableOpacity
         activeOpacity={0.85}

@@ -1,3 +1,4 @@
+import PropertyProtectionEntry from '../../components/dashboard/PropertyProtectionEntry';
 
 
 import React, { useContext, useEffect, useState } from 'react';
@@ -80,6 +81,7 @@ const StateAdminDashboardScreen = ({ navigation }) => {
         icon="map-outline"
         onRefresh={loadDashboard}
       />
+<PropertyProtectionEntry />
       <AdminAccountActions navigation={navigation} />
 
       {!stateId ? (

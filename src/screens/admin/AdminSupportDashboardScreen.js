@@ -1,3 +1,4 @@
+import PropertyProtectionEntry from '../../components/dashboard/PropertyProtectionEntry';
 
 
 import React, { useContext, useEffect, useMemo, useState } from 'react';
@@ -83,6 +84,7 @@ const AdminSupportDashboardScreen = ({ navigation, route }) => {
         icon="chatbubbles-outline"
         onRefresh={loadDashboard}
       />
+<PropertyProtectionEntry />
 
       <MetricGrid>
         {summaryCards.map((card) => (
