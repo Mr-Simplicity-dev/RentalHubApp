@@ -1235,10 +1235,10 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
         />
         <AppText style={styles.filterLabel}>Status</AppText>
         <View style={styles.filtersRow}>
-          {['pending', 'verified', 'rejected', 'all'].map((value) => (
+          {['all', 'pending', 'not_submitted', 'verified', 'rejected', 'revalidation_required'].map((value) => (
             <FilterChip
               key={value}
-              label={value}
+              label={value === 'not_submitted' ? 'Incomplete' : value.replace(/_/g, ' ')}
               active={verificationFilters.status === value}
               onPress={() =>
                 setVerificationFilters((prev) => ({ ...prev, status: value }))
@@ -1286,7 +1286,8 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
             <AppText style={styles.meta}>Role: {item.user_type}</AppText>
             <AppText style={styles.meta}>Document: {item.identity_document_type || 'nin'}</AppText>
             <AppText style={styles.meta}>Number: {documentNumber || '-'}</AppText>
-            <AppText style={styles.meta}>Status: {reviewStatus}</AppText>
+            <AppText style={styles.meta}>Status: {reviewStatus === 'not_submitted' ? 'Incomplete' : reviewStatus.replace(/_/g, ' ')}</AppText>
+            {reviewStatus === 'not_submitted' && <AppText style={styles.meta}>{!item.passport_photo_url ? 'Face photo needed. ' : ''}{!(item.nin || item.international_passport_number) ? 'NIN or passport needed. ' : ''}User completes these steps in Profile.</AppText>}
             <AppText style={styles.meta}>Verified By: {item.identity_verified_by_name || '-'}</AppText>
             {(item.identity_review_flags || []).map(flag=><View key={flag.id} style={{marginVertical:6}}><AppText style={styles.meta}>{flag.reason.replace(/_/g,' ')}</AppText><TouchableOpacity onPress={()=>openOperationPrompt({title:'Record identity investigation',label:'Review note',message:'Explain the evidence reviewed. This does not approve the account.',successMessage:'Review recorded',run:note=>superAdminService.reviewIdentityFlag(item.id,flag.id,note)})}><AppText style={styles.linkText}>Record investigation</AppText></TouchableOpacity></View>)}
             {item.passport_photo_url ? (

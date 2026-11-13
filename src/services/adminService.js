@@ -28,8 +28,8 @@ export const adminService = {
     return response.data;
   },
 
-  approveVerification: async (id) => {
-    const response = await api.post(`/admin/verifications/${id}/approve`);
+  approveVerification: async (id, note) => {
+    const response = await api.post(`/admin/verifications/${id}/approve`, {note});
     return response.data;
   },
 

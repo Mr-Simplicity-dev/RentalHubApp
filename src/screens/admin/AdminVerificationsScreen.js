@@ -15,11 +15,14 @@ import {
 } from '../../components/common/PremiumLayout';
 import { colors, typography, typeScale } from '../../theme';
 
+import OperationNoteModal from '../../components/admin/OperationNoteModal';
 import AppText from '../../components/common/AppText';
 const AdminVerificationsScreen = () => {
 
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [approvalTarget, setApprovalTarget] = useState(null);
+  const [approving, setApproving] = useState(false);
 
   const loadVerifications = async () => {
     setLoading(true);
@@ -41,9 +44,11 @@ const AdminVerificationsScreen = () => {
     loadVerifications();
   }, []);
 
-  const approve = async (id) => {
+  const approve = async (id, note) => {
+    setApproving(true);
     try {
-      await adminService.approveVerification(id);
+      await adminService.approveVerification(id,note);
+      setApprovalTarget(null);
       await loadVerifications();
       Toast.show({ type: 'success', text1: "Verification approved" });
     } catch (error) {
@@ -52,7 +57,7 @@ const AdminVerificationsScreen = () => {
         text1: "Failed",
         text2: getErrorMessage(error, 'Could not approve verification'),
       });
-    }
+    } finally { setApproving(false); }
   };
 
   const reject = async (id) => {
@@ -70,6 +75,8 @@ const AdminVerificationsScreen = () => {
   };
 
   return (
+    <>
+    <OperationNoteModal visible={Boolean(approvalTarget)} title="Review identity approval" message={approvalTarget ? `Review the evidence for ${approvalTarget.full_name}. Your note is saved with the decision.` : ""} label="Approval note" confirmText="Approve identity" loading={approving} onCancel={() => setApprovalTarget(null)} onConfirm={note => approve(approvalTarget.id,note)} />
     <PremiumListScreen
       data={items}
       refreshing={loading}
@@ -106,13 +113,14 @@ const AdminVerificationsScreen = () => {
             </View>
             <InfoRow icon="id-card-outline" label={"Document"} value={documentLabel} />
             <View style={styles.actions}>
-              <PremiumButton title={"Approve"} icon="checkmark-circle-outline" onPress={() => approve(item.id)} />
+              <PremiumButton title={"Approve"} icon="checkmark-circle-outline" onPress={() => setApprovalTarget(item)} />
               <PremiumButton title={"Reject"} variant="ghost" icon="close-circle-outline" onPress={() => reject(item.id)} />
             </View>
           </PremiumCard>
         );
       }}
     />
+    </>
   );
 };
 
