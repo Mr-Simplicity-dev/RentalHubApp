@@ -1,206 +1,33 @@
-import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
-import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
-import React, { useCallback, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
-import Toast from 'react-native-toast-message';
-import { useFocusEffect } from '@react-navigation/native';
-import {
-  InfoRow,
-  PremiumButton,
-  PremiumCard,
-  PremiumCenter,
-  PremiumHero,
-} from '../../components/common/PremiumLayout';
-import { complianceOpsService } from '../../services/complianceOpsService';
-import { getErrorMessage } from '../../utils/http';
-import { colors, radius, typography, typeScale } from '../../theme';
+import useAdminNotificationHeader from '../../hooks/useAdminNotificationHeader';
+import React,{useCallback,useContext,useState} from 'react';
+import {ActivityIndicator,Alert,Linking,StyleSheet,TextInput,View} from 'react-native';
+import {useFocusEffect} from '@react-navigation/native';
+import {AuthContext} from '../../context/AuthContext';
+import api from '../../services/api';
 import AppText from '../../components/common/AppText';
-
-const SeoToolsScreen = () => {
-  useInterfaceLanguage();
-  const [summary, setSummary] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [busy, setBusy] = useState(null);
-
-  const load = useCallback(async () => {
-    setLoading(true);
-    try {
-      const response = await complianceOpsService.getSeoSummary();
-      if (response?.success) {
-        setSummary(response.summary || null);
-      }
-    } catch (err) {
-      Toast.show({
-        type: 'error',
-        text1: ui("Failed"),
-        text2: getErrorMessage(err, 'Could not load the SEO summary'),
-      });
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useFocusEffect(
-    useCallback(() => {
-      load();
-    }, [load])
-  );
-
-  const run = async (action, label) => {
-    setBusy(action);
-    try {
-      let response;
-      if (action === 'rankings') response = await complianceOpsService.runSeoRankingChecks();
-      else if (action === 'sitemap') response = await complianceOpsService.regenerateSitemap();
-      else response = await complianceOpsService.pingGoogle();
-      if (response?.success) {
-        Toast.show({
-          type: 'success',
-          text1: label,
-          text2:
-            action === "sitemap"
-              ? ui("Sitemap regenerated ({value0} URLs).", {value0: (response.data?.urlCount || 0)})
-              : action === "rankings"
-                ? response.message || ui("Ranking checks completed.")
-                : ui("Google notified."),
-        });
-      } else {
-        Toast.show({ type: 'error', text1: label, text2: response?.message || ui("Request failed.") });
-      }
-    } catch (err) {
-      Toast.show({
-        type: 'error',
-        text1: label,
-        text2: getErrorMessage(err, ui("Request failed")),
-      });
-    } finally {
-      setBusy(null);
-    }
-  };
-
-  if (loading) {
-    return <PremiumCenter loading title={ui("Loading SEO summary")} />;
-  }
-
-  const s = summary || {};
-
-  return (
-    <View style={styles.screen}>
-      <PremiumCard style={styles.hero}>
-        <AppText style={styles.heroTitle}>{ui("SEO & indexing tools")}</AppText>
-        <AppText style={styles.heroText}>{ui("Live page inventory and on-demand Google / sitemap actions.")}</AppText>
-      </PremiumCard>
-
-      <View style={styles.metricRow}>
-        <View style={[styles.metric, styles.metricAccent]}>
-          <AppText style={styles.metricValue}>{Number(s.totalSeoPages || 0).toLocaleString()}</AppText>
-          <AppText style={styles.metricLabel}>{ui("SEO pages")}</AppText>
-        </View>
-        <View style={styles.metric}>
-          <AppText style={styles.metricValue}>{Number(s.sitemapUrls || 0).toLocaleString()}</AppText>
-          <AppText style={styles.metricLabel}>{ui("Sitemap URLs")}</AppText>
-        </View>
-      </View>
-
-      <PremiumCard>
-        <InfoRow icon="layers-outline" label={ui("State pages")} value={String(s.statePages || 0)} />
-        <InfoRow icon="grid-outline" label={ui("LGA pages")} value={String(s.lgaPages || 0)} />
-        <InfoRow icon="map-outline" label={ui("Area pages")} value={String(s.areaPages || 0)} />
-        <InfoRow icon="business-outline" label={ui("Property pages")} value={String(s.propertyPages || 0)} />
-      </PremiumCard>
-
-      <PremiumCard>
-        <PremiumButton
-          title={busy === "sitemap" ? 'Regenerating…' : ui("Regenerate sitemap")}
-          onPress={() => run('sitemap', 'Sitemap regenerated')}
-          loading={busy === 'sitemap'}
-          disabled={busy !== null && busy !== 'sitemap'}
-          icon="refresh-outline"
-          style={styles.action}
-        />
-        <PremiumButton
-          title={busy === "rankings" ? 'Running checks…' : 'Run ranking checks'}
-          onPress={() => run('rankings', 'Ranking checks')}
-          loading={busy === 'rankings'}
-          disabled={busy !== null && busy !== 'rankings'}
-          variant="secondary"
-          icon="search-outline"
-          style={styles.action}
-        />
-        <PremiumButton
-          title={ui("Ping Google")}
-          onPress={() => run('ping', 'Google notified')}
-          loading={busy === 'ping'}
-          disabled={busy !== null && busy !== 'ping'}
-          variant="secondary"
-          icon="globe-outline"
-          style={styles.action}
-        />
-      </PremiumCard>
-    </View>
-  );
-};
-
-const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: colors.surface,
-    padding: 18,
-  },
-  hero: {
-    backgroundColor: colors.navy,
-    borderRadius: radius.lg,
-    marginBottom: 14,
-    padding: 18,
-  },
-  heroTitle: {
-    color: colors.white,
-    fontFamily: typography.semibold,
-    fontSize: typeScale.md,
-    lineHeight: 26,
-  },
-  heroText: {
-    color: '#B9C9E5',
-    fontFamily: typography.regular,
-    fontSize: typeScale.xs,
-    lineHeight: 18,
-    marginTop: 4,
-  },
-  metricRow: {
-    flexDirection: 'row',
-    gap: 10,
-    marginBottom: 12,
-  },
-  metric: {
-    flex: 1,
-    backgroundColor: colors.white,
-    borderColor: colors.border,
-    borderRadius: radius.md,
-    borderWidth: 1,
-    paddingVertical: 12,
-    alignItems: 'center',
-  },
-  metricAccent: {
-    backgroundColor: colors.surfaceBlue,
-    borderColor: colors.blue,
-  },
-  metricValue: {
-    color: colors.ink,
-    fontFamily: typography.bold,
-    fontSize: typeScale.lg,
-    lineHeight: 28,
-  },
-  metricLabel: {
-    color: colors.muted,
-    fontFamily: typography.regular,
-    fontSize: typeScale.xs,
-    lineHeight: 18,
-    marginTop: 2,
-    textTransform: 'uppercase',
-  },
-  action: {
-    marginTop: 12,
-  },
-});
-
-export default SeoToolsScreen;
+import {PremiumScreen,PremiumCard,PremiumButton,PremiumCenter} from '../../components/common/PremiumLayout';
+import {colors,typography} from '../../theme';
+import {getErrorMessage} from '../../utils/http';
+const sections=['Overview','Search','Keywords','Rankings','Opportunities','Technical','History'];
+const value=n=>n===null||n===undefined?'Not available':String(n);
+export default function SeoToolsScreen({navigation}){
+ useAdminNotificationHeader(navigation);
+ const {user}=useContext(AuthContext),allowed=user?.user_type==='super_admin';
+ const [section,setSection]=useState('Overview'),[data,setData]=useState(null),[error,setError]=useState(''),[busy,setBusy]=useState(false),[input,setInput]=useState(''),[result,setResult]=useState(null);
+ const load=useCallback(async()=>{if(!allowed)return;setBusy(true);setError('');setData(null);const path={Overview:'',Search:'/search-console/performance',Keywords:'/keywords',Rankings:'/rankings',Opportunities:'/opportunities',History:'/search-console/syncs'}[section];if(path===undefined){setBusy(false);return;}try{const r=await api.get('/admin/seo'+path);setData(section==='Overview'?r.data:r.data.data);}catch(e){setError(getErrorMessage(e,'This SEO data is not available.'));}finally{setBusy(false);}},[allowed,section]);
+ useFocusEffect(useCallback(()=>{setResult(null);load();},[load]));
+ const run=async(path,body={})=>{if(!allowed)return;setBusy(true);setError('');try{const r=await api.post('/admin/seo'+path,body);setResult(r.data.data);return r.data.data;}catch(e){setError(getErrorMessage(e,'The request could not be completed.'));return null;}finally{setBusy(false);}};
+ const button=(title,onPress)=><PremiumButton title={title} onPress={onPress} disabled={busy} style={styles.action}/>;
+ if(!allowed)return <PremiumCenter title="Super Admin only" message="SEO intelligence is available only to Super Admin."/>;
+ return <PremiumScreen><PremiumCard><AppText style={styles.title}>Search intelligence</AppText><AppText style={styles.text}>Actual Google searches, saved keyword estimates and separate ranking checks. Missing data is never shown as zero traffic.</AppText></PremiumCard><View style={styles.tabs}>{sections.map(name=><View key={name} style={styles.tab}>{button(name,()=>setSection(name))}</View>)}</View>{busy&&<ActivityIndicator accessibilityLabel="Loading SEO data" color={colors.blue}/ >}{!!error&&<AppText accessibilityRole="alert" style={styles.error}>{error}</AppText>}
+ {section==='Overview'&&<><PremiumCard><AppText style={styles.heading}>Public page inventory</AppText>{data?.summary?Object.entries(data.summary).map(([key,n])=><AppText style={styles.text} key={key}>{key}: {value(n)}</AppText>):<AppText style={styles.text}>Inventory has not loaded.</AppText>}</PremiumCard><PremiumCard><AppText style={styles.heading}>Google connections</AppText>{button('Check connection status',async()=>{try{const r=await api.get('/admin/seo/integrations');setResult(r.data.data);}catch(e){setError(getErrorMessage(e,'Could not read connections.'));}})}<AppText style={styles.text}>Connect or disconnect the owning Google account securely in the website SEO dashboard. No Google password or API secret belongs in the app.</AppText>{button('Open web SEO dashboard',()=>Linking.openURL('https://rentalhub.com.ng/super-admin/seo'))}{button('Rebuild sitemap',()=>run('/regenerate-sitemap'))}{button('Submit sitemap to Google',()=>Alert.alert('Submit sitemap?','Google accepting a sitemap does not guarantee indexing.',[{text:'Cancel',style:'cancel'},{text:'Submit',onPress:()=>run('/search-console/submit-sitemap')}]))}</PremiumCard></>}
+ {section==='Search'&&<><PremiumCard><AppText style={styles.heading}>Google Search Console</AppText>{data?.summary?Object.entries({Clicks:data.summary.clicks,Impressions:data.summary.impressions,'CTR ratio':data.summary.ctr,'Average position':data.summary.position}).map(([label,n])=><AppText key={label} style={styles.text}>{label}: {value(n)}</AppText>):<AppText style={styles.text}>No imported data. Connect Google and select the verified property on the website first.</AppText>}<AppText style={styles.small}>{data?.limitations}</AppText>{button('Queue Google refresh',()=>run('/search-console/sync'))}</PremiumCard>{[['Queries','topQueries'],['Pages','topPages'],['Countries','countries'],['Devices','devices']].map(([label,key])=><PremiumCard key={key}><AppText style={styles.heading}>{label}</AppText>{(data?.[key]||[]).slice(0,20).map((row,i)=><View style={styles.row} key={row.label||i}><AppText style={styles.text}>{row.label}</AppText><AppText style={styles.small}>Clicks: {value(row.clicks)} · Impressions: {value(row.impressions)} · Position: {value(row.position)}</AppText></View>)}</PremiumCard>)}</>}
+ {section==='Keywords'&&<><PremiumCard><AppText style={styles.heading}>Keyword research</AppText><TextInput accessibilityLabel="Seed keywords" placeholder="Seed keywords, separated by commas" placeholderTextColor={colors.muted} style={styles.input} value={input} onChangeText={setInput}/>{button('Research Ads estimates',()=>run('/keywords/research',{seeds:input.split(',').map(x=>x.trim()).filter(Boolean)}))}{button('Save manual keyword',async()=>{await run('/keywords',{keyword:input});load();})}{button('Queue tracked ranking checks',()=>run('/rankings/queue'))}<AppText style={styles.small}>Ads demand is estimated. Advertising competition is not organic SEO difficulty. Configure groups, locations and spending limits on the website.</AppText></PremiumCard>{(data||[]).map(k=><PremiumCard key={k.id}><AppText style={styles.heading}>{k.keyword}</AppText><AppText style={styles.text}>Group: {k.group_name||'None'} · Location: {k.location||k.country}</AppText><AppText style={styles.small}>Estimated monthly searches: {value(k.metrics?.average_monthly_searches)}</AppText>{button(k.is_tracked?'Stop tracking':'Track weekly',async()=>{await run('/keywords',{...k,is_tracked:!k.is_tracked});load();})}</PremiumCard>)}</>}
+ {section==='Rankings'&&<>{button('Queue tracked ranking checks',()=>run('/rankings/queue'))}<AppText style={styles.small}>Only real SerpAPI observations are shown. A missing result applies only to the results actually returned.</AppText>{(data?.latestByKeyword||[]).map(r=><PremiumCard key={r._id}><AppText style={styles.heading}>{r.keyword}</AppText><AppText style={styles.text}>{r.found?'Position '+r.position:r.resultsReturned!=null?'Not found in '+r.resultsReturned+' returned results':'Not found in returned results'}</AppText><AppText style={styles.small}>{r.searchLocation||r.searchCountry} · {r.searchLanguage} · {r.checkedAt}</AppText>{r.movement!=null&&<AppText style={styles.small}>Position movement: {r.movement>0?'+':''}{r.movement}</AppText>}{r.competitors?.slice(0,5).map((c,i)=><AppText key={i} style={styles.small}>{c.domain}: {value(c.position)}</AppText>)}</PremiumCard>)}</>}
+ {section==='Opportunities'&&<>{button('Generate from recorded evidence',async()=>{await run('/opportunities/generate');load();})}{(data||[]).map(o=><PremiumCard key={o.id}><AppText style={styles.heading}>{o.priority.toUpperCase()} · {o.rule.replaceAll('_',' ')}</AppText><AppText style={styles.text}>{o.reason}</AppText><AppText style={styles.text}>{o.action}</AppText><AppText style={styles.small}>Source: {o.source}</AppText></PremiumCard>)}</>}
+ {section==='Technical'&&<PremiumCard><AppText style={styles.heading}>Check a public RentalHub page</AppText><TextInput accessibilityLabel="Public RentalHub page URL" autoCapitalize="none" keyboardType="url" placeholder="https://rentalhub.com.ng/" placeholderTextColor={colors.muted} style={styles.input} value={input} onChangeText={setInput}/>{button('Audit page HTML',()=>run('/technical-audit',{urls:[input]}))}{button('Inspect Google indexed version',()=>run('/search-console/inspect',{url:input}))}{button('Check mobile PageSpeed',()=>run('/pagespeed',{url:input,strategy:'mobile'}))}<AppText style={styles.small}>These are separate reports. PageSpeed needs its own configured API key. No missing report is treated as a passing check.</AppText></PremiumCard>}
+ {section==='History'&&(data||[]).map(row=><PremiumCard key={row.id}><AppText style={styles.heading}>{row.status}</AppText><AppText style={styles.text}>{row.start_date} → {row.end_date}</AppText><AppText style={styles.small}>Rows: {row.processed_rows} · Error: {row.error_code||'None'} · Limited: {String(row.truncated)}</AppText></PremiumCard>)}
+ {result&&<PremiumCard><AppText style={styles.heading}>Recorded result</AppText>{result.source&&<AppText style={styles.small}>Source: {result.source.replaceAll('_',' ')}</AppText>}{result.pages?.map(page=><View key={page.url} style={styles.row}><AppText style={styles.text}>{page.url}</AppText><AppText style={styles.small}>HTTP {value(page.status)}</AppText>{page.issues?.length?page.issues.map((issue,i)=><View key={i} style={styles.row}><AppText style={styles.text}>{issue.message}</AppText><AppText style={styles.small}>{issue.action}</AppText></View>):<AppText style={styles.text}>No issues found in these limited checks.</AppText>}</View>)}{result.inspection?.indexStatusResult&&Object.entries(result.inspection.indexStatusResult).filter(([,v])=>typeof v==='string').map(([key,v])=><AppText key={key} style={styles.text}>{key.replace(/([A-Z])/g,' $1')}: {v}</AppText>)}{result.lab&&<><AppText style={styles.text}>Lab performance: {result.lab.categories?.performance?.score==null?'Not available':Math.round(result.lab.categories.performance.score*100)+'/100'}</AppText><AppText style={styles.small}>Real-user field result: {result.field?.overall_category||'Not available'}</AppText></>}{result.ideas?.slice(0,20).map(idea=><View key={idea.keyword} style={styles.row}><AppText style={styles.text}>{idea.keyword}</AppText><AppText style={styles.small}>Estimated monthly searches: {value(idea.average_monthly_searches)} · Ads competition: {value(idea.competition)}</AppText></View>)}{Array.isArray(result)&&result.map((record,i)=><View key={record.id||record.provider||i} style={styles.row}><AppText style={styles.heading}>{record.provider||record.keyword||record.kind||'Report'}</AppText><AppText style={styles.text}>{record.status||record.reason||'Recorded'}</AppText>{record.missing?.length>0&&<AppText style={styles.small}>Server setup is needed. Open the website SEO settings.</AppText>}</View>)}{result.run&&<AppText style={styles.text}>Google import: {result.run.status}. Check History for progress.</AppText>}{result.queued&&<AppText style={styles.text}>{result.message||'Request queued.'}</AppText>}{result.generated!==undefined&&<AppText style={styles.text}>{result.generated} recommendations generated.</AppText>}{result.google_accepted&&<AppText style={styles.text}>Google accepted the sitemap. Indexing is not guaranteed.</AppText>}{result.urlCount!==undefined&&<AppText style={styles.text}>Sitemap: {result.urlCount} URLs</AppText>}{result.note&&<AppText style={styles.small}>{result.note}</AppText>}{result.limitations&&<AppText style={styles.small}>{result.limitations}</AppText>}</PremiumCard>}{button('Refresh view',load)}
+ </PremiumScreen>;
+}
+const styles=StyleSheet.create({title:{fontFamily:typography.bold,fontSize:24,lineHeight:32,color:colors.ink},heading:{fontFamily:typography.bold,fontSize:18,lineHeight:26,color:colors.ink,marginBottom:8},text:{fontSize:15,lineHeight:23,color:colors.ink,marginBottom:8},small:{fontSize:13,lineHeight:20,color:colors.muted},tabs:{flexDirection:'row',flexWrap:'wrap',gap:8},tab:{minWidth:100,flexGrow:1},action:{marginTop:8},input:{borderWidth:1,borderColor:colors.border,borderRadius:10,padding:12,color:colors.ink,fontSize:16,minHeight:48},error:{padding:12,color:colors.danger,fontSize:15,lineHeight:23},row:{paddingVertical:8,borderBottomWidth:1,borderColor:colors.border}});

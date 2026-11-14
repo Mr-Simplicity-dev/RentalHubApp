@@ -13,4 +13,10 @@ global.__REACT_NATIVE_METRO_CONFIG_LOADED = true;
  *
  * @type {import('expo/metro-config').MetroConfig}
  */
-module.exports = getDefaultConfig(__dirname);
+const config = getDefaultConfig(__dirname);
+const previousBlocks = config.resolver.blockList;
+config.resolver.blockList = [
+  ...(Array.isArray(previousBlocks) ? previousBlocks : previousBlocks ? [previousBlocks] : []),
+  /[\\/](?:\.codex-tmp|\.release[^\\/]*)[\\/]/,
+];
+module.exports = config;
