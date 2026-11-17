@@ -39,25 +39,7 @@ export const pickObject = (response, keys = []) => {
   return null;
 };
 
-export const getReviewStatus = (user, verificationStatus) => {
-  if (verificationStatus?.review_status) {
-    return verificationStatus.review_status;
-  }
-
-  if (user?.identity_verification_status) {
-    return user.identity_verification_status;
-  }
-
-  if (user?.identity_verified) {
-    return 'verified';
-  }
-
-  if (user?.passport_photo_url) {
-    return 'pending';
-  }
-
-  return 'not_submitted';
-};
+export { getReviewStatus, getReviewStatusLabel } from "./verificationStatus.cjs";
 
 export const buildUploadUrl = (rawUrl) => {
   if (!rawUrl) return '';

@@ -60617,5 +60617,145 @@
     "ha": "An ƙara taimakon lamari, kula da rikici da kasuwar feshi da tsaftacewa.",
     "yo": "A fi ìrànlọ́wọ́ ọ̀ràn, ìtọ́jú àríyànjiyàn àti ọjà iṣẹ́ fífọ́n oògùn àti ìmọ́tótó kún un.",
     "ig": "Etinyere nkwado okwu, idozi esemokwu na ahịa ọrụ igbu ahụhụ na nhicha."
+  },
+  "status unavailable": {
+    "en": "Status unavailable",
+    "fr": "Statut indisponible",
+    "ar": "الحالة غير متاحة",
+    "ru": "Статус недоступен",
+    "zh": "状态暂不可用",
+    "ha": "Ba a samu matsayin ba",
+    "yo": "A kò rí ipò náà",
+    "ig": "Ọnọdụ adịghị ugbu a"
+  },
+  "verification update required": {
+    "en": "Verification update required",
+    "fr": "Mise à jour de vérification requise",
+    "ar": "يلزم تحديث التحقق",
+    "ru": "Требуется обновить проверку",
+    "zh": "需要更新身份验证",
+    "ha": "Ana bukatar sabunta tantancewa",
+    "yo": "A nílò àtúnṣe ìdánimọ̀",
+    "ig": "A chọrọ imelite nkwenye njirimara"
+  },
+  "capture passport photo": {
+    "en": "Capture passport photo",
+    "fr": "Prendre une photo d’identité",
+    "ar": "التقاط صورة شخصية",
+    "ru": "Сделать фото для профиля",
+    "zh": "拍摄证件照",
+    "ha": "Ɗauki hoton fuska",
+    "yo": "Ya fọ́tò ojú",
+    "ig": "See foto ihu"
+  },
+  "try saving photo again": {
+    "en": "Try saving photo again",
+    "fr": "Réessayer d’enregistrer la photo",
+    "ar": "حاول حفظ الصورة مرة أخرى",
+    "ru": "Повторить сохранение фото",
+    "zh": "重新保存照片",
+    "ha": "Sake gwada ajiye hoton",
+    "yo": "Gbìyànjú láti fi fọ́tò pamọ́ lẹ́ẹ̀kan sí i",
+    "ig": "Nwaa ịchekwa foto ọzọ"
+  },
+  "photo saved": {
+    "en": "Photo saved",
+    "fr": "Photo enregistrée",
+    "ar": "تم حفظ الصورة",
+    "ru": "Фото сохранено",
+    "zh": "照片已保存",
+    "ha": "An ajiye hoton",
+    "yo": "A ti fi fọ́tò pamọ́",
+    "ig": "Echekwala foto"
+  },
+  "saving your photo…": {
+    "en": "Saving your photo…",
+    "fr": "Enregistrement de votre photo…",
+    "ar": "جارٍ حفظ صورتك…",
+    "ru": "Сохранение фото…",
+    "zh": "正在保存照片…",
+    "ha": "Ana ajiye hotonka…",
+    "yo": "À ń fi fọ́tò rẹ pamọ́…",
+    "ig": "A na-echekwa foto gị…"
+  },
+  "photo captured": {
+    "en": "Photo captured",
+    "fr": "Photo prise",
+    "ar": "تم التقاط الصورة",
+    "ru": "Фото сделано",
+    "zh": "照片已拍摄",
+    "ha": "An ɗauki hoton",
+    "yo": "A ti ya fọ́tò",
+    "ig": "Eseela foto"
+  },
+  "face forward with both eyes open": {
+    "en": "Face forward with both eyes open",
+    "fr": "Regardez devant vous, les deux yeux ouverts",
+    "ar": "انظر للأمام مع فتح العينين",
+    "ru": "Смотрите прямо, открыв оба глаза",
+    "zh": "面向前方，睁开双眼",
+    "ha": "Kalli gaba ka buɗe idanunka biyu",
+    "yo": "Wo iwájú pẹ̀lú ojú méjèèjì ní ṣíṣí",
+    "ig": "Lee ihu n’ihu, meghee anya abụọ"
+  },
+  "close both eyes for one second": {
+    "en": "Close both eyes for one second",
+    "fr": "Fermez les deux yeux pendant une seconde",
+    "ar": "أغلق عينيك لثانية واحدة",
+    "ru": "Закройте оба глаза на одну секунду",
+    "zh": "闭上双眼一秒钟",
+    "ha": "Rufe idanunka biyu na daƙiƙa ɗaya",
+    "yo": "Pa ojú méjèèjì fún ìṣẹ́jú-àáyá kan",
+    "ig": "Mechie anya abụọ otu sekọnd"
+  },
+  "open both eyes and face forward": {
+    "en": "Open both eyes and face forward",
+    "fr": "Ouvrez les deux yeux et regardez devant vous",
+    "ar": "افتح عينيك وانظر للأمام",
+    "ru": "Откройте оба глаза и смотрите прямо",
+    "zh": "睁开双眼并面向前方",
+    "ha": "Buɗe idanunka biyu ka kalli gaba",
+    "yo": "Ṣí ojú méjèèjì kí o sì wo iwájú",
+    "ig": "Meghee anya abụọ ma lee ihu n’ihu"
+  },
+  "follow the steps. your photo will be captured and saved automatically. keep only your face in the frame.": {
+    "en": "Follow the steps. Your photo will be captured and saved automatically. Keep only your face in the frame.",
+    "fr": "Suivez les étapes. Votre photo sera prise et enregistrée automatiquement. Gardez uniquement votre visage dans le cadre.",
+    "ar": "اتبع الخطوات. سيتم التقاط صورتك وحفظها تلقائياً. اجعل وجهك وحده داخل الإطار.",
+    "ru": "Следуйте инструкциям. Фото будет сделано и сохранено автоматически. В кадре должно быть только ваше лицо.",
+    "zh": "请按步骤操作。照片将自动拍摄并保存。画面中只保留您的脸。",
+    "ha": "Bi matakan. Za a ɗauki hotonka kuma a ajiye shi kai tsaye. Fuskarka kaɗai ta kasance a cikin firam.",
+    "yo": "Tẹ̀lé àwọn ìgbésẹ̀. A ó ya fọ́tò rẹ, a ó sì fi í pamọ́ fúnra rẹ̀. Jẹ́ kí ojú rẹ nìkan wà nínú àpótí.",
+    "ig": "Soro usoro ndị a. A ga-ese ma chekwaa foto gị na-akpaghị aka. Ka naanị ihu gị dị n’ime fremu."
+  },
+  "camera unavailable. close other camera apps and try again.": {
+    "en": "Camera unavailable. Close other camera apps and try again.",
+    "fr": "Caméra indisponible. Fermez les autres applications utilisant la caméra et réessayez.",
+    "ar": "الكاميرا غير متاحة. أغلق تطبيقات الكاميرا الأخرى وحاول مجدداً.",
+    "ru": "Камера недоступна. Закройте другие приложения камеры и повторите попытку.",
+    "zh": "相机不可用。请关闭其他使用相机的应用后重试。",
+    "ha": "Ba a samun kyamara. Rufe sauran manhajojin kyamara ka sake gwadawa.",
+    "yo": "Kámẹ́rà kò sí. Pa àwọn àpù kámẹ́rà mìíràn kí o tún gbìyànjú.",
+    "ig": "Igwefoto adịghị. Mechie ngwa igwefoto ndị ọzọ ma nwaa ọzọ."
+  },
+  "allow camera access in phone settings, then try again.": {
+    "en": "Allow camera access in phone settings, then try again.",
+    "fr": "Autorisez la caméra dans les réglages du téléphone, puis réessayez.",
+    "ar": "اسمح بالوصول إلى الكاميرا من إعدادات الهاتف ثم حاول مجدداً.",
+    "ru": "Разрешите доступ к камере в настройках телефона и повторите попытку.",
+    "zh": "请在手机设置中允许相机权限后重试。",
+    "ha": "Ba da izinin kyamara a saitin waya, sannan ka sake gwadawa.",
+    "yo": "Fún kámẹ́rà ní àṣẹ nínú ètò fóònù, kí o tún gbìyànjú.",
+    "ig": "Nye igwefoto ikike na ntọala ekwentị, wee nwaa ọzọ."
+  },
+  "could not load verification status. pull down to try again.": {
+    "en": "Could not load verification status. Pull down to try again.",
+    "fr": "Impossible de charger le statut. Faites glisser vers le bas pour réessayer.",
+    "ar": "تعذر تحميل حالة التحقق. اسحب لأسفل لإعادة المحاولة.",
+    "ru": "Не удалось загрузить статус проверки. Потяните вниз для повтора.",
+    "zh": "无法加载验证状态。请下拉重试。",
+    "ha": "Ba a iya loda matsayin tantancewa ba. Ja ƙasa don sake gwadawa.",
+    "yo": "A kò lè ṣí ipò ìdánimọ̀. Fà sílẹ̀ láti tún gbìyànjú.",
+    "ig": "Enweghị ike ịgụ ọnọdụ nkwenye. Dọrọ ala ka ị nwaa ọzọ."
   }
 }

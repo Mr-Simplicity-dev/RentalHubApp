@@ -1,6 +1,7 @@
+import { AuthContext } from '../../context/AuthContext';
 import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import Toast from 'react-native-toast-message';
 import Input from '../../components/common/Input';
@@ -15,6 +16,7 @@ import { getErrorMessage } from '../../utils/http';
 
 const VerifyPhoneScreen = ({ navigation }) => {
   useInterfaceLanguage();
+  const {user, updateUser} = useContext(AuthContext);
   const [otp, setOtp] = useState('');
   const [sending, setSending] = useState(false);
   const [verifying, setVerifying] = useState(false);
@@ -48,6 +50,9 @@ const VerifyPhoneScreen = ({ navigation }) => {
     setVerifying(true);
     try {
       const response = await authService.verifyPhone(otp.trim());
+      if (!response?.success) throw Error(response?.message || 'Phone verification failed');
+      await updateUser({...user,phone_verified:true});
+      try {const latest = await authService.getCurrentUser(); if (latest?.success && latest.data) await updateUser(latest.data);} catch {}
       Toast.show({
         type: 'success',
         text1: ui("Phone verified"),

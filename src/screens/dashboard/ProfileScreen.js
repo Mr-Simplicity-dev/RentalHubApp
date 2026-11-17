@@ -4,7 +4,7 @@ import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import AssistedPasswordForm from '../../components/common/AssistedPasswordForm';
 import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
-import {Platform, View, StyleSheet, ScrollView, Image, TouchableOpacity, Switch} from 'react-native';
+import {AppState, Platform, View, StyleSheet, ScrollView, Image, TouchableOpacity, Switch} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
@@ -16,8 +16,8 @@ import { biometricService } from '../../services/biometricService';
 import { userService } from '../../services/userService';
 import { authService } from '../../services/authService';
 import { storageService } from '../../services/storageService';
-import { cameraService } from '../../services/cameraService';
-import { getErrorMessage, getReviewStatus, pickObject } from '../../utils/http';
+import LivePassportCapture from '../../components/identity/LivePassportCapture';
+import { getErrorMessage, getReviewStatus, getReviewStatusLabel, pickObject } from '../../utils/http';
 import { colors, radius, shadows, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
@@ -26,7 +26,6 @@ const ProfileScreen = ({ navigation }) => {
   const { user, updateUser, logout } = useContext(AuthContext);
   const { replayTour } = useTour();
   const [saving, setSaving] = useState(false);
-  const [uploading, setUploading] = useState(false);
   const [biometricSaving, setBiometricSaving] = useState(false);
   const [biometricStatus, setBiometricStatus] = useState({
     available: false,
@@ -36,7 +35,8 @@ const ProfileScreen = ({ navigation }) => {
   const [status, setStatus] = useState(null);
   const [photoConsent, setPhotoConsent] = useState(false);
   const photoCopy = identityPhotoCopy[interfaceLanguage] || identityPhotoCopy.en;
-  const [passportAsset, setPassportAsset] = useState(null);
+  const [showPhotoCapture, setShowPhotoCapture] = useState(false);
+  const [statusError, setStatusError] = useState(false);
   const [form, setForm] = useState({
     full_name: user?.full_name || '',
     phone: user?.phone || '',
@@ -148,14 +148,18 @@ const ProfileScreen = ({ navigation }) => {
     try {
       const response = await userService.getVerificationStatus();
       setStatus(pickObject(response, ['data']));
+      setStatusError(false);
     } catch (error) {
-      // non-blocking
+      setStatusError(true);
     }
   };
 
   useEffect(() => {
     loadVerificationStatus();
-  }, []);
+    const off = navigation.addListener('focus', loadVerificationStatus);
+    const app = AppState.addEventListener('change', state => {if (state === 'active') loadVerificationStatus();});
+    return () => {off(); app.remove();};
+  }, [navigation]);
 
   const loadBiometricStatus = async () => {
     const nextStatus = await biometricService.getStatus();
@@ -193,59 +197,10 @@ const ProfileScreen = ({ navigation }) => {
     }
   };
 
-  const openCamera = async () => {
-    const result = await cameraService.pickPassportPhoto();
-
-    if (result.cancelled) {
-      if (result.message) {
-        Toast.show({
-          type: 'info',
-          text1: Platform.OS === "web" ? ui("Select a passport photo") : ui("Camera unavailable"),
-          text2: result.message,
-        });
-      }
-      return;
-    }
-
-    if (result.asset?.uri) {
-      setPassportAsset(result.asset);
-    }
-  };
-
-  const uploadPassport = async () => {
-    if (!passportAsset?.uri) {
-      Toast.show({
-        type: 'error',
-        text1: Platform.OS === "web" ? ui("Select passport photo first") : ui("Capture passport photo first"),
-      });
-      return;
-    }
-    setUploading(true);
-    try {
-      let captureToken = '';
-      try {
-        const session = await userService.createLiveCaptureSession();
-        captureToken = session?.data?.token || '';
-      } catch (error) {
-        // session might be optional
-      }
-
-      const response = await authService.uploadPassport(passportAsset, captureToken, photoConsent);
-      if (response?.user) {
-        await updateUser(response.user);
-      }
-      setPassportAsset(null);
-      await loadVerificationStatus();
-      Toast.show({ type: 'success', text1: response?.verification_pending ? photoCopy.pending : ui("Passport uploaded") });
-    } catch (error) {
-      Toast.show({
-        type: 'error',
-        text1: ui("Upload failed"),
-        text2: getErrorMessage(error, 'Could not upload passport'),
-      });
-    } finally {
-      setUploading(false);
-    }
+  const onPhotoSaved = async response => {
+    if (response?.user) await updateUser({...user, ...response.user});
+    await loadVerificationStatus();
+    Toast.show({type:'success',text1:response?.verification_pending ? photoCopy.pending : ui('Photo saved')});
   };
 
   const handleBiometricToggle = async (enabled) => {
@@ -315,14 +270,8 @@ const ProfileScreen = ({ navigation }) => {
   };
 
   const reviewStatus = getReviewStatus(user, status);
-  const reviewStatusLabel =
-    reviewStatus === 'verified'
-      ? 'Verified'
-      : reviewStatus === 'pending'
-        ? 'Pending review'
-        : reviewStatus === 'rejected'
-          ? 'Rejected'
-          : 'Not submitted';
+  const reviewStatusLabel = statusError ? ui('Status unavailable') : ui(getReviewStatusLabel(user, status));
+  const statusFlag = key => statusError || !status ? ui('Status unavailable') : status[key] === true ? ui('Verified') : ui('Pending');
 
   return (
     <SafeAreaView edges={['top']} style={styles.safeArea}>
@@ -407,9 +356,9 @@ const ProfileScreen = ({ navigation }) => {
             <AppText style={styles.cardCaption}>{ui("Status: ")}{reviewStatusLabel}</AppText>
           </View>
         </View>
-        <AppText style={styles.statusText}>{ui("Email:")}{status?.email_required===false ? ui('Not required') : status?.email ? ui("Verified") : ui("Pending")}{ui(" | Phone: ")}{status?.phone ? ui("Verified") : ui("Pending")}
+        <AppText style={styles.statusText}>{ui("Email:")}{status?.email_required===false ? ui('Not required') : statusFlag('email')}{ui(" | Phone: ")}{statusFlag('phone')}
         </AppText>
-        <AppText style={styles.statusText}>{ui("Identity:")}{status?.identity ? ui("Verified") : ui("Pending")}{ui(" | Document: ")}{status?.identity_document_type || '-'}
+        <AppText style={styles.statusText}>{ui("Identity:")}{statusFlag('identity')}{ui(" | Document: ")}{status?.identity_document_type || '-'}
         </AppText>
         <AppText style={styles.statusText}>{ui("Review Status: ")}{reviewStatusLabel}</AppText>
 
@@ -424,14 +373,8 @@ const ProfileScreen = ({ navigation }) => {
         ) : null}
 
         <View style={{flexDirection:'row',alignItems:'center',gap:12,marginTop:12}}><Switch value={photoConsent} onValueChange={setPhotoConsent} accessibilityLabel={photoCopy.consent} /><AppText style={[styles.infoText,{flex:1}]}>{photoCopy.consent}</AppText></View>
-        {passportAsset?.uri ? <Image source={{ uri: passportAsset.uri }} style={styles.preview} /> : null}
-        <Button
-          title={Platform.OS === "web" ? 'Select Passport Photo' : 'Capture Passport Photo'}
-          onPress={openCamera}
-          variant="outline"
-          style={styles.marginTop}
-        />
-        <Button title={ui("Upload Passport")} onPress={uploadPassport} loading={uploading} style={styles.marginTop} />
+        <Button title={ui('Capture Passport Photo')} onPress={() => setShowPhotoCapture(true)} variant="outline" style={styles.marginTop}/>
+        {showPhotoCapture ? <LivePassportCapture consent={photoConsent} onClose={() => setShowPhotoCapture(false)} onSaved={onPhotoSaved}/> : null}
         <Button
           title={ui("View Verification Status")}
           variant="outline"

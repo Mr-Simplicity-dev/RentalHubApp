@@ -1,5 +1,5 @@
 import { translateUi as ui } from '../i18n/interfaceRuntime.cjs';
-import { Platform } from 'react-native';
+import { Platform, PermissionsAndroid } from 'react-native';
 
 const pickImageFromWeb = (accept = 'image/*') =>
   new Promise((resolve) => {
@@ -68,6 +68,10 @@ export const cameraService = {
     }
 
     try {
+      if (Platform.OS === 'android') {
+        const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.CAMERA);
+        if (granted !== PermissionsAndroid.RESULTS.GRANTED) return {cancelled:true,message:ui('Allow camera access in phone settings, then try again.')};
+      }
       const { launchCamera } = require('react-native-image-picker');
       const result = await launchCamera({
         mediaType: 'photo',

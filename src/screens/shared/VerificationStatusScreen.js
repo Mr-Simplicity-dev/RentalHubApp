@@ -9,13 +9,14 @@ import Toast from 'react-native-toast-message';
 import Button from '../../components/common/Button';
 import { userService } from '../../services/userService';
 import { colors, radius, typography, typeScale } from '../../theme';
-import { getErrorMessage, pickObject } from '../../utils/http';
+import { getErrorMessage, getReviewStatus, pickObject } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
 const VerificationStatusScreen = ({ navigation }) => {
   const interfaceLanguage = useInterfaceLanguage();
   const [status, setStatus] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [revalidationRequests, setRevalidationRequests] = useState([]);
   const [submittingRevalidation, setSubmittingRevalidation] = useState(false);
@@ -39,8 +40,10 @@ const VerificationStatusScreen = ({ navigation }) => {
         userService.getVerificationStatus(),
         userService.getRevalidationRequests(),
       ]);
+      if (results[0].status === 'rejected') throw results[0].reason;
       if (results[0].status === 'fulfilled') {
         setStatus(pickObject(results[0].value, ['data']) || results[0].value?.data || {});
+        setLoadError(false);
       }
       if (results[1].status === 'fulfilled') {
         const list = Array.isArray(results[1].value?.data)
@@ -49,6 +52,7 @@ const VerificationStatusScreen = ({ navigation }) => {
         setRevalidationRequests(list);
       }
     } catch (error) {
+      setLoadError(true);
       Toast.show({
         type: 'error',
         text1: ui("Could not load verification"),
@@ -62,7 +66,8 @@ const VerificationStatusScreen = ({ navigation }) => {
 
   useEffect(() => {
     loadStatus();
-  }, [loadStatus]);
+    return navigation.addListener('focus', () => loadStatus());
+  }, [loadStatus, navigation]);
 
   const activeRevalidation = useMemo(
     () => revalidationRequests.find((r) => ['requested', 'rejected', 'submitted'].includes(r.status)) || null,
@@ -75,9 +80,9 @@ const VerificationStatusScreen = ({ navigation }) => {
   const phoneVerified = Boolean(status?.phone || status?.phone_verified);
   const identityVerified = Boolean(status?.identity || status?.identity_verified);
   const reviewStatus =
-    status?.review_status || status?.identity_verification_status || 'not_submitted';
+    getReviewStatus({}, status);
   const identityPending = reviewStatus === 'pending' || reviewStatus === 'provider_pending';
-  const identityRejected = reviewStatus === 'rejected';
+  const identityRejected = reviewStatus === 'rejected' || reviewStatus === 'revalidation_required';
   const identityInProgress = reviewStatus === 'provider_pending';
   const completedCount = [...(emailRequired?[emailVerified]:[]), phoneVerified, identityVerified].filter(Boolean).length;
   const progress = useMemo(() => `${Math.round((completedCount / requiredCount) * 100)}%`, [completedCount,requiredCount, interfaceLanguage]);
@@ -113,7 +118,7 @@ const VerificationStatusScreen = ({ navigation }) => {
             ? ui("Your passport photo is waiting for review.")
             : identityRejected
               ? ui("Your submission needs to be replaced.")
-              : ui("Submit a live passport photo for review."),
+              : reviewStatus === 'revalidation_required' ? ui('Verification update required') : reviewStatus === 'unknown' ? ui('Status unavailable') : ui("Submit a live passport photo for review."),
       complete: identityVerified,
       pending: identityPending || identityInProgress,
       rejected: identityRejected,
@@ -210,6 +215,7 @@ const VerificationStatusScreen = ({ navigation }) => {
           </View>
         ) : (
           <>
+            {loadError && <AppText accessibilityRole="alert">{ui('Could not load verification status. Pull down to try again.')}</AppText>}
             <View style={[styles.hero, completedCount === requiredCount && styles.heroComplete]}>
               <View style={styles.heroIcon}>
                 <Icon
@@ -267,7 +273,7 @@ const VerificationStatusScreen = ({ navigation }) => {
                             step.pending && styles.stepStatusPending,
                             step.rejected && styles.stepStatusRejected,
                           ]}>
-                          {step.complete ? ui("Verified") : identityInProgress ? ui("Processing") : step.pending ? ui("In review") : step.rejected ? ui('Action needed') : ui('Incomplete')}
+                          {loadError ? ui("Status unavailable") : step.complete ? ui("Verified") : step.key === 'identity' && identityInProgress ? ui("Processing") : step.pending ? ui("In review") : step.rejected ? ui('Action needed') : ui('Incomplete')}
                         </AppText>
                       </View>
                       <AppText style={styles.stepText}>{step.description}</AppText>

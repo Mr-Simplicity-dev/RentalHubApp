@@ -20,7 +20,7 @@ const recovery = require('../../i18n/registrationRecoveryCopy.cjs');
 const VerifyEmailScreen = ({ navigation, route }) => {
   const language = useInterfaceLanguage();
   const copy = recovery[language] || recovery.en;
-  const { establishSession, user } = useContext(AuthContext);
+  const { establishSession, updateUser, user } = useContext(AuthContext);
   const handledToken = useRef(null);
   const [token, setToken] = useState(route?.params?.token || '');
   const [loading, setLoading] = useState(false);
@@ -47,6 +47,7 @@ const VerifyEmailScreen = ({ navigation, route }) => {
       if (!response.success) throw new Error(response.message || 'Could not verify email');
       const session = response.data || response;
       if (session.token && session.user) await establishSession(session);
+      else if (user) {await updateUser({...user,email_verified:true}); try {const latest = await authService.getCurrentUser(); if (latest?.success && latest.data) await updateUser(latest.data);} catch {}}
       setMessage(response?.message || 'Email verified successfully.');
       Toast.show({ type: 'success', text1: ui("Email verified") });
     } catch (error) {

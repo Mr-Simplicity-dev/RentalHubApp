@@ -1,3 +1,4 @@
+import {getReviewStatus, getReviewStatusLabel} from '../../utils/verificationStatus.cjs';
 import React, { useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Alert, FlatList, Image, Modal, ScrollView, StyleSheet, Switch, TouchableOpacity, View } from 'react-native';
 import TextInput from '../../components/common/AppTextInput';
@@ -1235,7 +1236,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
         />
         <AppText style={styles.filterLabel}>Status</AppText>
         <View style={styles.filtersRow}>
-          {['all', 'pending', 'not_submitted', 'verified', 'rejected', 'revalidation_required'].map((value) => (
+          {['all', 'pending', 'provider_pending', 'not_submitted', 'verified', 'rejected', 'revalidation_required'].map((value) => (
             <FilterChip
               key={value}
               label={value === 'not_submitted' ? 'Incomplete' : value.replace(/_/g, ' ')}
@@ -1273,7 +1274,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
       </View>
 
       {verifications.map((item) => {
-        const reviewStatus = item.identity_verification_status || (item.identity_verified ? 'verified' : 'pending');
+        const reviewStatus = getReviewStatus(item);
         const documentNumber =
           item.identity_document_type === 'passport'
             ? item.international_passport_number
@@ -1286,7 +1287,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
             <AppText style={styles.meta}>Role: {item.user_type}</AppText>
             <AppText style={styles.meta}>Document: {item.identity_document_type || 'nin'}</AppText>
             <AppText style={styles.meta}>Number: {documentNumber || '-'}</AppText>
-            <AppText style={styles.meta}>Status: {reviewStatus === 'not_submitted' ? 'Incomplete' : reviewStatus.replace(/_/g, ' ')}</AppText>
+            <AppText style={styles.meta}>Status: {reviewStatus === 'not_submitted' ? 'Incomplete' : getReviewStatusLabel(item)}</AppText>
             {reviewStatus === 'not_submitted' && <AppText style={styles.meta}>{!item.passport_photo_url ? 'Face photo needed. ' : ''}{!(item.nin || item.international_passport_number) ? 'NIN or passport needed. ' : ''}User completes these steps in Profile.</AppText>}
             <AppText style={styles.meta}>Verified By: {item.identity_verified_by_name || '-'}</AppText>
             {(item.identity_review_flags || []).map(flag=><View key={flag.id} style={{marginVertical:6}}><AppText style={styles.meta}>{flag.reason.replace(/_/g,' ')}</AppText><TouchableOpacity onPress={()=>openOperationPrompt({title:'Record identity investigation',label:'Review note',message:'Explain the evidence reviewed. This does not approve the account.',successMessage:'Review recorded',run:note=>superAdminService.reviewIdentityFlag(item.id,flag.id,note)})}><AppText style={styles.linkText}>Record investigation</AppText></TouchableOpacity></View>)}
@@ -1888,7 +1889,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
 
   const renderModeration = () => {
     const pendingVerifications = verifications.filter((item) => {
-      const status = item.identity_verification_status || (item.identity_verified ? 'verified' : 'pending');
+      const status = getReviewStatus(item);
       return status === 'pending';
     });
     const openReports = reports.filter((item) => !['resolved', 'dismissed'].includes(item.status));

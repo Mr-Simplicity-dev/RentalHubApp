@@ -1,3 +1,4 @@
+import {AppState} from 'react-native';
 import {announceRegistrationEmail} from '../utils/registrationEmailNotice';
 import { translateUi as ui } from '../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../i18n/useInterfaceLanguage';
@@ -16,6 +17,18 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isImpersonating, setIsImpersonating] = useState(false);
+
+  useEffect(() => {
+    if (!user?.id) return;
+    let active = true, inFlight = false;
+    const listener = AppState.addEventListener('change', async state => {
+      if (state !== 'active' || inFlight) return;
+      inFlight = true;
+      try {const latest = await authService.getCurrentUser(); if (active && latest?.success && latest.data) {setUser(latest.data); await storageService.saveUser(latest.data);}} catch {}
+      finally {inFlight = false;}
+    });
+    return () => {active = false; listener.remove();};
+  }, [user?.id]);
 
   const logoutRef = useRef();
   const clearLocalSessionRef = useRef();
