@@ -260,7 +260,7 @@ const saveSecureValue = async (record, value) => {
   }
 
   if (!hasKeychain()) {
-    if (!mayUseFallback(record)) return false;
+    if (!mayUseFallback(record) && Platform.OS !== 'web') return false;
     return writeFallback(record, value);
   }
 
@@ -291,10 +291,13 @@ const readSecureValue = async (
   isValid = isNonEmptyString
 ) => {
   if (!hasKeychain()) {
-    if (!mayUseFallback(record)) return null;
-  if (!mayUseFallback(record)) {
-    // Derived identity data has no fallback: if Keychain read failed it simply
-    // must be refetched from the API.
+    if (!mayUseFallback(record) && Platform.OS !== 'web') {
+      // Derived identity data and impersonation sessions have no native
+      // AsyncStorage fallback: refetch from the API if Keychain is unavailable.
+      return null;
+    }
+
+    if (record === SECURE_RECORDS.impersonation) {
     return null;
   }
 

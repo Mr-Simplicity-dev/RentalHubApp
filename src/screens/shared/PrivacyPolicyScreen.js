@@ -477,7 +477,7 @@ const PrivacyPolicyScreen = () => { useInterfaceLanguage(); return (<DashboardSc
           icon="call-outline"
           label={ui("Telephone")}
           value="+234 803 060 1238"
-          url="tel:+234+1 447 747 4743"
+          url="tel:+2348030601238"
         />
         <ContactLink
           icon="globe-outline"

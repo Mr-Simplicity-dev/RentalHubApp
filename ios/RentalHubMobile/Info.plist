@@ -62,8 +62,6 @@
 				<true/>
 				<key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
 				<false/>
-				<key>NSRequiresCertificateTransparency</key>
-				<false/>
 			</dict>
 		</dict>
 
@@ -74,8 +72,17 @@
 	<string>Amana RentalHub NG uses your camera for identity verification, document capture and virtual property tours.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Amana RentalHub NG uses your microphone for virtual property tours and secure in-app calls.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Amana RentalHub NG needs access to your photo library so you can upload bank transfer receipts and verification documents.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Amana RentalHub NG saves receipts and property documents to your photo library when requested.</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>Amana RentalHub NG uses Face ID to securely unlock your saved login on this device.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>

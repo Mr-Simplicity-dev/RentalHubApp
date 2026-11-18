@@ -17,6 +17,8 @@ import { AuthContext } from '../../context/AuthContext';
 import { useRealtime } from '../../context/RealtimeContext';
 import { supportService } from '../../services/supportService';
 import { guestSupportCredentialService } from '../../services/guestSupportCredentialService';
+import { buildUploadUrl } from '../../utils/http';
+import { openSafeExternalUrl } from '../../utils/safeLinks';
 import { colors, radius, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
@@ -548,7 +550,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
         <Icon name="chevron-forward" size={18} color={colors.muted} />
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.menuRow} onPress={() => Linking.openURL('mailto:support@rentalhub.com.ng')}>
+      <TouchableOpacity style={styles.menuRow} onPress={() => openSafeExternalUrl('mailto:support@rentalhub.com.ng')}>
         <View style={[styles.menuIcon, { backgroundColor: '#EDE9FE' }]}>
           <Icon name="mail-outline" size={20} color="#7C3AED" />
         </View>
@@ -570,7 +572,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
         <Icon name="chevron-forward" size={18} color={colors.muted} />
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.menuRow} onPress={() => Linking.openURL('tel:+2348001234567')}>
+      <TouchableOpacity style={styles.menuRow} onPress={() => openSafeExternalUrl('tel:+2348030601238')}>
         <View style={[styles.menuIcon, { backgroundColor: '#FEE2E2' }]}>
           <Icon name="call-outline" size={20} color={colors.danger} />
         </View>
@@ -875,7 +877,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
         {isAudio && msg.attachment_url ? (
           <TouchableOpacity
             style={styles.attachmentChip}
-            onPress={() => Linking.openURL(msg.attachment_url)}
+            onPress={() => openSafeExternalUrl(buildUploadUrl(msg.attachment_url), { allowedProtocols: ['https:', 'http:'] })}
           >
             <Icon name="mic" size={12} color={isOwn ? colors.white : colors.blue} />
             <AppText style={[styles.attachmentText, isOwn && { color: colors.white }]}>{ui("Voice message")}</AppText>
@@ -883,7 +885,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
         ) : msg.attachment_url ? (
           <TouchableOpacity
             style={styles.attachmentChip}
-            onPress={() => Linking.openURL(msg.attachment_url)}
+            onPress={() => openSafeExternalUrl(buildUploadUrl(msg.attachment_url), { allowedProtocols: ['https:', 'http:'] })}
           >
             <Icon name="document-outline" size={12} color={isOwn ? colors.white : colors.blue} />
             <AppText style={[styles.attachmentText, isOwn && { color: colors.white }]} numberOfLines={1}>
@@ -1031,7 +1033,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
                           {r.is_admin && <AppText style={styles.contactBubbleAuthor}>{r.author_name || ui("Support")}</AppText>}
                           {r.message ? <AppText style={styles.contactBubbleMsg}>{r.message}</AppText> : null}
                           {r.attachment_url ? (
-                            <TouchableOpacity onPress={() => Linking.openURL(r.attachment_url)}>
+                            <TouchableOpacity onPress={() => openSafeExternalUrl(buildUploadUrl(r.attachment_url), { allowedProtocols: ['https:', 'http:'] })}>
                               <AppText style={styles.contactBubbleLink}>{r.attachment_name || ui("Attachment")}</AppText>
                             </TouchableOpacity>
                           ) : null}

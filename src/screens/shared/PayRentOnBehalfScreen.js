@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Linking,
+  Platform,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
@@ -13,8 +14,10 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import { rentHelpService } from '../../services/rentHelpService';
+import RegistrationCardCheckout from '../../components/RegistrationCardCheckout';
 import { colors, radius, typography, typeScale } from '../../theme';
 import { getErrorMessage, pickObject } from '../../utils/http';
+import { isSafeHttpsUrl } from '../../utils/safeLinks';
 
 import AppText from '../../components/common/AppText';
 
@@ -36,6 +39,7 @@ const PayRentOnBehalfScreen = ({ route, navigation }) => {
   const [info, setInfo] = useState(null);
   const [confirmed, setConfirmed] = useState(false);
   const [bankDetails, setBankDetails] = useState(null);
+  const [checkoutUrl, setCheckoutUrl] = useState('');
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -67,7 +71,13 @@ const PayRentOnBehalfScreen = ({ route, navigation }) => {
       if (method === 'bank_transfer') {
         setBankDetails(data);
       } else if (data.authorization_url) {
-        await Linking.openURL(data.authorization_url);
+        if (Platform.OS === 'web') {
+          await Linking.openURL(data.authorization_url);
+        } else if (isSafeHttpsUrl(data.authorization_url)) {
+          setCheckoutUrl(data.authorization_url);
+        } else {
+          Toast.show({ type: 'error', text1: ui("Payment link was not valid. Please try again.") });
+        }
       } else {
         Toast.show({ type: 'error', text1: ui("Payment could not be started. Please try again.") });
       }
@@ -169,6 +179,16 @@ const PayRentOnBehalfScreen = ({ route, navigation }) => {
           </>
         )}
       </ScrollView>
+      {checkoutUrl ? (
+        <RegistrationCardCheckout
+          key={checkoutUrl}
+          url={checkoutUrl}
+          onReturn={() => {
+            setCheckoutUrl('');
+            load();
+          }}
+        />
+      ) : null}
     </SafeAreaView>
   );
 };

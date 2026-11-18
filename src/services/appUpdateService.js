@@ -125,6 +125,14 @@ export const startAppUpdate = async (versionState = {}) => {
     return { started: true, method: 'external-link' };
   }
 
+  if (Platform.OS === 'ios') {
+    Alert.alert(
+      ui("Update available on the App Store"),
+      ui("Open the App Store on your iPhone or iPad and search for Amana RentalHub NG to install version {value0}.", { value0: latestVersion })
+    );
+    return { started: false, reason: 'missing-ios-store-url' };
+  }
+
   Alert.alert(
     ui("Update link unavailable"),
     ui("The latest RentalHub app download link has not been configured yet.")

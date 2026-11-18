@@ -20,7 +20,7 @@ const getBuildNumber = () => {
       .map(value => String(value ?? '').trim()).find(Boolean) || null;
   }
   if (Platform.OS === 'ios') {
-    return String(ios.buildNumber || Constants.nativeBuildVersion || '').trim() || null;
+    return String(Constants.nativeBuildVersion || ios.buildNumber || '').trim() || null;
   }
   return String(Constants.nativeBuildVersion || '').trim() || null;
 };

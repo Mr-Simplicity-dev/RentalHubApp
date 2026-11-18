@@ -51,6 +51,13 @@ const COMMANDS = [
   { cmd: 'insertOrderedList', label: '1.' },
 ];
 
+const sanitizePreviewHtml = (rawHtml = '') =>
+  String(rawHtml || '')
+    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '')
+    .replace(/<\/?(?:iframe|object|embed|base|meta)\b[^>]*>/gi, '')
+    .replace(/\son[a-z]+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, '')
+    .replace(/(href|src)\s*=\s*(["'])\s*(?:javascript|vbscript|data:text\/html)[^"']*\2/gi, '$1=$2#$2');
+
 const EmailTemplateEditorScreen = ({ navigation }) => {
   useInterfaceLanguage();
   const webRef = useRef(null);
@@ -168,10 +175,13 @@ const EmailTemplateEditorScreen = ({ navigation }) => {
         {tab === "preview" ? (
           <View style={styles.editorWrap}>
             <WebView
-              originWhitelist={['*']}
-              source={{ html: html || '<p style="font-family:sans-serif;color:#94a3b8;">Nothing to preview yet.</p>' }}
+              originWhitelist={['about:blank']}
+              source={{ html: sanitizePreviewHtml(html) || '<p style="font-family:sans-serif;color:#94a3b8;">Nothing to preview yet.</p>' }}
               style={styles.webview}
-              javaScriptEnabled
+              javaScriptEnabled={false}
+              domStorageEnabled={false}
+              mixedContentMode="never"
+              setSupportMultipleWindows={false}
             />
           </View>
         ) : null}

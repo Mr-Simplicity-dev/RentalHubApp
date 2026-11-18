@@ -14,6 +14,7 @@ import { colors, radius, typography, typeScale } from '../../theme';
 import {AuthContext} from '../../context/AuthContext';
 import {askAccountAssistant,askPublicAssistant,submitAssistantTicket,needsAccount} from '../../services/accountAssistantService';
 import AppText from '../../components/common/AppText';
+import { openSafeExternalUrl } from '../../utils/safeLinks';
 const BOT_DELAY = 1000;
 
 const CONFIRM_WORDS = ['yes', 'yeah', 'yep', 'okay', 'ok', 'sure', 'alright', 'please', 'yea', 'go ahead'];
@@ -248,7 +249,7 @@ const WhatsAppBotScreen = ({ navigation, embedded=false, onHumanRequest }) => {
     if(onHumanRequest){setConnectedToAgent(true);setIsBotTyping(false);onHumanRequest({summary:messages.filter(m=>m.type==='user' && (!m.owner || m.owner===authKeyRef.current)).slice(-3).map(m=>m.text).join('\n')});return;}
     setConnectedToAgent(true);
     setAwaitingResponse(null);
-    try{const r=await api.get('/support-channels');const data=r.data.data;const c=channelCopy[interfaceLanguage]||channelCopy.en;if(!data?.whatsapp_ready||!/^https:\/\/wa\.me\/\d+$/.test(data.whatsapp_url||'')){setConnectedToAgent(false);addBotMessage(c.unavailable);return;}await Linking.openURL(data.whatsapp_url);}catch{setConnectedToAgent(false);addBotMessage((channelCopy[interfaceLanguage]||channelCopy.en).failed);}
+    try{const r=await api.get('/support-channels');const data=r.data.data;const c=channelCopy[interfaceLanguage]||channelCopy.en;if(!data?.whatsapp_ready||!/^https:\/\/wa\.me\/\d+$/.test(data.whatsapp_url||'')){setConnectedToAgent(false);addBotMessage(c.unavailable);return;}await openSafeExternalUrl(data.whatsapp_url, { allowedProtocols: ['https:'] });}catch{setConnectedToAgent(false);addBotMessage((channelCopy[interfaceLanguage]||channelCopy.en).failed);}
   }, [onHumanRequest,messages,interfaceLanguage,addBotMessage]);
 
   const tryAccountReply = useCallback(async msg => {

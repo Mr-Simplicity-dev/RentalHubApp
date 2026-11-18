@@ -50,6 +50,7 @@ const ProfileScreen = ({ navigation }) => {
   const [twoFa, setTwoFa] = useState({ enabled: false, checked: false });
   const [twoFaPhase, setTwoFaPhase] = useState('idle');
   const [twoFaSecret, setTwoFaSecret] = useState('');
+  const [twoFaOtpAuthUrl, setTwoFaOtpAuthUrl] = useState('');
   const [twoFaCode, setTwoFaCode] = useState('');
   const [twoFaRecovery, setTwoFaRecovery] = useState([]);
   const [twoFaBusy, setTwoFaBusy] = useState(false);
@@ -74,6 +75,7 @@ const ProfileScreen = ({ navigation }) => {
     try {
       const res = await authService.setupTotp();
       setTwoFaSecret(res?.data?.secret || '');
+      setTwoFaOtpAuthUrl(res?.data?.otpauth_url || '');
       setTwoFaCode('');
       setTwoFaPhase('confirm');
       Toast.show({ type: 'success', text1: ui("Add the secret to your authenticator app") });
@@ -122,6 +124,7 @@ const ProfileScreen = ({ navigation }) => {
       setTwoFa((prev) => ({ ...prev, enabled: false }));
       setTwoFaPhase('idle');
       setTwoFaSecret('');
+      setTwoFaOtpAuthUrl('');
       setTwoFaCode('');
       setTwoFaRecovery([]);
       Toast.show({ type: 'success', text1: ui("Two-factor disabled") });
@@ -169,8 +172,14 @@ const ProfileScreen = ({ navigation }) => {
   useEffect(() => {
     loadBiometricStatus();
     const unsubscribe = navigation.addListener('focus', loadBiometricStatus);
+    const appSub = AppState.addEventListener('change', (state) => {
+      if (state === 'active') loadBiometricStatus();
+    });
 
-    return unsubscribe;
+    return () => {
+      unsubscribe();
+      appSub.remove();
+    };
   }, [navigation]);
 
   const handleSaveProfile = async () => {
@@ -444,6 +453,21 @@ const ProfileScreen = ({ navigation }) => {
               <AppText selectable style={{ color: colors.ink, fontFamily: typography.medium, fontSize: typeScale.xs, lineHeight: 18, marginVertical: 6 }}>
                 {twoFaSecret}
               </AppText>
+              {twoFaOtpAuthUrl ? (
+                <Button
+                  title={ui("Open authenticator app")}
+                  variant="outline"
+                  style={{ marginBottom: 8 }}
+                  onPress={() => {
+                    Linking.openURL(twoFaOtpAuthUrl).catch(() => {
+                      Toast.show({
+                        type: 'info',
+                        text1: ui("Copy the setup key above into your authenticator app"),
+                      });
+                    });
+                  }}
+                />
+              ) : null}
               <Input
                 label={ui("6-digit code")}
                 value={twoFaCode}
@@ -460,6 +484,7 @@ const ProfileScreen = ({ navigation }) => {
                 onPress={() => {
                   setTwoFaPhase('idle');
                   setTwoFaSecret('');
+                  setTwoFaOtpAuthUrl('');
                   setTwoFaCode('');
                 }}
               />
@@ -481,6 +506,7 @@ const ProfileScreen = ({ navigation }) => {
                 onPress={() => {
                   setTwoFaPhase('idle');
                   setTwoFaSecret('');
+                  setTwoFaOtpAuthUrl('');
                   setTwoFaCode('');
                   setTwoFaRecovery([]);
                 }}

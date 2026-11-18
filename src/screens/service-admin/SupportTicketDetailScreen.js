@@ -12,6 +12,7 @@ import { launchImageLibrary } from 'react-native-image-picker';
 import { AuthContext } from '../../context/AuthContext';
 import { supportService } from '../../services/supportService';
 import { buildUploadUrl, getErrorMessage, pickList, pickObject } from '../../utils/http';
+import { openSafeExternalUrl } from '../../utils/safeLinks';
 import { colors, radius, typography, typeScale } from '../../theme';
 import AppText from '../../components/common/AppText';
 import {
@@ -285,10 +286,16 @@ const SupportTicketDetailScreen = ({ navigation, route }) => {
   };
 
   const openAttachment = (url) => {
-    const resolvedUrl = buildUploadUrl(url);
+    const raw = String(url || '').trim();
+    if (!raw || /^\s*(?:javascript|vbscript|data|file|intent|content):/i.test(raw)) {
+      Toast.show({ type: 'error', text1: "Unsupported attachment link" });
+      return;
+    }
+    const resolvedUrl = buildUploadUrl(raw);
     if (!resolvedUrl) return;
-    Linking.openURL(resolvedUrl).catch(() => {
-      Toast.show({ type: 'error', text1: "Could not open attachment" });
+    openSafeExternalUrl(resolvedUrl, {
+      allowedProtocols: ['https:', 'http:'],
+      onBlocked: () => Toast.show({ type: 'error', text1: "Could not open attachment" }),
     });
   };
 

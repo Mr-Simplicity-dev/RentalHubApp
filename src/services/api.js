@@ -8,6 +8,7 @@ import {
 } from './networkStatusService';
 import { storageService } from './storageService';
 import { requestMfaCode, resetMfaAttempts } from './mfaPromptService';
+import { navigationRef } from '../navigation/navigationRef';
 import Toast from 'react-native-toast-message';
 
 const DEFAULT_LOCAL_API_BASE_URL =
@@ -238,6 +239,30 @@ api.interceptors.response.use(
 
     if (error.response?.status === 429) {
       showRateLimitNotice(error.response.data?.message);
+    }
+
+    if (
+      error.response?.status === 403 &&
+      ['MFA_ENROLLMENT_REQUIRED', 'TOTP_NOT_ENABLED', 'TOTP_NOT_SETUP'].includes(
+        error.response?.data?.code
+      )
+    ) {
+      Toast.show({
+        type: 'info',
+        text1: ui("Two-factor authentication required"),
+        text2:
+          error.response?.data?.message ||
+          ui("Enable two-factor authentication in Profile to continue."),
+      });
+      if (navigationRef.isReady()) {
+        const routeNames = navigationRef.getRootState()?.routeNames || [];
+        if (routeNames.includes('Profile')) {
+          navigationRef.navigate('Profile');
+        } else if (routeNames.includes('MainTabs')) {
+          navigationRef.navigate('MainTabs', { screen: 'Profile' });
+        }
+      }
+      return Promise.reject(error);
     }
 
     if (
