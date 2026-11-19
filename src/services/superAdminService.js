@@ -17,13 +17,13 @@ export const superAdminService = {
     return response.data;
   },
 
-  deleteUser: async (id) => {
-    const response = await api.delete(`/super/users/${id}`);
+  deleteUser: async (id, reason) => {
+    const response = await api.delete(`/super/users/${id}`, { data: { reason } });
     return response.data;
   },
 
-  promoteUser: async (id) => {
-    const response = await api.patch(`/super/users/${id}/promote`);
+  promoteUser: async (id, reason) => {
+    const response = await api.patch(`/super/users/${id}/promote`, { reason });
     return response.data;
   },
 
@@ -72,6 +72,11 @@ export const superAdminService = {
   reviewIdentityFlag: async (id,flagId,note) => { const response=await api.patch(`/admin/users/${id}/identity-flags/${flagId}/review`,{note});return response.data; },
   approveVerification: async (id, reviewNote) => {
     const response = await api.patch(`/super/verifications/${id}/approve`, {review_note:reviewNote});
+    return response.data;
+  },
+
+  sendVerificationReminder: async (id, message) => {
+    const response = await api.post(`/super/users/${id}/verification-reminder`, { message });
     return response.data;
   },
 

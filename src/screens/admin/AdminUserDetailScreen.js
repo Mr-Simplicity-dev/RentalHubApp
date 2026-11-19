@@ -16,6 +16,7 @@ import {
   StatusPill,
 } from '../../components/common/PremiumLayout';
 import { adminService } from '../../services/adminService';
+import { getIdentityRequirements } from '../../utils/identityReview.cjs';
 import { getErrorMessage, pickObject } from '../../utils/http';
 import { colors, typography, typeScale } from '../../theme';
 
@@ -26,6 +27,8 @@ const AdminUserDetailScreen = ({ route, navigation }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
+  const [reviewVisible, setReviewVisible] = useState(false);
+  const [reviewing, setReviewing] = useState(false);
   const [disablePromptVisible, setDisablePromptVisible] = useState(false);
 
   useEffect(() => {
@@ -46,6 +49,15 @@ const AdminUserDetailScreen = ({ route, navigation }) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const verifyIdentity = async reason => {
+    const readiness = getIdentityRequirements(user);
+    if (!readiness.ready) { Toast.show({type:'error',text1:'Verification incomplete',text2:'Missing: '+readiness.missing.join(' and ')}); return; }
+    setReviewing(true);
+    try { await adminService.verifyUser(userId, reason); setReviewVisible(false); await loadUser(); Toast.show({type:'success',text1:'Identity verified'}); }
+    catch(error) { Toast.show({type:'error',text1:'Verification was not saved',text2:getErrorMessage(error,'Please review the requirements and try again.')}); }
+    finally { setReviewing(false); }
   };
 
   const handleDeleteUser = async (reason) => {
@@ -117,6 +129,7 @@ const AdminUserDetailScreen = ({ route, navigation }) => {
         <InfoRow icon="location-outline" label={"State"} value={user.state_name || user.state || 'N/A'} />
       </PremiumCard>
 
+      {!user.identity_verified && <PremiumCard><AppText style={styles.dangerCopy}>{getIdentityRequirements(user).ready ? 'Review the submitted identity evidence before approving this account.' : 'Missing: '+getIdentityRequirements(user).missing.join(' and ')+'. The user must complete this in Profile before approval.'}</AppText><PremiumButton title="Verify identity" icon="shield-checkmark-outline" onPress={()=>setReviewVisible(true)} /></PremiumCard>}
       <PremiumSectionTitle title={"Subscription"} />
       <PremiumCard>
         <InfoRow

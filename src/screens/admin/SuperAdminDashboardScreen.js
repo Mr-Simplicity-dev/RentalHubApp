@@ -14,6 +14,7 @@ import StatusBadge from '../../components/common/StatusBadge';
 import AdminAccountActions from '../../components/admin/AdminAccountActions';
 import OperationNoteModal from '../../components/admin/OperationNoteModal';
 import { superAdminService } from '../../services/superAdminService';
+import { getIdentityRequirements } from '../../utils/identityReview.cjs';
 import { authService } from '../../services/authService';
 import { notificationService } from '../../services/notificationService';
 import { API_BASE_URL } from '../../services/api';
@@ -1108,13 +1109,13 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
       <View style={styles.card}>
         <AppText style={styles.cardTitle}>Users ({users.length})</AppText>
         <AppText style={styles.meta}>
-          Select multiple users for bulk actions (ban, unban, promote, delete).
+          Select users to ban, verify or promote. A recorded reason is required.
         </AppText>
         {selectedUserIds.length > 0 && (
           <View style={styles.bulkActions}>
             <AppText style={styles.filterLabel}>{selectedUserIds.length} selected</AppText>
             <View style={styles.filtersRow}>
-              {['ban', 'unban', 'promote', 'delete'].map((action) => (
+              {['ban', 'verify', 'promote'].map((action) => (
                 <FilterChip
                   key={action}
                   label={action}
@@ -1160,9 +1161,10 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
             </TouchableOpacity>
             <AppText style={styles.meta}>Role: {item.user_type}</AppText>
             {item.state_name ? <AppText style={styles.meta}>State: {item.state_name}</AppText> : null}
-            {item.is_banned !== undefined && <StatusBadge status={item.is_banned ? 'banned' : 'active'} />}
+            <StatusBadge status={item.is_active === false || item.is_banned === true ? 'banned' : 'active'} />
+            {!item.identity_verified && <View style={styles.row}><Button title="Verify identity" size="sm" disabled={submitting} onPress={() => {const readiness=getIdentityRequirements(item);openOperationPrompt(readiness.ready ? {title:'Approve identity',label:'Approval note',confirmText:'Verify identity',message:'Review the submitted identity evidence and record your decision.',successMessage:'Identity verified',run:note=>superAdminService.approveVerification(item.id,note)} : {title:'Verification incomplete',label:'Request note',confirmText:'Send verification reminder',message:'Missing: '+readiness.missing.join(' and ')+'. The user must complete this in Profile before approval.',successMessage:'Verification reminder sent',run:note=>superAdminService.sendVerificationReminder(item.id,'Please complete your verification in Profile. Missing: '+readiness.missing.join(' and ')+'. '+note)});}} /></View>}
             <View style={styles.row}>
-              {item.is_banned ? (
+              {item.is_active === false || item.is_banned === true ? (
                 <TouchableOpacity onPress={() => runAction(() => superAdminService.unbanUser(item.id), 'User unbanned')}>
                   <AppText style={styles.linkText}>Unban</AppText>
                 </TouchableOpacity>
@@ -1187,10 +1189,10 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
                   <AppText style={styles.warnText}>Ban</AppText>
                 </TouchableOpacity>
               )}
-              <TouchableOpacity onPress={() => runAction(() => superAdminService.promoteUser(item.id), 'User promoted')}>
+              <TouchableOpacity onPress={() => openOperationPrompt({title:'Promote user to admin',label:'Promotion reason',confirmText:'Promote user',message:'This grants administrator access. Explain why this account should be promoted.',successMessage:'User promoted',run:note=>superAdminService.promoteUser(item.id,note)})}>
                 <AppText style={styles.linkText}>Promote</AppText>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => runAction(() => superAdminService.deleteUser(item.id), 'User deleted')}>
+              <TouchableOpacity onPress={() => openOperationPrompt({title:'Delete user account',label:'Deletion reason',confirmText:'Delete user',variant:'danger',message:'This removes account access. Explain why this account should be deleted.',successMessage:'User deleted',run:note=>superAdminService.deleteUser(item.id,note)})}>
                 <AppText style={styles.warnText}>Delete</AppText>
               </TouchableOpacity>
             </View>

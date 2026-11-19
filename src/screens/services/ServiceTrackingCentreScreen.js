@@ -59,9 +59,9 @@ export default function ServiceTrackingCentreScreen({ navigation }) {
 
   const openTrackingDetail = (item) => {
     if (item.service_type === 'fumigation') {
-      navigation.navigate('FumigationLiveTracking', { bookingId: item.booking_id });
+      navigation.navigate('WebBridge', { path: '/service-tracking/fumigation/' + encodeURIComponent(item.booking_id), title: 'Service tracking' });
     } else {
-      navigation.navigate('TransportationLiveTracking', { bookingId: item.booking_id });
+      navigation.navigate('WebBridge', { path: '/service-tracking/transportation/' + encodeURIComponent(item.booking_id), title: 'Service tracking' });
     }
   };
 

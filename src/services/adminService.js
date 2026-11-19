@@ -16,6 +16,11 @@ export const adminService = {
     return response.data;
   },
 
+  verifyUser: async (id, reason) => {
+    const response = await api.patch(`/admin/users/${id}/verify`, { reason });
+    return response.data;
+  },
+
   deleteUser: async (id, reason) => {
     const response = await api.delete(`/admin/users/${id}`, {
       data: { reason },

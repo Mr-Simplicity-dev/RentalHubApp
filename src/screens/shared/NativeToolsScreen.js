@@ -49,6 +49,7 @@ const makeProtectedFeatures = (
     { label: ui("Settings"), path: '/settings' },
     { label: ui("Dashboard"), path: '/dashboard' },
     { label: ui("Support Centre"), path: '/support' },
+    { label: ui("Service tracking"), path: "/service-tracking" },
     { label: ui("Transport Bookings"), path: '/transportation/bookings' },
     { label: ui("Fumigation Bookings"), path: '/fumigation-cleaning/bookings' },
     { label: ui("My Disputes"), path: '/my-disputes' },

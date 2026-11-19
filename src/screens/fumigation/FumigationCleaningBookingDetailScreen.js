@@ -201,6 +201,7 @@ const FumigationCleaningBookingDetailScreen = ({ route, navigation }) => {
         ) : null}
 
         <View style={styles.actions}>
+          <PremiumButton title={ui("Track service")} icon="navigate-outline" variant="secondary" onPress={() => navigation.navigate("WebBridge", {path: "/service-tracking/fumigation/" + encodeURIComponent(bookingId), title: ui("Service tracking")})} />
           {canPay ? (
             <PremiumButton
               title={ui("Pay now")}
