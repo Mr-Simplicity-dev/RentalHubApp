@@ -15,6 +15,7 @@ import {
 } from '../../components/common/PremiumLayout';
 import { propertyService } from '../../services/propertyService';
 import { surveyService } from '../../services/surveyService';
+import { surveyDraftStorage } from '../../services/surveyDraftStorage';
 import { getErrorMessage, pickList } from '../../utils/http';
 import { colors, radius, typography, typeScale } from '../../theme';
 import AppText from '../../components/common/AppText';
@@ -28,7 +29,7 @@ const PublicSurveyScreen = ({ navigation }) => {
   const [gateToken, setGateToken] = useState('');
   const [submitToken, setSubmitToken] = useState('');
   const [type, setType] = useState('tenant');
-  const [contact, setContact] = useState({ name: '', phone: '', email: '' });
+  const [contact, setContact] = useState({ name: '', phone: '', email: '', location: '', state_of_origin: '' });
   const [states, setStates] = useState([]);
   const [stateName, setStateName] = useState('');
   const [lgaName, setLgaName] = useState('');
@@ -42,6 +43,8 @@ const PublicSurveyScreen = ({ navigation }) => {
   const [respondentCode, setRespondentCode] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const startTimeRef = useRef(Date.now());
+  const clientId = useRef(newClientId());
+  const draft = useRef({token:"",pending:null,queued:null});
 
   const loadFlags = useCallback(async () => {
     try {
@@ -72,6 +75,25 @@ const PublicSurveyScreen = ({ navigation }) => {
       .catch(() => {});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (!gateToken) return;
+    let cancelled=false;
+    draft.current.token='';
+    (async()=>{try{const token=await surveyDraftStorage.get(type);if(!token||cancelled)return;const response=await surveyService.publicResume(token,{state_name:stateName,lga_name:lgaName});if(cancelled)return;const saved=response?.data;if(saved?.completed){await surveyDraftStorage.clear(type);return;}draft.current.token=token;if(saved?.contact)setContact(previous=>({...previous,...saved.contact}));if(saved?.answers)setAnswers(saved.answers);}catch{if(!cancelled)setError(ui('Could not restore survey progress. Please retry.'));}})();
+    return()=>{cancelled=true;};
+  }, [type,gateToken]);
+
+  const drainDraft = () => {
+    if(draft.current.pending)return draft.current.pending;
+    draft.current.pending=(async()=>{try{while(draft.current.queued){const payload=draft.current.queued;draft.current.queued=null;const response=await surveyService.publicDraft({...payload,resume_token:draft.current.token||undefined});const token=response?.data?.resume_token;if(token){draft.current.token=token;await surveyDraftStorage.save(payload.survey_type,token);}}}finally{draft.current.pending=null;}})();
+    return draft.current.pending;
+  };
+  useEffect(()=>{
+    if(step!=='questions'||!contact.name.trim()||!contact.phone.trim())return;
+    const timer=setTimeout(()=>{draft.current.queued={survey_type:type,answers,consent_flags:{},contact,state_name:stateName||undefined,lga_name:lgaName||undefined};drainDraft().catch(failure=>setError(getErrorMessage(failure,ui('Could not save survey progress. Please retry.'))));},1200);
+    return()=>clearTimeout(timer);
+  },[step,type,answers,contact,stateName,lgaName]);
 
   if (step === 'flags') {
     return <PremiumCenter loading title={ui("Checking survey")} />;
@@ -113,6 +135,7 @@ const PublicSurveyScreen = ({ navigation }) => {
       setError('A valid email address is required to take this survey.');
       return;
     }
+    if (!contact.location.trim() || !contact.state_of_origin.trim()) { setError(ui('Enter your location and state of origin.')); return; }
     loadDefinition();
   };
 
@@ -174,6 +197,7 @@ const PublicSurveyScreen = ({ navigation }) => {
     setSubmitting(true);
     setError('');
     try {
+      await drainDraft();
       const res = await surveyService.publicSubmit({
         survey_type: type,
         answers,
@@ -182,14 +206,18 @@ const PublicSurveyScreen = ({ navigation }) => {
           name: contact.name.trim(),
           phone: contact.phone.trim(),
           email: contact.email.trim().toLowerCase(),
+          location: contact.location.trim(),
+          state_of_origin: contact.state_of_origin.trim(),
         },
         state_name: stateName || undefined,
         lga_name: lgaName || undefined,
-        client_request_id: newClientId(),
+        client_request_id: clientId.current,
+        resume_token: draft.current.token || undefined,
         time_spent_seconds: Math.max(1, Math.round((Date.now() - startTimeRef.current) / 1000)),
         turnstile_token: token,
       });
       if (res?.success) {
+        surveyDraftStorage.clear(type).catch(()=>{});
         setRespondentCode(res?.data?.respondent_code || '');
         setSubmitToken(token);
         setStep('done');
@@ -261,6 +289,8 @@ const PublicSurveyScreen = ({ navigation }) => {
           <Input label={ui("Full name")} value={contact.name} onChangeText={(v) => setContact((p) => ({ ...p, name: v }))} />
           <Input label={ui("Phone")} value={contact.phone} onChangeText={(v) => setContact((p) => ({ ...p, phone: v }))} keyboardType="phone-pad" containerStyle={styles.fieldGap} />
           <Input label={ui("Email")} value={contact.email} onChangeText={(v) => setContact((p) => ({ ...p, email: v }))} keyboardType="email-address" autoCapitalize="none" containerStyle={styles.fieldGap} />
+          <Input label={ui("Where do you live?")} value={contact.location} onChangeText={value=>setContact(previous=>({...previous,location:value}))} containerStyle={styles.fieldGap} />
+          <Input label={ui("State of origin")} value={contact.state_of_origin} onChangeText={value=>setContact(previous=>({...previous,state_of_origin:value}))} containerStyle={styles.fieldGap} />
           <AppText style={[styles.fieldLabel, styles.fieldGap]}>{ui("Your location (optional but recommended)")}</AppText>
           <TouchableOpacity activeOpacity={0.85} style={styles.pickerRow} onPress={() => setShowStatePicker(true)}>
             <AppText style={styles.pickerRowText}>{stateName || ui("Select state")}</AppText>

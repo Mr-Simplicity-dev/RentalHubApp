@@ -363,6 +363,7 @@ const NativeToolsScreen = ({ navigation }) => {
     '/list-property': { name: 'AddProperty' },
     '/transportation/book': { name: 'TransportationBooking' },
     '/transportation/bookings': { name: 'TransportationBookings' },
+    '/service-tracking': { name: 'ServiceTrackingCentre' },
     '/fumigation-cleaning/catalog': { name: 'FumigationCleaningCatalog' },
     '/fumigation-cleaning/booking': { name: 'FumigationCleaningBooking' },
     '/fumigation-cleaning/bookings': { name: 'FumigationCleaningBookings' },

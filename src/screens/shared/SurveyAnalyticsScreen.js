@@ -28,6 +28,8 @@ const SurveyAnalyticsScreen = () => {
   useInterfaceLanguage();
   const [tab, setTab] = useState('tenant');
   const [data, setData] = useState(null);
+  const [responses, setResponses] = useState(null);
+  const [responsesPage, setResponsesPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [enablingAll, setEnablingAll] = useState(false);
@@ -49,7 +51,8 @@ const SurveyAnalyticsScreen = () => {
     setLoading(true);
     setError('');
     try {
-      const response = await surveyAnalyticsService.getAnalysis(tab);
+      const [response, records] = await Promise.all([surveyAnalyticsService.getAnalysis(tab),surveyAnalyticsService.getResponses(tab,responsesPage)]);
+      setResponses(records?.data || null);
       if (response?.success && response?.data) {
         setData(response.data);
       } else {
@@ -62,7 +65,7 @@ const SurveyAnalyticsScreen = () => {
     } finally {
       setLoading(false);
     }
-  }, [tab]);
+  }, [tab,responsesPage]);
 
   useFocusEffect(
     useCallback(() => {
@@ -103,7 +106,7 @@ const SurveyAnalyticsScreen = () => {
             <TouchableOpacity
               key={key}
               activeOpacity={0.85}
-              onPress={() => setTab(key)}
+              onPress={() => {setResponsesPage(1);setTab(key);}}
               style={[styles.tab, active && styles.tabActive]}
             >
               <AppText style={[styles.tabText, active && styles.tabTextActive]}>
@@ -130,6 +133,20 @@ const SurveyAnalyticsScreen = () => {
         </PremiumCard>
       ) : (
         <>
+          <PremiumCard><AppText style={styles.sectionTitle}>Survey responses ({responses?.total ?? 0})</AppText><AppText style={styles.empty}>Partial records are not included in completed-response analysis. Missing details are shown as not provided.</AppText></PremiumCard>
+          {(responses?.responses || []).map(record=><PremiumCard key={record.id}>
+            <InfoRow icon="document-text-outline" label="Code" value={record.respondent_code} />
+            <InfoRow icon="person-outline" label="Respondent" value={record.respondent_name || 'Not provided yet'} />
+            <InfoRow icon="call-outline" label="Phone" value={record.respondent_phone || 'Not provided yet'} />
+            <InfoRow icon="mail-outline" label="Email" value={record.respondent_email || (record.email_status==='no_email'?'No email':'Not provided yet')} />
+            <InfoRow icon="location-outline" label="Lives in" value={record.respondent_location || 'Not provided yet'} />
+            <InfoRow icon="map-outline" label="State of origin" value={record.respondent_state_of_origin || 'Not provided yet'} />
+            <InfoRow icon="person-outline" label="Agent" value={record.agent_name || record.agent_display || 'Not recorded'} />
+            <InfoRow icon="location-outline" label="Agent LGA" value={record.agent_lga || (!record.agent_user_id&&record.source==='public_link'?'Not applicable':'Not recorded')} />
+            <InfoRow icon="information-circle-outline" label="Source" value={record.source} />
+            <InfoRow icon="checkmark-circle-outline" label="Status" value={record.completed_at?'Completed':'Partial · '+(record.answer_count ?? 0)+' answered'} />
+          </PremiumCard>)}
+          <View style={styles.metricRow}><PremiumButton title="Previous" variant="secondary" disabled={responsesPage<=1} onPress={()=>setResponsesPage(page=>page-1)} /><PremiumButton title="Next" variant="secondary" disabled={responsesPage*25 >= (responses?.total ?? 0)} onPress={()=>setResponsesPage(page=>page+1)} /></View>
           <View style={styles.metricRow}>
             <View style={[styles.metric, styles.metricAccent]}>
               <AppText style={styles.metricValue}>{total}</AppText>

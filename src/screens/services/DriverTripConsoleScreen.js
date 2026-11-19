@@ -68,7 +68,6 @@ export default function DriverTripConsoleScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <TouchableOpacity accessibilityRole="button" onPress={()=>navigation.navigate("WebBridge",{path:"/transportation/driver",title:"Field operations"})}><Text style={{padding:16,color:"#071A3D",fontWeight:"700"}}>Open field tools</Text></TouchableOpacity>
         {/* Header */}
         <View style={styles.headerCard}>
           <Text style={styles.headerTitle}>Driver Transit Console</Text>

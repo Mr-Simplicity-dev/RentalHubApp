@@ -60767,5 +60767,65 @@
     "ha": "Ba a ajiye hoton ba. Sake gwadawa.",
     "yo": "A kò fi fọ́tò pamọ́. Tún gbìyànjú.",
     "ig": "Echekwaghị foto. Nwaa ọzọ."
+  },
+  "track service": {
+    "en": "Track service",
+    "fr": "Suivre le service",
+    "ar": "تتبع الخدمة",
+    "ru": "Отследить услугу",
+    "zh": "跟踪服务",
+    "ha": "Bibiyi aikin",
+    "yo": "Tọpinpin iṣẹ́",
+    "ig": "Sochie ọrụ"
+  },
+  "service tracking": {
+    "en": "Service tracking",
+    "fr": "Suivi du service",
+    "ar": "تتبع الخدمة",
+    "ru": "Отслеживание услуги",
+    "zh": "服务跟踪",
+    "ha": "Bibiyar aiki",
+    "yo": "Ìtọpinpin iṣẹ́",
+    "ig": "Nsochi ọrụ"
+  },
+  "could not load service tracking": {
+    "en": "Could not load service tracking",
+    "fr": "Impossible de charger le suivi du service",
+    "ar": "تعذر تحميل تتبع الخدمة",
+    "ru": "Не удалось загрузить отслеживание услуги",
+    "zh": "无法加载服务跟踪",
+    "ha": "Ba a iya loda bibiyar aikin ba",
+    "yo": "A kò lè ṣí ìtọpinpin iṣẹ́",
+    "ig": "Enweghị ike ibudata nsochi ọrụ"
+  },
+  "assigned team": {
+    "en": "Assigned team",
+    "fr": "Équipe affectée",
+    "ar": "الفريق المكلّف",
+    "ru": "Назначенная команда",
+    "zh": "已分配团队",
+    "ha": "Ƙungiyar da aka sanya",
+    "yo": "Ẹgbẹ́ tí a yàn",
+    "ig": "Otu e kenyere"
+  },
+  "safe re-entry has not been confirmed.": {
+    "en": "Safe re-entry has not been confirmed.",
+    "fr": "Le retour en toute sécurité n’a pas été confirmé.",
+    "ar": "لم يتم تأكيد أمان العودة بعد.",
+    "ru": "Безопасность возвращения ещё не подтверждена.",
+    "zh": "尚未确认可以安全返回。",
+    "ha": "Ba a tabbatar da cewa komawa ciki yana da aminci ba.",
+    "yo": "A kò tíì jẹ́rìí pé ó dára láti padà wọlé.",
+    "ig": "Akwadobeghị na ọ dị mma ịbanye ọzọ."
+  },
+  "follow the instructions provided by the service team.": {
+    "en": "Follow the instructions provided by the service team.",
+    "fr": "Suivez les consignes de l’équipe de service.",
+    "ar": "اتبع تعليمات فريق الخدمة.",
+    "ru": "Следуйте указаниям команды обслуживания.",
+    "zh": "请遵循服务团队提供的指示。",
+    "ha": "Bi umarnin da ƙungiyar aikin ta bayar.",
+    "yo": "Tẹ̀lé ìtọ́nisọ́nà tí ẹgbẹ́ iṣẹ́ fún ọ.",
+    "ig": "Soro ntuziaka ndị otu ọrụ nyere."
   }
 }

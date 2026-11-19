@@ -71,4 +71,7 @@ export const surveyService = {
     const response = await api.post('/survey/public/submit', payload);
     return response.data;
   },
+
+  publicDraft: async (payload) => completed((await api.post('/survey/public/draft', payload)).data),
+  publicResume: async (token, params = {}) => (await api.get('/survey/resume', {params:{...params,token}})).data,
 };

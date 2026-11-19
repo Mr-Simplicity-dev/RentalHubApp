@@ -65,6 +65,9 @@ import LegalSupportScreen from '../screens/legal/LegalSupportScreen';
 
 import VerifyCaseScreen from '../screens/shared/VerifyCaseScreen';
 import NativeToolsScreen from '../screens/shared/NativeToolsScreen';
+import ServiceTrackingCentreScreen from '../screens/services/ServiceTrackingCentreScreen';
+import FumigationLiveTrackingScreen from '../screens/services/FumigationLiveTrackingScreen';
+import TransportationLiveTrackingScreen from '../screens/services/TransportationLiveTrackingScreen';
 
 import AdminDashboardScreen from '../screens/admin/AdminDashboardScreen';
 import AdminUsersScreen from '../screens/admin/AdminUsersScreen';
@@ -405,6 +408,9 @@ const commonTenancyScreens = () => (
 
 const commonInfoScreens = () => (
   <>
+    <Stack.Screen name="ServiceTrackingCentre" component={ServiceTrackingCentreScreen} options={{title:ui("Service tracking")}} />
+    <Stack.Screen name="FumigationLiveTracking" component={FumigationLiveTrackingScreen} options={{title:ui("Service tracking")}} />
+    <Stack.Screen name="TransportationLiveTracking" component={TransportationLiveTrackingScreen} options={{title:ui("Service tracking")}} />
     <Stack.Screen name="PropertyProtection" component={PropertyProtectionScreen} options={{title:ui("Property Protection")}}/>
     <Stack.Screen name="AdminConduct" component={AdminConductScreen} options={{title:"Code of Conduct"}}/>
     <Stack.Screen name="WhatsAppSupport" component={WhatsAppSupportScreen} options={{title:"WhatsApp human support"}}/>

@@ -236,7 +236,7 @@ const TransportationBookingDetailScreen = ({ route, navigation }) => {
         ) : null}
 
         <View style={styles.actions}>
-          <PremiumButton title={ui("Track service")} icon="navigate-outline" variant="secondary" onPress={() => navigation.navigate("WebBridge", {path: "/service-tracking/transportation/" + encodeURIComponent(bookingId), title: ui("Service tracking")})} />
+          <PremiumButton title={ui("Track service")} icon="navigate-outline" variant="secondary" onPress={() => navigation.navigate("TransportationLiveTracking", { bookingId })} />
           {canPay ? (
             <PremiumButton
               title={ui("Pay now")}

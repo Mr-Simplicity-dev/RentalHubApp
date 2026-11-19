@@ -80,7 +80,6 @@ export default function FumigationTeamConsoleScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <TouchableOpacity accessibilityRole="button" onPress={()=>navigation.navigate("WebBridge",{path:"/fumigation/team",title:"Field operations"})}><Text style={{padding:16,color:"#071A3D",fontWeight:"700"}}>Open field tools</Text></TouchableOpacity>
         {/* Console Header */}
         <View style={styles.consoleHeader}>
           <Text style={styles.consoleTitle}>Fumigation Specialist Squad</Text>
