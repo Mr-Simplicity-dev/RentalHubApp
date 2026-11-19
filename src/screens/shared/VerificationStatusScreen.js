@@ -78,9 +78,8 @@ const VerificationStatusScreen = ({ navigation }) => {
   const requiredCount=emailRequired?3:2;
   const emailVerified = Boolean(status?.email || status?.email_verified);
   const phoneVerified = Boolean(status?.phone || status?.phone_verified);
-  const identityVerified = Boolean(status?.identity || status?.identity_verified);
-  const reviewStatus =
-    getReviewStatus({}, status);
+  const reviewStatus = getReviewStatus({}, status);
+  const identityVerified = Boolean(status?.identity || status?.identity_verified) && reviewStatus === 'verified';
   const identityPending = reviewStatus === 'pending' || reviewStatus === 'provider_pending';
   const identityRejected = reviewStatus === 'rejected' || reviewStatus === 'revalidation_required';
   const identityInProgress = reviewStatus === 'provider_pending';
@@ -273,7 +272,7 @@ const VerificationStatusScreen = ({ navigation }) => {
                             step.pending && styles.stepStatusPending,
                             step.rejected && styles.stepStatusRejected,
                           ]}>
-                          {loadError ? ui("Status unavailable") : step.complete ? ui("Verified") : step.key === 'identity' && identityInProgress ? ui("Processing") : step.pending ? ui("In review") : step.rejected ? ui('Action needed') : ui('Incomplete')}
+                          {loadError || (step.key === 'identity' && reviewStatus === 'unknown') ? ui("Status unavailable") : step.complete ? ui("Verified") : step.key === 'identity' && identityInProgress ? ui("Processing") : step.pending ? ui("In review") : step.rejected ? ui('Action needed') : ui('Incomplete')}
                         </AppText>
                       </View>
                       <AppText style={styles.stepText}>{step.description}</AppText>
