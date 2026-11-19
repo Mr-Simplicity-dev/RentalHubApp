@@ -4,7 +4,7 @@ import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import AssistedPasswordForm from '../../components/common/AssistedPasswordForm';
 import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
-import {AppState, Platform, View, StyleSheet, ScrollView, Image, TouchableOpacity, Switch} from 'react-native';
+import {AppState, Linking, Platform, View, StyleSheet, ScrollView, Image, TouchableOpacity, Switch} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';

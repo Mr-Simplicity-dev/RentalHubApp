@@ -56,7 +56,7 @@ traverse(screen.ast, { JSXOpeningElement(p) {
   }
   selectors++;
 } });
-assert.equal(selectors, 2);
+assert.equal(selectors, 3);
 const input = inspect('src/components/common/Input.js');
 assert.equal(input.styles.inputContainer.minHeight, 54);
 assert.equal(input.styles.compactInputContainer.minHeight, 48);

@@ -4,7 +4,7 @@ import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { colors, radius, typography, typeScale } from '../../theme';
 import { reportMobileCrash } from '../../services/mobileDiagnosticsService';
-import storageService from '../../services/storageService';
+import { storageService } from '../../services/storageService';
 
 import AppText from '../../components/common/AppText';
 

@@ -566,7 +566,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
           <Icon name="headset-outline" size={20} color="#2563EB" />
         </View>
         <View style={styles.menuRowText}>
-          <AppText style={styles.menuRowTitle}>{callingSupport ? ui('Connectingâ€¦') : ui('Call support')}</AppText>
+          <AppText style={styles.menuRowTitle}>{callingSupport ? ui('Connecting…') : ui('Call support')}</AppText>
           <AppText style={styles.menuRowSub}>{ui("Talk to a support agent in-app")}</AppText>
         </View>
         <Icon name="chevron-forward" size={18} color={colors.muted} />
@@ -852,7 +852,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
                     <AppText style={[styles.statusText, { color: sc.text }]}>{ticket.status?.replace(/_/g, ' ')}</AppText>
                   </View>
                 </View>
-                <AppText style={styles.ticketMeta}>#{ticket.id} Â· {formatDate(ticket.created_at)}</AppText>
+                <AppText style={styles.ticketMeta}>#{ticket.id} · {formatDate(ticket.created_at)}</AppText>
                 {ticket.unread_admin_replies > 0 && (
                   <View style={styles.unreadBadge}>
                     <AppText style={styles.unreadText}>{ticket.unread_admin_replies}{ui(" new")}</AppText>
@@ -894,7 +894,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
           </TouchableOpacity>
         ) : null}
         <AppText style={[styles.bubbleTime, isOwn && styles.bubbleTimeOwn]}>
-          {formatTime(msg.created_at)}{msg._temp ? ui(' Â· Sending...') : ''}
+          {formatTime(msg.created_at)}{msg._temp ? ui(' · Sending...') : ''}
         </AppText>
         {msg._failed && (
           <AppText style={styles.failedText}>{ui("Failed to send")}</AppText>
@@ -1038,7 +1038,7 @@ const ContactWidgetScreen = ({ navigation, route }) => {
                             </TouchableOpacity>
                           ) : null}
                           <AppText style={styles.contactBubbleTime}>
-                            {formatDateTime(r.created_at)}{r._temp ? ui(' Â· Sending...') : ''}
+                            {formatDateTime(r.created_at)}{r._temp ? ui(' · Sending...') : ''}
                           </AppText>
                           {r._failed && <AppText style={styles.failedText}>{ui("Failed")}</AppText>}
                         </View>

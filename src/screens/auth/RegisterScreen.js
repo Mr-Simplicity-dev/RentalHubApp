@@ -1343,7 +1343,7 @@ Your legal representative's email
               autoCapitalize="characters"
               icon="document-outline"
             />
-            {registrationFlags.passport_country_choices?.length ? <SelectField label={passportText.passport_country_label} value={form.nationality} onPress={() => setShowPassportCountries(true)} /> : <Input
+            {registrationFlags.passport_country_choices?.length ? <SelectField compact label={passportText.passport_country_label} value={form.nationality} onPress={() => setShowPassportCountries(true)} /> : <Input
               label={passportText.passport_country_label}
               compact
               containerStyle={styles.lastAboutField}
