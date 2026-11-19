@@ -93,9 +93,27 @@ function collectRoutes(file, prefix = '') {
 }
 collectRoutes(path.join(root, 'server.js'));
 const calls = [], dynamicCalls = [], nativeScreens = new Set(), nativeNavigation = [], webRoutes = [], webLinks = [];
+function collectWebRoutes(node, info, parent = '') {
+  if (!node || typeof node !== 'object') return;
+  let prefix = parent;
+  if (node.type === 'JSXElement' && node.openingElement.name.name === 'Route') {
+    const attr = node.openingElement.attributes.find(item => item.name?.name === 'path');
+    const route = value(attr?.value?.type === 'JSXExpressionContainer' ? attr.value.expression : attr?.value, info);
+    if (route !== null && route !== '*') {
+      prefix = normalized(route.startsWith('/') ? route : parent + '/' + route);
+      webRoutes.push(prefix);
+    }
+  }
+  for (const [key, child] of Object.entries(node)) {
+    if (['loc', 'start', 'end', 'comments'].includes(key)) continue;
+    if (Array.isArray(child)) child.forEach(item => collectWebRoutes(item, info, prefix));
+    else if (child && typeof child === 'object') collectWebRoutes(child, info, prefix);
+  }
+}
 const files = [...walk(path.join(mobileRoot, 'src')), ...walk(path.join(root, 'client', 'src'))];
 for (const file of files) {
   const info = read(file), platform = file.startsWith(mobileRoot + path.sep) ? 'mobile' : 'web';
+  if (platform === 'web') collectWebRoutes(info.ast, info);
   for (const specifier of info.imports) {
     if (specifier.startsWith('.') && !resolve(file, specifier) && !/\.(?:json|css|svg|png|jpe?g|webp|ttf|woff2?|mp3|mp4|d\.ts)$/.test(specifier)) missingImports.push({ file: path.relative(root, file), specifier });
   }
@@ -122,7 +140,6 @@ for (const file of files) {
         const text = value(attrValue, info);
         if (text === null) continue;
         if (platform === 'mobile' && name === 'Screen' && attr.name?.name === 'name') nativeScreens.add(text);
-        if (platform === 'web' && name === 'Route' && attr.name?.name === 'path' && text !== '*') webRoutes.push(normalized(text));
         if (platform === 'web' && ['Link', 'NavLink', 'Navigate'].includes(name) && attr.name?.name === 'to' && text.startsWith('/')) webLinks.push({ ...at, target: normalized(text) });
       }
     }

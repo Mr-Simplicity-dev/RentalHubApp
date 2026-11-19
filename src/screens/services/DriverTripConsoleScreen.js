@@ -38,28 +38,7 @@ export default function DriverTripConsoleScreen({ navigation }) {
     loadTrips();
   }, []);
 
-  // Transmit GPS telemetry when switch active
-  useEffect(() => {
-    if (gpsActive && selectedTrip) {
-      pingIntervalRef.current = setInterval(() => {
-        transportationTrackingService.sendLocationPing({
-          bookingId: selectedTrip.id,
-          latitude: 9.0765 + (Math.random() - 0.5) * 0.003,
-          longitude: 7.4215 + (Math.random() - 0.5) * 0.003,
-          accuracy: 6.0,
-          speed: 42,
-          heading: 180,
-          batteryLevel: 85
-        }).catch(() => {});
-      }, 10000);
-    } else {
-      if (pingIntervalRef.current) clearInterval(pingIntervalRef.current);
-    }
-    return () => {
-      if (pingIntervalRef.current) clearInterval(pingIntervalRef.current);
-    };
-  }, [gpsActive, selectedTrip]);
-
+  // This legacy screen has no real location adapter; never send simulated coordinates.
   const handleAdvanceStatus = async (newStatus) => {
     if (!selectedTrip) return;
     setUpdatingStatus(true);
@@ -89,6 +68,7 @@ export default function DriverTripConsoleScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
+        <TouchableOpacity accessibilityRole="button" onPress={()=>navigation.navigate("WebBridge",{path:"/transportation/driver",title:"Field operations"})}><Text style={{padding:16,color:"#071A3D",fontWeight:"700"}}>Open field tools</Text></TouchableOpacity>
         {/* Header */}
         <View style={styles.headerCard}>
           <Text style={styles.headerTitle}>Driver Transit Console</Text>
@@ -98,10 +78,11 @@ export default function DriverTripConsoleScreen({ navigation }) {
           <View style={styles.gpsRow}>
             <View>
               <Text style={styles.gpsLabel}>Share Vehicle GPS with Customer</Text>
-              <Text style={styles.gpsSub}>{gpsActive ? 'Transmitting road speed & telemetry' : 'Broadcasting paused'}</Text>
+              <Text style={styles.gpsSub}>{gpsActive ? 'Transmitting road speed & telemetry' : 'Use the web field console for real GPS sharing'}</Text>
             </View>
             <Switch
               value={gpsActive}
+              disabled
               onValueChange={setGpsActive}
               trackColor={{ false: '#cbd5e1', true: '#bae6fd' }}
               thumbColor={gpsActive ? '#0284c7' : '#f1f5f9'}

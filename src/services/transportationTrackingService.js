@@ -25,7 +25,7 @@ const transportationTrackingService = {
    * Driver: Fetch assigned driver trips
    */
   async getDriverTrips() {
-    const res = await api.get('/transportation/driver/trips');
+    const res = await api.get('/transportation/driver/assigned');
     return res.data?.data || [];
   },
 
@@ -33,7 +33,7 @@ const transportationTrackingService = {
    * Driver: Update transit stage
    */
   async updateTripStatus(bookingId, payload) {
-    const res = await api.patch(`/transportation/driver/trips/${bookingId}/status`, payload);
+    const res = await api.post('/transportation/driver/status', { ...payload, booking_id: bookingId, status: payload.status ?? payload.newStatus });
     return res.data?.data || res.data;
   },
 
@@ -41,15 +41,15 @@ const transportationTrackingService = {
    * Driver: Send GPS location telemetry ping
    */
   async sendLocationPing({ bookingId, latitude, longitude, accuracy, heading, speed, altitude, batteryLevel }) {
-    const res = await api.post('/transportation/driver/location-ping', {
-      bookingId,
+    const res = await api.post('/transportation/driver/location', {
+      booking_id: bookingId,
       latitude,
       longitude,
       accuracy,
       heading,
       speed,
       altitude,
-      batteryLevel
+      battery_level: batteryLevel
     });
     return res.data?.data || res.data;
   },
@@ -58,7 +58,7 @@ const transportationTrackingService = {
    * Driver: Report road blockages, mechanical delay or accident
    */
   async reportIncident(payload) {
-    const res = await api.post('/transportation/driver/incident', payload);
+    const res = await api.post('/transportation/driver/incident', { ...payload, booking_id: payload.booking_id ?? payload.bookingId });
     return res.data?.data || res.data;
   }
 };

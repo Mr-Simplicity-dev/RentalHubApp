@@ -19,8 +19,8 @@ export default function FumigationTeamConsoleScreen({ navigation }) {
   const [loading, setLoading] = useState(true);
   const [gpsActive, setGpsActive] = useState(false);
   const [updatingStatus, setUpdatingStatus] = useState(false);
-  const [chemicalName, setChemicalName] = useState('Deltamethrin 2.5% EC');
-  const [nafdacNo, setNafdacNo] = useState('A4-2281');
+  const [chemicalName, setChemicalName] = useState('');
+  const [nafdacNo, setNafdacNo] = useState('');
   const [ventilationHours, setVentilationHours] = useState('4');
   const watchIdRef = useRef(null);
 
@@ -42,33 +42,10 @@ export default function FumigationTeamConsoleScreen({ navigation }) {
     loadJobs();
   }, []);
 
-  // GPS broadcasting simulation / geolocation watch
-  useEffect(() => {
-    if (gpsActive && selectedJob) {
-      // In mobile environment, this binds to navigator.geolocation or expo-location
-      const interval = setInterval(() => {
-        // Broadcast telemetry ping
-        fumigationTrackingService.sendLocationPing({
-          bookingId: selectedJob.id,
-          latitude: 9.0722 + (Math.random() - 0.5) * 0.002,
-          longitude: 7.4913 + (Math.random() - 0.5) * 0.002,
-          accuracy: 5.0,
-          speed: 35,
-          heading: 90,
-          batteryLevel: 92
-        }).catch(() => {});
-      }, 10000);
-      watchIdRef.current = interval;
-    } else {
-      if (watchIdRef.current) clearInterval(watchIdRef.current);
-    }
-    return () => {
-      if (watchIdRef.current) clearInterval(watchIdRef.current);
-    };
-  }, [gpsActive, selectedJob]);
-
+  // This legacy screen has no real location adapter; never send simulated coordinates.
   const handleStageAdvance = async (nextStatus) => {
     if (!selectedJob) return;
+    if (nextStatus === 'service_completed') { Alert.alert('Completion evidence required','Open the field tools to submit actual photos and chemical records.'); return; }
     setUpdatingStatus(true);
     try {
       const payload = {
@@ -79,7 +56,7 @@ export default function FumigationTeamConsoleScreen({ navigation }) {
         payload.chemicalName = chemicalName;
         payload.nafdacRegNumber = nafdacNo;
         payload.ventilationHours = Number(ventilationHours) || 4;
-        payload.afterPhotos = ['https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=600&q=80'];
+        payload.afterPhotos = [];
       }
       await fumigationTrackingService.updateJobStatus(selectedJob.id, payload);
       Alert.alert('Status Updated', `Operation progressed to ${nextStatus.replace(/_/g, ' ')}`);
@@ -103,6 +80,7 @@ export default function FumigationTeamConsoleScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
+        <TouchableOpacity accessibilityRole="button" onPress={()=>navigation.navigate("WebBridge",{path:"/fumigation/team",title:"Field operations"})}><Text style={{padding:16,color:"#071A3D",fontWeight:"700"}}>Open field tools</Text></TouchableOpacity>
         {/* Console Header */}
         <View style={styles.consoleHeader}>
           <Text style={styles.consoleTitle}>Fumigation Specialist Squad</Text>
@@ -112,10 +90,11 @@ export default function FumigationTeamConsoleScreen({ navigation }) {
           <View style={styles.gpsRow}>
             <View>
               <Text style={styles.gpsLabel}>Broadcast Live GPS Telemetry</Text>
-              <Text style={styles.gpsSub}>{gpsActive ? 'Transmitting active coordinates' : 'Telemetry standby'}</Text>
+              <Text style={styles.gpsSub}>{gpsActive ? 'Transmitting active coordinates' : 'Use the web field console for real GPS sharing'}</Text>
             </View>
             <Switch
               value={gpsActive}
+              disabled
               onValueChange={setGpsActive}
               trackColor={{ false: '#cbd5e1', true: '#a7f3d0' }}
               thumbColor={gpsActive ? '#059669' : '#f1f5f9'}

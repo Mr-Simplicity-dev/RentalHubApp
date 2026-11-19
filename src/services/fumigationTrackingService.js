@@ -31,7 +31,7 @@ const fumigationTrackingService = {
    * Team: Fetch jobs assigned to specialist squad
    */
   async getAssignedJobs() {
-    const res = await api.get('/fumigation/team/jobs');
+    const res = await api.get('/fumigation/team/assigned');
     return res.data?.data || [];
   },
 
@@ -47,7 +47,7 @@ const fumigationTrackingService = {
    * Team: Progress status stage
    */
   async updateJobStatus(bookingId, payload) {
-    const res = await api.patch(`/fumigation/team/jobs/${bookingId}/status`, payload);
+    const res = await api.post(`/fumigation/team/jobs/${bookingId}/status`, { ...payload, status: payload.status ?? payload.newStatus, chemical_used: payload.chemical_used ?? payload.chemicalName, ventilation_hours: payload.ventilation_hours ?? payload.ventilationHours, after_photos: payload.after_photos ?? payload.afterPhotos });
     return res.data?.data || res.data;
   },
 
@@ -55,15 +55,14 @@ const fumigationTrackingService = {
    * Team: Broadcast high-accuracy GPS coordinates ping
    */
   async sendLocationPing({ bookingId, latitude, longitude, accuracy, heading, speed, altitude, batteryLevel }) {
-    const res = await api.post('/fumigation/team/location-ping', {
-      bookingId,
+    const res = await api.post(`/fumigation/team/jobs/${bookingId}/ping`, {
       latitude,
       longitude,
       accuracy,
       heading,
       speed,
       altitude,
-      batteryLevel
+      battery_level: batteryLevel
     });
     return res.data?.data || res.data;
   },
@@ -72,7 +71,7 @@ const fumigationTrackingService = {
    * Team: Submit formal service report & NAFDAC chemical verification
    */
   async submitServiceReport(payload) {
-    const res = await api.post('/fumigation/team/service-report', payload);
+    const res = await api.post(`/fumigation/team/jobs/${payload.bookingId ?? payload.booking_id}/report`, payload);
     return res.data?.data || res.data;
   },
 
@@ -80,7 +79,7 @@ const fumigationTrackingService = {
    * Team: Report operational incident, weather delay or chemical alert
    */
   async reportIncident(payload) {
-    const res = await api.post('/fumigation/team/incident', payload);
+    const res = await api.post(`/fumigation/team/jobs/${payload.bookingId ?? payload.booking_id}/incidents`, payload);
     return res.data?.data || res.data;
   }
 };
