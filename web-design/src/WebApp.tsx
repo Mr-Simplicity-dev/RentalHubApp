@@ -107,33 +107,35 @@ export default function WebApp() {
 
   // Registration modal with silent 24-hour draft persistence (passwords & identity numbers never saved)
   const [showRegisterModal, setShowRegisterModal] = useState(false);
-  const [regForm, setRegForm] = useState(() => {
-    const defaults = {
-      user_type: 'tenant' as 'tenant' | 'landlord',
-      full_name: '',
-      email: '',
-      phone: '',
-      lawyer_email: '',
-      state_name: 'Lagos',
-      lga_name: 'Lekki Phase 1',
-      referral_code: '',
-      nin: '',
-      password: '',
-      confirm_password: '',
-    };
+  const initialRegFormDefaults = {
+    user_type: 'tenant' as 'tenant' | 'landlord',
+    full_name: '',
+    email: '',
+    phone: '',
+    lawyer_email: '',
+    state_name: 'Lagos',
+    lga_name: 'Lekki Phase 1',
+    referral_code: '',
+    nin: '',
+    password: '',
+    confirm_password: '',
+  };
+  const [regForm, setRegForm] = useState<typeof initialRegFormDefaults>(() => {
     try {
       const raw = window.localStorage.getItem(REGISTRATION_DRAFT_STORAGE_KEY);
-      if (!raw) return defaults;
+      if (!raw) return initialRegFormDefaults;
       const parsed = JSON.parse(raw);
       const savedAt = Number(parsed?.savedAt || 0);
       if (!savedAt || Date.now() - savedAt >= REGISTRATION_DRAFT_TTL_MS) {
         window.localStorage.removeItem(REGISTRATION_DRAFT_STORAGE_KEY);
-        return defaults;
+        return initialRegFormDefaults;
       }
       const d = parsed?.form || {};
+      const hydratedUserType: 'tenant' | 'landlord' =
+        d.user_type === 'landlord' ? 'landlord' : 'tenant';
       return {
-        ...defaults,
-        user_type: d.user_type === 'landlord' ? 'landlord' : 'tenant',
+        ...initialRegFormDefaults,
+        user_type: hydratedUserType,
         full_name: String(d.full_name || ''),
         email: String(d.email || ''),
         phone: String(d.phone || ''),
@@ -146,12 +148,32 @@ export default function WebApp() {
         confirm_password: '',
       };
     } catch {
-      return defaults;
+      return initialRegFormDefaults;
     }
   });
 
+  const regDraftInitializedRef = React.useRef(false);
+
   React.useEffect(() => {
+    if (!regDraftInitializedRef.current) {
+      regDraftInitializedRef.current = true;
+      return;
+    }
     try {
+      const hasAnyValue = Boolean(
+        regForm.full_name.trim() ||
+          regForm.email.trim() ||
+          regForm.phone.trim() ||
+          regForm.lawyer_email.trim() ||
+          regForm.referral_code.trim() ||
+          regForm.user_type !== 'tenant' ||
+          regForm.state_name !== 'Lagos' ||
+          regForm.lga_name !== 'Lekki Phase 1'
+      );
+      if (!hasAnyValue) {
+        window.localStorage.removeItem(REGISTRATION_DRAFT_STORAGE_KEY);
+        return;
+      }
       const payload = {
         savedAt: Date.now(),
         form: {
@@ -1855,6 +1877,7 @@ export default function WebApp() {
                 window.localStorage.removeItem(REGISTRATION_DRAFT_STORAGE_KEY);
               } catch {}
               setRole(regForm.user_type);
+              setRegForm(initialRegFormDefaults);
               setShowRegisterModal(false);
               triggerToast('Registration complete', 'Your account has been created.');
             }}

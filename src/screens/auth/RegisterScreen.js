@@ -156,8 +156,53 @@ const RegisterScreen = ({ navigation, route }) => {
   const turnstileTokenRef = useRef(null);
   const turnstileRef = useRef(null);
   const draftHydratedRef = useRef(false);
+  const lastDraftSnapshotRef = useRef('');
+
+  const buildDraftPayload = (nextUserType, nextIsForeigner, nextAcceptedTerms, nextForm) => ({
+    userType: nextUserType,
+    isForeigner: nextIsForeigner,
+    acceptedTerms: nextAcceptedTerms,
+    form: {
+      full_name: nextForm.full_name,
+      email: nextForm.email,
+      phone: nextForm.phone,
+      lawyer_email: nextForm.lawyer_email,
+      use_rentalhub_lawyers: nextForm.use_rentalhub_lawyers,
+      use_rentalhub_agents: nextForm.use_rentalhub_agents,
+      referral_code: nextForm.referral_code,
+      add_agent: nextForm.add_agent,
+      agent_full_name: nextForm.agent_full_name,
+      agent_email: nextForm.agent_email,
+      agent_phone: nextForm.agent_phone,
+      nationality: nextForm.nationality,
+      state_id: nextForm.state_id,
+      lga_name: nextForm.lga_name,
+    },
+  });
+
+  const hasDraftInputValues = (payload) =>
+    Boolean(
+      payload.userType !== 'tenant' ||
+        payload.isForeigner ||
+        payload.acceptedTerms ||
+        payload.form.full_name ||
+        payload.form.email ||
+        payload.form.phone ||
+        payload.form.lawyer_email ||
+        payload.form.use_rentalhub_lawyers ||
+        payload.form.use_rentalhub_agents ||
+        payload.form.referral_code ||
+        payload.form.add_agent ||
+        payload.form.agent_full_name ||
+        payload.form.agent_email ||
+        payload.form.agent_phone ||
+        payload.form.nationality ||
+        payload.form.state_id ||
+        payload.form.lga_name
+    );
 
   const clearSavedRegistrationDraft = async () => {
+    lastDraftSnapshotRef.current = '';
     try {
       await storageService.setItem(REGISTRATION_DRAFT_STORAGE_KEY, '');
     } catch {}
@@ -182,6 +227,14 @@ const RegisterScreen = ({ navigation, route }) => {
           return;
         }
 
+        const nextUserType =
+          parsed.userType === 'tenant' || parsed.userType === 'landlord'
+            ? parsed.userType
+            : 'tenant';
+        const nextIsForeigner = typeof parsed.isForeigner === 'boolean' ? parsed.isForeigner : false;
+        const nextAcceptedTerms =
+          typeof parsed.acceptedTerms === 'boolean' ? parsed.acceptedTerms : false;
+
         if (parsed.userType === 'tenant' || parsed.userType === 'landlord') {
           setUserType(parsed.userType);
         }
@@ -193,22 +246,30 @@ const RegisterScreen = ({ navigation, route }) => {
         }
 
         const draftForm = parsed?.form && typeof parsed.form === 'object' ? parsed.form : {};
-        setForm((prev) => ({
-          ...prev,
-          full_name: String(draftForm.full_name ?? prev.full_name),
-          email: String(draftForm.email ?? prev.email),
-          phone: String(draftForm.phone ?? prev.phone),
-          lawyer_email: String(draftForm.lawyer_email ?? prev.lawyer_email),
+        const hydratedFormFields = {
+          full_name: String(draftForm.full_name ?? ''),
+          email: String(draftForm.email ?? ''),
+          phone: String(draftForm.phone ?? ''),
+          lawyer_email: String(draftForm.lawyer_email ?? ''),
           use_rentalhub_lawyers: Boolean(draftForm.use_rentalhub_lawyers),
           use_rentalhub_agents: Boolean(draftForm.use_rentalhub_agents),
-          referral_code: String(initialReferralCode || draftForm.referral_code || prev.referral_code),
+          referral_code: String(initialReferralCode || draftForm.referral_code || ''),
           add_agent: Boolean(draftForm.add_agent),
-          agent_full_name: String(draftForm.agent_full_name ?? prev.agent_full_name),
-          agent_email: String(draftForm.agent_email ?? prev.agent_email),
-          agent_phone: String(draftForm.agent_phone ?? prev.agent_phone),
-          nationality: String(draftForm.nationality ?? prev.nationality),
-          state_id: String(draftForm.state_id ?? prev.state_id),
-          lga_name: String(draftForm.lga_name ?? prev.lga_name),
+          agent_full_name: String(draftForm.agent_full_name ?? ''),
+          agent_email: String(draftForm.agent_email ?? ''),
+          agent_phone: String(draftForm.agent_phone ?? ''),
+          nationality: String(draftForm.nationality ?? ''),
+          state_id: String(draftForm.state_id ?? ''),
+          lga_name: String(draftForm.lga_name ?? ''),
+        };
+
+        lastDraftSnapshotRef.current = JSON.stringify(
+          buildDraftPayload(nextUserType, nextIsForeigner, nextAcceptedTerms, hydratedFormFields)
+        );
+
+        setForm((prev) => ({
+          ...prev,
+          ...hydratedFormFields,
           nin: '',
           international_passport_number: '',
           password: '',
@@ -235,27 +296,21 @@ const RegisterScreen = ({ navigation, route }) => {
       return;
     }
 
+    const payload = buildDraftPayload(userType, isForeigner, acceptedTerms, form);
+    const snapshot = JSON.stringify(payload);
+    if (snapshot === lastDraftSnapshotRef.current) {
+      return;
+    }
+
+    if (!hasDraftInputValues(payload)) {
+      clearSavedRegistrationDraft();
+      return;
+    }
+
+    lastDraftSnapshotRef.current = snapshot;
     const sanitizedDraft = {
       savedAt: Date.now(),
-      userType,
-      isForeigner,
-      acceptedTerms,
-      form: {
-        full_name: form.full_name,
-        email: form.email,
-        phone: form.phone,
-        lawyer_email: form.lawyer_email,
-        use_rentalhub_lawyers: form.use_rentalhub_lawyers,
-        use_rentalhub_agents: form.use_rentalhub_agents,
-        referral_code: form.referral_code,
-        add_agent: form.add_agent,
-        agent_full_name: form.agent_full_name,
-        agent_email: form.agent_email,
-        agent_phone: form.agent_phone,
-        nationality: form.nationality,
-        state_id: form.state_id,
-        lga_name: form.lga_name,
-      },
+      ...payload,
     };
 
     storageService
