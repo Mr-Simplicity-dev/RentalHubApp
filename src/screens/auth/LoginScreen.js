@@ -250,7 +250,7 @@ const LoginScreen = ({ navigation }) => {
               label={identityLabel}
               value={email}
               onChangeText={setEmail}
-              placeholder={identityLabel}
+              placeholder={`${ui('Email')} / ${ui('Phone')}`}
               keyboardType="default"
               icon="person-outline"
               autoCapitalize="none"

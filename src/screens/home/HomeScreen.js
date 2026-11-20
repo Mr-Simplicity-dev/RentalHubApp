@@ -198,7 +198,8 @@ const HomeScreen = ({ navigation }) => {
             accessibilityLabel={ui("Search properties")}
             value={search}
             onChangeText={setSearch}
-            placeholder={ui("City, state or neighbourhood")}
+            accessibilityLabel={ui("City, state or neighbourhood")}
+            placeholder={ui("Search properties")}
             placeholderTextColor="#909CB2"
             style={styles.searchInput}
             returnKeyType="search"

@@ -2,19 +2,19 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:drawable="@color/rentalhub_navy" />
 
-    <!-- Logo mark, lifted to leave room for the Amana mark beneath it. -->
+    <!-- Keep a clear gap between the logo and the full wordmark. -->
     <item
         android:width="132dp"
         android:height="132dp"
         android:drawable="@drawable/rentalhub_splash_mark"
         android:gravity="center"
-        android:bottom="52dp" />
+        android:bottom="112dp" />
 
-    <!-- Amana: the only other thing on this screen. -->
+    <!-- Full Amana RentalHub wordmark. -->
     <item
         android:width="268dp"
         android:height="64dp"
         android:drawable="@drawable/rentalhub_launch_wordmark"
         android:gravity="center"
-        android:top="96dp" />
+        android:top="112dp" />
 </layer-list>
