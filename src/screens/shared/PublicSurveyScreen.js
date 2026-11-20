@@ -412,7 +412,7 @@ const PublicSurveyScreen = ({ navigation }) => {
         ) : null}
 
         {index>0 ? <PremiumButton variant="secondary" title={ui("Back")} onPress={()=>setIndex(value=>value-1)} /> : null}
-        <PremiumButton title={index === queue.length - 1 ? ui("Finish") : ui("Next")} onPress={next} icon="arrow-forward-outline" style={styles.submit} />
+        <PremiumButton disabled={current?.required !== false && !answered} title={index === queue.length - 1 ? ui("Finish") : ui("Next")} onPress={next} icon="arrow-forward-outline" style={styles.submit} />
       </PremiumCard>
     </ScrollView>
   );

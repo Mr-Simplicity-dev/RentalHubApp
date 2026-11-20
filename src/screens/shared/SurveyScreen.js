@@ -384,7 +384,7 @@ const SurveyScreen = ({ navigation }) => {
             title={index === queue.length - 1 ? (status?.part_a_done ? 'Finish survey' : 'Complete part A') : ui("Next")}
             onPress={next}
             loading={busy}
-            disabled={busy}
+            disabled={busy || (current?.required !== false && !answered)}
             icon="arrow-forward-outline"
             style={styles.nextBtn}
           />
