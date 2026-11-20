@@ -40,6 +40,7 @@ const PublicSurveyScreen = ({ navigation }) => {
   const [index, setIndex] = useState(0);
   const [answers, setAnswers] = useState({});
   const [screenedOut, setScreenedOut] = useState(false);
+  const [surveyNotice,setSurveyNotice] = useState('');
   const [respondentCode, setRespondentCode] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const startTimeRef = useRef(Date.now());
@@ -112,9 +113,10 @@ const PublicSurveyScreen = ({ navigation }) => {
     setError('');
     setStep('questions');
     try {
-      const res = await surveyService.getDefinition({ type, lang: 'en' });
+      const res = await surveyService.getDefinition({ type, lang: ['en','ha','yo','ig'].includes(interfaceLanguage)?interfaceLanguage:'en' });
       const defQuestions = res?.data?.questions || [];
       setQuestions(defQuestions);
+      setSurveyNotice(res?.data?.notice || '');
       setQueue(defQuestions.filter((q) => q.part === 'A' || true));
       setIndex(0);
       startTimeRef.current = Date.now();
@@ -139,20 +141,13 @@ const PublicSurveyScreen = ({ navigation }) => {
 
   const current = queue[index] || null;
   const answerValue = current ? answers[current.key] : undefined;
-  const answered = Array.isArray(answerValue) ? answerValue.length > 0 : answerValue !== undefined && answerValue !== '';
+  const answered = Array.isArray(answerValue) ? answerValue.length >= (current?.minPicks || 1) : answerValue !== undefined && answerValue !== null && String(answerValue).trim() !== '';
 
   const optionList = useMemo(() => {
     if (!current) return [];
     if (current.options && current.options.length) return current.options;
     if (current.type === 'rank' && Array.isArray(current.rankSource)) {
-      const seen = new Map();
-      questions.forEach((q) => {
-        if (!current.rankSource.includes(q.key)) return;
-        (q.options || []).forEach((opt) => {
-          if (!seen.has(opt.v)) seen.set(opt.v, opt);
-        });
-      });
-      return Array.from(seen.values());
+      return current.rankSource.map(key=>({v:key,label:key+'. '+(questions.find(q=>q.key===key)?.prompt||key)}));
     }
     return [];
   }, [current, questions, interfaceLanguage]);
@@ -160,8 +155,8 @@ const PublicSurveyScreen = ({ navigation }) => {
   const setValue = (key, value) => {
     setAnswers((prev) => ({ ...prev, [key]: value }));
     const q = questions.find((item) => item.key === key);
-    if (q && q.analysis === 'consent' && q.endsOn && String(value) === String(q.endsOn)) {
-      setScreenedOut(true);
+    if (q && q.analysis === 'consent') {
+      setScreenedOut(questions.some(question=>question.endsOn&&String(question.key===key?value:answers[question.key])===String(question.endsOn)));
     }
   };
 
@@ -182,7 +177,7 @@ const PublicSurveyScreen = ({ navigation }) => {
       Toast.show({ type: 'info', text1: ui("Please answer this question to continue.") });
       return;
     }
-    if (index < queue.length - 1) {
+    if (!screenedOut && index < queue.length - 1) {
       setIndex((i) => i + 1);
       return;
     }
@@ -347,6 +342,7 @@ const PublicSurveyScreen = ({ navigation }) => {
           <TurnstileWidget action="rentalhub_survey" onToken={onSubmitToken} onExpire={() => setError('Check expired — please try again.')} onError={() => setError('Check failed — please try again.')} />
           {error ? <AppText style={styles.error}>{error}</AppText> : null}
           {submitting ? <PremiumCenter loading title={ui("Submitting")} /> : null}
+          <PremiumButton title={ui('Back')} variant="secondary" disabled={submitting} onPress={()=>setStep('questions')} />
         </PremiumCard>
       </ScrollView>
     );
@@ -382,6 +378,7 @@ const PublicSurveyScreen = ({ navigation }) => {
       </View>
 
       <PremiumCard>
+        {surveyNotice ? <AppText style={styles.note}>{surveyNotice}</AppText> : null}
         <AppText style={styles.prompt}>{current?.prompt || current?.key}</AppText>
 
         {current?.type === 'text' ? (
@@ -414,6 +411,7 @@ const PublicSurveyScreen = ({ navigation }) => {
           <AppText style={styles.note}>{ui("Based on your answer, the survey ends here after this section.")}</AppText>
         ) : null}
 
+        {index>0 ? <PremiumButton variant="secondary" title={ui("Back")} onPress={()=>setIndex(value=>value-1)} /> : null}
         <PremiumButton title={index === queue.length - 1 ? ui("Finish") : ui("Next")} onPress={next} icon="arrow-forward-outline" style={styles.submit} />
       </PremiumCard>
     </ScrollView>

@@ -1,6 +1,6 @@
 import * as Keychain from 'react-native-keychain';
 
-const service = type => 'com.rentalhubng.survey-draft.' + (type === 'landlord' ? 'landlord' : 'tenant');
+const service = type => 'com.rentalhubng.survey-draft.v3.' + (type === 'landlord' ? 'landlord' : 'tenant');
 const valid = value => typeof value === 'string' && /^[A-Za-z0-9_-]{24,64}$/.test(value);
 export const surveyDraftStorage = {
   async get(type) { const saved = await Keychain.getGenericPassword({service:service(type)}); return saved && valid(saved.password) ? saved.password : ''; },

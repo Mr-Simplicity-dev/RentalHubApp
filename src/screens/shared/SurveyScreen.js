@@ -27,6 +27,7 @@ const SurveyScreen = ({ navigation }) => {
   const [answers, setAnswers] = useState({});
   const [responseId, setResponseId] = useState(null);
   const [screenedOut, setScreenedOut] = useState(false);
+  const [surveyNotice,setSurveyNotice] = useState('');
   const [busy, setBusy] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const startTimeRef = useRef(Date.now());
@@ -43,20 +44,13 @@ const SurveyScreen = ({ navigation }) => {
   const progressPct = queue.length > 1 ? Math.round(((index + 1) / queue.length) * 100) : 100;
 
   const answerValue = current ? answers[current.key] : undefined;
-  const answered = Array.isArray(answerValue) ? answerValue.length > 0 : answerValue !== undefined && answerValue !== '';
+  const answered = Array.isArray(answerValue) ? answerValue.length >= (current?.minPicks || 1) : answerValue !== undefined && answerValue !== null && String(answerValue).trim() !== '';
 
   const currentOptionList = useMemo(() => {
     if (!current) return [];
     if (current.options && current.options.length) return current.options;
     if (current.type === 'rank' && Array.isArray(current.rankSource)) {
-      const seen = new Map();
-      questions.forEach((q) => {
-        if (!current.rankSource.includes(q.key)) return;
-        (q.options || []).forEach((opt) => {
-          if (!seen.has(opt.v)) seen.set(opt.v, opt);
-        });
-      });
-      return Array.from(seen.values());
+      return current.rankSource.map(key=>({v:key,label:key+'. '+(questions.find(q=>q.key===key)?.prompt||key)}));
     }
     return [];
   }, [current, questions, interfaceLanguage]);
@@ -82,9 +76,10 @@ const SurveyScreen = ({ navigation }) => {
         setPhase('info');
         return;
       }
-      const defRes = await surveyService.getDefinition({ type: st.survey_type || 'tenant', lang: 'en' });
+      const defRes = await surveyService.getDefinition({ type: st.survey_type || 'tenant', lang: ['en','ha','yo','ig'].includes(interfaceLanguage)?interfaceLanguage:'en' });
       const defQuestions = defRes?.data?.questions || [];
       setQuestions(defQuestions);
+      setSurveyNotice(defRes?.data?.notice || '');
       const startRes = await surveyService.start();
       const response = startRes?.data?.response;
       if (!response || !response.id) {
@@ -150,10 +145,9 @@ const SurveyScreen = ({ navigation }) => {
     if (
       q &&
       q.analysis === 'consent' &&
-      q.endsOn &&
-      String(value) === String(q.endsOn)
+      q.endsOn
     ) {
-      setScreenedOut(true);
+      setScreenedOut(questions.some(question=>question.endsOn&&String(question.key===key?value:answers[question.key])===String(question.endsOn)));
     }
   };
 
@@ -176,7 +170,7 @@ const SurveyScreen = ({ navigation }) => {
       Toast.show({ type: 'info', text1: ui("Please answer this question to continue.") });
       return;
     }
-    if (index < queue.length - 1) {
+    if (!screenedOut && index < queue.length - 1) {
       setIndex((i) => i + 1);
       return;
     }
@@ -193,7 +187,7 @@ const SurveyScreen = ({ navigation }) => {
           await surveyService.complete(responseId, elapsedSeconds());
         }
         setStatus((prev) => ({ ...prev, part_a_done: true }));
-        setPhase('partADone');
+        setPhase(screenedOut?'finished':'partADone');
       } else {
         await surveyService.complete(responseId, elapsedSeconds());
         setPhase('finished');
@@ -319,6 +313,7 @@ const SurveyScreen = ({ navigation }) => {
           <AppText style={styles.sectionLabel}>
             {current?.section ? ui("{value0} · ", {value0: (current.section)}) : ''}{ui("Question ")}{index + 1}
           </AppText>
+          {surveyNotice ? <AppText>{surveyNotice}</AppText> : null}
           <AppText style={styles.prompt}>{current?.prompt || current?.key}</AppText>
 
           {current?.type === 'text' ? (
