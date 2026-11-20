@@ -12,9 +12,9 @@
 
     <!-- Amana: the only other thing on this screen. -->
     <item
-        android:width="188dp"
-        android:height="69dp"
-        android:drawable="@drawable/amana_launch"
+        android:width="268dp"
+        android:height="64dp"
+        android:drawable="@drawable/rentalhub_launch_wordmark"
         android:gravity="center"
         android:top="96dp" />
 </layer-list>

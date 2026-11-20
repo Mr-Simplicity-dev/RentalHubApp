@@ -8,11 +8,16 @@ const protectionEntries=new Map(Object.entries(protectionCopy.en).map(([key,valu
 const setInterfaceLanguage = value => { if (language === value) return; language = value; listeners.forEach(listener => listener()); };
 const getInterfaceLanguage = () => language;
 const subscribeInterfaceLanguage = listener => { listeners.add(listener); return () => listeners.delete(listener); };
+const getInterfaceTranslationEntry = text => {
+  if (typeof text !== 'string') return undefined;
+  const canonical = protectionAliases[normalize(text)] || text;
+  return protectionEntries.get(normalize(canonical)) || copy[normalize(canonical)] || copy[normalize(canonical).replace(/_/g, ' ')];
+};
 const translateUi = (text, variables = {}) => {
   if (typeof text !== 'string') return text;
   text=protectionAliases[normalize(text)]||text;
-  const entry = protectionEntries.get(normalize(text)) || copy[normalize(text)] || copy[normalize(text).replace(/_/g, ' ')];
+  const entry = getInterfaceTranslationEntry(text);
   const translated = language === 'en' || !entry?.[language] ? text : (text.match(/^\s*/)[0] + entry[language].trim() + text.match(/\s*$/)[0]);
   return translated.replace(/\{([a-zA-Z0-9_]+)\}/g, (match, key) => variables[key] == null ? match : String(variables[key]));
 };
-module.exports = { setInterfaceLanguage, getInterfaceLanguage, subscribeInterfaceLanguage, translateUi };
+module.exports = { setInterfaceLanguage, getInterfaceLanguage, subscribeInterfaceLanguage, getInterfaceTranslationEntry, translateUi };

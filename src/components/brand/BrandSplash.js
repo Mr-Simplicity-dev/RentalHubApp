@@ -9,15 +9,13 @@ import { AMANA_RED_ON_DARK, AMANA_SCRIPT_FONT } from './BrandMark';
 
 import AppText from '../../components/common/AppText';
 const LOADING_TRACK_WIDTH = 210;
-const DEFAULT_DURATION_MS = 1600;
+const DEFAULT_DURATION_MS = 3200;
 
-const BrandSplash = ({ duration = DEFAULT_DURATION_MS, showProgressPercent = false }) => {
+const BrandSplash = ({ duration = DEFAULT_DURATION_MS, showProgressPercent = false, fontsReady = true }) => {
   useInterfaceLanguage();
   const { reduceMotion } = useAccessibilityPreferences();
   const scale = useRef(new Animated.Value(1)).current;
   const opacity = useRef(new Animated.Value(1)).current;
-  const copyOpacity = useRef(new Animated.Value(0)).current;
-  const copyTranslateY = useRef(new Animated.Value(12)).current;
   const loadingOpacity = useRef(new Animated.Value(0)).current;
   const loadingTranslateY = useRef(new Animated.Value(12)).current;
   const progress = useRef(new Animated.Value(0)).current;
@@ -34,8 +32,6 @@ const BrandSplash = ({ duration = DEFAULT_DURATION_MS, showProgressPercent = fal
     if (reduceMotion) {
       scale.setValue(1);
       opacity.setValue(1);
-      copyOpacity.setValue(1);
-      copyTranslateY.setValue(0);
       loadingOpacity.setValue(1);
       loadingTranslateY.setValue(0);
       progress.setValue(1);
@@ -55,8 +51,6 @@ const BrandSplash = ({ duration = DEFAULT_DURATION_MS, showProgressPercent = fal
     progress.setValue(0);
     scale.setValue(1);
     opacity.setValue(1);
-    copyOpacity.setValue(0);
-    copyTranslateY.setValue(12);
     loadingOpacity.setValue(0);
     loadingTranslateY.setValue(12);
     const introAnimation = Animated.parallel([
@@ -74,23 +68,6 @@ const BrandSplash = ({ duration = DEFAULT_DURATION_MS, showProgressPercent = fal
           tension: 55,
           useNativeDriver: true,
         }),
-      ]),
-      Animated.sequence([
-        Animated.delay(160),
-        Animated.parallel([
-          Animated.timing(copyOpacity, {
-            toValue: 1,
-            duration: 360,
-            easing: Easing.out(Easing.cubic),
-            useNativeDriver: true,
-          }),
-          Animated.timing(copyTranslateY, {
-            toValue: 0,
-            duration: 320,
-            easing: Easing.out(Easing.cubic),
-            useNativeDriver: true,
-          }),
-        ]),
       ]),
       Animated.sequence([
         Animated.delay(300),
@@ -131,8 +108,6 @@ const BrandSplash = ({ duration = DEFAULT_DURATION_MS, showProgressPercent = fal
       progress.stopAnimation();
     };
   }, [
-    copyOpacity,
-    copyTranslateY,
     duration,
     loadingOpacity,
     loadingTranslateY,
@@ -158,21 +133,15 @@ const BrandSplash = ({ duration = DEFAULT_DURATION_MS, showProgressPercent = fal
           <View style={styles.logoGlow} />
           <BrandLogoMark size="lg" surface="gold" />
         </View>
-        <Animated.View
-          style={{
-            alignItems: 'center',
-            opacity: copyOpacity,
-            transform: [{ translateY: copyTranslateY }],
-          }}
-        >
+        <View style={{ alignItems: 'center' }}>
           <Image
             source={require('../../../assets/brand/03_horizontal_dark_navy.png')}
             style={styles.lockup}
             resizeMode="contain"
             accessibilityLabel={ui("Amana RentalHub")}
           />
-          <AppText style={[styles.tagline, { fontSize: 13 }]}>{ui("Trusted homes. Confident living.")}</AppText>
-        </Animated.View>
+          {fontsReady ? <AppText style={[styles.tagline, { fontSize: 13 }]}>{ui("Trusted homes. Confident living.")}</AppText> : null}
+        </View>
       </Animated.View>
       <Animated.View
         style={[
@@ -184,7 +153,7 @@ const BrandSplash = ({ duration = DEFAULT_DURATION_MS, showProgressPercent = fal
         ]}
       >
         <View style={[styles.loadingRow, !showProgressPercent && styles.loadingRowCentered]}>
-          <AppText style={[styles.loadingText, { fontSize: 11 }]}>{ui("Loading...")}</AppText>
+          {fontsReady ? <AppText style={[styles.loadingText, { fontSize: 11 }]}>{ui("Loading...")}</AppText> : null}
           {showProgressPercent ? (
             <AppText style={[styles.loadingPercent, { fontSize: 11 }]}>{progressPercent}%</AppText>
           ) : null}

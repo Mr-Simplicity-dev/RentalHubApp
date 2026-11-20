@@ -7,6 +7,11 @@ for (const file of files) {
   const source = fs.readFileSync(file, 'utf8');
   traverse(parser.parse(source, { sourceType: 'module', plugins: ['jsx'] }), {
     StringLiteral(p) {
+      for (let branch = p; branch.parentPath; branch = branch.parentPath) {
+        const parent = branch.parentPath;
+        if (parent.isConditionalExpression() && parent.node.test.type === 'Identifier' && parent.node.test.name === 'admin' && branch.key === 'consequent') return;
+        if (parent.isLogicalExpression() && parent.node.operator === '&&' && parent.node.left.type === 'Identifier' && parent.node.left.name === 'admin' && branch.key === 'right') return;
+      }
       if (!/[a-z]{2}/i.test(p.node.value) || /^https?:|^[^\s]+@[^\s]+$/.test(p.node.value)) return;
       let value = p;
       while (value.parentPath && (value.parentPath.isConditionalExpression() || value.parentPath.isLogicalExpression())) {

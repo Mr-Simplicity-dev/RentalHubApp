@@ -41,7 +41,7 @@ const interpolate = (value, variables = {}) => String(value).replace(
 
 export const LanguageContext = createContext(null);
 
-export const LanguageProvider = ({ children }) => {
+export const LanguageProvider = ({ children, fallback = null }) => {
   const { user } = useContext(AuthContext) || {};
   const isAdmin = /(^|_)admin($|_)/.test(String(user?.user_type || '')) || user?.is_recruitment_admin === true;
   const [preferredLanguage, setLanguageState] = useState(detectDeviceLanguage);
@@ -119,7 +119,7 @@ export const LanguageProvider = ({ children }) => {
     t,
   ]);
 
-  if (!ready) return null;
+  if (!ready) return fallback;
 
   return (
     <LanguageContext.Provider value={value}>

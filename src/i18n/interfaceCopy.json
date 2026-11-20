@@ -18780,7 +18780,14 @@
     "ig": "Rịọ Maka Mmalite Ọhụrụ Steeti"
   },
   "request": {
-    "en": " request"
+    "en": " request",
+    "fr": "Demande",
+    "ar": "طلب",
+    "ru": "Запрос",
+    "zh": "申请",
+    "ha": "Buƙata",
+    "yo": "Ìbéèrè",
+    "ig": "Arịrịọ"
   },
   "s": {
     "en": "s",
@@ -33957,7 +33964,10 @@
     "ar": "إزالة",
     "fr": "Supprimer",
     "ru": "Удалить",
-    "zh": "删除"
+    "zh": "删除",
+    "ha": "Cire",
+    "yo": "Yọ kúrò",
+    "ig": "Wepụ"
   },
   "reason:": {
     "en": "Reason:",
@@ -45026,7 +45036,10 @@
     "ar": "مسجل",
     "fr": "Enregistré",
     "ru": "Зарегистрировано",
-    "zh": "已注册"
+    "zh": "已注册",
+    "ha": "An yi rajista",
+    "yo": "A ti forúkọ sílẹ̀",
+    "ig": "Edebanyela aha"
   },
   "dismiss flag": {
     "en": "Dismiss flag",
@@ -60857,5 +60870,795 @@
     "ha": "Bi umarnin da ƙungiyar aikin ta bayar.",
     "yo": "Tẹ̀lé ìtọ́nisọ́nà tí ẹgbẹ́ iṣẹ́ fún ọ.",
     "ig": "Soro ntuziaka ndị otu ọrụ nyere."
+  },
+  "two-factor authentication required": {
+    "en": "Two-factor authentication required",
+    "fr": "Authentification à deux facteurs requise",
+    "ar": "المصادقة الثنائية مطلوبة",
+    "ru": "Требуется двухфакторная аутентификация",
+    "zh": "需要双重身份验证",
+    "ha": "Ana buƙatar tabbatarwa ta matakai biyu",
+    "yo": "A nílò ìmúdájú ní ìgbésẹ̀ méjì",
+    "ig": "Achọrọ nkwenye ụzọ abụọ"
+  },
+  "enable two-factor authentication in profile to continue.": {
+    "en": "Enable two-factor authentication in Profile to continue.",
+    "fr": "Activez l’authentification à deux facteurs dans votre profil pour continuer.",
+    "ar": "فعّل المصادقة الثنائية في الملف الشخصي للمتابعة.",
+    "ru": "Включите двухфакторную аутентификацию в профиле, чтобы продолжить.",
+    "zh": "请在个人资料中启用双重身份验证以继续。",
+    "ha": "Kunna tabbatarwa ta matakai biyu a bayanan asusunku don ci gaba.",
+    "yo": "Tan ìmúdájú ní ìgbésẹ̀ méjì nínú Àkọsílẹ̀ ẹni láti tẹ̀síwájú.",
+    "ig": "Gbanye nkwenye ụzọ abụọ na profaịlụ ka ị gaa n’ihu."
+  },
+  "update available on the app store": {
+    "en": "Update available on the App Store",
+    "fr": "Mise à jour disponible sur l’App Store",
+    "ar": "يتوفر تحديث في App Store",
+    "ru": "Обновление доступно в App Store",
+    "zh": "App Store 中有可用更新",
+    "ha": "Akwai sabuntawa a App Store",
+    "yo": "Ìmúdójúìwọ̀n wà ní App Store",
+    "ig": "Mmelite dị na App Store"
+  },
+  "open the app store on your iphone or ipad and search for amana rentalhub ng to install version {value0}.": {
+    "en": "Open the App Store on your iPhone or iPad and search for Amana RentalHub NG to install version {value0}.",
+    "fr": "Ouvrez l’App Store sur votre iPhone ou iPad et recherchez Amana RentalHub NG pour installer la version {value0}.",
+    "ar": "افتح App Store على iPhone أو iPad وابحث عن Amana RentalHub NG لتثبيت الإصدار {value0}.",
+    "ru": "Откройте App Store на iPhone или iPad и найдите Amana RentalHub NG, чтобы установить версию {value0}.",
+    "zh": "在 iPhone 或 iPad 上打开 App Store，搜索 Amana RentalHub NG 并安装版本 {value0}。",
+    "ha": "Buɗe App Store a iPhone ko iPad ɗinku, ku nemo Amana RentalHub NG don girka sigar {value0}.",
+    "yo": "Ṣí App Store lórí iPhone tàbí iPad rẹ, kí o sì wá Amana RentalHub NG láti fi ẹ̀dà {value0} sí ẹ̀rọ.",
+    "ig": "Mepee App Store na iPhone ma ọ bụ iPad gị, chọọ Amana RentalHub NG ka ị wụnye ụdị {value0}."
+  },
+  "where do you live?": {
+    "en": "Where do you live?",
+    "fr": "Où habitez-vous ?",
+    "ar": "أين تقيم؟",
+    "ru": "Где вы живёте?",
+    "zh": "您住在哪里？",
+    "ha": "Ina kuke zama?",
+    "yo": "Níbo ni o ń gbé?",
+    "ig": "Ebee ka ị bi?"
+  },
+  "state of origin": {
+    "en": "State of origin",
+    "fr": "État d’origine",
+    "ar": "ولاية الأصل",
+    "ru": "Штат происхождения",
+    "zh": "原籍州",
+    "ha": "Jihar asali",
+    "yo": "Ìpínlẹ̀ ìbílẹ̀",
+    "ig": "Steeti i si"
+  },
+  "invalid survey draft": {
+    "en": "Invalid survey draft",
+    "fr": "Brouillon de questionnaire non valide",
+    "ar": "مسودة الاستبيان غير صالحة",
+    "ru": "Недействительный черновик опроса",
+    "zh": "问卷草稿无效",
+    "ha": "Daftarin binciken bai inganta ba",
+    "yo": "Àkọ́kọ́ àdàkọ ìwádìí kò péye",
+    "ig": "Ndepụta nyocha a ezughị oke"
+  },
+  "google sign-in": {
+    "en": "Google sign-in",
+    "fr": "Connexion Google",
+    "ar": "تسجيل الدخول باستخدام Google",
+    "ru": "Вход через Google",
+    "zh": "Google 登录",
+    "ha": "Shiga da Google",
+    "yo": "Wọlé pẹ̀lú Google",
+    "ig": "Jiri Google banye"
+  },
+  "sign in with google": {
+    "en": "Sign in with Google",
+    "fr": "Se connecter avec Google",
+    "ar": "تسجيل الدخول باستخدام Google",
+    "ru": "Войти через Google",
+    "zh": "使用 Google 登录",
+    "ha": "Shiga da Google",
+    "yo": "Wọlé pẹ̀lú Google",
+    "ig": "Jiri Google banye"
+  },
+  "enter your legal representative's email to use for registration.": {
+    "en": "Enter your legal representative's email to use for registration.",
+    "fr": "Saisissez l’adresse e-mail de votre représentant juridique pour l’inscription.",
+    "ar": "أدخل البريد الإلكتروني لممثلك القانوني لاستخدامه في التسجيل.",
+    "ru": "Введите электронную почту вашего юридического представителя для регистрации.",
+    "zh": "请输入您的法律代表的电子邮箱，用于注册。",
+    "ha": "Shigar da imel ɗin wakilinku na shari’a don yin rajista.",
+    "yo": "Tẹ àdírẹ́sì ímeèlì aṣojú rẹ nípa òfin láti lò fún ìforúkọsílẹ̀.",
+    "ig": "Tinye adreesị imel onye nnọchi anya gị n’ihe gbasara iwu maka ndebanye aha."
+  },
+  "enter a valid legal representative's email.": {
+    "en": "Enter a valid legal representative's email.",
+    "fr": "Saisissez une adresse e-mail valide pour le représentant juridique.",
+    "ar": "أدخل بريدًا إلكترونيًا صالحًا للممثل القانوني.",
+    "ru": "Введите действительный адрес электронной почты юридического представителя.",
+    "zh": "请输入有效的法律代表电子邮箱。",
+    "ha": "Shigar da ingantaccen imel ɗin wakilin shari’a.",
+    "yo": "Tẹ àdírẹ́sì ímeèlì tó péye ti aṣojú nípa òfin.",
+    "ig": "Tinye adreesị imel ziri ezi nke onye nnọchi anya n’ihe gbasara iwu."
+  },
+  "complete checkout. we will check your payment automatically.": {
+    "en": "Complete checkout. We will check your payment automatically.",
+    "fr": "Terminez le paiement. Nous le vérifierons automatiquement.",
+    "ar": "أكمل الدفع. سنتحقق من دفعتك تلقائيًا.",
+    "ru": "Завершите оплату. Мы проверим платёж автоматически.",
+    "zh": "请完成付款，我们会自动核验。",
+    "ha": "Kammala biyan kuɗi. Za mu bincika biyanku kai tsaye.",
+    "yo": "Parí ìsanwó. A ó ṣàyẹ̀wò ìsanwó rẹ fúnra rẹ̀.",
+    "ig": "Mechaa ịkwụ ụgwọ. Anyị ga-enyocha ịkwụ ụgwọ gị na-akpaghị aka."
+  },
+  "payment was checked but no account session was returned. please try again.": {
+    "en": "Payment was checked but no account session was returned. Please try again.",
+    "fr": "Le paiement a été vérifié, mais aucune session de compte n’a été reçue. Veuillez réessayer.",
+    "ar": "تم التحقق من الدفع، لكن لم يتم إنشاء جلسة للحساب. يرجى المحاولة مجددًا.",
+    "ru": "Платёж проверен, но сеанс входа в аккаунт не получен. Попробуйте ещё раз.",
+    "zh": "已核验付款，但未获取到账户登录会话。请重试。",
+    "ha": "An bincika biyan kuɗi, amma ba a samu damar shiga asusun ba. A sake gwadawa.",
+    "yo": "A ti ṣàyẹ̀wò ìsanwó, ṣùgbọ́n kò sí ìwọlé sí àkọọ́lẹ̀. Jọ̀wọ́ tún gbìyànjú.",
+    "ig": "Enyochala ịkwụ ụgwọ, mana enweghị ohere ịbanye n’akaụntụ. Biko nwaa ọzọ."
+  },
+  "after paying, your payment will be checked automatically.": {
+    "en": "After paying, your payment will be checked automatically.",
+    "fr": "Après le paiement, celui-ci sera vérifié automatiquement.",
+    "ar": "بعد الدفع، سيتم التحقق من دفعتك تلقائيًا.",
+    "ru": "После оплаты платёж будет проверен автоматически.",
+    "zh": "付款后，系统会自动核验您的付款。",
+    "ha": "Bayan biyan kuɗi, za a bincika biyanku kai tsaye.",
+    "yo": "Lẹ́yìn tí o bá sanwó, a ó ṣàyẹ̀wò ìsanwó rẹ fúnra rẹ̀.",
+    "ig": "Mgbe ị kwụrụ ụgwọ, a ga-enyocha ịkwụ ụgwọ gị na-akpaghị aka."
+  },
+  "lawyer email": {
+    "en": "Lawyer Email",
+    "fr": "E-mail de l’avocat",
+    "ar": "البريد الإلكتروني للمحامي",
+    "ru": "Электронная почта юриста",
+    "zh": "律师电子邮箱",
+    "ha": "Imel ɗin lauya",
+    "yo": "Ímeèlì agbẹjọ́rò",
+    "ig": "Imel ọkaiwu"
+  },
+  "complete secure checkout inside the app. your payment will be checked automatically.": {
+    "en": "Complete secure checkout inside the app. Your payment will be checked automatically.",
+    "fr": "Effectuez le paiement sécurisé dans l’application. Il sera vérifié automatiquement.",
+    "ar": "أكمل الدفع الآمن داخل التطبيق. سيتم التحقق من دفعتك تلقائيًا.",
+    "ru": "Завершите безопасную оплату в приложении. Платёж будет проверен автоматически.",
+    "zh": "请在应用内完成安全付款，系统会自动核验。",
+    "ha": "Kammala biyan kuɗi cikin tsaro a manhajar. Za a bincika biyanku kai tsaye.",
+    "yo": "Parí ìsanwó tó ní ààbò nínú ohun èlò náà. A ó ṣàyẹ̀wò ìsanwó rẹ fúnra rẹ̀.",
+    "ig": "Mechaa ịkwụ ụgwọ n’enweghị nsogbu n’ime ngwa. A ga-enyocha ịkwụ ụgwọ gị na-akpaghị aka."
+  },
+  "choose a jpeg or png passport image no larger than 500 kb.": {
+    "en": "Choose a JPEG or PNG passport image no larger than 500 KB.",
+    "fr": "Choisissez une photo d’identité JPEG ou PNG de 500 Ko maximum.",
+    "ar": "اختر صورة شخصية بصيغة JPEG أو PNG لا يزيد حجمها عن 500 كيلوبايت.",
+    "ru": "Выберите фото для документов в формате JPEG или PNG размером не более 500 КБ.",
+    "zh": "请选择不超过 500 KB 的 JPEG 或 PNG 证件照。",
+    "ha": "Zaɓi hoton fasfo na JPEG ko PNG wanda bai wuce 500 KB ba.",
+    "yo": "Yan fọ́tò ìdánimọ̀ JPEG tàbí PNG tí kò ju 500 KB lọ.",
+    "ig": "Họrọ foto paspọtụ JPEG ma ọ bụ PNG nke na-erughị ma ọ bụ hà 500 KB."
+  },
+  "choose a clear jpeg or png passport image no larger than 500 kb.": {
+    "en": "Choose a clear JPEG or PNG passport image no larger than 500 KB.",
+    "fr": "Choisissez une photo d’identité nette, au format JPEG ou PNG, de 500 Ko maximum.",
+    "ar": "اختر صورة شخصية واضحة بصيغة JPEG أو PNG لا يزيد حجمها عن 500 كيلوبايت.",
+    "ru": "Выберите чёткое фото для документов в формате JPEG или PNG размером не более 500 КБ.",
+    "zh": "请选择清晰且不超过 500 KB 的 JPEG 或 PNG 证件照。",
+    "ha": "Zaɓi hoton fasfo mai kyau na JPEG ko PNG wanda bai wuce 500 KB ba.",
+    "yo": "Yan fọ́tò ìdánimọ̀ tó ṣe kedere, JPEG tàbí PNG, tí kò ju 500 KB lọ.",
+    "ig": "Họrọ foto paspọtụ doro anya, JPEG ma ọ bụ PNG, nke na-erughị ma ọ bụ hà 500 KB."
+  },
+  "the passport image could not be prepared. please choose another image.": {
+    "en": "The passport image could not be prepared. Please choose another image.",
+    "fr": "La photo d’identité n’a pas pu être préparée. Choisissez une autre image.",
+    "ar": "تعذر تجهيز الصورة الشخصية. يرجى اختيار صورة أخرى.",
+    "ru": "Не удалось подготовить фото для документов. Выберите другое изображение.",
+    "zh": "无法处理证件照，请选择另一张图片。",
+    "ha": "Ba a iya shirya hoton fasfo ba. A zaɓi wani hoton.",
+    "yo": "A kò lè pèsè fọ́tò ìdánimọ̀ náà. Jọ̀wọ́ yan fọ́tò mìíràn.",
+    "ig": "Enweghị ike ịkwadebe foto paspọtụ ahụ. Biko họrọ foto ọzọ."
+  },
+  "i have paid": {
+    "en": "I have paid",
+    "fr": "J’ai payé",
+    "ar": "لقد دفعت",
+    "ru": "Я оплатил(а)",
+    "zh": "我已付款",
+    "ha": "Na biya",
+    "yo": "Mo ti sanwó",
+    "ig": "Akwụgoro m ụgwọ"
+  },
+  "verification code": {
+    "en": "Verification code",
+    "fr": "Code de vérification",
+    "ar": "رمز التحقق",
+    "ru": "Код подтверждения",
+    "zh": "验证码",
+    "ha": "Lambar tabbatarwa",
+    "yo": "Kóòdù ìmúdájú",
+    "ig": "Koodu nkwenye"
+  },
+  "payment link was not valid. please try again.": {
+    "en": "Payment link was not valid. Please try again.",
+    "fr": "Le lien de paiement n’était pas valide. Veuillez réessayer.",
+    "ar": "رابط الدفع غير صالح. يرجى المحاولة مجددًا.",
+    "ru": "Ссылка на оплату недействительна. Попробуйте ещё раз.",
+    "zh": "付款链接无效，请重试。",
+    "ha": "Hanyar biyan kuɗin ba ta inganta ba. A sake gwadawa.",
+    "yo": "Ọ̀nà ìsanwó náà kò péye. Jọ̀wọ́ tún gbìyànjú.",
+    "ig": "Njikọ ịkwụ ụgwọ adịghị irè. Biko nwaa ọzọ."
+  },
+  "case meetings and review": {
+    "en": "Case meetings and review",
+    "fr": "Réunions et examen du dossier",
+    "ar": "اجتماعات الحالة ومراجعتها",
+    "ru": "Встречи и рассмотрение дела",
+    "zh": "案件会议与审查",
+    "ha": "Tarurruka da nazarin lamari",
+    "yo": "Ìpàdé àti àyẹ̀wò ọ̀ràn",
+    "ig": "Nzukọ na nyocha okwu"
+  },
+  "approved meeting participant": {
+    "en": "Approved meeting participant",
+    "fr": "Participant autorisé à la réunion",
+    "ar": "مشارك معتمد في الاجتماع",
+    "ru": "Одобренный участник встречи",
+    "zh": "获准参会者",
+    "ha": "Wanda aka amince ya halarci taro",
+    "yo": "Ẹni tí a fọwọ́ sí láti kópa nínú ìpàdé",
+    "ig": "Onye a kwadoro ịga nzukọ"
+  },
+  "meeting history": {
+    "en": "Meeting history",
+    "fr": "Historique des réunions",
+    "ar": "سجل الاجتماعات",
+    "ru": "История встреч",
+    "zh": "会议记录",
+    "ha": "Tarihin tarurruka",
+    "yo": "Àkọsílẹ̀ àwọn ìpàdé",
+    "ig": "Akụkọ nzukọ ndị gara aga"
+  },
+  "shared with record holder": {
+    "en": "Shared with record holder",
+    "fr": "Partagé avec le titulaire du dossier",
+    "ar": "تمت مشاركته مع صاحب السجل",
+    "ru": "Предоставлено владельцу записи",
+    "zh": "已与记录持有人共享",
+    "ha": "An raba da mai bayanan",
+    "yo": "A ti pín pẹ̀lú ẹni tó ni àkọsílẹ̀",
+    "ig": "Ekesara onye nwe ndekọ"
+  },
+  "confidential professional findings": {
+    "en": "Confidential professional findings",
+    "fr": "Conclusions professionnelles confidentielles",
+    "ar": "نتائج مهنية سرية",
+    "ru": "Конфиденциальные выводы специалиста",
+    "zh": "专业人员的保密调查结果",
+    "ha": "Sakamakon ƙwararru na sirri",
+    "yo": "Àbájáde àyẹ̀wò amọ̀ṣẹ́ṣe tó jẹ́ àṣírí",
+    "ig": "Nchọpụta ọkachamara nzuzo"
+  },
+  "assigned professional assessment": {
+    "en": "Assigned professional assessment",
+    "fr": "Évaluation du professionnel désigné",
+    "ar": "تقييم المختص المكلّف",
+    "ru": "Оценка назначенного специалиста",
+    "zh": "指派专业人员的评估",
+    "ha": "Tantancewar ƙwararren da aka naɗa",
+    "yo": "Àyẹ̀wò amọ̀ṣẹ́ṣe tí a yàn",
+    "ig": "Ntụle ọkachamara a họpụtara"
+  },
+  "findings, missing evidence and limitations": {
+    "en": "Findings, missing evidence and limitations",
+    "fr": "Constatations, preuves manquantes et limites",
+    "ar": "النتائج والأدلة الناقصة والقيود",
+    "ru": "Выводы, недостающие доказательства и ограничения",
+    "zh": "调查结果、缺失证据及限制",
+    "ha": "Abubuwan da aka gano, hujjojin da suka rasa da iyakoki",
+    "yo": "Àbájáde, ẹ̀rí tó ṣì kù àti àwọn ààlà",
+    "ig": "Nchọpụta, ihe akaebe na-efu na oke nyocha"
+  },
+  "share this note with the record holder. leave off for a confidential internal note.": {
+    "en": "Share this note with the record holder. Leave off for a confidential internal note.",
+    "fr": "Partagez cette note avec le titulaire du dossier. Laissez l’option désactivée pour une note interne confidentielle.",
+    "ar": "شارك هذه الملاحظة مع صاحب السجل. اترك الخيار معطلاً إذا كانت ملاحظة داخلية سرية.",
+    "ru": "Поделитесь этой заметкой с владельцем записи. Оставьте выключенным для конфиденциальной внутренней заметки.",
+    "zh": "与记录持有人分享此备注。如为内部保密备注，请保持关闭。",
+    "ha": "Raba wannan bayanin da mai bayanan. A bar zaɓin a kashe idan bayanin cikin gida ne na sirri.",
+    "yo": "Pín àkọsílẹ̀ yìí pẹ̀lú ẹni tó ni ìwé náà. Má tan àṣàyàn yìí fún àkọsílẹ̀ inú ilé tó jẹ́ àṣírí.",
+    "ig": "Kekọrịta ndetu a na onye nwe ndekọ. Hapụ ya n’agbanyụghị ma ọ bụrụ ndetu nzuzo nke ime ụlọ ọrụ."
+  },
+  "eta": {
+    "en": "ETA",
+    "fr": "Heure d’arrivée estimée",
+    "ar": "وقت الوصول المتوقع",
+    "ru": "Ожидаемое время прибытия",
+    "zh": "预计到达时间",
+    "ha": "Lokacin isowa da ake tsammani",
+    "yo": "Àkókò tí a retí pé yóò dé",
+    "ig": "Oge e chere na a ga-erute"
+  },
+  "safety instructions": {
+    "en": "Safety instructions",
+    "fr": "Consignes de sécurité",
+    "ar": "تعليمات السلامة",
+    "ru": "Инструкции по безопасности",
+    "zh": "安全须知",
+    "ha": "Umarnin tsaro",
+    "yo": "Ìtọ́nisọ́nà ààbò",
+    "ig": "Ntuziaka nchekwa"
+  },
+  "request service": {
+    "en": "Request service",
+    "fr": "Demander un service",
+    "ar": "طلب خدمة",
+    "ru": "Заказать услугу",
+    "zh": "申请服务",
+    "ha": "Nemi sabis",
+    "yo": "Béèrè fún iṣẹ́",
+    "ig": "Rịọ maka ọrụ"
+  },
+  "property protection": {
+    "en": "Property Protection",
+    "fr": "Protection immobilière",
+    "ar": "حماية العقارات",
+    "ru": "Защита недвижимости",
+    "zh": "房产保护",
+    "ha": "Kariyar kadara",
+    "yo": "Ààbò dúkìá",
+    "ig": "Nchedo ihe onwunwe"
+  },
+  "choose a file": {
+    "en": "Choose a file",
+    "fr": "Choisir un fichier",
+    "ar": "اختيار ملف",
+    "ru": "Выбрать файл",
+    "zh": "选择文件",
+    "ha": "Zaɓi fayil",
+    "yo": "Yan fáìlì",
+    "ig": "Họrọ faịlụ"
+  },
+  "take a photo": {
+    "en": "Take a photo",
+    "fr": "Prendre une photo",
+    "ar": "التقاط صورة",
+    "ru": "Сделать фото",
+    "zh": "拍照",
+    "ha": "Ɗauki hoto",
+    "yo": "Ya fọ́tò",
+    "ig": "See foto"
+  },
+  "record a video": {
+    "en": "Record a video",
+    "fr": "Enregistrer une vidéo",
+    "ar": "تسجيل فيديو",
+    "ru": "Записать видео",
+    "zh": "录制视频",
+    "ha": "Ɗauki bidiyo",
+    "yo": "Ṣe fídíò",
+    "ig": "Dekọọ vidio"
+  },
+  "load more properties": {
+    "en": "Load more properties",
+    "fr": "Afficher plus de biens",
+    "ar": "تحميل المزيد من العقارات",
+    "ru": "Загрузить больше объектов",
+    "zh": "加载更多房源",
+    "ha": "Ƙara nuna kadarori",
+    "yo": "Ṣàfihàn àwọn dúkìá sí i",
+    "ig": "Gosi ihe onwunwe ndị ọzọ"
+  },
+  "no property records in this view.": {
+    "en": "No property records in this view.",
+    "fr": "Aucun dossier immobilier dans cette vue.",
+    "ar": "لا توجد سجلات عقارات في هذا العرض.",
+    "ru": "В этом разделе нет записей о недвижимости.",
+    "zh": "此视图中没有房产记录。",
+    "ha": "Babu bayanan kadara a wannan shafin.",
+    "yo": "Kò sí àkọsílẹ̀ dúkìá ní ojú ìwò yìí.",
+    "ig": "Enweghị ndekọ ihe onwunwe na nlele a."
+  },
+  "valid until": {
+    "en": "Valid until",
+    "fr": "Valable jusqu’au",
+    "ar": "صالح حتى",
+    "ru": "Действует до",
+    "zh": "有效期至",
+    "ha": "Yana aiki har zuwa",
+    "yo": "Ó wúlò títí di",
+    "ig": "Ọ dị irè ruo"
+  },
+  "record correction awaiting review": {
+    "en": "Record correction awaiting review",
+    "fr": "Correction du dossier en attente d’examen",
+    "ar": "تصحيح السجل بانتظار المراجعة",
+    "ru": "Исправление записи ожидает проверки",
+    "zh": "记录更正待审核",
+    "ha": "Gyaran bayanan yana jiran nazari",
+    "yo": "Àtúnṣe àkọsílẹ̀ ń dúró de àyẹ̀wò",
+    "ig": "Ndozi ndekọ na-eche nyocha"
+  },
+  "this check is not complete.": {
+    "en": "This check is not complete.",
+    "fr": "Cette vérification n’est pas terminée.",
+    "ar": "هذا الفحص غير مكتمل.",
+    "ru": "Эта проверка не завершена.",
+    "zh": "此项检查尚未完成。",
+    "ha": "Ba a kammala wannan binciken ba.",
+    "yo": "Àyẹ̀wò yìí kò tíì parí.",
+    "ig": "Nyocha a agwụbeghị."
+  },
+  "days; checks every": {
+    "en": "days; checks every",
+    "fr": "jours ; vérification tous les",
+    "ar": "أيام؛ فحص كل",
+    "ru": "дн.; проверка каждые",
+    "zh": "天；检查间隔为",
+    "ha": "kwanaki; ana bincike duk bayan",
+    "yo": "ọjọ́; àyẹ̀wò ní gbogbo",
+    "ig": "ụbọchị; nyocha kwa"
+  },
+  "days. renewal is optional.": {
+    "en": "days. Renewal is optional.",
+    "fr": "jours. Le renouvellement est facultatif.",
+    "ar": "أيام. التجديد اختياري.",
+    "ru": "дн. Продление по желанию.",
+    "zh": "天。续订为可选。",
+    "ha": "kwanaki. Sabuntawa zaɓi ne.",
+    "yo": "ọjọ́. Àtúnṣe àkókò jẹ́ àṣàyàn.",
+    "ig": "ụbọchị. Ịdịghachi na ya bụ nhọrọ."
+  },
+  "check payment status": {
+    "en": "Check payment status",
+    "fr": "Vérifier le statut du paiement",
+    "ar": "التحقق من حالة الدفع",
+    "ru": "Проверить статус платежа",
+    "zh": "查看付款状态",
+    "ha": "Duba matsayin biyan kuɗi",
+    "yo": "Ṣàyẹ̀wò ipò ìsanwó",
+    "ig": "Lelee ọnọdụ ịkwụ ụgwọ"
+  },
+  "resume checkout": {
+    "en": "Resume checkout",
+    "fr": "Reprendre le paiement",
+    "ar": "متابعة الدفع",
+    "ru": "Продолжить оплату",
+    "zh": "继续付款",
+    "ha": "Ci gaba da biyan kuɗi",
+    "yo": "Tẹ̀síwájú pẹ̀lú ìsanwó",
+    "ig": "Gaa n’ihu n’ịkwụ ụgwọ"
+  },
+  "stopped": {
+    "en": "Stopped",
+    "fr": "Arrêté",
+    "ar": "متوقف",
+    "ru": "Остановлено",
+    "zh": "已停止",
+    "ha": "An dakatar",
+    "yo": "A ti dá dúró",
+    "ig": "Akwụsịla"
+  },
+  "not subscribed": {
+    "en": "Not subscribed",
+    "fr": "Non abonné",
+    "ar": "غير مشترك",
+    "ru": "Подписка не оформлена",
+    "zh": "未订阅",
+    "ha": "Ba a yi rajistar biyan kuɗi ba",
+    "yo": "Kò ṣe ìforúkọsílẹ̀ iṣẹ́",
+    "ig": "Edeghị aha maka ọrụ a"
+  },
+  "stop future monitoring checks": {
+    "en": "Stop future monitoring checks",
+    "fr": "Arrêter les prochains contrôles de suivi",
+    "ar": "إيقاف فحوصات المراقبة المستقبلية",
+    "ru": "Остановить будущие проверки мониторинга",
+    "zh": "停止后续监测检查",
+    "ha": "Dakatar da binciken sa ido na gaba",
+    "yo": "Dá àwọn àyẹ̀wò àbójútó ọjọ́ iwájú dúró",
+    "ig": "Kwụsị nyocha nlekota ndị ga-abịa"
+  },
+  "assign case officer": {
+    "en": "Assign case officer",
+    "fr": "Désigner un responsable du dossier",
+    "ar": "تعيين مسؤول للحالة",
+    "ru": "Назначить ответственного по делу",
+    "zh": "指派案件负责人",
+    "ha": "Naɗa jami’in kula da lamari",
+    "yo": "Yan olùtọ́jú ọ̀ràn",
+    "ig": "Họpụta onye na-ahụ maka okwu"
+  },
+  "loading property…": {
+    "en": "Loading property…",
+    "fr": "Chargement du bien…",
+    "ar": "جارٍ تحميل العقار…",
+    "ru": "Загрузка объекта…",
+    "zh": "正在加载房产…",
+    "ha": "Ana loda kadara…",
+    "yo": "Ń ṣí dúkìá…",
+    "ig": "A na-ebunye ihe onwunwe…"
+  },
+  "staff": {
+    "en": "Staff",
+    "fr": "Personnel",
+    "ar": "الموظفون",
+    "ru": "Сотрудники",
+    "zh": "工作人员",
+    "ha": "Ma’aikata",
+    "yo": "Òṣìṣẹ́",
+    "ig": "Ndị ọrụ"
+  },
+  "saving…": {
+    "en": "Saving…",
+    "fr": "Enregistrement…",
+    "ar": "جارٍ الحفظ…",
+    "ru": "Сохранение…",
+    "zh": "正在保存…",
+    "ha": "Ana ajiyewa…",
+    "yo": "Ń fi pamọ́…",
+    "ig": "A na-echekwa…"
+  },
+  "select 2 to 5 languages, including nigerian pidgin.": {
+    "en": "Select 2 to 5 languages, including Nigerian Pidgin.",
+    "fr": "Sélectionnez 2 à 5 langues, dont le pidgin nigérian.",
+    "ar": "اختر من لغتين إلى خمس لغات، بما فيها لغة البيدجن النيجيرية.",
+    "ru": "Выберите от 2 до 5 языков, включая нигерийский пиджин.",
+    "zh": "请选择 2 至 5 种语言，其中必须包括尼日利亚皮钦语。",
+    "ha": "Zaɓi harsuna 2 zuwa 5, ciki har da Pidgin na Najeriya.",
+    "yo": "Yan èdè 2 sí 5, pẹ̀lú Pidgin Nàìjíríà.",
+    "ig": "Họrọ asụsụ 2 ruo 5, gụnyere Pidgin Naịjirịa."
+  },
+  "choose different languages from the list.": {
+    "en": "Choose different languages from the list.",
+    "fr": "Choisissez des langues différentes dans la liste.",
+    "ar": "اختر لغات مختلفة من القائمة.",
+    "ru": "Выберите разные языки из списка.",
+    "zh": "请从列表中选择不同的语言。",
+    "ha": "Zaɓi harsuna daban-daban daga jerin.",
+    "yo": "Yan àwọn èdè ọ̀tọ̀ọ̀tọ̀ nínú àtòjọ.",
+    "ig": "Họrọ asụsụ dị iche iche na ndepụta."
+  },
+  "choose speaking/understanding and reading/writing levels for every language.": {
+    "en": "Choose speaking/understanding and reading/writing levels for every language.",
+    "fr": "Choisissez les niveaux d’expression/compréhension orale et de lecture/écriture pour chaque langue.",
+    "ar": "حدد مستوى التحدث والفهم والقراءة والكتابة لكل لغة.",
+    "ru": "Выберите уровень разговорной речи/понимания и чтения/письма для каждого языка.",
+    "zh": "请为每种语言选择口语／理解和阅读／写作水平。",
+    "ha": "Zaɓi matakin magana/fahimta da karatu/rubutu na kowane harshe.",
+    "yo": "Yan ìpele sísọ/òye àti kíkà/kíkọ fún èdè kọ̀ọ̀kan.",
+    "ig": "Họrọ ogo ikwu okwu/nghọta na ịgụ/ide maka asụsụ ọ bụla."
+  },
+  "nigerian pidgin is required.": {
+    "en": "Nigerian Pidgin is required.",
+    "fr": "Le pidgin nigérian est obligatoire.",
+    "ar": "لغة البيدجن النيجيرية مطلوبة.",
+    "ru": "Нигерийский пиджин обязателен.",
+    "zh": "必须选择尼日利亚皮钦语。",
+    "ha": "Ana buƙatar Pidgin na Najeriya.",
+    "yo": "A nílò Pidgin Nàìjíríà.",
+    "ig": "Achọrọ Pidgin Naịjirịa."
+  },
+  "choose a support language from the list.": {
+    "en": "Choose a support language from the list.",
+    "fr": "Choisissez une langue d’assistance dans la liste.",
+    "ar": "اختر لغة الدعم من القائمة.",
+    "ru": "Выберите язык поддержки из списка.",
+    "zh": "请从列表中选择支持语言。",
+    "ha": "Zaɓi harshen tallafi daga jerin.",
+    "yo": "Yan èdè ìrànlọ́wọ́ nínú àtòjọ.",
+    "ig": "Họrọ asụsụ enyemaka na ndepụta."
+  },
+  "head office": {
+    "en": "Head office",
+    "fr": "Siège social",
+    "ar": "المكتب الرئيسي",
+    "ru": "Головной офис",
+    "zh": "总部",
+    "ha": "Babban ofishi",
+    "yo": "Olú ilé iṣẹ́",
+    "ig": "Isi ụlọ ọrụ"
+  },
+  "branch office": {
+    "en": "Branch office",
+    "fr": "Agence",
+    "ar": "المكتب الفرعي",
+    "ru": "Филиал",
+    "zh": "分部",
+    "ha": "Ofishin reshe",
+    "yo": "Ẹ̀ka ilé iṣẹ́",
+    "ig": "Ụlọ ọrụ alaka"
+  },
+  "dispute support": {
+    "en": "Dispute support",
+    "fr": "Assistance en cas de litige",
+    "ar": "دعم النزاعات",
+    "ru": "Помощь в разрешении споров",
+    "zh": "纠纷支持",
+    "ha": "Tallafin sasanta rikici",
+    "yo": "Ìrànlọ́wọ́ lórí awuyewuye",
+    "ig": "Enyemaka maka esemokwu"
+  },
+  "create a new listing": {
+    "en": "Create a new listing",
+    "fr": "Créer une nouvelle annonce",
+    "ar": "إنشاء إعلان جديد",
+    "ru": "Создать новое объявление",
+    "zh": "创建新房源",
+    "ha": "Ƙirƙiri sabon talla",
+    "yo": "Ṣẹ̀dá ìpolówó tuntun",
+    "ig": "Mepụta mgbasa ozi ọhụrụ"
+  },
+  "open authenticator app": {
+    "en": "Open authenticator app",
+    "fr": "Ouvrir l’application d’authentification",
+    "ar": "فتح تطبيق المصادقة",
+    "ru": "Открыть приложение-аутентификатор",
+    "zh": "打开身份验证器应用",
+    "ha": "Buɗe manhajar tabbatarwa",
+    "yo": "Ṣí ohun èlò ìmúdájú",
+    "ig": "Mepee ngwa nkwenye"
+  },
+  "copy the setup key above into your authenticator app": {
+    "en": "Copy the setup key above into your authenticator app",
+    "fr": "Copiez la clé de configuration ci-dessus dans votre application d’authentification",
+    "ar": "انسخ مفتاح الإعداد أعلاه إلى تطبيق المصادقة",
+    "ru": "Скопируйте ключ настройки выше в приложение-аутентификатор",
+    "zh": "将上方设置密钥复制到您的身份验证器应用",
+    "ha": "Kwafi maɓallin saitin da ke sama zuwa manhajarku ta tabbatarwa",
+    "yo": "Da kọ́kọ́rọ́ ètò tó wà lókè kọ sínú ohun èlò ìmúdájú rẹ",
+    "ig": "Detuo igodo nhazi dị n’elu n’ime ngwa nkwenye gị"
+  },
+  "service tracking centre": {
+    "en": "Service Tracking Centre",
+    "fr": "Centre de suivi des services",
+    "ar": "مركز تتبع الخدمات",
+    "ru": "Центр отслеживания услуг",
+    "zh": "服务跟踪中心",
+    "ha": "Cibiyar sa ido kan ayyuka",
+    "yo": "Àárín ìtọpinpin iṣẹ́",
+    "ig": "Ebe nlekota ọrụ"
+  },
+  "real-time movement, eta & safety protocols": {
+    "en": "Real-time movement, ETA & safety protocols",
+    "fr": "Déplacements en direct, arrivée estimée et consignes de sécurité",
+    "ar": "الحركة المباشرة ووقت الوصول المتوقع وإجراءات السلامة",
+    "ru": "Движение в реальном времени, время прибытия и правила безопасности",
+    "zh": "实时动态、预计到达时间和安全规范",
+    "ha": "Motsi kai tsaye, lokacin isowa da ƙa’idojin tsaro",
+    "yo": "Ìrìnàjò ní àsìkò gidi, àkókò ìdé àti ìlànà ààbò",
+    "ig": "Mmegharị ozugbo, oge mbata na usoro nchekwa"
+  },
+  "🚚 relocation": {
+    "en": "🚚 Relocation",
+    "fr": "🚚 Déménagement",
+    "ar": "🚚 نقل الأثاث",
+    "ru": "🚚 Переезд",
+    "zh": "🚚 搬家",
+    "ha": "🚚 Ƙaura",
+    "yo": "🚚 Ìṣípò ilé",
+    "ig": "🚚 Ịkwaga ụlọ"
+  },
+  "💨 fumigation": {
+    "en": "💨 Fumigation",
+    "fr": "💨 Désinsectisation",
+    "ar": "💨 مكافحة الآفات",
+    "ru": "💨 Дезинсекция",
+    "zh": "💨 熏蒸除虫",
+    "ha": "💨 Feshin maganin ƙwari",
+    "yo": "💨 Fífún ilé ní oògùn kòkòrò",
+    "ig": "💨 Ịgba ọgwụ ụmụ ahụhụ"
+  },
+  "fetching active trips & telemetry...": {
+    "en": "Fetching active trips & telemetry...",
+    "fr": "Chargement des trajets actifs et des données de suivi...",
+    "ar": "جارٍ تحميل الرحلات النشطة وبيانات التتبع...",
+    "ru": "Загрузка активных поездок и данных отслеживания...",
+    "zh": "正在获取进行中的行程和跟踪数据……",
+    "ha": "Ana ɗauko tafiye-tafiye masu gudana da bayanan sa ido...",
+    "yo": "Ń gba ìrìnàjò tó ń lọ àti àlàyé ìtọpinpin...",
+    "ig": "A na-ebunye njem na-aga na ozi nlekota..."
+  },
+  "no active services found": {
+    "en": "No Active Services Found",
+    "fr": "Aucun service actif trouvé",
+    "ar": "لم يتم العثور على خدمات نشطة",
+    "ru": "Активные услуги не найдены",
+    "zh": "未找到进行中的服务",
+    "ha": "Ba a samu ayyuka masu gudana ba",
+    "yo": "Kò sí iṣẹ́ tó ń lọ lọ́wọ́",
+    "ig": "Achọtaghị ọrụ na-aga n’ihu"
+  },
+  "book a relocation trip or professional fumigation session to track live here.": {
+    "en": "Book a relocation trip or professional fumigation session to track live here.",
+    "fr": "Réservez un déménagement ou une intervention professionnelle de désinsectisation pour suivre son déroulement ici.",
+    "ar": "احجز خدمة نقل أثاث أو مكافحة آفات متخصصة لتتبعها مباشرة هنا.",
+    "ru": "Закажите переезд или профессиональную дезинсекцию, чтобы отслеживать выполнение здесь.",
+    "zh": "预约搬家或专业熏蒸除虫服务，即可在此实时跟踪。",
+    "ha": "Yi ajiyar sabis na ƙaura ko feshin maganin ƙwari na ƙwararru don bin diddigi kai tsaye a nan.",
+    "yo": "Ṣètò iṣẹ́ ìṣípò ilé tàbí fífún ilé ní oògùn kòkòrò lọ́dọ̀ amọ̀ṣẹ́ṣe láti tọpinpin rẹ̀ níbí.",
+    "ig": "Debe njem ịkwaga ụlọ ma ọ bụ ọrụ ịgba ọgwụ ụmụ ahụhụ nke ọkachamara ka ị hụ nlekota ya ozugbo ebe a."
+  },
+  "no relocation requests currently active.": {
+    "en": "No relocation requests currently active.",
+    "fr": "Aucune demande de déménagement n’est active actuellement.",
+    "ar": "لا توجد طلبات نقل أثاث نشطة حاليًا.",
+    "ru": "Сейчас нет активных заявок на переезд.",
+    "zh": "目前没有进行中的搬家申请。",
+    "ha": "Babu buƙatun ƙaura da ke gudana yanzu.",
+    "yo": "Kò sí ìbéèrè ìṣípò ilé tó ń lọ lọ́wọ́ báyìí.",
+    "ig": "Enweghị arịrịọ ịkwaga ụlọ na-aga n’ihu ugbu a."
+  },
+  "no fumigation requests currently active.": {
+    "en": "No fumigation requests currently active.",
+    "fr": "Aucune demande de désinsectisation n’est active actuellement.",
+    "ar": "لا توجد طلبات مكافحة آفات نشطة حاليًا.",
+    "ru": "Сейчас нет активных заявок на дезинсекцию.",
+    "zh": "目前没有进行中的熏蒸除虫申请。",
+    "ha": "Babu buƙatun feshin maganin ƙwari da ke gudana yanzu.",
+    "yo": "Kò sí ìbéèrè fífún ilé ní oògùn kòkòrò tó ń lọ lọ́wọ́ báyìí.",
+    "ig": "Enweghị arịrịọ ịgba ọgwụ ụmụ ahụhụ na-aga n’ihu ugbu a."
+  },
+  "🚚 logistics": {
+    "en": "🚚 LOGISTICS",
+    "fr": "🚚 LOGISTIQUE",
+    "ar": "🚚 النقل",
+    "ru": "🚚 ЛОГИСТИКА",
+    "zh": "🚚 物流",
+    "ha": "🚚 Sufuri",
+    "yo": "🚚 Ìrìnnà",
+    "ig": "🚚 Mbupu"
+  },
+  "assigned crew": {
+    "en": "Assigned Crew",
+    "fr": "Équipe affectée",
+    "ar": "الفريق المكلّف",
+    "ru": "Назначенная бригада",
+    "zh": "指派团队",
+    "ha": "Rukunin da aka naɗa",
+    "yo": "Ẹgbẹ́ tí a yàn",
+    "ig": "Ndị ọrụ a họpụtara"
+  },
+  "contact via platform": {
+    "en": "Contact via platform",
+    "fr": "Contacter via la plateforme",
+    "ar": "التواصل عبر المنصة",
+    "ru": "Связаться через платформу",
+    "zh": "通过平台联系",
+    "ha": "Tuntuɓa ta dandamali",
+    "yo": "Kàn sí wọn nípasẹ̀ pẹpẹ",
+    "ig": "Kpọtụrụ site na ikpo okwu"
+  },
+  "service destination:": {
+    "en": "Service Destination:",
+    "fr": "Lieu de l’intervention :",
+    "ar": "وجهة الخدمة:",
+    "ru": "Место оказания услуги:",
+    "zh": "服务目的地：",
+    "ha": "Wurin zuwa don sabis:",
+    "yo": "Ibi tí iṣẹ́ yóò ti wáyé:",
+    "ig": "Ebe ọrụ a ga-eme:"
+  },
+  "gps active": {
+    "en": "GPS Active",
+    "fr": "GPS actif",
+    "ar": "GPS نشط",
+    "ru": "GPS активен",
+    "zh": "GPS 已启用",
+    "ha": "GPS yana aiki",
+    "yo": "GPS ń ṣiṣẹ́",
+    "ig": "GPS na-arụ ọrụ"
+  },
+  "track live ➔": {
+    "en": "Track Live ➔",
+    "fr": "Suivre en direct ➔",
+    "ar": "تتبع مباشر ➔",
+    "ru": "Отслеживать онлайн ➔",
+    "zh": "实时跟踪 ➔",
+    "ha": "Bibiyi kai tsaye ➔",
+    "yo": "Tọpinpin ní àsìkò gidi ➔",
+    "ig": "Soro ozugbo ➔"
   }
 }

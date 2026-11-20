@@ -30,7 +30,7 @@ const WelcomeScreen = ({ navigation }) => {
   const careersCopy = recruitmentCopy[language] || recruitmentCopy.en;
 
   // Responsive device thresholds
-  const compact = height < 800 || width < 380;
+  const compact = height < 720;
   const short = height < 700;
   const tiny = height < 620;
   const stackCareers = width < 350 || fontScale > 1.25;
@@ -451,11 +451,12 @@ const styles = StyleSheet.create({
   },
   bodyScrollContent: {
     justifyContent: 'flex-start',
-    gap: 18,
+    gap: 24,
     paddingTop: 12,
     paddingBottom: 24,
   },
   bodyScrollContentCompact: {
+    gap: 18,
     paddingTop: 8,
     paddingBottom: 14,
   },

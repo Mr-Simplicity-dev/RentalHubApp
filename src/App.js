@@ -25,9 +25,9 @@ import { trackMobileEvent } from './services/mobileDiagnosticsService';
 import { checkForAppUpdate } from './services/appUpdateService';
 import { AuthContext } from './context/AuthContext';
 
-const APP_INTRO_DURATION_MS = 1600;
+const APP_INTRO_DURATION_MS = 3200;
 
-export const AppContent = () => {
+export const AppContent = ({ fontsReady = true } = {}) => {
   const {
     isAuthenticated,
     isImpersonating,
@@ -37,9 +37,10 @@ export const AppContent = () => {
   const [showSplash, setShowSplash] = useState(true);
 
   useEffect(() => {
+    if (!fontsReady) return undefined;
     const timer = setTimeout(() => setShowSplash(false), APP_INTRO_DURATION_MS);
     return () => clearTimeout(timer);
-  }, []);
+  }, [fontsReady]);
 
   useEffect(() => {
     trackMobileEvent('app_opened', { source: 'native_app_root' });
@@ -76,8 +77,8 @@ export const AppContent = () => {
     user?.user_type,
   ]);
 
-  if (showSplash || authLoading) {
-    return <BrandSplash duration={APP_INTRO_DURATION_MS} showProgressPercent={false} />;
+  if (showSplash || authLoading || !fontsReady) {
+    return <BrandSplash duration={APP_INTRO_DURATION_MS} fontsReady={fontsReady} showProgressPercent={false} />;
   }
 
   return (
@@ -104,18 +105,16 @@ const App = () => {
     'Inter-Bold': require('../assets/fonts/Inter-Bold.ttf'),
   });
 
-  if (!fontsLoaded && !fontError) return null;
-
   return (
     <AppErrorBoundary>
       <SafeAreaProvider>
         <TypographyProvider>
           <AuthProvider>
-            <LanguageProvider>
+            <LanguageProvider fallback={<BrandSplash fontsReady={false} />}>
               <RealtimeProvider>
                 <NotificationProvider>
                   <TourProvider>
-                    <AppContent />
+                    <AppContent fontsReady={fontsLoaded || Boolean(fontError)} />
                   </TourProvider>
                 </NotificationProvider>
               </RealtimeProvider>

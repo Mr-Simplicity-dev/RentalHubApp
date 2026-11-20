@@ -9,14 +9,14 @@ const catalog=require('../src/i18n/catalog.cjs');
 const compile=file=>transformSync(fs.readFileSync(path.join(root,file),'utf8'),{configFile:false,babelrc:false,plugins:['@babel/plugin-transform-modules-commonjs','@babel/plugin-transform-react-jsx']}).code;
 const flush=()=>new Promise(resolve=>setImmediate(resolve));
 const flatten=style=>Array.isArray(style)?Object.assign({},...style.map(flatten)):style||{};
-function providerHarness({nativeRTL=false,stored='en',failRead=false,failWrite=false,user=null}={}){
+function providerHarness({nativeRTL=false,stored='en',failRead=false,failWrite=false,user=null,fallback=null}={}){
  const slots=[];let cursor=0,effects=[];const calls=[],writes=[];
  const react={...React,useContext:()=>({user}),useState(initial){const index=cursor++;if(!(index in slots))slots[index]=typeof initial==='function'?initial():initial;return[slots[index],value=>{slots[index]=typeof value==='function'?value(slots[index]):value;}];},useRef(initial){const [ref]=this.useState({current:initial});return ref;},useEffect(fn,deps){const index=cursor++,previous=slots[index];if(!previous||deps.some((value,i)=>value!==previous[i]))effects.push(fn);slots[index]=deps;},useMemo:fn=>fn(),useCallback:fn=>fn};
  react.useRef=initial=>{const index=cursor++;if(!(index in slots))slots[index]={current:initial};return slots[index];};
  const storage={getItem:async()=>{if(failRead)throw Error('read');return stored;},setItem:async(key,value)=>{await flush();if(failWrite)throw Error('write');stored=value;writes.push(value);}};
  const manager={isRTL:nativeRTL,allowRTL:value=>calls.push(['allowRTL',value]),forceRTL:value=>calls.push(['forceRTL',value]),swapLeftAndRightInRTL:value=>calls.push(['swap',value])};
  const module={exports:{}};vm.runInNewContext(compile('src/context/LanguageContext.js'),{exports:module.exports,module,require:name=>name.includes('AuthContext')?{AuthContext:{}}:name.includes('interfaceRuntime')?require('../src/i18n/interfaceRuntime.cjs'):name==='react'?react:name==='react-native'?{I18nManager:manager,View:'View'}:name.includes('async-storage')?{__esModule:true,default:storage}:catalog});
- const render=()=>{cursor=0;effects=[];const tree=module.exports.LanguageProvider({children:React.createElement('Form',{value:'preserved'})});effects.forEach(fn=>fn());return tree;};
+ const render=()=>{cursor=0;effects=[];const tree=module.exports.LanguageProvider({children:React.createElement('Form',{value:'preserved'}),fallback});effects.forEach(fn=>fn());return tree;};
  return{render,calls,writes,getStored:()=>stored};
 }
 const visit=(node,fn)=>{if(!node||typeof node!=='object')return;if(Array.isArray(node))return node.forEach(child=>visit(child,fn));if(!node.props)return;fn(node);visit(node.props.children,fn);};
@@ -72,7 +72,7 @@ function welcome(language,width=375,height=812,fontScale=1){
  for(const [button,route]of [[explore,'Home'],[createButton,'Register'],[login,'Login'],[careerButton,'Careers']]){
   const count=routes.length;button.props.onPress();button.props.onPress();assert.equal(routes.length,count+1);assert.equal(routes.at(-1),route);timers.splice(0).forEach(fn=>fn());
  }
- return {rootDirection:flatten(tree.props.style).direction,exploreStyle:flatten(explore.props.style),hintStyles:hints.map(node=>{const {transform,...style}=flatten(node.props.style);return style;}),icons,careerMinHeight:flatten(careerButton.props.style).minHeight};
+ return {rootDirection:flatten(tree.props.style).direction,exploreStyle:flatten(explore.props.style),hintStyles:hints.map(node=>{const {transform,...style}=flatten(node.props.style);return style;}),icons,careerMinHeight:flatten(careerButton.props.style).minHeight,titleFontSize:flatten(title.props.style).fontSize,sectionGap:flatten(scroll.props.contentContainerStyle).gap};
 }
 async function languageDropdown(){
  const changes=[],react={...React,useMemo:fn=>fn(),useState:value=>[value,()=>{}]};
@@ -104,6 +104,7 @@ async function languageDropdown(){
  assert.deepEqual(changes,['ar']);
 }
 (async()=>{
+ const loadingBrand=React.createElement('BrandSplash');const pendingLanguage=providerHarness({fallback:loadingBrand});assert.equal(pendingLanguage.render().type,'BrandSplash');await flush();assert.equal(pendingLanguage.render().props.children.props.children.props.value,'preserved');
  await languageDropdown();
  for(const nativeRTL of [false,true]){
   const harness=providerHarness({nativeRTL});harness.render();await flush();let tree=harness.render();
@@ -114,14 +115,15 @@ async function languageDropdown(){
  }
  for(const options of [{failRead:true},{failWrite:true}]){const harness=providerHarness(options);harness.render();await flush();let tree=harness.render();await tree.props.value.setLanguage('ar');tree=harness.render();assert.equal(tree.props.value.language,'ar');}
  for(const role of ['admin','super_admin','state_support_admin','recruitment_admin']){const harness=providerHarness({stored:'yo',user:{user_type:role}});harness.render();await flush();let tree=harness.render();assert.equal(tree.props.value.language,'en');assert.equal(tree.props.value.languageSelectionEnabled,false);await tree.props.value.setLanguage('ha');tree=harness.render();assert.equal(tree.props.value.language,'en');assert.equal(harness.getStored(),'yo');}
- for(const [width,height] of [[320,568],[360,640],[375,812],[390,844],[412,915],[430,1000],[768,600]])for(const {code}of catalog.SUPPORTED_LANGUAGES)for(const fontScale of [1,1.5])welcome(code,width,height,fontScale);
+ for(const [width,height] of [[320,568],[360,640],[360,744],[375,812],[390,844],[412,915],[430,1000],[768,600]])for(const {code}of catalog.SUPPORTED_LANGUAGES)for(const fontScale of [1,1.5])welcome(code,width,height,fontScale);
  assert.ok(welcome('en',390,800).careerMinHeight>=64&&welcome('en',390,800).careerMinHeight<=80);
  assert.ok(welcome('en',360,720).careerMinHeight>=64&&welcome('en',360,720).careerMinHeight<=80);
  assert.ok(welcome('en',320,640).careerMinHeight>=64&&welcome('en',320,640).careerMinHeight<=80);
+ assert.equal(welcome('en',360,744).titleFontSize,36);assert.equal(welcome('en',360,744).sectionGap,24);assert.equal(welcome('en',360,640).titleFontSize,28);
  assert.equal(JSON.stringify(welcome('en')),JSON.stringify(welcome('ar')));assert.equal(JSON.stringify(welcome('ar')),JSON.stringify(welcome('en')));
  const android=fs.readFileSync(path.join(root,'android/app/src/main/java/com/rentalhubng/MainApplication.kt'),'utf8');const ios=fs.readFileSync(path.join(root,'ios/RentalHubMobile/AppDelegate.mm'),'utf8');
  assert.ok(android.indexOf('forceRTL(this@MainApplication, false)')<android.indexOf('SoLoader.init'));assert.ok(ios.indexOf('forceRTL:NO')<ios.indexOf('return [super application:'));
  console.log('Language round-trip behavior passed for all 8 locales with both old native direction states, rapid changes and storage failures.');
  console.log('Welcome Explore controls, arrow direction and yellow hint geometry stay unchanged while text translates. Native startup clears persisted mirroring before React loads.');
- console.log('Welcome compact flow verified at seven screen sizes and two font scales across eight locales; Home, Register, Login and Careers handlers and navigation debounce passed.');
+ console.log('Welcome compact flow verified at eight screen sizes and two font scales across eight locales; Home, Register, Login and Careers handlers and navigation debounce passed.');
 })().catch(error=>{console.error(error);process.exitCode=1;});

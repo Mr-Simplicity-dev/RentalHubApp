@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
+import Text from '../../components/common/AppText';
 import {
   View,
-  Text,
   TouchableOpacity,
   ScrollView,
   RefreshControl,
@@ -12,6 +14,7 @@ import {
 import serviceTrackingService from '../../services/serviceTrackingService';
 
 export default function ServiceTrackingCentreScreen({ navigation }) {
+  useInterfaceLanguage();
   const [filter, setFilter] = useState('all');
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -69,8 +72,8 @@ export default function ServiceTrackingCentreScreen({ navigation }) {
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.title}>Service Tracking Centre</Text>
-        <Text style={styles.subtitle}>Real-time movement, ETA &amp; safety protocols</Text>
+        <Text style={styles.title}>{ui('Service Tracking Centre')}</Text>
+        <Text style={styles.subtitle}>{ui('Real-time movement, ETA & safety protocols')}</Text>
       </View>
 
       {/* Filter Tabs */}
@@ -82,7 +85,7 @@ export default function ServiceTrackingCentreScreen({ navigation }) {
             style={[styles.tabButton, filter === tab && styles.tabButtonActive]}
           >
             <Text style={[styles.tabText, filter === tab && styles.tabTextActive]}>
-              {tab === 'all' ? 'All Services' : tab === 'transportation' ? '🚚 Relocation' : '💨 Fumigation'}
+              {tab === 'all' ? ui('All Services') : tab === 'transportation' ? ui('🚚 Relocation') : ui('💨 Fumigation')}
             </Text>
           </TouchableOpacity>
         ))}
@@ -92,7 +95,7 @@ export default function ServiceTrackingCentreScreen({ navigation }) {
       {loading && !refreshing ? (
         <View style={styles.centerContainer}>
           <ActivityIndicator size="large" color="#0284c7" />
-          <Text style={styles.loadingText}>Fetching active trips &amp; telemetry...</Text>
+          <Text style={styles.loadingText}>{ui('Fetching active trips & telemetry...')}</Text>
         </View>
       ) : (
         <ScrollView
@@ -102,11 +105,11 @@ export default function ServiceTrackingCentreScreen({ navigation }) {
           {services.length === 0 ? (
             <View style={styles.emptyContainer}>
               <Text style={styles.emptyIcon}>🛰️</Text>
-              <Text style={styles.emptyTitle}>No Active Services Found</Text>
+              <Text style={styles.emptyTitle}>{ui('No Active Services Found')}</Text>
               <Text style={styles.emptySubtitle}>
                 {filter === 'all'
-                  ? 'Book a relocation trip or professional fumigation session to track live here.'
-                  : `No ${filter} requests currently active.`}
+                  ? ui('Book a relocation trip or professional fumigation session to track live here.')
+                  : filter === 'transportation' ? ui('No relocation requests currently active.') : ui('No fumigation requests currently active.')}
               </Text>
             </View>
           ) : (
@@ -121,12 +124,12 @@ export default function ServiceTrackingCentreScreen({ navigation }) {
                   <View style={styles.badgeRow}>
                     <View style={[styles.typeBadge, { backgroundColor: item.service_type === 'fumigation' ? '#ecfdf5' : '#f0f9ff' }]}>
                       <Text style={[styles.typeBadgeText, { color: item.service_type === 'fumigation' ? '#047857' : '#0369a1' }]}>
-                        {item.service_type === 'fumigation' ? '💨 FUMIGATION' : '🚚 LOGISTICS'}
+                        {item.service_type === 'fumigation' ? ui('💨 FUMIGATION') : ui('🚚 LOGISTICS')}
                       </Text>
                     </View>
                     <View style={[styles.statusBadge, { backgroundColor: `${getStatusColor(item.tracking_status)}15` }]}>
                       <Text style={[styles.statusBadgeText, { color: getStatusColor(item.tracking_status) }]}>
-                        {String(item.tracking_status || item.booking_status).replace(/_/g, ' ').toUpperCase()}
+                        {ui(String(item.tracking_status || item.booking_status).replace(/_/g, ' ').toUpperCase())}
                       </Text>
                     </View>
                   </View>
@@ -139,16 +142,16 @@ export default function ServiceTrackingCentreScreen({ navigation }) {
                 <View style={styles.personRow}>
                   <Text style={styles.personEmoji}>{item.service_type === 'fumigation' ? '👨‍🔬' : '👨‍✈️'}</Text>
                   <View style={styles.personInfo}>
-                    <Text style={styles.personName}>{item.driver_name || item.team_name || 'Assigned Crew'}</Text>
-                    <Text style={styles.personPhone}>{item.driver_phone || item.team_phone || 'Contact via platform'}</Text>
+                    <Text style={styles.personName}>{item.driver_name || item.team_name || ui('Assigned Crew')}</Text>
+                    <Text style={styles.personPhone}>{item.driver_phone || item.team_phone || ui('Contact via platform')}</Text>
                   </View>
                 </View>
 
                 {/* Destination */}
                 <View style={styles.locationContainer}>
-                  <Text style={styles.locationLabel}>Service Destination:</Text>
+                  <Text style={styles.locationLabel}>{ui('Service Destination:')}</Text>
                   <Text style={styles.locationAddress} numberOfLines={2}>
-                    {item.destination_address || item.property_address || 'Property location'}
+                    {item.destination_address || item.property_address || ui('Property location')}
                   </Text>
                 </View>
 
@@ -156,10 +159,10 @@ export default function ServiceTrackingCentreScreen({ navigation }) {
                 <View style={styles.actionRow}>
                   <View style={styles.liveIndicator}>
                     <View style={styles.liveDot} />
-                    <Text style={styles.liveText}>GPS Active</Text>
+                    <Text style={styles.liveText}>{ui('GPS Active')}</Text>
                   </View>
                   <View style={styles.openButton}>
-                    <Text style={styles.openButtonText}>Track Live ➔</Text>
+                    <Text style={styles.openButtonText}>{ui('Track Live ➔')}</Text>
                   </View>
                 </View>
               </TouchableOpacity>

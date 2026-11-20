@@ -202,6 +202,8 @@ const HomeScreen = ({ navigation }) => {
             placeholderTextColor="#909CB2"
             style={styles.searchInput}
             returnKeyType="search"
+            multiline={false}
+            numberOfLines={1}
             selectionColor={colors.blue}
             onSubmitEditing={submitSearch}
           />
@@ -489,11 +491,13 @@ const styles = StyleSheet.create({
   searchInput: {
     color: colors.ink,
     flex: 1,
+    minWidth: 0,
     fontFamily: typography.regular,
     fontSize: typeScale.sm,
     lineHeight: 20,
     paddingHorizontal: 11,
-    paddingVertical: 15,
+    paddingVertical: 10,
+    textAlignVertical: 'center',
   },
   searchButton: {
     alignItems: 'center',
