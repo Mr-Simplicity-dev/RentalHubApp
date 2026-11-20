@@ -1,4 +1,34 @@
 {
+  "could not restore survey progress. please retry.": {
+    "en": "Could not restore survey progress. Please retry.",
+    "fr": "Impossible de restaurer votre progression. Veuillez réessayer.",
+    "ar": "تعذرت استعادة تقدم الاستبيان. يرجى المحاولة مرة أخرى.",
+    "ru": "Не удалось восстановить ответы опроса. Повторите попытку.",
+    "zh": "无法恢复问卷进度。请重试。",
+    "ha": "An kasa dawo da inda ka tsaya a binciken. Ka sake gwadawa.",
+    "yo": "A kò lè mú ìdáhùn ìwádìí rẹ padà. Jọ̀wọ́ tún gbìyànjú.",
+    "ig": "Enweghị ike iweghachi azịza nyocha gị. Biko nwaa ọzọ."
+  },
+  "could not save survey progress. please retry.": {
+    "en": "Could not save survey progress. Please retry.",
+    "fr": "Impossible d’enregistrer votre progression. Veuillez réessayer.",
+    "ar": "تعذر حفظ تقدم الاستبيان. يرجى المحاولة مرة أخرى.",
+    "ru": "Не удалось сохранить ответы опроса. Повторите попытку.",
+    "zh": "无法保存问卷进度。请重试。",
+    "ha": "An kasa adana amsoshin binciken. Ka sake gwadawa.",
+    "yo": "A kò lè fi ìdáhùn ìwádìí rẹ pamọ́. Jọ̀wọ́ tún gbìyànjú.",
+    "ig": "Enweghị ike ichekwa azịza nyocha gị. Biko nwaa ọzọ."
+  },
+  "enter your location and state of origin.": {
+    "en": "Enter your location and state of origin.",
+    "fr": "Indiquez votre lieu de résidence et votre État d’origine.",
+    "ar": "أدخل مكان إقامتك وولايتك الأصلية.",
+    "ru": "Укажите место проживания и штат происхождения.",
+    "zh": "请输入居住地和原籍州。",
+    "ha": "Shigar da inda kake zama da jihar asalinka.",
+    "yo": "Tẹ ibi tí o ń gbé àti ìpínlẹ̀ ìbílẹ̀ rẹ sílẹ̀.",
+    "ig": "Tinye ebe i bi na steeti i si."
+  },
   "loading...": {
     "en": "Loading...",
     "fr": "Chargement...",

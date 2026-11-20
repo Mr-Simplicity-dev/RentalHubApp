@@ -95,9 +95,7 @@ const PublicSurveyScreen = ({ navigation }) => {
     return()=>clearTimeout(timer);
   },[step,type,answers,contact,stateName,lgaName]);
 
-  if (step === 'flags') {
-    return <PremiumCenter loading title={ui("Checking survey")} />;
-  }
+
 
   const onGateToken = async (token) => {
     setError('');
@@ -238,6 +236,8 @@ const PublicSurveyScreen = ({ navigation }) => {
       setSubmitting(false);
     }
   };
+
+  if (step === 'flags') return <PremiumCenter loading title={ui("Checking survey")} />;
 
   if (step === 'closed') {
     return (

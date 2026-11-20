@@ -153,6 +153,7 @@ const AdminUserDetailScreen = ({ route, navigation }) => {
           </PremiumCard>
         ) : null}
       </PremiumScreen>
+      <OperationNoteModal visible={reviewVisible} title="Review identity approval" label="Approval note" confirmText="Verify identity" message={getIdentityRequirements(user).ready ? "Review the evidence and explain your decision." : "Missing: "+getIdentityRequirements(user).missing.join(" and ")+". The user must complete this in Profile before approval."} loading={reviewing} onCancel={()=>setReviewVisible(false)} onConfirm={verifyIdentity} />
       <OperationNoteModal
         visible={disablePromptVisible}
         title={"Disable user account"}
