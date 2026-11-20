@@ -202,8 +202,6 @@ const HomeScreen = ({ navigation }) => {
             placeholderTextColor="#909CB2"
             style={styles.searchInput}
             returnKeyType="search"
-            multiline={false}
-            numberOfLines={1}
             selectionColor={colors.blue}
             onSubmitEditing={submitSearch}
           />
