@@ -51,11 +51,14 @@ test('Android 12 inherits the branded window background during React startup',()
  const splash=fs.readFileSync(path.join(__dirname,'../src/components/brand/BrandSplash.js'),'utf8');
  assert.ok(!splash.includes('copyOpacity'));
 });
-test('native screen restoration is configured before React starts, with no second navigator splash',()=>{
+test('native restoration runs before React; link loading uses branding without a second timed intro',()=>{
  const activity=fs.readFileSync(path.join(__dirname,'../android/app/src/main/java/com/rentalhubng/MainActivity.kt'),'utf8');
  assert.ok(activity.indexOf('supportFragmentManager.fragmentFactory = RNScreensFragmentFactory()')<activity.indexOf('super.onCreate(savedInstanceState)'));
  assert.ok(!activity.includes('setKeepOnScreenCondition'));
- const navigation=fs.readFileSync(path.join(__dirname,'../src/navigation/AppNavigator.js'),'utf8');assert.ok(!navigation.includes('BrandSplash'));assert.ok(!navigation.includes('flashHeld'));
+ const navigation=fs.readFileSync(path.join(__dirname,'../src/navigation/AppNavigator.js'),'utf8');
+ assert.match(navigation,/fallback=\{<BrandSplash showProgressPercent=\{false\} \/>\}/);
+ assert.ok(!navigation.includes('flashHeld'));
+ assert.ok(!navigation.includes('2600'));
 });
 function updateService(request){
  const module={exports:{}};vm.runInNewContext(compile('src/services/appUpdateService.js'),{module,exports:module.exports,Date,URL,require:name=>{

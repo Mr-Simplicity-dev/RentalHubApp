@@ -5,7 +5,8 @@ import SupportLanguageScreen from '../screens/shared/SupportLanguageScreen';
 import { translateUi as ui } from '../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../i18n/useInterfaceLanguage';
 import React, { useContext, useEffect } from 'react';
-import { ActivityIndicator, AppState, BackHandler, Linking, Platform } from 'react-native';
+import { AppState, BackHandler, Linking, Platform } from 'react-native';
+import BrandSplash from '../components/brand/BrandSplash';
 import { NavigationContainer } from '@react-navigation/native';
 import { navigationRef } from './navigationRef';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -1157,7 +1158,7 @@ const AppNavigator = () => {
       key={isAuthenticated ? 'authenticated' : 'guest'}
       ref={navigationRef}
       linking={linkingConfig}
-      fallback={<ActivityIndicator />}>
+      fallback={<BrandSplash showProgressPercent={false} />}>
       {isAuthenticated ? user?.registration_payment_required ? <Stack.Navigator screenOptions={{headerShown:false}}><Stack.Screen name="RegistrationPayment" component={RegistrationPaymentScreen}/></Stack.Navigator> : <RoleRouter userType={user?.user_type} /> : <GuestStack />}
     </NavigationContainer>
   );
