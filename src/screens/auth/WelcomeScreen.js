@@ -26,7 +26,7 @@ const CAREER_GLOW_DURATION = 7200;
 
 const WelcomeScreen = ({ navigation }) => {
   const { height, width, fontScale = 1 } = useWindowDimensions();
-  const { isRTL, t, textAlign, language } = useLanguage();
+  const { isRTL, t, language } = useLanguage();
   const careersCopy = recruitmentCopy[language] || recruitmentCopy.en;
 
   // Responsive device thresholds
@@ -181,7 +181,7 @@ const WelcomeScreen = ({ navigation }) => {
               accessibilityRole="button"
               accessibilityLabel={t('welcome.exploreHint')}
               onPress={() => navigateOnce('Home')}
-              style={[styles.exploreHintWrap, compact && styles.exploreHintWrapCompact, isRTL && styles.exploreHintWrapRTL]}
+              style={[styles.exploreHintWrap, compact && styles.exploreHintWrapCompact]}
             >
               <View style={[styles.exploreArrow, compact && styles.exploreArrowCompact]} />
               <Animated.View
@@ -451,12 +451,12 @@ const styles = StyleSheet.create({
   },
   bodyScrollContent: {
     justifyContent: 'flex-start',
-    gap: 12,
-    paddingTop: 6,
-    paddingBottom: 18,
+    gap: 18,
+    paddingTop: 12,
+    paddingBottom: 24,
   },
   bodyScrollContentCompact: {
-    paddingTop: 4,
+    paddingTop: 8,
     paddingBottom: 14,
   },
   bodyScrollContentShort: {
@@ -522,11 +522,6 @@ const styles = StyleSheet.create({
     marginBottom: 6,
     paddingRight: 4,
   },
-  exploreHintWrapRTL: {
-    alignItems: 'flex-start',
-    paddingRight: 0,
-    paddingLeft: 6,
-  },
   exploreArrow: {
     borderBottomColor: colors.gold,
     borderBottomWidth: 8,
@@ -577,15 +572,15 @@ const styles = StyleSheet.create({
   languageRow: {
     width: '100%',
     marginTop: 2,
-    marginBottom: 14,
+    marginBottom: 8,
   },
   languageRowCompact: {
     marginTop: 2,
-    marginBottom: 10,
+    marginBottom: 6,
   },
   languageRowShort: {
     marginTop: 0,
-    marginBottom: 10,
+    marginBottom: 6,
   },
 
   // 2. Centered hero content
@@ -595,10 +590,10 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   heroGroupCompact: {
-    paddingVertical: 4,
+    paddingVertical: 6,
   },
   heroGroupShort: {
-    paddingVertical: 2,
+    paddingVertical: 4,
   },
   eyebrow: {
     maxWidth: '100%',
@@ -640,35 +635,35 @@ const styles = StyleSheet.create({
     width: '100%',
     color: colors.white,
     fontFamily: typography.bold,
-    fontSize: 32,
+    fontSize: 36,
     letterSpacing: -0.7,
-    lineHeight: 38,
+    lineHeight: 42,
   },
   titleCompact: {
-    fontSize: 27,
+    fontSize: 32,
     letterSpacing: -0.5,
-    lineHeight: 32,
+    lineHeight: 38,
   },
   titleShort: {
-    fontSize: 24,
-    lineHeight: 28,
+    fontSize: 28,
+    lineHeight: 34,
   },
   titleTiny: {
-    fontSize: 24,
-    lineHeight: 30,
+    fontSize: 26,
+    lineHeight: 32,
   },
   subtitle: {
     width: '100%',
     maxWidth: 360,
     color: '#B7C8E2',
     fontFamily: typography.regular,
-    fontSize: 14.5,
-    lineHeight: 21,
+    fontSize: 15,
+    lineHeight: 22,
     marginTop: 10,
   },
   subtitleCompact: {
-    fontSize: 13,
-    lineHeight: 18,
+    fontSize: 14,
+    lineHeight: 21,
     marginTop: 8,
   },
   subtitleShort: {
@@ -685,10 +680,10 @@ const styles = StyleSheet.create({
   // 3. Bottom Actions & Trust Group
   bottomGroup: {
     width: '100%',
-    paddingTop: 8,
+    paddingTop: 12,
   },
   bottomGroupCompact: {
-    paddingTop: 4,
+    paddingTop: 8,
   },
   bottomGroupShort: {
     paddingTop: 2,
@@ -710,7 +705,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderRadius: radius.md,
     flexDirection: 'row',
-    minHeight: 60,
+    minHeight: 64,
     justifyContent: 'center',
     paddingHorizontal: 48,
     paddingVertical: 10,
@@ -718,7 +713,7 @@ const styles = StyleSheet.create({
     ...shadows.soft,
   },
   primaryButtonCompact: {
-    minHeight: 56,
+    minHeight: 60,
     paddingHorizontal: 42,
     paddingVertical: 8,
   },
@@ -771,7 +766,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   secondaryButtonCompact: {
-    minHeight: 46,
+    minHeight: 50,
     paddingVertical: 8,
   },
   secondaryButtonShort: {
@@ -786,7 +781,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   secondaryTextCompact: {
-    fontSize: 13.5,
+    fontSize: 14,
     lineHeight: 18,
   },
   secondaryTextShort: {
@@ -861,16 +856,17 @@ const styles = StyleSheet.create({
     width: 4,
   },
   careerTitle: {
+    textAlign: 'center',
     color: colors.white,
     fontFamily: typography.semibold,
-    fontSize: 13.5,
+    fontSize: 14,
     lineHeight: 18,
     flex: 1,
     minWidth: 0,
     marginEnd: 8,
   },
   careerTitleCompact: {
-    fontSize: 13,
+    fontSize: 14,
     lineHeight: 18,
   },
   careerTitleShort: {

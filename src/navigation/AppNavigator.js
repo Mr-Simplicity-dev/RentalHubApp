@@ -4,7 +4,7 @@ import AdminConductScreen from '../screens/shared/AdminConductScreen';
 import SupportLanguageScreen from '../screens/shared/SupportLanguageScreen';
 import { translateUi as ui } from '../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../i18n/useInterfaceLanguage';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { ActivityIndicator, AppState, BackHandler, Linking, Platform } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { navigationRef } from './navigationRef';
@@ -14,7 +14,6 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
 import { AuthContext } from '../context/AuthContext';
-import BrandSplash from '../components/brand/BrandSplash';
 import { colors, typography, typeScale } from '../theme';
 import {
   getPendingPayment,
@@ -1080,7 +1079,7 @@ const RoleRouter = ({ userType }) => {
 
 const AppNavigator = () => {
   useInterfaceLanguage();
-  const { isAuthenticated, loading, user } = useContext(AuthContext);
+  const { isAuthenticated, user } = useContext(AuthContext);
 
   useEffect(() => {
     let recovering = false;
@@ -1147,21 +1146,9 @@ const AppNavigator = () => {
       }
       return false;
     };
-    BackHandler.addEventListener('hardwareBackPress', onBackPress);
-    return () => BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+    const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+    return () => subscription.remove();
   }, []);
-
-  // Hold the opening flash for a beat so the Amana mark is actually readable;
-  // it used to vanish the instant auth finished.
-  const [flashHeld, setFlashHeld] = useState(true);
-  useEffect(() => {
-    const timer = setTimeout(() => setFlashHeld(false), 2600);
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (loading || flashHeld) {
-    return <BrandSplash />;
-  }
 
   return (
     <NavigationContainer

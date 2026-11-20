@@ -90,7 +90,12 @@ async function languageDropdown(){
  const nodes=[];visit(module.exports.default({tone:'dark',fullWidth:true}),node=>nodes.push(node));
  const trigger=nodes.find(node=>node.props.accessibilityHint===catalog.UI_COPY.en['welcome.languageHelp']);
  assert.ok(flatten(trigger.props.style).paddingVertical<=12);
- assert.ok(flatten(trigger.props.style).minHeight>=70&&flatten(trigger.props.style).minHeight<=80);
+ assert.equal(flatten(trigger.props.style).minHeight,64);
+ const compactNodes=[];visit(module.exports.default({tone:'dark',fullWidth:true,compact:true}),node=>compactNodes.push(node));
+ const compactTrigger=compactNodes.find(node=>node.props.accessibilityHint===catalog.UI_COPY.en['welcome.languageHelp']);
+ assert.equal(flatten(compactTrigger.props.style).minHeight,60);
+ assert.ok(flatten(compactTrigger.props.style).minHeight<flatten(trigger.props.style).minHeight);
+ assert.ok(flatten(compactTrigger.props.style).minHeight>=48);
  assert.equal(trigger.props.accessibilityRole,'button');
  assert.equal(typeof trigger.props.onPress,'function');
  for(const name of ['language-outline','chevron-down'])assert.ok(nodes.some(node=>node.props.name===name));

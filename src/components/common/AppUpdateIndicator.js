@@ -63,12 +63,12 @@ const AppUpdateIndicator = ({ variant = 'floating' }) => {
     let checking = false;
     let previousAppState = AppState.currentState;
 
-    const checkForUpdate = async () => {
+    const checkForUpdate = async ({ force = false } = {}) => {
       if (!active || checking) return;
       checking = true;
       clearTimeout(retryId);
       try {
-        const nextState = await checkForAppUpdate();
+        const nextState = await checkForAppUpdate({ force });
         if (!active) return;
         setVersionState(nextState?.update_available === true ? nextState : null);
         if (nextState?.update_available) {
@@ -91,13 +91,13 @@ const AppUpdateIndicator = ({ variant = 'floating' }) => {
     const appStateSubscription = AppState.addEventListener('change', nextAppState => {
       const resumed = nextAppState === 'active' && previousAppState !== 'active';
       previousAppState = nextAppState;
-      if (resumed) checkForUpdate();
+      if (resumed) checkForUpdate({ force: true });
     });
 
     const timeoutId = setTimeout(() => {
       checkForUpdate();
       intervalId = setInterval(checkForUpdate, CHECK_INTERVAL_MS);
-    }, CHECK_DELAY_MS);
+    }, isInline ? 0 : CHECK_DELAY_MS);
 
     return () => {
       active = false;

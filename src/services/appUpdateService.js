@@ -49,11 +49,30 @@ export const getUpdateUrl = (versionState = {}) =>
   versionState.store_url ||
   (Platform.OS === 'android' ? PLAY_STORE_WEB_URL : '');
 
-export const checkForAppUpdate = async () => {
-  const response = await checkMobileAppVersion();
-  const state = response?.data || null;
-  if (state?.update_available === false) await cancelUpdateNotification();
-  return state;
+let updateCheckPromise = null;
+let cachedUpdateState;
+let updateCheckedAt = 0;
+const UPDATE_CHECK_CACHE_MS = 30000;
+
+export const checkForAppUpdate = async ({ force = false } = {}) => {
+  if (!force && updateCheckedAt && Date.now() - updateCheckedAt < UPDATE_CHECK_CACHE_MS) {
+    return cachedUpdateState;
+  }
+  if (updateCheckPromise) return updateCheckPromise;
+
+  updateCheckPromise = (async () => {
+    const response = await checkMobileAppVersion();
+    const state = response?.data || null;
+    if (state?.update_available === false) await cancelUpdateNotification();
+    cachedUpdateState = state;
+    updateCheckedAt = Date.now();
+    return state;
+  })();
+  try {
+    return await updateCheckPromise;
+  } finally {
+    updateCheckPromise = null;
+  }
 };
 
 export const openInstallPermissionSettings = async () => {

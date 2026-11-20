@@ -17,6 +17,7 @@ assert.ok(effect);
 let listener, calls = 0, fail = false, state, removed = false;
 const timers = new Map(); let id = 0;
 const context = {
+  isInline: false,
   AppState: { currentState: 'active', addEventListener: (_, fn) => { listener = fn; return { remove: () => { removed = true; } }; } },
   CHECK_DELAY_MS: 4200, CHECK_INTERVAL_MS: 14400000, RETRY_DELAY_MS: 60000,
   setTimeout: (fn, delay) => { timers.set(++id, { fn, delay }); return id; },
@@ -40,5 +41,8 @@ const flush = () => new Promise(resolve => setImmediate(resolve));
   assert.equal(state.latest_version, '1.0.54');
   cleanup(); assert.ok(removed); assert.equal(timers.size, 0);
   listener('background'); listener('active'); await flush(); assert.equal(calls, 4);
+  context.isInline=true;
+  const before=calls,inlineCleanup=vm.runInNewContext(`(${effect})()`,context);
+  const immediate=[...timers.values()].find(timer=>timer.delay===0);assert.ok(immediate,'Welcome checks immediately');immediate.fn();await flush();assert.equal(calls,before+1);inlineCleanup();assert.equal(timers.size,0);
   console.log('PASS: startup check, resume recheck, duplicate suppression, network retry and unmount cleanup.');
 })().catch(error => { console.error(error); process.exitCode = 1; });

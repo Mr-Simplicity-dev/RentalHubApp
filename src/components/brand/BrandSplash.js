@@ -1,7 +1,7 @@
 import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useRef, useState } from 'react';
-import {Animated, Easing, Image, StatusBar, StyleSheet, View} from 'react-native';
+import {ActivityIndicator, Animated, Easing, Image, StatusBar, StyleSheet, View} from 'react-native';
 import { colors, typography } from '../../theme';
 import { useAccessibilityPreferences } from '../../hooks/useAccessibilityPreferences';
 import BrandLogoMark from './BrandLogoMark';
@@ -9,7 +9,7 @@ import { AMANA_RED_ON_DARK, AMANA_SCRIPT_FONT } from './BrandMark';
 
 import AppText from '../../components/common/AppText';
 const LOADING_TRACK_WIDTH = 210;
-const DEFAULT_DURATION_MS = 8000;
+const DEFAULT_DURATION_MS = 1600;
 
 const BrandSplash = ({ duration = DEFAULT_DURATION_MS, showProgressPercent = false }) => {
   useInterfaceLanguage();
@@ -61,7 +61,7 @@ const BrandSplash = ({ duration = DEFAULT_DURATION_MS, showProgressPercent = fal
     loadingTranslateY.setValue(12);
     const introAnimation = Animated.parallel([
       Animated.sequence([
-        Animated.delay(520),
+        Animated.delay(120),
         Animated.timing(scale, {
           toValue: 1.018,
           duration: 360,
@@ -76,24 +76,24 @@ const BrandSplash = ({ duration = DEFAULT_DURATION_MS, showProgressPercent = fal
         }),
       ]),
       Animated.sequence([
-        Animated.delay(620),
+        Animated.delay(160),
         Animated.parallel([
           Animated.timing(copyOpacity, {
             toValue: 1,
-            duration: 620,
+            duration: 360,
             easing: Easing.out(Easing.cubic),
             useNativeDriver: true,
           }),
           Animated.timing(copyTranslateY, {
             toValue: 0,
-            duration: 520,
+            duration: 320,
             easing: Easing.out(Easing.cubic),
             useNativeDriver: true,
           }),
         ]),
       ]),
       Animated.sequence([
-        Animated.delay(980),
+        Animated.delay(300),
         Animated.parallel([
           Animated.timing(loadingOpacity, {
             toValue: 1,
@@ -103,7 +103,7 @@ const BrandSplash = ({ duration = DEFAULT_DURATION_MS, showProgressPercent = fal
           }),
           Animated.timing(loadingTranslateY, {
             toValue: 0,
-            duration: 420,
+            duration: 280,
             easing: Easing.out(Easing.cubic),
             useNativeDriver: true,
           }),
@@ -124,6 +124,7 @@ const BrandSplash = ({ duration = DEFAULT_DURATION_MS, showProgressPercent = fal
     });
 
     return () => {
+      introAnimation.stop();
       if (progressListener) {
         progress.removeListener(progressListener);
       }
@@ -183,12 +184,12 @@ const BrandSplash = ({ duration = DEFAULT_DURATION_MS, showProgressPercent = fal
         ]}
       >
         <View style={[styles.loadingRow, !showProgressPercent && styles.loadingRowCentered]}>
-          <AppText style={[styles.loadingText, { fontSize: 11 }]}>{ui("Loading mobile workspace")}</AppText>
+          <AppText style={[styles.loadingText, { fontSize: 11 }]}>{ui("Loading...")}</AppText>
           {showProgressPercent ? (
             <AppText style={[styles.loadingPercent, { fontSize: 11 }]}>{progressPercent}%</AppText>
           ) : null}
         </View>
-        <View style={styles.loadingTrack}>
+        {showProgressPercent ? <View style={styles.loadingTrack}>
           <Animated.View
             style={[
               styles.loadingFill,
@@ -205,7 +206,7 @@ const BrandSplash = ({ duration = DEFAULT_DURATION_MS, showProgressPercent = fal
               },
             ]}
           />
-        </View>
+        </View> : <ActivityIndicator size="small" color={colors.gold} accessibilityLabel={ui("Loading...")} />}
       </Animated.View>
     </View>
   );

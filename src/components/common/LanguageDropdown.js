@@ -58,8 +58,8 @@ const LanguageDropdown = ({ tone = 'light', fullWidth = false, compact = false }
         style={[
           triggerStyle,
           styles.triggerBase,
-          compact && styles.triggerCompact,
           fullWidth && styles.triggerFull,
+          compact && styles.triggerCompact,
         ]}
       >
         <Icon
@@ -164,14 +164,14 @@ const styles = StyleSheet.create({
   triggerCopy: { flex: 1, justifyContent: 'center' },
   triggerFull: {
     alignSelf: 'stretch',
-    minHeight: 72,
+    minHeight: 64,
     paddingHorizontal: 14,
     paddingVertical: 10,
   },
   triggerCompact: {
-    minHeight: 48,
+    minHeight: 60,
     paddingHorizontal: 12,
-    paddingVertical: 3,
+    paddingVertical: 6,
   },
   labelCompact: {
     lineHeight: 18,

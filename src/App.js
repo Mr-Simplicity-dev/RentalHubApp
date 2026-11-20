@@ -22,11 +22,12 @@ import AppErrorBoundary from './components/common/AppErrorBoundary';
 import { subscribeNetworkStatus } from './services/networkStatusService';
 import { flushOfflineQueue, hydrateOfflineQueue } from './services/offlineActionQueueService';
 import { trackMobileEvent } from './services/mobileDiagnosticsService';
+import { checkForAppUpdate } from './services/appUpdateService';
 import { AuthContext } from './context/AuthContext';
 
-const APP_INTRO_DURATION_MS = 8000;
+const APP_INTRO_DURATION_MS = 1600;
 
-const AppContent = () => {
+export const AppContent = () => {
   const {
     isAuthenticated,
     isImpersonating,
@@ -42,6 +43,7 @@ const AppContent = () => {
 
   useEffect(() => {
     trackMobileEvent('app_opened', { source: 'native_app_root' });
+    checkForAppUpdate().catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -74,7 +76,7 @@ const AppContent = () => {
     user?.user_type,
   ]);
 
-  if (showSplash) {
+  if (showSplash || authLoading) {
     return <BrandSplash duration={APP_INTRO_DURATION_MS} showProgressPercent={false} />;
   }
 
