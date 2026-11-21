@@ -37,6 +37,7 @@ import { colors, radius, shadows, typography, typeScale } from '../../theme';
 import { getErrorMessage } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
+import { getParkingSummary } from '../../utils/propertyParking';
 import { summariseStructuredFeatures } from '../../data/propertyFeatureSchema';
 const formatCurrency = (value) => `₦${Number(value || 0).toLocaleString()}`;
 
@@ -504,6 +505,14 @@ const PropertyDetailScreen = ({ route, navigation }) => {
               </View>
               <AppText style={styles.factValue}>{Number(property.bathrooms || 0)}</AppText>
               <AppText style={styles.factLabel}>{ui("Bathrooms")}</AppText>
+            </View>
+            <View style={styles.factDivider} />
+            <View style={styles.fact}>
+              <View style={styles.factIcon}>
+                <Icon name="car-outline" size={20} color={colors.blue} />
+              </View>
+              <AppText style={styles.factValue}>{getParkingSummary(property).label}</AppText>
+              <AppText style={styles.factLabel}>{ui("Parking")}</AppText>
             </View>
             <View style={styles.factDivider} />
             <View style={styles.fact}>

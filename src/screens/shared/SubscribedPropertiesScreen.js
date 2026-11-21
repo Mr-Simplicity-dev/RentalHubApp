@@ -12,6 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import PropertyCard from '../../components/properties/PropertyCard';
 import { paymentService } from '../../services/paymentService';
+import { propertyService } from '../../services/propertyService';
 import { colors, radius, typography, typeScale } from '../../theme';
 import { getErrorMessage, pickList } from '../../utils/http';
 
@@ -21,6 +22,8 @@ const SubscribedPropertiesScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [items, setItems] = useState([]);
+  const [savedIds, setSavedIds] = useState(() => new Set());
+  const [savingId, setSavingId] = useState(null);
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
@@ -29,8 +32,13 @@ const SubscribedPropertiesScreen = ({ navigation }) => {
   const loadProperties = async ({ refresh = false } = {}) => {
     refresh ? setRefreshing(true) : setLoading(true);
     try {
-      const response = await paymentService.getMyUnlockedProperties();
+      const [response, savedRes] = await Promise.all([
+        paymentService.getMyUnlockedProperties(),
+        propertyService.getSavedProperties({ limit: 100 }).catch(() => null),
+      ]);
       setItems(pickList(response, ['data', 'properties']));
+      const savedList = pickList(savedRes, ['data', 'properties']);
+      setSavedIds(new Set(savedList.map((entry) => entry.id)));
     } catch (error) {
       Toast.show({
         type: 'error',
@@ -46,6 +54,39 @@ const SubscribedPropertiesScreen = ({ navigation }) => {
   useEffect(() => {
     loadProperties();
   }, []);
+
+  const toggleSave = async (propertyId) => {
+    const isSaved = savedIds.has(propertyId);
+    setSavingId(propertyId);
+    try {
+      if (isSaved) {
+        await propertyService.unsaveProperty(propertyId);
+      } else {
+        await propertyService.saveProperty(propertyId);
+      }
+      setSavedIds((previous) => {
+        const next = new Set(previous);
+        if (isSaved) {
+          next.delete(propertyId);
+        } else {
+          next.add(propertyId);
+        }
+        return next;
+      });
+      Toast.show({
+        type: 'success',
+        text1: isSaved ? ui("Removed from saved homes") : ui("Home saved"),
+      });
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: ui("Could not update saved homes"),
+        text2: getErrorMessage(error, 'Please try again.'),
+      });
+    } finally {
+      setSavingId(null);
+    }
+  };
 
   return (
     <SafeAreaView edges={['top']} style={styles.safeArea}>
@@ -103,12 +144,17 @@ const SubscribedPropertiesScreen = ({ navigation }) => {
             tintColor={colors.blue}
           />
         }
-        renderItem={({ item }) => (
-          <PropertyCard
-            onPress={() => navigation.navigate('PropertyDetail', { id: item.id })}
-            property={item}
-          />
-        )}
+        renderItem={({ item }) => {
+          const targetId = item.property_id || item.id;
+          return (
+            <PropertyCard
+              isSaved={savedIds.has(targetId)}
+              onSave={savingId === targetId ? undefined : () => toggleSave(targetId)}
+              onPress={() => navigation.navigate('PropertyDetail', { id: targetId })}
+              property={{ ...item, id: targetId }}
+            />
+          );
+        }}
         showsVerticalScrollIndicator={false}
       />
     </SafeAreaView>

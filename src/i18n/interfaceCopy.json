@@ -61660,5 +61660,65 @@
     "ha": "Bibiyi kai tsaye ➔",
     "yo": "Tọpinpin ní àsìkò gidi ➔",
     "ig": "Soro ozugbo ➔"
+  },
+  " park": {
+    "en": " park",
+    "fr": " parking",
+    "ar": " موقف",
+    "ru": " парковка",
+    "zh": " 车位",
+    "ha": " filin ajiye mota",
+    "yo": " ibi ìdúró ọkọ̀",
+    "ig": " ebe nkwụsị ụgbọala"
+  },
+  "parking": {
+    "en": "Parking",
+    "fr": "Parking",
+    "ar": "موقف سيارات",
+    "ru": "Парковка",
+    "zh": "停车位",
+    "ha": "Filin ajiye mota",
+    "yo": "Ibi ìdúró ọkọ̀",
+    "ig": "Ebe nkwụsị ụgbọala"
+  },
+  "parking spaces": {
+    "en": "Parking spaces",
+    "fr": "Places de parking",
+    "ar": "مواقف السيارات",
+    "ru": "Парковочные места",
+    "zh": "停车位数",
+    "ha": "Adadin filin ajiye mota",
+    "yo": "Iye ibi ìdúró ọkọ̀",
+    "ig": "Ọnụọgụ ebe nkwụsị ụgbọala"
+  },
+  "all 36 states & fct": {
+    "en": "All 36 States & FCT",
+    "fr": "Les 36 États et le FCT",
+    "ar": "جميع الولايات الـ36 والعاصمة",
+    "ru": "Все 36 штатов и ФСТ",
+    "zh": "覆盖全部36个州及联邦首都区",
+    "ha": "Duk Jihohi 36 da FCT",
+    "yo": "Gbogbo Ìpínlẹ̀ 36 àti FCT",
+    "ig": "Steeti 36 niile na FCT"
+  },
+  "show all 37 states": {
+    "en": "Show all 37 states",
+    "fr": "Afficher les 37 États",
+    "ar": "عرض جميع الولايات الـ37",
+    "ru": "Показать все 37 штатов",
+    "zh": "查看全部37个州",
+    "ha": "Nuna duk jihohi 37",
+    "yo": "Fi gbogbo ìpínlẹ̀ 37 hàn",
+    "ig": "Gosi steeti 37 niile"
+  },
+  "show fewer states": {
+    "en": "Show fewer states",
+    "fr": "Afficher moins d’États",
+    "ar": "عرض عدد أقل من الولايات",
+    "ru": "Показать меньше штатов",
+    "zh": "收起部分州",
+    "ha": "Nuna jihohi kaɗan",
+    "yo": "Fi ìpínlẹ̀ díẹ̀ hàn",
+    "ig": "Gosi steeti ole na ole"
   }
 }

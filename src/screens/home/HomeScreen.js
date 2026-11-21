@@ -17,7 +17,15 @@ import { colors, radius, shadows, typography, typeScale } from '../../theme';
 import { getErrorMessage, pickList } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
-const defaultLocations = [[25,'Lagos'],[1,'Abuja'],[33,'Rivers'],[31,'Oyo'],[20,'Kano'],[15,'Enugu']].map(([id,state_name]) => ({id,state_name}));
+const defaultLocations = [
+  [25, 'Lagos'], [1, 'Abuja'], [33, 'Rivers'], [31, 'Oyo'], [20, 'Kano'], [15, 'Enugu'],
+  [2, 'Abia'], [3, 'Adamawa'], [4, 'Akwa Ibom'], [5, 'Anambra'], [6, 'Bauchi'], [7, 'Bayelsa'],
+  [8, 'Benue'], [9, 'Borno'], [10, 'Cross River'], [11, 'Delta'], [12, 'Ebonyi'], [13, 'Edo'],
+  [14, 'Ekiti'], [16, 'Gombe'], [17, 'Imo'], [18, 'Jigawa'], [19, 'Kaduna'], [21, 'Katsina'],
+  [22, 'Kebbi'], [23, 'Kogi'], [24, 'Kwara'], [26, 'Nasarawa'], [27, 'Niger'], [28, 'Ogun'],
+  [29, 'Ondo'], [30, 'Osun'], [32, 'Plateau'], [34, 'Sokoto'], [35, 'Taraba'], [36, 'Yobe'],
+  [37, 'Zamfara'],
+].map(([id, state_name]) => ({ id, state_id: id, state_name, property_count: 0 }));
 const propertyTypes = [
   { get "label"() { return ui("Apartment"); }, value: 'apartment', icon: 'business-outline' },
   { get "label"() { return ui("House"); }, value: 'house', icon: 'home-outline' },
@@ -33,6 +41,9 @@ const HomeScreen = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [featured, setFeatured] = useState([]);
   const [locations, setLocations] = useState(defaultLocations);
+  const [showAllStates, setShowAllStates] = useState(false);
+  const [savedIds, setSavedIds] = useState(() => new Set());
+  const [savingId, setSavingId] = useState(null);
   const [unreadTotal, setUnreadTotal] = useState(0);
 
   const featuredCards = useMemo(() => featured.slice(0, 6), [featured, interfaceLanguage]);
@@ -50,13 +61,31 @@ const HomeScreen = ({ navigation }) => {
     }
 
     try {
-      const [featuredRes, statesRes] = await Promise.all([
+      const [featuredRes, statesRes, allStatesRes] = await Promise.all([
         propertyService.getFeaturedProperties(8),
-        propertyService.getPopularLocations(8).catch(() => propertyService.getStates()),
+        propertyService.getPopularLocations(37).catch(() => null),
+        propertyService.getStates().catch(() => null),
       ]);
       setFeatured(pickList(featuredRes, ['data', 'properties']));
-      const areas = pickList(statesRes, ['data', 'locations', 'states']);
-      setLocations(areas.length ? areas.slice(0, 8) : defaultLocations);
+      const popularList = pickList(statesRes, ['data', 'locations', 'states']);
+      const stateList = pickList(allStatesRes, ['data', 'states', 'locations']);
+      const mergedMap = new Map();
+      for (const item of popularList) {
+        const key = String(item?.state_name || item?.name || '').trim().toLowerCase();
+        if (key) mergedMap.set(key, item);
+      }
+      for (const item of [...stateList, ...defaultLocations]) {
+        const key = String(item?.state_name || item?.name || '').trim().toLowerCase();
+        if (key && !mergedMap.has(key)) {
+          mergedMap.set(key, {
+            ...item,
+            state_id: item.state_id || item.id,
+            property_count: Number(item.property_count || 0),
+          });
+        }
+      }
+      const mergedLocations = Array.from(mergedMap.values());
+      setLocations(mergedLocations.length ? mergedLocations : defaultLocations);
     } catch (error) {
       Toast.show({
         type: 'error',
@@ -72,6 +101,67 @@ const HomeScreen = ({ navigation }) => {
   useEffect(() => {
     loadHome();
   }, []);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setSavedIds(new Set());
+      return undefined;
+    }
+    let cancelled = false;
+    const loadSaved = async () => {
+      try {
+        const savedRes = await propertyService.getSavedProperties({ limit: 100 });
+        if (cancelled) return;
+        const list = pickList(savedRes, ['data', 'properties']);
+        setSavedIds(new Set(list.map((item) => item.id)));
+      } catch {
+        // Ignore transient saved list load failures
+      }
+    };
+    loadSaved();
+    const unsubscribe = navigation.addListener('focus', loadSaved);
+    return () => {
+      cancelled = true;
+      unsubscribe();
+    };
+  }, [isAuthenticated, navigation]);
+
+  const toggleSave = async (id) => {
+    if (!isAuthenticated) {
+      navigation.navigate('Login');
+      return;
+    }
+    const isSaved = savedIds.has(id);
+    setSavingId(id);
+    try {
+      if (isSaved) {
+        await propertyService.unsaveProperty(id);
+      } else {
+        await propertyService.saveProperty(id);
+      }
+      setSavedIds((previous) => {
+        const next = new Set(previous);
+        if (isSaved) {
+          next.delete(id);
+        } else {
+          next.add(id);
+        }
+        return next;
+      });
+      Toast.show({
+        type: 'success',
+        text1: isSaved ? ui("Removed from saved homes") : ui("Home saved"),
+      });
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: ui("Could not update saved homes"),
+        text2: getErrorMessage(error, 'Please try again.'),
+      });
+    } finally {
+      setSavingId(null);
+    }
+  };
 
   // Keep the in-app badge in step with the icon badge while this screen is up.
   useEffect(() => {
@@ -195,10 +285,9 @@ const HomeScreen = ({ navigation }) => {
         <View style={styles.searchCard}>
           <Icon name="search-outline" size={21} color={colors.muted} />
           <TextInput
-            accessibilityLabel={ui("Search properties")}
+            accessibilityLabel={ui("City, state or neighbourhood")}
             value={search}
             onChangeText={setSearch}
-            accessibilityLabel={ui("City, state or neighbourhood")}
             placeholder={ui("Search properties")}
             placeholderTextColor="#909CB2"
             style={styles.searchInput}
@@ -263,6 +352,8 @@ const HomeScreen = ({ navigation }) => {
               <View key={item.id} style={styles.featuredCard}>
                 <PropertyCard
                   property={item}
+                  isSaved={savedIds.has(item.id)}
+                  onSave={savingId === item.id ? undefined : toggleSave}
                   onPress={() => navigation.navigate('PropertyDetail', { id: item.id })}
                 />
               </View>
@@ -279,39 +370,75 @@ const HomeScreen = ({ navigation }) => {
         )}
 
         <View style={styles.sectionHeader}>
-          <View>
-            <AppText style={styles.sectionEyebrow}>{ui("EXPLORE NIGERIA")}</AppText>
-            <AppText style={styles.sectionTitle}>{ui("Popular locations")}</AppText>
+          <View style={{ flex: 1 }}>
+            <AppText style={styles.sectionEyebrow}>{ui("NATIONWIDE COVERAGE")}</AppText>
+            <AppText style={styles.sectionTitle}>{ui("All 36 States & FCT")}</AppText>
           </View>
+          <TouchableOpacity
+            onPress={() => setShowAllStates((prev) => !prev)}
+            style={styles.seeAllButton}>
+            <AppText style={styles.seeAllText}>
+              {showAllStates ? ui("Show fewer states") : ui("Show all 37 states")}
+            </AppText>
+            <Icon
+              name={showAllStates ? 'chevron-up' : 'chevron-down'}
+              size={16}
+              color={colors.blue}
+              style={{ marginLeft: 4 }}
+            />
+          </TouchableOpacity>
         </View>
 
-        <ScrollView
-          horizontal
-          contentContainerStyle={styles.locationRow}
-          showsHorizontalScrollIndicator={false}>
-          {locations.map((item, index) => (
-            <TouchableOpacity
-              key={item.id || item.state_name}
-              activeOpacity={0.82}
-              onPress={() => goToPropertyList({ state_id: item.state_id || item.id })}
-              style={[styles.locationCard, index % 2 === 1 && styles.locationCardAlt]}>
-              <View style={styles.locationIcon}>
-                <Icon name="location" size={18} color={colors.white} />
-              </View>
-              <AppText style={styles.locationName} numberOfLines={1}>
-                {item.state_name || item.name}
-              </AppText>
-              <AppText style={styles.locationMeta}>
-                {Number(item.property_count || 0).toLocaleString()}{ui("homes")}</AppText>
-              <Icon
-                name="arrow-forward-circle-outline"
-                size={23}
-                color="rgba(255,255,255,0.78)"
-                style={styles.locationArrow}
-              />
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
+        {showAllStates ? (
+          <View style={styles.locationGrid}>
+            {locations.map((item, index) => (
+              <TouchableOpacity
+                key={item.id || item.state_name}
+                activeOpacity={0.82}
+                onPress={() => goToPropertyList({ state_id: item.state_id || item.id })}
+                style={[styles.locationGridCard, index % 2 === 1 && styles.locationCardAlt]}>
+                <View style={styles.locationIcon}>
+                  <Icon name="location" size={17} color={colors.white} />
+                </View>
+                <AppText style={styles.locationName} numberOfLines={1}>
+                  {item.state_name || item.name}
+                </AppText>
+                <AppText style={styles.locationMeta}>
+                  {Number(item.property_count || 0).toLocaleString()} {ui("homes")}
+                </AppText>
+              </TouchableOpacity>
+            ))}
+          </View>
+        ) : (
+          <ScrollView
+            horizontal
+            contentContainerStyle={styles.locationRow}
+            showsHorizontalScrollIndicator={false}>
+            {locations.slice(0, 8).map((item, index) => (
+              <TouchableOpacity
+                key={item.id || item.state_name}
+                activeOpacity={0.82}
+                onPress={() => goToPropertyList({ state_id: item.state_id || item.id })}
+                style={[styles.locationCard, index % 2 === 1 && styles.locationCardAlt]}>
+                <View style={styles.locationIcon}>
+                  <Icon name="location" size={18} color={colors.white} />
+                </View>
+                <AppText style={styles.locationName} numberOfLines={1}>
+                  {item.state_name || item.name}
+                </AppText>
+                <AppText style={styles.locationMeta}>
+                  {Number(item.property_count || 0).toLocaleString()} {ui("homes")}
+                </AppText>
+                <Icon
+                  name="arrow-forward-circle-outline"
+                  size={23}
+                  color="rgba(255,255,255,0.78)"
+                  style={styles.locationArrow}
+                />
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        )}
 
         <View style={styles.sectionHeader}>
           <View style={{ flex: 1 }}>
@@ -624,6 +751,20 @@ const styles = StyleSheet.create({
   locationRow: {
     gap: 12,
     paddingHorizontal: 20,
+  },
+  locationGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+    paddingHorizontal: 20,
+  },
+  locationGridCard: {
+    backgroundColor: colors.navySoft,
+    borderRadius: radius.md,
+    minHeight: 118,
+    overflow: 'hidden',
+    padding: 14,
+    width: '48%',
   },
   locationCard: {
     backgroundColor: colors.navySoft,

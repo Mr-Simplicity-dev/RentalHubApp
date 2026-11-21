@@ -91,6 +91,8 @@ export const propertyService = {
         });
       } else if (key === 'amenities' && Array.isArray(propertyData[key])) {
         formData.append(key, JSON.stringify(propertyData[key]));
+      } else if (key === 'structured_features' && propertyData[key] && typeof propertyData[key] === 'object') {
+        formData.append(key, JSON.stringify(propertyData[key]));
       } else if (propertyData[key] !== undefined && propertyData[key] !== null) {
         formData.append(key, propertyData[key]);
       }

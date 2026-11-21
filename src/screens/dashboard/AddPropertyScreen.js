@@ -39,6 +39,7 @@ const AddPropertyScreen = ({ navigation }) => {
     property_type: 'apartment',
     bedrooms: '1',
     bathrooms: '1',
+    parking_spaces: '0',
     rent_amount: '',
     payment_frequency: 'yearly',
   });
@@ -129,6 +130,16 @@ const AddPropertyScreen = ({ navigation }) => {
         ...form,
         bedrooms: Number(form.bedrooms || 0),
         bathrooms: Number(form.bathrooms || 0),
+        parking_spaces: Math.max(0, Math.floor(Number(form.parking_spaces || 0) || 0)),
+        structured_features: {
+          parking: {
+            available: Number(form.parking_spaces || 0) > 0,
+            details:
+              Number(form.parking_spaces || 0) > 0
+                ? { capacity: Math.floor(Number(form.parking_spaces || 0)) }
+                : {},
+          },
+        },
         rent_amount: Number(form.rent_amount || 0),
         latitude,
         longitude,
@@ -238,6 +249,12 @@ const AddPropertyScreen = ({ navigation }) => {
           />
         </View>
       </View>
+      <Input
+        label={ui("Parking spaces")}
+        value={form.parking_spaces}
+        onChangeText={(value) => onChange('parking_spaces', value)}
+        keyboardType="number-pad"
+      />
       </View>
 
       <AppText style={styles.sectionLabel}>{ui("PROPERTY PHOTOS")}</AppText>

@@ -7,6 +7,7 @@ import BrandImagePlaceholder from '../common/BrandImagePlaceholder';
 import { colors, radius, shadows, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
+import { getParkingSummary } from '../../utils/propertyParking';
 const formatCurrency = (value) => {
   const amount = Number(value || 0);
   return `₦${amount.toLocaleString()}`;
@@ -14,6 +15,9 @@ const formatCurrency = (value) => {
 
 const PropertyCard = ({ property, onPress, onSave, isSaved = false }) => {
   useInterfaceLanguage();
+  const parking = getParkingSummary(property);
+  const ratingValue = Number(property?.avg_rating);
+  const hasRating = Number.isFinite(ratingValue) && ratingValue > 0;
   const cover =
     property?.primary_photo ||
     property?.photo_url ||
@@ -61,11 +65,25 @@ const PropertyCard = ({ property, onPress, onSave, isSaved = false }) => {
           </AppText>
         </View>
 
-        <View style={styles.row}>
-          <Icon name="bed-outline" size={15} color={colors.muted} />
-          <AppText style={styles.meta}>{Number(property?.bedrooms || 0)}{ui(" bed")}</AppText>
-          <Icon name="water-outline" size={15} color={colors.muted} style={styles.gap} />
-          <AppText style={styles.meta}>{Number(property?.bathrooms || 0)}{ui(" bath")}</AppText>
+        <View style={styles.specsRow}>
+          <View style={styles.specItem}>
+            <Icon name="bed-outline" size={15} color={colors.blue} />
+            <AppText style={styles.meta}>{Number(property?.bedrooms || 0)}{ui(" bed")}</AppText>
+          </View>
+          <View style={styles.specItem}>
+            <Icon name="water-outline" size={15} color={colors.blue} />
+            <AppText style={styles.meta}>{Number(property?.bathrooms || 0)}{ui(" bath")}</AppText>
+          </View>
+          <View style={styles.specItem}>
+            <Icon name="car-outline" size={15} color={colors.blue} />
+            <AppText style={styles.meta}>{parking.label}{ui(" park")}</AppText>
+          </View>
+          {hasRating && (
+            <View style={styles.specItem}>
+              <Icon name="star" size={14} color="#EAB308" />
+              <AppText style={styles.meta}>{ratingValue.toFixed(1)}</AppText>
+            </View>
+          )}
         </View>
 
         <View style={styles.footer}>
@@ -143,6 +161,16 @@ const styles = StyleSheet.create({
     fontSize: typeScale.xs,
     lineHeight: 18,
     marginLeft: 6,
+  },
+  specsRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    gap: 12,
+  },
+  specItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   gap: {
     marginLeft: 14,
