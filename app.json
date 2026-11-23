@@ -2,14 +2,14 @@
   "expo": {
     "name": "Amana RentalHub NG",
     "slug": "rentalhubmobile",
-    "version": "1.0.69",
+    "version": "1.0.70",
     "orientation": "portrait",
     "icon": "./assets/rentalhub-app-icon.png",
     "scheme": "rentalhub",
     "userInterfaceStyle": "light",
     "android": {
       "package": "com.rentalhubng",
-      "versionCode": 80,
+      "versionCode": 81,
       "adaptiveIcon": {
         "foregroundImage": "./assets/rentalhub-app-icon.png",
         "backgroundColor": "#071A3D"
@@ -17,7 +17,7 @@
     },
     "ios": {
       "bundleIdentifier": "com.rentalhubng",
-      "buildNumber": "72",
+      "buildNumber": "73",
       "supportsTablet": false
     },
     "owner": "mdozaa",
