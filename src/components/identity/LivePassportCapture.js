@@ -1,22 +1,44 @@
-import {nextPhotoStep} from '../../utils/livePhotoSequence.cjs';
+import {nextPhotoStep, holdClosedEyes} from '../../utils/livePhotoSequence.cjs';
 import React, {useEffect, useRef, useState} from 'react';
 import {AppState, Modal, View, StyleSheet, ScrollView} from 'react-native';
 import {CameraView, useCameraPermissions} from 'expo-camera';
 import FaceDetection from '@react-native-ml-kit/face-detection';
 import {File} from 'expo-file-system';
+import * as Speech from 'expo-speech';
 import Button from '../common/Button';
 import AppText from '../common/AppText';
 import {userService} from '../../services/userService';
 import {authService} from '../../services/authService';
 import {getErrorMessage} from '../../utils/http';
-import {translateUi as ui} from '../../i18n/interfaceRuntime.cjs';
+import {translateUi as ui, getInterfaceLanguage} from '../../i18n/interfaceRuntime.cjs';
 
-const prompts = ['Face forward with both eyes open', 'Close both eyes for one second', 'Open both eyes and face forward'];
+const prompts = ['Face forward with both eyes open', 'Close both eyes and keep them closed until the next instruction', 'Open both eyes and face forward'];
 const discard = uri => {try {if (uri) new File(uri).delete();} catch {}};
 export default function LivePassportCapture({consent, onClose, onSaved}) {
   const camera = useRef(null), alive = useRef(true), busy = useRef(false), stepRef = useRef(0), shot = useRef(''), token = useRef('');
+  const speechRun = useRef(0), closedSince = useRef(null);
   const [, requestPermission] = useCameraPermissions();
   const [allowed, setAllowed] = useState(false), [ready, setReady] = useState(false), [step, setStep] = useState(0), [saving, setSaving] = useState(false), [error, setError] = useState('');
+  const [voiceEnabled, setVoiceEnabled] = useState(true);
+  const instruction = ui(step < 3 ? prompts[step] : saving ? 'Saving your photo…' : 'Photo captured');
+  const speakInstruction = async () => {
+    const run = ++speechRun.current;
+    try {
+      await Speech.stop();
+      if (run === speechRun.current && alive.current && AppState.currentState === 'active') Speech.speak(instruction, {language:getInterfaceLanguage(), rate:0.85, onError:() => {}});
+    } catch {}
+  };
+  useEffect(() => {
+    if (ready && voiceEnabled) speakInstruction();
+    else {speechRun.current++; Speech.stop().catch(() => {});}
+    return () => {speechRun.current++; Speech.stop().catch(() => {});};
+  }, [ready, step, saving, voiceEnabled, instruction]);
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', state => {
+      if (state !== 'active') {speechRun.current++; Speech.stop().catch(() => {});}
+    });
+    return () => subscription.remove();
+  }, []);
   const save = async () => {
     if (busy.current) return;
     busy.current = true; setSaving(true); setError('');
@@ -54,7 +76,12 @@ export default function LivePassportCapture({consent, onClose, onSaved}) {
         if (!uri || cancelled) return;
         const faces = await FaceDetection.detect(uri, {classificationMode:'all',performanceMode:'accurate'});
         if (cancelled || !alive.current) return;
-        const next = nextPhotoStep(stepRef.current, faces, photo.width, photo.height);
+        let next = nextPhotoStep(stepRef.current, faces, photo.width, photo.height);
+        if (stepRef.current === 1) {
+          const hold = holdClosedEyes(next === 2, closedSince.current, Date.now());
+          closedSince.current = hold.since;
+          if (!hold.complete) next = 1;
+        }
         if (next === stepRef.current) return;
         stepRef.current = next;
         if (stepRef.current === 3) {
@@ -70,7 +97,9 @@ export default function LivePassportCapture({consent, onClose, onSaved}) {
     <AppText style={styles.title}>{ui('Capture passport photo')}</AppText>
     <AppText>{ui('Follow the steps. Your photo will be captured and saved automatically. Keep only your face in the frame.')}</AppText>
     {allowed && step < 3 ? <View style={styles.camera}><CameraView ref={camera} facing="front" style={styles.fill} onCameraReady={() => setReady(true)} onMountError={() => setError(ui('Camera unavailable. Close other camera apps and try again.'))}/></View> : null}
-    <AppText accessibilityLiveRegion="polite">{ui(step < 3 ? prompts[step] : saving ? 'Saving your photo…' : 'Photo captured')}</AppText>
+    <AppText accessibilityLiveRegion="polite">{instruction}</AppText>
+    <Button title={ui(voiceEnabled ? 'Mute instructions' : 'Read instructions aloud')} variant="outline" onPress={() => setVoiceEnabled(value => !value)}/>
+    {ready && voiceEnabled ? <Button title={ui('Repeat instruction')} variant="outline" onPress={speakInstruction}/> : null}
     {error ? <AppText accessibilityRole="alert">{error}</AppText> : null}
     {step === 3 && error ? <Button title={ui('Try saving photo again')} loading={saving} onPress={save}/> : null}
     <Button title={ui('Close')} variant="outline" disabled={saving} onPress={onClose}/>

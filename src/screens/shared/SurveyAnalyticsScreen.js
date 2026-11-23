@@ -1,6 +1,6 @@
 import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { useFocusEffect } from '@react-navigation/native';
@@ -27,9 +27,11 @@ const mmss = (seconds) => {
 const SurveyAnalyticsScreen = () => {
   useInterfaceLanguage();
   const [tab, setTab] = useState('tenant');
+  const [selectedResponseId,setSelectedResponseId]=useState(null);
   const [data, setData] = useState(null);
   const [responses, setResponses] = useState(null);
   const [responsesPage, setResponsesPage] = useState(1);
+  useEffect(()=>setSelectedResponseId(null),[tab,responsesPage]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [enablingAll, setEnablingAll] = useState(false);
@@ -135,6 +137,11 @@ const SurveyAnalyticsScreen = () => {
         <>
           <PremiumCard><AppText style={styles.sectionTitle}>Survey responses ({responses?.total ?? 0})</AppText><AppText style={styles.empty}>Partial records are not included in completed-response analysis. Missing details are shown as not provided.</AppText></PremiumCard>
           {(responses?.responses || []).map(record=><PremiumCard key={record.id}>
+            <TouchableOpacity accessibilityRole="button" accessibilityState={{expanded:selectedResponseId===record.id}} onPress={()=>setSelectedResponseId(current=>current===record.id?null:record.id)} style={styles.stateRow}>
+              <View style={styles.agentCopy}><AppText style={styles.stateName}>{record.respondent_name || record.respondent_code || 'Name not provided'}</AppText><AppText style={styles.empty}>{record.completed_at?'Completed':'Partial'} · {record.respondent_code}</AppText></View>
+              <AppText>{selectedResponseId===record.id?'Hide results':'View results'}</AppText>
+            </TouchableOpacity>
+            {selectedResponseId===record.id && <>
             <InfoRow icon="document-text-outline" label="Code" value={record.respondent_code} />
             <InfoRow icon="person-outline" label="Respondent" value={record.respondent_name || 'Not provided yet'} />
             <InfoRow icon="call-outline" label="Phone" value={record.respondent_phone || 'Not provided yet'} />
@@ -145,6 +152,10 @@ const SurveyAnalyticsScreen = () => {
             <InfoRow icon="location-outline" label="Agent LGA" value={record.agent_lga || (!record.agent_user_id&&record.source==='public_link'?'Not applicable':'Not recorded')} />
             <InfoRow icon="information-circle-outline" label="Source" value={record.source} />
             <InfoRow icon="checkmark-circle-outline" label="Status" value={record.completed_at?'Completed':'Partial · '+(record.answer_count ?? 0)+' answered'} />
+            <AppText style={styles.sectionTitle}>Answers</AppText>
+            {(record.answer_details || Object.entries(record.answers||{}).map(([key,value])=>({key,question:key,answer:formatDisplayValue(value)}))).map(answer=><View key={answer.key} style={styles.answerRow}><AppText style={styles.stateName}>{answer.question}</AppText><AppText>{answer.answer || 'Not answered'}</AppText></View>)}
+            {!Object.keys(record.answers||{}).length && <AppText>No answers saved yet.</AppText>}
+            </>}
           </PremiumCard>)}
           <View style={styles.metricRow}><PremiumButton title="Previous" variant="secondary" disabled={responsesPage<=1} onPress={()=>setResponsesPage(page=>page-1)} /><PremiumButton title="Next" variant="secondary" disabled={responsesPage*25 >= (responses?.total ?? 0)} onPress={()=>setResponsesPage(page=>page+1)} /></View>
           <View style={styles.metricRow}>
@@ -220,6 +231,7 @@ const SurveyAnalyticsScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  answerRow: {marginTop:12,gap:4},
   screen: {
     flex: 1,
     backgroundColor: colors.surface,

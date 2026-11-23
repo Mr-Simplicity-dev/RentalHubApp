@@ -20,7 +20,14 @@ module.exports = {
     "optional_cv": "CV / document (optional)",
     "upload_documents": "Upload document",
     "portal_intro": "Choose an opportunity, submit your details, and follow your application. Volunteer applications are free.",
-    "apply": "Apply"
+    "apply": "Apply",
+    "service_state": "State where you want to volunteer",
+    "service_lga": "LGA where you want to volunteer",
+    "service_choice_hint": "Choose where you want to serve. This can be different from where you live.",
+    "service_fct_only": "This opportunity is for FCT only. Choose your preferred FCT area council.",
+    "service_choice_required": "Choose the state and LGA where you want to volunteer.",
+    "loading_locations": "Loading local government areas…",
+    "location_error": "Could not load locations. Choose the state again to retry."
   },
   "fr": {
     "opportunities_title": "Opportunités de carrière",
@@ -43,7 +50,14 @@ module.exports = {
     "optional_cv": "CV / document (facultatif)",
     "upload_documents": "Téléverser le document",
     "portal_intro": "Choisissez une opportunité, envoyez vos informations et suivez votre candidature. Les candidatures bénévoles sont gratuites.",
-    "apply": "Postuler"
+    "apply": "Postuler",
+    "service_state": "State where you want to volunteer",
+    "service_lga": "LGA where you want to volunteer",
+    "service_choice_hint": "Choose where you want to serve. This can be different from where you live.",
+    "service_fct_only": "This opportunity is for FCT only. Choose your preferred FCT area council.",
+    "service_choice_required": "Choose the state and LGA where you want to volunteer.",
+    "loading_locations": "Loading local government areas…",
+    "location_error": "Could not load locations. Choose the state again to retry."
   },
   "ar": {
     "opportunities_title": "فرص مهنية",
@@ -66,7 +80,14 @@ module.exports = {
     "optional_cv": "السيرة الذاتية / مستند (اختياري)",
     "upload_documents": "رفع المستند",
     "portal_intro": "اختر فرصة وقدّم بياناتك وتابع طلبك. طلبات التطوع مجانية.",
-    "apply": "تقدّم"
+    "apply": "تقدّم",
+    "service_state": "الولاية التي تريد التطوع فيها",
+    "service_lga": "المنطقة المحلية التي تريد التطوع فيها",
+    "service_choice_hint": "اختر مكان التطوع. يمكن أن يختلف عن مكان إقامتك.",
+    "service_fct_only": "هذه الفرصة خاصة بإقليم العاصمة الفيدرالية فقط. اختر المجلس المحلي المفضل.",
+    "service_choice_required": "اختر الولاية والمنطقة المحلية للتطوع.",
+    "loading_locations": "Loading local government areas…",
+    "location_error": "Could not load locations. Choose the state again to retry."
   },
   "ru": {
     "opportunities_title": "Карьерные возможности",
@@ -89,7 +110,14 @@ module.exports = {
     "optional_cv": "Резюме / документ (необязательно)",
     "upload_documents": "Загрузить документ",
     "portal_intro": "Выберите возможность, отправьте данные и отслеживайте заявку. Волонтёрские заявки бесплатны.",
-    "apply": "Откликнуться"
+    "apply": "Откликнуться",
+    "service_state": "State where you want to volunteer",
+    "service_lga": "LGA where you want to volunteer",
+    "service_choice_hint": "Choose where you want to serve. This can be different from where you live.",
+    "service_fct_only": "This opportunity is for FCT only. Choose your preferred FCT area council.",
+    "service_choice_required": "Choose the state and LGA where you want to volunteer.",
+    "loading_locations": "Loading local government areas…",
+    "location_error": "Could not load locations. Choose the state again to retry."
   },
   "zh": {
     "opportunities_title": "职业机会",
@@ -112,7 +140,14 @@ module.exports = {
     "optional_cv": "简历／文档（可选）",
     "upload_documents": "上传文档",
     "portal_intro": "选择机会、提交信息并查看申请进度。志愿服务申请免费。",
-    "apply": "申请"
+    "apply": "申请",
+    "service_state": "State where you want to volunteer",
+    "service_lga": "LGA where you want to volunteer",
+    "service_choice_hint": "Choose where you want to serve. This can be different from where you live.",
+    "service_fct_only": "This opportunity is for FCT only. Choose your preferred FCT area council.",
+    "service_choice_required": "Choose the state and LGA where you want to volunteer.",
+    "loading_locations": "Loading local government areas…",
+    "location_error": "Could not load locations. Choose the state again to retry."
   },
   "ha": {
     "opportunities_title": "Damar aiki",
@@ -135,7 +170,14 @@ module.exports = {
     "optional_cv": "CV / takarda (ba dole ba)",
     "upload_documents": "Loda takarda",
     "portal_intro": "Zaɓi dama, aika bayananka, kuma bi diddigin buƙatarka. Neman aikin sa kai kyauta ne.",
-    "apply": "Nema"
+    "apply": "Nema",
+    "service_state": "Jihar da kake son aikin sa kai",
+    "service_lga": "Karamar hukumar da kake son aikin sa kai",
+    "service_choice_hint": "Zaɓi inda kake son yin aiki. Zai iya bambanta da inda kake zaune.",
+    "service_fct_only": "Wannan damar ta FCT ce kawai. Zaɓi majalisar yankin FCT da kake so.",
+    "service_choice_required": "Zaɓi jiha da ƙaramar hukumar da kake son aikin sa kai.",
+    "loading_locations": "Loading local government areas…",
+    "location_error": "Could not load locations. Choose the state again to retry."
   },
   "yo": {
     "opportunities_title": "Àwọn àǹfààní iṣẹ́",
@@ -158,7 +200,14 @@ module.exports = {
     "optional_cv": "CV / ìwé (kì í ṣe dandan)",
     "upload_documents": "Gbé ìwé sókè",
     "portal_intro": "Yan àǹfààní, fi àlàyé rẹ sílẹ̀, kí o sì tọpinpin ìbéèrè rẹ. Ìbéèrè iṣẹ́ ìyọ̀ǹda jẹ́ ọ̀fẹ́.",
-    "apply": "Forúkọ"
+    "apply": "Forúkọ",
+    "service_state": "Ìpínlẹ̀ tí o fẹ́ ṣe iṣẹ́ ìyọ̀ǹda",
+    "service_lga": "Ìjọba ìbílẹ̀ tí o fẹ́ ṣe iṣẹ́ ìyọ̀ǹda",
+    "service_choice_hint": "Yan ibi tí o fẹ́ ṣiṣẹ́. Ó lè yàtọ̀ sí ibi tí o ń gbé.",
+    "service_fct_only": "Àǹfààní yìí jẹ́ fún FCT nìkan. Yan ìgbìmọ̀ agbègbè FCT tí o fẹ́.",
+    "service_choice_required": "Yan ìpínlẹ̀ àti ìjọba ìbílẹ̀ tí o fẹ́ ṣiṣẹ́.",
+    "loading_locations": "Loading local government areas…",
+    "location_error": "Could not load locations. Choose the state again to retry."
   },
   "ig": {
     "opportunities_title": "Ohere ọrụ",
@@ -181,6 +230,13 @@ module.exports = {
     "optional_cv": "CV / akwụkwọ (ọ bụghị iwu)",
     "upload_documents": "Bulite akwụkwọ",
     "portal_intro": "Họrọ ohere, zipu nkọwa gị ma soro akwụkwọ gị. Itinye akwụkwọ ọrụ afọ ofufo bụ n’efu.",
-    "apply": "Tinye akwụkwọ"
+    "apply": "Tinye akwụkwọ",
+    "service_state": "Steeti ịchọrọ ịrụ ọrụ afọ ofufo",
+    "service_lga": "Okpuru ọchịchị ịchọrọ ịrụ ọrụ afọ ofufo",
+    "service_choice_hint": "Họrọ ebe ịchọrọ ije ozi. Ọ nwere ike ịdị iche na ebe i bi.",
+    "service_fct_only": "Ohere a bụ naanị maka FCT. Họrọ kansụl mpaghara FCT ịchọrọ.",
+    "service_choice_required": "Họrọ steeti na okpuru ọchịchị ịchọrọ ije ozi.",
+    "loading_locations": "Loading local government areas…",
+    "location_error": "Could not load locations. Choose the state again to retry."
   }
 };

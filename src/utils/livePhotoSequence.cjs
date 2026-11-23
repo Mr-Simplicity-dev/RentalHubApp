@@ -7,4 +7,9 @@ function nextPhotoStep(step, faces, width, height) {
   const eyes = [face.leftEyeOpenProbability, face.rightEyeOpenProbability];
   return eyes.every(n => Number.isFinite(n) && n >= 0 && n <= 1 && (step === 1 ? n < 0.35 : n > 0.65)) ? step + 1 : step;
 }
-module.exports = {nextPhotoStep};
+function holdClosedEyes(closed, since, now) {
+  if (!closed) return {since:null, complete:false};
+  const start = since ?? now;
+  return {since:start, complete:now - start >= 1000};
+}
+module.exports = {nextPhotoStep, holdClosedEyes};

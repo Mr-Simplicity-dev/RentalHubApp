@@ -1,3 +1,4 @@
+import VolunteerServiceLocationPicker from '../../components/common/VolunteerServiceLocationPicker';
 import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import {useTourTarget} from '../../components/tour/TourTarget';
@@ -18,6 +19,8 @@ import { colors, radius, shadows, typography, typeScale } from '../../theme';
 import AppText from '../../components/common/AppText';
 import TurnstileWidget from '../../components/common/TurnstileWidget';
 const emptyForm = {
+  preferred_service_state: '',
+  preferred_service_lga: '',
   full_name: '',
   phone_number: '',
   email_address: '',
@@ -112,6 +115,7 @@ const CareersScreen = ({ navigation, route }) => {
   );
 
   const volunteer=selectedRole?.opportunity_type==='volunteer';
+  useEffect(()=>{setForm(previous=>({...previous,preferred_service_state:selectedRole?.service_state?(states.find(state=>state.name===selectedRole.service_state)?.displayName||selectedRole.service_state):'',preferred_service_lga:''}));},[selectedRole?.id,selectedRole?.service_state]);
   const intakeOpen=status?.is_active===true||status?.volunteer_applications_enabled===true;
   const visibleRoles=roles.filter(role=>opportunityFilter==='all'||(role.opportunity_type||'employment')===opportunityFilter);
   const volunteerBrowsing=volunteer||(!selectedRole&&(opportunityFilter==='volunteer'||(visibleRoles.length>0&&visibleRoles.every(role=>role.opportunity_type==='volunteer'))));
@@ -122,6 +126,7 @@ const CareersScreen = ({ navigation, route }) => {
 
   const handleSubmit = async () => {
     if (!intakeOpen) return;
+    if(volunteer&&(!form.preferred_service_state||!form.preferred_service_lga)){Toast.show({type:'error',text1:copy.service_choice_required});return;}
     if(requiresLanguages(selectedRole)){try{validateSkills(form.language_skills);}catch(error){Toast.show({type:'error',text1:error.message});return;}}
     if(volunteer&&(!form.volunteer_motivation.trim()||!form.availability.trim())){Toast.show({type:'error',text1:copy.volunteer_fields_required});return;}
     if (!selectedRoleId) {
@@ -139,6 +144,8 @@ const CareersScreen = ({ navigation, route }) => {
       setError('');
       const payload = {
         role_id: Number(selectedRoleId),
+        preferred_service_state: form.preferred_service_state,
+        preferred_service_lga: form.preferred_service_lga,
         full_name: form.full_name,
         phone_number: form.phone_number,
         email_address: form.email_address,
@@ -294,6 +301,7 @@ const CareersScreen = ({ navigation, route }) => {
         </View>
 
         </>}
+        {volunteer && <VolunteerServiceLocationPicker role={selectedRole} states={states} stateValue={form.preferred_service_state} lgaValue={form.preferred_service_lga} copy={copy} onStateChange={value=>setForm(previous=>({...previous,preferred_service_state:value,preferred_service_lga:''}))} onLgaChange={value=>updateField('preferred_service_lga',value)}/>}
         <AppText style={styles.helperLabel}>{ui("State")}</AppText>
         <View style={styles.chipRow}>
           {states.map((state) => {
@@ -338,7 +346,7 @@ const CareersScreen = ({ navigation, route }) => {
           onError={() => setTurnstileToken('')}
         />
 
-        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit} disabled={submitting||(requiresLanguages(selectedRole)&&(()=>{try{validateSkills(form.language_skills);return false;}catch{return true;}})())}>
+        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit} disabled={submitting||(volunteer&&(!form.preferred_service_state||!form.preferred_service_lga))||(requiresLanguages(selectedRole)&&(()=>{try{validateSkills(form.language_skills);return false;}catch{return true;}})())}>
           {submitting ? <ActivityIndicator color="#ffffff" /> : <AppText style={styles.submitButtonText}>{volunteer?copy.apply_volunteer:ui("Submit application")}</AppText>}
         </TouchableOpacity>
       </View>

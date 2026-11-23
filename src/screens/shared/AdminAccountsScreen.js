@@ -45,6 +45,8 @@ const AdminAccountsScreen = () => {
     user_type: 'state_admin',
     assigned_state: '',
     assigned_city: '',
+    assigned_zone: '',
+    lawyer_client_scope: '',
   });
   const [reminderUserId, setReminderUserId] = useState('');
   const [busy, setBusy] = useState(false);
@@ -55,13 +57,21 @@ const AdminAccountsScreen = () => {
     setForm((prev) => ({ ...prev, [key]: value }));
 
   const submitCreate = async () => {
-    const { full_name, email, phone, password, user_type, assigned_state, assigned_city } = form;
+    const { full_name, email, phone, password, user_type, assigned_state, assigned_city, assigned_zone, lawyer_client_scope } = form;
     if (!full_name || !email || !phone || !password || !user_type) {
       setError('Fill in all required fields.');
       return;
     }
     if (password.length < 8) {
       setError('Password must be at least 8 characters.');
+      return;
+    }
+    if (user_type.startsWith('zonal_') && !assigned_zone) {
+      setError('Select the assigned zone.');
+      return;
+    }
+    if (user_type.includes('lawyer') && !lawyer_client_scope) {
+      setError('Select whether this professional assists tenants or landlords.');
       return;
     }
     setBusy(true);
@@ -75,6 +85,8 @@ const AdminAccountsScreen = () => {
         user_type,
         assigned_state: assigned_state.trim() || undefined,
         assigned_city: assigned_city.trim() || undefined,
+        assigned_zone: user_type.startsWith('zonal_') ? assigned_zone : undefined,
+        lawyer_client_scope: user_type.includes('lawyer') ? lawyer_client_scope : undefined,
       });
       if (response?.success) {
         Toast.show({ type: 'success', text1: "Admin account created" });
@@ -86,6 +98,8 @@ const AdminAccountsScreen = () => {
           user_type: 'state_admin',
           assigned_state: '',
           assigned_city: '',
+          assigned_zone: '',
+          lawyer_client_scope: '',
         });
       } else {
         setError(response?.message || 'Could not create the account.');
@@ -173,6 +187,14 @@ const AdminAccountsScreen = () => {
             );
           })}
         </View>
+        {form.user_type.startsWith('zonal_') ? <View style={styles.fieldGap}>
+          <AppText>Assigned zone</AppText>
+          <View style={styles.roleChips}>{['North Central','North East','North West','South East','South South','South West'].map(zone => <TouchableOpacity key={zone} accessibilityRole="button" accessibilityState={{selected:form.assigned_zone === zone}} onPress={() => setField('assigned_zone')(zone)} style={[styles.chip, form.assigned_zone === zone && styles.chipSelected]}><AppText style={[styles.chipText,form.assigned_zone === zone && styles.chipTextSelected]}>{zone}</AppText></TouchableOpacity>)}</View>
+        </View> : null}
+        {form.user_type.includes('lawyer') ? <View style={styles.fieldGap}>
+          <AppText>Assists</AppText>
+          <View style={styles.roleChips}>{['tenant','landlord'].map(scope => <TouchableOpacity key={scope} accessibilityRole="button" accessibilityState={{selected:form.lawyer_client_scope === scope}} onPress={() => setField('lawyer_client_scope')(scope)} style={[styles.chip,form.lawyer_client_scope === scope && styles.chipSelected]}><AppText style={[styles.chipText,form.lawyer_client_scope === scope && styles.chipTextSelected]}>{scope === 'tenant' ? 'Tenants' : 'Landlords'}</AppText></TouchableOpacity>)}</View>
+        </View> : null}
         <Input
           label={"Assigned state"}
           value={form.assigned_state}

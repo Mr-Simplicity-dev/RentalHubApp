@@ -425,6 +425,7 @@ const RecruitmentAdminScreen = ({ navigation }) => {
                   ['Email', detailModal.applicant?.email_address],
                   ['Phone', detailModal.applicant?.phone_number],
                   ['Role', detailModal.applicant?.role_title],
+                  ['Preferred service location', [detailModal.applicant?.preferred_service_state,detailModal.applicant?.preferred_service_lga].filter(Boolean).join(', ') || 'Not provided'],
                   ['Location', [detailModal.applicant?.state_name, detailModal.applicant?.lga_name].filter(Boolean).join(', ')],
                   ['Status', detailModal.applicant?.status],
                   ['Payment', detailModal.applicant?.opportunity_type==='volunteer'?'Not Applicable':detailModal.applicant?.payment_status],
