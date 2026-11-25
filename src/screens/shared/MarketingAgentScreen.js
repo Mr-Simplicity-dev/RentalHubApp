@@ -1,7 +1,7 @@
 import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useCallback, useContext, useLayoutEffect, useState } from 'react';
-import { Alert, Share, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Alert, Platform, Share, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
 import { useFocusEffect } from '@react-navigation/native';
@@ -65,10 +65,10 @@ const MarketingAgentScreen = ({ navigation }) => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: true,
-      title: ui('Marketing Dashboard'),
+      title: Platform.OS === 'ios' ? ui('Marketing') : ui('Marketing Dashboard'),
       headerRight: () => (
         <View style={styles.headerActions}>
-          <HeadphoneSupportButton />
+          <HeadphoneSupportButton compact={Platform.OS === 'ios'} />
           <NotificationBell />
           <TouchableOpacity
             accessibilityRole="button"
@@ -166,6 +166,7 @@ const MarketingAgentScreen = ({ navigation }) => {
     if (!invite?.invite_url) return;
     try {
       await Share.share({
+        title: ui('Join RentalHub Nigeria'),
         message: ui('Open your RentalHub account here: {value0}', {
           value0: invite.invite_url,
         }),
@@ -432,15 +433,16 @@ const styles = StyleSheet.create({
   headerActions: {
     alignItems: 'center',
     flexDirection: 'row',
-    gap: 8,
+    gap: Platform.OS === 'ios' ? 6 : 8,
+    minHeight: 38,
   },
   headerLogoutBtn: {
     alignItems: 'center',
     backgroundColor: '#b91c1c',
-    borderRadius: 19,
-    height: 38,
+    borderRadius: Platform.OS === 'ios' ? 17 : 19,
+    height: Platform.OS === 'ios' ? 34 : 38,
     justifyContent: 'center',
-    width: 38,
+    width: Platform.OS === 'ios' ? 34 : 38,
   },
   shortcutGrid: {
     flexDirection: 'row',

@@ -12,7 +12,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
@@ -81,12 +81,16 @@ const ensureAndroidAudioPermission = async () => {
   }
 };
 
-const HeadphoneSupportButton = ({ variant = 'dark', style }) => {
+const waitForIosModalDismiss = () =>
+  Platform.OS === 'ios' ? new Promise((resolve) => setTimeout(resolve, 320)) : Promise.resolve();
+
+const HeadphoneSupportButton = ({ variant = 'dark', compact = false, style }) => {
   useInterfaceLanguage();
   const navigation = useNavigation();
   const { user, isAuthenticated } = useContext(AuthContext);
   const { connected, inviteCall, inviteSupportCall } = useRealtime();
   const { hitSlop } = useAccessibilityPreferences();
+  const insets = useSafeAreaInsets();
 
   const [open, setOpen] = useState(false);
   const [policy, setPolicy] = useState(() => inferFallbackCallPolicy(user));
@@ -216,6 +220,10 @@ const HeadphoneSupportButton = ({ variant = 'dark', style }) => {
 
     setCallingId('support');
     try {
+      if (Platform.OS === 'ios') {
+        setOpen(false);
+        await waitForIosModalDismiss();
+      }
       await inviteSupportCall();
       setOpen(false);
     } catch (err) {
@@ -224,6 +232,9 @@ const HeadphoneSupportButton = ({ variant = 'dark', style }) => {
           err?.message ||
             ui('All support agents are currently busy or offline. Try live chat instead.')
         );
+        if (Platform.OS === 'ios') {
+          setOpen(true);
+        }
       } else {
         Toast.show({
           type: 'error',
@@ -251,6 +262,10 @@ const HeadphoneSupportButton = ({ variant = 'dark', style }) => {
 
     setCallingId(contact.id);
     try {
+      if (Platform.OS === 'ios') {
+        setOpen(false);
+        await waitForIosModalDismiss();
+      }
       await inviteCall({
         receiverId: contact.id,
         callType: 'audio',
@@ -339,6 +354,7 @@ const HeadphoneSupportButton = ({ variant = 'dark', style }) => {
         }}
         style={[
           isLight ? styles.lightTrigger : styles.darkTrigger,
+          compact && styles.compactTrigger,
           style,
         ]}
       >
@@ -360,6 +376,13 @@ const HeadphoneSupportButton = ({ variant = 'dark', style }) => {
       <Modal
         visible={open}
         transparent={!isDirectoryMode}
+        presentationStyle={
+          isDirectoryMode
+            ? Platform.OS === 'ios'
+              ? 'pageSheet'
+              : 'fullScreen'
+            : 'overFullScreen'
+        }
         animationType="slide"
         onRequestClose={() => setOpen(false)}
       >
@@ -500,7 +523,7 @@ const HeadphoneSupportButton = ({ variant = 'dark', style }) => {
               activeOpacity={1}
               onPress={() => setOpen(false)}
             />
-            <View style={styles.sheetCard}>
+            <View style={[styles.sheetCard, { paddingBottom: Math.max(24, insets.bottom + 12) }]}>
               <View style={styles.sheetHeader}>
                 <View style={styles.headerTitleRow}>
                   <View style={styles.headerIconBadge}>
@@ -682,6 +705,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     position: 'relative',
     width: 42,
+  },
+  compactTrigger: {
+    borderRadius: 17,
+    height: 34,
+    width: 34,
   },
   liveDot: {
     borderRadius: 4,

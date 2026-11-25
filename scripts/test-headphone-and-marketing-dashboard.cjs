@@ -108,3 +108,15 @@ test('AndroidManifest declares audio permissions needed for Android APK voice ca
   assert.match(manifest, /android\.permission\.RECORD_AUDIO/);
   assert.match(manifest, /android\.permission\.MODIFY_AUDIO_SETTINGS/);
 });
+
+test('iOS Info.plist declares microphone, background audio, and Ionicons font, and Modal handles UIKit handoff safely', () => {
+  const plist = read('ios/RentalHubMobile/Info.plist');
+  assert.match(plist, /<key>NSMicrophoneUsageDescription<\/key>/, 'iOS Info.plist must declare NSMicrophoneUsageDescription');
+  assert.match(plist, /<key>UIBackgroundModes<\/key>[\s\S]*?<string>audio<\/string>/, 'iOS Info.plist must include audio background mode');
+  assert.match(plist, /<string>Ionicons\.ttf<\/string>/, 'iOS Info.plist must bundle Ionicons.ttf for headset/bell/logout icons');
+
+  const btn = read('src/components/calls/HeadphoneSupportButton.js');
+  assert.match(btn, /useSafeAreaInsets/, 'HeadphoneSupportButton must pad bottom sheet for iPhone Home Indicator');
+  assert.match(btn, /pageSheet/, 'HeadphoneSupportButton directory modal must use iOS pageSheet presentation');
+  assert.match(btn, /waitForIosModalDismiss/, 'HeadphoneSupportButton must dismiss its Modal before presenting NativeCallOverlay on iOS UIKit');
+});
