@@ -269,6 +269,14 @@ const MarketingAgentScreen = ({ navigation }) => {
               </TouchableOpacity>
             </View>
 
+            <TouchableOpacity
+              style={[styles.conductButton, { backgroundColor: colors.navy, marginBottom: 10 }]}
+              activeOpacity={0.85}
+              onPress={() => navigation.navigate('MyStaffIdentity')}
+            >
+              <Icon name="id-card-outline" size={18} color={colors.white} />
+              <AppText style={styles.conductButtonText}>My Staff Identity</AppText>
+            </TouchableOpacity>
             <TourTarget id="marketing_capture" label={ui('Conduct a survey')}>
               <TouchableOpacity
                 style={styles.conductButton}

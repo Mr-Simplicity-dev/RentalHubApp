@@ -114,6 +114,12 @@ const AgentDashboardScreen = ({ navigation }) => {
         subtitle={ui("Manage your agent profile and assigned location.")}
       >
         <ActionRow
+          title={"My Staff Identity"}
+          subtitle={"Show official Amana Staff QR & confirm live verification"}
+          icon="id-card-outline"
+          onPress={() => navigation.navigate('MyStaffIdentity')}
+        />
+        <ActionRow
           title={ui("State Migration")}
           subtitle={ui("Request a move to a new assigned state")}
           icon="swap-horizontal-outline"

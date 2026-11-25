@@ -76,6 +76,7 @@ const ZonalAdminScreen = ({ navigation }) => {
 
       <Button title={"Assisted registration & receipts"} onPress={()=>navigation.navigate('AssistedRegistration')} variant="outline" />
       <Button title={"Messages"} onPress={()=>navigation.navigate('Messages')} variant="outline" />
+      <Button title={"My Staff Identity"} onPress={()=>navigation.navigate('MyStaffIdentity')} variant="outline" />
       <TourTarget id="zonal_overview" label={"Zone metrics"}><View style={styles.metricRow}>
         {metric('Users', data?.totalUsers ?? 0)}
         {metric('Properties', data?.totalProperties ?? 0)}

@@ -74,6 +74,12 @@ const AdminAccountActions = ({ navigation }) => {
         onPress={() => navigation.navigate('Profile')}
       />
       <AdminActionPill
+        label={"Staff ID"}
+        icon="id-card-outline"
+        color={colors.success}
+        onPress={() => navigation.navigate('MyStaffIdentity')}
+      />
+      <AdminActionPill
         label={"Settings"}
         icon="settings-outline"
         color={colors.navy}

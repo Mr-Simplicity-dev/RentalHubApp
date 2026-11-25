@@ -202,6 +202,25 @@ const WelcomeScreen = ({ navigation }) => {
             <View style={[styles.languageRow, compact && styles.languageRowCompact, short && styles.languageRowShort]}>
               <LanguageDropdown fullWidth tone="dark" compact={compact || short} />
             </View>
+
+            {/* Verify Staff Link Directly Beneath Language Selector */}
+            <TouchableOpacity
+              accessibilityRole="link"
+              accessibilityLabel="Verify Staff Before Engaging Them"
+              activeOpacity={0.8}
+              onPress={() => navigateOnce('VerifyStaff')}
+              style={[styles.verifyStaffRow, compact && styles.verifyStaffRowCompact]}
+            >
+              <AppText
+                style={[
+                  styles.verifyStaffLinkText,
+                  compact && styles.verifyStaffLinkTextCompact,
+                  { writingDirection: textDirection },
+                ]}
+              >
+                Verify Staff Before Engaging Them
+              </AppText>
+            </TouchableOpacity>
           </View>
 
           {/* 2. MIDDLE HERO GROUP (Centered, naturally flowing content) */}
@@ -934,6 +953,28 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
   trustTextShort: {
+    fontSize: 13,
+    lineHeight: 18,
+  },
+  verifyStaffRow: {
+    alignSelf: "center",
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    marginTop: 2,
+  },
+  verifyStaffRowCompact: {
+    paddingVertical: 3,
+    marginTop: 1,
+  },
+  verifyStaffLinkText: {
+    color: "#E8F1FF",
+    fontFamily: typography.semibold,
+    fontSize: 13.5,
+    lineHeight: 19,
+    textAlign: "center",
+    textDecorationLine: "underline",
+  },
+  verifyStaffLinkTextCompact: {
     fontSize: 13,
     lineHeight: 18,
   },

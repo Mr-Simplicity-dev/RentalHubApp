@@ -23,6 +23,8 @@ import {
 } from '../services/paymentRecoveryService';
 
 import WelcomeScreen from '../screens/auth/WelcomeScreen';
+import VerifyStaffScreen from '../screens/shared/VerifyStaffScreen';
+import MyStaffIdentityScreen from '../screens/shared/MyStaffIdentityScreen';
 import AssistedRegistrationScreen from '../screens/admin/AssistedRegistrationScreen';
 import RegistrationPaymentScreen from '../screens/auth/RegistrationPaymentScreen';
 import LoginScreen from '../screens/auth/LoginScreen';
@@ -222,6 +224,9 @@ const linkingConfig = {
   config: {
     screens: {
       Welcome: 'welcome',
+      VerifyStaff: 'verify-staff',
+      VerifyStaffDetail: 'verify-staff/:staffId',
+      MyStaffIdentity: 'my-staff-identity',
       Home: '',
       Login: 'login',
       Register: {
@@ -420,6 +425,9 @@ const commonInfoScreens = () => (
     <Stack.Screen name="LocationInfoLga" component={LocationInfoScreen} options={{ title: ui("Location") }} />
     <Stack.Screen name="AreaInfo" component={LocationInfoScreen} options={{ title: ui("Location") }} />
     <Stack.Screen name="VerifyCaseAlias" component={VerifyCaseScreen} options={{ title: ui("Verify Case") }} />
+    <Stack.Screen name="VerifyStaff" component={VerifyStaffScreen} options={{ title: "Verify Amana Staff" }} />
+    <Stack.Screen name="VerifyStaffDetail" component={VerifyStaffScreen} options={{ title: "Verify Amana Staff" }} />
+    <Stack.Screen name="MyStaffIdentity" component={MyStaffIdentityScreen} options={{ title: "My Staff Identity" }} />
     <Stack.Screen name="Cases" component={LawyersDirectoryScreen} options={{ title: ui("Resolved cases") }} />
     <Stack.Screen name="Assistance" component={LegalSupportScreen} options={{ title: ui("Assistance") }} />
     <Stack.Screen name="LawyersDirectory" component={LegalSupportScreen} options={{ title: ui("Assistance") }} />

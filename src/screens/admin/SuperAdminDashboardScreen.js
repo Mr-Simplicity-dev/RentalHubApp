@@ -82,6 +82,8 @@ const WORKSPACE_GROUPS = [
       { label: 'Pending Approvals', section: 'pending_approvals', icon: 'hourglass-outline' },
       { label: 'Assisted registration', route: 'AssistedRegistration', icon: 'person-add-outline' },
       { label: 'Admin Accounts & Reminders', route: 'AdminAccounts', icon: 'person-add-outline' },
+      { label: 'My Staff Identity', route: 'MyStaffIdentity', icon: 'id-card-outline' },
+      { label: 'Verify Staff Portal', route: 'VerifyStaff', icon: 'shield-checkmark-outline' },
     ],
   },
   {
