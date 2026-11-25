@@ -7,7 +7,8 @@ const recruitmentCopy = require('../../i18n/recruitmentCopy.cjs');
 import LanguageSkillsField from '../../components/common/LanguageSkillsField';
 const {requiresLanguages,validateSkills}=require('../../data/languagePolicy.cjs');
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, ScrollView, StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Linking, Share, ScrollView, StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 import TextInput from '../../components/common/AppTextInput';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
@@ -53,7 +54,42 @@ const CareersScreen = ({ navigation, route }) => {
   const [states, setStates] = useState([]);
   const [lgas, setLgas] = useState([]);
   const [form, setForm] = useState(emptyForm);
-  const [selectedRoleId, setSelectedRoleId] = useState(null);
+  const [selectedRoleId, setSelectedRoleId] = useState(
+    route?.params?.role ? String(route.params.role) : null
+  );
+
+  const shareVolunteerOnWhatsApp = async (role) => {
+    if (!role) return;
+    const shareUrl = `https://rentalhub.com.ng/careers?type=volunteer&role=${encodeURIComponent(role.id)}`;
+    const rawDescription = String(role.description || '').replace(/\s+/g, ' ').trim();
+    const snippet =
+      rawDescription.length > 140
+        ? `${rawDescription.slice(0, 137).trim()}...`
+        : rawDescription;
+    const message = [
+      `Volunteer Opportunity at Amana RentalHub NG: ${role.title}`,
+      role.service_state ? `Location: ${role.service_state}` : '',
+      'Free to apply — no application fee or degree required.',
+      snippet,
+      `Apply here: ${shareUrl}`,
+    ]
+      .filter(Boolean)
+      .join('\n');
+
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+    try {
+      await Linking.openURL(whatsappUrl);
+    } catch {
+      try {
+        await Share.share({ message, url: shareUrl });
+      } catch {
+        Toast.show({
+          type: 'error',
+          text1: ui('Unable to share right now'),
+        });
+      }
+    }
+  };
   const [submittedApplication, setSubmittedApplication] = useState(null);
   const [lookupEmail, setLookupEmail] = useState('');
   const [lookupReference, setLookupReference] = useState('');
@@ -243,16 +279,33 @@ const CareersScreen = ({ navigation, route }) => {
         <View style={styles.roleGrid}>
           {visibleRoles.map((role) => {
             const active = String(role.id) === String(selectedRoleId);
+            const isVolunteerRole = role.opportunity_type === "volunteer";
             return (
-              <TouchableOpacity
+              <View
                 key={role.id}
                 style={[styles.roleCard, active && styles.roleCardActive]}
-                onPress={() => {setSelectedRoleId(role.id);updateField('application_track','standard');}}
               >
-                <AppText style={[styles.roleTitle, active && styles.roleTitleActive]}>{role.title}</AppText>
-                <AppText style={styles.roleMeta}>{role.opportunity_type==="volunteer"?copy.volunteer_position:copy.employment_position}</AppText>
-                <AppText style={styles.roleMeta}>{role.opportunity_type==="volunteer"?copy.volunteer_free:('₦'+Number(role.application_fee||0).toLocaleString()+ui(" standard"))}</AppText>
-              </TouchableOpacity>
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPress={() => {setSelectedRoleId(role.id);updateField('application_track','standard');}}
+                >
+                  <AppText style={[styles.roleTitle, active && styles.roleTitleActive]}>{role.title}</AppText>
+                  <AppText style={styles.roleMeta}>{isVolunteerRole?copy.volunteer_position:copy.employment_position}</AppText>
+                  <AppText style={styles.roleMeta}>{isVolunteerRole?copy.volunteer_free:('₦'+Number(role.application_fee||0).toLocaleString()+ui(" standard"))}</AppText>
+                </TouchableOpacity>
+                {isVolunteerRole ? (
+                  <TouchableOpacity
+                    accessibilityRole="button"
+                    accessibilityLabel={`Share ${role.title} on WhatsApp`}
+                    activeOpacity={0.85}
+                    style={styles.whatsappShareBtn}
+                    onPress={() => shareVolunteerOnWhatsApp(role)}
+                  >
+                    <Icon name="logo-whatsapp" size={15} color="#047857" />
+                    <AppText style={styles.whatsappShareBtnText}>{ui("Share on WhatsApp")}</AppText>
+                  </TouchableOpacity>
+                ) : null}
+              </View>
             );
           })}
         </View>
@@ -265,6 +318,18 @@ const CareersScreen = ({ navigation, route }) => {
           <AppText style={styles.selectionTitle}>{ui("Selected role")}</AppText>
           <AppText style={styles.selectionText}>{selectedRole.title}</AppText>
           <AppText style={styles.roleMeta}>{selectedRole.description || ui('A professional role in the RentalHub team.')}</AppText>
+          {selectedRole.opportunity_type === 'volunteer' ? (
+            <TouchableOpacity
+              accessibilityRole="button"
+              accessibilityLabel={`Share ${selectedRole.title} on WhatsApp`}
+              activeOpacity={0.85}
+              style={[styles.whatsappShareBtn, styles.whatsappShareBtnFull]}
+              onPress={() => shareVolunteerOnWhatsApp(selectedRole)}
+            >
+              <Icon name="logo-whatsapp" size={16} color="#047857" />
+              <AppText style={styles.whatsappShareBtnText}>{ui("Share on WhatsApp")}</AppText>
+            </TouchableOpacity>
+          ) : null}
         </View>
       ) : null}
 
@@ -450,6 +515,29 @@ const styles = StyleSheet.create({
   roleTitle: { color: colors.ink, fontFamily: typography.bold },
   roleTitleActive: { color: colors.blue },
   roleMeta: { color: colors.muted, fontFamily: typography.regular, fontSize: typeScale.xs, lineHeight: 18, marginTop: 4 },
+  whatsappShareBtn: {
+    marginTop: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    borderRadius: radius.sm,
+    borderWidth: 1,
+    borderColor: '#059669',
+    backgroundColor: '#ECFDF5',
+    paddingVertical: 7,
+    paddingHorizontal: 8,
+  },
+  whatsappShareBtnFull: {
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+  },
+  whatsappShareBtnText: {
+    color: '#065F46',
+    fontFamily: typography.semibold,
+    fontSize: typeScale.xs,
+    lineHeight: 16,
+  },
   selectionCard: { backgroundColor: colors.white, borderRadius: radius.md, padding: 14, borderWidth: 1, borderColor: colors.border, marginBottom: 12, ...shadows.soft },
   selectionTitle: { fontFamily: typography.bold, color: colors.ink },
   selectionText: { color: colors.blue, marginTop: 4, fontFamily: typography.semibold },
