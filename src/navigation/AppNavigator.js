@@ -996,11 +996,19 @@ const RecruitmentAdminRoot = () => {  return (<Stack.Navigator screenOptions={sc
   </Stack.Navigator>); };
 
 const MarketingAgentRoot = () => { useInterfaceLanguage(); return (<Stack.Navigator screenOptions={screenOptions}>
-    <Stack.Screen name="MarketingAgentDashboard" component={MarketingAgentScreen} options={{ title: ui("Survey Respondents") }} />
+    <Stack.Screen name="MarketingAgentDashboard" component={MarketingAgentScreen} options={{ title: ui("Marketing Dashboard") }} />
     {/* Field capture: the backend attributes the response to the signed-in
         marketing agent, so this is how the role actually earns. */}
     <Stack.Screen name="PublicSurvey" component={PublicSurveyScreen} options={{ title: ui("Conduct Survey") }} />
+    <Stack.Screen name="PropertyList" component={PropertyListScreen} options={{ title: ui("Property Market") }} />
+    <Stack.Screen name="PropertyDetail" component={PropertyDetailScreen} options={{ title: ui("Property Details") }} />
+    <Stack.Screen name="PropertyAlertRequest" component={PropertyAlertRequestScreen} options={{ title: ui("Submit Request") }} />
+    <Stack.Screen name="LocationInfo" component={LocationInfoScreen} options={{ title: ui("Location") }} />
+    <Stack.Screen name="Messages" component={MessagesScreen} />
+    <Stack.Screen name="Notifications" component={NotificationsScreen} />
+    <Stack.Screen name="Support" component={SupportScreen} options={{ title: ui("Support") }} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
+    <Stack.Screen name="PrivacyData" component={PrivacyDataScreen} options={{ title: ui("My Personal Data") }} />
     {commonVerificationScreens()}
     {commonAppealScreens()}
     {commonInfoScreens()}

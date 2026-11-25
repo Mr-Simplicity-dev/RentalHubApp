@@ -1,5 +1,6 @@
 import EmailVerificationNotice from '../../components/common/EmailVerificationNotice';
 import UserAvatar from '../../components/common/UserAvatar';
+import HeadphoneSupportButton from '../../components/calls/HeadphoneSupportButton';
 import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import {useTour} from '../../context/TourContext';
@@ -798,6 +799,7 @@ const DashboardScreen = ({ navigation }) => {
           <AppText style={styles.topTitle}>{ui("Hello, ")}{String(user?.full_name || 'there').split(' ')[0]}</AppText>
         </View>
         <View style={styles.topActions}>
+          <HeadphoneSupportButton variant="light" />
           <TouchableOpacity
             accessibilityLabel={ui("Open notifications")}
             onPress={() => navigation.navigate('Notifications')}

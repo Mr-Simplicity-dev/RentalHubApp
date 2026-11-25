@@ -41,6 +41,7 @@ import { useAccessibilityPreferences } from '../../hooks/useAccessibilityPrefere
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import AppText from '../../components/common/AppText';
+import HeadphoneSupportButton from '../../components/calls/HeadphoneSupportButton';
 const sections = [
   'overview',
   'users',
@@ -365,7 +366,9 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerRight: () => (
-          <TouchableOpacity
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+        <HeadphoneSupportButton />
+        <TouchableOpacity
             accessibilityRole="button"
             accessibilityLabel={`Notifications${(unreadCount ? `, ${unreadCount} unread` : '') ?? "{value0}"}`}
             activeOpacity={0.85}
@@ -381,6 +384,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
               </View>
             ) : null}
           </TouchableOpacity>
+      </View>
     ) });
     return () => navigation.setOptions({ headerRight: undefined });
   }, [navigation, unreadCount, interfaceLanguage]);

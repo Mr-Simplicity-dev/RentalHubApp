@@ -1,3 +1,4 @@
+import useAdminNotificationHeader from '../../hooks/useAdminNotificationHeader';
 import PropertyProtectionEntry from '../../components/dashboard/PropertyProtectionEntry';
 import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
@@ -20,9 +21,7 @@ const SuperLawyerDashboardScreen = ({ navigation }) => {
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useLayoutEffect(() => {
-    navigation.setOptions({ headerShown: navigation.canGoBack() });
-  }, [navigation, interfaceLanguage]);
+  useAdminNotificationHeader(navigation);
 
   const loadDashboard = async () => {
     setLoading(true);

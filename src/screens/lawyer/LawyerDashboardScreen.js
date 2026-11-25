@@ -1,3 +1,4 @@
+import useAdminNotificationHeader from '../../hooks/useAdminNotificationHeader';
 import PropertyProtectionEntry from '../../components/dashboard/PropertyProtectionEntry';
 import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
@@ -31,9 +32,7 @@ const LawyerDashboardScreen = ({ navigation }) => {
     radius: radius.pill,
   });
 
-  useLayoutEffect(() => {
-    navigation.setOptions({ headerShown: navigation.canGoBack() });
-  }, [navigation, interfaceLanguage]);
+  useAdminNotificationHeader(navigation);
 
   const loadProperties = async () => {
     setLoading(true);

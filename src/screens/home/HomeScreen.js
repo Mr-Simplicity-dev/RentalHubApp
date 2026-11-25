@@ -8,6 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import AdSpace from '../../components/common/AdSpace';
 import BrandMark from '../../components/brand/BrandMark';
+import HeadphoneSupportButton from '../../components/calls/HeadphoneSupportButton';
 import PropertyCard from '../../components/properties/PropertyCard';
 import { useTourTarget } from '../../components/tour/TourTarget';
 import { AuthContext } from '../../context/AuthContext';
@@ -249,7 +250,9 @@ const HomeScreen = ({ navigation }) => {
               <BrandMark compact />
             </TouchableOpacity>
           )}
-          <TouchableOpacity
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            {isAuthenticated ? <HeadphoneSupportButton variant="light" /> : null}
+            <TouchableOpacity
             {...notificationsTourTarget}
             accessibilityLabel={
               isAuthenticated
@@ -274,6 +277,7 @@ const HomeScreen = ({ navigation }) => {
               </View>
             ) : null}
           </TouchableOpacity>
+          </View>
         </View>
 
         <View style={styles.intro}>

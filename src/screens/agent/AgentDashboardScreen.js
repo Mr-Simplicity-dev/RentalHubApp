@@ -1,3 +1,4 @@
+import useAdminNotificationHeader from '../../hooks/useAdminNotificationHeader';
 import PropertyProtectionEntry from '../../components/dashboard/PropertyProtectionEntry';
 import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
@@ -17,9 +18,7 @@ const AgentDashboardScreen = ({ navigation }) => {
   const interfaceLanguage = useInterfaceLanguage();
   const [profile, setProfile] = useState(null);
 
-  useLayoutEffect(() => {
-    navigation.setOptions({ headerShown: navigation.canGoBack() });
-  }, [navigation, interfaceLanguage]);
+  useAdminNotificationHeader(navigation);
 
   useEffect(() => {
     const loadProfile = async () => {
