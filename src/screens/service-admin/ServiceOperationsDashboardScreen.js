@@ -23,33 +23,50 @@ const money = (value) => `₦${Number(value || 0).toLocaleString()}`;
 const roleLabel = (role = '') => String(role).replace(/_/g, ' ');
 
 const getRoleProfile = (role = '') => {
-  if (role.includes('transportation')) {
+  const normalized = String(role || '').trim().toLowerCase();
+  if (normalized.includes('transportation')) {
     return {
       family: 'transportation',
-      title: role.includes('super') ? "Transport command centre" : role.includes('state') ? "State transport operations" : "Transportation desk",
+      title: normalized.includes('super')
+        ? "Transport command centre"
+        : normalized.includes('zonal')
+          ? "Zonal transport operations"
+          : normalized.includes('state')
+            ? "State transport operations"
+            : "Transportation desk",
       eyebrow: "TRANSPORT OPERATIONS",
       icon: 'car-outline',
-      bookingsType: role.includes('state')
+      bookingsType: normalized.includes('state') || normalized.includes('zonal')
         ? 'transportation_state'
-        : role.includes('super')
+        : normalized.includes('super')
           ? 'transportation_super'
           : 'transportation',
     };
   }
-
-  if (role.includes('fumigation')) {
+  if (normalized.includes('fumigation')) {
     return {
       family: 'fumigation',
-      title: role.includes('super') ? "Fumigation command centre" : role.includes('state') ? "State service operations" : "Fumigation & cleaning desk",
+      title: normalized.includes('super')
+        ? "Fumigation command centre"
+        : normalized.includes('zonal')
+          ? "Zonal fumigation operations"
+          : normalized.includes('state')
+            ? "State service operations"
+            : "Fumigation & cleaning desk",
       eyebrow: "FUMIGATION & CLEANING",
       icon: 'sparkles-outline',
       bookingsType: 'fumigation',
     };
   }
-
   return {
     family: 'support',
-    title: role.includes('super') ? "Support command centre" : role.includes('state') ? "State support desk" : "Support desk",
+    title: normalized.includes('super')
+      ? "Support command centre"
+      : normalized.includes('zonal')
+        ? "Zonal support desk"
+        : normalized.includes('state')
+          ? "State support desk"
+          : "Support desk",
     eyebrow: "CUSTOMER SUPPORT",
     icon: 'headset-outline',
   };

@@ -120,3 +120,27 @@ test('iOS Info.plist declares microphone, background audio, and Ionicons font, a
   assert.match(btn, /pageSheet/, 'HeadphoneSupportButton directory modal must use iOS pageSheet presentation');
   assert.match(btn, /waitForIosModalDismiss/, 'HeadphoneSupportButton must dismiss its Modal before presenting NativeCallOverlay on iOS UIKit');
 });
+
+test('Admin, Zonal, Service, Recruitment, and Lawyer mobile headers include Profile and Logout alongside Headphone and Bell', () => {
+  const headerHook = fs.readFileSync(
+    path.join(ROOT, 'src/hooks/useAdminNotificationHeader.js'),
+    'utf8'
+  );
+  assert.match(headerHook, /HeadphoneSupportButton/);
+  assert.match(headerHook, /NotificationBell/);
+  assert.match(headerHook, /navigation\.navigate\('Profile'\)/);
+  assert.match(headerHook, /log-out-outline/);
+  assert.match(headerHook, /confirmLogout/);
+
+  const nav = fs.readFileSync(path.join(ROOT, 'src/navigation/AppNavigator.js'), 'utf8');
+  assert.match(nav, /case 'zonal_support_admin':/);
+  assert.match(nav, /ZonalAdminRoot[\s\S]*?<Stack\.Screen name="Messages" component=\{MessagesScreen\} \/>/);
+
+  const serviceScreen = fs.readFileSync(
+    path.join(ROOT, 'src/screens/service-admin/ServiceOperationsDashboardScreen.js'),
+    'utf8'
+  );
+  assert.match(serviceScreen, /Zonal transport operations/);
+  assert.match(serviceScreen, /Zonal fumigation operations/);
+  assert.match(serviceScreen, /Zonal support desk/);
+});
