@@ -145,14 +145,16 @@ test('Admin, Zonal, Service, Recruitment, and Lawyer mobile headers include Prof
   assert.match(serviceScreen, /Zonal support desk/);
 });
 
-test('Mobile CareersScreen renders a WhatsApp share button on each volunteer position with deep-link support', () => {
+test('Mobile CareersScreen renders a WhatsApp share button on every recruitment and volunteer position with full description and deep-link support', () => {
   const careers = fs.readFileSync(
     path.join(ROOT, 'src/screens/shared/CareersScreen.js'),
     'utf8'
   );
-  assert.match(careers, /shareVolunteerOnWhatsApp/);
+  assert.match(careers, /shareRoleOnWhatsApp/);
+  assert.match(careers, /Job Opportunity at Amana RentalHub NG:/);
+  assert.match(careers, /Volunteer Opportunity at Amana RentalHub NG:/);
   assert.match(careers, /https:\/\/wa\.me\/\?text=/);
-  assert.match(careers, /https:\/\/rentalhub\.com\.ng\/careers\?type=volunteer&role=/);
+  assert.match(careers, /https:\/\/rentalhub\.com\.ng\/careers\?type=\$\{type\}&role=/);
   assert.match(careers, /logo-whatsapp/);
   assert.match(careers, /Share on WhatsApp/);
   assert.match(careers, /Share\.share/);

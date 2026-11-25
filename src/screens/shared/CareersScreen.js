@@ -58,16 +58,20 @@ const CareersScreen = ({ navigation, route }) => {
     route?.params?.role ? String(route.params.role) : null
   );
 
-  const shareVolunteerOnWhatsApp = async (role) => {
+  const shareRoleOnWhatsApp = async (role) => {
     if (!role) return;
-    const shareUrl = `https://rentalhub.com.ng/careers?type=volunteer&role=${encodeURIComponent(role.id)}`;
+    const isVolunteerRole = role.opportunity_type === 'volunteer';
+    const type = isVolunteerRole ? 'volunteer' : 'employment';
+    const shareUrl = `https://rentalhub.com.ng/careers?type=${type}&role=${encodeURIComponent(role.id)}`;
     const fullDescription = String(role.description || '')
       .replace(/\r\n/g, '\n')
       .trim();
     const message = [
-      `*Volunteer Opportunity at Amana RentalHub NG: ${role.title}*`,
+      isVolunteerRole
+        ? `*Volunteer Opportunity at Amana RentalHub NG: ${role.title}*`
+        : `*Job Opportunity at Amana RentalHub NG: ${role.title}*`,
       role.service_state ? `Location: ${role.service_state}` : '',
-      'Free to apply — no application fee or degree required.',
+      isVolunteerRole ? 'Free to apply — no application fee or degree required.' : '',
       fullDescription ? `\n*Job Description:*\n${fullDescription}` : '',
       `\nApply here: ${shareUrl}`,
     ]
@@ -291,18 +295,16 @@ const CareersScreen = ({ navigation, route }) => {
                   <AppText style={styles.roleMeta}>{isVolunteerRole?copy.volunteer_position:copy.employment_position}</AppText>
                   <AppText style={styles.roleMeta}>{isVolunteerRole?copy.volunteer_free:('₦'+Number(role.application_fee||0).toLocaleString()+ui(" standard"))}</AppText>
                 </TouchableOpacity>
-                {isVolunteerRole ? (
-                  <TouchableOpacity
-                    accessibilityRole="button"
-                    accessibilityLabel={`Share ${role.title} on WhatsApp`}
-                    activeOpacity={0.85}
-                    style={styles.whatsappShareBtn}
-                    onPress={() => shareVolunteerOnWhatsApp(role)}
-                  >
-                    <Icon name="logo-whatsapp" size={15} color="#047857" />
-                    <AppText style={styles.whatsappShareBtnText}>{ui("Share on WhatsApp")}</AppText>
-                  </TouchableOpacity>
-                ) : null}
+                <TouchableOpacity
+                  accessibilityRole="button"
+                  accessibilityLabel={`Share ${role.title} on WhatsApp`}
+                  activeOpacity={0.85}
+                  style={styles.whatsappShareBtn}
+                  onPress={() => shareRoleOnWhatsApp(role)}
+                >
+                  <Icon name="logo-whatsapp" size={15} color="#047857" />
+                  <AppText style={styles.whatsappShareBtnText}>{ui("Share on WhatsApp")}</AppText>
+                </TouchableOpacity>
               </View>
             );
           })}
@@ -316,18 +318,16 @@ const CareersScreen = ({ navigation, route }) => {
           <AppText style={styles.selectionTitle}>{ui("Selected role")}</AppText>
           <AppText style={styles.selectionText}>{selectedRole.title}</AppText>
           <AppText style={styles.roleMeta}>{selectedRole.description || ui('A professional role in the RentalHub team.')}</AppText>
-          {selectedRole.opportunity_type === 'volunteer' ? (
-            <TouchableOpacity
-              accessibilityRole="button"
-              accessibilityLabel={`Share ${selectedRole.title} on WhatsApp`}
-              activeOpacity={0.85}
-              style={[styles.whatsappShareBtn, styles.whatsappShareBtnFull]}
-              onPress={() => shareVolunteerOnWhatsApp(selectedRole)}
-            >
-              <Icon name="logo-whatsapp" size={16} color="#047857" />
-              <AppText style={styles.whatsappShareBtnText}>{ui("Share on WhatsApp")}</AppText>
-            </TouchableOpacity>
-          ) : null}
+          <TouchableOpacity
+            accessibilityRole="button"
+            accessibilityLabel={`Share ${selectedRole.title} on WhatsApp`}
+            activeOpacity={0.85}
+            style={[styles.whatsappShareBtn, styles.whatsappShareBtnFull]}
+            onPress={() => shareRoleOnWhatsApp(selectedRole)}
+          >
+            <Icon name="logo-whatsapp" size={16} color="#047857" />
+            <AppText style={styles.whatsappShareBtnText}>{ui("Share on WhatsApp")}</AppText>
+          </TouchableOpacity>
         </View>
       ) : null}
 
