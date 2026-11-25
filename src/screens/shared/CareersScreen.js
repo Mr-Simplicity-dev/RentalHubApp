@@ -61,17 +61,15 @@ const CareersScreen = ({ navigation, route }) => {
   const shareVolunteerOnWhatsApp = async (role) => {
     if (!role) return;
     const shareUrl = `https://rentalhub.com.ng/careers?type=volunteer&role=${encodeURIComponent(role.id)}`;
-    const rawDescription = String(role.description || '').replace(/\s+/g, ' ').trim();
-    const snippet =
-      rawDescription.length > 140
-        ? `${rawDescription.slice(0, 137).trim()}...`
-        : rawDescription;
+    const fullDescription = String(role.description || '')
+      .replace(/\r\n/g, '\n')
+      .trim();
     const message = [
-      `Volunteer Opportunity at Amana RentalHub NG: ${role.title}`,
+      `*Volunteer Opportunity at Amana RentalHub NG: ${role.title}*`,
       role.service_state ? `Location: ${role.service_state}` : '',
       'Free to apply — no application fee or degree required.',
-      snippet,
-      `Apply here: ${shareUrl}`,
+      fullDescription ? `\n*Job Description:*\n${fullDescription}` : '',
+      `\nApply here: ${shareUrl}`,
     ]
       .filter(Boolean)
       .join('\n');

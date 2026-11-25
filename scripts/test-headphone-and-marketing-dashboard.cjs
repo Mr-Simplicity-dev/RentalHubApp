@@ -157,4 +157,6 @@ test('Mobile CareersScreen renders a WhatsApp share button on each volunteer pos
   assert.match(careers, /Share on WhatsApp/);
   assert.match(careers, /Share\.share/);
   assert.match(careers, /route\?\.params\?\.role/);
+  assert.match(careers, /\*Job Description:\*/);
+  assert.doesNotMatch(careers, /slice\(0,\s*137\)/);
 });
