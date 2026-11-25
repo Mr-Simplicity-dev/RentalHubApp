@@ -1065,6 +1065,7 @@ const RoleRouter = ({ userType }) => {
       return <StateAdminRoot />;
     case 'lga_support_admin':
     case 'state_support_admin':
+    case 'zonal_support_admin':
     case 'super_support_admin':
     case 'transportation_admin':
     case 'lga_transportation_admin':
