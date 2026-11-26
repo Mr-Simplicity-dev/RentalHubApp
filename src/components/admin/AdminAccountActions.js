@@ -32,6 +32,7 @@ const AdminActionPill = ({ label, icon, color = colors.blue, onPress }) => {
 const AdminAccountActions = ({ navigation }) => {
 
   const {
+    user,
     exitImpersonation,
     isImpersonating,
     logout,
@@ -73,12 +74,12 @@ const AdminAccountActions = ({ navigation }) => {
         icon="person-circle-outline"
         onPress={() => navigation.navigate('Profile')}
       />
-      <AdminActionPill
+      {user?.user_type !== 'super_admin' && <AdminActionPill
         label={"Staff ID"}
         icon="id-card-outline"
         color={colors.success}
         onPress={() => navigation.navigate('MyStaffIdentity')}
-      />
+      />}
       <AdminActionPill
         label={"Settings"}
         icon="settings-outline"

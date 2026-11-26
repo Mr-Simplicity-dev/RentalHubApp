@@ -43,6 +43,22 @@ export const staffVerificationService = {
 
   getMyStaffIdentity: () => api.get('/staff-verification/me'),
 
+  getAdminCatalog: () => api.get('/staff-verification/admin/catalog'),
+  getEligibleUsers: (search = '') => api.get('/staff-verification/admin/eligible-users', { params: { search, limit: 100 } }),
+  listIdentities: (params = {}) => api.get('/staff-verification/admin/identities', { params }),
+  createIdentity: payload => api.post('/staff-verification/admin/identities', payload),
+  updateIdentity: (id, payload) => api.patch(`/staff-verification/admin/identities/${encodeURIComponent(id)}`, payload),
+  updateIdentityStatus: (id, action, reason) => api.post(`/staff-verification/admin/identities/${encodeURIComponent(id)}/status`, { action, reason }),
+  regenerateIdentityId: id => api.post(`/staff-verification/admin/identities/${encodeURIComponent(id)}/regenerate-id`),
+  uploadIdentityPhoto: (id, asset) => {
+    const body = new FormData();
+    body.append('photo', { uri: asset.uri, name: asset.name, type: asset.mimeType });
+    return api.post(`/staff-verification/admin/identities/${encodeURIComponent(id)}/photo`, body, { headers: { 'Content-Type': 'multipart/form-data' } });
+  },
+  getAdminHistory: () => api.get('/staff-verification/admin/history', { params: { limit: 100 } }),
+  listImpersonationReports: () => api.get('/staff-verification/admin/impersonation-reports', { params: { limit: 100 } }),
+  updateImpersonationReport: (id, payload) => api.patch(`/staff-verification/admin/impersonation-reports/${encodeURIComponent(id)}`, payload),
+
   getMyPendingChallenges: () => api.get('/staff-verification/me/challenges/pending'),
 
   lookupMyChallenge: (codeOrQr) =>

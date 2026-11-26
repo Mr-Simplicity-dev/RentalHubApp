@@ -24,7 +24,7 @@ import {
 
 import WelcomeScreen from '../screens/auth/WelcomeScreen';
 import VerifyStaffScreen from '../screens/shared/VerifyStaffScreen';
-import MyStaffIdentityScreen from '../screens/shared/MyStaffIdentityScreen';
+import StaffIdentityManagementScreen, { StaffIdentityEntryScreen } from '../screens/admin/StaffIdentityManagementScreen';
 import AssistedRegistrationScreen from '../screens/admin/AssistedRegistrationScreen';
 import RegistrationPaymentScreen from '../screens/auth/RegistrationPaymentScreen';
 import LoginScreen from '../screens/auth/LoginScreen';
@@ -227,6 +227,7 @@ const linkingConfig = {
       VerifyStaff: 'verify-staff',
       VerifyStaffDetail: 'verify-staff/:staffId',
       MyStaffIdentity: 'my-staff-identity',
+      StaffIdentityManagement: 'staff-identity-management',
       Home: '',
       Login: 'login',
       Register: {
@@ -427,7 +428,7 @@ const commonInfoScreens = () => (
     <Stack.Screen name="VerifyCaseAlias" component={VerifyCaseScreen} options={{ title: ui("Verify Case") }} />
     <Stack.Screen name="VerifyStaff" component={VerifyStaffScreen} options={{ title: "Verify Amana Staff" }} />
     <Stack.Screen name="VerifyStaffDetail" component={VerifyStaffScreen} options={{ title: "Verify Amana Staff" }} />
-    <Stack.Screen name="MyStaffIdentity" component={MyStaffIdentityScreen} options={{ title: "My Staff Identity" }} />
+    <Stack.Screen name="MyStaffIdentity" component={StaffIdentityEntryScreen} options={{ title: "Staff Identity" }} />
     <Stack.Screen name="Cases" component={LawyersDirectoryScreen} options={{ title: ui("Resolved cases") }} />
     <Stack.Screen name="Assistance" component={LegalSupportScreen} options={{ title: ui("Assistance") }} />
     <Stack.Screen name="LawyersDirectory" component={LegalSupportScreen} options={{ title: ui("Assistance") }} />
@@ -792,6 +793,7 @@ const AdminRoot = () => {  return (<Stack.Navigator screenOptions={screenOptions
   </Stack.Navigator>); };
 
 const SuperAdminRoot = ({ initialRouteName = 'SuperAdminDashboard' }) => {  return (<Stack.Navigator initialRouteName={initialRouteName} screenOptions={screenOptions}>
+    <Stack.Screen name="StaffIdentityManagement" component={StaffIdentityManagementScreen} options={{ title: "Staff Identity Management" }} />
     <Stack.Screen name="SuperAdminDashboard" component={SuperAdminDashboardScreen} options={{ title: "Super Admin" }} />
     <Stack.Screen name="Home" component={HomeScreen} options={{ title: "Explore homes" }} />
     <Stack.Screen name="ModerationHub" component={ModerationHubScreen} options={{ title: "Moderation" }} />
