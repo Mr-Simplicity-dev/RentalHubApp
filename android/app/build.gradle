@@ -70,8 +70,8 @@ android {
         applicationId = "com.rentalhubng"
         minSdkVersion = rootProject.ext.minSdkVersion
         targetSdkVersion = rootProject.ext.targetSdkVersion
-        versionCode = 83
-        versionName = "1.0.72"
+        versionCode = 84
+        versionName = "1.0.73"
         buildConfigField "String", "PAYSTACK_PUBLIC_KEY", "\"pk_live_24159afdd489928d4e500cff2eafb7d08b0f0d3f\""
     }
     signingConfigs {
@@ -109,6 +109,7 @@ android {
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
+    implementation("com.google.firebase:firebase-messaging:25.0.1")
     implementation("androidx.core:core-splashscreen:1.0.1")
     implementation(project(":expo"))
     implementation("com.paystack.android:paystack-ui:0.0.9")

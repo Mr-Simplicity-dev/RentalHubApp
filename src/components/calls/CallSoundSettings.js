@@ -1,5 +1,5 @@
 import React, {useEffect,useRef,useState} from 'react';
-import {View,TouchableOpacity,Switch} from 'react-native';
+import {View,TouchableOpacity,Switch,NativeModules} from 'react-native';
 import AppText from '../common/AppText';
 import {loadCallSounds,saveCallSound,saveCallPolicy,playCallSound} from '../../services/callSoundService';
 export default function CallSoundSettings({admin=false}) {
@@ -12,6 +12,7 @@ export default function CallSoundSettings({admin=false}) {
   return <View style={{padding:16,gap:12,borderWidth:1,borderColor:'#dce4ee',borderRadius:16,backgroundColor:'#fff',marginVertical:12}}>
     <AppText style={{fontSize:18,fontWeight:'600'}}>Call sounds</AppText>
     <AppText>Choose your incoming call sound. No religion information is collected.</AppText>
+    {!!NativeModules.RentalHubIncomingCalls && <TouchableOpacity accessibilityRole="button" onPress={() => NativeModules.RentalHubIncomingCalls.openCallSettings()} style={{padding:12}}><AppText>Allow incoming calls on the lock screen</AppText></TouchableOpacity>}
     {!!error&&<AppText accessibilityRole="alert">{error}</AppText>}
     {!data&&<TouchableOpacity accessibilityRole="button" onPress={()=>loadCallSounds().then(setData).catch(()=>setError('Could not load call sounds.'))} style={{padding:12}}><AppText>Load call settings</AppText></TouchableOpacity>}
     {data&&<>

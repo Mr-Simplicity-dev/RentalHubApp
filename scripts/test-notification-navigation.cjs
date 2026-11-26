@@ -51,3 +51,14 @@ test('a notification link cannot open an arbitrary website in a browser', () => 
   assert.equal(context.includes('rentalhub\\.com\\.ng'), true);
   assert.match(context, /data\.link && isAllowedExternalLink\(data\.link\)[\s\S]*Linking\.openURL\(String\(data\.link\)\)/);
 });
+
+test('staff identity notification links open the role-protected management or personal entry', () => {
+  const navigation = loadNavigationRef();
+  navigation.state.routeNames = ['MyStaffIdentity', 'StaffIdentityManagement'];
+  assert.equal(navigation.openRentalHubLinkInApp('/my-staff-identity'), true);
+  assert.equal(navigation.calls[0].name, 'MyStaffIdentity');
+  assert.equal(navigation.openRentalHubLinkInApp('/super-admin?tab=staff_identity'), true);
+  assert.equal(navigation.calls[1].name, 'StaffIdentityManagement');
+  navigation.state.routeNames = ['Notifications'];
+  assert.equal(navigation.openRentalHubLinkInApp('/staff-identity-management'), false);
+});

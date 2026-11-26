@@ -42,6 +42,10 @@ export const openRentalHubLinkInApp = (link) => {
   if (path === '/notifications') {
     return navigateIfAvailable('Notifications');
   }
+  if (path === '/my-staff-identity') return navigateIfAvailable('MyStaffIdentity');
+  if (path === '/staff-identity-management' || (path === '/super-admin' && /[?&]tab=staff_identity(?:&|$)/i.test(String(link)))) {
+    return navigateIfAvailable('StaffIdentityManagement');
+  }
 
   if (path === '/admin/whatsapp-support') return navigateIfAvailable('WhatsAppSupport');
 

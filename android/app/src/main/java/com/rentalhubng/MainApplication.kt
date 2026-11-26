@@ -26,6 +26,7 @@ class MainApplication : Application(), ReactApplication {
           add(RentalHubPaystackPackage())
           add(RentalHubUpdatePackage())
           add(RentalHubCallSoundPackage())
+          add(RentalHubIncomingCallsPackage())
           add(RentalHubAudioRoutePackage())
       }
 

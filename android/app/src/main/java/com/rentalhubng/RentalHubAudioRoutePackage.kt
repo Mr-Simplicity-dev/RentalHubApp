@@ -64,7 +64,8 @@ class RentalHubAudioRouteModule(context: ReactApplicationContext) : ReactContext
     return outputDevices().any { device ->
       device.type == AudioDeviceInfo.TYPE_BLUETOOTH_SCO ||
         device.type == AudioDeviceInfo.TYPE_BLUETOOTH_A2DP ||
-        (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && device.type == AudioDeviceInfo.TYPE_BLUETOOTH_LE)
+        (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
+          (device.type == AudioDeviceInfo.TYPE_BLE_HEADSET || device.type == AudioDeviceInfo.TYPE_BLE_SPEAKER))
     }
   }
 

@@ -25,7 +25,8 @@ class RentalHubCallSoundModule(context: ReactApplicationContext) : ReactContextB
         allowed = allowed && notifications.currentInterruptionFilter == NotificationManager.INTERRUPTION_FILTER_ALL
       }
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        val channel = notifications.getNotificationChannel("calls-${if (sound == "greeting") "greeting" else "normal"}-v1")
+        val incomingChannel = notifications.getNotificationChannel("incoming-${if (sound == "greeting") "greeting" else "normal"}-v2")
+        val channel = incomingChannel ?: notifications.getNotificationChannel("calls-${if (sound == "greeting") "greeting" else "normal"}-v1")
         if (channel != null) allowed = allowed && channel.importance != NotificationManager.IMPORTANCE_NONE && channel.sound != null
       }
       promise.resolve(allowed)

@@ -1,5 +1,5 @@
 import * as Notifications from 'expo-notifications';
-import { AppState } from 'react-native';
+import { AppState, NativeModules } from 'react-native';
 import api from '../services/api';
 import React, {
   createContext,
@@ -18,7 +18,7 @@ import { AuthContext } from './AuthContext';
 export const RealtimeContext = createContext(null);
 
 export const RealtimeProvider = ({ children }) => {
-  const { isAuthenticated, user } = useContext(AuthContext);
+  const { isAuthenticated, user, loading: authLoading } = useContext(AuthContext);
   const socketRef = useRef(null);
   const listenersRef = useRef(new Map());
   const [connected, setConnected] = useState(false);
@@ -45,8 +45,31 @@ export const RealtimeProvider = ({ children }) => {
     }), []);
 
   useEffect(() => {
+    if (authLoading) return;
     let disposed = false;
     let recoveryGeneration = 0;
+    let answering = false;
+    const nativeCalls = NativeModules.RentalHubIncomingCalls;
+    nativeCalls?.configure(isAuthenticated && user?.id ? String(user.id) : '', AppState.currentState === 'active');
+    const answerFromNotification = async () => {
+      if (!isAuthenticated || !user?.id || disposed || answering || !socketRef.current?.connected || !nativeCalls) return;
+      answering = true;
+      try {
+        const raw = await nativeCalls.consumeAnswer();
+        if (!raw || disposed) return;
+        const chosen = JSON.parse(raw);
+        if (String(chosen.receiverId) !== String(user.id) || !(Date.parse(chosen.expiresAt) > Date.now())) return;
+        const response = await api.get('/voice/calls/' + encodeURIComponent(chosen.callId));
+        const call = response.data?.data;
+        if (disposed || call?.status !== 'ringing' || String(call.receiver?.id) !== String(user.id) || !(Date.parse(call.expiresAt) > Date.now())) return;
+        setActiveCall({ ...call, direction: 'incoming' });
+        await emitWithAck('call:accept', { callId: call.callId });
+        recoveryGeneration++;
+        if (!disposed) setActiveCall({ ...call, direction: 'incoming', status: 'accepted' });
+        nativeCalls.dismiss(call.callId);
+      } catch { /* Keep a recovered call available for the normal Answer button if connection failed. */ }
+      finally { answering = false; }
+    };
     const recoverCall = async (callId) => {
       if (!isAuthenticated || !user?.id || disposed) return;
       const generation = recoveryGeneration;
@@ -63,8 +86,12 @@ export const RealtimeProvider = ({ children }) => {
     };
     const receivedPush = Notifications.addNotificationReceivedListener(onPush);
     const respondedPush = Notifications.addNotificationResponseReceivedListener(response => onPush(response.notification));
-    const appState = AppState.addEventListener('change', state => { if (state === 'active') void recoverCall(); });
+    const appState = AppState.addEventListener('change', state => {
+      nativeCalls?.setForeground(state === 'active');
+      if (state === 'active') { void recoverCall(); void answerFromNotification(); }
+    });
     const dismissCall = callId => {
+      if (callId) nativeCalls?.dismiss(callId);
       void Notifications.getPresentedNotificationsAsync().then(list => Promise.all(list.filter(item => item.request.content.data?.callId === callId).map(item => Notifications.dismissNotificationAsync(item.request.identifier)))).catch(() => {});
     };
     const pendingCallTimers = new Set();
@@ -114,7 +141,7 @@ export const RealtimeProvider = ({ children }) => {
       });
 
       socket.on('connect', () => {
-        if (!disposed) { setConnected(true); void recoverCall(); }
+        if (!disposed) { setConnected(true); void recoverCall(); void answerFromNotification(); }
       });
       socket.on('disconnect', () => {
         if (!disposed) setConnected(false);
@@ -163,7 +190,7 @@ export const RealtimeProvider = ({ children }) => {
         recoveryGeneration++;
         dismissCall(call.callId);
         if (!disposed) setActiveCall((current) => ({ ...(current || {}), ...call, status: 'missed' }));
-        scheduleCallClear(1800);
+        scheduleCallClear(1800, call.callId);
       });
       socket.on('call:ended', (call = {}) => {
         recoveryGeneration++;
@@ -198,7 +225,7 @@ export const RealtimeProvider = ({ children }) => {
       pendingCallTimers.clear();
       disconnect();
     };
-  }, [isAuthenticated, user?.id]);
+  }, [isAuthenticated, user?.id, authLoading, emitWithAck]);
 
   const subscribe = useCallback((eventName, handler) => {
     if (!eventName || typeof handler !== 'function') return () => {};

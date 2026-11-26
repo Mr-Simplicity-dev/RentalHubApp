@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
-import { Platform } from 'react-native';
+import { NativeModules, Platform } from 'react-native';
 import api from './api';
 
 const PUSH_TOKEN_KEY = 'expo_push_token';
@@ -17,14 +17,14 @@ export const configureNotificationPresentation = () => {
       return {
         shouldPlaySound: !isIncomingCall && !isLiveMessage && !isBadgeSummary,
         shouldSetBadge: !isIncomingCall,
-        shouldShowBanner: !isLiveMessage && !isBadgeSummary,
-        shouldShowList: !isLiveMessage,
+        shouldShowBanner: !(isIncomingCall && Platform.OS === 'android' && NativeModules.RentalHubIncomingCalls) && !isLiveMessage && !isBadgeSummary,
+        shouldShowList: !(isIncomingCall && Platform.OS === 'android' && NativeModules.RentalHubIncomingCalls) && !isLiveMessage,
       };
     },
   });
 };
 
-export const registerForPushNotifications = async () => {
+export const registerForPushNotifications = async ({ requestPermission = true } = {}) => {
   if (!Device.isDevice) {
     return { success: false, reason: 'physical-device-required' };
   }
@@ -54,6 +54,18 @@ export const registerForPushNotifications = async () => {
       importance: Notifications.AndroidImportance.DEFAULT,
       sound: 'default',
     });
+    const previous = await Notifications.getNotificationChannelAsync?.('general');
+    await Notifications.setNotificationChannelAsync('activity-v2', {
+      name: 'RentalHub updates',
+      showBadge: true,
+      importance: previous && previous.importance < Notifications.AndroidImportance.DEFAULT
+        ? previous.importance : Notifications.AndroidImportance.HIGH,
+      sound: previous?.sound === null ? null : 'default',
+      enableVibrate: previous?.enableVibrate ?? true,
+      vibrationPattern: [0, 250, 180, 250],
+      lockscreenVisibility: Notifications.AndroidNotificationVisibility?.PRIVATE ?? 0,
+      bypassDnd: false,
+    });
     await Notifications.setNotificationChannelAsync('unread-activity', {
       name: 'Unread activity',
       importance: Notifications.AndroidImportance.LOW,
@@ -64,7 +76,7 @@ export const registerForPushNotifications = async () => {
   }
 
   let permissions = await Notifications.getPermissionsAsync();
-  if (permissions.status !== 'granted') {
+  if (permissions.status !== 'granted' && requestPermission) {
     permissions = await Notifications.requestPermissionsAsync({ ios: { allowAlert: true, allowBadge: true, allowSound: true } });
   }
   if (permissions.status !== 'granted') {
@@ -87,7 +99,7 @@ export const registerForPushNotifications = async () => {
     device_id: [Device.brand, Device.modelName, Device.osBuildId]
       .filter(Boolean)
       .join(':')
-      .slice(0, 255),
+      .slice(0, 230) + (Platform.OS === 'android' && NativeModules.RentalHubIncomingCalls ? ':incoming-v1' : ''),
   });
   await AsyncStorage.setItem(PUSH_TOKEN_KEY, token);
   return { success: true, token };

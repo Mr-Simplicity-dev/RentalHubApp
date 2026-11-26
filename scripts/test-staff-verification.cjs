@@ -26,11 +26,12 @@ test('WelcomeScreen places underlined "Verify Staff Before Engaging Them" link d
 test('AppNavigator registers native VerifyStaff and MyStaffIdentity routes for guests and authenticated staff', () => {
   const src = read('src/navigation/AppNavigator.js');
   assert.match(src, /import VerifyStaffScreen from '\.\.\/screens\/shared\/VerifyStaffScreen'/);
-  assert.match(src, /import MyStaffIdentityScreen from '\.\.\/screens\/shared\/MyStaffIdentityScreen'/);
+  assert.match(src, /import StaffIdentityManagementScreen, \{ StaffIdentityEntryScreen \} from '\.\.\/screens\/admin\/StaffIdentityManagementScreen'/);
   assert.match(src, /VerifyStaff:\s*'verify-staff'/);
   assert.match(src, /MyStaffIdentity:\s*'my-staff-identity'/);
   assert.match(src, /<Stack\.Screen name="VerifyStaff" component=\{VerifyStaffScreen\}/);
-  assert.match(src, /<Stack\.Screen name="MyStaffIdentity" component=\{MyStaffIdentityScreen\}/);
+  assert.match(src, /<Stack\.Screen name="MyStaffIdentity" component=\{StaffIdentityEntryScreen\}/);
+  assert.match(src, /<Stack\.Screen name="StaffIdentityManagement" component=\{StaffIdentityManagementScreen\}/);
 
   // Confirm commonInfoScreens is rendered inside GuestStack so unauthenticated visitors reach VerifyStaff natively
   const guestStart = src.indexOf('const GuestStack');
@@ -91,15 +92,17 @@ test('MyStaffIdentityScreen supports official QR display, explicit Confirm/Rejec
   assert.match(src, /barcodeTypes:\s*\['qr'\]/);
 });
 
-test('Mobile staff dashboards link to MyStaffIdentity', () => {
+test('Mobile staff retain personal identity while Super Admin opens management', () => {
   for (const rel of [
     'src/components/admin/AdminAccountActions.js',
     'src/screens/agent/AgentDashboardScreen.js',
     'src/screens/shared/MarketingAgentScreen.js',
-    'src/screens/admin/SuperAdminDashboardScreen.js',
     'src/screens/shared/ZonalAdminScreen.js',
   ]) {
     const src = read(rel);
     assert.ok(src.includes('MyStaffIdentity'), `${rel} must link to MyStaffIdentity`);
   }
+  const superAdmin = read('src/screens/admin/SuperAdminDashboardScreen.js');
+  assert.ok(superAdmin.includes("route: 'StaffIdentityManagement'"));
+  assert.ok(!superAdmin.includes("route: 'MyStaffIdentity'"));
 });
