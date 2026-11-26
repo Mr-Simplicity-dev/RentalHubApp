@@ -22,13 +22,16 @@ export const NotificationContext = createContext(null);
 
 configureNotificationPresentation();
 
+const isAllowedExternalLink = (link) =>
+  /^https?:\/\/(www\.)?rentalhub\.com\.ng\//i.test(String(link || '').trim());
+
 const openResponse = (response) => {
   const data = response?.notification?.request?.content?.data || {};
   const open = () => {
     if(/^\d+$/.test(String(data.notificationId||'')))void notificationService.markAsRead(data.notificationId).then(()=>syncAppIconBadge('push_read')).catch(()=>{});
     if (openNotificationDestination(data)) return;
     if (data.link && openRentalHubLinkInApp(data.link)) return;
-    if (data.link) void Linking.openURL(String(data.link));
+    if (data.link && isAllowedExternalLink(data.link)) void Linking.openURL(String(data.link));
   };
 
   if (navigationRef.isReady()) open();

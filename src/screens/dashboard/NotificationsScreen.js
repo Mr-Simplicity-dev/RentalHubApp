@@ -12,6 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import { notificationService } from '../../services/notificationService';
 import { syncAppIconBadge } from '../../services/appBadgeService';
+import { openRentalHubLinkInApp } from '../../navigation/navigationRef';
 import { colors, radius, typography, typeScale } from '../../theme';
 import { getErrorMessage, pickList } from '../../utils/http';
 
@@ -83,6 +84,12 @@ const NotificationsScreen = ({ navigation }) => {
     } finally {
       setBusyId(null);
     }
+  };
+
+  const handleOpen = (item) => {
+    void markOne(item);
+    const link = item.link || item.action_url || item.url;
+    if (link) openRentalHubLinkInApp(link);
   };
 
   const markAll = async () => {
@@ -180,7 +187,7 @@ const NotificationsScreen = ({ navigation }) => {
           return (
             <TouchableOpacity
               activeOpacity={0.82}
-              onPress={() => markOne(item)}
+              onPress={() => handleOpen(item)}
               style={[styles.card, !item.is_read && styles.cardUnread]}>
               <View style={[styles.itemIcon, { backgroundColor: visual.bg }]}>
                 <Icon name={visual.icon} size={20} color={visual.color} />

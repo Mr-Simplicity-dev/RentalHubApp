@@ -23,7 +23,8 @@
     "test:protection": "node --test scripts/test-property-protection.cjs src/services/__tests__/privatePropertyFileService.test.cjs",
     "test:survey": "node --test scripts/test-survey-progress.cjs",
     "test:parity": "node scripts/audit-platform-contracts.cjs && node --test scripts/test-platform-parity.cjs scripts/test-public-survey.cjs scripts/test-build-compat.cjs",
-    "test:startup": "node --test scripts/test-startup-flow.cjs && node scripts/verify-language-layout.cjs && node scripts/verify-update-resume.cjs && node scripts/verify-update-version.cjs"
+    "test:startup": "node --test scripts/test-startup-flow.cjs && node scripts/verify-language-layout.cjs && node scripts/verify-update-resume.cjs && node scripts/verify-update-version.cjs",
+    "test:notifications": "node --test scripts/test-notification-navigation.cjs"
   },
   "dependencies": {
     "@expo-google-fonts/inter": "^0.4.2",
