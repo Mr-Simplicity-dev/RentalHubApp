@@ -47,7 +47,8 @@ not enable Phase C spoken notifications or send SMS, WhatsApp or email tests.
   The backend sends these devices data-only incoming-call messages. Older apps
   and iOS retain their existing alert delivery. Ordinary messages are unchanged.
 - `RentalHubMessagingService` extends the existing Expo service, including its
-  token handling. Non-call pushes pass to Expo unchanged.
+  token handling. Recipient-bound pushes are dropped before display if the
+  account has changed or signed out. Other non-call pushes pass to Expo unchanged.
 - Incoming calls are bound to the signed-in user and expire with the server
   invitation. Native code checks the authoritative server status before alerting.
 - The Android call notification uses immutable private action intents, CallStyle,

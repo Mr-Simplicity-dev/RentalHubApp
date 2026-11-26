@@ -146,6 +146,7 @@ object IncomingCalls {
 class RentalHubMessagingService : ExpoFirebaseMessagingService() {
   override fun onMessageReceived(message: RemoteMessage) {
     val data = try { JSONObject(message.data["body"] ?: "{}") } catch (_: Exception) { JSONObject() }
+    if (data.has("receiverId") && !IncomingCalls.owns(this, data)) return
     if (data.optString("type") in listOf("incoming_call", "call_cancelled")) {
       IncomingCalls.receive(this, data)
       if (IncomingCalls.foreground(this) && data.optString("type") == "incoming_call") super.onMessageReceived(message)

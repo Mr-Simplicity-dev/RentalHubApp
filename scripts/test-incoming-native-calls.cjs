@@ -78,4 +78,8 @@ test('Android background delivery has private actions, bounded OS ringing and no
   const native = fs.readFileSync(path.resolve(__dirname, '../android/app/src/main/java/com/rentalhubng/RentalHubIncomingCalls.kt'), 'utf8');
   for (const required of ['Notification.FLAG_INSISTENT', '.setTimeoutAfter(', 'FLAG_IMMUTABLE', 'setShowWhenLocked(true)', 'super.onMessageReceived(message)', 'notification-${if (decline)', 'requestMethod = if (decline)', 'owns(c, data)', 'closed:', 'VISIBILITY_PRIVATE', '.setShowBadge(false)', '.setNumber(0)']) assert.ok(native.includes(required), required);
   assert.ok(!native.includes('setRingerMode')); assert.ok(!native.includes('setStreamVolume'));
+  const service = native.slice(native.indexOf('override fun onMessageReceived'));
+  const ownerGuard = service.indexOf('if (data.has("receiverId") && !IncomingCalls.owns(this, data)) return');
+  assert.ok(ownerGuard > 0 && ownerGuard < service.indexOf('IncomingCalls.receive(this, data)'));
+  assert.ok(ownerGuard < service.indexOf('super.onMessageReceived(message)'));
 });
