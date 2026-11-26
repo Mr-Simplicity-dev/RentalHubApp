@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1012407907292",
+    "project_id": "amana-rentalhub-ng",
+    "storage_bucket": "amana-rentalhub-ng.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1012407907292:android:e490ebb2b51c189accd519",
+        "android_client_info": {
+          "package_name": "com.rentalhubng"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQZ2nqbT2-8BXVJ91_YikOY3AX65eqa04"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

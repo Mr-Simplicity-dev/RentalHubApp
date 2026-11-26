@@ -1,12 +1,18 @@
 # Android incoming calls
 
-Release prerequisite: the existing APK has no Firebase Android configuration.
-Before publishing this release, register `com.rentalhubng` in the owner's Firebase
-project, add its public `google-services.json` and Google Services Gradle setup,
-and configure the same project's FCM V1 delivery credential in the owner's Expo
-project. Keep the private service-account credential outside Git. A successfully
-compiled APK alone does not prove push delivery. The preliminary v1.0.73 build
-must not be published as a working notification release before this is done.
+The public Firebase Android configuration lives at
+`android/app/google-services.json` for `com.rentalhubng`. Android builds use the
+Google Services Gradle plugin. `npm run verify:push-config` checks the package,
+project and app identifiers and rejects private service-account files; the
+Android build scripts run that check before compilation.
+
+Delivery also requires the matching Firebase project's FCM V1 credential in the
+existing Expo project (`mdozaa/rentalhubmobile`, project ID
+`a7a3b4d3-a3b3-418b-9d5f-c441627b264c`). A credential stored in another Expo
+project does not configure this app. Keep private service-account credentials
+outside Git. A successfully compiled APK alone does not prove push delivery.
+Verify the generated Firebase resources in the signed APK and test delivery on
+a real phone before describing the notification release as fully tested.
 
 Android v1.0.73 / build 84 adds native incoming-call alerts. Existing staff
 identity management and the shared property-protection workflow are included.

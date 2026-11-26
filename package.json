@@ -9,8 +9,8 @@
     "start": "react-native start",
     "web": "expo start --web",
     "postinstall": "patch-package",
-    "build:android": "cd android && ./gradlew assembleRelease",
-    "build:android:bundle": "cd android && ./gradlew bundleRelease",
+    "build:android": "node scripts/verify-push-config.cjs && cd android && ./gradlew assembleRelease",
+    "build:android:bundle": "node scripts/verify-push-config.cjs && cd android && ./gradlew bundleRelease",
     "build:ios": "cd ios && xcodebuild -workspace RentalHubMobile.xcworkspace -scheme RentalHubMobile -configuration Release",
     "build:app": "node scripts/build-all.js",
     "sync:version": "node scripts/sync-app-version.cjs",
@@ -26,7 +26,8 @@
     "test:startup": "node --test scripts/test-startup-flow.cjs && node scripts/verify-language-layout.cjs && node scripts/verify-update-resume.cjs && node scripts/verify-update-version.cjs",
     "test:notifications": "node --test scripts/test-notification-navigation.cjs",
     "test:call-sounds": "node --test scripts/test-call-sounds.cjs scripts/test-call-connection.cjs scripts/test-native-call-media.cjs",
-    "prepare:call-sounds": "node scripts/prepare-call-sounds.cjs"
+    "prepare:call-sounds": "node scripts/prepare-call-sounds.cjs",
+    "verify:push-config": "node scripts/verify-push-config.cjs"
   },
   "dependencies": {
     "@expo-google-fonts/inter": "^0.4.2",

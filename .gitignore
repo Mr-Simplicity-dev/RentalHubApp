@@ -100,6 +100,9 @@ android/app/src/main/assets/index.android.bundle.meta
 
 # Expo
 .expo
+*-firebase-adminsdk-*.json
+*service-account*.json
+serviceAccountKey.json
 dist/
 web-build/
 

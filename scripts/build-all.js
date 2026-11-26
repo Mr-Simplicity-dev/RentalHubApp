@@ -43,6 +43,7 @@ const main = () => {
   console.log(`=== Building RentalHub Mobile v${version} for ${platform} ===\n`);
 
   if (platform === 'android' || platform === 'all') {
+    run('node scripts/verify-push-config.cjs');
     console.log('>>> Building Android APK...');
     const gradlewCmd = process.platform === 'win32' ? '.\\gradlew' : './gradlew';
     if (process.platform !== 'win32') {
