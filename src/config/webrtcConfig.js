@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import api from '../services/api';
 
 export const getWebRtcIceServers = () => [
@@ -17,3 +18,20 @@ export const loadWebRtcIceServers = async () => {
 };
 
 export const isVideoEnabledCall = (callType) => ['video', 'virtual_tour'].includes(callType);
+
+export const getAudioConstraints = (platform = Platform.OS) => {
+  if (platform !== 'android') return true;
+  return {
+    googEchoCancellation: true,
+    googNoiseSuppression: true,
+    googAutoGainControl: true,
+    googHighpassFilter: true,
+  };
+};
+
+export const getVideoConstraints = (facingMode = 'user', highQuality = true) => ({
+  facingMode,
+  width: { ideal: highQuality ? 1280 : 640 },
+  height: { ideal: highQuality ? 720 : 480 },
+  frameRate: { ideal: highQuality ? 30 : 24, max: highQuality ? 30 : 24 },
+});

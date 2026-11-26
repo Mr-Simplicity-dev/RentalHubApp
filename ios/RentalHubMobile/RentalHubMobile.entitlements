@@ -9,5 +9,9 @@
 		<string>applinks:rentalhub.com.ng</string>
 		<string>applinks:www.rentalhub.com.ng</string>
 	</array>
+	<key>com.apple.security.application-groups</key>
+	<array>
+		<string>group.com.rentalhubng.screencapture</string>
+	</array>
 </dict>
 </plist>

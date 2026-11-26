@@ -24,6 +24,10 @@
 		5B91B2097CBE453184FFC3E9 /* Inter-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 470F7D202BAE4692BB6C17A2 /* Inter-SemiBold.ttf */; };
 		CA1150100000000000000002 /* call_normal.wav in Resources */ = {isa = PBXBuildFile; fileRef = CA1150100000000000000001 /* call_normal.wav */; };
 		CA1150200000000000000002 /* call_greeting.wav in Resources */ = {isa = PBXBuildFile; fileRef = CA1150200000000000000001 /* call_greeting.wav */; };
+		A0BAAB71CAFE467EAA8D32EE /* RentalHubBroadcastExtension.appex in Copy Files */ = {isa = PBXBuildFile; fileRef = 6082A439DE3D4B8EA90190FB /* RentalHubBroadcastExtension.appex */; };
+		51EA79F557D3474DB68560EA /* SampleHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9310276702E440DB839FF996 /* SampleHandler.swift */; };
+		22876EC1CF6749D589647E96 /* RentalHubAudioRoute.m in Sources */ = {isa = PBXBuildFile; fileRef = 60B4C660B8CB4C83A166C379 /* RentalHubAudioRoute.m */; };
+		BB0000000000000000000004 = {isa = PBXBuildFile; fileRef = BB0000000000000000000003; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -33,6 +37,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
 			remoteInfo = RentalHubMobile;
+		};
+		E6A0D29793704361819A3E2D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F751BAEF77114840899CA68C;
+			remoteInfo = "RentalHubBroadcastExtension";
 		};
 /* End PBXContainerItemProxy section */
 
@@ -61,6 +72,13 @@
 		470F7D202BAE4692BB6C17A2 /* Inter-SemiBold.ttf */ = {isa = PBXFileReference; name = "Inter-SemiBold.ttf"; path = "../assets/fonts/Inter-SemiBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		CA1150100000000000000001 /* call_normal.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = call_normal.wav; path = ../assets/call-sounds/call_normal.wav; sourceTree = "<group>"; };
 		CA1150200000000000000001 /* call_greeting.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = call_greeting.wav; path = ../assets/call-sounds/call_greeting.wav; sourceTree = "<group>"; };
+		6082A439DE3D4B8EA90190FB /* RentalHubBroadcastExtension.appex */ = {isa = PBXFileReference; name = "RentalHubBroadcastExtension.appex"; path = "RentalHubBroadcastExtension.appex"; sourceTree = BUILT_PRODUCTS_DIR; fileEncoding = undefined; lastKnownFileType = undefined; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; };
+		9310276702E440DB839FF996 /* SampleHandler.swift */ = {isa = PBXFileReference; name = "SampleHandler.swift"; path = "SampleHandler.swift"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.swift; explicitFileType = undefined; includeInIndex = 0; };
+		E7FE55BBA1734312A734D3FA /* RentalHubBroadcastExtension-Info.plist */ = {isa = PBXFileReference; name = "RentalHubBroadcastExtension-Info.plist"; path = "RentalHubBroadcastExtension-Info.plist"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = text.plist.xml; explicitFileType = undefined; includeInIndex = 0; };
+		A34B2F4657EE46C28E04AAD5 /* RentalHubBroadcastExtension.entitlements */ = {isa = PBXFileReference; name = "RentalHubBroadcastExtension.entitlements"; path = "RentalHubBroadcastExtension.entitlements"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = text.plist.xml; explicitFileType = undefined; includeInIndex = 0; };
+		67E38C9D3AB34239A79CF970 /* RentalHubAudioRoute.h */ = {isa = PBXFileReference; name = "RentalHubAudioRoute.h"; path = "RentalHubAudioRoute.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
+		60B4C660B8CB4C83A166C379 /* RentalHubAudioRoute.m */ = {isa = PBXFileReference; name = "RentalHubAudioRoute.m"; path = "RentalHubAudioRoute.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
+		BB0000000000000000000003 = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReplayKit.framework; path = System/Library/Frameworks/ReplayKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,6 +95,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				0C80B921A6F3F58F76C31292 /* libPods-RentalHubMobile.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BB0000000000000000000002 = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BB0000000000000000000004 /* ReplayKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -110,6 +136,8 @@
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
 				13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */,
+				67E38C9D3AB34239A79CF970 /* RentalHubAudioRoute.h */,
+				60B4C660B8CB4C83A166C379 /* RentalHubAudioRoute.m */,
 			);
 			name = RentalHubMobile;
 			sourceTree = "<group>";
@@ -141,6 +169,7 @@
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
 				F0102E011E064DF9AC317CE0 /* Resources */,
+				FA04BC835777412AAD5FC5F5 /* RentalHubBroadcastExtension */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -152,6 +181,7 @@
 			children = (
 				13B07F961A680F5B00A75B9A /* RentalHubMobile.app */,
 				00E356EE1AD99517003FC87E /* RentalHubMobileTests.xctest */,
+				6082A439DE3D4B8EA90190FB /* RentalHubBroadcastExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -178,6 +208,17 @@
 			name = Resources;
 			sourceTree = "<group>";
 			path = "";
+		};
+		FA04BC835777412AAD5FC5F5 /* RentalHubBroadcastExtension */ = {
+			isa = PBXGroup;
+			children = (
+				9310276702E440DB839FF996 /* SampleHandler.swift */,
+				E7FE55BBA1734312A734D3FA /* RentalHubBroadcastExtension-Info.plist */,
+				A34B2F4657EE46C28E04AAD5 /* RentalHubBroadcastExtension.entitlements */,
+			);
+			name = RentalHubBroadcastExtension;
+			path = RentalHubBroadcastExtension;
+			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
@@ -214,15 +255,33 @@
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				00EEFC60759A1932668264C0 /* [CP] Embed Pods Frameworks */,
 				E235C05ADACE081382539298 /* [CP] Copy Pods Resources */,
+				68F26518C78441AAA33390C8 /* Copy Files */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				914312982C9A45DAA6C0B634 /* PBXTargetDependency */,
 			);
 			name = RentalHubMobile;
 			productName = RentalHubMobile;
 			productReference = 13B07F961A680F5B00A75B9A /* RentalHubMobile.app */;
 			productType = "com.apple.product-type.application";
+		};
+		F751BAEF77114840899CA68C /* "RentalHubBroadcastExtension" */ = {
+			isa = PBXNativeTarget;
+			name = RentalHubBroadcastExtension;
+			productName = RentalHubBroadcastExtension;
+			productReference = 6082A439DE3D4B8EA90190FB;
+			productType = "com.apple.product-type.app-extension";
+			buildConfigurationList = 67B0E9EECA1C4FDB80D31E50;
+			buildPhases = (
+				BB0000000000000000000001 /* Sources */,
+				BB0000000000000000000002 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
 		};
 /* End PBXNativeTarget section */
 
@@ -238,6 +297,10 @@
 					};
 					13B07F861A680F5B00A75B9A = {
 						LastSwiftMigration = 1120;
+					};
+					F751BAEF77114840899CA68C = {
+						CreatedOnToolsVersion = 12.4;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -263,6 +326,7 @@
 			targets = (
 				13B07F861A680F5B00A75B9A /* RentalHubMobile */,
 				00E356ED1AD99517003FC87E /* RentalHubMobileTests */,
+				F751BAEF77114840899CA68C /* "RentalHubBroadcastExtension" */,
 			);
 		};
 /* End PBXProject section */
@@ -442,6 +506,15 @@
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				22876EC1CF6749D589647E96 /* RentalHubAudioRoute.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BB0000000000000000000001 = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				51EA79F557D3474DB68560EA /* SampleHandler.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -452,6 +525,11 @@
 			isa = PBXTargetDependency;
 			target = 13B07F861A680F5B00A75B9A /* RentalHubMobile */;
 			targetProxy = 00E356F41AD99517003FC87E /* PBXContainerItemProxy */;
+		};
+		914312982C9A45DAA6C0B634 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F751BAEF77114840899CA68C /* "RentalHubBroadcastExtension" */;
+			targetProxy = E6A0D29793704361819A3E2D /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -532,6 +610,7 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 			};
 			name = Debug;
 		};
@@ -558,6 +637,7 @@
 				PRODUCT_NAME = RentalHubMobile;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 			};
 			name = Release;
 		};
@@ -700,6 +780,46 @@
 			};
 			name = Release;
 		};
+		5AC96A1F704340D299479A88 /* Debug */ = {
+			name = Debug;
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "RentalHubBroadcastExtension/RentalHubBroadcastExtension-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_NAME = "RentalHubBroadcastExtension";
+				SKIP_INSTALL = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.rentalhubng.RentalHubBroadcastExtension";
+				CODE_SIGN_ENTITLEMENTS = "RentalHubBroadcastExtension/RentalHubBroadcastExtension.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 73;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				MARKETING_VERSION = "1.0.70";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+		};
+		A939CFBA096145F29A7EC137 /* Release */ = {
+			name = Release;
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = "RentalHubBroadcastExtension/RentalHubBroadcastExtension-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_NAME = "RentalHubBroadcastExtension";
+				SKIP_INSTALL = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.rentalhubng.RentalHubBroadcastExtension";
+				CODE_SIGN_ENTITLEMENTS = "RentalHubBroadcastExtension/RentalHubBroadcastExtension.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 73;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				MARKETING_VERSION = "1.0.70";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -730,7 +850,30 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		67B0E9EECA1C4FDB80D31E50 /* Build configuration list for PBXNativeTarget "RentalHubBroadcastExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5AC96A1F704340D299479A88 /* Debug */,
+				A939CFBA096145F29A7EC137 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		68F26518C78441AAA33390C8 /* Copy Files */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A0BAAB71CAFE467EAA8D32EE /* RentalHubBroadcastExtension.appex in Copy Files */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			name = "Embed App Extensions";
+			dstPath = "";
+			dstSubfolderSpec = 13;
+		};
+/* End PBXCopyFilesBuildPhase section */
 	};
 	rootObject = 83CBB9F71A601CBA00E9B192 /* Project object */;
 }

@@ -15,6 +15,7 @@ import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.load
 import com.facebook.react.defaults.DefaultReactNativeHost
 import com.facebook.react.soloader.OpenSourceMergedSoMapping
 import com.facebook.soloader.SoLoader
+import com.oney.WebRTCModule.WebRTCModuleOptions
 import com.paystack.android.core.Paystack
 
 class MainApplication : Application(), ReactApplication {
@@ -25,6 +26,7 @@ class MainApplication : Application(), ReactApplication {
           add(RentalHubPaystackPackage())
           add(RentalHubUpdatePackage())
           add(RentalHubCallSoundPackage())
+          add(RentalHubAudioRoutePackage())
       }
 
   override val reactNativeHost: ReactNativeHost =
@@ -44,6 +46,7 @@ class MainApplication : Application(), ReactApplication {
 
   override fun onCreate() {
     super.onCreate()
+    WebRTCModuleOptions.getInstance().enableMediaProjectionService = true
     I18nUtil.instance.apply {
       allowRTL(this@MainApplication, false)
       forceRTL(this@MainApplication, false)

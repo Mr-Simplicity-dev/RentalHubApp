@@ -1,43 +1,52 @@
-import useCallSounds from '../../hooks/useCallSounds';
-import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
-import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
-import TextInput from '../common/AppTextInput';
+import {
+  ActivityIndicator,
+  Modal,
+  Platform,
+  StyleSheet,
+  TouchableOpacity,
+  useWindowDimensions,
+  View,
+} from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
-import { loadWebRtcIceServers, isVideoEnabledCall } from '../../config/webrtcConfig';
-import { createCallSignalBuffer } from '../../utils/callSignalBuffer.cjs';
+import { useCallSounds } from '../../hooks/useCallSounds';
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
+import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
+import TextInput from '../common/AppTextInput';
+import AppText from '../common/AppText';
+import { createNativeCallMedia } from '../../services/nativeCallMediaService';
+import { AUDIO_ROUTE_EVENT, subscribeAudioRouteChanges } from '../../services/nativeAudioRouteService';
 import { useRealtime } from '../../context/RealtimeContext';
 import { AuthContext } from '../../context/AuthContext';
 import { voiceMonitorService } from '../../services/voiceMonitorService';
 import { colors, radius, shadows, typography, typeScale } from '../../theme';
 
-import AppText from '../../components/common/AppText';
-let mediaDevices, RTCIceCandidate, RTCPeerConnection, RTCSessionDescription, RTCView;
+let RTCView = null;
+let ScreenCapturePickerView = null;
 try {
   const WebRTC = require('react-native-webrtc');
-  mediaDevices = WebRTC.mediaDevices;
-  RTCIceCandidate = WebRTC.RTCIceCandidate;
-  RTCPeerConnection = WebRTC.RTCPeerConnection;
-  RTCSessionDescription = WebRTC.RTCSessionDescription;
   RTCView = WebRTC.RTCView;
-} catch (e) {
-  // WebRTC native module not available — calls will gracefully fail
+  ScreenCapturePickerView = WebRTC.ScreenCapturePickerView;
+} catch (_error) {
+  // WebRTC native code is optional at module load so the UI can explain call failures.
 }
 
+const ENDED_STATUSES = ['rejected', 'missed', 'ended'];
+
 const callTitle = (call = {}) => {
-  if (call.isSupport) return 'Support call';
-  if (call.callType === 'virtual_tour') return 'Virtual property tour';
-  if (call.callType === 'video') return 'Video call';
-  return 'Audio call';
+  if (call.isSupport) return ui('Support call');
+  if (call.callType === 'virtual_tour') return ui('Virtual property tour');
+  if (call.callType === 'video') return ui('Video call');
+  return ui('Audio call');
 };
 
 const otherPartyName = (call = {}) => {
-  if (!call) return 'RentalHub user';
+  if (!call) return ui('RentalHub user');
   return call.direction === 'incoming'
-    ? call.caller?.full_name || call.caller?.name || 'RentalHub user'
-    : call.receiver?.full_name || call.receiver?.name || 'RentalHub user';
+    ? call.caller?.full_name || call.caller?.name || ui('RentalHub user')
+    : call.receiver?.full_name || call.receiver?.name || ui('RentalHub user');
 };
 
 const normalizeParticipants = (call = {}) => {
@@ -52,19 +61,50 @@ const normalizeParticipants = (call = {}) => {
   if (rawParticipants.length) {
     return rawParticipants.slice(0, 5).map((participant, index) => ({
       id: participant?.id || participant?.userId || participant?.callId || `${participant?.name || 'participant'}-${index}`,
-      name: participant?.name || participant?.full_name || participant?.displayName || participant?.role || `Agent ${index + 1}`,
-      role: participant?.role || participant?.status || (index === 0 ? 'Speaker' : 'Listener'),
-      status: participant?.status || (index === 0 ? 'Connected' : 'Listening'),
+      name: participant?.name || participant?.full_name || participant?.displayName || participant?.role || ui('Agent {value0}', { value0: index + 1 }),
+      role: participant?.role || (index === 0 ? 'speaker' : 'listener'),
+      status: participant?.status || (index === 0 ? 'connected' : 'listening'),
     }));
   }
 
-  const primaryName = otherPartyName(call);
   return [{
     id: call?.callId || 'primary-call',
-    name: primaryName,
-    role: call?.direction === 'incoming' ? 'Caller' : 'Guest',
-    status: 'Connected',
+    name: otherPartyName(call),
+    role: call?.direction === 'incoming' ? 'caller' : 'guest',
+    status: 'connected',
   }];
+};
+
+const participantRoleLabel = (role) => {
+  if (role === 'speaker' || role === 'Speaker') return ui('Main speaker');
+  if (role === 'listener' || role === 'Listener') return ui('Listener');
+  if (role === 'caller' || role === 'Caller') return ui('Caller');
+  if (role === 'guest' || role === 'Guest') return ui('Guest');
+  return role || ui('Participant');
+};
+
+const participantStatusLabel = (status) => {
+  if (status === 'connected' || status === 'Connected') return ui('Connected');
+  if (status === 'listening' || status === 'Listening') return ui('Listening');
+  return status || ui('Connected');
+};
+
+const mediaStatusLabel = (status, videoEnabled) => {
+  if (status === 'connected') return ui('Connected');
+  if (status === 'connecting') return ui('Connecting…');
+  if (status === 'requesting_camera') return ui('Opening camera…');
+  if (status === 'requesting_microphone') return ui('Opening microphone…');
+  if (status === 'failed') return ui('Connection failed');
+  if (videoEnabled) return ui('Video ready');
+  return ui('Ready');
+};
+
+const routeLabel = (route) => {
+  if (route === 'speaker') return ui('Speaker');
+  if (route === 'earpiece') return ui('Earpiece');
+  if (route === 'bluetooth') return ui('Bluetooth');
+  if (route === 'wired') return ui('Wired audio');
+  return ui('Unknown route');
 };
 
 const getParticipantInitials = (participant = {}) => {
@@ -86,7 +126,10 @@ const getStreamUrl = (stream) => {
 };
 
 const NativeCallOverlay = () => {
-  const interfaceLanguage = useInterfaceLanguage();
+  useInterfaceLanguage();
+  const insets = useSafeAreaInsets();
+  const { width, height } = useWindowDimensions();
+  const compact = width < 370 || height < 680;
   const {
     acceptCall,
     activeCall,
@@ -101,224 +144,97 @@ const NativeCallOverlay = () => {
   } = useRealtime();
   useCallSounds(activeCall);
   const { user } = React.useContext(AuthContext);
-  const peerRef = useRef(null);
-  const localStreamRef = useRef(null);
-  const remoteStreamRef = useRef(null);
-  const mediaInitPromiseRef = useRef(null);
-  const mediaGenerationRef = useRef(0);
-  const signalBufferRef = useRef(createCallSignalBuffer());
-  const activeCallRef = useRef(null);
-  const [localStream, setLocalStream] = useState(null);
-  const [remoteStream, setRemoteStream] = useState(null);
-  const [mediaStatus, setMediaStatus] = useState('idle');
-  const [microphoneEnabled, setMicrophoneEnabled] = useState(true);
-  const [cameraEnabled, setCameraEnabled] = useState(true);
-  const [showAddParticipant, setShowAddParticipant] = useState(false);
+
+  const pickerRef = useRef(null);
+  const activeCallRef = useRef(activeCall);
+  const emitSignalRef = useRef(emitCallSignal);
+  const endCallRef = useRef(endCall);
+  const shareTimeoutRef = useRef(null);
+  const suppressShareToastRef = useRef(false);
+  activeCallRef.current = activeCall;
+  emitSignalRef.current = emitCallSignal;
+  endCallRef.current = endCall;
+
+  const [mediaState, setMediaState] = useState({
+    status: 'idle',
+    microphoneEnabled: true,
+    cameraEnabled: false,
+    videoEnabled: false,
+    screenSharing: false,
+    screenSharePending: false,
+    facingMode: 'user',
+    audioRoute: 'unknown',
+    audioRouteAvailable: [],
+    audioRouteSupported: false,
+    localVideoStream: null,
+    remoteStream: null,
+  });
+  const mediaRef = useRef(null);
+  if (!mediaRef.current) {
+    mediaRef.current = createNativeCallMedia({
+      emitSignal: (event, payload) => emitSignalRef.current?.(event, payload),
+      onState: setMediaState,
+      pickerRef,
+    });
+  }
+  const media = mediaRef.current;
+
+  const [showParticipants, setShowParticipants] = useState(false);
+  const [showAudioRoutes, setShowAudioRoutes] = useState(false);
   const [participantUserId, setParticipantUserId] = useState('');
   const [recentRoomHistory, setRecentRoomHistory] = useState([]);
-  const displayParticipants = useMemo(() => normalizeParticipants(activeCall), [activeCall, interfaceLanguage]);
 
-  useEffect(() => {
-    activeCallRef.current = activeCall;
-  }, [activeCall]);
+  const callId = activeCall?.callId;
+  const callStatus = activeCall?.status;
+  const callType = activeCall?.callType;
+  const callDirection = activeCall?.direction;
+  const displayParticipants = useMemo(() => normalizeParticipants(activeCall), [activeCall]);
 
-  const cleanupMedia = useCallback(() => {
-    if (peerRef.current) {
-      peerRef.current.onicecandidate = null;
-      peerRef.current.ontrack = null;
-      peerRef.current.onconnectionstatechange = null;
-      peerRef.current.close();
-      peerRef.current = null;
+  const showMediaError = useCallback((error) => {
+    Toast.show({
+      type: 'error',
+      text1: ui('Could not start media'),
+      text2: error?.message || ui('Camera or microphone permission failed.'),
+    });
+    const call = activeCallRef.current;
+    if (call?.callId && call.status === 'accepted') {
+      endCallRef.current?.(call.callId).catch(() => {});
     }
-
-    localStreamRef.current?.getTracks?.().forEach((track) => track.stop());
-    remoteStreamRef.current?.getTracks?.().forEach((track) => track.stop?.());
-    localStreamRef.current = null;
-    remoteStreamRef.current = null;
-    mediaGenerationRef.current += 1;
-    mediaInitPromiseRef.current = null;
-    signalBufferRef.current.clear();
-    setLocalStream(null);
-    setRemoteStream(null);
-    setMediaStatus('idle');
-    setMicrophoneEnabled(true);
-    setCameraEnabled(true);
   }, []);
 
-  const createPeerConnection = useCallback((call, iceServers) => {
-    const peer = new RTCPeerConnection({ iceServers });
-
-    peer.onicecandidate = (event) => {
-      if (!event.candidate) return;
-      emitCallSignal('call:signal:ice-candidate', {
-        callId: call.callId,
-        candidate: event.candidate,
-      }).catch(() => {});
-    };
-
-    peer.ontrack = (event) => {
-      const [stream] = event.streams || [];
-      if (stream) {
-        remoteStreamRef.current = stream;
-        setRemoteStream(stream);
-      }
-    };
-
-    peer.onconnectionstatechange = () => {
-      if (peer.connectionState === 'connected') {
-        setMediaStatus('connected');
-      } else if (['checking', 'disconnected'].includes(peer.connectionState)) {
-        setMediaStatus('connecting');
-      } else if (peer.connectionState === 'failed') {
-        setMediaStatus('failed');
-      }
-    };
-
-    return peer;
-  }, [emitCallSignal]);
-
-  const beginMediaCall = useCallback((call, { initiator = false } = {}) => {
-    if (!call?.callId) return Promise.resolve(null);
-    if (mediaInitPromiseRef.current) return mediaInitPromiseRef.current;
-    if (peerRef.current) return Promise.resolve(peerRef.current);
-    const generation = mediaGenerationRef.current;
-    const initialization = (async () => {
-    const videoCall = isVideoEnabledCall(call.callType);
-    setMediaStatus(videoCall ? 'requesting_camera' : 'requesting_microphone');
-
-    try {
-      if (!mediaDevices || !RTCPeerConnection) throw new Error('Calling is unavailable in this app version.');
-      const iceServers = await loadWebRtcIceServers();
-      if (generation !== mediaGenerationRef.current) return null;
-      const videoConstraints = videoCall
-        ? {
-            facingMode: 'user',
-            width: { ideal: 1280 },
-            height: { ideal: 720 },
-            frameRate: { ideal: 30, max: 30 },
-          }
-        : false;
-
-      let stream;
-      try {
-        stream = await mediaDevices.getUserMedia({ audio: true, video: videoConstraints });
-      } catch (highQualityError) {
-        // A slow phone or a weak camera may refuse 720p. Falling back to a
-        // lower resolution keeps the call alive instead of failing it.
-        if (!videoCall) throw highQualityError;
-
-        stream = await mediaDevices.getUserMedia({
-          audio: true,
-          video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 }, frameRate: { ideal: 24 } },
-        });
-      }
-
-      if (generation !== mediaGenerationRef.current) {
-        stream.getTracks().forEach((track) => track.stop());
-        return null;
-      }
-      localStreamRef.current = stream;
-      setLocalStream(stream);
-      setMicrophoneEnabled(stream.getAudioTracks().some((track) => track.enabled));
-      setCameraEnabled(videoCall && stream.getVideoTracks().some((track) => track.enabled));
-
-      const peer = createPeerConnection(call, iceServers);
-      peerRef.current = peer;
-      stream.getTracks().forEach((track) => peer.addTrack(track, stream));
-      setMediaStatus('connecting');
-
-      if (initiator) {
-        const offer = await peer.createOffer();
-        await peer.setLocalDescription(offer);
-        await emitCallSignal('call:signal:offer', {
-          callId: call.callId,
-          description: peer.localDescription,
-        });
-      }
-      return peer;
-    } catch (error) {
-      if (generation !== mediaGenerationRef.current) return null;
-      cleanupMedia();
-      Toast.show({
-        type: 'error',
-        text1: ui("Could not start media"),
-        text2: error.message || ui("Camera or microphone permission failed."),
-      });
-      if (call?.callId) {
-        endCall(call.callId).catch(() => {});
-      }
+  useEffect(() => {
+    if (!callId || ENDED_STATUSES.includes(callStatus)) {
+      void media.stop();
+      return;
     }
-    })();
-    const pending = initialization.finally(() => {
-      if (mediaInitPromiseRef.current === pending) mediaInitPromiseRef.current = null;
-    });
-    mediaInitPromiseRef.current = pending;
-    return pending;
-  }, [cleanupMedia, createPeerConnection, emitCallSignal, endCall]);
+    if (callStatus !== 'accepted') return;
+
+    const call = activeCallRef.current;
+    void media.start(call, { initiator: call?.direction === 'outgoing' }).catch(showMediaError);
+  }, [callId, callStatus, callType, callDirection, media, showMediaError]);
 
   useEffect(() => {
-    if (activeCall?.status === 'accepted') {
-      beginMediaCall(activeCall, { initiator: activeCall.direction === 'outgoing' });
-    }
-  }, [activeCall, beginMediaCall]);
-
-  useEffect(() => {
-    let isMounted = true;
-    const loadRecentHistory = async () => {
-      if (!user?.id) return;
-      try {
-        const response = await voiceMonitorService.myCallRoomHistory();
-        if (!isMounted) return;
-        setRecentRoomHistory(Array.isArray(response?.data) ? response.data : []);
-      } catch {
-        if (isMounted) setRecentRoomHistory([]);
-      }
-    };
-
-    void loadRecentHistory();
-    return () => { isMounted = false; };
-  }, [user?.id]);
-
-  useEffect(() => {
-    const unsubscribeOffer = subscribe('call:signal:offer', async ({ callId, description } = {}) => {
+    const unsubscribeOffer = subscribe('call:signal:offer', async ({ callId: signalCallId, description } = {}) => {
       const call = activeCallRef.current;
-      if (!call || String(call.callId) !== String(callId)) return;
+      if (!call || call.status !== 'accepted' || String(call.callId) !== String(signalCallId) || !description) return;
       try {
-        const peer = await beginMediaCall(call, { initiator: false });
-        if (!peer) return;
-        await peer.setRemoteDescription(new RTCSessionDescription(description));
-        await signalBufferRef.current.drain(callId, peer, RTCIceCandidate);
-        const answer = await peer.createAnswer();
-        await peer.setLocalDescription(answer);
-        await emitCallSignal('call:signal:answer', {
-          callId,
-          description: peer.localDescription,
-        });
+        await media.start(call, { initiator: false });
+        await media.handleOffer({ callId: signalCallId, description });
       } catch (error) {
-        Toast.show({ type: 'error', text1: ui("Call offer failed"), text2: error.message });
+        showMediaError(error);
       }
     });
 
-    const unsubscribeAnswer = subscribe('call:signal:answer', async ({ callId, description } = {}) => {
+    const unsubscribeAnswer = subscribe('call:signal:answer', ({ callId: signalCallId, description } = {}) => {
       const call = activeCallRef.current;
-      if (!call || String(call.callId) !== String(callId) || !peerRef.current) return;
-      try {
-        await peerRef.current.setRemoteDescription(new RTCSessionDescription(description));
-        await signalBufferRef.current.drain(callId, peerRef.current, RTCIceCandidate);
-      } catch (error) {
-        Toast.show({ type: 'error', text1: ui("Call answer failed"), text2: error.message });
-      }
+      if (!call || String(call.callId) !== String(signalCallId) || !description) return;
+      void media.handleAnswer({ callId: signalCallId, description });
     });
 
-    const unsubscribeIce = subscribe('call:signal:ice-candidate', async ({ callId, candidate } = {}) => {
+    const unsubscribeIce = subscribe('call:signal:ice-candidate', ({ callId: signalCallId, candidate } = {}) => {
       const call = activeCallRef.current;
-      if (!call || String(call.callId) !== String(callId) || !candidate) return;
-      signalBufferRef.current.add(callId, candidate);
-      try {
-        await signalBufferRef.current.drain(callId, peerRef.current, RTCIceCandidate);
-      } catch (_error) {
-        // Late ICE candidates can arrive after a call ends; ignore safely.
-      }
+      if (!call || String(call.callId) !== String(signalCallId) || !candidate) return;
+      media.handleIce({ callId: signalCallId, candidate });
     });
 
     return () => {
@@ -326,55 +242,146 @@ const NativeCallOverlay = () => {
       unsubscribeAnswer();
       unsubscribeIce();
     };
-  }, [beginMediaCall, emitCallSignal, subscribe]);
+  }, [media, showMediaError, subscribe]);
+
+  useEffect(() => subscribeAudioRouteChanges(() => {
+    if (activeCallRef.current?.status === 'accepted') void media.refreshRoute();
+  }), [media]);
 
   useEffect(() => {
-    if (!activeCall) cleanupMedia();
-    if (activeCall && ['rejected', 'missed', 'ended'].includes(activeCall.status)) cleanupMedia();
-  }, [activeCall, cleanupMedia]);
+    let isMounted = true;
+    const loadRecentHistory = async () => {
+      if (!user?.id) return;
+      try {
+        const response = await voiceMonitorService.myCallRoomHistory();
+        if (isMounted) setRecentRoomHistory(Array.isArray(response?.data) ? response.data : []);
+      } catch (_error) {
+        if (isMounted) setRecentRoomHistory([]);
+      }
+    };
+    void loadRecentHistory();
+    return () => { isMounted = false; };
+  }, [user?.id]);
 
-  useEffect(() => cleanupMedia, [cleanupMedia]);
+  useEffect(() => () => {
+    if (shareTimeoutRef.current) clearTimeout(shareTimeoutRef.current);
+    void media.stop();
+  }, [media]);
+
+  useEffect(() => {
+    if (!mediaState.shareEndedBySystem) return;
+    Toast.show({
+      type: 'info',
+      text1: ui('Screen sharing stopped'),
+      text2: ui('Your device ended the screen share.'),
+    });
+  }, [mediaState.shareEndedBySystem]);
 
   if (!activeCall) return null;
 
   const isIncoming = activeCall.direction === 'incoming' && activeCall.status === 'ringing';
   const isAccepted = activeCall.status === 'accepted';
-  const isClosing = ['rejected', 'missed', 'ended'].includes(activeCall.status);
-  const videoCall = isVideoEnabledCall(activeCall.callType);
-  const localUrl = getStreamUrl(localStream);
-  const remoteUrl = getStreamUrl(remoteStream);
-  const participantColors = ['#2563eb', '#8b5cf6', '#10b981', '#f59e0b', '#ef4444'];
+  const isClosing = ENDED_STATUSES.includes(activeCall.status);
+  const localUrl = getStreamUrl(mediaState.localVideoStream);
+  const remoteUrl = getStreamUrl(mediaState.remoteStream);
+  const hasRemoteVideo = Boolean(remoteUrl && mediaState.remoteStream?.getVideoTracks?.().some(
+    (track) => track.readyState !== 'ended',
+  ));
+  const participantColors = ['#3B82F6', '#8B5CF6', '#10B981', '#F59E0B', '#EF4444'];
   const participantSummary = displayParticipants.length > 1
-    ? `${displayParticipants.length}-way support room`
+    ? ui('{value0}-way support room', { value0: displayParticipants.length })
     : callTitle(activeCall);
+  const availableRoutes = ['earpiece', 'speaker', 'bluetooth', 'wired'].filter(
+    (route) => route === 'earpiece' || route === 'speaker' || mediaState.audioRouteAvailable.includes(route),
+  );
 
   const safeAction = async (action, fallback) => {
     try {
       await action();
     } catch (error) {
-      Toast.show({ type: 'error', text1: fallback, text2: error.message });
+      Toast.show({ type: 'error', text1: fallback, text2: error?.message });
     }
   };
 
   const toggleMicrophone = () => {
-    const nextEnabled = !microphoneEnabled;
-    localStreamRef.current?.getAudioTracks?.().forEach((track) => {
-      track.enabled = nextEnabled;
-    });
-    setMicrophoneEnabled(nextEnabled);
+    void media.setMicrophoneEnabled(!mediaState.microphoneEnabled);
   };
 
-  const toggleCamera = () => {
-    const nextEnabled = !cameraEnabled;
-    localStreamRef.current?.getVideoTracks?.().forEach((track) => {
-      track.enabled = nextEnabled;
+  const toggleVideo = () => {
+    if (mediaState.screenSharing || mediaState.screenSharePending) {
+      Toast.show({ type: 'info', text1: ui('Stop screen sharing first') });
+      return;
+    }
+    void media.setVideoEnabled(!mediaState.videoEnabled).catch((error) => {
+      Toast.show({ type: 'error', text1: ui('Could not change video'), text2: error?.message });
     });
-    setCameraEnabled(nextEnabled);
   };
 
-  const hangUp = () => {
-    cleanupMedia();
-    return endCall(activeCall.callId);
+  const switchCamera = () => {
+    void media.switchCamera().catch((error) => {
+      const message = error?.message === 'STOP_SHARING_FIRST'
+        ? ui('Stop screen sharing first')
+        : ui('Could not switch camera');
+      Toast.show({ type: 'error', text1: message, text2: error?.message });
+    });
+  };
+
+  const handleScreenShare = () => {
+    if (mediaState.screenSharePending) {
+      suppressShareToastRef.current = true;
+      void media.cancelScreenShare();
+      return;
+    }
+    if (mediaState.screenSharing) {
+      void safeAction(() => media.stopScreenShare(), ui('Could not stop screen sharing'));
+      return;
+    }
+    if (!mediaDevicesAvailable()) {
+      Toast.show({ type: 'error', text1: ui('Screen sharing is unavailable in this app version.') });
+      return;
+    }
+
+    suppressShareToastRef.current = false;
+    const pending = media.startScreenShare();
+    if (Platform.OS === 'ios') {
+      shareTimeoutRef.current = setTimeout(() => {
+        suppressShareToastRef.current = true;
+        void media.cancelScreenShare();
+        Toast.show({
+          type: 'info',
+          text1: ui('Screen sharing did not start'),
+          text2: ui('Choose Amana RentalHub Screen Share in the picker, then try again.'),
+        });
+      }, 20000);
+    }
+    Promise.resolve(pending).then((started) => {
+      if (started === false && Platform.OS === 'ios' && !suppressShareToastRef.current) {
+        Toast.show({ type: 'info', text1: ui('Screen sharing did not start') });
+      }
+    }).catch((error) => {
+      if (suppressShareToastRef.current) return;
+      Toast.show({
+        type: 'error',
+        text1: error?.name === 'NotAllowedError' ? ui('Screen sharing was cancelled') : ui('Could not start screen sharing'),
+        text2: error?.message,
+      });
+    }).finally(() => {
+      if (shareTimeoutRef.current) clearTimeout(shareTimeoutRef.current);
+      shareTimeoutRef.current = null;
+      suppressShareToastRef.current = false;
+    });
+  };
+
+  const handleAudioRoute = (route) => {
+    setShowAudioRoutes(false);
+    void safeAction(async () => {
+      await media.setAudioRoute(route);
+    }, ui('Could not change audio output'));
+  };
+
+  const hangUp = async () => {
+    await media.stop();
+    await endCall(activeCall.callId);
   };
 
   const handleAddParticipant = async () => {
@@ -389,300 +396,426 @@ const NativeCallOverlay = () => {
 
     if (response?.success) {
       setParticipantUserId('');
-      setShowAddParticipant(false);
     } else {
       Toast.show({
         type: 'error',
-        text1: ui("Could not add participant"),
-        text2: response?.message || ui("Please try another user."),
+        text1: ui('Could not add participant'),
+        text2: response?.message || ui('Please try another user.'),
       });
     }
   };
 
   const handleRemoveParticipant = async (targetUserId) => {
     if (!activeCall?.callId || !targetUserId || !removeCallParticipant) return;
-
-    const response = await removeCallParticipant({
-      callId: activeCall.callId,
-      userId: Number(targetUserId),
-    });
-
+    const response = await removeCallParticipant({ callId: activeCall.callId, userId: Number(targetUserId) });
     if (!response?.success) {
-      Toast.show({
-        type: 'error',
-        text1: ui("Could not remove participant"),
-        text2: response?.message || ui("Please try again."),
-      });
+      Toast.show({ type: 'error', text1: ui('Could not remove participant'), text2: response?.message || ui('Please try again.') });
     }
   };
 
   const handleTransferHost = async (targetUserId) => {
     if (!activeCall?.callId || !targetUserId || !transferCallHost) return;
-
-    const response = await transferCallHost({
-      callId: activeCall.callId,
-      userId: Number(targetUserId),
-    });
-
+    const response = await transferCallHost({ callId: activeCall.callId, userId: Number(targetUserId) });
     if (!response?.success) {
-      Toast.show({
-        type: 'error',
-        text1: ui("Could not transfer host"),
-        text2: response?.message || ui("Please try again."),
-      });
+      Toast.show({ type: 'error', text1: ui('Could not transfer host'), text2: response?.message || ui('Please try again.') });
     }
   };
 
-  return (
-    <Modal transparent animationType="fade" visible>
-      <View style={[styles.backdrop, isAccepted && styles.liveBackdrop]}>
-        <View style={[styles.card, isAccepted && styles.liveCard]}>
-          {isAccepted ? (
-            <View style={styles.videoStage}>
-              {remoteUrl && videoCall ? (
-                <RTCView
-                  mirror={false}
-                  objectFit="cover"
-                  streamURL={remoteUrl}
-                  style={styles.remoteVideo}
-                />
-              ) : (
-                <View style={styles.remotePlaceholder}>
-                  {mediaStatus === 'requesting_camera' || mediaStatus === 'requesting_microphone' ? (
-                    <ActivityIndicator color={colors.white} />
-                  ) : (
-                    <Icon name={videoCall ? 'videocam-outline' : 'call-outline'} size={42} color={colors.white} />
-                  )}
-                  <AppText style={styles.remotePlaceholderText}>
-                    {mediaStatus === "connected"
-                      ? videoCall ? ui('Waiting for remote video…') : ui('Audio session connected')
-                      : ui('Connecting media…')}
-                  </AppText>
-                </View>
-              )}
-              {displayParticipants.length > 1 ? (
-                <View style={styles.participantGrid}>
-                  {displayParticipants.slice(0, 5).map((participant, index) => (
-                    <View
-                      key={participant.id || `${participant.name}-${index}`}
-                      style={[
-                        styles.participantTile,
-                        index === 0 && styles.primaryParticipantTile,
-                        { borderColor: participantColors[index % participantColors.length] },
-                      ]}
-                    >
-                      {Number(activeCall?.hostUserId || activeCall?.caller?.id) === Number(user?.id) && Number(participant.id) !== Number(activeCall?.hostUserId || activeCall?.caller?.id) ? (
-                        <TouchableOpacity
-                          accessibilityRole="button"
-                          onPress={() => handleTransferHost(participant.id)}
-                          style={styles.transferHostButton}
-                        >
-                          <Icon name="arrow-redo-outline" size={14} color={colors.white} />
-                        </TouchableOpacity>
-                      ) : null}
-                      {Number(participant.id) !== Number(activeCall?.caller?.id) && Number(participant.id) !== Number(activeCall?.receiver?.id) ? (
-                        <TouchableOpacity
-                          accessibilityRole="button"
-                          onPress={() => handleRemoveParticipant(participant.id)}
-                          style={styles.removeParticipantButton}
-                        >
-                          <Icon name="close-circle" size={16} color={colors.white} />
-                        </TouchableOpacity>
-                      ) : null}
-                      <View
-                        style={[
-                          styles.participantAvatar,
-                          { backgroundColor: participantColors[index % participantColors.length] },
-                        ]}
-                      >
-                        <AppText style={styles.participantAvatarText}>{getParticipantInitials(participant)}</AppText>
-                      </View>
-                      <AppText style={styles.participantName} numberOfLines={1}>{participant.name}</AppText>
-                      <AppText style={styles.participantRole}>{participant.role}</AppText>
-                    </View>
-                  ))}
-                </View>
-              ) : null}
-              {localUrl && videoCall ? (
-                <RTCView
-                  mirror
-                  objectFit="cover"
-                  streamURL={localUrl}
-                  style={styles.localVideo}
-                />
-              ) : null}
-            </View>
-          ) : (
-            <View style={[styles.iconWrap, isAccepted && styles.iconWrapLive]}>
-              <Icon
-                name={videoCall ? 'videocam-outline' : 'call-outline'}
-                size={32}
-                color={isAccepted ? colors.success : colors.blue}
-              />
-            </View>
-          )}
+  const renderControl = ({
+    label,
+    icon,
+    onPress,
+    active = true,
+    danger = false,
+    disabled = false,
+    badge,
+  }) => (
+    <View style={styles.controlItem}>
+      <TouchableOpacity
+        accessibilityLabel={label}
+        accessibilityRole="button"
+        accessibilityState={{ disabled }}
+        disabled={disabled}
+        onPress={onPress}
+        style={[
+          styles.controlCircle,
+          !active && styles.controlCircleOff,
+          danger && styles.controlCircleDanger,
+          disabled && styles.controlCircleDisabled,
+        ]}
+      >
+        <Icon name={icon} size={compact ? 20 : 23} color={colors.white} />
+      </TouchableOpacity>
+      <AppText style={styles.controlLabel} numberOfLines={1}>{label}</AppText>
+      {badge ? <View style={styles.controlBadge}><AppText style={styles.controlBadgeText}>{badge}</AppText></View> : null}
+    </View>
+  );
 
-          <AppText style={[styles.eyebrow, isAccepted && styles.liveEyebrow]}>
-            {isAccepted ? String(mediaStatus).replace(/_/g, ' ') : activeCall.status || ui('RINGING')}
+  const renderParticipantPanel = () => (
+    <View style={styles.panel}>
+      <AppText style={styles.panelTitle}>{ui('People in this call')}</AppText>
+      {displayParticipants.map((participant, index) => {
+        const isHost = Number(activeCall?.hostUserId || activeCall?.caller?.id) === Number(user?.id);
+        const isCurrentHost = Number(participant.id) === Number(activeCall?.hostUserId || activeCall?.caller?.id);
+        const isPrimary = Number(participant.id) === Number(activeCall?.caller?.id)
+          || Number(participant.id) === Number(activeCall?.receiver?.id);
+        return (
+          <View key={participant.id || `${participant.name}-${index}`} style={styles.participantRow}>
+            <View style={[styles.participantAvatar, { backgroundColor: participantColors[index % participantColors.length] }]}>
+              <AppText style={styles.participantAvatarText}>{getParticipantInitials(participant)}</AppText>
+            </View>
+            <View style={styles.participantDetails}>
+              <AppText style={styles.participantName} numberOfLines={1}>{participant.name}</AppText>
+              <AppText style={styles.participantMeta}>
+                {participantRoleLabel(participant.role)} · {participantStatusLabel(participant.status)}
+              </AppText>
+            </View>
+            {isAccepted && isHost && !isCurrentHost ? (
+              <TouchableOpacity
+                accessibilityLabel={ui('Make host')}
+                accessibilityRole="button"
+                onPress={() => void safeAction(() => handleTransferHost(participant.id), ui('Could not transfer host'))}
+                style={styles.panelIconButton}
+              >
+                <Icon name="arrow-redo-outline" size={17} color={colors.white} />
+              </TouchableOpacity>
+            ) : null}
+            {isAccepted && !isPrimary ? (
+              <TouchableOpacity
+                accessibilityLabel={ui('Remove participant')}
+                accessibilityRole="button"
+                onPress={() => void safeAction(() => handleRemoveParticipant(participant.id), ui('Could not remove participant'))}
+                style={[styles.panelIconButton, styles.removeIconButton]}
+              >
+                <Icon name="close" size={17} color={colors.white} />
+              </TouchableOpacity>
+            ) : null}
+          </View>
+        );
+      })}
+      {isAccepted ? (
+        <View style={styles.addParticipantRow}>
+          <TextInput
+            value={participantUserId}
+            onChangeText={setParticipantUserId}
+            keyboardType="numeric"
+            placeholder={ui('User ID')}
+            style={styles.addParticipantInput}
+            placeholderTextColor="#94a3b8"
+          />
+          <TouchableOpacity
+            accessibilityLabel={ui('Add participant')}
+            accessibilityRole="button"
+            style={styles.addParticipantSubmit}
+            onPress={() => void safeAction(handleAddParticipant, ui('Could not add participant'))}
+          >
+            <AppText style={styles.addParticipantSubmitText}>{ui('Add')}</AppText>
+          </TouchableOpacity>
+        </View>
+      ) : null}
+      {recentRoomHistory.length > 0 ? (
+        <View style={styles.historyBlock}>
+          <AppText style={styles.panelTitle}>{ui('Recent room activity')}</AppText>
+          {recentRoomHistory.slice(0, 3).map((event) => (
+            <View key={event.id || `${event.callId}-${event.createdAt}`} style={styles.historyRow}>
+              <AppText style={styles.historyAction}>{String(event.action || '').replace(/_/g, ' ')}</AppText>
+              <AppText style={styles.historyMeta}>
+                {event.actorName || ui('Someone')} → {event.targetName || ui('Room')}
+              </AppText>
+            </View>
+          ))}
+        </View>
+      ) : null}
+    </View>
+  );
+
+  const renderAudioRoutePanel = () => (
+    <View style={styles.panel}>
+      <AppText style={styles.panelTitle}>{ui('Audio output')}</AppText>
+      {mediaState.audioRouteSupported ? availableRoutes.map((route) => (
+        <TouchableOpacity
+          key={route}
+          accessibilityLabel={routeLabel(route)}
+          accessibilityRole="button"
+          accessibilityState={{ selected: mediaState.audioRoute === route }}
+          onPress={() => handleAudioRoute(route)}
+          style={[styles.routeRow, mediaState.audioRoute === route && styles.routeRowSelected]}
+        >
+          <Icon
+            name={route === 'speaker' ? 'volume-high-outline' : route === 'bluetooth' ? 'bluetooth-outline' : 'ear-outline'}
+            size={18}
+            color={mediaState.audioRoute === route ? colors.blue : '#CBD5E1'}
+          />
+          <AppText style={[styles.routeLabel, mediaState.audioRoute === route && styles.routeLabelSelected]}>
+            {routeLabel(route)}
           </AppText>
-          <AppText style={[styles.title, isAccepted && styles.liveTitle]}>{participantSummary}</AppText>
-          <AppText style={[styles.subtitle, isAccepted && styles.liveSubtitle]}>
-            {isIncoming
-              ? ui("{value0} is requesting this session.", {value0: (otherPartyName(activeCall))})
-              : displayParticipants.length > 1
-                ? ui("{value0} active participants in this call room.", {value0: (displayParticipants.length)})
-                : ui("With {value0}", {value0: (otherPartyName(activeCall))})}
+          {mediaState.audioRoute === route ? <Icon name="checkmark" size={18} color={colors.blue} /> : null}
+        </TouchableOpacity>
+      )) : (
+        <AppText style={styles.panelBody}>{ui('Audio routing is not available on this device.')}</AppText>
+      )}
+    </View>
+  );
+
+  const renderLiveCall = () => (
+    <>
+      <View style={styles.videoStage}>
+        {hasRemoteVideo ? (
+          <RTCView mirror={false} objectFit="cover" streamURL={remoteUrl} style={styles.remoteVideo} />
+        ) : (
+          <View style={styles.remotePlaceholder}>
+            <View style={styles.remoteAvatar}>
+              <AppText style={styles.remoteAvatarText}>{getParticipantInitials({ name: otherPartyName(activeCall) })}</AppText>
+            </View>
+            <AppText style={styles.remoteName}>{otherPartyName(activeCall)}</AppText>
+            <AppText style={styles.remoteStatus}>
+              {mediaState.status === 'connected'
+                ? mediaState.videoEnabled ? ui('Waiting for remote video…') : ui('Audio session connected')
+                : ui('Connecting media…')}
+            </AppText>
+          </View>
+        )}
+        {localUrl && mediaState.videoEnabled ? (
+          <View style={[styles.localPreview, compact && styles.localPreviewCompact]}>
+            <RTCView mirror objectFit="cover" streamURL={localUrl} style={styles.localVideo} />
+            <AppText style={styles.localLabel}>{ui('You')}</AppText>
+          </View>
+        ) : null}
+      </View>
+
+      <View style={styles.liveTopBar}>
+        <View style={styles.liveIdentity}>
+          <View style={styles.liveBadge}>
+            <View style={styles.liveDot} />
+            <AppText style={styles.liveBadgeText}>{ui('LIVE')}</AppText>
+          </View>
+          <AppText style={styles.liveTitle} numberOfLines={1}>{participantSummary}</AppText>
+          <AppText style={styles.liveSubtitle} numberOfLines={1}>
+            {displayParticipants.length > 1
+              ? ui('{value0} people connected', { value0: displayParticipants.length })
+              : ui('With {value0}', { value0: otherPartyName(activeCall) })}
           </AppText>
           {activeCall.propertyTitle ? (
-            <AppText style={[styles.propertyText, isAccepted && styles.livePropertyText]}>
-              {activeCall.propertyTitle}
-            </AppText>
+            <AppText style={styles.liveProperty} numberOfLines={1}>{activeCall.propertyTitle}</AppText>
           ) : null}
+        </View>
+        <TouchableOpacity
+          accessibilityLabel={ui('People in this call')}
+          accessibilityRole="button"
+          onPress={() => {
+            setShowParticipants((current) => !current);
+            setShowAudioRoutes(false);
+          }}
+          style={styles.topButton}
+        >
+          <Icon name="people-outline" size={20} color={colors.white} />
+        </TouchableOpacity>
+      </View>
 
-          {recentRoomHistory.length > 0 ? (
-            <View style={styles.historyCard}>
-              <AppText style={styles.historyTitle}>{ui("Recent room activity")}</AppText>
-              {recentRoomHistory.slice(0, 3).map((event) => (
-                <View key={event.id || `${event.callId}-${event.createdAt}`} style={styles.historyRow}>
-                  <AppText style={styles.historyAction}>{String(event.action || '').replace(/_/g, ' ')}</AppText>
-                  <AppText style={styles.historyMeta}>
-                    {event.actorName || ui('Someone')} → {event.targetName || ui("Room")}
-                  </AppText>
-                </View>
-              ))}
-            </View>
+      {(mediaState.screenSharing || mediaState.screenSharePending) ? (
+        <View style={styles.shareBanner}>
+          {mediaState.screenSharePending ? <ActivityIndicator color={colors.white} size="small" /> : <Icon name="desktop-outline" size={16} color={colors.white} />}
+          <AppText style={styles.shareBannerText}>
+            {mediaState.screenSharePending ? ui('Starting screen share…') : ui('You are sharing your screen')}
+          </AppText>
+          {mediaState.screenSharePending ? (
+            <TouchableOpacity
+              accessibilityLabel={ui('Cancel')}
+              accessibilityRole="button"
+              onPress={handleScreenShare}
+              style={styles.shareCancelButton}
+            >
+              <AppText style={styles.shareCancelText}>{ui('Cancel')}</AppText>
+            </TouchableOpacity>
           ) : null}
+        </View>
+      ) : null}
 
-          {isAccepted ? (
-            <View style={styles.addParticipantBlock}>
-              <TouchableOpacity
-                accessibilityRole="button"
-                style={styles.addParticipantButton}
-                onPress={() => setShowAddParticipant((current) => !current)}
-              >
-                <Icon name="person-add-outline" size={18} color={colors.white} />
-                <AppText style={styles.addParticipantButtonText}>{ui("Add participant")}</AppText>
-              </TouchableOpacity>
-              {showAddParticipant ? (
-                <View style={styles.addParticipantRow}>
-                  <TextInput
-                    value={participantUserId}
-                    onChangeText={setParticipantUserId}
-                    keyboardType="numeric"
-                    placeholder={ui("User ID")}
-                    style={styles.addParticipantInput}
-                    placeholderTextColor="#94a3b8"
-                  />
-                  <TouchableOpacity
-                    accessibilityRole="button"
-                    style={styles.addParticipantSubmit}
-                    onPress={handleAddParticipant}
-                  >
-                    <AppText style={styles.addParticipantSubmitText}>{ui("Add")}</AppText>
-                  </TouchableOpacity>
-                </View>
-              ) : null}
-            </View>
-          ) : null}
+      <View style={styles.liveFooter}>
+        {showParticipants ? renderParticipantPanel() : null}
+        {showAudioRoutes ? renderAudioRoutePanel() : null}
+        <View style={styles.statusRow}>
+          <AppText accessibilityLiveRegion="polite" style={styles.statusText}>
+            {mediaStatusLabel(mediaState.status, mediaState.videoEnabled)}
+          </AppText>
+          <TouchableOpacity
+            accessibilityLabel={ui('Audio output')}
+            accessibilityRole="button"
+            onPress={() => {
+              setShowAudioRoutes((current) => !current);
+              setShowParticipants(false);
+            }}
+            style={styles.routeButton}
+          >
+            <Icon name="volume-high-outline" size={15} color={colors.white} />
+            <AppText style={styles.routeButtonText}>{routeLabel(mediaState.audioRoute)}</AppText>
+          </TouchableOpacity>
+        </View>
 
-          <View style={styles.actions}>
-            {isIncoming ? (
-              <>
-                <TouchableOpacity
-                  accessibilityLabel={ui("Reject call")}
-                  accessibilityRole="button"
-                  style={[styles.roundButton, styles.rejectButton]}
-                  onPress={() => safeAction(() => rejectCall(activeCall.callId), 'Could not reject call')}
-                >
-                  <Icon name="close" size={24} color={colors.white} />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  accessibilityLabel={ui("Accept call")}
-                  accessibilityRole="button"
-                  style={[styles.roundButton, styles.acceptButton]}
-                  onPress={() => safeAction(() => acceptCall(activeCall.callId), 'Could not accept call')}
-                >
-                  <Icon name="call" size={24} color={colors.white} />
-                </TouchableOpacity>
-              </>
-            ) : isAccepted ? (
-              <>
-                <TouchableOpacity
-                  accessibilityLabel={microphoneEnabled ? 'Mute microphone' : 'Unmute microphone'}
-                  accessibilityRole="button"
-                  style={[styles.roundButton, styles.controlButton, !microphoneEnabled && styles.controlButtonMuted]}
-                  onPress={toggleMicrophone}
-                >
-                  <Icon name={microphoneEnabled ? 'mic-outline' : 'mic-off-outline'} size={22} color={colors.white} />
-                </TouchableOpacity>
-                {videoCall ? (
-                  <TouchableOpacity
-                    accessibilityLabel={cameraEnabled ? ui("Turn camera off") : ui("Turn camera on")}
-                    accessibilityRole="button"
-                    style={[styles.roundButton, styles.controlButton, !cameraEnabled && styles.controlButtonMuted]}
-                    onPress={toggleCamera}
-                  >
-                    <Icon name={cameraEnabled ? 'videocam-outline' : 'videocam-off-outline'} size={22} color={colors.white} />
-                  </TouchableOpacity>
-                ) : null}
-                <TouchableOpacity
-                  accessibilityLabel={ui("End call")}
-                  accessibilityRole="button"
-                  style={[styles.roundButton, styles.rejectButton]}
-                  onPress={() => safeAction(hangUp, 'Could not end call')}
-                >
-                  <Icon name="call" size={22} color={colors.white} />
-                </TouchableOpacity>
-              </>
-            ) : isClosing ? (
-              <TouchableOpacity accessibilityRole="button" style={styles.closeButton} onPress={clearCall}>
-                <AppText style={styles.closeButtonText}>{ui("Close")}</AppText>
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity
-                accessibilityRole="button"
-                style={[styles.endButton, styles.rejectWideButton]}
-                onPress={() => safeAction(hangUp, 'Could not cancel call')}
-              >
-                <Icon name="close" size={18} color={colors.white} />
-                <AppText style={styles.endButtonText}>{ui("Cancel request")}</AppText>
-              </TouchableOpacity>
-            )}
-          </View>
+        <View style={styles.controlBar}>
+          {renderControl({
+            label: mediaState.microphoneEnabled ? ui('Mute') : ui('Unmute'),
+            icon: mediaState.microphoneEnabled ? 'mic-outline' : 'mic-off-outline',
+            onPress: toggleMicrophone,
+            active: mediaState.microphoneEnabled,
+          })}
+          {renderControl({
+            label: mediaState.screenSharing
+              ? ui('Stop sharing')
+              : mediaState.videoEnabled ? ui('Camera off') : ui('Add video'),
+            icon: mediaState.screenSharing
+              ? 'desktop-outline'
+              : mediaState.videoEnabled ? 'videocam-outline' : 'videocam-off-outline',
+            onPress: mediaState.screenSharing ? handleScreenShare : toggleVideo,
+            active: mediaState.videoEnabled || mediaState.screenSharing,
+            disabled: mediaState.screenSharePending,
+          })}
+          {mediaState.videoEnabled && !mediaState.screenSharing ? renderControl({
+            label: ui('Flip'),
+            icon: 'camera-reverse-outline',
+            onPress: switchCamera,
+          }) : null}
+          {renderControl({
+            label: mediaState.screenSharePending
+              ? ui('Cancel share')
+              : mediaState.screenSharing ? ui('Stop sharing') : ui('Share screen'),
+            icon: mediaState.screenSharePending ? 'close-circle-outline' : 'screen-share-outline',
+            onPress: handleScreenShare,
+            active: mediaState.screenSharing,
+          })}
+          {renderControl({
+            label: ui('End'),
+            icon: 'call',
+            onPress: () => void safeAction(hangUp, ui('Could not end call')),
+            danger: true,
+          })}
+        </View>
+      </View>
+    </>
+  );
+
+  const renderRingingCall = () => (
+    <View style={styles.cardBody}>
+      <View style={[styles.iconWrap, isAccepted && styles.iconWrapLive]}>
+        <Icon
+          name={callType === 'video' || callType === 'virtual_tour' ? 'videocam-outline' : 'call-outline'}
+          size={32}
+          color={isClosing ? colors.muted : colors.blue}
+        />
+      </View>
+      <AppText style={styles.eyebrow}>{isClosing ? ui('Call ended') : ui('INCOMING CALL')}</AppText>
+      <AppText style={styles.title}>{participantSummary}</AppText>
+      <AppText style={styles.subtitle}>
+        {isIncoming
+          ? ui('{value0} is requesting this session.', { value0: otherPartyName(activeCall) })
+          : displayParticipants.length > 1
+            ? ui('{value0} active participants in this call room.', { value0: displayParticipants.length })
+            : ui('With {value0}', { value0: otherPartyName(activeCall) })}
+      </AppText>
+      {activeCall.propertyTitle ? <AppText style={styles.propertyText}>{activeCall.propertyTitle}</AppText> : null}
+
+      {isIncoming ? (
+        <View style={styles.actions}>
+          <TouchableOpacity
+            accessibilityLabel={ui('Reject call')}
+            accessibilityRole="button"
+            style={[styles.roundButton, styles.rejectButton]}
+            onPress={() => void safeAction(() => rejectCall(activeCall.callId), ui('Could not reject call'))}
+          >
+            <Icon name="close" size={24} color={colors.white} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            accessibilityLabel={ui('Accept call')}
+            accessibilityRole="button"
+            style={[styles.roundButton, styles.acceptButton]}
+            onPress={() => void safeAction(() => acceptCall(activeCall.callId), ui('Could not accept call'))}
+          >
+            <Icon name="call" size={24} color={colors.white} />
+          </TouchableOpacity>
+        </View>
+      ) : isClosing ? (
+        <TouchableOpacity accessibilityRole="button" style={styles.closeButton} onPress={clearCall}>
+          <AppText style={styles.closeButtonText}>{ui('Close')}</AppText>
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity
+          accessibilityRole="button"
+          style={[styles.endButton, styles.rejectWideButton]}
+          onPress={() => void safeAction(hangUp, ui('Could not cancel call'))}
+        >
+          <Icon name="close" size={18} color={colors.white} />
+          <AppText style={styles.endButtonText}>{ui('Cancel request')}</AppText>
+        </TouchableOpacity>
+      )}
+    </View>
+  );
+
+  return (
+    <Modal transparent animationType="fade" visible statusBarTranslucent>
+      {Platform.OS === 'ios' && ScreenCapturePickerView ? (
+        <View pointerEvents="none" style={styles.hiddenPicker}>
+          <ScreenCapturePickerView ref={pickerRef} style={styles.hiddenPicker} />
+        </View>
+      ) : null}
+      <View
+        style={[
+          styles.backdrop,
+          isAccepted && styles.liveBackdrop,
+          { paddingTop: insets.top, paddingBottom: insets.bottom },
+        ]}
+      >
+        <View style={[styles.card, isAccepted && styles.liveCard]}>
+          {isAccepted ? renderLiveCall() : renderRingingCall()}
         </View>
       </View>
     </Modal>
   );
 };
 
+const mediaDevicesAvailable = () => {
+  try {
+    const WebRTC = require('react-native-webrtc');
+    return Boolean(WebRTC?.mediaDevices?.getDisplayMedia);
+  } catch (_error) {
+    return false;
+  }
+};
+
 const styles = StyleSheet.create({
+  hiddenPicker: {
+    height: 1,
+    opacity: 0,
+    position: 'absolute',
+    width: 1,
+  },
   backdrop: {
     alignItems: 'center',
     backgroundColor: 'rgba(7, 26, 61, 0.72)',
     flex: 1,
     justifyContent: 'center',
-    padding: 22,
+    paddingHorizontal: 22,
   },
   liveBackdrop: {
     backgroundColor: '#020817',
-    padding: 0,
+    paddingHorizontal: 0,
   },
   card: {
     alignItems: 'center',
     backgroundColor: colors.white,
     borderRadius: radius.lg,
     maxWidth: 430,
-    padding: 24,
+    paddingVertical: 24,
     width: '100%',
     ...shadows.soft,
   },
   liveCard: {
+    alignItems: 'stretch',
     backgroundColor: '#020817',
     borderRadius: 0,
     flex: 1,
-    justifyContent: 'flex-end',
+    justifyContent: 'flex-start',
     maxWidth: undefined,
-    padding: 18,
+    paddingVertical: 0,
   },
   videoStage: {
     ...StyleSheet.absoluteFillObject,
@@ -695,97 +828,397 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
     justifyContent: 'center',
-    padding: 24,
+    paddingHorizontal: 28,
   },
-  remotePlaceholderText: {
+  remoteAvatar: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(59, 130, 246, 0.28)',
+    borderColor: 'rgba(255, 255, 255, 0.24)',
+    borderRadius: 52,
+    borderWidth: 2,
+    height: 104,
+    justifyContent: 'center',
+    width: 104,
+  },
+  remoteAvatarText: {
+    color: colors.white,
+    fontFamily: typography.bold,
+    fontSize: 36,
+  },
+  remoteName: {
     color: colors.white,
     fontFamily: typography.semibold,
-    fontSize: typeScale.sm,
-    lineHeight: 20,
-    marginTop: 12,
+    fontSize: typeScale.xl,
+    marginTop: 18,
     textAlign: 'center',
   },
-  localVideo: {
+  remoteStatus: {
+    color: '#CBD5E1',
+    fontFamily: typography.regular,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
+    marginTop: 6,
+    textAlign: 'center',
+  },
+  localPreview: {
     backgroundColor: '#111827',
-    borderColor: colors.white,
-    borderRadius: 18,
+    borderColor: 'rgba(255, 255, 255, 0.8)',
+    borderRadius: 16,
     borderWidth: 2,
     height: 150,
+    overflow: 'hidden',
     position: 'absolute',
     right: 18,
-    top: 54,
+    top: 108,
     width: 112,
   },
-  participantGrid: {
+  localPreviewCompact: {
+    height: 112,
+    right: 12,
+    top: 96,
+    width: 84,
+  },
+  localVideo: {
+    ...StyleSheet.absoluteFillObject,
+  },
+  localLabel: {
+    backgroundColor: 'rgba(2, 8, 23, 0.7)',
+    borderRadius: 8,
+    bottom: 6,
+    color: colors.white,
+    fontFamily: typography.semibold,
+    fontSize: 10,
+    left: 6,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
     position: 'absolute',
-    bottom: 18,
-    left: 18,
-    right: 18,
+  },
+  liveTopBar: {
+    flexDirection: 'row',
+    paddingHorizontal: 18,
+    paddingTop: 14,
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    zIndex: 3,
+  },
+  liveIdentity: {
+    flex: 1,
+    marginRight: 12,
+  },
+  liveBadge: {
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    backgroundColor: 'rgba(239, 68, 68, 0.22)',
+    borderRadius: radius.pill,
+    flexDirection: 'row',
+    gap: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+  },
+  liveDot: {
+    backgroundColor: '#EF4444',
+    borderRadius: 4,
+    height: 8,
+    width: 8,
+  },
+  liveBadgeText: {
+    color: '#FECACA',
+    fontFamily: typography.bold,
+    fontSize: 10,
+    letterSpacing: 1,
+  },
+  liveTitle: {
+    color: colors.white,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.lg,
+    lineHeight: 26,
+    marginTop: 8,
+  },
+  liveSubtitle: {
+    color: '#CBD5E1',
+    fontFamily: typography.regular,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
+  },
+  liveProperty: {
+    color: '#93C5FD',
+    fontFamily: typography.medium,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
+  },
+  topButton: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.14)',
+    borderRadius: 24,
+    height: 48,
+    justifyContent: 'center',
+    width: 48,
+  },
+  shareBanner: {
+    alignItems: 'center',
+    alignSelf: 'center',
+    backgroundColor: 'rgba(15, 23, 42, 0.9)',
+    borderRadius: radius.pill,
+    flexDirection: 'row',
+    gap: 8,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    position: 'absolute',
+    top: 92,
+    zIndex: 4,
+  },
+  shareBannerText: {
+    color: colors.white,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.xs,
+  },
+  shareCancelButton: {
+    marginLeft: 4,
+  },
+  shareCancelText: {
+    color: '#93C5FD',
+    fontFamily: typography.semibold,
+    fontSize: typeScale.xs,
+  },
+  liveFooter: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingHorizontal: 18,
+    paddingBottom: 6,
+    zIndex: 3,
+  },
+  statusRow: {
+    alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    gap: 8,
+    marginBottom: 10,
   },
-  participantTile: {
-    backgroundColor: 'rgba(15, 23, 42, 0.75)',
-    borderRadius: 14,
+  statusText: {
+    color: '#E2E8F0',
+    fontFamily: typography.semibold,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
+  },
+  routeButton: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.14)',
+    borderRadius: radius.pill,
+    flexDirection: 'row',
+    gap: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+  },
+  routeButtonText: {
+    color: colors.white,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.xs,
+  },
+  panel: {
+    backgroundColor: 'rgba(15, 23, 42, 0.94)',
+    borderColor: 'rgba(148, 163, 184, 0.3)',
+    borderRadius: 18,
     borderWidth: 1,
-    flex: 1,
-    paddingHorizontal: 8,
-    paddingVertical: 10,
-    alignItems: 'center',
-    position: 'relative',
+    marginBottom: 12,
+    maxHeight: 320,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
   },
-  primaryParticipantTile: {
-    borderWidth: 2,
+  panelTitle: {
+    color: colors.white,
+    fontFamily: typography.bold,
+    fontSize: typeScale.xs,
+    letterSpacing: 0.6,
+    marginBottom: 10,
+    textTransform: 'uppercase',
   },
-  removeParticipantButton: {
-    alignItems: 'center',
-    backgroundColor: 'rgba(239, 68, 68, 0.9)',
-    borderRadius: 12,
-    height: 22,
-    justifyContent: 'center',
-    position: 'absolute',
-    right: 6,
-    top: 6,
-    width: 22,
+  panelBody: {
+    color: '#CBD5E1',
+    fontFamily: typography.regular,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
   },
-  transferHostButton: {
+  participantRow: {
     alignItems: 'center',
-    backgroundColor: 'rgba(59, 130, 246, 0.9)',
-    borderRadius: 12,
-    height: 22,
-    justifyContent: 'center',
-    position: 'absolute',
-    left: 6,
-    top: 6,
-    width: 22,
+    borderTopColor: 'rgba(148, 163, 184, 0.2)',
+    borderTopWidth: 1,
+    flexDirection: 'row',
+    gap: 10,
+    paddingVertical: 8,
   },
   participantAvatar: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
     alignItems: 'center',
+    borderRadius: 17,
+    height: 34,
     justifyContent: 'center',
-    marginBottom: 6,
+    width: 34,
   },
   participantAvatarText: {
     color: colors.white,
     fontFamily: typography.bold,
-    fontSize: 11,
+    fontSize: 12,
+  },
+  participantDetails: {
+    flex: 1,
   },
   participantName: {
     color: colors.white,
     fontFamily: typography.semibold,
     fontSize: typeScale.xs,
     lineHeight: 18,
-    maxWidth: '100%',
   },
-  participantRole: {
-    color: 'rgba(255, 255, 255, 0.72)',
+  participantMeta: {
+    color: '#94A3B8',
     fontFamily: typography.regular,
+    fontSize: 11,
+    lineHeight: 16,
+  },
+  panelIconButton: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(59, 130, 246, 0.85)',
+    borderRadius: 12,
+    height: 28,
+    justifyContent: 'center',
+    width: 28,
+  },
+  removeIconButton: {
+    backgroundColor: 'rgba(239, 68, 68, 0.85)',
+  },
+  addParticipantRow: {
+    flexDirection: 'row',
+    gap: 8,
+    marginTop: 12,
+  },
+  addParticipantInput: {
+    backgroundColor: '#E2E8F0',
+    borderRadius: 10,
+    color: '#0F172A',
+    flex: 1,
+    fontFamily: typography.regular,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
+    paddingHorizontal: 12,
+    paddingVertical: 9,
+  },
+  addParticipantSubmit: {
+    alignItems: 'center',
+    backgroundColor: '#3B82F6',
+    borderRadius: 10,
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+  },
+  addParticipantSubmitText: {
+    color: colors.white,
+    fontFamily: typography.semibold,
     fontSize: typeScale.xs,
     lineHeight: 18,
-    marginTop: 2,
+  },
+  historyBlock: {
+    borderTopColor: 'rgba(148, 163, 184, 0.2)',
+    borderTopWidth: 1,
+    marginTop: 12,
+    paddingTop: 10,
+  },
+  historyRow: {
+    borderTopColor: 'rgba(148, 163, 184, 0.16)',
+    borderTopWidth: 1,
+    marginTop: 8,
+    paddingTop: 8,
+  },
+  historyAction: {
+    color: '#E2E8F0',
+    fontFamily: typography.semibold,
+    fontSize: typeScale.xs,
+    lineHeight: 18,
+    textTransform: 'capitalize',
+  },
+  historyMeta: {
+    color: '#94A3B8',
+    fontFamily: typography.regular,
+    fontSize: 11,
+    lineHeight: 16,
+  },
+  routeRow: {
+    alignItems: 'center',
+    borderRadius: 12,
+    flexDirection: 'row',
+    gap: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+  },
+  routeRowSelected: {
+    backgroundColor: 'rgba(59, 130, 246, 0.18)',
+  },
+  routeLabel: {
+    color: '#E2E8F0',
+    flex: 1,
+    fontFamily: typography.regular,
+    fontSize: typeScale.sm,
+  },
+  routeLabelSelected: {
+    color: colors.white,
+    fontFamily: typography.semibold,
+  },
+  controlBar: {
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  controlItem: {
+    alignItems: 'center',
+    minWidth: 52,
+    position: 'relative',
+  },
+  controlCircle: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.18)',
+    borderRadius: 30,
+    height: 58,
+    justifyContent: 'center',
+    width: 58,
+  },
+  controlCircleOff: {
+    backgroundColor: 'rgba(148, 163, 184, 0.35)',
+  },
+  controlCircleDanger: {
+    backgroundColor: colors.danger,
+  },
+  controlCircleDisabled: {
+    opacity: 0.5,
+  },
+  controlLabel: {
+    color: '#CBD5E1',
+    fontFamily: typography.medium,
+    fontSize: 10,
+    lineHeight: 14,
+    marginTop: 5,
+    maxWidth: 62,
+    textAlign: 'center',
+  },
+  controlBadge: {
+    backgroundColor: colors.blue,
+    borderRadius: 10,
+    left: 38,
+    minWidth: 18,
+    paddingHorizontal: 4,
+    paddingVertical: 1,
+    position: 'absolute',
+    top: -4,
+  },
+  controlBadgeText: {
+    color: colors.white,
+    fontFamily: typography.bold,
+    fontSize: 9,
+    textAlign: 'center',
+  },
+  cardBody: {
+    alignItems: 'center',
+    paddingHorizontal: 24,
+    paddingVertical: 24,
+    width: '100%',
   },
   iconWrap: {
     alignItems: 'center',
@@ -802,14 +1235,10 @@ const styles = StyleSheet.create({
     color: colors.blue,
     fontFamily: typography.bold,
     fontSize: typeScale.xs,
-    lineHeight: 18,
     letterSpacing: 0.8,
+    lineHeight: 18,
     marginTop: 18,
     textTransform: 'uppercase',
-  },
-  liveEyebrow: {
-    color: colors.gold,
-    marginTop: 'auto',
   },
   title: {
     color: colors.ink,
@@ -819,9 +1248,6 @@ const styles = StyleSheet.create({
     marginTop: 6,
     textAlign: 'center',
   },
-  liveTitle: {
-    color: colors.white,
-  },
   subtitle: {
     color: colors.text,
     fontFamily: typography.regular,
@@ -830,9 +1256,6 @@ const styles = StyleSheet.create({
     marginTop: 8,
     textAlign: 'center',
   },
-  liveSubtitle: {
-    color: '#CBD5E1',
-  },
   propertyText: {
     color: colors.muted,
     fontFamily: typography.semibold,
@@ -840,97 +1263,6 @@ const styles = StyleSheet.create({
     lineHeight: 18,
     marginTop: 7,
     textAlign: 'center',
-  },
-  livePropertyText: {
-    color: '#94A3B8',
-  },
-  addParticipantBlock: {
-    marginTop: 12,
-    width: '100%',
-  },
-  addParticipantButton: {
-    alignItems: 'center',
-    backgroundColor: '#4F46E5',
-    borderRadius: 12,
-    flexDirection: 'row',
-    gap: 8,
-    justifyContent: 'center',
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-  },
-  addParticipantButtonText: {
-    color: colors.white,
-    fontFamily: typography.semibold,
-    fontSize: typeScale.xs,
-    lineHeight: 18,
-  },
-  addParticipantRow: {
-    flexDirection: 'row',
-    gap: 8,
-    marginTop: 10,
-  },
-  addParticipantInput: {
-    backgroundColor: '#E2E8F0',
-    borderRadius: 10,
-    color: '#0F172A',
-    flex: 1,
-    fontFamily: typography.regular,
-    fontSize: typeScale.sm,
-    lineHeight: 20,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-  },
-  addParticipantSubmit: {
-    alignItems: 'center',
-    backgroundColor: '#0F172A',
-    borderRadius: 10,
-    justifyContent: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-  },
-  addParticipantSubmitText: {
-    color: colors.white,
-    fontFamily: typography.semibold,
-    fontSize: typeScale.xs,
-    lineHeight: 18,
-  },
-  historyCard: {
-    backgroundColor: 'rgba(15, 23, 42, 0.7)',
-    borderColor: 'rgba(148, 163, 184, 0.3)',
-    borderRadius: 12,
-    borderWidth: 1,
-    marginTop: 14,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    width: '100%',
-  },
-  historyTitle: {
-    color: colors.white,
-    fontFamily: typography.bold,
-    fontSize: typeScale.xs,
-    lineHeight: 18,
-    marginBottom: 8,
-    textTransform: 'uppercase',
-  },
-  historyRow: {
-    borderTopColor: 'rgba(148, 163, 184, 0.24)',
-    borderTopWidth: 1,
-    paddingTop: 8,
-    marginTop: 8,
-  },
-  historyAction: {
-    color: '#E2E8F0',
-    fontFamily: typography.semibold,
-    fontSize: typeScale.xs,
-    lineHeight: 18,
-    textTransform: 'capitalize',
-  },
-  historyMeta: {
-    color: '#CBD5E1',
-    fontFamily: typography.regular,
-    fontSize: typeScale.xs,
-    lineHeight: 18,
-    marginTop: 2,
   },
   actions: {
     alignItems: 'center',
@@ -951,12 +1283,6 @@ const styles = StyleSheet.create({
   },
   acceptButton: {
     backgroundColor: colors.success,
-  },
-  controlButton: {
-    backgroundColor: 'rgba(255, 255, 255, 0.18)',
-  },
-  controlButtonMuted: {
-    backgroundColor: colors.danger,
   },
   endButton: {
     alignItems: 'center',
@@ -981,6 +1307,7 @@ const styles = StyleSheet.create({
   closeButton: {
     backgroundColor: colors.surfaceBlue,
     borderRadius: radius.pill,
+    marginTop: 20,
     paddingHorizontal: 20,
     paddingVertical: 12,
   },

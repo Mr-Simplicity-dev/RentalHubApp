@@ -61720,5 +61720,805 @@
     "ha": "Nuna jihohi kaɗan",
     "yo": "Fi ìpínlẹ̀ díẹ̀ hàn",
     "ig": "Gosi steeti ole na ole"
+  },
+  "support call": {
+    "en": "Support call",
+    "fr": "Appel d’assistance",
+    "ar": "مكالمة دعم",
+    "ru": "Звонок в поддержку",
+    "zh": "支持通话",
+    "ha": "Kiran taimako",
+    "yo": "Pè títìlẹ́",
+    "ig": "Oku nkwado"
+  },
+  "virtual property tour": {
+    "en": "Virtual property tour",
+    "fr": "Visite virtuelle du bien",
+    "ar": "جولة افتراضية للعقار",
+    "ru": "Виртуальный осмотр недвижимости",
+    "zh": "虚拟房产看房",
+    "ha": "Yawon shakatawa na gidaje ta wayar tarho",
+    "yo": "Ìrìn-àjò ilé làti ọ̀nà tẹlifísàn",
+    "ig": "Njegharị ụlọ site na vidiyo"
+  },
+  "agent {value0}": {
+    "en": "Agent {value0}",
+    "fr": "Agent {value0}",
+    "ar": "الوكيل {value0}",
+    "ru": "Агент {value0}",
+    "zh": "经纪人 {value0}",
+    "ha": "Wakilin {value0}",
+    "yo": "Aṣojú {value0}",
+    "ig": "Onye nnọchi anya {value0}"
+  },
+  "main speaker": {
+    "en": "Main speaker",
+    "fr": "Intervenant principal",
+    "ar": "المتحدث الرئيسي",
+    "ru": "Основной говорящий",
+    "zh": "主要发言人",
+    "ha": "Babban mai magana",
+    "yo": "Olórí ẹni tó ń sọ̀rọ̀",
+    "ig": "Onye na-ekwu okwu ukwu"
+  },
+  "speaker": {
+    "en": "Speaker",
+    "fr": "Haut-parleur",
+    "ar": "مكبر الصوت",
+    "ru": "Громкоговоритель",
+    "zh": "扬声器",
+    "ha": "Kakafonin sauti",
+    "yo": "Agbọ̀rọ̀ ohùn",
+    "ig": "Igwe na-ekwusa olu"
+  },
+  "listener": {
+    "en": "Listener",
+    "fr": "Auditeur",
+    "ar": "مستمع",
+    "ru": "Слушатель",
+    "zh": "收听者",
+    "ha": "Mai sauraro",
+    "yo": "Ẹni tó ń gbọ́",
+    "ig": "Onye na-ege ntị"
+  },
+  "guest": {
+    "en": "Guest",
+    "fr": "Invité",
+    "ar": "ضيف",
+    "ru": "Гость",
+    "zh": "访客",
+    "ha": "Baƙo",
+    "yo": "Àlejò",
+    "ig": "Ọbịa"
+  },
+  "listening": {
+    "en": "Listening",
+    "fr": "Écoute en cours",
+    "ar": "يستمع",
+    "ru": "Слушает",
+    "zh": "正在收听",
+    "ha": "Yana sauraro",
+    "yo": "Ń gbọ́",
+    "ig": "Na-ege ntị"
+  },
+  "opening camera…": {
+    "en": "Opening camera…",
+    "fr": "Ouverture de la caméra…",
+    "ar": "جارٍ فتح الكاميرا…",
+    "ru": "Открываем камеру…",
+    "zh": "正在打开摄像头…",
+    "ha": "Ana buɗe kyamara…",
+    "yo": "Ń ṣí kámẹ́rà…",
+    "ig": "Na-emeghe igwefoto…"
+  },
+  "opening microphone…": {
+    "en": "Opening microphone…",
+    "fr": "Ouverture du microphone…",
+    "ar": "جارٍ فتح الميكروفون…",
+    "ru": "Открываем микрофон…",
+    "zh": "正在打开麦克风…",
+    "ha": "Ana buɗe makirifo…",
+    "yo": "Ń ṣí máìkíròfò…",
+    "ig": "Na-emeghe microphone…"
+  },
+  "connection failed": {
+    "en": "Connection failed",
+    "fr": "La connexion a échoué",
+    "ar": "فشل الاتصال",
+    "ru": "Не удалось подключиться",
+    "zh": "连接失败",
+    "ha": "Haɗin ya gaza",
+    "yo": "Asopọ̀ kùnà",
+    "ig": "Njikọ dara"
+  },
+  "video ready": {
+    "en": "Video ready",
+    "fr": "Vidéo prête",
+    "ar": "الفيديو جاهز",
+    "ru": "Видео готово",
+    "zh": "视频已就绪",
+    "ha": "Bidiyo ya shirya",
+    "yo": "Fídíò ti ṣẹ́tán",
+    "ig": "Vidiyo adịla njikere"
+  },
+  "ready": {
+    "en": "Ready",
+    "fr": "Prêt",
+    "ar": "جاهز",
+    "ru": "Готово",
+    "zh": "已就绪",
+    "ha": "Shirya",
+    "yo": "Ṣẹ́tán",
+    "ig": "Adịla njikere"
+  },
+  "earpiece": {
+    "en": "Earpiece",
+    "fr": "Écouteur",
+    "ar": "سماعة الأذن",
+    "ru": "Наушник",
+    "zh": "听筒",
+    "ha": "Kunne",
+    "yo": "Etílé",
+    "ig": "Nkwuchi ntị"
+  },
+  "bluetooth": {
+    "en": "Bluetooth",
+    "fr": "Bluetooth",
+    "ar": "بلوتوث",
+    "ru": "Bluetooth",
+    "zh": "蓝牙",
+    "ha": "Bluetooth",
+    "yo": "Bluetooth",
+    "ig": "Bluetooth"
+  },
+  "wired audio": {
+    "en": "Wired audio",
+    "fr": "Audio filaire",
+    "ar": "صوت سلكي",
+    "ru": "Проводной звук",
+    "zh": "有线音频",
+    "ha": "Sautin waya",
+    "yo": "Ohùn pẹ̀lú okùn",
+    "ig": "Olu site na waya"
+  },
+  "unknown route": {
+    "en": "Unknown route",
+    "fr": "Sortie inconnue",
+    "ar": "مسار غير معروف",
+    "ru": "Неизвестный выход",
+    "zh": "未知输出",
+    "ha": "Hanya da ba a sani ba",
+    "yo": "Ọ̀nà tí a kò mọ̀",
+    "ig": "Ụzọ a maghị"
+  },
+  "screen sharing stopped": {
+    "en": "Screen sharing stopped",
+    "fr": "Partage d’écran arrêté",
+    "ar": "توقف مشاركة الشاشة",
+    "ru": "Демонстрация экрана остановлена",
+    "zh": "屏幕共享已停止",
+    "ha": "Raba shanfari ya tsaya",
+    "yo": "Pínpín àgbèwé ti dúró",
+    "ig": "Nkesa ihu screen akwụsịla"
+  },
+  "your device ended the screen share.": {
+    "en": "Your device ended the screen share.",
+    "fr": "Votre appareil a arrêté le partage d’écran.",
+    "ar": "أنهى جهازك مشاركة الشاشة.",
+    "ru": "Ваше устройство остановило демонстрацию экрана.",
+    "zh": "您的设备已结束屏幕共享。",
+    "ha": "Na'urarka ta kawo ƙarshen raba shanfari.",
+    "yo": "Ẹ̀rọ rẹ ti parí pípìn àgbèwé.",
+    "ig": "Ngwaọrụ gị kwụsịrị nkesa ihu screen."
+  },
+  "{value0}-way support room": {
+    "en": "{value0}-way support room",
+    "fr": "Salle d’assistance à {value0} personnes",
+    "ar": "غرفة دعم بـ {value0} أشخاص",
+    "ru": "Комната поддержки на {value0} участников",
+    "zh": "{value0} 方支持房间",
+    "ha": "Dakin taimako na mutane {value0}",
+    "yo": "Yàrá títìlẹ́ fún ènìyàn {value0}",
+    "ig": "Ụlọ nkwado maka mmadụ {value0}"
+  },
+  "stop screen sharing first": {
+    "en": "Stop screen sharing first",
+    "fr": "Arrêtez d’abord le partage d’écran",
+    "ar": "أوقف مشاركة الشاشة أولاً",
+    "ru": "Сначала остановите демонстрацию экрана",
+    "zh": "请先停止屏幕共享",
+    "ha": "A tsaya raba shanfari da farko",
+    "yo": "Dúró pípìn àgbèwé kọ́kọ́",
+    "ig": "Kwụsị nkesa ihu screen buru ụzọ"
+  },
+  "could not change video": {
+    "en": "Could not change video",
+    "fr": "Impossible de modifier la vidéo",
+    "ar": "تعذّر تغيير الفيديو",
+    "ru": "Не удалось изменить видео",
+    "zh": "无法更改视频",
+    "ha": "An kasa canza bidiyo",
+    "yo": "A kò lè yi fídíò padà",
+    "ig": "Enweghị ike ịgbanwe vidiyo"
+  },
+  "could not switch camera": {
+    "en": "Could not switch camera",
+    "fr": "Impossible de changer de caméra",
+    "ar": "تعذّر تبديل الكاميرا",
+    "ru": "Не удалось переключить камеру",
+    "zh": "无法切换摄像头",
+    "ha": "An kasa sauya kyamara",
+    "yo": "A kò lè yí kámẹ́rà padà",
+    "ig": "Enweghị ike ịtụgharị igwefoto"
+  },
+  "could not stop screen sharing": {
+    "en": "Could not stop screen sharing",
+    "fr": "Impossible d’arrêter le partage d’écran",
+    "ar": "تعذّر إيقاف مشاركة الشاشة",
+    "ru": "Не удалось остановить демонстрацию экрана",
+    "zh": "无法停止屏幕共享",
+    "ha": "An kasa dakatar da raba shanfari",
+    "yo": "A kò lè dúró pípìn àgbèwé",
+    "ig": "Enweghị ike ịkwụsị nkesa ihu screen"
+  },
+  "screen sharing is unavailable in this app version.": {
+    "en": "Screen sharing is unavailable in this app version.",
+    "fr": "Le partage d’écran n’est pas disponible dans cette version.",
+    "ar": "مشاركة الشاشة غير متاحة في هذه النسخة.",
+    "ru": "Демонстрация экрана недоступна в этой версии.",
+    "zh": "此版本不支持屏幕共享。",
+    "ha": "Raba shanfari ba ya samuwa a wannan sigar.",
+    "yo": "Pípìn àgbèwé kò sí nínú ẹ̀dà yìí.",
+    "ig": "Nkesa ihu screen adịghị na nsụgharị a."
+  },
+  "screen sharing did not start": {
+    "en": "Screen sharing did not start",
+    "fr": "Le partage d’écran n’a pas démarré",
+    "ar": "لم تبدأ مشاركة الشاشة",
+    "ru": "Демонстрация экрана не началась",
+    "zh": "屏幕共享未开始",
+    "ha": "Raba shanfari bai fara ba",
+    "yo": "Pípìn àgbèwé kò bẹ̀rẹ̀",
+    "ig": "Nkesa ihu screen ebighị"
+  },
+  "choose amana rentalhub screen share in the picker, then try again.": {
+    "en": "Choose Amana RentalHub Screen Share in the picker, then try again.",
+    "fr": "Choisissez Amana RentalHub Screen Share dans le sélecteur, puis réessayez.",
+    "ar": "اختر Amana RentalHub Screen Share من القائمة، ثم حاول مرة أخرى.",
+    "ru": "Выберите Amana RentalHub Screen Share в списке, затем попробуйте снова.",
+    "zh": "在选择器中选择 Amana RentalHub Screen Share，然后重试。",
+    "ha": "Zaɓi Amana RentalHub Screen Share a cikin jerin, sannan ka sake gwadawa.",
+    "yo": "Yan Amana RentalHub Screen Share nínú àṣàyàn, kí o sì tún gbìyànjú.",
+    "ig": "Họrọ Amana RentalHub Screen Share na nhọrọ, wee nwaa ọzọ."
+  },
+  "screen sharing was cancelled": {
+    "en": "Screen sharing was cancelled",
+    "fr": "Le partage d’écran a été annulé",
+    "ar": "تم إلغاء مشاركة الشاشة",
+    "ru": "Демонстрация экрана отменена",
+    "zh": "屏幕共享已取消",
+    "ha": "An soke raba shanfari",
+    "yo": "Wọ́n fagilé pípìn àgbèwé",
+    "ig": "Kagbuola nkesa ihu screen"
+  },
+  "could not start screen sharing": {
+    "en": "Could not start screen sharing",
+    "fr": "Impossible de démarrer le partage d’écran",
+    "ar": "تعذّر بدء مشاركة الشاشة",
+    "ru": "Не удалось начать демонстрацию экрана",
+    "zh": "无法开始屏幕共享",
+    "ha": "An kasa fara raba shanfari",
+    "yo": "A kò lè bẹ̀rẹ̀ pípìn àgbèwé",
+    "ig": "Enweghị ike ịmalite nkesa ihu screen"
+  },
+  "could not change audio output": {
+    "en": "Could not change audio output",
+    "fr": "Impossible de modifier la sortie audio",
+    "ar": "تعذّر تغيير مخرج الصوت",
+    "ru": "Не удалось изменить звуковой выход",
+    "zh": "无法更改音频输出",
+    "ha": "An kasa canza fitar sauti",
+    "yo": "A kò lè yi ẹ̀gbẹ́ ohùn padà",
+    "ig": "Enweghị ike ịgbanwe ebe olu na-apụta"
+  },
+  "people in this call": {
+    "en": "People in this call",
+    "fr": "Personnes dans cet appel",
+    "ar": "الأشخاص في هذه المكالمة",
+    "ru": "Участники этого звонка",
+    "zh": "此通话中的人员",
+    "ha": "Mutane a cikin wannan kiran",
+    "yo": "Àwọn ènìyàn nínú pè yìí",
+    "ig": "Ndị nọ na oku a"
+  },
+  "make host": {
+    "en": "Make host",
+    "fr": "Désigner comme hôte",
+    "ar": "تعيين كمضيف",
+    "ru": "Сделать ведущим",
+    "zh": "设为主持人",
+    "ha": "Sanya shugaba",
+    "yo": "Ṣe ẹni àlejò",
+    "ig": "Mee ka ọ bụrụ onye isi"
+  },
+  "remove participant": {
+    "en": "Remove participant",
+    "fr": "Retirer le participant",
+    "ar": "إزالة المشارك",
+    "ru": "Удалить участника",
+    "zh": "移除参与者",
+    "ha": "Cire mahalicci",
+    "yo": "Yọ ẹni tó ń kópa",
+    "ig": "Wepụ onye sonyeere"
+  },
+  "audio output": {
+    "en": "Audio output",
+    "fr": "Sortie audio",
+    "ar": "مخرج الصوت",
+    "ru": "Звуковой выход",
+    "zh": "音频输出",
+    "ha": "Fitar sauti",
+    "yo": "Ẹ̀gbẹ́ ohùn",
+    "ig": "Ebe olu na-apụta"
+  },
+  "audio routing is not available on this device.": {
+    "en": "Audio routing is not available on this device.",
+    "fr": "Le choix de la sortie audio n’est pas disponible sur cet appareil.",
+    "ar": "توجيه الصوت غير متاح على هذا الجهاز.",
+    "ru": "Выбор звукового выхода недоступен на этом устройстве.",
+    "zh": "此设备不支持音频路由。",
+    "ha": "Jagorar sauti ba ta samuwa a wannan na'urar.",
+    "yo": "Ìṣàkóso ẹ̀gbẹ́ ohùn kò sí lórí ẹ̀rọ yìí.",
+    "ig": "Nhazi ebe olu na-apụta adịghị na ngwaọrụ a."
+  },
+  "live": {
+    "en": "LIVE",
+    "fr": "EN DIRECT",
+    "ar": "مباشر",
+    "ru": "ПО ПРЯМОЙ",
+    "zh": "直播中",
+    "ha": "KAI-DAYA",
+    "yo": "LÁẸ̀Ẹ̀",
+    "ig": "N'oge a"
+  },
+  "{value0} people connected": {
+    "en": "{value0} people connected",
+    "fr": "{value0} personnes connectées",
+    "ar": "اتصل {value0} أشخاص",
+    "ru": "Подключено участников: {value0}",
+    "zh": "已连接 {value0} 人",
+    "ha": "Mutane {value0} sun haɗu",
+    "yo": "Àwọn ènìyàn {value0} ti sopọ̀",
+    "ig": "Mmadụ {value0} ejikọrọ"
+  },
+  "starting screen share…": {
+    "en": "Starting screen share…",
+    "fr": "Démarrage du partage d’écran…",
+    "ar": "جارٍ بدء مشاركة الشاشة…",
+    "ru": "Начинаем демонстрацию экрана…",
+    "zh": "正在开始屏幕共享…",
+    "ha": "Ana fara raba shanfari…",
+    "yo": "Ń bẹ̀rẹ̀ pípìn àgbèwé…",
+    "ig": "Na-amalite nkesa ihu screen…"
+  },
+  "you are sharing your screen": {
+    "en": "You are sharing your screen",
+    "fr": "Vous partagez votre écran",
+    "ar": "أنت تشارك شاشتك",
+    "ru": "Вы демонстрируете экран",
+    "zh": "您正在共享屏幕",
+    "ha": "Kuna raba shanfarin ku",
+    "yo": "O ń pín àgbèwé rẹ",
+    "ig": "Ị na-ekekọrịta ihu screen gị"
+  },
+  "add video": {
+    "en": "Add video",
+    "fr": "Ajouter la vidéo",
+    "ar": "إضافة فيديو",
+    "ru": "Добавить видео",
+    "zh": "添加视频",
+    "ha": "Ƙara bidiyo",
+    "yo": "Fi fídíò kún",
+    "ig": "Tinye vidiyo"
+  },
+  "flip": {
+    "en": "Flip",
+    "fr": "Retourner",
+    "ar": "تبديل",
+    "ru": "Перевернуть",
+    "zh": "翻转",
+    "ha": "Juyawa",
+    "yo": "Yí padà",
+    "ig": "Tụgharịa"
+  },
+  "cancel share": {
+    "en": "Cancel share",
+    "fr": "Annuler le partage",
+    "ar": "إلغاء المشاركة",
+    "ru": "Отменить показ",
+    "zh": "取消共享",
+    "ha": "Soke raba",
+    "yo": "Fagilé pípìn",
+    "ig": "Kagbuo nkesa"
+  },
+  "end": {
+    "en": "End",
+    "fr": "Terminer",
+    "ar": "إنهاء",
+    "ru": "Завершить",
+    "zh": "结束",
+    "ha": "Ƙare",
+    "yo": "Parí",
+    "ig": "Mechie"
+  },
+  "could not end call": {
+    "en": "Could not end call",
+    "fr": "Impossible de terminer l’appel",
+    "ar": "تعذّر إنهاء المكالمة",
+    "ru": "Не удалось завершить звонок",
+    "zh": "无法结束通话",
+    "ha": "An kasa kawo kiran ƙarshe",
+    "yo": "A kò lè parí pè",
+    "ig": "Enweghị ike ịmechi oku"
+  },
+  "call ended": {
+    "en": "Call ended",
+    "fr": "Appel terminé",
+    "ar": "انتهت المكالمة",
+    "ru": "Звонок завершён",
+    "zh": "通话已结束",
+    "ha": "Kiran ya ƙare",
+    "yo": "Pè ti parí",
+    "ig": "Oku mechiela"
+  },
+  "incoming call": {
+    "en": "INCOMING CALL",
+    "fr": "APPEL ENTRANT",
+    "ar": "مكالمة واردة",
+    "ru": "ВХОДЯЩИЙ ЗВОНОК",
+    "zh": "来电",
+    "ha": "KIRIN SHIGOWA",
+    "yo": "PÈ WÍWỌ́LÉ",
+    "ig": "OKU NA-ABỊA"
+  },
+  "could not reject call": {
+    "en": "Could not reject call",
+    "fr": "Impossible de refuser l’appel",
+    "ar": "تعذّر رفض المكالمة",
+    "ru": "Не удалось отклонить звонок",
+    "zh": "无法拒接",
+    "ha": "An kasa ƙi kiran",
+    "yo": "A kò lè kọ̀ pè",
+    "ig": "Enweghị ike ịjụ oku"
+  },
+  "could not accept call": {
+    "en": "Could not accept call",
+    "fr": "Impossible d’accepter l’appel",
+    "ar": "تعذّر قبول المكالمة",
+    "ru": "Не удалось принять звонок",
+    "zh": "无法接听",
+    "ha": "An kasa karɓar kiran",
+    "yo": "A kò lè gba pè",
+    "ig": "Enweghị ike ịnara oku"
+  },
+  "could not cancel call": {
+    "en": "Could not cancel call",
+    "fr": "Impossible d’annuler l’appel",
+    "ar": "تعذّر إلغاء المكالمة",
+    "ru": "Не удалось отменить звонок",
+    "zh": "无法取消通话",
+    "ha": "An kasa soke kiran",
+    "yo": "A kò lè fagilé pè",
+    "ig": "Enweghị ike ịkagbuo oku"
+  },
+  "microphone required": {
+    "en": "Microphone required",
+    "fr": "Microphone requis",
+    "ar": "الميكروفون مطلوب",
+    "ru": "Требуется микрофон",
+    "zh": "需要麦克风",
+    "ha": "Ana buƙatar makirifo",
+    "yo": "Máìkíròfò nílàti wà",
+    "ig": "Achọrọ microphone"
+  },
+  "allow microphone permission in settings to place voice calls.": {
+    "en": "Allow microphone permission in Settings to place voice calls.",
+    "fr": "Autorisez l’accès au microphone dans les réglages pour passer des appels vocaux.",
+    "ar": "اسمح بالإذن باستخدام الميكروفون في الإعدادات لإجراء المكالمات الصوتية.",
+    "ru": "Разрешите доступ к микрофону в настройках для голосовых звонков.",
+    "zh": "请在设置中允许麦克风权限以拨打语音电话。",
+    "ha": "Ba da izinin makirifo a Saituna don yin kiran murya.",
+    "yo": "Fún láǹfààní máìkíròfò ní Ètò láti pe àwọn ipe ohùn.",
+    "ig": "Nye ikike microphone na Ntọala iji kpọọ oku olu."
+  },
+  "call platform users": {
+    "en": "Call platform users",
+    "fr": "Appeler les utilisateurs de la plateforme",
+    "ar": "اتصال بمستخدمي المنصة",
+    "ru": "Звонить пользователям платформы",
+    "zh": "呼叫平台用户",
+    "ha": "Kira masu amfani da dandamali",
+    "yo": "Pe àwọn olumulo pẹpẹ",
+    "ig": "Kpọọ ndị ọrụ ikpo okwu"
+  },
+  "platform call directory": {
+    "en": "Platform Call Directory",
+    "fr": "Répertoire d’appels de la plateforme",
+    "ar": "دليل مكالمات المنصة",
+    "ru": "Каталог звонков платформы",
+    "zh": "平台通话目录",
+    "ha": "Littafin kiran dandamali",
+    "yo": "Àtòjọ ipe pẹpẹ",
+    "ig": "Ndepụta oku ikpo okwu"
+  },
+  "call any tenant, landlord, agent, lawyer, or admin": {
+    "en": "Call any Tenant, Landlord, Agent, Lawyer, or Admin",
+    "fr": "Appelez un locataire, un propriétaire, un agent, un avocat ou un administrateur",
+    "ar": "اتصل بأي مستأجر أو مالك أو وكيل أو محامٍ أو مسؤول",
+    "ru": "Позвоните любому арендатору, владельцу, агенту, юристу или администратору",
+    "zh": "呼叫任意租客、房东、经纪人、律师或管理员",
+    "ha": "Kira kowane mai haya, mai gida, wakili, lauya, ko mai gudanarwa",
+    "yo": "Pe ànyí àgbẹ̀, ẹni tó ní ilé, aṣojú, amòfin, tàbí alábòójútó",
+    "ig": "Kpọọ onye ọ bụla na-akwụ ụgwọ, onye nwe ụlọ, onye nnọchi anya, onye ọka iwu, ma ọ bụ onye nchịkwa"
+  },
+  "call admins and team": {
+    "en": "Call admins and team",
+    "fr": "Appeler les administrateurs et l’équipe",
+    "ar": "اتصل بالمسؤولين والفريق",
+    "ru": "Звонить администраторам и команде",
+    "zh": "呼叫管理员和团队",
+    "ha": "Kira masu gudanarwa da ƙungiya",
+    "yo": "Pe àwọn alábòójútó àti ẹgbẹ́",
+    "ig": "Kpọọ ndị nchịkwa na otu"
+  },
+  "admin & team call directory": {
+    "en": "Admin & Team Call Directory",
+    "fr": "Répertoire d’appels administrateurs et équipe",
+    "ar": "دليل مكالمات المسؤولين والفريق",
+    "ru": "Каталог звонков администраторов и команды",
+    "zh": "管理员与团队通话目录",
+    "ha": "Littafin kiran masu gudanarwa da ƙungiya",
+    "yo": "Àtòjọ ipe àwọn alábòójútó àti ẹgbẹ́",
+    "ig": "Ndepụta oku ndị nchịkwa na otu"
+  },
+  "call admins and team members below you": {
+    "en": "Call admins and team members below you",
+    "fr": "Appelez les administrateurs et les membres de votre équipe",
+    "ar": "اتصل بالمسؤولين وأعضاء فريقك الأقل رتبة",
+    "ru": "Звонить администраторам и сотрудникам вашей команды",
+    "zh": "呼叫管理员和下属团队成员",
+    "ha": "Kira masu gudanarwa da mamban ƙungiyar da ke ƙarƙashinka",
+    "yo": "Pe àwọn alábòójútó àti àwọn ọmọ ẹgbẹ́ rẹ",
+    "ig": "Kpọọ ndị nchịkwa na ndị otu nọ n'okpuru gị"
+  },
+  "support and supervisor calls": {
+    "en": "Support and supervisor calls",
+    "fr": "Appels au support et au superviseur",
+    "ar": "مكالمات الدعم والمشرف",
+    "ru": "Звонки в поддержку и супервайзеру",
+    "zh": "支持与主管通话",
+    "ha": "Kiran taimako da mai kula",
+    "yo": "Àwọn ipe títìlẹ́ àti alábòójútó",
+    "ig": "Oku nkwado na onye nlekọta"
+  },
+  "support & supervisor": {
+    "en": "Support & Supervisor",
+    "fr": "Support et superviseur",
+    "ar": "الدعم والمشرف",
+    "ru": "Поддержка и супервайзер",
+    "zh": "支持与主管",
+    "ha": "Taimako da Mai kula",
+    "yo": "Títìlẹ́ àti Alábòójútó",
+    "ig": "Nkwado na Onye nlekọta"
+  },
+  "chat or call support, or call your supervisor": {
+    "en": "Chat or call Support, or call your supervisor",
+    "fr": "Discutez avec le support, appelez le support ou votre superviseur",
+    "ar": "تحدث مع الدعم أو اتصل به أو اتصل بمشرفك",
+    "ru": "Напишите в поддержку, позвоните в поддержку или супервайзеру",
+    "zh": "与支持人员聊天、致电支持人员或致电主管",
+    "ha": "Yi hira da Taimako, kira Taimako, ko kira mai kula",
+    "yo": "Bá títìlẹ́ sọ̀rọ̀, pe títìlẹ́, tàbí pe alábòójútó rẹ",
+    "ig": "Soro nkwado kparịta ụka, kpọọ nkwado, ma ọ bụ kpọọ onye nlekọta gị"
+  },
+  "chat with support or place an instant voice call": {
+    "en": "Chat with Support or place an instant voice call",
+    "fr": "Discutez avec le support ou passez un appel vocal immédiat",
+    "ar": "تحدث مع الدعم أو أجرِ مكالمة صوتية فورية",
+    "ru": "Напишите в поддержку или совершите мгновенный голосовой звонок",
+    "zh": "与支持人员聊天或发起即时语音通话",
+    "ha": "Yi hira da Taimako ko fara kiran murya nan take",
+    "yo": "Bá títìlẹ́ sọ̀rọ̀ tàbí bẹ̀rẹ̀ ipe ohùn lẹ́sẹ̀kẹsẹ̀",
+    "ig": "Soro nkwado kparịta ụka ma ọ bụ malite oku olu ozugbo"
+  },
+  "connecting voice line": {
+    "en": "Connecting voice line",
+    "fr": "Connexion de la ligne vocale",
+    "ar": "جارٍ الاتصال بالخط الصوتي",
+    "ru": "Подключение голосовой линии",
+    "zh": "正在连接语音线路",
+    "ha": "Ana haɗa layin murya",
+    "yo": "Ń so pọ̀ mọ́ líìn ohùn",
+    "ig": "Na-ejikọ ahịrị olu"
+  },
+  "please wait a moment and try calling support again.": {
+    "en": "Please wait a moment and try calling Support again.",
+    "fr": "Veuillez patienter puis réessayer d’appeler le support.",
+    "ar": "يرجى الانتظار قليلاً ثم المحاولة مرة أخرى.",
+    "ru": "Подождите немного и попробуйте позвонить в поддержку снова.",
+    "zh": "请稍候，然后再次尝试致电支持人员。",
+    "ha": "Ka jira ɗan lokaci ka sake kiran Taimako.",
+    "yo": "Jọ̀wọ́ dúró díẹ̀, kí o sì tún pe títìlẹ́.",
+    "ig": "Biko chere ntakịrị wee kpọọ nkwado ọzọ."
+  },
+  "all support agents are currently busy or offline. try live chat instead.": {
+    "en": "All support agents are currently busy or offline. Try live chat instead.",
+    "fr": "Tous les agents du support sont occupés ou hors ligne. Utilisez le chat en direct.",
+    "ar": "جميع وكلاء الدعم مشغولون أو غير متصلين. جرّب الدردشة المباشرة.",
+    "ru": "Все агенты поддержки заняты или не в сети. Попробуйте онлайн-чат.",
+    "zh": "所有支持人员当前都忙或离线。请改用在线聊天。",
+    "ha": "Duk wakilan taimako suna aiki ko kuma ba su nan. Yi amfani da hira kai tsaye.",
+    "yo": "Gbogbo àwọn aṣojú títìlẹ́ nísinsin yìí n ṣiṣẹ́ tàbí wọn kò sí. Lo ọ̀rọ̀ ayé lẹ́sẹ̀kẹsẹ̀.",
+    "ig": "Ndị ọrụ nkwado niile na-arụ ọrụ ma ọ bụ anọghị. Nwaa nkata ndụ."
+  },
+  "realtime voice connection is not ready yet.": {
+    "en": "Realtime voice connection is not ready yet.",
+    "fr": "La connexion vocale en temps réel n’est pas encore prête.",
+    "ar": "اتصال الصوت في الوقت الفعلي ليس جاهزًا بعد.",
+    "ru": "Голосовое соединение в реальном времени ещё не готово.",
+    "zh": "实时语音连接尚未就绪。",
+    "ha": "Haɗin murya na lokaci-lokaci bai shirya ba tukuna.",
+    "yo": "Asopọ̀ ohùn ayé kò tíì ṣetán.",
+    "ig": "Njikọ olu oge na-adịghị adị yet."
+  },
+  "online now": {
+    "en": "Online now",
+    "fr": "En ligne maintenant",
+    "ar": "متصل الآن",
+    "ru": "Сейчас онлайн",
+    "zh": "当前在线",
+    "ha": "Yana kan layi yanzu",
+    "yo": "Ó wà lórí ayé báyìí",
+    "ig": "Ọ nọ na njikọ ugbu a"
+  },
+  "calling…": {
+    "en": "Calling…",
+    "fr": "Appel…",
+    "ar": "جارٍ الاتصال…",
+    "ru": "Звонок…",
+    "zh": "正在呼叫…",
+    "ha": "Ana kira…",
+    "yo": "Ń pe…",
+    "ig": "Na-akpọ…"
+  },
+  "supervisor": {
+    "en": "Supervisor",
+    "fr": "Superviseur",
+    "ar": "المشرف",
+    "ru": "Супервайзер",
+    "zh": "主管",
+    "ha": "Mai kula",
+    "yo": "Alábòójútó",
+    "ig": "Onye nlekọta"
+  },
+  "connecting to support…": {
+    "en": "Connecting to Support…",
+    "fr": "Connexion au support…",
+    "ar": "جارٍ الاتصال بالدعم…",
+    "ru": "Подключение к поддержке…",
+    "zh": "正在连接支持人员…",
+    "ha": "Ana haɗawa da Taimako…",
+    "yo": "Ń so pọ̀ mọ́ títìlẹ́…",
+    "ig": "Na-ejikọ na nkwado…"
+  },
+  "search name, role, state, or lga…": {
+    "en": "Search name, role, state, or LGA…",
+    "fr": "Rechercher un nom, un rôle, un État ou une LGA…",
+    "ar": "ابحث بالاسم أو الدور أو الولاية أو منطقة الحكم المحلي…",
+    "ru": "Поиск по имени, роли, штату или LGA…",
+    "zh": "搜索姓名、角色、州或地方政府区域…",
+    "ha": "Nemi suna, matsayi, jiha, ko LGA…",
+    "yo": "Wá orúkọ, ipa, ìpínlẹ̀, tàbí LGA…",
+    "ig": "Chọọ aha, ọrụ, steeti, ma ọ bụ LGA…"
+  },
+  "refresh directory": {
+    "en": "Refresh directory",
+    "fr": "Actualiser le répertoire",
+    "ar": "تحديث الدليل",
+    "ru": "Обновить каталог",
+    "zh": "刷新目录",
+    "ha": "Sabunta littafin",
+    "yo": "Tún àtòjọ gbé",
+    "ig": "Melite ndepụta"
+  },
+  "loading directory…": {
+    "en": "Loading directory…",
+    "fr": "Chargement du répertoire…",
+    "ar": "جارٍ تحميل الدليل…",
+    "ru": "Загрузка каталога…",
+    "zh": "正在加载目录…",
+    "ha": "Ana loda littafin…",
+    "yo": "Ń gbà àtòjọ…",
+    "ig": "Na-ebunye ndepụta…"
+  },
+  "no matching users found": {
+    "en": "No matching users found",
+    "fr": "Aucun utilisateur correspondant",
+    "ar": "لم يتم العثور على مستخدمين مطابقين",
+    "ru": "Совпадений не найдено",
+    "zh": "未找到匹配的用户",
+    "ha": "Babu masu amfani da suka dace",
+    "yo": "Kò sí olumulo tó bára mu",
+    "ig": "Enweghị ndị ọrụ dabara adaba"
+  },
+  "try clearing your search or turning off the online filter.": {
+    "en": "Try clearing your search or turning off the Online filter.",
+    "fr": "Essayez d’effacer la recherche ou de désactiver le filtre En ligne.",
+    "ar": "جرّب مسح البحث أو إيقاف فلتر متصل.",
+    "ru": "Очистите поиск или отключите фильтр «Онлайн».",
+    "zh": "请清除搜索或关闭在线筛选。",
+    "ha": "Gwada share bincikenka ko kashe tacewar Kan layi.",
+    "yo": "Gbìyànjú láti pa àwọn tó wà lórí ayé kúrò.",
+    "ig": "Gwaa ihichapụ ọchụchọ ma ọ bụ gbanyụọ nzacha Ndị nọ na njikọ."
+  },
+  "chat with support": {
+    "en": "Chat with Support",
+    "fr": "Discuter avec le support",
+    "ar": "الدردشة مع الدعم",
+    "ru": "Чат с поддержкой",
+    "zh": "与支持人员聊天",
+    "ha": "Yi hira da Taimako",
+    "yo": "Bá títìlẹ́ sọ̀rọ̀",
+    "ig": "Kparịta ụka na nkwado"
+  },
+  "open live support messaging and tickets": {
+    "en": "Open live support messaging and tickets",
+    "fr": "Ouvrir la messagerie et les tickets du support",
+    "ar": "فتح رسائل الدعم المباشرة والتذاكر",
+    "ru": "Открыть чат и заявки поддержки",
+    "zh": "打开在线支持消息和工单",
+    "ha": "Buɗe saƙonnin taimako kai tsaye da tikiti",
+    "yo": "Ṣí àwọn ọ̀rọ̀ títìlẹ́ àti àwọn tikẹ̀tì",
+    "ig": "Mepee ozi nkwado na tiketi"
+  },
+  "switch to support chat": {
+    "en": "Switch to Support Chat",
+    "fr": "Passer au chat du support",
+    "ar": "التبديل إلى دردشة الدعم",
+    "ru": "Перейти в чат поддержки",
+    "zh": "切换到支持聊天",
+    "ha": "Canja zuwa Hirar Taimako",
+    "yo": "Yi padà sí Ọ̀rọ̀ Títìlẹ́",
+    "ig": "Gbanwee gaa na nkata nkwado"
+  },
+  "calling is unavailable in this app version.": {
+    "en": "Calling is unavailable in this app version.",
+    "fr": "Les appels ne sont pas disponibles dans cette version de l’application.",
+    "ar": "المكالمات غير متاحة في هذه النسخة من التطبيق.",
+    "ru": "Звонки недоступны в этой версии приложения.",
+    "zh": "此版本应用不支持通话。",
+    "ha": "Kiran ba ya samuwa a wannan sigar manhaja.",
+    "yo": "Ọ̀pẹ̀ kò sí nínú ẹ̀dá àpụ̀pọ̀ yìí.",
+    "ig": "Oku adịghị na ụdị ngwa a."
+  },
+  "camera capture was not started.": {
+    "en": "Camera capture was not started.",
+    "fr": "La capture de la caméra n’a pas démarré.",
+    "ar": "لم يبدأ التقاط الكاميرا.",
+    "ru": "Захват с камеры не был запущен.",
+    "zh": "摄像头拍摄未启动。",
+    "ha": "Ba a fara ɗaukar hoto da kyamara ba.",
+    "yo": "A kò bẹ̀rẹ̀ lílo kámẹ́rà.",
+    "ig": "Ebidochaghị ijide onyonyo site na igwefoto."
+  },
+  "the call connection service is unavailable. please try again shortly.": {
+    "en": "The call connection service is unavailable. Please try again shortly.",
+    "fr": "Le service de connexion aux appels est indisponible. Veuillez réessayer dans un instant.",
+    "ar": "خدمة اتصال المكالمات غير متاحة. يرجى المحاولة بعد قليل.",
+    "ru": "Сервис подключения звонков недоступен. Повторите попытку позже.",
+    "zh": "通话连接服务不可用。请稍后重试。",
+    "ha": "Sabis ɗin haɗin kira ba ya samuwa. Ka sake gwadawa daga baya.",
+    "yo": "Iṣẹ́ asopọ̀ ipe kò sí. Jọ̀wọ́ tún gbìyànjú lẹ́yìn díẹ̀.",
+    "ig": "Ọrụ njikọ oku adịghị. Biko nwaa ọzọ n'oge na-adịghị anya."
   }
 }

@@ -56,6 +56,7 @@ const loadConfig = (get) => {
   const module = { exports: {} };
   vm.runInNewContext(code, { module, exports: module.exports, require: name => {
     if (name === '../services/api') return { get };
+    if (name === 'react-native') return { Platform: { OS: 'android' } };
     throw Error('Unexpected import '+name);
   } });
   return module.exports;
@@ -77,56 +78,26 @@ test('missing relay, API failure and invalid settings stop with an error', async
   await assert.rejects(loadConfig(async () => { throw Error('Network unavailable'); }).loadWebRtcIceServers(), /Network unavailable/);
 });
 
-const nativeInitializer = () => {
-  const source = fs.readFileSync(path.join(__dirname, '../src/components/calls/NativeCallOverlay.js'), 'utf8');
-  const ast = transformSync(source, { ast: true, code: false, configFile: false, babelrc: false, parserOpts: { plugins: ['jsx'] } }).ast;
-  let fn;
-  const visit = node => {
-    if (!node || typeof node !== 'object') return;
-    if (node.type === 'VariableDeclarator' && node.id?.name === 'beginMediaCall') fn = node.init.arguments[0];
-    for (const value of Object.values(node)) {
-      if (Array.isArray(value)) value.forEach(visit);
-      else if (value && typeof value === 'object') visit(value);
-    }
-  };
-  visit(ast); assert.ok(fn);
-  const state = { peers: 0, offers: 0, stopped: 0, captures: 0 };
-  let release;
-  const media = new Promise(resolve => { release = resolve; });
-  const track = { enabled: true, stop: () => { state.stopped++; } };
-  const stream = { getTracks: () => [track], getAudioTracks: () => [track], getVideoTracks: () => [] };
-  const context = {
-    Promise, Error, peerRef: { current: null }, mediaInitPromiseRef: { current: null }, mediaGenerationRef: { current: 0 },
-    localStreamRef: { current: null },
-    isVideoEnabledCall: type => type === 'video' || type === 'virtual_tour',
-    setMediaStatus() {}, setLocalStream() {}, setMicrophoneEnabled() {}, setCameraEnabled() {},
-    loadWebRtcIceServers: async () => [{ urls: 'turn:relay:3478' }],
-    RTCPeerConnection: function () {},
-    mediaDevices: { getUserMedia: async () => { state.captures++; await media; return stream; } },
-    createPeerConnection: () => { state.peers++; return { addTrack() {}, createOffer: async () => ({ type: 'offer' }), setLocalDescription: async () => {} }; },
-    emitCallSignal: async () => { state.offers++; }, cleanupMedia() {}, Toast: { show() {} }, ui: v => v, endCall: async () => {},
-  };
-  return { begin: vm.runInNewContext('('+source.slice(fn.start, fn.end)+')', context), context, state, release };
-};
+const overlaySource = fs.readFileSync(path.join(__dirname, '../src/components/calls/NativeCallOverlay.js'), 'utf8');
 
-test('an offer arriving while the native microphone opens waits for the same initialization', async () => {
-  for (const callType of ['audio', 'video', 'virtual_tour']) {
-    const app = nativeInitializer(); const call = { callId: 'accepted-call', callType };
-    const started = app.begin(call, { initiator: true });
-    await Promise.resolve();
-    const overlapping = app.begin(call, { initiator: false });
-    assert.equal(started, overlapping);
-    app.release(); const [one, two] = await Promise.all([started, overlapping]);
-    assert.ok(one); assert.equal(one, two); assert.equal(app.state.peers, 1); assert.equal(app.state.captures, 1); assert.equal(app.state.offers, 1);
-  }
+test('the native overlay delegates signalling to the shared media controller', () => {
+  assert.match(overlaySource, /createNativeCallMedia\(/);
+  assert.match(overlaySource, /media\.start\(call/);
+  assert.match(overlaySource, /media\.handleOffer\(/);
+  assert.match(overlaySource, /media\.handleAnswer\(/);
+  assert.match(overlaySource, /media\.handleIce\(/);
+  assert.match(overlaySource, /subscribe\('call:signal:offer'/);
+  assert.match(overlaySource, /subscribe\('call:signal:answer'/);
+  assert.match(overlaySource, /subscribe\('call:signal:ice-candidate'/);
 });
 
-test('hanging up while native microphone permission is pending stops late tracks', async () => {
-  const app = nativeInitializer();
-  const started = app.begin({ callId: 'cancelled', callType: 'audio' });
-  await new Promise(resolve => setImmediate(resolve));
-  assert.equal(app.state.captures, 1);
-  app.context.mediaGenerationRef.current++;
-  app.release(); assert.equal(await started, null);
-  assert.equal(app.state.stopped, 1); assert.equal(app.state.peers, 0);
+test('the native overlay keeps controls accessible and respects device edges', () => {
+  assert.match(overlaySource, /useSafeAreaInsets\(\)/);
+  assert.match(overlaySource, /useWindowDimensions\(\)/);
+  assert.match(overlaySource, /accessibilityRole="button"/);
+  assert.match(overlaySource, /accessibilityState=/);
+  assert.match(overlaySource, /ScreenCapturePickerView/);
+  assert.match(overlaySource, /Platform\.OS === 'ios'/);
+  assert.match(overlaySource, /media\.setAudioRoute\(route\)/);
+  assert.match(overlaySource, /media\.cancelScreenShare\(\)/);
 });

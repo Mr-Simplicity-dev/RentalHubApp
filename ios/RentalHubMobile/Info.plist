@@ -72,6 +72,10 @@
 	<string>Amana RentalHub NG uses your camera for identity verification, document capture and virtual property tours.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Amana RentalHub NG uses your microphone for virtual property tours and secure in-app calls.</string>
+	<key>RTCAppGroupIdentifier</key>
+	<string>group.com.rentalhubng.screencapture</string>
+	<key>RTCScreenSharingExtension</key>
+	<string>com.rentalhubng.RentalHubBroadcastExtension</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Amana RentalHub NG needs access to your photo library so you can upload bank transfer receipts and verification documents.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
