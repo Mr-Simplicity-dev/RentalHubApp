@@ -1,3 +1,4 @@
+import useCallSounds from '../../hooks/useCallSounds';
 import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -98,6 +99,7 @@ const NativeCallOverlay = () => {
     subscribe,
     transferCallHost,
   } = useRealtime();
+  useCallSounds(activeCall);
   const { user } = React.useContext(AuthContext);
   const peerRef = useRef(null);
   const localStreamRef = useRef(null);

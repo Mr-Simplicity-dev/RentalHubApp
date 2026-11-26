@@ -33,7 +33,11 @@
         "expo-notifications",
         {
           "color": "#0A66C2",
-          "defaultChannel": "messages"
+          "defaultChannel": "messages",
+          "sounds": [
+            "./assets/call-sounds/call_normal.wav",
+            "./assets/call-sounds/call_greeting.wav"
+          ]
         }
       ],
       "expo-sharing",

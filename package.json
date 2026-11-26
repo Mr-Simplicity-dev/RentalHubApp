@@ -24,7 +24,9 @@
     "test:survey": "node --test scripts/test-survey-progress.cjs",
     "test:parity": "node scripts/audit-platform-contracts.cjs && node --test scripts/test-platform-parity.cjs scripts/test-public-survey.cjs scripts/test-build-compat.cjs",
     "test:startup": "node --test scripts/test-startup-flow.cjs && node scripts/verify-language-layout.cjs && node scripts/verify-update-resume.cjs && node scripts/verify-update-version.cjs",
-    "test:notifications": "node --test scripts/test-notification-navigation.cjs"
+    "test:notifications": "node --test scripts/test-notification-navigation.cjs",
+    "test:call-sounds": "node --test scripts/test-call-sounds.cjs scripts/test-call-connection.cjs",
+    "prepare:call-sounds": "node scripts/prepare-call-sounds.cjs"
   },
   "dependencies": {
     "@expo-google-fonts/inter": "^0.4.2",
@@ -36,6 +38,7 @@
     "axios": "^1.7.2",
     "expo": "~55.0.27",
     "expo-asset": "~55.0.17",
+    "expo-audio": "~55.0.18",
     "expo-camera": "~55.0.23",
     "expo-constants": "~55.0.16",
     "expo-device": "~55.0.21",

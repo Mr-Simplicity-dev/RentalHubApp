@@ -1,3 +1,4 @@
+import CallSoundSettings from '../../components/calls/CallSoundSettings';
 import {getReviewStatus, getReviewStatusLabel} from '../../utils/verificationStatus.cjs';
 import React, { useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Alert, FlatList, Image, Modal, ScrollView, StyleSheet, Switch, TouchableOpacity, View } from 'react-native';
@@ -43,6 +44,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import AppText from '../../components/common/AppText';
 import HeadphoneSupportButton from '../../components/calls/HeadphoneSupportButton';
 const sections = [
+  'call_settings',
   'overview',
   'users',
   'verifications',
@@ -152,6 +154,7 @@ const WORKSPACE_GROUPS = [
       { label: 'Platform Lawyers', section: 'platform_lawyers', icon: 'briefcase-outline' },
       { label: 'Platform Agents', section: 'platform_agents', icon: 'people-circle-outline' },
       { label: 'Lawyer Activity', section: 'lawyer_activity', icon: 'pulse-outline' },
+      { label: 'Call Settings', section: 'call_settings', icon: 'call-outline' },
       { label: 'Flags', section: 'flags', icon: 'toggle-outline' },
       { label: 'Logs', section: 'logs', icon: 'list-outline' },
     ],
@@ -3376,6 +3379,7 @@ const SuperAdminDashboardScreen = ({ navigation, route }) => {
       case 'reports': return renderReports();
       case 'broadcasts': return renderBroadcasts();
       case 'ad_spaces': return renderAdSpaces();
+      case 'call_settings': return <CallSoundSettings admin />;
       case 'flags': return renderFlags();
       case 'sfa_permissions': return renderSfaPermissions();
       case 'fraud': return renderFraud();

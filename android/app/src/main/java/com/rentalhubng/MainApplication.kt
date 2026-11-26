@@ -24,6 +24,7 @@ class MainApplication : Application(), ReactApplication {
           add(ExpoModulesPackage())
           add(RentalHubPaystackPackage())
           add(RentalHubUpdatePackage())
+          add(RentalHubCallSoundPackage())
       }
 
   override val reactNativeHost: ReactNativeHost =

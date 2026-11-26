@@ -10,12 +10,13 @@ const PUSH_TOKEN_KEY = 'expo_push_token';
 export const configureNotificationPresentation = () => {
   Notifications.setNotificationHandler({
     handleNotification: async (notification) => {
+      const isIncomingCall = notification.request.content.data?.type === 'incoming_call';
       const isBadgeSummary = notification.request.content.data?.badgeSummary === true;
       const isLiveMessage =
         notification.request.content.data?.screen === 'Messages';
       return {
-        shouldPlaySound: !isLiveMessage && !isBadgeSummary,
-        shouldSetBadge: true,
+        shouldPlaySound: !isIncomingCall && !isLiveMessage && !isBadgeSummary,
+        shouldSetBadge: !isIncomingCall,
         shouldShowBanner: !isLiveMessage && !isBadgeSummary,
         shouldShowList: !isLiveMessage,
       };
@@ -29,6 +30,17 @@ export const registerForPushNotifications = async () => {
   }
 
   if (Platform.OS === 'android') {
+    for (const sound of ['normal', 'greeting', 'silent']) {
+      await Notifications.setNotificationChannelAsync('calls-' + sound + '-v1', {
+        name: sound === 'greeting' ? 'Calls: spoken greeting' : sound === 'silent' ? 'Calls: silent' : 'Calls: normal ringtone',
+        importance: Notifications.AndroidImportance.HIGH,
+        sound: sound === 'silent' ? null : 'call_' + sound + '.wav',
+        showBadge: false,
+        enableVibrate: sound !== 'silent',
+        vibrationPattern: [0, 300, 150, 300],
+        bypassDnd: false,
+      });
+    }
     await Notifications.setNotificationChannelAsync('messages', {
       name: 'Messages',
       showBadge: true,

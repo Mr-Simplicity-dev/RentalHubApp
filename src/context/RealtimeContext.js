@@ -1,3 +1,6 @@
+import * as Notifications from 'expo-notifications';
+import { AppState } from 'react-native';
+import api from '../services/api';
 import React, {
   createContext,
   useCallback,
@@ -43,6 +46,27 @@ export const RealtimeProvider = ({ children }) => {
 
   useEffect(() => {
     let disposed = false;
+    let recoveryGeneration = 0;
+    const recoverCall = async (callId) => {
+      if (!isAuthenticated || !user?.id || disposed) return;
+      const generation = recoveryGeneration;
+      try {
+        const response = await api.get(callId ? '/voice/calls/' + encodeURIComponent(callId) : '/voice/calls/ringing');
+        const call = response.data?.data;
+        if (disposed || generation !== recoveryGeneration || call?.status !== 'ringing' || !(Date.parse(call.expiresAt) > Date.now())) return;
+        setActiveCall(current => current?.status === 'accepted' ? current : { ...call, direction: 'incoming' });
+      } catch { /* Expired, ended and unauthorized calls are not reopened. */ }
+    };
+    const onPush = notification => {
+      const data = notification?.request?.content?.data || {};
+      if (data.type === 'incoming_call' && Date.parse(data.expiresAt) > Date.now()) void recoverCall(data.callId);
+    };
+    const receivedPush = Notifications.addNotificationReceivedListener(onPush);
+    const respondedPush = Notifications.addNotificationResponseReceivedListener(response => onPush(response.notification));
+    const appState = AppState.addEventListener('change', state => { if (state === 'active') void recoverCall(); });
+    const dismissCall = callId => {
+      void Notifications.getPresentedNotificationsAsync().then(list => Promise.all(list.filter(item => item.request.content.data?.callId === callId).map(item => Notifications.dismissNotificationAsync(item.request.identifier)))).catch(() => {});
+    };
     const pendingCallTimers = new Set();
 
     const disconnect = () => {
@@ -55,10 +79,10 @@ export const RealtimeProvider = ({ children }) => {
     // Rejected/missed/ended events fade the call overlay out after a short
     // delay. Those timers must be tracked so a logout or provider unmount
     // cannot leave a stale full-screen call Modal mounted over the app.
-    const scheduleCallClear = (delayMs) => {
+    const scheduleCallClear = (delayMs, callId) => {
       const timer = setTimeout(() => {
         pendingCallTimers.delete(timer);
-        if (!disposed) setActiveCall(null);
+        if (!disposed) setActiveCall(current => current?.callId === callId ? null : current);
       }, delayMs);
       pendingCallTimers.add(timer);
     };
@@ -90,7 +114,7 @@ export const RealtimeProvider = ({ children }) => {
       });
 
       socket.on('connect', () => {
-        if (!disposed) setConnected(true);
+        if (!disposed) { setConnected(true); void recoverCall(); }
       });
       socket.on('disconnect', () => {
         if (!disposed) setConnected(false);
@@ -125,19 +149,27 @@ export const RealtimeProvider = ({ children }) => {
         if (!disposed) setActiveCall({ ...call, direction: 'outgoing' });
       });
       socket.on('call:accepted', (call = {}) => {
+        recoveryGeneration++;
+        dismissCall(call.callId);
         if (!disposed) setActiveCall((current) => ({ ...(current || {}), ...call, status: 'accepted' }));
       });
       socket.on('call:rejected', (call = {}) => {
+        recoveryGeneration++;
+        dismissCall(call.callId);
         if (!disposed) setActiveCall((current) => ({ ...(current || {}), ...call, status: 'rejected' }));
-        scheduleCallClear(1800);
+        scheduleCallClear(1800, call.callId);
       });
       socket.on('call:missed', (call = {}) => {
+        recoveryGeneration++;
+        dismissCall(call.callId);
         if (!disposed) setActiveCall((current) => ({ ...(current || {}), ...call, status: 'missed' }));
         scheduleCallClear(1800);
       });
       socket.on('call:ended', (call = {}) => {
+        recoveryGeneration++;
+        dismissCall(call.callId);
         if (!disposed) setActiveCall((current) => ({ ...(current || {}), ...call, status: 'ended' }));
-        scheduleCallClear(1200);
+        scheduleCallClear(1200, call.callId);
       });
       socket.on('call:room:updated', (room = {}) => {
         if (!disposed) {
@@ -159,6 +191,9 @@ export const RealtimeProvider = ({ children }) => {
     void connect();
     return () => {
       disposed = true;
+      receivedPush.remove();
+      respondedPush.remove();
+      appState.remove();
       pendingCallTimers.forEach((timer) => clearTimeout(timer));
       pendingCallTimers.clear();
       disconnect();

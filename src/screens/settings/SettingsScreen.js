@@ -1,3 +1,4 @@
+import CallSoundSettings from '../../components/calls/CallSoundSettings';
 import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
@@ -314,6 +315,7 @@ const SettingsScreen = ({ navigation }) => {
         </View>
       </DashboardSection>}
 
+      <CallSoundSettings />
       <DashboardSection title={ui("Notification preferences")}>
         {notificationKeys.map((key) => (
           <View key={key} style={styles.switchRow}>
