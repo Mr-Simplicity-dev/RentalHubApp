@@ -82,6 +82,9 @@ test('Android background delivery has private actions, bounded OS ringing and no
   const ownerGuard = service.indexOf('if (data.has("receiverId") && !IncomingCalls.owns(this, data)) return');
   assert.ok(ownerGuard > 0 && ownerGuard < service.indexOf('IncomingCalls.receive(this, data)'));
   assert.ok(ownerGuard < service.indexOf('super.onMessageReceived(message)'));
+  const configure = native.slice(native.indexOf('fun configure('), native.indexOf('@Synchronized fun setForeground'));
+  assert.ok(configure.includes('manager(c).cancelAll()'));
+  assert.ok(configure.indexOf('manager(c).cancelAll()') < configure.indexOf('prefs(c).edit().clear()'));
 });
 
 test('Android 7 schedules a process-independent expiry without rejecting an expired invitation', () => {

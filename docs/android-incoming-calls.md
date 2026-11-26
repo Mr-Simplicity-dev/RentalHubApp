@@ -49,6 +49,8 @@ not enable Phase C spoken notifications or send SMS, WhatsApp or email tests.
 - `RentalHubMessagingService` extends the existing Expo service, including its
   token handling. Recipient-bound pushes are dropped before display if the
   account has changed or signed out. Other non-call pushes pass to Expo unchanged.
+  Changing the signed-in account also clears that app's displayed alerts. This
+  does not mark notification history as read or change another app's alerts.
 - Incoming calls are bound to the signed-in user and expire with the server
   invitation. Native code checks the authoritative server status before alerting.
 - The Android call notification uses immutable private action intents, CallStyle,

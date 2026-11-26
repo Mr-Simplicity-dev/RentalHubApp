@@ -40,7 +40,7 @@ object IncomingCalls {
   }
   fun configure(c: Context, user: String, active: Boolean) {
     if (prefs(c).getString("user", "") != user) {
-      current(c)?.let { manager(c).cancel(identifier(it.optString("callId"))) }
+      manager(c).cancelAll()
       prefs(c).edit().clear().putString("user", user).apply()
     }
     setForeground(c, active)
