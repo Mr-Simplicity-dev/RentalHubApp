@@ -110,12 +110,27 @@ object IncomingCalls {
         if (Build.VERSION.SDK_INT < 26 && sound != "silent") notification.setSound(Uri.parse("android.resource://${c.packageName}/raw/call_$sound"))
         val built = notification.build()
         if (sound != "silent") built.flags = built.flags or Notification.FLAG_INSISTENT
-        synchronized(this@IncomingCalls) { if (valid(c, data) && !foreground(c)) nm.notify(identifier(id), built) }
+        synchronized(this@IncomingCalls) {
+          if (valid(c, data) && !foreground(c)) {
+            if (Build.VERSION.SDK_INT < 26) {
+              val alarm = c.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+              alarm.setExactAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                SystemClock.elapsedRealtime() + (expiry(data) - System.currentTimeMillis()).coerceAtLeast(1),
+                pending(c, id, "expire", false))
+            }
+            nm.notify(identifier(id), built)
+          }
+        }
       } catch (_: Exception) { /* Notification permission or network failure must not crash startup. */ }
     }
   }
   @Synchronized fun close(c: Context, id: String) {
     if (!validId(id)) return
+    if (Build.VERSION.SDK_INT < 26) {
+      val timeout = pending(c, id, "expire", false)
+      (c.getSystemService(Context.ALARM_SERVICE) as AlarmManager).cancel(timeout)
+      timeout.cancel()
+    }
     manager(c).cancel(identifier(id))
     val edit = prefs(c).edit().putLong("closed:$id", System.currentTimeMillis() + 90000)
     for ((key, value) in prefs(c).all) if (key.startsWith("closed:") && value is Long && value < System.currentTimeMillis()) edit.remove(key)
@@ -156,6 +171,10 @@ class RentalHubMessagingService : ExpoFirebaseMessagingService() {
 
 class IncomingCallDeclineReceiver : BroadcastReceiver() {
   override fun onReceive(context: Context, intent: Intent) {
+    if (intent.action == "expire") {
+      IncomingCalls.close(context, intent.getStringExtra("callId") ?: "")
+      return
+    }
     val result = goAsync()
     IncomingCalls.decline(context, intent.getStringExtra("callId") ?: "") { result.finish() }
   }

@@ -54,6 +54,10 @@ not enable Phase C spoken notifications or send SMS, WhatsApp or email tests.
 - The Android call notification uses immutable private action intents, CallStyle,
   a bounded timeout and the OS repeating sound flag. It needs neither a permanent
   background microphone nor a continuously running foreground service.
+  Android 7 uses an expiry alarm because notification timeouts start at Android 8.
+  The alarm closes only that local alert; it does not reject or end a call.
+  Newer Android versions use the notification timeout without an exact-alarm
+  permission request.
 - In another app, Android can show a heads-up call notification. On a locked
   screen, full-screen access depends on Android's permission settings. The app
   supplies a settings shortcut in Call sounds. Silent mode, notification channel

@@ -83,3 +83,11 @@ test('Android background delivery has private actions, bounded OS ringing and no
   assert.ok(ownerGuard > 0 && ownerGuard < service.indexOf('IncomingCalls.receive(this, data)'));
   assert.ok(ownerGuard < service.indexOf('super.onMessageReceived(message)'));
 });
+
+test('Android 7 schedules a process-independent expiry without rejecting an expired invitation', () => {
+  const native = fs.readFileSync(path.resolve(__dirname, '../android/app/src/main/java/com/rentalhubng/RentalHubIncomingCalls.kt'), 'utf8');
+  assert.match(native, /if \(Build\.VERSION\.SDK_INT < 26\) \{\s+val alarm[\s\S]*?setExactAndAllowWhileIdle[\s\S]*?pending\(c, id, "expire", false\)/);
+  const receiver = native.slice(native.indexOf('class IncomingCallDeclineReceiver'));
+  assert.match(receiver, /if \(intent\.action == "expire"\) \{\s+IncomingCalls\.close[\s\S]*?return/);
+  assert.ok(receiver.indexOf('intent.action == "expire"') < receiver.indexOf('goAsync()'));
+});
