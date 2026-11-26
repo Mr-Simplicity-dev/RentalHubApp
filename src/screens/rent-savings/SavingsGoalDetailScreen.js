@@ -1,7 +1,7 @@
 import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useState } from 'react';
-import {Modal, StyleSheet, View} from 'react-native';
+import {Modal, TouchableOpacity, StyleSheet, View} from 'react-native';
 import Toast from 'react-native-toast-message';
 import Input from '../../components/common/Input';
 import {
@@ -21,6 +21,7 @@ import { getErrorMessage, pickList, pickObject } from '../../utils/http';
 import { colors, radius, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
+import FinancialReceiptModal from '../../components/payments/FinancialReceiptModal';
 const ProgressBar = ({ value }) => { useInterfaceLanguage(); return (<View style={styles.progressBar}>
     <View style={[styles.progressFill, { width: `${value}%` }]} />
   </View>); };
@@ -30,6 +31,7 @@ const SavingsGoalDetailScreen = ({ route }) => {
   const { goalId } = route?.params || {};
   const [goal, setGoal] = useState(null);
   const [contributions, setContributions] = useState([]);
+  const [receiptContributionId, setReceiptContributionId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [contributeModal, setContributeModal] = useState(false);
   const [contributionAmount, setContributionAmount] = useState('');
@@ -176,6 +178,14 @@ const SavingsGoalDetailScreen = ({ route }) => {
                 label={ui("Date")}
                 value={item.contributed_at ? new Date(item.contributed_at).toLocaleDateString() : 'N/A'}
               />
+              {item.id ? (
+                <TouchableOpacity
+                  onPress={() => setReceiptContributionId(item.id)}
+                  style={{ marginTop: 8, alignSelf: 'flex-start', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8, borderWidth: 1, borderColor: '#0284C7', backgroundColor: '#F0F9FF' }}
+                >
+                  <AppText style={{ color: '#0284C7', fontSize: 12, fontWeight: '600' }}>{ui('View receipt')}</AppText>
+                </TouchableOpacity>
+              ) : null}
             </PremiumCard>
           ))
         ) : (
@@ -187,6 +197,12 @@ const SavingsGoalDetailScreen = ({ route }) => {
         )}
       </PremiumScreen>
 
+      <FinancialReceiptModal
+        visible={Boolean(receiptContributionId)}
+        kind="savings"
+        recordId={receiptContributionId}
+        onClose={() => setReceiptContributionId(null)}
+      />
       <Modal visible={contributeModal} transparent animationType="fade">
         <View style={styles.modalOverlay}>
           <PremiumCard style={styles.modalContent}>

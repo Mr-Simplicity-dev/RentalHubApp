@@ -1,7 +1,7 @@
 import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useEffect, useState } from 'react';
-import {Alert, StyleSheet, View} from 'react-native';
+import {Alert, StyleSheet, TouchableOpacity, View} from 'react-native';
 import Toast from 'react-native-toast-message';
 import { fumigationCleaningService } from '../../services/fumigationCleaningService';
 import { getErrorMessage } from '../../utils/http';
@@ -22,6 +22,7 @@ import {
 import { colors, radius, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
+import FinancialReceiptModal from '../../components/payments/FinancialReceiptModal';
 const STATUS_COLORS = {
   pending: '#B7791F',
   confirmed: colors.blue,
@@ -37,6 +38,7 @@ const FumigationCleaningBookingDetailScreen = ({ route, navigation }) => {
   const { bookingId } = route.params;
   const [booking, setBooking] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showReceipt, setShowReceipt] = useState(false);
   const [cancelling, setCancelling] = useState(false);
   const [paying, setPaying] = useState(false);
   const { openNativeCheckout, NativePaystackCheckoutModal } = useNativePaystackCheckout();
@@ -186,6 +188,14 @@ const FumigationCleaningBookingDetailScreen = ({ route, navigation }) => {
           <View style={styles.totalPanel}>
             <View>
               <AppText style={styles.totalLabel}>{ui("Total")}</AppText>
+              {['completed', 'paid', 'success'].includes(String(booking?.payment_status || '').toLowerCase()) ? (
+                <TouchableOpacity
+                  onPress={() => setShowReceipt(true)}
+                  style={{ marginBottom: 8, alignSelf: 'flex-start', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8, borderWidth: 1, borderColor: '#0284C7', backgroundColor: '#F0F9FF' }}
+                >
+                  <AppText style={{ color: '#0284C7', fontSize: 12, fontWeight: '600' }}>{ui('View receipt')}</AppText>
+                </TouchableOpacity>
+              ) : null}
               <AppText style={styles.paymentStatus}>{ui("Payment")}{booking.payment_status === "paid" ? ui("completed") : ui("pending")}
               </AppText>
             </View>

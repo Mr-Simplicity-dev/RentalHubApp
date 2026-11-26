@@ -1,7 +1,8 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
 
 
 import React, { useCallback, useEffect, useState } from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import Toast from 'react-native-toast-message';
 import {
   InfoRow,
@@ -17,6 +18,8 @@ import { getErrorMessage, pickList } from '../../utils/http';
 import { colors, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
+import FinancialReceiptModal from '../../components/payments/FinancialReceiptModal';
+const maskAccount = (acct) => { const v = String(acct || '').replace(/\s+/g, ''); if (!v) return ''; return v.length <= 4 ? '•'.repeat(v.length) : '•'.repeat(v.length - 4) + v.slice(-4); };
 import TourTarget from '../../components/tour/TourTarget';
 const getStatusColor = (status) => {
   if (status === 'approved' || status === 'paid' || status === 'completed') return colors.success;
@@ -27,6 +30,7 @@ const getStatusColor = (status) => {
 const FinancialWithdrawalsScreen = () => {
 
   const [withdrawals, setWithdrawals] = useState([]);
+  const [receiptId, setReceiptId] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   const [processingId, setProcessingId] = useState(null);
 
@@ -78,6 +82,7 @@ const FinancialWithdrawalsScreen = () => {
   );
 
   return (
+    <>
     <PremiumListScreen
       data={withdrawals}
       keyExtractor={(item) => String(item.id)}
@@ -106,7 +111,7 @@ const FinancialWithdrawalsScreen = () => {
             <InfoRow
               icon="business-outline"
               label={"Bank"}
-              value={`${item.bank_name || 'N/A'}${item.account_number ? ` • ${item.account_number}` : ''}`}
+              value={`${item.bank_name || 'N/A'}${item.account_number ? ` • ${maskAccount(item.account_number)}` : ''}`}
             />
             <InfoRow
               icon="time-outline"
@@ -132,11 +137,25 @@ const FinancialWithdrawalsScreen = () => {
                   style={styles.actionButton}
                 />
               </View>
+            ) : ['completed', 'processed', 'failed', 'reversed', 'rejected'].includes(String(status || '').toLowerCase()) ? (
+              <TouchableOpacity
+                onPress={() => setReceiptId(item.id)}
+                style={{ marginTop: 10, alignSelf: 'flex-start', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8, borderWidth: 1, borderColor: '#0284C7', backgroundColor: '#F0F9FF' }}
+              >
+                <AppText style={{ color: '#0284C7', fontSize: 12, fontWeight: '600' }}>{ui('View receipt')}</AppText>
+              </TouchableOpacity>
             ) : null}
           </PremiumCard>
         );
       }}
     />
+        <FinancialReceiptModal
+        visible={Boolean(receiptId)}
+        kind="admin-payout"
+        recordId={receiptId}
+        onClose={() => setReceiptId(null)}
+      />
+    </>
   );
 };
 

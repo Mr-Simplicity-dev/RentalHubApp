@@ -1,3 +1,4 @@
+import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
 
 
 import React, { useEffect, useState } from 'react';
@@ -16,6 +17,7 @@ import { getErrorMessage, pickList } from '../../utils/http';
 import { colors, radius, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
+import FinancialReceiptModal from '../../components/payments/FinancialReceiptModal';
 import TourTarget from '../../components/tour/TourTarget';
 const filters = ['all', 'pending', 'completed', 'failed'];
 
@@ -29,6 +31,7 @@ const FinancialTransactionsScreen = () => {
 
   const [transactions, setTransactions] = useState([]);
   const [filter, setFilter] = useState('all');
+  const [receiptId, setReceiptId] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
 
   const loadTransactions = async () => {
@@ -81,6 +84,7 @@ const FinancialTransactionsScreen = () => {
   );
 
   return (
+    <>
     <PremiumListScreen
       data={transactions}
       keyExtractor={(item) => String(item.id)}
@@ -120,10 +124,25 @@ const FinancialTransactionsScreen = () => {
               label={"Date"}
               value={item.created_at ? new Date(item.created_at).toLocaleString() : 'Not available'}
             />
+            {item.id && ['completed', 'refunded'].includes(String(status || '').toLowerCase()) ? (
+              <TouchableOpacity
+                onPress={() => setReceiptId(item.id)}
+                style={{ marginTop: 10, alignSelf: 'flex-start', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8, borderWidth: 1, borderColor: '#0284C7', backgroundColor: '#F0F9FF' }}
+              >
+                <AppText style={{ color: '#0284C7', fontSize: 12, fontWeight: '600' }}>{ui('View receipt')}</AppText>
+              </TouchableOpacity>
+            ) : null}
           </PremiumCard>
         );
       }}
     />
+        <FinancialReceiptModal
+        visible={Boolean(receiptId)}
+        kind="payment"
+        recordId={receiptId}
+        onClose={() => setReceiptId(null)}
+      />
+    </>
   );
 };
 

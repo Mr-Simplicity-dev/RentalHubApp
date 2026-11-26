@@ -19,6 +19,7 @@ import { getErrorMessage, pickList } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
 import BrandMark from '../../components/brand/BrandMark';
+import FinancialReceiptModal from '../../components/payments/FinancialReceiptModal';
 import { AuthContext } from '../../context/AuthContext';
 import { useTourTarget } from '../../components/tour/TourTarget';
 const PAYMENT_TYPE_LABELS = {
@@ -80,6 +81,14 @@ const PaymentHistoryScreen = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [payments, setPayments] = useState([]);
   const [filter, setFilter] = useState('all');
+  const [section, setSection] = useState('payments');
+  const [landlordRentReceipts, setLandlordRentReceipts] = useState([]);
+  const [walletTransactions, setWalletTransactions] = useState([]);
+  const [withdrawals, setWithdrawals] = useState([]);
+  const [refunds, setRefunds] = useState([]);
+  const [docModal, setDocModal] = useState({ visible: false, kind: null, recordId: null });
+  const isLandlord = user?.user_type === 'landlord';
+  const isTenant = user?.user_type === 'tenant';
   const [selectedReceipt, setSelectedReceipt] = useState(null);
   const [receiptBusy, setReceiptBusy] = useState(false);
   const [receiptData, setReceiptData] = useState(null);
@@ -92,8 +101,22 @@ const PaymentHistoryScreen = ({ navigation }) => {
   const loadPayments = async ({ refresh = false } = {}) => {
     refresh ? setRefreshing(true) : setLoading(true);
     try {
-      const response = await paymentService.getPaymentHistory({ limit: 50 });
-      setPayments(pickList(response, ['data']));
+      const [payRes, walletRes, wdrRes, rentRes, refRes] = await Promise.all([
+        paymentService.getPaymentHistory({ limit: 50 }),
+        paymentService.getWalletTransactions({ limit: 50 }).catch(() => ({ data: [] })),
+        paymentService.getWalletWithdrawals().catch(() => ({ data: [] })),
+        isLandlord ? paymentService.getLandlordRentReceipts({ limit: 50 }).catch(() => ({ data: [] })) : Promise.resolve({ data: [] }),
+        isLandlord
+          ? paymentService.getLandlordRefundRequests().catch(() => ({ data: [] }))
+          : isTenant
+            ? paymentService.getTenantRefundRequests().catch(() => ({ data: [] }))
+            : Promise.resolve({ data: [] }),
+      ]);
+      setPayments(pickList(payRes, ['data']));
+      setWalletTransactions(pickList(walletRes, ['data']));
+      setWithdrawals(pickList(wdrRes, ['data']));
+      setLandlordRentReceipts(pickList(rentRes, ['data']));
+      setRefunds(pickList(refRes, ['data']));
     } catch (error) {
       Toast.show({
         type: 'error',
@@ -220,7 +243,17 @@ const PaymentHistoryScreen = ({ navigation }) => {
 
       <FlatList
         contentContainerStyle={[styles.list, !visiblePayments.length && styles.emptyList]}
-        data={visiblePayments}
+        data={
+          section === 'rent'
+            ? landlordRentReceipts
+            : section === 'wallet'
+              ? walletTransactions
+              : section === 'withdrawals'
+                ? withdrawals
+                : section === 'refunds'
+                  ? refunds
+                  : visiblePayments
+        }
         keyExtractor={(item, index) => String(item.id || item.transaction_reference || index)}
         ListHeaderComponent={
           <>
@@ -233,6 +266,26 @@ const PaymentHistoryScreen = ({ navigation }) => {
               <AppText style={styles.summaryMeta}>
                 {completedPayments.length}{ui(" completed · ")}{payments.length}{ui("total transactions")}</AppText>
             </View>
+            <View style={[styles.filterRow, { marginBottom: 8 }]}>
+              {[
+                { id: 'payments', label: ui('Payments') },
+                ...(isLandlord ? [{ id: 'rent', label: ui('Rent received') }] : []),
+                { id: 'wallet', label: ui('Wallet') },
+                { id: 'withdrawals', label: ui('Withdrawals') },
+                ...((isTenant || isLandlord) ? [{ id: 'refunds', label: ui('Refunds') }] : []),
+              ].map((tab) => (
+                <TouchableOpacity
+                  key={tab.id}
+                  onPress={() => setSection(tab.id)}
+                  style={[styles.filterChip, section === tab.id && styles.filterChipActive]}
+                >
+                  <AppText style={[styles.filterText, section === tab.id && styles.filterTextActive]}>
+                    {tab.label}
+                  </AppText>
+                </TouchableOpacity>
+              ))}
+            </View>
+            {section === 'payments' ? (
             <View style={styles.filterRow}>
               {['all', 'completed', 'pending', 'failed'].map((value) => (
                 <TouchableOpacity
@@ -245,6 +298,7 @@ const PaymentHistoryScreen = ({ navigation }) => {
                 </TouchableOpacity>
               ))}
             </View>
+            ) : null}
           </>
         }
         ListEmptyComponent={
@@ -276,8 +330,81 @@ const PaymentHistoryScreen = ({ navigation }) => {
           />
         }
         renderItem={({ item }) => {
+          if (section === 'rent') {
+            return (
+              <TouchableOpacity
+                onPress={() => setDocModal({ visible: true, kind: 'payment', recordId: item.id })}
+                style={styles.card}
+              >
+                <View style={styles.cardTop}>
+                  <View style={styles.cardBody}>
+                    <AppText style={styles.cardTitle}>{item.property_title || ui('Rent received')}</AppText>
+                    <AppText style={styles.cardMeta}>{item.receipt_number} · {item.tenant_name || '—'}</AppText>
+                  </View>
+                  <AppText style={styles.cardAmount}>{formatAmount(item.gross_amount)}</AppText>
+                </View>
+                <AppText style={styles.cardMeta}>{ui('Tap to view receipt')}</AppText>
+              </TouchableOpacity>
+            );
+          }
+          if (section === 'wallet') {
+            return (
+              <TouchableOpacity
+                onPress={() => setDocModal({ visible: true, kind: 'wallet-transaction', recordId: item.id })}
+                style={styles.card}
+              >
+                <View style={styles.cardTop}>
+                  <View style={styles.cardBody}>
+                    <AppText style={styles.cardTitle}>{item.description || item.source || ui('Wallet')}</AppText>
+                    <AppText style={styles.cardMeta}>{item.reference || item.transaction_reference || String(item.id)}</AppText>
+                  </View>
+                  <AppText style={styles.cardAmount}>{formatAmount(item.amount)}</AppText>
+                </View>
+                <AppText style={styles.cardMeta}>{ui('Tap to view receipt')}</AppText>
+              </TouchableOpacity>
+            );
+          }
+          if (section === 'withdrawals') {
+            const effStatus = item.paystack_transfer_status === 'reversed' ? 'reversed' : item.paystack_transfer_status === 'failed' ? 'failed' : item.status;
+            const ready = ['processed', 'completed', 'success', 'paid', 'failed', 'reversed', 'rejected'].includes(String(effStatus || '').toLowerCase());
+            return (
+              <TouchableOpacity
+                disabled={!ready}
+                onPress={() => setDocModal({ visible: true, kind: 'user-payout', recordId: item.id })}
+                style={styles.card}
+              >
+                <View style={styles.cardTop}>
+                  <View style={styles.cardBody}>
+                    <AppText style={styles.cardTitle}>{item.bank_name || ui('Withdrawal')}</AppText>
+                    <AppText style={styles.cardMeta}>{String(effStatus || '').toUpperCase()}</AppText>
+                  </View>
+                  <AppText style={styles.cardAmount}>{formatAmount(item.amount)}</AppText>
+                </View>
+                {ready ? <AppText style={styles.cardMeta}>{ui('Tap to view receipt')}</AppText> : null}
+              </TouchableOpacity>
+            );
+          }
+          if (section === 'refunds') {
+            const ready = ['approved', 'refunded', 'rejected'].includes(String(item.status || '').toLowerCase());
+            return (
+              <TouchableOpacity
+                disabled={!ready}
+                onPress={() => setDocModal({ visible: true, kind: 'refund', recordId: item.id })}
+                style={styles.card}
+              >
+                <View style={styles.cardTop}>
+                  <View style={styles.cardBody}>
+                    <AppText style={styles.cardTitle}>{item.property_title || ui('Refund')}</AppText>
+                    <AppText style={styles.cardMeta}>{String(item.status || '').toUpperCase()}</AppText>
+                  </View>
+                  <AppText style={styles.cardAmount}>{formatAmount(item.approved_amount ?? item.requested_refund_amount ?? item.amount)}</AppText>
+                </View>
+                {ready ? <AppText style={styles.cardMeta}>{ui('Tap to view receipt')}</AppText> : null}
+              </TouchableOpacity>
+            );
+          }
           const visual = statusVisual(item.payment_status);
-          const completed = isCompletedPayment(item);
+          const completed = isCompletedPayment(item) || item.payment_status === 'refunded';
           return (
             <TouchableOpacity
               activeOpacity={completed ? 0.7 : 1}
@@ -474,6 +601,13 @@ const PaymentHistoryScreen = ({ navigation }) => {
           </View>
         </View>
       </Modal>
+    
+      <FinancialReceiptModal
+        visible={docModal.visible}
+        kind={docModal.kind}
+        recordId={docModal.recordId}
+        onClose={() => setDocModal({ visible: false, kind: null, recordId: null })}
+      />
     </SafeAreaView>
   );
 };

@@ -13,6 +13,7 @@ import { colors, radius, shadows, typography, typeScale } from '../../theme';
 import { getErrorMessage, pickList, pickObject } from '../../utils/http';
 
 import AppText from '../../components/common/AppText';
+import FinancialReceiptModal from '../../components/payments/FinancialReceiptModal';
 import { useTourTarget } from '../../components/tour/TourTarget';
 const AgentWithdrawalsScreen = ({ navigation }) => {
   const interfaceLanguage = useInterfaceLanguage();
@@ -20,6 +21,7 @@ const AgentWithdrawalsScreen = ({ navigation }) => {
   const withdrawalsTourTarget = useTourTarget('agent_withdrawals', { padding: 6, radius: 18 });
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [receiptId, setReceiptId] = useState(null);
   const [profile, setProfile] = useState(null);
   const [summary, setSummary] = useState({});
   const [requests, setRequests] = useState([]);
@@ -196,11 +198,22 @@ const AgentWithdrawalsScreen = ({ navigation }) => {
               {item.reason_for_rejection || item.payout_failed_reason ? (
                 <AppText style={styles.reject}>{ui("Reason: ")}{item.reason_for_rejection || item.payout_failed_reason}</AppText>
               ) : null}
+              {['completed', 'processed', 'failed', 'reversed', 'rejected'].includes(String(item.status || '').toLowerCase()) ? (
+                <TouchableOpacity onPress={() => setReceiptId(item.id)} style={{ marginTop: 10, alignSelf: 'flex-start', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8, borderWidth: 1, borderColor: '#0284C7', backgroundColor: '#F0F9FF' }}>
+                  <AppText style={{ color: '#0284C7', fontSize: 12, fontWeight: '600' }}>{ui('View receipt')}</AppText>
+                </TouchableOpacity>
+              ) : null}
             </View>
           ))}
         </>
       )}
     </ScrollView>
+      <FinancialReceiptModal
+        visible={Boolean(receiptId)}
+        kind="agent-payout"
+        recordId={receiptId}
+        onClose={() => setReceiptId(null)}
+      />
     </SafeAreaView>
   );
 };

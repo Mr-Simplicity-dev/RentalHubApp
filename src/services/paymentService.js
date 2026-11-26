@@ -72,6 +72,33 @@ export const paymentService = {
     return response.data;
   },
 
+  getDocumentReceipt: async (kind, id) => {
+    const response = await api.get(`/payments/receipts/${encodeURIComponent(kind)}/${encodeURIComponent(id)}`);
+    return response.data;
+  },
+  downloadDocumentPdf: async (kind, id) => {
+    const response = await api.get(
+      `/payments/receipts/${encodeURIComponent(kind)}/${encodeURIComponent(id)}/pdf`,
+      { responseType: 'arraybuffer' }
+    );
+    return response.data;
+  },
+  getLandlordRentReceipts: async (params = {}) => {
+    const response = await api.get('/payments/landlord/rent-receipts', { params });
+    return response.data;
+  },
+  getWalletTransactions: async (params = {}) => {
+    const response = await api.get('/payments/wallet/transactions', { params });
+    return response.data;
+  },
+  getTenantRefundRequests: async () => {
+    const response = await api.get('/payments/refund/my-requests');
+    return response.data;
+  },
+  getLandlordRefundRequests: async () => {
+    const response = await api.get('/payments/refund/landlord');
+    return response.data;
+  },
   downloadReceiptPdf: async (paymentId) => {
     const response = await api.get(`/payments/receipt-pdf/${paymentId}`, {
       responseType: 'arraybuffer',
