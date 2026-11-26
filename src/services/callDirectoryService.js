@@ -9,6 +9,7 @@ export const inferFallbackCallPolicy = (user) => {
       canChatSupport: false,
       canCallSupport: false,
       canCallBoss: false,
+      canCallTeammates: false,
       canCallSubordinates: true,
       canCallAnyone: true,
     };
@@ -20,17 +21,31 @@ export const inferFallbackCallPolicy = (user) => {
       canChatSupport: true,
       canCallSupport: true,
       canCallBoss: false,
+      canCallTeammates: false,
       canCallSubordinates: false,
       canCallAnyone: false,
     };
   }
-  if (role === 'agent' || role === 'marketing_agent') {
+  if (role === 'marketing_agent') {
     return {
       role,
       mode: 'support_and_boss',
       canChatSupport: true,
       canCallSupport: true,
       canCallBoss: true,
+      canCallTeammates: true,
+      canCallSubordinates: false,
+      canCallAnyone: false,
+    };
+  }
+  if (role === 'agent') {
+    return {
+      role,
+      mode: 'support_and_boss',
+      canChatSupport: true,
+      canCallSupport: true,
+      canCallBoss: true,
+      canCallTeammates: false,
       canCallSubordinates: false,
       canCallAnyone: false,
     };
@@ -48,6 +63,7 @@ export const inferFallbackCallPolicy = (user) => {
       canChatSupport: false,
       canCallSupport: false,
       canCallBoss: true,
+      canCallTeammates: false,
       canCallSubordinates: true,
       canCallAnyone: false,
     };
@@ -58,6 +74,7 @@ export const inferFallbackCallPolicy = (user) => {
     canChatSupport: true,
     canCallSupport: true,
     canCallBoss: true,
+    canCallTeammates: false,
     canCallSubordinates: false,
     canCallAnyone: false,
   };
@@ -76,9 +93,27 @@ export const callDirectoryService = {
     if (params.state) cleanParams.state = String(params.state).trim();
     if (params.onlineOnly) cleanParams.onlineOnly = 'true';
     if (params.limit) cleanParams.limit = Number(params.limit);
-
     const response = await api.get('/calls/directory', { params: cleanParams });
     return response?.data?.data || response?.data || { contacts: [], supportOnlineCount: 0 };
+  },
+
+  async getHistory(params = {}) {
+    const cleanParams = {};
+    if (params.filter) cleanParams.filter = String(params.filter).trim();
+    if (params.limit) cleanParams.limit = Number(params.limit);
+    const response = await api.get('/calls/history', { params: cleanParams });
+    return (
+      response?.data?.data ||
+      response?.data || {
+        records: [],
+        summary: {
+          total_count: 0,
+          missed_count: 0,
+          incoming_missed_count: 0,
+          answered_count: 0,
+        },
+      }
+    );
   },
 };
 

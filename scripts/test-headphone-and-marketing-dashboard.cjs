@@ -162,3 +162,21 @@ test('Mobile CareersScreen renders a WhatsApp share button on every recruitment 
   assert.match(careers, /\*Job Description:\*/);
   assert.doesNotMatch(careers, /slice\(0,\s*137\)/);
 });
+
+test('Mobile HeadphoneSupportButton supports Marketing Agent teammate calls, missed calls, and call records with full details', () => {
+  const svc = read('src/services/callDirectoryService.js');
+  const comp = read('src/components/calls/HeadphoneSupportButton.js');
+
+  assert.match(svc, /canCallTeammates:\s*true/);
+  assert.match(svc, /getHistory\(/);
+  assert.match(svc, /\/calls\/history/);
+
+  assert.match(comp, /MARKETING TEAM/);
+  assert.match(comp, /teammateContacts/);
+  assert.match(comp, /Call Records/);
+  assert.match(comp, /Missed Call/);
+  assert.match(comp, /No Answer \(Missed\)/);
+  assert.match(comp, /Call Back/);
+  assert.match(comp, /Talk Duration:/);
+  assert.match(comp, /incoming_missed_count/);
+});

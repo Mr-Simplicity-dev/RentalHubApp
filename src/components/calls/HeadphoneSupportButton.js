@@ -8,7 +8,6 @@ import {
   Platform,
   ScrollView,
   StyleSheet,
-  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -16,10 +15,11 @@ import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
-import AppText from '../common/AppText';
 import { AuthContext } from '../../context/AuthContext';
 import { useRealtime } from '../../context/RealtimeContext';
 import { useAccessibilityPreferences } from '../../hooks/useAccessibilityPreferences';
+import AppText from '../common/AppText';
+import TextInput from '../common/AppTextInput';
 import {
   callDirectoryService,
   inferFallbackCallPolicy,
@@ -39,6 +39,13 @@ const SUPER_ADMIN_TABS = [
   { id: 'lawyer', label: 'Lawyers' },
 ];
 
+const HISTORY_FILTERS = [
+  { id: 'all', label: 'All' },
+  { id: 'missed', label: 'Missed' },
+  { id: 'incoming', label: 'Incoming' },
+  { id: 'outgoing', label: 'Outgoing' },
+];
+
 const getInitials = (name) => {
   const parts = String(name || 'U')
     .trim()
@@ -54,6 +61,49 @@ const formatTerritory = (contact) =>
     .map((v) => String(v || '').trim())
     .filter(Boolean)
     .join(' • ');
+
+const formatDuration = (seconds) => {
+  const total = Math.max(0, Number(seconds) || 0);
+  if (total <= 0) return '0s';
+  const hrs = Math.floor(total / 3600);
+  const mins = Math.floor((total % 3600) / 60);
+  const secs = total % 60;
+  if (hrs > 0) return `${hrs}h ${mins}m ${secs}s`;
+  if (mins > 0) return `${mins}m ${secs}s`;
+  return `${secs}s`;
+};
+
+const formatDateTime = (value) => {
+  if (!value) return '—';
+  const dt = new Date(value);
+  if (Number.isNaN(dt.getTime())) return '—';
+  return dt.toLocaleString('en-NG', {
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+};
+
+const getStatusBadgeStyle = (record) => {
+  const status = String(record?.status || '').toLowerCase();
+  if (status === 'missed') {
+    if (record?.direction === 'incoming') {
+      return { label: 'Missed Call', bg: '#fee2e2', text: '#b91c1c', border: '#fecaca' };
+    }
+    return { label: 'No Answer (Missed)', bg: '#fef3c7', text: '#92400e', border: '#fde68a' };
+  }
+  if (status === 'rejected') {
+    return { label: 'Declined', bg: '#ffe4e6', text: '#be123c', border: '#fecdd3' };
+  }
+  if (status === 'ended' || status === 'accepted') {
+    return { label: 'Completed', bg: '#dcfce7', text: '#15803d', border: '#bbf7d0' };
+  }
+  if (status === 'ringing') {
+    return { label: 'Ringing', bg: '#dbeafe', text: '#1d4ed8', border: '#bfdbfe' };
+  }
+  return { label: 'Failed', bg: '#f1f5f9', text: '#475569', border: '#e2e8f0' };
+};
 
 const ensureAndroidAudioPermission = async () => {
   if (Platform.OS !== 'android') return true;
@@ -93,6 +143,7 @@ const HeadphoneSupportButton = ({ variant = 'dark', compact = false, style }) =>
   const insets = useSafeAreaInsets();
 
   const [open, setOpen] = useState(false);
+  const [activeView, setActiveView] = useState('contacts'); // 'contacts' | 'records'
   const [policy, setPolicy] = useState(() => inferFallbackCallPolicy(user));
   const [contacts, setContacts] = useState([]);
   const [supportOnlineCount, setSupportOnlineCount] = useState(0);
@@ -104,6 +155,19 @@ const HeadphoneSupportButton = ({ variant = 'dark', compact = false, style }) =>
   const [onlineOnly, setOnlineOnly] = useState(false);
   const [callingId, setCallingId] = useState(null);
   const [supportNoAgentMessage, setSupportNoAgentMessage] = useState('');
+
+  // Call records & missed calls state
+  const [historyFilter, setHistoryFilter] = useState('all');
+  const [callRecords, setCallRecords] = useState([]);
+  const [historySummary, setHistorySummary] = useState({
+    total_count: 0,
+    missed_count: 0,
+    incoming_missed_count: 0,
+    answered_count: 0,
+  });
+  const [historyLoading, setHistoryLoading] = useState(false);
+  const [historyError, setHistoryError] = useState('');
+  const [expandedRecordId, setExpandedRecordId] = useState(null);
 
   useEffect(() => {
     setPolicy(inferFallbackCallPolicy(user));
@@ -141,12 +205,58 @@ const HeadphoneSupportButton = ({ variant = 'dark', compact = false, style }) =>
     }
   }, [isAuthenticated, user?.id, debouncedSearch, roleFilter, onlineOnly]);
 
+  const loadCallHistory = useCallback(
+    async (filterOverride) => {
+      if (!isAuthenticated || !user?.id) return;
+      const targetFilter = filterOverride || historyFilter || 'all';
+      setHistoryLoading(true);
+      setHistoryError('');
+      try {
+        const payload = await callDirectoryService.getHistory({
+          filter: targetFilter,
+          limit: 40,
+        });
+        setCallRecords(Array.isArray(payload?.records) ? payload.records : []);
+        if (payload?.summary) {
+          setHistorySummary(payload.summary);
+        }
+      } catch (err) {
+        setHistoryError(getErrorMessage(err, 'Unable to load call records right now.'));
+      } finally {
+        setHistoryLoading(false);
+      }
+    },
+    [isAuthenticated, user?.id, historyFilter]
+  );
+
+  useEffect(() => {
+    if (!isAuthenticated || !user?.id) return;
+    callDirectoryService
+      .getHistory({ filter: 'all', limit: 15 })
+      .then((payload) => {
+        if (payload?.summary) setHistorySummary(payload.summary);
+        if (Array.isArray(payload?.records)) setCallRecords(payload.records);
+      })
+      .catch(() => {});
+  }, [isAuthenticated, user?.id]);
+
   useEffect(() => {
     if (!open) return;
-    loadDirectory();
-  }, [open, loadDirectory]);
+    if (activeView === 'contacts') {
+      loadDirectory();
+    } else {
+      loadCallHistory();
+    }
+  }, [open, activeView, loadDirectory, loadCallHistory]);
 
   const meta = useMemo(() => {
+    if (policy?.role === 'marketing_agent') {
+      return {
+        a11y: 'Marketing team, supervisor, support, and call records',
+        title: 'Marketing Calls & Support',
+        subtitle: 'Call marketing teammates, supervisors, Support, or view call records',
+      };
+    }
     switch (policy?.mode) {
       case 'platform_all':
         return {
@@ -174,7 +284,7 @@ const HeadphoneSupportButton = ({ variant = 'dark', compact = false, style }) =>
           subtitle: ui('Chat with Support or place an instant voice call'),
         };
     }
-  }, [policy?.mode]);
+  }, [policy?.mode, policy?.role]);
 
   const adminTabs = useMemo(() => {
     if (policy?.mode === 'platform_all') return SUPER_ADMIN_TABS;
@@ -217,7 +327,6 @@ const HeadphoneSupportButton = ({ variant = 'dark', compact = false, style }) =>
     }
     const allowed = await ensureAndroidAudioPermission();
     if (!allowed) return;
-
     setCallingId('support');
     try {
       if (Platform.OS === 'ios') {
@@ -259,7 +368,6 @@ const HeadphoneSupportButton = ({ variant = 'dark', compact = false, style }) =>
     }
     const allowed = await ensureAndroidAudioPermission();
     if (!allowed) return;
-
     setCallingId(contact.id);
     try {
       if (Platform.OS === 'ios') {
@@ -284,11 +392,229 @@ const HeadphoneSupportButton = ({ variant = 'dark', compact = false, style }) =>
   };
 
   const bossContacts = contacts.filter((c) => c.relation === 'boss');
+  const teammateContacts = contacts.filter((c) => c.relation === 'teammate');
+  const incomingMissedCount = Number(historySummary?.incoming_missed_count || 0);
+  const totalMissedCount = Number(historySummary?.missed_count || 0);
+  const missedBadgeLabel = incomingMissedCount > 9 ? '9+' : String(incomingMissedCount);
+  const primaryTabLabel = isDirectoryMode
+    ? 'Directory'
+    : policy?.canCallTeammates
+    ? 'Call & Team'
+    : 'Call & Support';
   const isLight = variant === 'light';
+
+  const renderCallRecordsSection = () => {
+    const emptyRecordsTitle =
+      historyFilter === 'missed' ? 'No missed calls recorded' : 'No call records yet';
+
+    return (
+      <View style={styles.recordsContainer}>
+        {/* Summary Strip */}
+        <View style={styles.summaryStrip}>
+          <View style={styles.summaryTile}>
+            <AppText style={styles.summaryLabel}>Total</AppText>
+            <AppText style={styles.summaryValue}>{historySummary.total_count || 0}</AppText>
+          </View>
+          <View style={[styles.summaryTile, totalMissedCount > 0 && styles.summaryTileMissed]}>
+            <AppText style={[styles.summaryLabel, styles.summaryLabelMissed]}>Missed</AppText>
+            <AppText style={[styles.summaryValue, styles.summaryValueMissed]}>
+              {totalMissedCount}
+            </AppText>
+          </View>
+          <View style={[styles.summaryTile, styles.summaryTileAnswered]}>
+            <AppText style={[styles.summaryLabel, styles.summaryLabelAnswered]}>Answered</AppText>
+            <AppText style={[styles.summaryValue, styles.summaryValueAnswered]}>
+              {historySummary.answered_count || 0}
+            </AppText>
+          </View>
+        </View>
+
+        {/* Filter Chips */}
+        <View style={styles.filterControlsRow}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.tabsRow}
+          >
+            {HISTORY_FILTERS.map((f) => {
+              const active = historyFilter === f.id;
+              const chipText =
+                f.id === 'missed' && totalMissedCount > 0
+                  ? `${f.label} (${totalMissedCount})`
+                  : f.label;
+              return (
+                <TouchableOpacity
+                  key={f.id}
+                  onPress={() => {
+                    setHistoryFilter(f.id);
+                    loadCallHistory(f.id);
+                  }}
+                  style={[
+                    styles.tabChip,
+                    active && (f.id === 'missed' ? styles.tabChipMissed : styles.tabChipActive),
+                  ]}
+                >
+                  <AppText style={[styles.tabChipText, active && styles.tabChipTextActive]}>
+                    {chipText}
+                  </AppText>
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+          <TouchableOpacity
+            onPress={() => loadCallHistory()}
+            style={styles.refreshIconBtn}
+            accessibilityLabel="Refresh call records"
+          >
+            <Icon name="refresh-outline" size={18} color={colors.ink} />
+          </TouchableOpacity>
+        </View>
+
+        {historyError ? (
+          <View style={styles.errorBanner}>
+            <AppText style={styles.errorText}>{historyError}</AppText>
+          </View>
+        ) : null}
+
+        {historyLoading && callRecords.length === 0 ? (
+          <View style={styles.centerBox}>
+            <ActivityIndicator size="small" color={colors.blue} />
+            <AppText style={styles.centerText}>Loading call records…</AppText>
+          </View>
+        ) : callRecords.length === 0 ? (
+          <View style={styles.centerBox}>
+            <Icon name="time-outline" size={28} color={colors.muted} />
+            <AppText style={styles.emptyTitle}>{emptyRecordsTitle}</AppText>
+            <AppText style={styles.centerText}>
+              Completed, declined, and missed calls will appear here with full call details.
+            </AppText>
+          </View>
+        ) : (
+          <View style={styles.recordsList}>
+            {callRecords.map((record) => {
+              const badge = getStatusBadgeStyle(record);
+              const isExpanded = expandedRecordId === record.id;
+              const counterpart = record.counterpart || {};
+              const isCalling = callingId === counterpart.id;
+              const callTypeText = record.is_support_call
+                ? 'Support Voice'
+                : record.call_type === 'video'
+                ? 'Video Call'
+                : 'Voice Call';
+              const directionLabel = record.direction === 'incoming' ? 'Incoming' : 'Outgoing';
+              const durationText = record.is_missed
+                ? 'No answer'
+                : record.duration_seconds > 0
+                ? formatDuration(record.duration_seconds)
+                : record.status === 'rejected'
+                ? 'Declined'
+                : '0s';
+              const subtitleLine = `${counterpart.role_label || 'User'} • ${directionLabel} ${callTypeText}`;
+              const timeDurationLine = `${formatDateTime(record.requested_at)} • ${durationText}`;
+              const callBackLabel = isCalling ? 'Calling…' : 'Call Back';
+              const detailsToggleLabel = isExpanded ? 'Hide Details' : 'Details';
+              const answeredText = record.started_at
+                ? formatDateTime(record.started_at)
+                : 'Not answered';
+              const dirIconName = record.is_missed
+                ? 'call-outline'
+                : record.direction === 'incoming'
+                ? 'arrow-down-outline'
+                : 'arrow-up-outline';
+              const dirIconColor = record.is_missed
+                ? '#dc2626'
+                : record.direction === 'incoming'
+                ? '#059669'
+                : colors.blue;
+
+              return (
+                <View
+                  key={record.id}
+                  style={[styles.recordCard, record.is_missed_for_me && styles.recordCardMissed]}
+                >
+                  <View style={styles.recordTopRow}>
+                    <View style={styles.contactInfo}>
+                      <View style={styles.contactNameRow}>
+                        <Icon name={dirIconName} size={14} color={dirIconColor} />
+                        <AppText style={styles.contactName} numberOfLines={1}>
+                          {counterpart.full_name || 'Unknown User'}
+                        </AppText>
+                      </View>
+                      <AppText style={styles.contactMeta} numberOfLines={1}>
+                        {subtitleLine}
+                      </AppText>
+                      <View style={styles.recordBadgeRow}>
+                        <View
+                          style={[
+                            styles.statusBadge,
+                            { backgroundColor: badge.bg, borderColor: badge.border },
+                          ]}
+                        >
+                          <AppText style={[styles.statusBadgeText, { color: badge.text }]}>
+                            {badge.label}
+                          </AppText>
+                        </View>
+                        <AppText style={styles.recordTimeText}>{timeDurationLine}</AppText>
+                      </View>
+                    </View>
+
+                    <View style={styles.recordActionsCol}>
+                      {record.can_call_back && counterpart.id ? (
+                        <TouchableOpacity
+                          activeOpacity={0.85}
+                          disabled={isCalling}
+                          onPress={() => handleDirectCall(counterpart)}
+                          style={[styles.callBackBtn, isCalling && styles.disabledBtn]}
+                        >
+                          <Icon name="call" size={12} color={colors.white} />
+                          <AppText style={styles.callBackBtnText}>{callBackLabel}</AppText>
+                        </TouchableOpacity>
+                      ) : null}
+                      <TouchableOpacity
+                        onPress={() => setExpandedRecordId(isExpanded ? null : record.id)}
+                        style={styles.detailsToggleBtn}
+                      >
+                        <AppText style={styles.detailsToggleText}>{detailsToggleLabel}</AppText>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+
+                  {isExpanded ? (
+                    <View style={styles.recordDetailsBox}>
+                      <AppText style={styles.detailLine}>
+                        Caller: {record.caller?.full_name || 'Unknown'}
+                      </AppText>
+                      <AppText style={styles.detailLine}>
+                        Receiver: {record.receiver?.full_name || 'Unknown'}
+                      </AppText>
+                      <AppText style={styles.detailLine}>
+                        Requested: {formatDateTime(record.requested_at)}
+                      </AppText>
+                      <AppText style={styles.detailLine}>Answered: {answeredText}</AppText>
+                      <AppText style={styles.detailLine}>
+                        Ended: {formatDateTime(record.ended_at)}
+                      </AppText>
+                      <AppText style={styles.detailLine}>Talk Duration: {durationText}</AppText>
+                    </View>
+                  ) : null}
+                </View>
+              );
+            })}
+          </View>
+        )}
+      </View>
+    );
+  };
 
   const renderDirectoryContact = ({ item }) => {
     const territory = formatTerritory(item);
     const isCalling = callingId === item.id;
+    const contactSubtitle = territory
+      ? `${item.role_label || item.user_type} • ${territory}`
+      : item.role_label || item.user_type;
+    const presenceText = item.online ? ui('Online now') : ui('Offline');
+    const callBtnText = isCalling ? ui('Calling…') : ui('Call');
+
     return (
       <View style={styles.contactRow}>
         <View style={styles.avatarWrap}>
@@ -314,8 +640,7 @@ const HeadphoneSupportButton = ({ variant = 'dark', compact = false, style }) =>
             ) : null}
           </View>
           <AppText style={styles.contactMeta} numberOfLines={1}>
-            {item.role_label || item.user_type}
-            {territory ? ` • ${territory}` : ''}
+            {contactSubtitle}
           </AppText>
           <AppText
             style={[
@@ -323,7 +648,7 @@ const HeadphoneSupportButton = ({ variant = 'dark', compact = false, style }) =>
               { color: item.online ? '#059669' : colors.muted },
             ]}
           >
-            {item.online ? ui('Online now') : ui('Offline')}
+            {presenceText}
           </AppText>
         </View>
         <TouchableOpacity
@@ -333,13 +658,18 @@ const HeadphoneSupportButton = ({ variant = 'dark', compact = false, style }) =>
           style={[styles.callPill, isCalling && styles.disabledBtn]}
         >
           <Icon name="call" size={14} color={colors.white} />
-          <AppText style={styles.callPillText}>
-            {isCalling ? ui('Calling…') : ui('Call')}
-          </AppText>
+          <AppText style={styles.callPillText}>{callBtnText}</AppText>
         </TouchableOpacity>
       </View>
     );
   };
+
+  const supportCallTitle =
+    callingId === 'support' ? ui('Connecting to Support…') : ui('Call Support');
+  const supportOnlineSubtitle =
+    supportOnlineCount > 0
+      ? `${supportOnlineCount} online now`
+      : 'Start an instant in-app voice call';
 
   return (
     <>
@@ -363,7 +693,11 @@ const HeadphoneSupportButton = ({ variant = 'dark', compact = false, style }) =>
           size={isLight ? 21 : 20}
           color={isLight ? colors.navy : colors.white}
         />
-        {connected ? (
+        {incomingMissedCount > 0 ? (
+          <View style={styles.missedBadge}>
+            <AppText style={styles.missedBadgeText}>{missedBadgeLabel}</AppText>
+          </View>
+        ) : connected ? (
           <View
             style={[
               styles.liveDot,
@@ -412,118 +746,175 @@ const HeadphoneSupportButton = ({ variant = 'dark', compact = false, style }) =>
                 </TouchableOpacity>
               </View>
 
-              {/* Search & Online Toggle */}
-              <View style={styles.filterBlock}>
-                <View style={styles.searchRow}>
-                  <View style={styles.searchBox}>
-                    <Icon name="search-outline" size={16} color={colors.muted} />
-                    <TextInput
-                      value={search}
-                      onChangeText={setSearch}
-                      placeholder={ui('Search name, role, state, or LGA…')}
-                      placeholderTextColor={colors.muted}
-                      style={styles.searchInput}
-                      returnKeyType="search"
-                    />
-                    {search ? (
-                      <TouchableOpacity onPress={() => setSearch('')}>
-                        <Icon name="close-circle" size={16} color={colors.muted} />
-                      </TouchableOpacity>
-                    ) : null}
-                  </View>
+              {/* Directory vs Call Records Switcher */}
+              <View style={styles.viewSwitcherWrap}>
+                <View style={styles.viewSwitcher}>
                   <TouchableOpacity
-                    onPress={loadDirectory}
-                    style={styles.refreshIconBtn}
-                    accessibilityLabel={ui('Refresh directory')}
+                    onPress={() => setActiveView('contacts')}
+                    style={[
+                      styles.viewSwitchTab,
+                      activeView === 'contacts' && styles.viewSwitchTabActive,
+                    ]}
                   >
-                    <Icon name="refresh-outline" size={18} color={colors.ink} />
-                  </TouchableOpacity>
-                </View>
-
-                <View style={styles.filterControlsRow}>
-                  <ScrollView
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={styles.tabsRow}
-                  >
-                    {adminTabs.map((tab) => {
-                      const active = roleFilter === tab.id;
-                      return (
-                        <TouchableOpacity
-                          key={tab.id}
-                          onPress={() => setRoleFilter(tab.id)}
-                          style={[styles.tabChip, active && styles.tabChipActive]}
-                        >
-                          <AppText
-                            style={[styles.tabChipText, active && styles.tabChipTextActive]}
-                          >
-                            {ui(tab.label)}
-                          </AppText>
-                        </TouchableOpacity>
-                      );
-                    })}
-                  </ScrollView>
-                  <TouchableOpacity
-                    onPress={() => setOnlineOnly((prev) => !prev)}
-                    style={[styles.onlineToggle, onlineOnly && styles.onlineToggleActive]}
-                  >
-                    <View
-                      style={[
-                        styles.onlineToggleDot,
-                        { backgroundColor: onlineOnly ? colors.white : '#10b981' },
-                      ]}
-                    />
                     <AppText
                       style={[
-                        styles.onlineToggleText,
-                        onlineOnly && styles.onlineToggleTextActive,
+                        styles.viewSwitchText,
+                        activeView === 'contacts' && styles.viewSwitchTextActive,
                       ]}
                     >
-                      {ui('Online')}
+                      {primaryTabLabel}
                     </AppText>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => setActiveView('records')}
+                    style={[
+                      styles.viewSwitchTab,
+                      activeView === 'records' && styles.viewSwitchTabActive,
+                    ]}
+                  >
+                    <AppText
+                      style={[
+                        styles.viewSwitchText,
+                        activeView === 'records' && styles.viewSwitchTextActive,
+                      ]}
+                    >
+                      Call Records
+                    </AppText>
+                    {totalMissedCount > 0 ? (
+                      <View style={styles.inlineMissedPill}>
+                        <AppText style={styles.inlineMissedPillText}>{totalMissedCount}</AppText>
+                      </View>
+                    ) : null}
                   </TouchableOpacity>
                 </View>
               </View>
 
-              {error ? (
-                <View style={styles.errorBanner}>
-                  <AppText style={styles.errorText}>{error}</AppText>
-                </View>
-              ) : null}
-
-              {loading && contacts.length === 0 ? (
-                <View style={styles.centerBox}>
-                  <ActivityIndicator size="small" color={colors.blue} />
-                  <AppText style={styles.centerText}>{ui('Loading directory…')}</AppText>
-                </View>
+              {activeView === 'records' ? (
+                <ScrollView
+                  contentContainerStyle={styles.recordsScrollContent}
+                  keyboardShouldPersistTaps="handled"
+                >
+                  {renderCallRecordsSection()}
+                </ScrollView>
               ) : (
-                <FlatList
-                  data={contacts}
-                  keyExtractor={(item) => String(item.id)}
-                  renderItem={renderDirectoryContact}
-                  contentContainerStyle={styles.listContent}
-                  ListEmptyComponent={
-                    <View style={styles.centerBox}>
-                      <Icon name="people-outline" size={32} color={colors.muted} />
-                      <AppText style={styles.emptyTitle}>{ui('No matching users found')}</AppText>
-                      <AppText style={styles.centerText}>
-                        {ui('Try clearing your search or turning off the Online filter.')}
-                      </AppText>
+                <>
+                  {/* Search & Online Toggle */}
+                  <View style={styles.filterBlock}>
+                    <View style={styles.searchRow}>
+                      <View style={styles.searchBox}>
+                        <Icon name="search-outline" size={16} color={colors.muted} />
+                        <TextInput
+                          value={search}
+                          onChangeText={setSearch}
+                          placeholder={ui('Search name, role, state, or LGA…')}
+                          placeholderTextColor={colors.muted}
+                          style={styles.searchInput}
+                          returnKeyType="search"
+                        />
+                        {search ? (
+                          <TouchableOpacity onPress={() => setSearch('')}>
+                            <Icon name="close-circle" size={16} color={colors.muted} />
+                          </TouchableOpacity>
+                        ) : null}
+                      </View>
+                      <TouchableOpacity
+                        onPress={loadDirectory}
+                        style={styles.refreshIconBtn}
+                        accessibilityLabel={ui('Refresh directory')}
+                      >
+                        <Icon name="refresh-outline" size={18} color={colors.ink} />
+                      </TouchableOpacity>
                     </View>
-                  }
-                />
+
+                    <View style={styles.filterControlsRow}>
+                      <ScrollView
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={styles.tabsRow}
+                      >
+                        {adminTabs.map((tab) => {
+                          const active = roleFilter === tab.id;
+                          return (
+                            <TouchableOpacity
+                              key={tab.id}
+                              onPress={() => setRoleFilter(tab.id)}
+                              style={[styles.tabChip, active && styles.tabChipActive]}
+                            >
+                              <AppText
+                                style={[styles.tabChipText, active && styles.tabChipTextActive]}
+                              >
+                                {ui(tab.label)}
+                              </AppText>
+                            </TouchableOpacity>
+                          );
+                        })}
+                      </ScrollView>
+                      <TouchableOpacity
+                        onPress={() => setOnlineOnly((prev) => !prev)}
+                        style={[styles.onlineToggle, onlineOnly && styles.onlineToggleActive]}
+                      >
+                        <View
+                          style={[
+                            styles.onlineToggleDot,
+                            { backgroundColor: onlineOnly ? colors.white : '#10b981' },
+                          ]}
+                        />
+                        <AppText
+                          style={[
+                            styles.onlineToggleText,
+                            onlineOnly && styles.onlineToggleTextActive,
+                          ]}
+                        >
+                          {ui('Online')}
+                        </AppText>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+
+                  {error ? (
+                    <View style={styles.errorBanner}>
+                      <AppText style={styles.errorText}>{error}</AppText>
+                    </View>
+                  ) : null}
+
+                  {loading && contacts.length === 0 ? (
+                    <View style={styles.centerBox}>
+                      <ActivityIndicator size="small" color={colors.blue} />
+                      <AppText style={styles.centerText}>{ui('Loading directory…')}</AppText>
+                    </View>
+                  ) : (
+                    <FlatList
+                      data={contacts}
+                      keyExtractor={(item) => String(item.id)}
+                      renderItem={renderDirectoryContact}
+                      contentContainerStyle={styles.listContent}
+                      keyboardShouldPersistTaps="handled"
+                      ListEmptyComponent={
+                        <View style={styles.centerBox}>
+                          <Icon name="people-outline" size={28} color={colors.muted} />
+                          <AppText style={styles.emptyTitle}>
+                            {ui('No matching users found')}
+                          </AppText>
+                          <AppText style={styles.centerText}>
+                            {ui('Try clearing your search or turning off the Online filter.')}
+                          </AppText>
+                        </View>
+                      }
+                    />
+                  )}
+                </>
               )}
             </KeyboardAvoidingView>
           </SafeAreaView>
         ) : (
-          /* Bottom Sheet Modal for Tenant, Landlord, Property Agent, Marketing Agent & LGA Admins */
+          /* Bottom Sheet for Tenants, Landlords, Agents, Marketing Agents & LGA Admins */
           <View style={styles.sheetBackdrop}>
-            <TouchableOpacity
-              style={styles.flexOne}
-              activeOpacity={1}
-              onPress={() => setOpen(false)}
-            />
-            <View style={[styles.sheetCard, { paddingBottom: Math.max(24, insets.bottom + 12) }]}>
+            <View
+              style={[
+                styles.sheetCard,
+                { paddingBottom: Math.max(24, insets.bottom + 12) },
+              ]}
+            >
               <View style={styles.sheetHeader}>
                 <View style={styles.headerTitleRow}>
                   <View style={styles.headerIconBadge}>
@@ -531,11 +922,7 @@ const HeadphoneSupportButton = ({ variant = 'dark', compact = false, style }) =>
                   </View>
                   <View style={styles.flexOne}>
                     <AppText style={styles.modalTitle}>{meta.title}</AppText>
-                    <AppText style={styles.modalSubtitle}>
-                      {supportOnlineCount > 0
-                        ? ui('{value0} support online now', { value0: supportOnlineCount })
-                        : meta.subtitle}
-                    </AppText>
+                    <AppText style={styles.modalSubtitle}>{meta.subtitle}</AppText>
                   </View>
                 </View>
                 <TouchableOpacity
@@ -547,132 +934,250 @@ const HeadphoneSupportButton = ({ variant = 'dark', compact = false, style }) =>
                 </TouchableOpacity>
               </View>
 
-              <ScrollView
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={styles.sheetBody}
-              >
-                {/* Support Actions */}
-                {policy?.canChatSupport ? (
+              {/* Contacts vs Call Records Switcher */}
+              <View style={styles.viewSwitcherWrap}>
+                <View style={styles.viewSwitcher}>
                   <TouchableOpacity
-                    activeOpacity={0.85}
-                    onPress={openSupportChat}
-                    style={styles.actionCard}
-                  >
-                    <View style={[styles.actionIconBox, { backgroundColor: '#dbeafe' }]}>
-                      <Icon name="chatbubbles-outline" size={20} color="#1d4ed8" />
-                    </View>
-                    <View style={styles.flexOne}>
-                      <AppText style={styles.actionTitle}>{ui('Chat with Support')}</AppText>
-                      <AppText style={styles.actionSubtitle}>
-                        {ui('Open live support chat & tickets')}
-                      </AppText>
-                    </View>
-                    <Icon name="chevron-forward" size={18} color={colors.muted} />
-                  </TouchableOpacity>
-                ) : null}
-
-                {policy?.canCallSupport ? (
-                  <TouchableOpacity
-                    activeOpacity={0.85}
-                    disabled={callingId === 'support'}
-                    onPress={handleCallSupport}
+                    onPress={() => setActiveView('contacts')}
                     style={[
-                      styles.actionCard,
-                      styles.callSupportCard,
-                      callingId === 'support' && styles.disabledBtn,
+                      styles.viewSwitchTab,
+                      activeView === 'contacts' && styles.viewSwitchTabActive,
                     ]}
                   >
-                    <View style={[styles.actionIconBox, { backgroundColor: '#059669' }]}>
-                      <Icon name="call" size={18} color={colors.white} />
-                    </View>
-                    <View style={styles.flexOne}>
-                      <AppText style={styles.actionTitle}>
-                        {callingId === 'support' ? ui('Connecting Call…') : ui('Call Support')}
-                      </AppText>
-                      <AppText style={[styles.actionSubtitle, { color: '#047857' }]}>
-                        {connected
-                          ? ui('Start an instant voice call')
-                          : ui('Connecting voice line…')}
-                      </AppText>
-                    </View>
-                    <Icon name="chevron-forward" size={18} color="#059669" />
+                    <AppText
+                      style={[
+                        styles.viewSwitchText,
+                        activeView === 'contacts' && styles.viewSwitchTextActive,
+                      ]}
+                    >
+                      {primaryTabLabel}
+                    </AppText>
                   </TouchableOpacity>
-                ) : null}
-
-                {supportNoAgentMessage ? (
-                  <View style={styles.warnBox}>
-                    <AppText style={styles.warnText}>{supportNoAgentMessage}</AppText>
-                    <TouchableOpacity onPress={openSupportChat} style={styles.warnAction}>
-                      <AppText style={styles.warnActionText}>
-                        {ui('Switch to Support Chat')}
-                      </AppText>
-                    </TouchableOpacity>
-                  </View>
-                ) : null}
-
-                {/* Supervisor / Boss Section for Property Agents, Marketing Agents & LGA Admins */}
-                {policy?.canCallBoss ? (
-                  <View style={styles.bossSection}>
-                    <View style={styles.bossHeaderRow}>
-                      <AppText style={styles.bossSectionTitle}>
-                        {ui('CALL YOUR BOSS / SUPERVISOR')}
-                      </AppText>
-                      <TouchableOpacity onPress={loadDirectory}>
-                        <Icon name="refresh-outline" size={16} color={colors.muted} />
-                      </TouchableOpacity>
-                    </View>
-
-                    {error ? <AppText style={styles.errorText}>{error}</AppText> : null}
-
-                    {loading && bossContacts.length === 0 ? (
-                      <View style={styles.bossLoading}>
-                        <ActivityIndicator size="small" color={colors.blue} />
+                  <TouchableOpacity
+                    onPress={() => setActiveView('records')}
+                    style={[
+                      styles.viewSwitchTab,
+                      activeView === 'records' && styles.viewSwitchTabActive,
+                    ]}
+                  >
+                    <AppText
+                      style={[
+                        styles.viewSwitchText,
+                        activeView === 'records' && styles.viewSwitchTextActive,
+                      ]}
+                    >
+                      Call Records
+                    </AppText>
+                    {totalMissedCount > 0 ? (
+                      <View style={styles.inlineMissedPill}>
+                        <AppText style={styles.inlineMissedPillText}>{totalMissedCount}</AppText>
                       </View>
-                    ) : bossContacts.length === 0 ? (
-                      <View style={styles.bossEmptyBox}>
-                        <AppText style={styles.bossEmptyText}>
-                          {ui('No supervisor is linked to your account yet. You can reach Support above anytime.')}
-                        </AppText>
-                      </View>
-                    ) : (
-                      bossContacts.map((boss) => (
-                        <View key={String(boss.id)} style={styles.bossRow}>
+                    ) : null}
+                  </TouchableOpacity>
+                </View>
+              </View>
+
+              <ScrollView
+                contentContainerStyle={styles.sheetBody}
+                keyboardShouldPersistTaps="handled"
+              >
+                {activeView === 'records' ? (
+                  renderCallRecordsSection()
+                ) : (
+                  <>
+                    {policy?.canChatSupport ? (
+                      <>
+                        <TouchableOpacity
+                          activeOpacity={0.85}
+                          onPress={openSupportChat}
+                          style={styles.actionCard}
+                        >
+                          <View style={[styles.actionIconBox, { backgroundColor: colors.blue }]}>
+                            <Icon name="chatbubbles-outline" size={18} color={colors.white} />
+                          </View>
                           <View style={styles.flexOne}>
-                            <View style={styles.contactNameRow}>
-                              <View
-                                style={[
-                                  styles.smallDot,
-                                  { backgroundColor: boss.online ? '#10b981' : '#cbd5e1' },
-                                ]}
-                              />
-                              <AppText style={styles.contactName} numberOfLines={1}>
-                                {boss.full_name}
-                              </AppText>
-                            </View>
-                            <AppText style={styles.contactMeta} numberOfLines={1}>
-                              {boss.role_label || boss.user_type}
-                              {formatTerritory(boss) ? ` • ${formatTerritory(boss)}` : ''}
+                            <AppText style={styles.actionTitle}>{ui('Chat with Support')}</AppText>
+                            <AppText style={styles.actionSubtitle}>
+                              {ui('Open live support messaging and tickets')}
                             </AppText>
                           </View>
+                          <Icon name="chevron-forward" size={18} color={colors.muted} />
+                        </TouchableOpacity>
+
+                        {policy?.canCallSupport ? (
                           <TouchableOpacity
                             activeOpacity={0.85}
-                            disabled={callingId === boss.id}
-                            onPress={() => handleDirectCall(boss)}
+                            disabled={callingId === 'support'}
+                            onPress={handleCallSupport}
                             style={[
-                              styles.bossCallBtn,
-                              callingId === boss.id && styles.disabledBtn,
+                              styles.actionCard,
+                              styles.callSupportCard,
+                              callingId === 'support' && styles.disabledBtn,
                             ]}
                           >
-                            <Icon name="call" size={13} color={colors.white} />
-                            <AppText style={styles.callPillText}>
-                              {callingId === boss.id ? ui('Calling…') : ui('Call')}
-                            </AppText>
+                            <View style={[styles.actionIconBox, { backgroundColor: '#059669' }]}>
+                              <Icon name="call" size={18} color={colors.white} />
+                            </View>
+                            <View style={styles.flexOne}>
+                              <AppText style={styles.actionTitle}>{supportCallTitle}</AppText>
+                              <AppText style={styles.actionSubtitle}>{supportOnlineSubtitle}</AppText>
+                            </View>
+                            <Icon name="chevron-forward" size={18} color="#059669" />
+                          </TouchableOpacity>
+                        ) : null}
+
+                        {supportNoAgentMessage ? (
+                          <View style={styles.warnBox}>
+                            <AppText style={styles.warnText}>{supportNoAgentMessage}</AppText>
+                            <TouchableOpacity onPress={openSupportChat} style={styles.warnAction}>
+                              <AppText style={styles.warnActionText}>
+                                {ui('Switch to Support Chat')}
+                              </AppText>
+                            </TouchableOpacity>
+                          </View>
+                        ) : null}
+                      </>
+                    ) : null}
+
+                    {/* Marketing Team (Teammates) Section */}
+                    {policy?.canCallTeammates ? (
+                      <View style={styles.bossSection}>
+                        <View style={styles.bossHeaderRow}>
+                          <AppText style={styles.bossSectionTitle}>
+                            MARKETING TEAM ({teammateContacts.length})
+                          </AppText>
+                          <TouchableOpacity onPress={loadDirectory}>
+                            <AppText style={styles.refreshLinkText}>Refresh</AppText>
                           </TouchableOpacity>
                         </View>
-                      ))
-                    )}
-                  </View>
-                ) : null}
+
+                        <View style={[styles.searchBox, { marginBottom: 8 }]}>
+                          <Icon name="search-outline" size={15} color={colors.muted} />
+                          <TextInput
+                            value={search}
+                            onChangeText={setSearch}
+                            placeholder="Search marketing teammate or state…"
+                            placeholderTextColor={colors.muted}
+                            style={styles.searchInput}
+                          />
+                        </View>
+
+                        {loading && teammateContacts.length === 0 ? (
+                          <ActivityIndicator
+                            size="small"
+                            color={colors.blue}
+                            style={styles.bossLoading}
+                          />
+                        ) : teammateContacts.length === 0 ? (
+                          <View style={styles.bossEmptyBox}>
+                            <AppText style={styles.bossEmptyText}>
+                              No other marketing agents found right now.
+                            </AppText>
+                          </View>
+                        ) : (
+                          teammateContacts.map((member) => {
+                            const territory = formatTerritory(member);
+                            const isCalling = callingId === member.id;
+                            const memberMeta = territory
+                              ? `${member.role_label || 'Marketing Agent'} • ${territory}`
+                              : member.role_label || 'Marketing Agent';
+                            const callBtnLabel = isCalling ? 'Calling…' : 'Call';
+                            return (
+                              <View key={member.id} style={styles.bossRow}>
+                                <View
+                                  style={[
+                                    styles.smallDot,
+                                    { backgroundColor: member.online ? '#10b981' : '#cbd5e1' },
+                                  ]}
+                                />
+                                <View style={styles.flexOne}>
+                                  <AppText style={styles.contactName} numberOfLines={1}>
+                                    {member.full_name}
+                                  </AppText>
+                                  <AppText style={styles.contactMeta} numberOfLines={1}>
+                                    {memberMeta}
+                                  </AppText>
+                                </View>
+                                <TouchableOpacity
+                                  activeOpacity={0.85}
+                                  disabled={isCalling}
+                                  onPress={() => handleDirectCall(member)}
+                                  style={[styles.teammateCallBtn, isCalling && styles.disabledBtn]}
+                                >
+                                  <Icon name="call" size={13} color={colors.white} />
+                                  <AppText style={styles.callPillText}>{callBtnLabel}</AppText>
+                                </TouchableOpacity>
+                              </View>
+                            );
+                          })
+                        )}
+                      </View>
+                    ) : null}
+
+                    {/* Supervising Boss Section */}
+                    {policy?.canCallBoss ? (
+                      <View style={styles.bossSection}>
+                        <View style={styles.bossHeaderRow}>
+                          <AppText style={styles.bossSectionTitle}>
+                            CALL YOUR BOSS / SUPERVISOR
+                          </AppText>
+                          <TouchableOpacity onPress={loadDirectory}>
+                            <AppText style={styles.refreshLinkText}>Refresh</AppText>
+                          </TouchableOpacity>
+                        </View>
+                        {loading ? (
+                          <ActivityIndicator
+                            size="small"
+                            color={colors.blue}
+                            style={styles.bossLoading}
+                          />
+                        ) : bossContacts.length === 0 ? (
+                          <View style={styles.bossEmptyBox}>
+                            <AppText style={styles.bossEmptyText}>
+                              No supervising admin or landlord is linked yet.
+                            </AppText>
+                          </View>
+                        ) : (
+                          bossContacts.map((boss) => {
+                            const territory = formatTerritory(boss);
+                            const isCalling = callingId === boss.id;
+                            const bossMeta = territory
+                              ? `${boss.role_label} • ${territory}`
+                              : boss.role_label;
+                            const callBtnLabel = isCalling ? 'Calling…' : 'Call';
+                            return (
+                              <View key={boss.id} style={styles.bossRow}>
+                                <View
+                                  style={[
+                                    styles.smallDot,
+                                    { backgroundColor: boss.online ? '#10b981' : '#cbd5e1' },
+                                  ]}
+                                />
+                                <View style={styles.flexOne}>
+                                  <AppText style={styles.contactName} numberOfLines={1}>
+                                    {boss.full_name}
+                                  </AppText>
+                                  <AppText style={styles.contactMeta} numberOfLines={1}>
+                                    {bossMeta}
+                                  </AppText>
+                                </View>
+                                <TouchableOpacity
+                                  activeOpacity={0.85}
+                                  disabled={isCalling}
+                                  onPress={() => handleDirectCall(boss)}
+                                  style={[styles.bossCallBtn, isCalling && styles.disabledBtn]}
+                                >
+                                  <Icon name="call" size={13} color={colors.white} />
+                                  <AppText style={styles.callPillText}>{callBtnLabel}</AppText>
+                                </TouchableOpacity>
+                              </View>
+                            );
+                          })
+                        )}
+                      </View>
+                    ) : null}
+                  </>
+                )}
               </ScrollView>
             </View>
           </View>
@@ -688,8 +1193,10 @@ const styles = StyleSheet.create({
   },
   darkTrigger: {
     alignItems: 'center',
-    backgroundColor: colors.navySoft,
-    borderRadius: 19,
+    backgroundColor: 'rgba(255, 255, 255, 0.14)',
+    borderColor: 'rgba(255, 255, 255, 0.24)',
+    borderRadius: 12,
+    borderWidth: 1,
     height: 38,
     justifyContent: 'center',
     position: 'relative',
@@ -699,33 +1206,52 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.white,
     borderColor: colors.border,
-    borderRadius: 21,
+    borderRadius: 12,
     borderWidth: 1,
-    height: 42,
+    height: 40,
     justifyContent: 'center',
     position: 'relative',
-    width: 42,
+    width: 40,
   },
   compactTrigger: {
-    borderRadius: 17,
-    height: 34,
-    width: 34,
+    height: 36,
+    width: 36,
   },
   liveDot: {
-    borderRadius: 4,
+    borderRadius: 5,
     borderWidth: 1.5,
-    bottom: 5,
-    height: 8,
+    height: 9,
     position: 'absolute',
-    right: 5,
-    width: 8,
+    right: -2,
+    top: -2,
+    width: 9,
     backgroundColor: '#10b981',
   },
   liveDotDark: {
-    borderColor: colors.navySoft,
+    borderColor: colors.navy,
   },
   liveDotLight: {
     borderColor: colors.white,
+  },
+  missedBadge: {
+    alignItems: 'center',
+    backgroundColor: '#dc2626',
+    borderColor: colors.white,
+    borderRadius: 9,
+    borderWidth: 1.5,
+    height: 18,
+    justifyContent: 'center',
+    minWidth: 18,
+    paddingHorizontal: 4,
+    position: 'absolute',
+    right: -5,
+    top: -5,
+  },
+  missedBadgeText: {
+    color: colors.white,
+    fontFamily: typography.bold,
+    fontSize: 10,
+    lineHeight: 13,
   },
   sheetBackdrop: {
     backgroundColor: 'rgba(15, 23, 42, 0.5)',
@@ -736,7 +1262,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
-    maxHeight: '82%',
+    maxHeight: '86%',
     paddingBottom: 24,
   },
   sheetHeader: {
@@ -748,10 +1274,187 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     paddingVertical: 14,
   },
+  viewSwitcherWrap: {
+    borderBottomColor: colors.border,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+  },
+  viewSwitcher: {
+    backgroundColor: '#f1f5f9',
+    borderRadius: 12,
+    flexDirection: 'row',
+    gap: 6,
+    padding: 4,
+  },
+  viewSwitchTab: {
+    alignItems: 'center',
+    borderRadius: 9,
+    flex: 1,
+    flexDirection: 'row',
+    gap: 6,
+    justifyContent: 'center',
+    paddingVertical: 8,
+  },
+  viewSwitchTabActive: {
+    backgroundColor: colors.white,
+  },
+  viewSwitchText: {
+    color: colors.muted,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.xs,
+  },
+  viewSwitchTextActive: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+  },
+  inlineMissedPill: {
+    backgroundColor: '#dc2626',
+    borderRadius: 9,
+    paddingHorizontal: 6,
+    paddingVertical: 1,
+  },
+  inlineMissedPillText: {
+    color: colors.white,
+    fontFamily: typography.bold,
+    fontSize: 10,
+  },
   sheetBody: {
     gap: 10,
     paddingHorizontal: 18,
     paddingTop: 14,
+    paddingBottom: 16,
+  },
+  recordsScrollContent: {
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+  },
+  recordsContainer: {
+    gap: 10,
+  },
+  summaryStrip: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  summaryTile: {
+    alignItems: 'center',
+    backgroundColor: '#f8fafc',
+    borderColor: colors.border,
+    borderRadius: 12,
+    borderWidth: 1,
+    flex: 1,
+    paddingVertical: 8,
+  },
+  summaryTileMissed: {
+    backgroundColor: '#fef2f2',
+    borderColor: '#fecaca',
+  },
+  summaryTileAnswered: {
+    backgroundColor: '#ecfdf5',
+    borderColor: '#a7f3d0',
+  },
+  summaryLabel: {
+    color: colors.muted,
+    fontFamily: typography.semibold,
+    fontSize: 11,
+  },
+  summaryLabelMissed: {
+    color: '#b91c1c',
+  },
+  summaryLabelAnswered: {
+    color: '#15803d',
+  },
+  summaryValue: {
+    color: colors.ink,
+    fontFamily: typography.bold,
+    fontSize: 16,
+    marginTop: 2,
+  },
+  summaryValueMissed: {
+    color: '#b91c1c',
+  },
+  summaryValueAnswered: {
+    color: '#15803d',
+  },
+  recordsList: {
+    gap: 8,
+  },
+  recordCard: {
+    backgroundColor: colors.white,
+    borderColor: colors.border,
+    borderRadius: 12,
+    borderWidth: 1,
+    padding: 12,
+    gap: 8,
+  },
+  recordCardMissed: {
+    backgroundColor: '#fef2f2',
+    borderColor: '#fecaca',
+  },
+  recordTopRow: {
+    flexDirection: 'row',
+    gap: 10,
+    justifyContent: 'space-between',
+  },
+  recordBadgeRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+    marginTop: 4,
+  },
+  statusBadge: {
+    borderRadius: 6,
+    borderWidth: 1,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+  },
+  statusBadgeText: {
+    fontFamily: typography.bold,
+    fontSize: 10,
+  },
+  recordTimeText: {
+    color: colors.muted,
+    fontSize: 11,
+  },
+  recordActionsCol: {
+    alignItems: 'flex-end',
+    gap: 6,
+  },
+  callBackBtn: {
+    alignItems: 'center',
+    backgroundColor: '#059669',
+    borderRadius: 8,
+    flexDirection: 'row',
+    gap: 4,
+    paddingHorizontal: 9,
+    paddingVertical: 6,
+  },
+  callBackBtnText: {
+    color: colors.white,
+    fontFamily: typography.semibold,
+    fontSize: 11,
+  },
+  detailsToggleBtn: {
+    paddingHorizontal: 4,
+    paddingVertical: 2,
+  },
+  detailsToggleText: {
+    color: colors.blue,
+    fontFamily: typography.semibold,
+    fontSize: 11,
+  },
+  recordDetailsBox: {
+    backgroundColor: '#f8fafc',
+    borderColor: colors.border,
+    borderRadius: 10,
+    borderWidth: 1,
+    gap: 3,
+    padding: 10,
+  },
+  detailLine: {
+    color: colors.text,
+    fontSize: 12,
   },
   headerTitleRow: {
     alignItems: 'center',
@@ -858,6 +1561,11 @@ const styles = StyleSheet.create({
     fontSize: 11,
     letterSpacing: 0.6,
   },
+  refreshLinkText: {
+    color: colors.blue,
+    fontFamily: typography.semibold,
+    fontSize: 12,
+  },
   bossLoading: {
     paddingVertical: 16,
   },
@@ -883,6 +1591,15 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     paddingHorizontal: 12,
     paddingVertical: 10,
+  },
+  teammateCallBtn: {
+    alignItems: 'center',
+    backgroundColor: '#059669',
+    borderRadius: 10,
+    flexDirection: 'row',
+    gap: 5,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
   },
   bossCallBtn: {
     alignItems: 'center',
@@ -973,6 +1690,10 @@ const styles = StyleSheet.create({
   tabChipActive: {
     backgroundColor: colors.blue,
     borderColor: colors.blue,
+  },
+  tabChipMissed: {
+    backgroundColor: '#dc2626',
+    borderColor: '#dc2626',
   },
   tabChipText: {
     color: colors.ink,
@@ -1118,7 +1839,7 @@ const styles = StyleSheet.create({
     gap: 6,
     justifyContent: 'center',
     paddingHorizontal: 24,
-    paddingVertical: 48,
+    paddingVertical: 36,
   },
   emptyTitle: {
     color: colors.ink,
