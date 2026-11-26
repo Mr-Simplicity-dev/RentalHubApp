@@ -1,7 +1,8 @@
 import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useCallback, useContext, useLayoutEffect, useState } from 'react';
-import { Alert, Platform, Share, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Alert, Modal, Platform, Pressable, Share, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
 import { useFocusEffect } from '@react-navigation/native';
@@ -38,7 +39,9 @@ const formatDate = (value) => {
 
 const MarketingAgentScreen = ({ navigation }) => {
   const interfaceLanguage = useInterfaceLanguage();
+  const insets = useSafeAreaInsets();
   const { user, logout } = useContext(AuthContext);
+  const [headerMenuOpen, setHeaderMenuOpen] = useState(false);
   const [responses, setResponses] = useState([]);
   const [summary, setSummary] = useState(null);
   const [invite, setInvite] = useState(null);
@@ -62,6 +65,8 @@ const MarketingAgentScreen = ({ navigation }) => {
     );
   }, [logout]);
 
+  const userInitial = String(user?.full_name || 'M').trim().charAt(0).toUpperCase() || 'M';
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: true,
@@ -72,17 +77,26 @@ const MarketingAgentScreen = ({ navigation }) => {
           <NotificationBell />
           <TouchableOpacity
             accessibilityRole="button"
-            accessibilityLabel={ui('Log out')}
+            accessibilityLabel={ui('Account menu')}
+            accessibilityState={{ expanded: headerMenuOpen }}
             activeOpacity={0.85}
-            onPress={confirmLogout}
-            style={styles.headerLogoutBtn}
+            hitSlop={{ top: 8, bottom: 8, left: 6, right: 6 }}
+            onPress={() => setHeaderMenuOpen((open) => !open)}
+            style={styles.headerDropdownTrigger}
           >
-            <Icon name="log-out-outline" size={19} color={colors.white} />
+            <View style={styles.headerAvatarCircle}>
+              <AppText style={styles.headerAvatarText}>{userInitial}</AppText>
+            </View>
+            <Icon
+              name={headerMenuOpen ? 'chevron-up' : 'chevron-down'}
+              size={14}
+              color={colors.navy}
+            />
           </TouchableOpacity>
         </View>
       ),
     });
-  }, [navigation, confirmLogout, interfaceLanguage]);
+  }, [navigation, headerMenuOpen, userInitial, interfaceLanguage]);
 
   const load = useCallback(async (isRefresh = false) => {
     if (isRefresh) {
@@ -214,69 +228,6 @@ const MarketingAgentScreen = ({ navigation }) => {
               icon="megaphone-outline"
             />
 
-            {/* Purpose-built Marketing Agent quick navigation */}
-            <View style={styles.shortcutGrid}>
-              <TouchableOpacity
-                activeOpacity={0.85}
-                onPress={() => navigation.navigate('PropertyList')}
-                style={styles.shortcutCard}
-              >
-                <View style={[styles.shortcutIcon, { backgroundColor: '#eff6ff' }]}>
-                  <Icon name="home-outline" size={19} color={colors.blue} />
-                </View>
-                <AppText style={styles.shortcutLabel} numberOfLines={1}>
-                  {ui('Property Market')}
-                </AppText>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                activeOpacity={0.85}
-                onPress={() => navigation.navigate('Messages')}
-                style={styles.shortcutCard}
-              >
-                <View style={[styles.shortcutIcon, { backgroundColor: '#f0fdf4' }]}>
-                  <Icon name="chatbubbles-outline" size={19} color="#15803d" />
-                </View>
-                <AppText style={styles.shortcutLabel} numberOfLines={1}>
-                  {ui('Messages')}
-                </AppText>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                activeOpacity={0.85}
-                onPress={() => navigation.navigate('Profile')}
-                style={styles.shortcutCard}
-              >
-                <View style={[styles.shortcutIcon, { backgroundColor: '#f8fafc' }]}>
-                  <Icon name="person-outline" size={19} color={colors.navy} />
-                </View>
-                <AppText style={styles.shortcutLabel} numberOfLines={1}>
-                  {ui('Profile')}
-                </AppText>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                activeOpacity={0.85}
-                onPress={confirmLogout}
-                style={[styles.shortcutCard, styles.shortcutLogoutCard]}
-              >
-                <View style={[styles.shortcutIcon, { backgroundColor: '#fef2f2' }]}>
-                  <Icon name="log-out-outline" size={19} color="#dc2626" />
-                </View>
-                <AppText style={[styles.shortcutLabel, { color: '#b91c1c' }]} numberOfLines={1}>
-                  {ui('Log out')}
-                </AppText>
-              </TouchableOpacity>
-            </View>
-
-            <TouchableOpacity
-              style={[styles.conductButton, { backgroundColor: colors.navy, marginBottom: 10 }]}
-              activeOpacity={0.85}
-              onPress={() => navigation.navigate('MyStaffIdentity')}
-            >
-              <Icon name="id-card-outline" size={18} color={colors.white} />
-              <AppText style={styles.conductButtonText}>My Staff Identity</AppText>
-            </TouchableOpacity>
             <TourTarget id="marketing_capture" label={ui('Conduct a survey')}>
               <TouchableOpacity
                 style={styles.conductButton}
@@ -413,6 +364,111 @@ const MarketingAgentScreen = ({ navigation }) => {
         )}
       />
 
+      <Modal
+        visible={headerMenuOpen}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setHeaderMenuOpen(false)}
+      >
+        <Pressable
+          style={styles.dropdownBackdrop}
+          onPress={() => setHeaderMenuOpen(false)}
+        >
+          <Pressable
+            onPress={() => {}}
+            style={[
+              styles.dropdownCard,
+              { top: Math.max(insets.top, 12) + (Platform.OS === 'ios' ? 46 : 52) },
+            ]}
+          >
+            <View style={styles.dropdownHeader}>
+              <AppText style={styles.dropdownUserName} numberOfLines={1}>
+                {user?.full_name || ui('Marketing Agent')}
+              </AppText>
+              {user?.email ? (
+                <AppText style={styles.dropdownUserEmail} numberOfLines={1}>
+                  {user.email}
+                </AppText>
+              ) : null}
+              <View style={styles.dropdownRolePill}>
+                <AppText style={styles.dropdownRoleText}>{ui('Marketing Agent')}</AppText>
+              </View>
+            </View>
+
+            <TouchableOpacity
+              accessibilityRole="button"
+              activeOpacity={0.75}
+              style={styles.dropdownItem}
+              onPress={() => {
+                setHeaderMenuOpen(false);
+                navigation.navigate('PropertyList');
+              }}
+            >
+              <Icon name="home-outline" size={18} color={colors.blue} />
+              <AppText style={styles.dropdownItemText}>{ui('Property Market')}</AppText>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              accessibilityRole="button"
+              activeOpacity={0.75}
+              style={styles.dropdownItem}
+              onPress={() => {
+                setHeaderMenuOpen(false);
+                navigation.navigate('Messages');
+              }}
+            >
+              <Icon name="chatbubbles-outline" size={18} color={colors.navy} />
+              <AppText style={styles.dropdownItemText}>{ui('Messages')}</AppText>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              accessibilityRole="button"
+              activeOpacity={0.75}
+              style={styles.dropdownItem}
+              onPress={() => {
+                setHeaderMenuOpen(false);
+                navigation.navigate('Profile');
+              }}
+            >
+              <Icon name="person-circle-outline" size={18} color={colors.navy} />
+              <AppText style={styles.dropdownItemText}>{ui('Profile')}</AppText>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              accessibilityRole="button"
+              activeOpacity={0.75}
+              style={styles.dropdownItem}
+              onPress={() => {
+                setHeaderMenuOpen(false);
+                navigation.navigate('MyStaffIdentity');
+              }}
+            >
+              <Icon name="id-card-outline" size={18} color={colors.blue} />
+              <AppText style={[styles.dropdownItemText, styles.dropdownIdentityText]}>
+                {ui('My Staff Identity')}
+              </AppText>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              accessibilityRole="button"
+              activeOpacity={0.75}
+              style={[styles.dropdownItem, styles.dropdownLogoutItem]}
+              onPress={() => {
+                setHeaderMenuOpen(false);
+                if (Platform.OS === 'ios') {
+                  setTimeout(() => confirmLogout(), 220);
+                } else {
+                  confirmLogout();
+                }
+              }}
+            >
+              <Icon name="log-out-outline" size={18} color="#dc2626" />
+              <AppText style={styles.dropdownLogoutText}>{ui('Log out')}</AppText>
+            </TouchableOpacity>
+          </Pressable>
+        </Pressable>
+      </Modal>
+
       <WalletWithdrawModal
         visible={withdrawOpen}
         onClose={() => setWithdrawOpen(false)}
@@ -444,13 +500,113 @@ const styles = StyleSheet.create({
     gap: Platform.OS === 'ios' ? 6 : 8,
     minHeight: 38,
   },
-  headerLogoutBtn: {
+  headerDropdownTrigger: {
     alignItems: 'center',
-    backgroundColor: '#b91c1c',
-    borderRadius: Platform.OS === 'ios' ? 17 : 19,
-    height: Platform.OS === 'ios' ? 34 : 38,
+    backgroundColor: colors.white,
+    borderColor: colors.border,
+    borderRadius: 18,
+    borderWidth: 1,
+    flexDirection: 'row',
+    gap: 4,
+    height: Platform.OS === 'ios' ? 34 : 36,
+    paddingLeft: 4,
+    paddingRight: 8,
+  },
+  headerAvatarCircle: {
+    alignItems: 'center',
+    backgroundColor: colors.navy,
+    borderRadius: 13,
+    height: 26,
     justifyContent: 'center',
-    width: Platform.OS === 'ios' ? 34 : 38,
+    width: 26,
+  },
+  headerAvatarText: {
+    color: colors.white,
+    fontFamily: typography.bold,
+    fontSize: 12,
+    lineHeight: 15,
+  },
+  dropdownBackdrop: {
+    backgroundColor: 'rgba(15, 23, 42, 0.22)',
+    flex: 1,
+  },
+  dropdownCard: {
+    backgroundColor: colors.white,
+    borderColor: colors.border,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    elevation: 10,
+    position: 'absolute',
+    right: 12,
+    shadowColor: '#0f172a',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.14,
+    shadowRadius: 18,
+    width: 248,
+    overflow: 'hidden',
+  },
+  dropdownHeader: {
+    borderBottomColor: colors.border,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+  },
+  dropdownUserName: {
+    color: colors.ink,
+    fontFamily: typography.semibold,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
+  },
+  dropdownUserEmail: {
+    color: colors.muted,
+    fontFamily: typography.regular,
+    fontSize: typeScale.xs,
+    lineHeight: 16,
+    marginTop: 2,
+  },
+  dropdownRolePill: {
+    alignSelf: 'flex-start',
+    backgroundColor: '#ecfdf5',
+    borderColor: '#a7f3d0',
+    borderRadius: radius.pill,
+    borderWidth: 1,
+    marginTop: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+  },
+  dropdownRoleText: {
+    color: '#047857',
+    fontFamily: typography.semibold,
+    fontSize: 10,
+    lineHeight: 14,
+    textTransform: 'uppercase',
+  },
+  dropdownItem: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+  },
+  dropdownItemText: {
+    color: colors.ink,
+    fontFamily: typography.medium,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
+  },
+  dropdownIdentityText: {
+    color: colors.blue,
+    fontFamily: typography.semibold,
+  },
+  dropdownLogoutItem: {
+    borderTopColor: colors.border,
+    borderTopWidth: StyleSheet.hairlineWidth,
+  },
+  dropdownLogoutText: {
+    color: '#dc2626',
+    fontFamily: typography.semibold,
+    fontSize: typeScale.sm,
+    lineHeight: 20,
   },
   shortcutGrid: {
     flexDirection: 'row',

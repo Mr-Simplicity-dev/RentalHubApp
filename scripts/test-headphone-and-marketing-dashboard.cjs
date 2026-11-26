@@ -60,7 +60,9 @@ test('MarketingAgentScreen and MarketingAgentRoot close all requested disparitie
   const screen = read('src/screens/shared/MarketingAgentScreen.js');
   assert.match(screen, /<HeadphoneSupportButton/, 'Marketing Agent must have Headphone icon');
   assert.match(screen, /<NotificationBell/, 'Marketing Agent must have Notification Bell');
-  assert.match(screen, /log-out-outline/, 'Marketing Agent must have Logout button');
+  assert.match(screen, /headerDropdownTrigger/, 'Marketing Agent header must use an admin-style dropdown trigger');
+  assert.match(screen, /chevron-down/, 'Marketing Agent header dropdown must render chevron indicator');
+  assert.match(screen, /log-out-outline/, 'Marketing Agent must have Logout action inside dropdown');
   assert.match(screen, /navigation\.navigate\('PropertyList'\)/, 'Marketing Agent must link to Property Market');
   assert.match(screen, /navigation\.navigate\('Messages'\)/, 'Marketing Agent must link to Messages');
   assert.match(screen, /navigation\.navigate\('Profile'\)/, 'Marketing Agent must link to Profile');
