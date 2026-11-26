@@ -5,7 +5,8 @@ import { ActivityIndicator, Modal, StyleSheet, TouchableOpacity, View } from 're
 import TextInput from '../common/AppTextInput';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
-import { getWebRtcIceServers, isVideoEnabledCall } from '../../config/webrtcConfig';
+import { loadWebRtcIceServers, isVideoEnabledCall } from '../../config/webrtcConfig';
+import { createCallSignalBuffer } from '../../utils/callSignalBuffer.cjs';
 import { useRealtime } from '../../context/RealtimeContext';
 import { AuthContext } from '../../context/AuthContext';
 import { voiceMonitorService } from '../../services/voiceMonitorService';
@@ -101,7 +102,9 @@ const NativeCallOverlay = () => {
   const peerRef = useRef(null);
   const localStreamRef = useRef(null);
   const remoteStreamRef = useRef(null);
-  const initializingRef = useRef(false);
+  const mediaInitPromiseRef = useRef(null);
+  const mediaGenerationRef = useRef(0);
+  const signalBufferRef = useRef(createCallSignalBuffer());
   const activeCallRef = useRef(null);
   const [localStream, setLocalStream] = useState(null);
   const [remoteStream, setRemoteStream] = useState(null);
@@ -130,7 +133,9 @@ const NativeCallOverlay = () => {
     remoteStreamRef.current?.getTracks?.().forEach((track) => track.stop?.());
     localStreamRef.current = null;
     remoteStreamRef.current = null;
-    initializingRef.current = false;
+    mediaGenerationRef.current += 1;
+    mediaInitPromiseRef.current = null;
+    signalBufferRef.current.clear();
     setLocalStream(null);
     setRemoteStream(null);
     setMediaStatus('idle');
@@ -138,8 +143,8 @@ const NativeCallOverlay = () => {
     setCameraEnabled(true);
   }, []);
 
-  const createPeerConnection = useCallback((call) => {
-    const peer = new RTCPeerConnection({ iceServers: getWebRtcIceServers() });
+  const createPeerConnection = useCallback((call, iceServers) => {
+    const peer = new RTCPeerConnection({ iceServers });
 
     peer.onicecandidate = (event) => {
       if (!event.candidate) return;
@@ -170,14 +175,19 @@ const NativeCallOverlay = () => {
     return peer;
   }, [emitCallSignal]);
 
-  const beginMediaCall = useCallback(async (call, { initiator = false } = {}) => {
-    if (!call?.callId || initializingRef.current || peerRef.current) return;
-
-    initializingRef.current = true;
+  const beginMediaCall = useCallback((call, { initiator = false } = {}) => {
+    if (!call?.callId) return Promise.resolve(null);
+    if (mediaInitPromiseRef.current) return mediaInitPromiseRef.current;
+    if (peerRef.current) return Promise.resolve(peerRef.current);
+    const generation = mediaGenerationRef.current;
+    const initialization = (async () => {
     const videoCall = isVideoEnabledCall(call.callType);
     setMediaStatus(videoCall ? 'requesting_camera' : 'requesting_microphone');
 
     try {
+      if (!mediaDevices || !RTCPeerConnection) throw new Error('Calling is unavailable in this app version.');
+      const iceServers = await loadWebRtcIceServers();
+      if (generation !== mediaGenerationRef.current) return null;
       const videoConstraints = videoCall
         ? {
             facingMode: 'user',
@@ -201,12 +211,16 @@ const NativeCallOverlay = () => {
         });
       }
 
+      if (generation !== mediaGenerationRef.current) {
+        stream.getTracks().forEach((track) => track.stop());
+        return null;
+      }
       localStreamRef.current = stream;
       setLocalStream(stream);
       setMicrophoneEnabled(stream.getAudioTracks().some((track) => track.enabled));
       setCameraEnabled(videoCall && stream.getVideoTracks().some((track) => track.enabled));
 
-      const peer = createPeerConnection(call);
+      const peer = createPeerConnection(call, iceServers);
       peerRef.current = peer;
       stream.getTracks().forEach((track) => peer.addTrack(track, stream));
       setMediaStatus('connecting');
@@ -219,7 +233,9 @@ const NativeCallOverlay = () => {
           description: peer.localDescription,
         });
       }
+      return peer;
     } catch (error) {
+      if (generation !== mediaGenerationRef.current) return null;
       cleanupMedia();
       Toast.show({
         type: 'error',
@@ -229,9 +245,13 @@ const NativeCallOverlay = () => {
       if (call?.callId) {
         endCall(call.callId).catch(() => {});
       }
-    } finally {
-      initializingRef.current = false;
     }
+    })();
+    const pending = initialization.finally(() => {
+      if (mediaInitPromiseRef.current === pending) mediaInitPromiseRef.current = null;
+    });
+    mediaInitPromiseRef.current = pending;
+    return pending;
   }, [cleanupMedia, createPeerConnection, emitCallSignal, endCall]);
 
   useEffect(() => {
@@ -262,12 +282,10 @@ const NativeCallOverlay = () => {
       const call = activeCallRef.current;
       if (!call || String(call.callId) !== String(callId)) return;
       try {
-        if (!peerRef.current) {
-          await beginMediaCall(call, { initiator: false });
-        }
-        const peer = peerRef.current;
+        const peer = await beginMediaCall(call, { initiator: false });
         if (!peer) return;
         await peer.setRemoteDescription(new RTCSessionDescription(description));
+        await signalBufferRef.current.drain(callId, peer, RTCIceCandidate);
         const answer = await peer.createAnswer();
         await peer.setLocalDescription(answer);
         await emitCallSignal('call:signal:answer', {
@@ -284,6 +302,7 @@ const NativeCallOverlay = () => {
       if (!call || String(call.callId) !== String(callId) || !peerRef.current) return;
       try {
         await peerRef.current.setRemoteDescription(new RTCSessionDescription(description));
+        await signalBufferRef.current.drain(callId, peerRef.current, RTCIceCandidate);
       } catch (error) {
         Toast.show({ type: 'error', text1: ui("Call answer failed"), text2: error.message });
       }
@@ -291,9 +310,10 @@ const NativeCallOverlay = () => {
 
     const unsubscribeIce = subscribe('call:signal:ice-candidate', async ({ callId, candidate } = {}) => {
       const call = activeCallRef.current;
-      if (!call || String(call.callId) !== String(callId) || !peerRef.current || !candidate) return;
+      if (!call || String(call.callId) !== String(callId) || !candidate) return;
+      signalBufferRef.current.add(callId, candidate);
       try {
-        await peerRef.current.addIceCandidate(new RTCIceCandidate(candidate));
+        await signalBufferRef.current.drain(callId, peerRef.current, RTCIceCandidate);
       } catch (_error) {
         // Late ICE candidates can arrive after a call ends; ignore safely.
       }
