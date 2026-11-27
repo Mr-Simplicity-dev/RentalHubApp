@@ -8,8 +8,8 @@ export const isAudioRouteSupported = () => Boolean(Native?.setRoute);
 
 export const subscribeAudioRouteChanges = (handler) => {
   if (!emitter || typeof handler !== 'function') return () => {};
-  emitter.addListener(AUDIO_ROUTE_EVENT, handler);
-  return () => emitter.removeListener(AUDIO_ROUTE_EVENT, handler);
+  const subscription = emitter.addListener(AUDIO_ROUTE_EVENT, handler);
+  return () => subscription.remove();
 };
 
 export const getAudioRouteState = async () => {

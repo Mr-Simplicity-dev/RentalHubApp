@@ -107,3 +107,10 @@ test('recipient ownership is checked before Firebase can display a background no
   const application = fs.readFileSync(path.resolve(__dirname, '../android/app/src/main/java/com/rentalhubng/MainApplication.kt'), 'utf8');
   assert.ok(application.includes('IncomingCalls.prepareNotifications'));
 });
+
+test('unmounting the app clears the native foreground state so later calls can ring', async () => {
+  const f = await fixture();
+  await f.foreground(true);
+  await f.close();
+  assert.deepEqual(f.calls.filter(item => item[0] === 'foreground').at(-1), ['foreground', false]);
+});

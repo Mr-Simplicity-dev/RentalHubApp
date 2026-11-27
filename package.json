@@ -25,7 +25,7 @@
     "test:parity": "node scripts/audit-platform-contracts.cjs && node --test scripts/test-platform-parity.cjs scripts/test-public-survey.cjs scripts/test-build-compat.cjs",
     "test:startup": "node --test scripts/test-startup-flow.cjs && node scripts/verify-language-layout.cjs && node scripts/verify-update-resume.cjs && node scripts/verify-update-version.cjs",
     "test:notifications": "node --test scripts/test-notification-navigation.cjs",
-    "test:call-sounds": "node --test scripts/test-call-sounds.cjs scripts/test-call-connection.cjs scripts/test-native-call-media.cjs",
+    "test:call-sounds": "node --test scripts/test-call-sounds.cjs scripts/test-call-connection.cjs scripts/test-native-call-media.cjs scripts/test-call-overlay-render.cjs",
     "prepare:call-sounds": "node scripts/prepare-call-sounds.cjs",
     "verify:push-config": "node scripts/verify-push-config.cjs"
   },

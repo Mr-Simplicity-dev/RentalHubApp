@@ -218,6 +218,7 @@ export const RealtimeProvider = ({ children }) => {
     void connect();
     return () => {
       disposed = true;
+      nativeCalls?.setForeground(false);
       receivedPush.remove();
       respondedPush.remove();
       appState.remove();
