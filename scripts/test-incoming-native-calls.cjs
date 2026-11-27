@@ -94,3 +94,16 @@ test('Android 7 schedules a process-independent expiry without rejecting an expi
   assert.match(receiver, /if \(intent\.action == "expire"\) \{\s+IncomingCalls\.close[\s\S]*?return/);
   assert.ok(receiver.indexOf('intent.action == "expire"') < receiver.indexOf('goAsync()'));
 });
+
+test('recipient ownership is checked before Firebase can display a background notification', () => {
+  const native = fs.readFileSync(path.resolve(__dirname, '../android/app/src/main/java/com/rentalhubng/RentalHubIncomingCalls.kt'), 'utf8');
+  const dispatch = native.slice(native.indexOf('override fun handleIntent('), native.indexOf('override fun onMessageReceived('));
+  assert.ok(dispatch.includes('intent.getStringExtra("body")'));
+  const guard = dispatch.indexOf('if (data.has("receiverId") && !IncomingCalls.owns(this, data)) return');
+  assert.ok(guard > 0 && guard < dispatch.indexOf('super.handleIntent(intent)'));
+  const manifest = fs.readFileSync(path.resolve(__dirname, '../android/app/src/main/AndroidManifest.xml'), 'utf8');
+  assert.match(manifest, /android:name="firebase_messaging_notification_delegation_enabled" android:value="false"/);
+  assert.ok(native.includes('setNotificationDelegationEnabled(false)'));
+  const application = fs.readFileSync(path.resolve(__dirname, '../android/app/src/main/java/com/rentalhubng/MainApplication.kt'), 'utf8');
+  assert.ok(application.includes('IncomingCalls.prepareNotifications'));
+});

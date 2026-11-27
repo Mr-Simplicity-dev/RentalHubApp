@@ -49,6 +49,11 @@ not enable Phase C spoken notifications or send SMS, WhatsApp or email tests.
 - `RentalHubMessagingService` extends the existing Expo service, including its
   token handling. Recipient-bound pushes are dropped before display if the
   account has changed or signed out. Other non-call pushes pass to Expo unchanged.
+  This check runs before Firebase dispatches the intent, because notification
+  payloads can be displayed in the background without calling `onMessageReceived`.
+  Google Play notification delegation is disabled in the manifest and explicitly
+  at startup for existing installations. Android registration also waits for the
+  native protection check before sharing the push token with the backend.
   Changing the signed-in account also clears that app's displayed alerts. This
   does not mark notification history as read or change another app's alerts.
 - Incoming calls are bound to the signed-in user and expire with the server

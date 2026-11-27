@@ -90,6 +90,13 @@ export const registerForPushNotifications = async ({ requestPermission = true } 
     return { success: false, reason: 'missing-project-id' };
   }
 
+  if (Platform.OS === 'android') {
+    if (!NativeModules.RentalHubIncomingCalls?.prepareNotifications) {
+      return { success: false, reason: 'native-notification-protection-unavailable' };
+    }
+    await NativeModules.RentalHubIncomingCalls.prepareNotifications();
+  }
+
   const token = (
     await Notifications.getExpoPushTokenAsync({ projectId })
   ).data;

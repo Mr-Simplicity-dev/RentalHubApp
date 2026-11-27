@@ -8,7 +8,7 @@ const babel = require('@babel/core');
 const compile = file => babel.transformSync(fs.readFileSync(path.resolve(__dirname, '../' + file), 'utf8'), { babelrc: false, configFile: false, presets: [['@babel/preset-react', { runtime: 'classic' }]], plugins: ['@babel/plugin-transform-modules-commonjs'] }).code;
 
 function pushFixture(oldChannel = { importance: 3, sound: 'default' }) {
-  const channels = [], posts = [], state = { permission: 'granted', prompts: 0 };
+  const channels = [], posts = [], state = { permission: 'granted', prompts: 0, prepared: 0, preparationFails: false };
   let handler;
   const notifications = {
     AndroidImportance: { NONE: 0, LOW: 2, DEFAULT: 3, HIGH: 4 }, AndroidNotificationVisibility: { PRIVATE: 0 },
@@ -20,7 +20,7 @@ function pushFixture(oldChannel = { importance: 3, sound: 'default' }) {
   const mocks = {
     '@react-native-async-storage/async-storage': { setItem: async () => {} },
     'expo-constants': { easConfig: { projectId: 'test-project' } }, 'expo-device': { isDevice: true, brand: 'Test', modelName: 'Phone', osBuildId: 'TEST' },
-    'expo-notifications': notifications, 'react-native': { Platform: { OS: 'android' }, NativeModules: { RentalHubIncomingCalls: {} } },
+    'expo-notifications': notifications, 'react-native': { Platform: { OS: 'android' }, NativeModules: { RentalHubIncomingCalls: { prepareNotifications: async () => { state.prepared++; if (state.preparationFails) throw Error('Protection is not ready'); return true; } } } },
     './api': { post: async (...args) => posts.push(args) },
   };
   const module = { exports: {} };
@@ -29,10 +29,17 @@ function pushFixture(oldChannel = { importance: 3, sound: 'default' }) {
 }
 test('new Android updates use a high-visibility private channel and registration advertises that capability', async () => {
   const f = pushFixture(); await f.service.registerForPushNotifications();
+  assert.equal(f.state.prepared, 1);
   const channel = f.channels.find(([id]) => id === 'activity-v2')[1];
   assert.equal(channel.importance, 4); assert.equal(channel.showBadge, true); assert.equal(channel.lockscreenVisibility, 0); assert.equal(channel.bypassDnd, false);
   assert.ok(f.posts[0][1].device_id.endsWith(':incoming-v1'));
 });
+test('failed native account protection blocks device registration', async () => {
+  const f = pushFixture(); f.state.preparationFails = true;
+  await assert.rejects(f.service.registerForPushNotifications(), /Protection is not ready/);
+  assert.equal(f.posts.length, 0);
+});
+
 test('a previously blocked or muted channel is not silently re-enabled', async () => {
   const f = pushFixture({ importance: 0, sound: null, enableVibrate: false }); await f.service.registerForPushNotifications();
   const channel = f.channels.find(([id]) => id === 'activity-v2')[1];

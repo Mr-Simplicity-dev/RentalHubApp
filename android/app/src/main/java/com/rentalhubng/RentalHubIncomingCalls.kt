@@ -13,6 +13,7 @@ import com.facebook.react.ReactPackage
 import com.facebook.react.bridge.*
 import com.facebook.react.uimanager.ViewManager
 import com.google.firebase.messaging.RemoteMessage
+import com.google.firebase.messaging.FirebaseMessaging
 import expo.modules.notifications.service.ExpoFirebaseMessagingService
 import org.json.JSONObject
 import java.net.HttpURLConnection
@@ -20,6 +21,15 @@ import java.net.URL
 import java.util.concurrent.Executors
 
 object IncomingCalls {
+  fun prepareNotifications(finished: (Boolean) -> Unit) {
+    try {
+      val messaging = FirebaseMessaging.getInstance()
+      messaging.setNotificationDelegationEnabled(false).addOnCompleteListener { task ->
+        val ready = runCatching { task.isSuccessful && !messaging.isNotificationDelegationEnabled }.getOrDefault(false)
+        finished(ready)
+      }
+    } catch (_: Exception) { finished(false) }
+  }
   private const val PREFS = "rentalhub_incoming_calls"
   private val worker = Executors.newSingleThreadExecutor()
   @Volatile private var active = false
@@ -159,6 +169,11 @@ object IncomingCalls {
 }
 
 class RentalHubMessagingService : ExpoFirebaseMessagingService() {
+  override fun handleIntent(intent: Intent) {
+    val data = try { JSONObject(intent.getStringExtra("body") ?: "{}") } catch (_: Exception) { JSONObject() }
+    if (data.has("receiverId") && !IncomingCalls.owns(this, data)) return
+    super.handleIntent(intent)
+  }
   override fun onMessageReceived(message: RemoteMessage) {
     val data = try { JSONObject(message.data["body"] ?: "{}") } catch (_: Exception) { JSONObject() }
     if (data.has("receiverId") && !IncomingCalls.owns(this, data)) return
@@ -215,6 +230,12 @@ class IncomingCallActivity : Activity() {
 
 class RentalHubIncomingCallsModule(context: ReactApplicationContext) : ReactContextBaseJavaModule(context) {
   override fun getName() = "RentalHubIncomingCalls"
+  @ReactMethod fun prepareNotifications(promise: Promise) {
+    IncomingCalls.prepareNotifications { ready ->
+      if (ready) promise.resolve(true)
+      else promise.reject("PUSH_ACCOUNT_PROTECTION", "Phone alerts could not be prepared. Please try again.")
+    }
+  }
   @ReactMethod fun configure(userId: String, foreground: Boolean) = IncomingCalls.configure(reactApplicationContext, userId, foreground)
   @ReactMethod fun setForeground(active: Boolean) = IncomingCalls.setForeground(reactApplicationContext, active)
   @ReactMethod fun dismiss(callId: String) = IncomingCalls.close(reactApplicationContext, callId)

@@ -47,6 +47,9 @@ class MainApplication : Application(), ReactApplication {
 
   override fun onCreate() {
     super.onCreate()
+    IncomingCalls.prepareNotifications { ready ->
+      if (!ready) android.util.Log.w("RentalHubPush", "Notification account protection is not ready")
+    }
     WebRTCModuleOptions.getInstance().enableMediaProjectionService = true
     I18nUtil.instance.apply {
       allowRTL(this@MainApplication, false)
