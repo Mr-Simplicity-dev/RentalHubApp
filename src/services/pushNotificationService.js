@@ -18,7 +18,7 @@ export const configureNotificationPresentation = () => {
         shouldPlaySound: !isIncomingCall && !isLiveMessage && !isBadgeSummary,
         shouldSetBadge: !isIncomingCall,
         shouldShowBanner: !(isIncomingCall && Platform.OS === 'android' && NativeModules.RentalHubIncomingCalls) && !isLiveMessage && !isBadgeSummary,
-        shouldShowList: !(isIncomingCall && Platform.OS === 'android' && NativeModules.RentalHubIncomingCalls) && !isLiveMessage,
+        shouldShowList: !(isIncomingCall && Platform.OS === 'android' && NativeModules.RentalHubIncomingCalls) && !isLiveMessage && !isBadgeSummary,
       };
     },
   });

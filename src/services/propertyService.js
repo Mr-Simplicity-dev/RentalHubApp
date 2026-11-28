@@ -105,6 +105,25 @@ export const propertyService = {
     return response.data;
   },
 
+  uploadClips: async (propertyId, clips, captureTokens = [], shotKeys = []) => {
+    const formData = new FormData();
+    formData.append('image_capture_source', 'live_camera');
+    formData.append('image_capture_tokens', JSON.stringify(captureTokens));
+    formData.append('clip_shot_keys', JSON.stringify(shotKeys));
+    clips.forEach((clip, index) => {
+      formData.append('clips', {
+        uri: clip.uri || clip,
+        type: clip.type || 'video/mp4',
+        name: clip.fileName || clip.name || `property-clip-${index + 1}.mp4`,
+      });
+    });
+
+    const response = await api.post(`/properties/${propertyId}/clips`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response.data;
+  },
+
   updateProperty: async (id, propertyData) => {
     const response = await api.put(`/properties/${id}`, propertyData);
     return response.data;

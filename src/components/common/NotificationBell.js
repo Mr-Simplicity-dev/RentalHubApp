@@ -10,7 +10,7 @@ import { notificationService } from '../../services/notificationService';
 import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 
-const NotificationBell = () => {
+const NotificationBell = ({ variant = 'dark', style }) => {
   useInterfaceLanguage();
   const navigation = useNavigation();
   const { hitSlop } = useAccessibilityPreferences();
@@ -44,9 +44,13 @@ const NotificationBell = () => {
       activeOpacity={0.85}
       hitSlop={hitSlop}
       onPress={() => navigation.navigate('Notifications')}
-      style={styles.button}
+      style={[styles.button, variant === 'light' && styles.buttonLight, style]}
     >
-      <Icon name="notifications-outline" size={20} color={colors.white} />
+      <Icon
+        name="notifications-outline"
+        size={20}
+        color={variant === 'light' ? colors.navy : colors.white}
+      />
       {unreadCount > 0 ? (
         <View style={styles.badge}>
           <AppText style={styles.badgeText}>{unreadCount > 99 ? '99+' : unreadCount}</AppText>
@@ -64,6 +68,11 @@ const styles = StyleSheet.create({
     height: 38,
     justifyContent: 'center',
     width: 38,
+  },
+  buttonLight: {
+    backgroundColor: colors.white,
+    borderColor: colors.border,
+    borderWidth: 1,
   },
   badge: {
     position: 'absolute',

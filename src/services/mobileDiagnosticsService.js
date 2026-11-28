@@ -42,7 +42,7 @@ export const reportMobileCrash = async (error, errorInfo = {}, metadata = {}) =>
   };
 
   try {
-    await api.post('/mobile/diagnostics/crash', payload);
+    await api.post('/mobile/diagnostics/crash', payload, { suppressRateLimitNotice: true });
   } catch {
     // Crash reporting must never create a second crash loop.
   }
@@ -60,7 +60,7 @@ export const trackMobileEvent = async (eventName, metadata = {}, screen = '') =>
         ...metadata,
         js_engine: global.HermesInternal ? 'hermes' : 'jsc',
       },
-    });
+    }, { suppressRateLimitNotice: true });
   } catch {
     // Analytics must never interrupt app workflows.
   }

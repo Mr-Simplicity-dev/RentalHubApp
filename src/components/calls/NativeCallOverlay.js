@@ -16,6 +16,8 @@ import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import TextInput from '../common/AppTextInput';
 import AppText from '../common/AppText';
+import UserAvatar from '../common/UserAvatar';
+import BrandLogoMark from '../brand/BrandLogoMark';
 import { createNativeCallMedia } from '../../services/nativeCallMediaService';
 import { AUDIO_ROUTE_EVENT, subscribeAudioRouteChanges } from '../../services/nativeAudioRouteService';
 import { useRealtime } from '../../context/RealtimeContext';
@@ -42,11 +44,23 @@ const callTitle = (call = {}) => {
   return ui('Audio call');
 };
 
+const otherParty = (call = {}) => call?.direction === 'incoming' ? call?.caller || {} : call?.receiver || {};
+
 const otherPartyName = (call = {}) => {
-  if (!call) return ui('RentalHub user');
-  return call.direction === 'incoming'
-    ? call.caller?.full_name || call.caller?.name || ui('RentalHub user')
-    : call.receiver?.full_name || call.receiver?.name || ui('RentalHub user');
+  const party = otherParty(call);
+  return party.call_display_name || party.full_name || party.name || ui('RentalHub user');
+};
+
+const otherPartyDetails = (call = {}) => {
+  const party = otherParty(call);
+  return party.call_display_detail || party.position_label || party.role_label || '';
+};
+
+const otherPartyAvatar = (call = {}, size = 84, surface = 'light') => {
+  const party = otherParty(call);
+  return party.call_display_kind === 'brand'
+    ? <BrandLogoMark size={size} surface={surface} />
+    : <UserAvatar user={party} size={size} />;
 };
 
 const normalizeParticipants = (call = {}) => {
@@ -564,10 +578,11 @@ const NativeCallOverlay = () => {
           <RTCView mirror={false} objectFit="cover" streamURL={remoteUrl} style={styles.remoteVideo} />
         ) : (
           <View style={styles.remotePlaceholder}>
-            <View style={styles.remoteAvatar}>
-              <AppText style={styles.remoteAvatarText}>{getParticipantInitials({ name: otherPartyName(activeCall) })}</AppText>
-            </View>
+            {otherPartyAvatar(activeCall, 104, 'dark')}
             <AppText style={styles.remoteName}>{otherPartyName(activeCall)}</AppText>
+            {otherPartyDetails(activeCall) ? (
+              <AppText style={styles.remoteIdentityDetail}>{otherPartyDetails(activeCall)}</AppText>
+            ) : null}
             <AppText style={styles.remoteStatus}>
               {mediaState.status === 'connected'
                 ? mediaState.videoEnabled ? ui('Waiting for remote video…') : ui('Audio session connected')
@@ -589,11 +604,13 @@ const NativeCallOverlay = () => {
             <View style={styles.liveDot} />
             <AppText style={styles.liveBadgeText}>{ui('LIVE')}</AppText>
           </View>
-          <AppText style={styles.liveTitle} numberOfLines={1}>{participantSummary}</AppText>
+          <AppText style={styles.liveTitle} numberOfLines={1}>
+            {displayParticipants.length > 1 ? participantSummary : otherPartyName(activeCall)}
+          </AppText>
           <AppText style={styles.liveSubtitle} numberOfLines={1}>
             {displayParticipants.length > 1
               ? ui('{value0} people connected', { value0: displayParticipants.length })
-              : ui('With {value0}', { value0: otherPartyName(activeCall) })}
+              : otherPartyDetails(activeCall) || ui('With {value0}', { value0: otherPartyName(activeCall) })}
           </AppText>
           {activeCall.propertyTitle ? (
             <AppText style={styles.liveProperty} numberOfLines={1}>{activeCall.propertyTitle}</AppText>
@@ -696,21 +713,19 @@ const NativeCallOverlay = () => {
 
   const renderRingingCall = () => (
     <View style={styles.cardBody}>
-      <View style={[styles.iconWrap, isAccepted && styles.iconWrapLive]}>
-        <Icon
-          name={callType === 'video' || callType === 'virtual_tour' ? 'videocam-outline' : 'call-outline'}
-          size={32}
-          color={isClosing ? colors.muted : colors.blue}
-        />
+      <View style={styles.identityAvatar}>
+        {otherPartyAvatar(activeCall, 84)}
       </View>
       <AppText style={styles.eyebrow}>{isClosing ? ui('Call ended') : ui('INCOMING CALL')}</AppText>
-      <AppText style={styles.title}>{participantSummary}</AppText>
+      <AppText style={styles.title}>
+        {displayParticipants.length > 1 ? participantSummary : otherPartyName(activeCall)}
+      </AppText>
       <AppText style={styles.subtitle}>
-        {isIncoming
-          ? ui('{value0} is requesting this session.', { value0: otherPartyName(activeCall) })
-          : displayParticipants.length > 1
-            ? ui('{value0} active participants in this call room.', { value0: displayParticipants.length })
-            : ui('With {value0}', { value0: otherPartyName(activeCall) })}
+        {displayParticipants.length > 1
+          ? ui('{value0} active participants in this call room.', { value0: displayParticipants.length })
+          : otherPartyDetails(activeCall) || (isIncoming
+            ? ui('{value0} is requesting this session.', { value0: otherPartyName(activeCall) })
+            : ui('With {value0}', { value0: otherPartyName(activeCall) }))}
       </AppText>
       {activeCall.propertyTitle ? <AppText style={styles.propertyText}>{activeCall.propertyTitle}</AppText> : null}
 
@@ -830,26 +845,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 28,
   },
-  remoteAvatar: {
-    alignItems: 'center',
-    backgroundColor: 'rgba(59, 130, 246, 0.28)',
-    borderColor: 'rgba(255, 255, 255, 0.24)',
-    borderRadius: 52,
-    borderWidth: 2,
-    height: 104,
-    justifyContent: 'center',
-    width: 104,
-  },
-  remoteAvatarText: {
-    color: colors.white,
-    fontFamily: typography.bold,
-    fontSize: 36,
-  },
   remoteName: {
     color: colors.white,
     fontFamily: typography.semibold,
     fontSize: typeScale.xl,
     marginTop: 18,
+    textAlign: 'center',
+  },
+  remoteIdentityDetail: {
+    color: '#CBD5E1',
+    fontFamily: typography.medium,
+    fontSize: typeScale.xs,
+    marginTop: 6,
     textAlign: 'center',
   },
   remoteStatus: {
@@ -1220,16 +1227,8 @@ const styles = StyleSheet.create({
     paddingVertical: 24,
     width: '100%',
   },
-  iconWrap: {
-    alignItems: 'center',
-    backgroundColor: colors.surfaceBlue,
-    borderRadius: 36,
-    height: 72,
-    justifyContent: 'center',
-    width: 72,
-  },
-  iconWrapLive: {
-    backgroundColor: '#ECFDF3',
+  identityAvatar: {
+    marginBottom: 16,
   },
   eyebrow: {
     color: colors.blue,

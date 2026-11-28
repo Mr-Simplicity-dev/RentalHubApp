@@ -1,9 +1,9 @@
 import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Image, Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Image, Linking, Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { CameraView, useCameraPermissions } from 'expo-camera';
+import { CameraView, useCameraPermissions, useMicrophonePermissions } from 'expo-camera';
 import Toast from 'react-native-toast-message';
 import Button from '../common/Button';
 import { propertyService } from '../../services/propertyService';
@@ -54,7 +54,11 @@ const LivePropertyCapture = ({
 }) => {
   useInterfaceLanguage();
   const [permission, requestPermission] = useCameraPermissions();
+  const [microphonePermission, requestMicrophonePermission] = useMicrophonePermissions();
   const cameraRef = useRef(null);
+  const cameraPermissionPromptedRef = useRef(false);
+  const recordingCancelledRef = useRef(false);
+  const recordingRef = useRef(false);
   const [facing, setFacing] = useState('back');
   const [ready, setReady] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -62,22 +66,40 @@ const LivePropertyCapture = ({
   const [mode, setMode] = useState('photo');
   const [recording, setRecording] = useState(false);
   const [seconds, setSeconds] = useState(0);
+  const [cameraError, setCameraError] = useState('');
+  const [pendingPhoto, setPendingPhoto] = useState(null);
+  const [pendingClip, setPendingClip] = useState(null);
   const clipTimerRef = useRef(null);
 
   useEffect(() => {
-    if (visible && permission && !permission.granted) {
-      requestPermission().catch(() => {});
-    }
-  }, [visible, permission, requestPermission]);
-
-  useEffect(() => {
     if (!visible) {
+      cameraPermissionPromptedRef.current = false;
+      recordingCancelledRef.current = true;
       setReady(false);
       setMode('photo');
       setRecording(false);
       setSeconds(0);
+      if (recordingRef.current && cameraRef.current) {
+        try {
+          cameraRef.current.stopRecording();
+        } catch (error) {
+          setCameraError(error?.message || ui('Could not stop the camera recording.'));
+        }
+      }
+      return;
     }
-  }, [visible]);
+    if (!permission || permission.granted || cameraPermissionPromptedRef.current) return;
+    cameraPermissionPromptedRef.current = true;
+    requestPermission()
+      .then((result) => {
+        if (!result.granted) {
+          setCameraError(ui('Camera access is required. Allow it in Settings to take property photos.'));
+        }
+      })
+      .catch((error) => {
+        setCameraError(error?.message || ui('Could not request camera permission. Try again.'));
+      });
+  }, [visible, permission, requestPermission]);
 
   useEffect(
     () => () => {
@@ -86,8 +108,51 @@ const LivePropertyCapture = ({
     []
   );
 
+  const verifyPendingPhoto = useCallback(async (photo) => {
+    setBusy(true);
+    setCameraError('');
+    try {
+      const session = await propertyService.createLiveCaptureSession();
+      const token = session?.data?.token;
+      if (!session?.success || !token) {
+        setCameraError(ui('Could not verify the captured photo. It is preserved; retry verification or discard it.'));
+        return false;
+      }
+      onCapture?.(photo, token);
+      setPendingPhoto(null);
+      return true;
+    } catch (error) {
+      setCameraError(error?.response?.data?.message || error?.message || ui('Could not verify the captured photo. It is preserved; retry verification.'));
+      return false;
+    } finally {
+      setBusy(false);
+    }
+  }, [onCapture]);
+
+  const verifyPendingClip = useCallback(async (clip) => {
+    setBusy(true);
+    setCameraError('');
+    try {
+      const session = await propertyService.createLiveCaptureSession();
+      const token = session?.data?.token;
+      if (!session?.success || !token) {
+        setCameraError(ui('Could not verify the recorded clip. It is preserved; retry verification or discard it.'));
+        return false;
+      }
+      onRecordClip?.(clip, token);
+      setPendingClip(null);
+      return true;
+    } catch (error) {
+      setCameraError(error?.response?.data?.message || error?.message || ui('Could not verify the recorded clip. It is preserved; retry verification.'));
+      return false;
+    } finally {
+      setBusy(false);
+    }
+  }, [onRecordClip]);
+
   const takePhoto = useCallback(async () => {
     if (busy || !cameraRef.current || !ready) return;
+    if (pendingPhoto) return;
 
     if (photos.length >= MAX_PROPERTY_PHOTOS) {
       Toast.show({
@@ -102,48 +167,30 @@ const LivePropertyCapture = ({
     try {
       const shot = await cameraRef.current.takePictureAsync({ quality: 0.9, skipProcessing: false });
       if (!shot?.uri) {
-        Toast.show({ type: 'error', text1: ui("Could not capture photo"), text2: ui("Please try again.") });
+        setCameraError(ui('Could not capture the photo. Please try again.'));
         return;
       }
 
-      // Ask for the ticket after the shutter, exactly like the web, so a token
-      // can never be stockpiled and used for a gallery image later.
-      const session = await propertyService.createLiveCaptureSession();
-      const token = session?.data?.token;
-
-      if (!session?.success || !token) {
-        Toast.show({
-          type: 'error',
-          text1: ui("Could not verify live capture"),
-          text2: ui("Please retake the photo."),
-        });
-        return;
-      }
+      const photo = {
+        uri: shot.uri,
+        type: 'image/jpeg',
+        fileName: `property-live-${Date.now()}-${photos.length + 1}.jpg`,
+      };
+      setPendingPhoto(photo);
+      await verifyPendingPhoto(photo);
 
       setFlash(true);
       setTimeout(() => setFlash(false), 140);
-
-      onCapture?.(
-        {
-          uri: shot.uri,
-          type: 'image/jpeg',
-          fileName: `property-live-${Date.now()}-${photos.length + 1}.jpg`,
-        },
-        token
-      );
     } catch (error) {
-      Toast.show({
-        type: 'error',
-        text1: ui("Capture failed"),
-        text2: error?.response?.data?.message || ui("Could not verify live capture. Please try again."),
-      });
+      setCameraError(error?.response?.data?.message || error?.message || ui('Photo capture failed. Please try again.'));
     } finally {
       setBusy(false);
     }
-  }, [busy, ready, photos.length, onCapture]);
+  }, [busy, pendingPhoto, ready, photos.length, verifyPendingPhoto]);
 
   const startRecording = useCallback(async () => {
     if (busy || recording || !cameraRef.current || !ready) return;
+    if (pendingClip) return;
 
     if (clips.length >= MAX_PROPERTY_CLIPS) {
       Toast.show({
@@ -156,65 +203,84 @@ const LivePropertyCapture = ({
 
     setBusy(true);
     setRecording(true);
+    recordingRef.current = true;
+    recordingCancelledRef.current = false;
     setSeconds(0);
+    setCameraError('');
 
     clipTimerRef.current = setInterval(() => {
       setSeconds((current) => current + 1);
     }, 1000);
 
+    let capturedClip = null;
     try {
       const clip = await cameraRef.current.recordAsync({ maxDuration: MAX_CLIP_SECONDS });
+      if (recordingCancelledRef.current) return;
       if (!clip?.uri) {
-        Toast.show({ type: 'error', text1: ui("Could not record clip"), text2: ui("Please try again.") });
+        setCameraError(ui('Could not record the clip. Check camera and microphone access, then try again.'));
         return;
       }
 
-      // Same rule as the photos: the ticket is asked for after the recording.
-      const session = await propertyService.createLiveCaptureSession();
-      const token = session?.data?.token;
-
-      if (!session?.success || !token) {
-        Toast.show({
-          type: 'error',
-          text1: ui("Could not verify live capture"),
-          text2: ui("Please record the clip again."),
-        });
-        return;
-      }
-
-      onRecordClip?.(
-        {
-          uri: clip.uri,
-          type: 'video/mp4',
-          fileName: `property-clip-${Date.now()}.mp4`,
-        },
-        token
-      );
+      capturedClip = {
+        uri: clip.uri,
+        type: 'video/mp4',
+        fileName: `property-clip-${Date.now()}.mp4`,
+      };
+      setPendingClip(capturedClip);
+      await verifyPendingClip(capturedClip);
     } catch (error) {
-      Toast.show({
-        type: 'error',
-        text1: ui("Recording failed"),
-        text2: error?.response?.data?.message || ui("Could not record the clip. Please try again."),
-      });
+      if (capturedClip) setPendingClip(capturedClip);
+      setCameraError(error?.response?.data?.message || error?.message || ui('Could not record the clip. Please try again.'));
     } finally {
       if (clipTimerRef.current) {
         clearInterval(clipTimerRef.current);
         clipTimerRef.current = null;
       }
       setRecording(false);
+      recordingRef.current = false;
       setSeconds(0);
       setBusy(false);
     }
-  }, [busy, clips.length, onRecordClip, ready, recording]);
+  }, [busy, clips.length, pendingClip, ready, recording, verifyPendingClip]);
 
   const stopRecording = useCallback(() => {
     if (!recording || !cameraRef.current) return;
     try {
       cameraRef.current.stopRecording();
     } catch (error) {
-      // stopRecording throws if the recorder already finished on its own.
+      setCameraError(error?.message || ui('Could not stop the recording. Please close and reopen the camera.'));
     }
   }, [recording]);
+
+  const selectMode = useCallback(async (nextMode) => {
+    setCameraError('');
+    setReady(false);
+    if (nextMode === 'clip' && !microphonePermission?.granted) {
+      try {
+        const result = await requestMicrophonePermission();
+        if (!result.granted) {
+          setCameraError(
+            result.canAskAgain
+              ? ui('Microphone access is required to record property clips.')
+              : ui('Microphone access is blocked. Allow it in Settings to record clips.')
+          );
+          return;
+        }
+      } catch (error) {
+        setCameraError(error?.message || ui('Could not request microphone permission.'));
+        return;
+      }
+    }
+    setMode(nextMode);
+  }, [microphonePermission, requestMicrophonePermission]);
+
+  const openAppSettings = useCallback(async () => {
+    try {
+      await Linking.openSettings();
+    } catch (error) {
+      setCameraError(error?.message || ui('Could not open app settings.'));
+    }
+  }, []);
 
   const canCaptureMore = photos.length < MAX_PROPERTY_PHOTOS;
   const canRecordMore = clips.length < MAX_PROPERTY_CLIPS;
@@ -235,7 +301,15 @@ const LivePropertyCapture = ({
           <Icon name="camera-outline" size={44} color={colors.gold} />
           <AppText style={styles.centeredTitle}>{ui("Camera access needed")}</AppText>
           <AppText style={styles.centeredText}>{ui("Property photos must be taken live in the app. Allow camera access to continue.")}</AppText>
-          <Button title={ui("Allow camera access")} onPress={() => requestPermission().catch(() => {})} />
+          <Button
+            title={permission.canAskAgain ? ui("Allow camera access") : ui("Open app settings")}
+            onPress={permission.canAskAgain
+              ? () => requestPermission().then((result) => {
+                if (!result.granted) setCameraError(ui('Camera permission is required to continue.'));
+              }).catch((error) => setCameraError(error?.message || ui('Could not request camera permission.')))
+              : openAppSettings}
+          />
+          {cameraError ? <AppText style={styles.errorText}>{cameraError}</AppText> : null}
         </View>
       );
     }
@@ -244,12 +318,45 @@ const LivePropertyCapture = ({
       <View style={styles.cameraWrap}>
         <CameraView
           ref={cameraRef}
+          key={`${facing}-${mode}`}
           style={StyleSheet.absoluteFill}
           facing={facing}
           mode={mode === 'clip' ? 'video' : 'picture'}
-          onCameraReady={() => setReady(true)}
+          onCameraReady={() => {
+            setReady(true);
+            setCameraError('');
+          }}
+          onMountError={(event) => {
+            setReady(false);
+            setCameraError(event?.message || ui('Could not start the camera. Close other camera apps and retry.'));
+          }}
         />
         {flash ? <View style={styles.flash} /> : null}
+        {cameraError ? (
+          <View style={styles.cameraError} accessibilityRole="alert">
+            <AppText style={styles.errorText}>{cameraError}</AppText>
+            {pendingPhoto ? (
+              <View style={styles.errorActions}>
+                <TouchableOpacity onPress={() => verifyPendingPhoto(pendingPhoto)} disabled={busy}>
+                  <AppText style={styles.errorAction}>{ui('Retry photo verification')}</AppText>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => setPendingPhoto(null)} disabled={busy}>
+                  <AppText style={styles.errorAction}>{ui('Discard photo')}</AppText>
+                </TouchableOpacity>
+              </View>
+            ) : null}
+            {pendingClip ? (
+              <View style={styles.errorActions}>
+                <TouchableOpacity onPress={() => verifyPendingClip(pendingClip)} disabled={busy}>
+                  <AppText style={styles.errorAction}>{ui('Retry clip verification')}</AppText>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => setPendingClip(null)} disabled={busy}>
+                  <AppText style={styles.errorAction}>{ui('Discard clip')}</AppText>
+                </TouchableOpacity>
+              </View>
+            ) : null}
+          </View>
+        ) : null}
         <View style={styles.topBar}>
           <TouchableOpacity
             accessibilityLabel={ui("Close camera")}
@@ -261,21 +368,25 @@ const LivePropertyCapture = ({
             <TouchableOpacity
               accessibilityLabel={ui("Photo mode")}
               disabled={recording}
-              onPress={() => setMode('photo')}
+              onPress={() => selectMode('photo')}
               style={[styles.modeButton, mode === 'photo' && styles.modeButtonActive]}>
               <AppText style={[styles.modeText, mode === 'photo' && styles.modeTextActive]}>{ui("Photo")}</AppText>
             </TouchableOpacity>
             <TouchableOpacity
               accessibilityLabel={ui("Clip mode")}
               disabled={recording}
-              onPress={() => setMode('clip')}
+              onPress={() => selectMode('clip')}
               style={[styles.modeButton, mode === 'clip' && styles.modeButtonActive]}>
               <AppText style={[styles.modeText, mode === 'clip' && styles.modeTextActive]}>{ui("Clip")}</AppText>
             </TouchableOpacity>
           </View>
           <TouchableOpacity
             accessibilityLabel={ui("Switch camera")}
-            onPress={() => setFacing((current) => (current === 'back' ? 'front' : 'back'))}
+            onPress={() => {
+              setReady(false);
+              setCameraError('');
+              setFacing((current) => (current === 'back' ? 'front' : 'back'));
+            }}
             style={styles.topButton}>
             <Icon name="camera-reverse-outline" size={22} color={colors.white} />
           </TouchableOpacity>
@@ -305,7 +416,7 @@ const LivePropertyCapture = ({
           {mode === "photo" ? (
             <TouchableOpacity
               accessibilityLabel={ui("Take photo")}
-              disabled={busy || !ready || !canCaptureMore}
+              disabled={busy || !ready || !canCaptureMore || Boolean(pendingPhoto)}
               onPress={takePhoto}
               style={[
                 styles.shutter,
@@ -316,7 +427,7 @@ const LivePropertyCapture = ({
           ) : (
             <TouchableOpacity
               accessibilityLabel={recording ? 'Stop recording' : 'Record clip'}
-              disabled={(!ready || !canRecordMore) || (!recording && busy)}
+              disabled={(!ready || !canRecordMore || Boolean(pendingClip)) || (!recording && busy)}
               onPress={recording ? stopRecording : startRecording}
               style={[
                 styles.shutter,
@@ -387,6 +498,10 @@ const styles = StyleSheet.create({
   centered: { alignItems: 'center', flex: 1, justifyContent: 'center', padding: 26 },
   centeredTitle: { color: colors.white, fontSize: typeScale.md, lineHeight: 26, fontWeight: '800', marginBottom: 8, marginTop: 12 },
   centeredText: { color: '#CBD5E1', fontSize: typeScale.sm, lineHeight: 20, marginBottom: 18, textAlign: 'center' },
+  errorText: { color: '#FECACA', fontSize: typeScale.sm, lineHeight: 20, textAlign: 'center' },
+  cameraError: { backgroundColor: 'rgba(127,29,29,0.94)', borderRadius: radius.md, left: 16, padding: 12, position: 'absolute', right: 16, top: 104, zIndex: 2 },
+  errorActions: { alignItems: 'center', flexDirection: 'row', gap: 18, justifyContent: 'center', marginTop: 10 },
+  errorAction: { color: colors.white, fontSize: typeScale.xs, fontWeight: '700', textDecorationLine: 'underline' },
   cameraWrap: { flex: 1 },
   flash: { ...StyleSheet.absoluteFillObject, backgroundColor: colors.white },
   // Guided prompt sits mid-frame so the landlord reads it while composing the shot.

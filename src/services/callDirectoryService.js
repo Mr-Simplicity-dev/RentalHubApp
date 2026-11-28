@@ -33,7 +33,7 @@ export const inferFallbackCallPolicy = (user) => {
       canChatSupport: true,
       canCallSupport: true,
       canCallBoss: true,
-      canCallTeammates: true,
+      canCallTeammates: false,
       canCallSubordinates: false,
       canCallAnyone: false,
     };
@@ -114,6 +114,11 @@ export const callDirectoryService = {
         },
       }
     );
+  },
+
+  async markIncomingMissedCallsAsViewed() {
+    const response = await api.patch('/calls/history/viewed');
+    return response?.data?.data || response?.data || {};
   },
 };
 

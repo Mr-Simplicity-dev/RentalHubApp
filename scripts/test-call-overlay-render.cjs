@@ -7,7 +7,7 @@ const React = require('react');
 const { renderToStaticMarkup } = require('react-dom/server');
 const { transformSync } = require('@babel/core');
 
-function loadOverlay(os, routes = { added: 0, removed: 0 }) {
+function loadOverlay(os, routes = { added: 0, removed: 0 }, activeCall = null) {
   const cache = new Map();
   const noop = () => {};
   const native = {
@@ -40,14 +40,17 @@ function loadOverlay(os, routes = { added: 0, removed: 0 }) {
       if (name.endsWith('/utils/callSoundSession.cjs')) return require('../src/utils/callSoundSession.cjs');
       if (name.endsWith('/services/callSoundService')) return { loadCallSounds: async () => ({}), playCallSound: async () => ({ stop: noop }) };
       if (name.endsWith('/context/AuthContext')) return { AuthContext: auth };
-      if (name.endsWith('/context/RealtimeContext')) return { useRealtime: () => ({ activeCall: null, subscribe: () => noop }) };
+      if (name.endsWith('/context/RealtimeContext')) return { useRealtime: () => ({ activeCall, subscribe: () => noop }) };
       if (name.endsWith('/services/nativeCallMediaService')) return { createNativeCallMedia: () => ({ stop: async () => {} }) };
       if (name.endsWith('/services/nativeAudioRouteService')) return load('src/services/nativeAudioRouteService.js');
       if (name.endsWith('/services/voiceMonitorService')) return { voiceMonitorService: { myCallRoomHistory: async () => ({ data: [] }) } };
+      if (name.endsWith('/common/UserAvatar')) return ({ user }) => React.createElement('span', null, `avatar:${user?.full_name || ''}`);
+      if (name.endsWith('/brand/BrandLogoMark')) return () => React.createElement('span', null, 'Amana logo');
       if (name.endsWith('/i18n/interfaceRuntime.cjs')) return { translateUi: value => value };
       if (name.endsWith('/i18n/useInterfaceLanguage')) return noop;
       if (name.endsWith('/theme')) return load('src/theme/index.js');
-      if (name.endsWith('/common/AppTextInput') || name.endsWith('/common/AppText')) return () => null;
+      if (name.endsWith('/common/AppTextInput')) return () => null;
+      if (name.endsWith('/common/AppText')) return ({ children }) => React.createElement('span', null, children);
       throw Error('Unexpected overlay dependency: ' + name);
     };
     vm.runInNewContext(code, { module, exports: module.exports, require: get, console, setTimeout, clearTimeout }, { filename });
@@ -75,4 +78,43 @@ test('the real call overlay mounts and releases its audio-route subscription wit
   try { await React.act(async () => root.render(React.createElement(Overlay))); assert.equal(routes.added, 1); }
   finally { await React.act(async () => root.unmount()); dom.window.close(); }
   assert.equal(routes.removed, 1);
+});
+
+test('incoming call overlay shows the caller department, role, ID and Amana brand', () => {
+  const Overlay = loadOverlay('android', undefined, {
+    callId: 'identity-call',
+    callType: 'audio',
+    direction: 'incoming',
+    status: 'ringing',
+    caller: {
+      id: 41,
+      full_name: 'Ada Lawyer',
+      call_display_name: 'Ada Lawyer',
+      call_display_detail: 'National Super Lawyer · Legal Department · ID 41',
+      call_display_kind: 'brand',
+    },
+  });
+  const html = renderToStaticMarkup(React.createElement(Overlay));
+  assert.match(html, /Amana logo/);
+  assert.match(html, /Ada Lawyer/);
+  assert.match(html, /National Super Lawyer · Legal Department · ID 41/);
+});
+
+test('incoming call overlay uses the caller profile avatar when the call is not department-branded', () => {
+  const Overlay = loadOverlay('android', undefined, {
+    callId: 'person-call',
+    callType: 'audio',
+    direction: 'incoming',
+    status: 'ringing',
+    caller: {
+      id: 51,
+      full_name: 'John Tenant',
+      call_display_name: 'John Tenant',
+      call_display_detail: 'Tenant',
+      call_display_kind: 'person',
+    },
+  });
+  const html = renderToStaticMarkup(React.createElement(Overlay));
+  assert.match(html, /avatar:John Tenant/);
+  assert.match(html, /John Tenant/);
 });

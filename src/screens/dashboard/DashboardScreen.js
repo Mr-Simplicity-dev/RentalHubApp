@@ -1,6 +1,7 @@
 import EmailVerificationNotice from '../../components/common/EmailVerificationNotice';
 import UserAvatar from '../../components/common/UserAvatar';
 import HeadphoneSupportButton from '../../components/calls/HeadphoneSupportButton';
+import NotificationBell from '../../components/common/NotificationBell';
 import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import {useTour} from '../../context/TourContext';
@@ -33,6 +34,7 @@ import useNativePaystackCheckout from '../../hooks/useNativePaystackCheckout';
 import { hasPaystackCheckout } from '../../services/nativePaymentService';
 import { getErrorMessage, getReviewStatus, pickList, pickObject } from '../../utils/http';
 import TenancyGracePanel from '../../components/dashboard/TenancyGracePanel';
+import ListingAssistancePanel from '../../components/properties/ListingAssistancePanel';
 import { colors, radius, shadows, typography, typeScale } from '../../theme';
 import { useTourTarget } from '../../components/tour/TourTarget';
 import {
@@ -800,15 +802,7 @@ const DashboardScreen = ({ navigation }) => {
         </View>
         <View style={styles.topActions}>
           <HeadphoneSupportButton variant="light" />
-          <TouchableOpacity
-            accessibilityLabel={ui("Open notifications")}
-            onPress={() => navigation.navigate('Notifications')}
-            style={styles.topButton}>
-            <Icon name="notifications-outline" size={21} color={colors.navy} />
-            {Number(stats.unread_notifications || stats.unread_messages || 0) > 0 ? (
-              <View style={styles.unreadDot} />
-            ) : null}
-          </TouchableOpacity>
+          <NotificationBell variant="light" style={styles.topButton} />
           <TouchableOpacity
             accessibilityLabel={ui("Open profile")}
             onPress={() => navigation.navigate('Profile')}
@@ -1160,6 +1154,8 @@ const DashboardScreen = ({ navigation }) => {
         ) : null}
       </DashboardSection>
 
+      {isLandlord ? <ListingAssistancePanel /> : null}
+
       {isTenant ? (
         <DashboardSection title={ui("Home services")} tourTarget="tenant_services">
           <ActionRow
@@ -1454,17 +1450,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     position: 'relative',
     width: 42,
-  },
-  unreadDot: {
-    backgroundColor: colors.gold,
-    borderColor: colors.white,
-    borderRadius: 5,
-    borderWidth: 2,
-    height: 10,
-    position: 'absolute',
-    right: 6,
-    top: 6,
-    width: 10,
   },
   avatar: {
     alignItems: 'center',

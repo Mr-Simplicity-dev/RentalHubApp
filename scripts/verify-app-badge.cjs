@@ -8,13 +8,16 @@ const code = transformSync(fs.readFileSync('src/services/appBadgeService.js', 'u
 }).code;
 
 function setup(os = 'android', supported = true) {
-  const calls = { badges: [], summaries: [], dismissed: [] };
-  const state = { total: 10, disabled: false };
+  const calls = { badges: [], summaries: [], dismissed: [], events: [] };
+  const state = { total: 10, disabled: false, summaryFails: false };
   const notifications = {
     AndroidImportance: { LOW: 2 },
     setNotificationChannelAsync: async () => {},
     getPermissionsAsync: async () => ({ granted: true }),
-    scheduleNotificationAsync: async value => calls.summaries.push(value),
+    scheduleNotificationAsync: async value => {
+      if (state.summaryFails) throw Error('summary unavailable');
+      calls.summaries.push(value);
+    },
     dismissNotificationAsync: async id => calls.dismissed.push(id),
     cancelScheduledNotificationAsync: async () => {},
     setBadgeCountAsync: async value => { calls.badges.push(value); return supported; },
@@ -33,7 +36,7 @@ function setup(os = 'android', supported = true) {
       getAppSettings: async () => ({ notificationBadges: !state.disabled }),
       subscribeAppSettings: () => () => {},
     },
-    './mobileDiagnosticsService': { trackMobileEvent: () => {} },
+    './mobileDiagnosticsService': { trackMobileEvent: (name, metadata) => calls.events.push([name, metadata]) },
   };
   const context = { exports: {}, require: name => {
     assert.ok(modules[name], name);
@@ -54,6 +57,8 @@ function setup(os = 'android', supported = true) {
     assert.deepEqual(calls.badges, [10, 9, 0]);
     assert.deepEqual(calls.summaries.map(item => item.content.badge), os === 'android' ? [10, 9] : []);
     if (os === 'android') assert.ok(calls.dismissed.includes('rentalhub-unread-summary'));
+    await api.syncAppIconBadge('foreground_poll');
+    assert.equal(calls.events.filter(([name]) => name === 'app_icon_badge_synced').length, 3);
     state.disabled = true;
     state.total = 12;
     await api.syncAppIconBadge();
@@ -65,6 +70,14 @@ function setup(os = 'android', supported = true) {
     service.getUnreadActivity = async () => { throw Error('offline'); };
     await assert.rejects(api.syncAppIconBadge(), /Unread counts unavailable/);
     assert.deepEqual(calls.badges, [10]);
+  }
+  {
+    const { api, calls, state } = setup();
+    state.summaryFails = true;
+    await api.syncAppIconBadge();
+    await api.syncAppIconBadge('foreground_poll');
+    assert.equal(calls.events.filter(([name]) => name === 'app_icon_badge_summary_failed').length, 1);
+    assert.equal(calls.events.filter(([name]) => name === 'app_icon_badge_synced').length, 1);
   }
   for (const logout of [false, true]) {
     const { api, calls, service } = setup();

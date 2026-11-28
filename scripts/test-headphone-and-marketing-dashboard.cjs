@@ -33,6 +33,7 @@ test('callDirectoryService fallback policy matches role matrix for mobile dashbo
   const marketing = inferFallbackCallPolicy({ user_type: 'marketing_agent' });
   assert.equal(marketing.mode, 'support_and_boss');
   assert.equal(marketing.canCallBoss, true);
+  assert.equal(marketing.canCallTeammates, false);
 
   const nationalAdmin = inferFallbackCallPolicy({ user_type: 'super_support_admin' });
   assert.equal(nationalAdmin.mode, 'admin_subordinates');
@@ -165,16 +166,16 @@ test('Mobile CareersScreen renders a WhatsApp share button on every recruitment 
   assert.doesNotMatch(careers, /slice\(0,\s*137\)/);
 });
 
-test('Mobile HeadphoneSupportButton supports Marketing Agent teammate calls, missed calls, and call records with full details', () => {
+test('Mobile HeadphoneSupportButton restricts Marketing Agent calls and shows missed-call records with full details', () => {
   const svc = read('src/services/callDirectoryService.js');
   const comp = read('src/components/calls/HeadphoneSupportButton.js');
 
-  assert.match(svc, /canCallTeammates:\s*true/);
+  assert.match(svc, /canCallTeammates:\s*false/);
+  assert.match(comp, /Call your team lead or supervisor/);
   assert.match(svc, /getHistory\(/);
   assert.match(svc, /\/calls\/history/);
 
   assert.match(comp, /MARKETING TEAM/);
-  assert.match(comp, /teammateContacts/);
   assert.match(comp, /Call Records/);
   assert.match(comp, /Missed Call/);
   assert.match(comp, /No Answer \(Missed\)/);

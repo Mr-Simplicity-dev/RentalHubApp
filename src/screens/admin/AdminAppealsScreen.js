@@ -32,10 +32,11 @@ const statusColor = (status) => {
   return colors.warning;
 };
 
-const AdminAppealsScreen = () => {
+const AdminAppealsScreen = ({ route }) => {
+  const targetAppealId = String(route?.params?.appealId || '');
 
   const [appeals, setAppeals] = useState([]);
-  const [status, setStatus] = useState('pending');
+  const [status, setStatus] = useState(targetAppealId ? '' : 'pending');
   const [total, setTotal] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
   const [actionId, setActionId] = useState(null);
@@ -65,6 +66,10 @@ const AdminAppealsScreen = () => {
   useEffect(() => {
     loadAppeals();
   }, [loadAppeals]);
+
+  useEffect(() => {
+    if (targetAppealId) setStatus('');
+  }, [targetAppealId]);
 
   const markUnderReview = async (appeal) => {
     setActionId(`${appeal.id}-under_review`);
@@ -128,6 +133,12 @@ const AdminAppealsScreen = () => {
     }
   };
 
+  const orderedAppeals = targetAppealId
+    ? [...appeals].sort((left, right) =>
+        Number(String(right.id) === targetAppealId) - Number(String(left.id) === targetAppealId)
+      )
+    : appeals;
+
   const header = (
     <>
       <PremiumHero
@@ -157,7 +168,7 @@ const AdminAppealsScreen = () => {
   return (
     <>
       <PremiumListScreen
-        data={appeals}
+        data={orderedAppeals}
         keyExtractor={(item) => String(item.id)}
         refreshing={refreshing}
         onRefresh={loadAppeals}

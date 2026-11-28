@@ -12,7 +12,7 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
 import { AuthContext } from '../../context/AuthContext';
@@ -163,6 +163,7 @@ const HeadphoneSupportButton = ({ variant = 'dark', compact = false, style }) =>
     total_count: 0,
     missed_count: 0,
     incoming_missed_count: 0,
+    incoming_unread_missed_count: 0,
     answered_count: 0,
   });
   const [historyLoading, setHistoryLoading] = useState(false);
@@ -216,10 +217,13 @@ const HeadphoneSupportButton = ({ variant = 'dark', compact = false, style }) =>
           filter: targetFilter,
           limit: 40,
         });
+        await callDirectoryService.markIncomingMissedCallsAsViewed();
         setCallRecords(Array.isArray(payload?.records) ? payload.records : []);
-        if (payload?.summary) {
-          setHistorySummary(payload.summary);
-        }
+        setHistorySummary((previous) => ({
+          ...previous,
+          ...payload?.summary,
+          incoming_unread_missed_count: 0,
+        }));
       } catch (err) {
         setHistoryError(getErrorMessage(err, 'Unable to load call records right now.'));
       } finally {
@@ -229,16 +233,25 @@ const HeadphoneSupportButton = ({ variant = 'dark', compact = false, style }) =>
     [isAuthenticated, user?.id, historyFilter]
   );
 
-  useEffect(() => {
-    if (!isAuthenticated || !user?.id) return;
-    callDirectoryService
-      .getHistory({ filter: 'all', limit: 15 })
-      .then((payload) => {
-        if (payload?.summary) setHistorySummary(payload.summary);
-        if (Array.isArray(payload?.records)) setCallRecords(payload.records);
-      })
-      .catch(() => {});
-  }, [isAuthenticated, user?.id]);
+  useFocusEffect(
+    useCallback(() => {
+      if (!isAuthenticated || !user?.id) return undefined;
+      let active = true;
+      callDirectoryService
+        .getHistory({ filter: 'all', limit: 15 })
+        .then((payload) => {
+          if (!active) return;
+          if (payload?.summary) setHistorySummary(payload.summary);
+          if (Array.isArray(payload?.records)) setCallRecords(payload.records);
+        })
+        .catch((error) => {
+          console.warn('Call history badge refresh failed:', error.message);
+        });
+      return () => {
+        active = false;
+      };
+    }, [isAuthenticated, user?.id])
+  );
 
   useEffect(() => {
     if (!open) return;
@@ -252,9 +265,9 @@ const HeadphoneSupportButton = ({ variant = 'dark', compact = false, style }) =>
   const meta = useMemo(() => {
     if (policy?.role === 'marketing_agent') {
       return {
-        a11y: 'Marketing team, supervisor, support, and call records',
+        a11y: 'Marketing team lead, supervisor, support, and call records',
         title: 'Marketing Calls & Support',
-        subtitle: 'Call marketing teammates, supervisors, Support, or view call records',
+        subtitle: 'Call your team lead or supervisor, contact Support, or view call records',
       };
     }
     switch (policy?.mode) {
@@ -393,7 +406,9 @@ const HeadphoneSupportButton = ({ variant = 'dark', compact = false, style }) =>
 
   const bossContacts = contacts.filter((c) => c.relation === 'boss');
   const teammateContacts = contacts.filter((c) => c.relation === 'teammate');
-  const incomingMissedCount = Number(historySummary?.incoming_missed_count || 0);
+  const incomingMissedCount = Number(
+    historySummary?.incoming_unread_missed_count ?? historySummary?.incoming_missed_count ?? 0
+  );
   const totalMissedCount = Number(historySummary?.missed_count || 0);
   const missedBadgeLabel = incomingMissedCount > 9 ? '9+' : String(incomingMissedCount);
   const primaryTabLabel = isDirectoryMode
@@ -689,8 +704,8 @@ const HeadphoneSupportButton = ({ variant = 'dark', compact = false, style }) =>
         ]}
       >
         <Icon
-          name="headset-outline"
-          size={isLight ? 21 : 20}
+          name="headset"
+          size={isLight ? 23 : 22}
           color={isLight ? colors.navy : colors.white}
         />
         {incomingMissedCount > 0 ? (

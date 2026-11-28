@@ -15,6 +15,7 @@ import Toast from 'react-native-toast-message';
 import BrandImagePlaceholder from '../../components/common/BrandImagePlaceholder';
 import DamageReportCapture from '../../components/properties/DamageReportCapture';
 import PropertyUpdateModal from '../../components/properties/PropertyUpdateModal';
+import ListingAssistancePanel from '../../components/properties/ListingAssistancePanel';
 import { AuthContext } from '../../context/AuthContext';
 import { propertyService } from '../../services/propertyService';
 import { colors, radius, typography, typeScale } from '../../theme';
@@ -158,6 +159,9 @@ const MyPropertiesScreen = ({ navigation }) => {
         keyExtractor={(item) => String(item.id)}
         ListHeaderComponent={
           <>
+            {user?.user_type === 'landlord' ? (
+              <ListingAssistancePanel properties={items} showPropertyPicker />
+            ) : null}
             <View style={styles.summaryCard}>
               <View>
                 <AppText style={styles.summaryLabel}>{ui("TOTAL PORTFOLIO")}</AppText>

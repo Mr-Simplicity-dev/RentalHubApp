@@ -9,6 +9,7 @@ import android.view.Gravity
 import android.widget.*
 import androidx.core.app.NotificationCompat
 import androidx.core.app.Person
+import androidx.core.graphics.drawable.IconCompat
 import com.facebook.react.ReactPackage
 import com.facebook.react.bridge.*
 import com.facebook.react.uimanager.ViewManager
@@ -116,11 +117,15 @@ object IncomingCalls {
         val answer = pending(c, id, "answer", true)
         val decline = pending(c, id, "decline", false)
         val fullScreen = pending(c, id, "show", true)
-        val person = Person.Builder().setName(data.optString("callerName", "RentalHub caller").take(120)).setImportant(true).build()
+        val callerName = data.optString("callerName", "RentalHub caller").take(120)
+        val callerDetail = data.optString("callerDetail").take(160)
+        val person = Person.Builder().setName(callerName)
+          .setIcon(IconCompat.createWithResource(c, R.mipmap.ic_launcher))
+          .setImportant(true).build()
         val notification = NotificationCompat.Builder(c, channelId)
-          .setSmallIcon(R.mipmap.ic_launcher).setContentTitle("Incoming RentalHub call")
-          .setContentText(person.name).setCategory(NotificationCompat.CATEGORY_CALL)
-          .setPriority(NotificationCompat.PRIORITY_MAX).setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
+          .setSmallIcon(R.mipmap.ic_launcher).setContentTitle("Incoming call: $callerName")
+          .setContentText(callerDetail.ifBlank { "Open Amana RentalHub to answer." }).setCategory(NotificationCompat.CATEGORY_CALL)
+          .setPriority(NotificationCompat.PRIORITY_MAX).setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
           .setOngoing(true).setAutoCancel(false).setOnlyAlertOnce(true).setNumber(0)
           .setTimeoutAfter((expiry(data) - System.currentTimeMillis()).coerceAtLeast(1))
           .setContentIntent(fullScreen).setFullScreenIntent(fullScreen, true)
@@ -226,8 +231,28 @@ class IncomingCallActivity : Activity() {
       else { IncomingCalls.answer(this, id); finish() }
     }
     val layout = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; gravity = Gravity.CENTER; setPadding(32, 32, 32, 32); setBackgroundColor(0xff071a3d.toInt()) }
-    layout.addView(TextView(this).apply { text = "Amana RentalHub NG"; textSize = 25f; gravity = Gravity.CENTER; setTextColor(-1) })
-    layout.addView(TextView(this).apply { text = if (keyguard.isKeyguardLocked) "Incoming call" else "${data.optString("callerName", "RentalHub caller")} is calling"; textSize = 21f; gravity = Gravity.CENTER; setTextColor(-1); setPadding(0, 32, 0, 40) })
+    layout.addView(ImageView(this).apply {
+      setImageResource(R.mipmap.ic_launcher)
+      contentDescription = "Amana RentalHub"
+    }, LinearLayout.LayoutParams(96, 96).apply { gravity = Gravity.CENTER })
+    layout.addView(TextView(this).apply { text = "Amana RentalHub NG"; textSize = 20f; gravity = Gravity.CENTER; setTextColor(-1); setPadding(0, 16, 0, 8) })
+    layout.addView(TextView(this).apply {
+      text = data.optString("callerName", "RentalHub caller")
+      textSize = 24f
+      gravity = Gravity.CENTER
+      setTextColor(-1)
+      setPadding(0, 8, 0, 8)
+    })
+    val callerDetail = data.optString("callerDetail").take(160)
+    if (callerDetail.isNotBlank()) {
+      layout.addView(TextView(this).apply {
+        text = callerDetail
+        textSize = 16f
+        gravity = Gravity.CENTER
+        setTextColor(0xffCBD5E1.toInt())
+        setPadding(0, 0, 0, 32)
+      })
+    }
     layout.addView(Button(this).apply { text = "Answer"; setOnClickListener { accept() } }, LinearLayout.LayoutParams(-1, -2))
     layout.addView(Button(this).apply { text = "Decline"; setOnClickListener { IncomingCalls.decline(this@IncomingCallActivity, id) {}; finish() } }, LinearLayout.LayoutParams(-1, -2))
     setContentView(layout)

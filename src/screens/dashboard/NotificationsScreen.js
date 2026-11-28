@@ -12,7 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import { notificationService } from '../../services/notificationService';
 import { syncAppIconBadge } from '../../services/appBadgeService';
-import { openRentalHubLinkInApp } from '../../navigation/navigationRef';
+import { openNotificationLink } from '../../navigation/navigationRef';
 import { colors, radius, typography, typeScale } from '../../theme';
 import { getErrorMessage, pickList } from '../../utils/http';
 
@@ -86,10 +86,26 @@ const NotificationsScreen = ({ navigation }) => {
     }
   };
 
-  const handleOpen = (item) => {
+  const handleOpen = async (item) => {
     void markOne(item);
     const link = item.link || item.action_url || item.url;
-    if (link) openRentalHubLinkInApp(link);
+    if (!link) return;
+    try {
+      const opened = await openNotificationLink(link);
+      if (!opened) {
+        Toast.show({
+          type: 'error',
+          text1: ui("Could not open this update"),
+          text2: ui("Open it from the RentalHub website."),
+        });
+      }
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: ui("Could not open this update"),
+        text2: getErrorMessage(error, ui("Please try again.")),
+      });
+    }
   };
 
   const markAll = async () => {

@@ -237,7 +237,7 @@ api.interceptors.response.use(
     markNetworkProblem(error);
     const originalRequest = error.config || {};
 
-    if (error.response?.status === 429) {
+    if (error.response?.status === 429 && !originalRequest.suppressRateLimitNotice) {
       showRateLimitNotice(error.response.data?.message);
     }
 
@@ -314,7 +314,7 @@ api.interceptors.response.use(
         return api(originalRequest);
       } catch (refreshError) {
         markNetworkProblem(refreshError);
-        if (refreshError?.response?.status === 429) {
+        if (refreshError?.response?.status === 429 && !originalRequest.suppressRateLimitNotice) {
           showRateLimitNotice(refreshError.response.data?.message);
         }
         const sessionIsInvalid = isTerminalSessionError(refreshError);

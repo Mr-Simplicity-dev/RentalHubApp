@@ -1,4 +1,5 @@
 import { createNavigationContainerRef } from '@react-navigation/native';
+import { Linking } from 'react-native';
 
 export const navigationRef = createNavigationContainerRef();
 
@@ -21,15 +22,34 @@ const navigateIfAvailable = (routeName, params) => {
   return true;
 };
 
+const navigateMainTab = (screen, params) => {
+  const routeNames = navigationRef.getRootState()?.routeNames || [];
+  if (routeNames.includes('MainTabs')) {
+    navigationRef.navigate('MainTabs', { screen, ...(params ? { params } : {}) });
+    return true;
+  }
+  return navigateIfAvailable(screen, params);
+};
+
 export const openRentalHubLinkInApp = (link) => {
   if (!navigationRef.isReady()) return false;
 
+  const query = String(link || '').split(/[?#]/)[1]?.split('#')[0] || '';
+  const search = new URLSearchParams(query);
   const path = getPathFromLink(link)
     .split(/[?#]/)[0]
     .replace(/\/+$/, '')
     .toLowerCase();
 
   if (!path || path === '/') return false;
+
+  if (['/dashboard', '/tenant/dashboard', '/landlord/dashboard'].includes(path)) {
+    return navigateMainTab('DashboardTab') || navigateIfAvailable('DashboardTab') || navigateIfAvailable('Dashboard');
+  }
+
+  if (path === '/applications') {
+    return navigateMainTab('Applications') || navigateIfAvailable('Applications');
+  }
 
   if (path === '/messages') {
     return openNotificationDestination({ screen: 'Messages' });
@@ -42,10 +62,36 @@ export const openRentalHubLinkInApp = (link) => {
   if (path === '/notifications') {
     return navigateIfAvailable('Notifications');
   }
+  if (path === '/verification-status') return navigateIfAvailable('VerificationStatus');
+  if (path === '/my-properties') return navigateIfAvailable('MyProperties');
+  if (path === '/my-disputes') return navigateIfAvailable('MyDisputes');
+  if (path === '/refund-requests') return navigateIfAvailable('RefundRequests');
+  if (path === '/careers') return navigateIfAvailable('Careers');
+  if (path === '/admin/code-of-conduct') return navigateIfAvailable('AdminConduct');
+  if (path === '/admin/verifications') return navigateIfAvailable('AdminVerifications');
+  if (path === '/admin/recruitment') {
+    return navigateIfAvailable('RecruitmentAdmin', search.get('tab') ? { tab: search.get('tab') } : undefined);
+  }
+  if (path === '/admin/super-support-dashboard') {
+    return navigateIfAvailable(
+      'SuperAdminSupportGovernance',
+      search.get('tab') ? { tab: search.get('tab') } : undefined
+    ) || navigateIfAvailable('AdminSupportDashboard');
+  }
+  if (path === '/admin/state-support-dashboard' || path === '/admin/lga-support-dashboard') {
+    return navigateIfAvailable(
+      'AdminSupportDashboard',
+      search.get('tab') ? { tab: search.get('tab') } : undefined
+    ) || navigateIfAvailable('SupportTickets');
+  }
   if (path === '/my-staff-identity') return navigateIfAvailable('MyStaffIdentity');
-  if (path === '/staff-identity-management' || (path === '/super-admin' && /[?&]tab=staff_identity(?:&|$)/i.test(String(link)))) {
+  if (path === '/staff-identity-management' || (path === '/super-admin' && search.get('tab') === 'staff_identity')) {
     return navigateIfAvailable('StaffIdentityManagement');
   }
+  if (path === '/super-admin' && search.get('tab') === 'verifications') {
+    return navigateIfAvailable('AdminVerifications') || navigateIfAvailable('SuperAdminDashboard');
+  }
+  if (path === '/super-admin') return navigateIfAvailable('SuperAdminDashboard');
 
   if (path === '/admin/whatsapp-support') return navigateIfAvailable('WhatsAppSupport');
 
@@ -69,6 +115,11 @@ export const openRentalHubLinkInApp = (link) => {
     return navigateIfAvailable('AdminPropertyDetail', { id: adminPropertyMatch[1] });
   }
 
+  const adminAppealMatch = path.match(/^\/admin\/appeals\/(\d+)$/);
+  if (adminAppealMatch) {
+    return navigateIfAvailable('AdminAppeals', { appealId: adminAppealMatch[1] });
+  }
+
   const adminUserMatch = path.match(/^\/admin\/users\/([^/]+)$/);
   if (adminUserMatch) {
     return navigateIfAvailable('AdminUserDetail', { id: adminUserMatch[1] });
@@ -89,6 +140,31 @@ export const openRentalHubLinkInApp = (link) => {
   }
 
   return false;
+};
+
+export const openNotificationLink = async (link) => {
+  if (openRentalHubLinkInApp(link)) return true;
+
+  const raw = String(link || '').trim();
+  if (!raw) return false;
+
+  let url;
+  try {
+    url = new URL(raw, 'https://rentalhub.com.ng');
+  } catch {
+    return false;
+  }
+
+  if (
+    url.protocol !== 'https:' ||
+    !['rentalhub.com.ng', 'www.rentalhub.com.ng'].includes(url.hostname) ||
+    (raw.startsWith('//'))
+  ) {
+    return false;
+  }
+
+  await Linking.openURL(url.href);
+  return true;
 };
 
 export const openNotificationDestination = (data = {}) => {

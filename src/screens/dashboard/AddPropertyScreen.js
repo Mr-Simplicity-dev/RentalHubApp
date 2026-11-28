@@ -1,12 +1,16 @@
 import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useContext, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import {Image, ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
+import SelectField from '../../components/common/SelectField';
+import OptionPickerModal from '../../components/common/OptionPickerModal';
+import ListingAssistancePanel from '../../components/properties/ListingAssistancePanel';
+import { AuthContext } from '../../context/AuthContext';
 import LivePropertyCapture, {
   MAX_PROPERTY_PHOTOS,
   MAX_PROPERTY_CLIPS,
@@ -18,11 +22,19 @@ import { colors, radius, shadows, typography, typeScale } from '../../theme';
 
 import AppText from '../../components/common/AppText';
 const propertyTypes = ['apartment', 'house', 'duplex', 'studio', 'bungalow', 'flat', 'room'];
+const createSubmissionKey = () => `mobile-${Date.now()}-${Math.random().toString(36).slice(2, 18)}`;
 
 const AddPropertyScreen = ({ navigation }) => {
   const interfaceLanguage = useInterfaceLanguage();
+  const { user } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const [captureOpen, setCaptureOpen] = useState(false);
+  const [locationOptions, setLocationOptions] = useState([]);
+  const [locationOptionsError, setLocationOptionsError] = useState('');
+  const [statePickerOpen, setStatePickerOpen] = useState(false);
+  const [lgaPickerOpen, setLgaPickerOpen] = useState(false);
+  const [createdPropertyId, setCreatedPropertyId] = useState(null);
+  const [submissionKey] = useState(createSubmissionKey);
   const [images, setImages] = useState([]);
   const [imageCaptureTokens, setImageCaptureTokens] = useState([]);
   const [clips, setClips] = useState([]);
@@ -31,6 +43,8 @@ const AddPropertyScreen = ({ navigation }) => {
     title: '',
     description: '',
     state: '',
+    state_id: '',
+    lga_name: '',
     city: '',
     area: '',
     full_address: '',
@@ -47,6 +61,41 @@ const AddPropertyScreen = ({ navigation }) => {
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
   }, [navigation, interfaceLanguage]);
+
+  useEffect(() => {
+    let active = true;
+    propertyService.getLocationOptions()
+      .then((response) => {
+        if (!active) return;
+        if (!response?.success || !Array.isArray(response.data)) {
+          setLocationOptionsError(ui('Could not load State and LGA options. Please retry.'));
+          return;
+        }
+        setLocationOptions(response.data);
+        setLocationOptionsError('');
+      })
+      .catch(() => {
+        if (active) {
+          setLocationOptionsError(ui('Could not load State and LGA options. Please retry.'));
+        }
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const selectedState = useMemo(
+    () => locationOptions.find((item) => String(item.id) === String(form.state_id)),
+    [form.state_id, locationOptions]
+  );
+  const statePickerOptions = useMemo(
+    () => locationOptions.map((item) => ({ label: item.state_name, value: String(item.id) })),
+    [locationOptions]
+  );
+  const lgaPickerOptions = useMemo(
+    () => (selectedState?.lgas || []).map((item) => ({ label: item, value: item })),
+    [selectedState]
+  );
 
   const onChange = (key, value) => {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -76,7 +125,8 @@ const AddPropertyScreen = ({ navigation }) => {
     if (
       !form.title.trim() ||
       !form.description.trim() ||
-      !form.state.trim() ||
+      !form.state_id ||
+      !form.lga_name ||
       !form.city.trim() ||
       !form.area.trim() ||
       !form.rent_amount ||
@@ -86,7 +136,7 @@ const AddPropertyScreen = ({ navigation }) => {
       Toast.show({
         type: 'error',
         text1: ui("Complete required fields"),
-        text2: ui("Title, description, location, coordinates and rent are required."),
+        text2: ui("Title, description, State, LGA, coordinates and rent are required."),
       });
       return;
     }
@@ -128,6 +178,7 @@ const AddPropertyScreen = ({ navigation }) => {
     try {
       const payload = {
         ...form,
+        submission_key: submissionKey,
         bedrooms: Number(form.bedrooms || 0),
         bathrooms: Number(form.bathrooms || 0),
         parking_spaces: Math.max(0, Math.floor(Number(form.parking_spaces || 0) || 0)),
@@ -149,21 +200,26 @@ const AddPropertyScreen = ({ navigation }) => {
       };
       const response = await propertyService.createProperty(payload);
       if (response.success) {
-        // Clips are optional; upload them after the listing exists.
         const createdId = response.data?.id || response.data?.property?.id;
+        setCreatedPropertyId(createdId || null);
         if (createdId && clips.length && clipCaptureTokens.length === clips.length) {
           try {
             await propertyService.uploadClips(createdId, clips, clipCaptureTokens, []);
           } catch (error) {
             Toast.show({
               type: 'info',
-              text1: ui("Property created"),
-              text2: ui("The listing is live, but the clips could not be added."),
+              text1: ui("Listing submitted for review"),
+              text2: ui("The property is saved and awaiting review, but the optional clips could not be uploaded. Keep this form open, retake any expired clips, and retry."),
             });
+            return;
           }
         }
 
-        Toast.show({ type: 'success', text1: ui("Property created") });
+        Toast.show({
+          type: 'success',
+          text1: ui("Listing submitted for review"),
+          text2: ui("It will become public after approval."),
+        });
         navigation.navigate('MyProperties');
       } else {
         Toast.show({
@@ -262,22 +318,6 @@ const AddPropertyScreen = ({ navigation }) => {
         <AppText style={styles.fieldLabel}>{ui("Live photos")}</AppText>
         <AppText style={styles.photoHint}>{ui("Property photos must be captured live in the app. Gallery images are not accepted. Up to 8 photos. Add optional clips in photo/clip mode.")}</AppText>
 
-        {images.length > 0 ? (
-          <View style={styles.photoGrid}>
-            {images.map((photo, index) => (
-              <View key={`${photo.uri}-${index}`} style={styles.photoItem}>
-                <Image source={{ uri: photo.uri }} style={styles.photoThumb} />
-                <TouchableOpacity
-                  accessibilityLabel={ui("Remove photo {value0}", {value0: (index + 1)})}
-                  onPress={() => handleRemovePhoto(index)}
-                  style={styles.photoRemove}>
-                  <Icon name="close" size={13} color={colors.white} />
-                </TouchableOpacity>
-              </View>
-            ))}
-          </View>
-        ) : null}
-
         {images.length > 0 || clips.length > 0 ? (
           <View style={styles.photoGrid}>
             {images.map((photo, index) => (
@@ -328,7 +368,29 @@ const AddPropertyScreen = ({ navigation }) => {
 
       <AppText style={styles.sectionLabel}>{ui("LOCATION")}</AppText>
       <View style={styles.card}>
-      <Input label={ui("State")} value={form.state} onChangeText={(value) => onChange('state', value)} />
+      {locationOptionsError ? (
+        <AppText style={styles.locationError}>{locationOptionsError}</AppText>
+      ) : null}
+      <SelectField
+        label={ui("State")}
+        value={form.state}
+        placeholder={ui("Select State")}
+        onPress={() => setStatePickerOpen(true)}
+        disabled={!locationOptions.length}
+      />
+      <SelectField
+        label={ui("LGA")}
+        value={form.lga_name}
+        placeholder={ui("Select LGA")}
+        onPress={() => setLgaPickerOpen(true)}
+        disabled={!form.state_id}
+      />
+      {user?.user_type === 'landlord' ? (
+        <ListingAssistancePanel
+          initialStateId={form.state_id}
+          initialLgaName={form.lga_name}
+        />
+      ) : null}
       <Input label={ui("City")} value={form.city} onChangeText={(value) => onChange('city', value)} />
       <Input label={ui("Area")} value={form.area} onChangeText={(value) => onChange('area', value)} />
       <Input
@@ -337,7 +399,7 @@ const AddPropertyScreen = ({ navigation }) => {
         onChangeText={(value) => onChange('full_address', value)}
         placeholder={ui("Street and building details")}
       />
-      <AppText style={styles.coordinateHint}>{ui("Copy the latitude and longitude from the property’s Google Maps pin.")}</AppText>
+      <AppText style={styles.coordinateHint}>{ui("Enter the confirmed coordinates for the property. Current location is only suitable when you are physically at the property.")}</AppText>
       <View style={styles.numberRow}>
         <View style={styles.numberField}>
           <Input label={ui("Latitude")} value={form.latitude} onChangeText={(value) => onChange('latitude', value)} keyboardType="decimal-pad" placeholder="6.5244" />
@@ -371,7 +433,12 @@ const AddPropertyScreen = ({ navigation }) => {
       </View>
       </View>
 
-      <Button title={ui("Submit for verification")} onPress={handleSubmit} loading={loading} size="lg" />
+      <Button
+        title={createdPropertyId ? ui("Retry optional clip upload") : ui("Submit for review")}
+        onPress={handleSubmit}
+        loading={loading}
+        size="lg"
+      />
       <View style={styles.reviewNote}>
         <Icon name="shield-checkmark-outline" size={17} color={colors.success} />
         <AppText style={styles.reviewText}>{ui("RentalHub reviews listings before they become publicly available.")}</AppText>
@@ -387,6 +454,32 @@ const AddPropertyScreen = ({ navigation }) => {
       onRecordClip={handleRecordClip}
       onRemoveClip={handleRemoveClip}
       onClose={() => setCaptureOpen(false)}
+    />
+    <OptionPickerModal
+      visible={statePickerOpen}
+      title={ui("Select State")}
+      options={statePickerOptions}
+      selectedValue={form.state_id}
+      searchable
+      onClose={() => setStatePickerOpen(false)}
+      onSelect={(option) => {
+        const selected = locationOptions.find((item) => String(item.id) === String(option.value));
+        setForm((current) => ({
+          ...current,
+          state_id: option.value,
+          state: selected?.state_name || '',
+          lga_name: '',
+        }));
+      }}
+    />
+    <OptionPickerModal
+      visible={lgaPickerOpen}
+      title={ui("Select LGA")}
+      options={lgaPickerOptions}
+      selectedValue={form.lga_name}
+      searchable
+      onClose={() => setLgaPickerOpen(false)}
+      onSelect={(option) => onChange('lga_name', option.value)}
     />
     </SafeAreaView>
   );
@@ -417,6 +510,7 @@ const styles = StyleSheet.create({
   numberRow: { flexDirection: 'row', gap: 10 },
   numberField: { flex: 1 },
   coordinateHint: { color: colors.muted, fontFamily: typography.regular, fontSize: typeScale.reading, lineHeight: 22, marginBottom: 10 },
+  locationError: { color: colors.danger, fontFamily: typography.medium, fontSize: typeScale.xs, lineHeight: 18, marginBottom: 10 },
   clipItem: {
     alignItems: 'center',
     backgroundColor: 'rgba(11,18,32,0.82)',

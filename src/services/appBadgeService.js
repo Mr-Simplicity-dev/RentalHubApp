@@ -65,6 +65,9 @@ const SUMMARY_CHANNEL_ID = 'unread-activity';
 let sessionVersion = 0;
 let refreshVersion = 0;
 let badgeQueue = Promise.resolve();
+let lastTrackedCountsSignature = null;
+let lastSummaryFailureAt = 0;
+const SUMMARY_FAILURE_TELEMETRY_COOLDOWN_MS = 15 * 60 * 1000;
 
 const ensureSummaryChannel = async () => {
   await Notifications.setNotificationChannelAsync(SUMMARY_CHANNEL_ID, {
@@ -76,7 +79,12 @@ const ensureSummaryChannel = async () => {
   });
 };
 
-export const resetBadgeSession = () => { sessionVersion += 1; return clearAppIconBadge(); };
+export const resetBadgeSession = () => {
+  sessionVersion += 1;
+  lastTrackedCountsSignature = null;
+  lastSummaryFailureAt = 0;
+  return clearAppIconBadge();
+};
 export const setAppIconBadgeCount = (count) => {
   const version = sessionVersion;
   const total = Number.isFinite(Number(count)) ? Math.max(0, Math.floor(Number(count))) : 0;
@@ -123,9 +131,13 @@ export const setAppIconBadgeCount = (count) => {
               trigger: { channelId: SUMMARY_CHANNEL_ID },
             });
           } catch (error) {
-            trackMobileEvent('app_icon_badge_summary_failed', {
-              message: String(error?.message || error),
-            });
+            const now = Date.now();
+            if (now - lastSummaryFailureAt >= SUMMARY_FAILURE_TELEMETRY_COOLDOWN_MS) {
+              lastSummaryFailureAt = now;
+              trackMobileEvent('app_icon_badge_summary_failed', {
+                message: String(error?.message || error),
+              });
+            }
           }
         }
       }
@@ -157,12 +169,16 @@ export const syncAppIconBadge = async (reason = 'manual') => {
   const counts = await fetchUnreadActivityCount();
   if (version !== sessionVersion || refresh !== refreshVersion) return { stale: true };
   await setAppIconBadgeCount(counts.total);
-  trackMobileEvent('app_icon_badge_synced', {
-    reason,
-    total: counts.total,
-    unread_messages: counts.unreadMessages,
-    unread_notifications: counts.unreadNotifications,
-  });
+  const signature = [counts.total, counts.unreadMessages, counts.unreadNotifications].join(':');
+  if (signature !== lastTrackedCountsSignature) {
+    lastTrackedCountsSignature = signature;
+    trackMobileEvent('app_icon_badge_synced', {
+      reason,
+      total: counts.total,
+      unread_messages: counts.unreadMessages,
+      unread_notifications: counts.unreadNotifications,
+    });
+  }
   return counts;
 };
 

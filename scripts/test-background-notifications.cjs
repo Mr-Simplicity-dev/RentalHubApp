@@ -58,6 +58,14 @@ test('normal alerts keep banners and sound; call alerts do not acquire duplicate
   const call = await present({ type: 'incoming_call' });
   assert.equal(call.shouldPlaySound, false); assert.equal(call.shouldShowBanner, false); assert.equal(call.shouldShowList, false); assert.equal(call.shouldSetBadge, false);
 });
+test('badge summaries update the app badge without appearing in the notification shade', async () => {
+  const f = pushFixture(); f.service.configureNotificationPresentation();
+  const summary = await f.handler().handleNotification({ request: { content: { data: { badgeSummary: true } } } });
+  assert.equal(summary.shouldPlaySound, false);
+  assert.equal(summary.shouldShowBanner, false);
+  assert.equal(summary.shouldShowList, false);
+  assert.equal(summary.shouldSetBadge, true);
+});
 
 const clientRequire = createRequire(path.resolve(__dirname, '../../client/package.json'));
 const { JSDOM } = clientRequire('jsdom');
@@ -107,7 +115,7 @@ test('a cold notification tap waits for navigation, falls back safely, and stops
     '../navigation/navigationRef': {
       navigationRef: { isReady: () => state.ready },
       openNotificationDestination: data => { if (data.screen === 'Notifications') { routes.push('Notifications'); return true; } return false; },
-      openRentalHubLinkInApp: link => { if (link === '/properties/42') { routes.push('PropertyDetail'); return true; } return false; },
+      openNotificationLink: async link => { if (link === '/properties/42') { routes.push('PropertyDetail'); return true; } return false; },
     },
   };
   const module = { exports: {} };
@@ -121,6 +129,7 @@ test('a cold notification tap waits for navigation, falls back safely, and stops
   state.ready = true; [...pending.values()][0](); await Promise.resolve();
   assert.deepEqual(routes, ['PropertyDetail']); assert.deepEqual(reads, ['7']);
   module.exports.openResponse(response('/unknown-private-route'));
+  await Promise.resolve();
   assert.equal(routes.at(-1), 'Notifications');
   state.ready = false; pending.clear();
   module.exports.openResponse(response('/properties/42'), { isActive: () => state.active, timers: new Set() });

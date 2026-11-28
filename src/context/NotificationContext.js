@@ -1,11 +1,11 @@
 import {notificationService} from '../services/notificationService';
 import * as Notifications from 'expo-notifications';
 import React, { createContext, useContext, useEffect } from 'react';
-import { AppState, Linking } from 'react-native';
+import { AppState } from 'react-native';
 import {
   navigationRef,
   openNotificationDestination,
-  openRentalHubLinkInApp,
+  openNotificationLink,
 } from '../navigation/navigationRef';
 import {
   configureNotificationPresentation,
@@ -22,9 +22,6 @@ export const NotificationContext = createContext(null);
 
 configureNotificationPresentation();
 
-const isAllowedExternalLink = (link) =>
-  /^https?:\/\/(www\.)?rentalhub\.com\.ng\//i.test(String(link || '').trim());
-
 export const openResponse = (response, { isActive = () => true, timers } = {}) => {
   const data = response?.notification?.request?.content?.data || {};
   let attempts = 0;
@@ -38,8 +35,15 @@ export const openResponse = (response, { isActive = () => true, timers } = {}) =
     }
     if(/^\d+$/.test(String(data.notificationId||'')))void notificationService.markAsRead(data.notificationId).then(()=>syncAppIconBadge('push_read')).catch(()=>{});
     if (openNotificationDestination(data)) return;
-    if (data.link && openRentalHubLinkInApp(data.link)) return;
-    if (data.link && isAllowedExternalLink(data.link)) { void Linking.openURL(String(data.link)); return; }
+    if (data.link) {
+      void openNotificationLink(data.link).then((opened) => {
+        if (!opened && isActive()) openNotificationDestination({ screen: 'Notifications' });
+      }).catch((error) => {
+        console.warn('Opening notification destination failed:', error.message);
+        if (isActive()) openNotificationDestination({ screen: 'Notifications' });
+      });
+      return;
+    }
     openNotificationDestination({ screen: 'Notifications' });
   };
   open();

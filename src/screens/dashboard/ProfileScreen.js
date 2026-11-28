@@ -1,6 +1,7 @@
 const identityPhotoCopy = require('../../i18n/identityPhotoCopy.cjs');
 import UserAvatar from '../../components/common/UserAvatar';
 import HeadphoneSupportButton from '../../components/calls/HeadphoneSupportButton';
+import NotificationBell from '../../components/common/NotificationBell';
 import { translateUi as ui } from '../../i18n/interfaceRuntime.cjs';
 import useInterfaceLanguage from '../../i18n/useInterfaceLanguage';
 import AssistedPasswordForm from '../../components/common/AssistedPasswordForm';
@@ -298,12 +299,7 @@ const ProfileScreen = ({ navigation }) => {
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
           <HeadphoneSupportButton variant="light" />
-          <TouchableOpacity
-          accessibilityLabel={ui("Open notifications")}
-          onPress={() => navigation.navigate('Notifications')}
-          style={styles.backButton}>
-          <Icon name="notifications-outline" size={21} color={colors.navy} />
-        </TouchableOpacity>
+          <NotificationBell variant="light" style={styles.backButton} />
         </View>
       </View>
 
