@@ -114,3 +114,5 @@ test('unmounting the app clears the native foreground state so later calls can r
   await f.close();
   assert.deepEqual(f.calls.filter(item => item[0] === 'foreground').at(-1), ['foreground', false]);
 });
+
+test('Android sleep and activity lifecycle decide foreground call presentation even if JavaScript is suspended',()=>{const native=fs.readFileSync(path.resolve(__dirname,'../android/app/src/main/java/com/rentalhubng/RentalHubIncomingCalls.kt'),'utf8');assert.ok(native.includes('active && activityResumed && power.isInteractive && !keyguard.isKeyguardLocked'));assert.ok(native.includes('if (foreground(c)) manager(c).cancel'));const activity=fs.readFileSync(path.resolve(__dirname,'../android/app/src/main/java/com/rentalhubng/MainActivity.kt'),'utf8');const pause=activity.slice(activity.indexOf('override fun onPause()'));assert.ok(pause.indexOf('IncomingCalls.setActivityResumed(this, false)')<pause.indexOf('super.onPause()'));assert.ok(activity.includes('IncomingCalls.setActivityResumed(this, true)'));});

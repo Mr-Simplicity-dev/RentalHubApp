@@ -23,6 +23,16 @@ class MainActivity : ReactActivity() {
     super.onCreate(savedInstanceState)
   }
 
+  override fun onResume() {
+    super.onResume()
+    IncomingCalls.setActivityResumed(this, true)
+  }
+
+  override fun onPause() {
+    IncomingCalls.setActivityResumed(this, false)
+    super.onPause()
+  }
+
   /**
    * Returns the instance of the [ReactActivityDelegate]. We use [DefaultReactActivityDelegate]
    * which allows you to enable New Architecture with a single boolean flags [fabricEnabled]

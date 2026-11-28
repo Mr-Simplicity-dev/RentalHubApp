@@ -103,3 +103,11 @@ No migration or new environment variable is needed. Deploy the paired backend
 changes before releasing the APK. Keep the previous APK and server source for
 rollback. Publish Android metadata only after verifying signing, version/build,
 public download hash and that build 84 no longer reports itself as outdated.
+
+## Sleep and sound checks
+
+Native presentation uses the Android activity lifecycle, screen power and keyguard state, alongside the JavaScript readiness signal. This avoids suppressing a locked-screen call when JavaScript is paused. Account changes use the same native monitor as call presentation.
+
+An active sign-in and notification permission are required. Android 14 and later can require separate full-screen call permission. The existing Call sounds card checks that permission and links to phone settings for background access and manufacturer Auto-start controls. The app respects Silent mode, Do Not Disturb and user volume.
+
+Incoming WAV tones are normalized with headroom. Versioned public filenames preserve the previous tone URLs for older clients. Run `npm run prepare:call-sounds -- --web` in the mobile folder when preparing the shared web and mobile sound assets. Audio files remain excluded from Git.

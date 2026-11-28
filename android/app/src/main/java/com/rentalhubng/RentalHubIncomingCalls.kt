@@ -33,12 +33,21 @@ object IncomingCalls {
   private const val PREFS = "rentalhub_incoming_calls"
   private val worker = Executors.newSingleThreadExecutor()
   @Volatile private var active = false
+  @Volatile private var activityResumed = false
   private fun prefs(c: Context) = c.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
   private fun manager(c: Context) = c.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
   private fun identifier(id: String) = "call:$id".hashCode()
   private fun validId(id: String) = id.matches(Regex("[0-9a-fA-F-]{36}"))
   fun expiry(data: JSONObject): Long = try { java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", java.util.Locale.US).apply { timeZone = java.util.TimeZone.getTimeZone("UTC"); isLenient = false }.parse(data.optString("expiresAt"))?.time ?: 0L } catch (_: Exception) { 0L }
-  fun foreground(c: Context) = active
+  fun foreground(c: Context): Boolean {
+    val power = c.getSystemService(Context.POWER_SERVICE) as PowerManager
+    val keyguard = c.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+    return active && activityResumed && power.isInteractive && !keyguard.isKeyguardLocked
+  }
+  @Synchronized fun setActivityResumed(c: Context, resumed: Boolean) {
+    activityResumed = resumed
+    if (!resumed || foreground(c)) setForeground(c, active)
+  }
   fun current(c: Context): JSONObject? = try {
     val data = JSONObject(prefs(c).getString("call", "") ?: "")
     if (valid(c, data)) data else null
@@ -48,7 +57,7 @@ object IncomingCalls {
     val remaining = expiry(data) - System.currentTimeMillis()
     return owns(c, data) && validId(data.optString("callId")) && remaining in 1..90000 && data.optString("alertToken").isNotEmpty() && prefs(c).getLong("closed:${data.optString("callId")}", 0) < System.currentTimeMillis()
   }
-  fun configure(c: Context, user: String, active: Boolean) {
+  @Synchronized fun configure(c: Context, user: String, active: Boolean) {
     if (prefs(c).getString("user", "") != user) {
       manager(c).cancelAll()
       prefs(c).edit().clear().putString("user", user).apply()
@@ -58,7 +67,7 @@ object IncomingCalls {
   @Synchronized fun setForeground(c: Context, active: Boolean) {
     this.active = active
     val data = current(c) ?: return
-    if (active) manager(c).cancel(identifier(data.optString("callId"))) else present(c, data)
+    if (foreground(c)) manager(c).cancel(identifier(data.optString("callId"))) else present(c, data)
   }
   fun receive(c: Context, data: JSONObject) {
     if (!owns(c, data) || !validId(data.optString("callId"))) return
@@ -78,7 +87,7 @@ object IncomingCalls {
       connection.requestMethod = if (decline) "POST" else "GET"
       connection.setRequestProperty("Authorization", "Bearer ${data.optString("alertToken")}")
       connection.setRequestProperty("X-RentalHub-Client", "native")
-      if (connection.responseCode != 200) return false
+      if (connection.responseCode != 200) { android.util.Log.w("RentalHubCalls", "Call check denied: HTTP ${connection.responseCode}"); return false }
       val result = JSONObject(connection.inputStream.bufferedReader().use { it.readText() })
       return result.optBoolean("success") && (decline || result.optBoolean("ringing"))
     } finally { connection.disconnect() }
@@ -131,7 +140,7 @@ object IncomingCalls {
             nm.notify(identifier(id), built)
           }
         }
-      } catch (_: Exception) { /* Notification permission or network failure must not crash startup. */ }
+      } catch (error: Exception) { android.util.Log.w("RentalHubCalls", "Call alert unavailable: ${error.javaClass.simpleName}") }
     }
   }
   @Synchronized fun close(c: Context, id: String) {
@@ -175,6 +184,7 @@ class RentalHubMessagingService : ExpoFirebaseMessagingService() {
     super.handleIntent(intent)
   }
   override fun onMessageReceived(message: RemoteMessage) {
+    android.util.Log.i("RentalHubCalls", "Push received priority=${message.priority} original=${message.originalPriority}")
     val data = try { JSONObject(message.data["body"] ?: "{}") } catch (_: Exception) { JSONObject() }
     if (data.has("receiverId") && !IncomingCalls.owns(this, data)) return
     if (data.optString("type") in listOf("incoming_call", "call_cancelled")) {

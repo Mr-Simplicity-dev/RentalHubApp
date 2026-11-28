@@ -71,8 +71,8 @@ android {
         applicationId = "com.rentalhubng"
         minSdkVersion = rootProject.ext.minSdkVersion
         targetSdkVersion = rootProject.ext.targetSdkVersion
-        versionCode = 84
-        versionName = "1.0.73"
+        versionCode = 85
+        versionName = "1.0.74"
         buildConfigField "String", "PAYSTACK_PUBLIC_KEY", "\"pk_live_24159afdd489928d4e500cff2eafb7d08b0f0d3f\""
     }
     signingConfigs {

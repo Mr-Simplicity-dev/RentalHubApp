@@ -5,12 +5,14 @@
     {
       "name": "call_normal.wav",
       "bytes": 132344,
-      "sha256": "9940a6a1ac3565a5f30353703aea2af7bb9794b323e41663a955fb86372dd396"
+      "sha256": "5be457e1e2278de4b02e9a698fb879d80a3d654454d7ab9bdb6f96d67cc13d42",
+      "downloadName": "call_normal_v2.wav"
     },
     {
       "name": "call_greeting.wav",
       "bytes": 259734,
-      "sha256": "57172bf720849d3ec7d59726d3ba33b7c3a556fc6e3973c81268a9fef616988f"
+      "sha256": "6b89cf52834cf5bb3bf08f0a6a11eb158a3c71f494d32102f7bacd3da9cea120",
+      "downloadName": "call_greeting_v2.wav"
     },
     {
       "name": "call_ringback.wav",

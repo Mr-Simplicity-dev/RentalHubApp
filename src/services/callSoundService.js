@@ -16,7 +16,7 @@ export const playCallSound = async (sound, loop = true) => {
   await setAudioModeAsync({ playsInSilentMode: false, shouldPlayInBackground: false, interruptionMode: 'mixWithOthers' });
   const player = createAudioPlayer(sources[sound] || sources.normal);
   player.loop = loop;
-  player.volume = 0.65;
+  player.volume = 1;
   player.play();
   let removed = false;
   return { stop: () => { if (!removed) { removed = true; player.pause(); player.remove(); } } };

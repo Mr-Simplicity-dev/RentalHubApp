@@ -62520,5 +62520,45 @@
     "ha": "Sabis ɗin haɗin kira ba ya samuwa. Ka sake gwadawa daga baya.",
     "yo": "Iṣẹ́ asopọ̀ ipe kò sí. Jọ̀wọ́ tún gbìyànjú lẹ́yìn díẹ̀.",
     "ig": "Ọrụ njikọ oku adịghị. Biko nwaa ọzọ n'oge na-adịghị anya."
+  },
+  "for calls while your phone is locked, allow notifications and background use for rentalhub. allow auto-start if your phone has it.": {
+    "en": "For calls while your phone is locked, allow notifications and background use for RentalHub. Allow Auto-start if your phone has it.",
+    "fr": "Pour recevoir les appels lorsque votre téléphone est verrouillé, autorisez les notifications et l’activité en arrière-plan pour RentalHub. Activez le démarrage automatique si cette option existe.",
+    "ar": "لتلقي المكالمات عندما يكون الهاتف مقفلاً، اسمح بإشعارات RentalHub وعمله في الخلفية. فعّل التشغيل التلقائي إن كان متاحاً.",
+    "ru": "Чтобы получать звонки при заблокированном телефоне, разрешите уведомления и работу RentalHub в фоне. Если есть автозапуск, включите его.",
+    "zh": "要在手机锁屏时接听来电，请允许 RentalHub 发送通知并在后台运行。如果手机有自动启动选项，请将其开启。",
+    "ha": "Don samun kira yayin da wayarka take a kulle, ba RentalHub izinin sanarwa da aiki a bayan fage. Kunna Auto-start idan wayarka tana da shi.",
+    "yo": "Láti gba ìpè nígbà tí fóònù bá wà ní títì, jẹ́ kí RentalHub fi ìfitónilétí hàn kí ó sì ṣiṣẹ́ ní abẹ́lẹ̀. Tan Auto-start bí ó bá wà.",
+    "ig": "Ka oku bata mgbe ekwentị gị akpọchiri, kwe ka RentalHub zipụ ọkwa ma rụọ ọrụ n’azụ. Gbanwuo Auto-start ma ọ bụrụ na ekwentị gị nwere ya."
+  },
+  "lock-screen call permission is off. use the button below to allow it.": {
+    "en": "Lock-screen call permission is off. Use the button below to allow it.",
+    "fr": "L’autorisation d’appel sur l’écran verrouillé est désactivée. Utilisez le bouton ci-dessous pour l’activer.",
+    "ar": "إذن عرض المكالمات على شاشة القفل غير مفعّل. استخدم الزر أدناه للسماح به.",
+    "ru": "Показ звонков на экране блокировки запрещён. Нажмите кнопку ниже, чтобы разрешить его.",
+    "zh": "锁屏来电权限已关闭。请使用下方按钮开启。",
+    "ha": "An kashe izinin nuna kira a allon kulle. Yi amfani da maɓallin da ke ƙasa don kunna shi.",
+    "yo": "Àṣẹ ìpè lórí iboju tí a tì ti wà ní pípa. Lo bọ́tìnì ìsàlẹ̀ láti gbà á láàyè.",
+    "ig": "Agbanyụghị ikike oku na ihuenyo mkpọchi. Jiri bọtịnụ dị n’okpuru gbanye ya."
+  },
+  "open phone settings": {
+    "en": "Open phone settings",
+    "fr": "Ouvrir les paramètres du téléphone",
+    "ar": "افتح إعدادات الهاتف",
+    "ru": "Открыть настройки телефона",
+    "zh": "打开手机设置",
+    "ha": "Bude saitunan waya",
+    "yo": "Ṣí ètò fóònù",
+    "ig": "Mepee ntọala ekwentị"
+  },
+  "could not open phone settings.": {
+    "en": "Could not open phone settings.",
+    "fr": "Impossible d’ouvrir les paramètres du téléphone.",
+    "ar": "تعذر فتح إعدادات الهاتف.",
+    "ru": "Не удалось открыть настройки телефона.",
+    "zh": "无法打开手机设置。",
+    "ha": "An kasa buɗe saitunan waya.",
+    "yo": "A kò lè ṣí ètò fóònù.",
+    "ig": "Enweghị ike imepe ntọala ekwentị."
   }
 }
